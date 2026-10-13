@@ -1,0 +1,45 @@
+PASS playwright-import
+PASS empty-before-add
+PASS add-disabled-until-path-mode
+PASS add-ask-neither-mode
+PASS add-still-disabled-without-mode
+PASS add-esc-closes
+PASS add-esc-no-write: []
+PASS add-cancel-closes
+PASS add-cancel-no-write: []
+PASS add-enabled-with-path-mode
+PASS page-not-empty-after-items
+PASS sources-after-dialog
+PASS scan-not-running: {'state': 'complete', 'added': 5, 'skipped': 0, 'errors': []}
+PASS status-line
+PASS page-no-localStorage
+PASS years-png: 1280x720
+PASS hover-target
+PASS ctrl-wheel-to-months
+PASS hover-stays-in-viewport: {"x": 20, "y": 253.15625, "width": 64, "height": 64}
+PASS all-png: 1280x720
+PASS zoomLevel-persists: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18769, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "all"}
+PASS items-http: 200
+PASS groups-years-http: 200
+PASS groups-years-ids-once: {"flat": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"], "items": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-years-shape:2024: {"key": "2024", "itemIds": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS groups-years-shape:2023: {"key": "2023", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-months-http: 200
+PASS groups-months-ids-once: {"flat": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"], "items": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-months-shape:2024-07: {"key": "2024-07", "itemIds": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6"]}
+PASS groups-months-shape:2024-06: {"key": "2024-06", "itemIds": ["52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS groups-months-shape:2023-06: {"key": "2023-06", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-days-http: 200
+PASS groups-days-ids-once: {"flat": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"], "items": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-days-shape:2024-07-04: {"key": "2024-07-04", "itemIds": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6"]}
+PASS groups-days-shape:2024-06-12: {"key": "2024-06-12", "itemIds": ["52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS groups-days-shape:2023-06-12: {"key": "2023-06-12", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-all-http: 200
+PASS groups-all-ids-once: {"flat": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"], "items": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6", "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-all-shape:2024-07-04: {"key": "2024-07-04", "itemIds": ["35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6"]}
+PASS groups-all-shape:2024-06-12: {"key": "2024-06-12", "itemIds": ["52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS groups-all-shape:2023-06-12: {"key": "2023-06-12", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS groups-years-count: ['2024', '2023']
+PASS groups-invalid-level: {"error": "invalid-argument"}
+PASS years-two-keys: ["2024", "2023"]
+PASS no-console-errors: []

@@ -130,12 +130,18 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.s02 import run_slice as runner
         elif args.slice_id == "S03":
             from tests.qa.s03 import run_slice as runner
+        elif args.slice_id == "S04":
+            from tests.qa.s04 import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "check":
         if args.feature_id == "F6":
             from tests.qa.s02 import run_check as runner
+        elif args.feature_id == "F9":
+            from tests.qa.s04 import run_check_f9 as runner
+        elif args.feature_id == "F11":
+            from tests.qa.s04 import run_check_f11 as runner
         else:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))

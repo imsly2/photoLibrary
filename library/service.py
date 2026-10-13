@@ -15,6 +15,7 @@ from library.catalog_io import (
     load_source,
     source_read,
 )
+from library.groups import LEVELS, groups_from_items
 from library.errors import AppError, fail
 from library.media import file_suffix
 from library.paths import library_path
@@ -171,6 +172,17 @@ class Library:
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
 
+    def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        query = dict(query or {})
+        extra = set(query) - ITEM_QUERY_KEYS - {"level"}
+        if extra:
+            raise fail("invalid-argument")
+        level = query.pop("level", None)
+        if level not in LEVELS:
+            raise fail("invalid-argument")
+        items = self.items_list(query)
+        return groups_from_items(items, level)
+
     def rebuild_index(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
@@ -286,6 +298,37 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
     return True
 
 
+def _item_place(item: dict[str, Any]) -> dict[str, Any] | None:
+    places = (item.get("entities") or {}).get("places") or []
+    if places and isinstance(places[0], dict):
+        return places[0]
+    return None
+
+
+def _location_category(item: dict[str, Any]) -> int:
+    place = _item_place(item)
+    if place is not None and place.get("name"):
+        return 0
+    if place is not None and place.get("latitude") is not None and place.get("longitude") is not None:
+        return 1
+    metadata = item.get("metadata") or {}
+    if metadata.get("latitude") is not None and metadata.get("longitude") is not None:
+        return 1
+    return 2
+
+
+def _location_label_key(item: dict[str, Any]) -> tuple:
+    place = _item_place(item)
+    if place is not None and place.get("name"):
+        return (str(place["name"]), 0.0, 0.0)
+    if place is not None and place.get("latitude") is not None and place.get("longitude") is not None:
+        return ("", float(place["latitude"]), float(place["longitude"]))
+    metadata = item.get("metadata") or {}
+    if metadata.get("latitude") is not None and metadata.get("longitude") is not None:
+        return ("", float(metadata["latitude"]), float(metadata["longitude"]))
+    return ("", 0.0, 0.0)
+
+
 def _sort_items(
     items: list[dict[str, Any]],
     query: dict[str, str],
@@ -296,6 +339,12 @@ def _sort_items(
     if sort not in {"date", "location", "name"} or direction not in {"asc", "desc"}:
         raise fail("invalid-argument")
     reverse = direction == "desc"
+
+    if sort == "location":
+        items = sorted(items, key=lambda item: (item.get("capturedAt") or "", item["id"]), reverse=reverse)
+        items = sorted(items, key=_location_label_key, reverse=reverse)
+        items = sorted(items, key=_location_category)
+        return items
 
     def key(item: dict[str, Any]) -> tuple:
         if sort == "name":

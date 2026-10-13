@@ -245,6 +245,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/groups" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.groups_list(query))
+                return
             if route == "/api/rebuild-index" and method == "POST":
                 self._read_json()
                 with self.lock:

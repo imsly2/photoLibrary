@@ -4,18 +4,77 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Library</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
   <header>
     <h1>Library</h1>
-    <button type="button" disabled>Add folder</button>
+    <input type="search" id="search" placeholder="Search" aria-label="Search" autocomplete="off">
+    <div class="toolbar">
+      <label class="toolbar-field">Sort
+        <select id="sort" aria-label="Sort">
+          <option value="date">Date</option>
+          <option value="location">Location</option>
+          <option value="name">Name</option>
+        </select>
+      </label>
+      <label class="toolbar-field">Direction
+        <select id="dir" aria-label="Direction">
+          <option value="desc">Newest first</option>
+          <option value="asc">Oldest first</option>
+        </select>
+      </label>
+    </div>
+    <button type="button" id="add-folder-btn">Add folder</button>
   </header>
-  <main>
-    <p>No pictures yet</p>
-  </main>
+  <p id="scan-status" class="status" hidden></p>
+  <div class="workspace">
+    <main id="grid">
+      <p>No pictures yet</p>
+    </main>
+    <aside class="levels" aria-label="Zoom level">
+      <label class="level-slider-label" for="zoom-slider">Zoom</label>
+      <input type="range" id="zoom-slider" min="0" max="3" step="1" value="0" aria-label="Zoom level">
+      <div class="level-labels" aria-hidden="true">
+        <span>Years</span>
+        <span>Months</span>
+        <span>Days</span>
+        <span>All</span>
+      </div>
+    </aside>
+  </div>
+  <dialog id="add-folder" aria-labelledby="add-folder-title">
+    <h2 id="add-folder-title">Add a folder</h2>
+    <label class="path-field">Path
+      <input type="text" id="add-path" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="choices">
+      <label class="choice">
+        <input type="radio" name="add-mode" value="copy-here">
+        <span>
+          <strong>Copy onto this drive</strong>
+          <em>Originals travel with this drive.</em>
+        </span>
+      </label>
+      <label class="choice">
+        <input type="radio" name="add-mode" value="serve-from-there">
+        <span>
+          <strong>Serve from that folder</strong>
+          <em>Originals stay where they are.</em>
+        </span>
+      </label>
+    </div>
+    <p id="add-error" class="dialog-error" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" id="add-cancel">Cancel</button>
+      <button type="button" id="add-submit" disabled>Add</button>
+    </div>
+  </dialog>
   <div id="viewer" hidden>
-    <img id="viewer-image" alt="">
+    <div id="viewer-stage">
+      <img id="viewer-image" alt="">
+    </div>
   </div>
   <script src="/assets/library.js"></script>
 </body>
