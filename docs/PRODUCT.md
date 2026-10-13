@@ -137,6 +137,12 @@ address.
 The server listens on `127.0.0.1` and port `8765` unless settings say otherwise.
 Binding every interface is a setting, off by default.
 
+The opened page stays on that live origin. Back (in-app or the browser button)
+must not jump to another host or port — including a leftover QA listen such as
+`127.0.0.1:18765`. History, links, and fetches use the current origin or
+root-relative paths. Never embed `settings.port` or a stored runtime URL from
+a previous listen.
+
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
 URL `http://127.0.0.1:8765/` and `GET /api/health` returns
@@ -186,11 +192,11 @@ arguments and full assertions in SLICES). Run every mutation through CLI and HTT
 ## F4 — Add a folder
 
 The Add folder dialog shows the path and two choices. On Windows, Browse
-opens a native folder picker on this computer and fills the path. You can
-still type or paste a path. After Add, the dialog closes, the library
-confirms the folder, and scan progress appears in the page and the server
-console. Pictures show as they become ready. The dialog never stays open
-on a dead `busy` wait.
+opens a native folder picker on this computer and fills the path — he does
+not have to type a directory. Typed or pasted paths still work. After Add,
+the dialog closes on the 202, the library confirms the folder, and scan
+progress appears in the page and the server console. Pictures show as they
+become ready. The dialog never stays open on a dead `busy` wait.
 
 **Copy onto this drive.** Files are copied under
 `library-data/originals/<safe-name>-<source-id>/`, keeping the folder structure below
@@ -362,8 +368,10 @@ JSON responses.
 
 Click a cell to open the viewer. Previous and Next buttons, and the arrow
 keys, move to the next and previous item in the current sort. Back (and Esc)
-returns to the grid he came from. Zoom in/out and pan work on the opened
-still. Rotate turns the displayed still 90° and does not change the file.
+returns to the grid he came from on the **same** live origin and port.
+Browser Back does the same while the page is open; it must not load a
+stale port. Zoom in/out and pan work on the opened still. Rotate turns
+the displayed still 90° and does not change the file.
 
 For a photo the viewer shows `preview.webp` first, then the original if available.
 For video it shows the poster, then plays the original or proxy; a browser that
@@ -624,7 +632,8 @@ arguments and full assertions in SLICES). Drive every key and gesture in the tab
 
 ## F22 — Web pages
 
-One page, five views. The address is the listen host and port.
+One page, five views. The address is the live listen host and port. Back
+and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|

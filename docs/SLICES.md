@@ -18,6 +18,12 @@ This order replaces “next help-file section”: dependencies determine the bui
 | 6: places | S10–S11 | **M3 — Travel through the pictures:** offline globe, cluster selection and looping tour; evidence milestone, no required stop |
 | 7: finish | S12–S14 | Live pairs, full history/settings/keyboard, cross-platform launcher checks and whole-product verification; **M4 — Complete fixture library**, final taste stop |
 
+Windows taste **Track A** (launch, Add folder, scan feedback, live-origin Back)
+is a mid-queue product fix on already-shipped F2/F4 behavior. It does **not**
+add a 23rd Check and does **not** start S13 or S14. Pin macOS/Linux F2.
+Viewer/grid chrome is a separate track. Gate: `python -m tests.qa slice TASTE-WIN`
+plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/PLAN.md).
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.
@@ -109,9 +115,9 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | Check | Complete acceptance / slice that closes it |
 |---|---|
 | F1 | Data outside tracked source; relocation with relative originals, volume remount and missing files; no drive-letter identity. S05. |
-| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. |
+| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. Windows double-click `Library.bat` is required product (not a new Check); macOS/Linux launch stays pinned. |
 | F3 | Every listed mutation CLI/HTTP equivalent; read filters/media/parity, content types/ranges; unknown ids/fields/errors, success/empty/failure/argument exits. Normalize only generated ids/root prefixes, never names/values/relations. S14. |
-| F4 | Original two-file copy/link example plus Add choice/default, source override, conversion id+annotation preservation, collision and interruption. S05. |
+| F4 | Original two-file copy/link example plus Add choice/default, source override, conversion id+annotation preservation, collision and interruption. S05. Windows Browse picker, 202-before-finish for both modes, close-on-busy, scan progress, and live-origin Back are the same feature — re-prove with TASTE-WIN, do not weaken this Check. |
 | F5 | Original second-scan skipped/added=0 plus exclusions, formats, pending hash+annotations, duplicates, changed path, restart and HEIC failure. S06, refreshed S08/S12. |
 | F6 | Original two places from three JPEGs plus all date fallbacks, orientation, dimensions/duration, EXIF/QuickTime GPS, absent GPS, tie behavior. S02. |
 | F7 | Original rendition bytes and ffprobe plus oriented dimensions, full duration/audio absent, queued/error states and all three hover policies. S06, refreshed S12. |
