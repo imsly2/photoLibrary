@@ -106,4 +106,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
   ([after-s02 S00](features/S00/Rev1.0/assets/after-s02/result.json),
   [after-s02 S01](features/S01/Rev1.0/assets/after-s02/result.json)).
   One test correction made the equal-timestamp tie sort by id rather than
-  filename. Next slice is S03.
+  filename.
+- 2026-10-13 — S03 plan locked in `docs/features/S03/Rev1.0/PLAN.md` after
+  still-rendition recon. JPEG thumbs and previews only. F7 and F10 stay open.
+  Next action is the S03 implementation.
