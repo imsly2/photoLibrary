@@ -83,6 +83,46 @@ bytes and expected metadata before implementation gates use them. Manifest hash
 goes in each result. Expose interruption barriers only in test harness. PNG capture
 and measurements must use actual browser controls and rendered pixels.
 
+## Generator locks (2026-10-13)
+
+`expectedMetadata` is `{kind,width,height,orientation,durationSec,hasAudio,
+capturedAt,capturedAtSource,latitude,longitude,contentIdentifier}`. Use null when
+the fact is absent. `capturedAt` keeps the embedded source spelling (EXIF
+`YYYY:MM:DD HH:MM:SS`, QuickTime ISO, or null when only mtime applies).
+`provenance` is `{recipe,verifiedBy,extraction}`. `extraction` is the independent
+probe output, not a copy of the generator's input table. `scenarios[].id` values
+are exactly the variant names in the table above.
+
+The QA marker is `library-data/.fixture-root` with
+`{"schemaVersion":1,"owner":"tests.qa"}`. The runner may create a missing root,
+refuses a nonempty root without that file, and deletes only processes and files
+it created.
+
+Ordinary `slice` and `check` runs write a free `port` from 18765–18864 into that
+sandbox's settings before launch and do not connect to 8765. The explicit
+default-port case, only inside slice S00: if 8765 is free, launch an owned
+server there, assert health, assert a second launch keeps the same pid, then
+stop only that pid. Also bind an owned dummy listener on another port, point a
+second root at it, assert `port-in-use`, and assert the dummy still accepts a
+connection. If 8765 is already occupied, do not kill it; record that a harmless
+probe still reaches the occupant, and still run the dummy case.
+
+`result.json` `revision` is `git rev-parse HEAD`. `dependency-probe.log` records
+Python, ffmpeg, and ffprobe versions. The slice fails if Python is older than
+3.12 or either binary is missing. Do not run winget from the slice.
+
+Still content identifiers are an XMP `ContentIdentifier` element in namespace
+`http://ns.apple.com/exif/1.0/`. Motion content identifiers are the QuickTime
+key `com.apple.quicktime.content.identifier`. Video GPS is
+`com.apple.quicktime.location.ISO6709` with the value in the base table. A
+matching filename is not a pair. HEIC/HEIF bytes must carry an `ftyp` brand of
+`heic`, `heix`, `heif`, or `mif1`. A renamed JPEG is a failed fixture.
+
+JPEG GPS is EXIF GPSLatitude/GPSLongitude. Orientation is the EXIF Orientation
+tag. CreateDate-only means DateTimeDigitized present and DateTimeOriginal
+absent. Independent checks use ffprobe for video and a reader that does not
+call the generator's write functions for stills.
+
 Each gate writes `result.json` (check/slice, pass/fail, assertions, platform,
 fixture-manifest hash, revision, commands, artifact paths), `stdout.log`, relevant
 canonical JSON/response captures, and browser `*.png`, `measurements.json`,

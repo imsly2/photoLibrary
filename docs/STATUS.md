@@ -73,3 +73,5 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-13 — Execution policy recorded in SLICES and AGENT-BUILD-MODE: prepare
   M1/M2/M3 evidence and continue without a taste pause. Product-only Git
   repository initialized. Software Checks remain 0/22.
+- 2026-10-13 — S00 plan locked in `docs/features/S00/Rev1.0/PLAN.md`. Foundation
+  and generator ambiguities are now in CONTRACTS and FIXTURES. No Check has run.

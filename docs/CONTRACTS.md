@@ -302,7 +302,42 @@ rendition error; it is not proof that every HEIC is decodable. Launcher installs
 the already-named Python/ffmpeg dependencies on Windows only, re-resolves PATH,
 reports failure honestly, and gives prerequisites on other platforms.
 
-GET `/` serves the five-view page; unknown asset paths return not-found. Mutation
+## Foundation locks (2026-10-13)
+
+These close S00 ambiguities. They are not new user features.
+
+Matching-root reopen: normalize both roots (absolute, symlinks resolved, Windows
+casefold). If the configured address accepts connections, GET `/api/health` and
+GET `/api/runtime`. When health is `{"ok":true}` and `runtime.root` matches,
+print that url and exit 0. Do not bind, do not take `write.lock`, and do not
+create a second catalog. If the address is occupied but those checks fail or
+the root differs, exit 1 with stderr `{"error":"port-in-use"}` and leave the
+occupant running. Never terminate another process.
+
+`launch.ps1 -NoBrowser` and `launch.sh --no-browser` skip opening a browser.
+The default remains to open one. This is not a settings key.
+
+When `LIBRARY_TEST=1`, `LIBRARY_TEST_BARRIER` may be `settings-prepared` or
+`settings-committed`. The process flushes the transaction manifest, then exits
+86 with stderr `{"error":"test-barrier","barrier":"<name>"}` before the next
+step. Recovery on the next open rolls `prepared` back and `committed` forward,
+then serves. Without `LIBRARY_TEST=1` the variable is ignored. It is not an
+HTTP parameter or a setting. Order for a settings change: write manifest
+`prepared` (full before/after) → barrier `settings-prepared` → atomic replace
+→ history entry → manifest `committed` → barrier `settings-committed` → delete
+the transaction directory.
+
+Log lines are UTF-8 `{utc-iso}\t{path}\t{error}\n`. `path` is the request path
+including query. Unknown media ids log `not-found`.
+
+Settings JSON key order is `schemaVersion` then the 16 PRODUCT keys in the
+order shown there. Indent 2, trailing newline, UTF-8.
+
+GET `/` may be the empty-library page (header, Add folder control present but
+inert until a later slice, text “No pictures yet”). No sample pictures and no
+claim that scan, search, globe, or viewer already work.
+
+GET `/` serves that page; unknown asset paths return not-found. Mutation
 requests accept application/json from the same origin/CLI; reject unrelated
 browser origins as 400 invalid-argument. No remote account, login, or cloud setup.
 The shipped globe assets and ordinary browsing must work with external network
