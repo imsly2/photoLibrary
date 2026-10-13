@@ -23,8 +23,8 @@ this file does not authorize accounts, editing, or albums.
 | Place comes from GPS | The iPhone writes coordinates into the file (EXIF GPS on JPEG and HEIC, QuickTime ISO6709 on MOV). The city name lives in the Photos database, not in the file. Apple Photos, Immich, and digiKam then show a map. | Read the coordinates from the file. The place name stays empty until someone sets it. A WebGL globe ships its own earth texture. No map tiles, no network. Click a cluster to filter and open. Play orbits, zooms in, shows pictures from that place, and zooms out. |
 | People and object search | Immich and Apple Photos run their own models. digiKam can store face tags. | This server stores the names. It does not ship a model. An agent writes people, places, and things into JSON. Search reads that JSON. |
 | Missing volume | Lightroom shows offline files with a badge and still shows the preview if the preview was generated. | If the original is not on this computer, the item can stay in the grid with its small preview. Showing or hiding those items is a setting. |
-| Viewer chrome | Windows Photo Viewer: bottom prev/next, F11 slideshow/fullscreen, rotate, filename. Windows Photos: F5 slideshow, Esc out, Alt+Enter info, arrows. Apple Photos: Info panel, favorite, Space open/close, fullscreen. XnView / Lightroom: filmstrip, fullscreen, slideshow interval, reveal-in-folder. | Win7-style viewer is locked in UI-SPEC: bottom Prev/Next/Rotate, zoom slider, pan, Info dropdown (no overlay pills), no “Showing original”, Reveal in Explorer. Slideshow / F11 / filmstrip / cheat-sheet are Soon backlog there — not this table inventing them as settings. |
-| Remove vs delete | Apple Photos: Delete removes from an album; Command-Delete removes from the library. Digikam/XnView can trash bytes. | Preserve originals. Favorite is not delete. Remove-from-library (catalog only) is Soon and needs a CONTRACTS command. Trash of original bytes is Later and never the default. |
+| Viewer chrome | Windows Photo Viewer: bottom prev/next, F11 slideshow/fullscreen, rotate, open-with, print. Windows Photos: F5 slideshow, Esc, Alt+Enter info, Ctrl+0/+/−/R, All/Photos/Videos. Apple Photos: heart, Info, fit. Google Photos: favorites strip, videos, search. IrfanView / XnView: fullscreen, EXIF, filmstrip, portable. | Must-for-presentable is locked in UI-SPEC: fullscreen, slideshow, viewer keys, EXIF-first Info, Open beside Reveal, empty/error, remove vs delete-file, sort/filters, search, Update UX. Filmstrip / Print / `?` are Soon. No cloud, AI, burn, or email. |
+| Remove vs delete | Apple Photos: Delete removes from an album; Command-Delete removes from the library. Photos/IrfanView can trash bytes with confirm. | Delete key removes from the library (confirm; originals stay). Delete file is extra confirm + Recycle Bin. Undo restores catalog only. |
 
 ## Input overlay
 
@@ -61,7 +61,8 @@ not authorize a new keybinding editor in this build.
 
 Favorite (viewer heart, tile hearts, Favorites strip) and Reveal in Explorer
 are authorized named actions — not albums and not a 17th setting. The
-Windows Presentable Shell in UI-SPEC is the family-PC North Star. Anticipated
-slideshow / fullscreen / cheat-sheet / multi-select come from the survey
-above; they stay backlog until that UI-SPEC row is built. Reference art
-still does not add Albums or a storage meter.
+Windows Presentable Shell in UI-SPEC is the family-PC North Star.
+Fullscreen, slideshow, EXIF Info, remove vs delete-file, and the rest of
+the Must list are locked requirements, not backlog. Filmstrip, multi-select,
+Print, and `?` stay Soon. Reference art still does not add Albums or a
+storage meter.

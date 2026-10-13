@@ -6,10 +6,10 @@ be inferred from generated reference art. Windows desktop browser is the primary
 taste surface; use a 1280×720 viewport for comparison and 1920×1080 for overflow.
 
 **Windows Presentable Shell** below is first-class product, not a taste overlay.
-Steve's stated Windows requirements are locked there. The family-PC definition
-of done is the checklist at the end of that section. Until that path is green,
+Must-for-presentable items are locked there. The family-PC definition of done
+is the 19-step checklist at the end of that section. Until that path is green,
 deeper engine slices (S13 settings matrix, S14 whole-product audit) stay
-secondary.
+secondary. Soon rows do not block it.
 
 ## Reference mapping
 
@@ -45,17 +45,17 @@ fill. They must read as clickable toggles, not heading text.
 
 | State | Visible behavior and exit |
 |---|---|
-| Empty library | Library header and Add folder; plain “No pictures yet” in grid. No fake sample pictures. Add opens named dialog. |
+| Empty library | Library header and Add folder as the CTA; plain “No pictures yet” in grid. No fake sample pictures. Add opens named dialog. |
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
-| Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts and readable error text, never a blank page. The serve process prints scan progress on stdout during normal work. |
+| Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts, readable error text, and **Retry**; never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
-| Ready | Years/Months/Days/All, search, sort, Videos, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
+| Ready | Years/Months/Days/All, search, sort Newest/Oldest/Name, filters All/Photos/Videos/Favorites, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
-| Update | Header `#update-library` is labeled Update. Click runs `POST /api/update` and writes a short sentence into `#update-status` (updated / already current / git missing / not a git copy / pull failed). No command prompt. Does not switch branches. |
-| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then original/proxy, live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom` (range slider) plus existing Ctrl+wheel; no Zoom in/Zoom out buttons. Click-and-drag pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate turns the displayed still 90° per click and does not rewrite the original. A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer is always present and opens the original's folder when the file is on this computer; disabled with the missing-original banner otherwise. Open with default program is optional and launches that file. Play preview keeps click-to-pause. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown that lists those entities; a click filters the grid to that entity and closes the viewer. Type-in fields stay inside Info and stay labeled. Esc closes Info first, then the viewer. No box-drawing editor. |
+| Update | Header `#update-library` is labeled Update or Update Library. Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed. No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
+| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then original/proxy, live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom` (range slider) plus Ctrl+wheel and Ctrl++/−; Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. Click-and-drag pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite. Reveal in Explorer and Open with default program sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
-| Empty search | Query/chips remain; “No matching pictures”. Clearing query/chip returns matching broader grid, no catalog mutation. |
+| Empty search | Query/chips remain; “No matches”. Clearing query/chip returns matching broader grid, no catalog mutation. |
 | Settings | Existing 16 settings only, grouped as the reference; change persists through HTTP immediately on valid commit. Inline validation preserves last valid value. Host/port label says “Applies next launch”. Esc returns to prior Library/Globe view. |
 | Globe | Realistic local Earth texture (oceans, continents, ice — not abstract blobs) and clusters from visible located items; no-location items absent. Plain “No locations to show” if empty. WebGL unavailable produces inline error text, not another map provider. Horizontal drag yaws with the pointer (inverted from the first grab); vertical drag pitch is unchanged. |
 | Tour | Existing globe motion plus media presentation, as specified below. Esc stops motion/playback at current globe position and leaves Globe. No new slideshow settings beyond the three existing tour settings. |
@@ -104,9 +104,11 @@ the word VIDEO, and duration when `metadata.durationSec` exists). Live
 cells keep the existing LIVE badge (`.live-badge` text `LIVE`). Badges sit
 on the tile and do not crop the media.
 
-The toolbar Videos control sets the transient `kind=video` filter and
-`aria-pressed`. Clearing it removes the kind filter. Combined with the
-existing sort, this is how the library is filtered to videos.
+The toolbar All / Photos / Videos / Favorites controls are mutually
+exclusive. All clears kind and favorite. Photos sends `kind=photo,live`.
+Videos sends `kind=video`. Favorites sends `favorite=1`. Combined with
+the presentable sort (Newest / Oldest / Name), this is how the library
+is filtered. Location sort remains available.
 
 Hearts: `#grid` `data-hearts=on` when `--cell` is 144 or larger, `off` at
 72 and 104. The heart is a button `.heart` in the badge corner (top-left
@@ -177,12 +179,12 @@ applies that same gesture, so playback does not fight the user.
 ## Keyboard and proof
 
 Use PRODUCT's keyboard table, plus the focused-text exception above. Esc cancels
-the innermost active interaction: tour/gesture, Add dialog, Viewer, Settings,
-then selection. There is no modal on top of a tour. Ctrl+F focuses search, Ctrl+,
-opens Settings. Ctrl+C copies the primary path, with missing-path notice when
-needed. Do not add cut/paste filesystem mutations to satisfy a general baseline.
-Anticipated Soon keys (F, I, F11, `?`, Home/End) are listed in Windows
-Presentable Shell; they are not required of F21 until that backlog row is built.
+the innermost active interaction: confirm dialog, Info, slideshow, fullscreen,
+tour/gesture, Add dialog, Viewer, Settings, then selection. There is no modal
+on top of a tour. Ctrl+F focuses search, Ctrl+, opens Settings. Ctrl+C copies
+the primary path, with missing-path notice when needed. F is fullscreen, not
+favorite. `?` cheat-sheet is Soon. Do not add cut/paste filesystem mutations
+to satisfy a general baseline.
 
 Each browser gate must drive actual controls, assert resulting data/state, inspect
 its saved PNG, and retain console/network diagnostics. Required proofs include:
@@ -206,192 +208,194 @@ counted features. Passing only an API half never closes a UI feature.
 ## Windows Presentable Shell
 
 First-class shell contract for the family Windows PC. Not a 23rd Check, not
-albums, not an editor, not a cloud. PRODUCT F2 / F4 / F7 / F9 / F10 / F11 /
-F12 / F18 / F21 / F22 already name the operations; this section is the
+albums, not an editor, not a cloud. PRODUCT F2 / F3 / F4 / F7 / F9 / F10 /
+F11 / F12 / F15 / F18 / F21 / F22 name the operations; this section is the
 presentable surface those Checks must look like.
+
+Stolen from, then cut to this product: Windows Photo Viewer (prev/next/
+rotate/slideshow/print/open-with), Windows Photos (shortcuts / F5 /
+Alt+Enter / Esc / filters), Apple Photos chrome (heart / info / fit),
+Google Photos (favorites strip / videos / search), IrfanView and XnView
+(fullscreen / EXIF / filmstrip / portable). Ignore cloud, AI, burn, and
+email.
 
 Do not invent accounts, phone sync, editing suites, or albums-as-cloud.
 Originals stay files on disk. New routes, settings, or errors still require
-a CONTRACTS edit before code.
+a CONTRACTS edit before code — except the Must remove / delete-file
+commands already listed there.
 
-### Locked from Steve (stated requirements)
+### Locked Must-for-presentable (shell requirements)
 
-**Launch and update.** Double-click `Library.bat` in the app folder. It runs
-`launch.ps1` in a visible console so scan progress is readable. Nobody types
-a command prompt. Header **Update** (`#update-library`) pulls the current git
-branch (`git fetch` then `git pull --ff-only`) and writes one sentence into
-`#update-status`: updated / already current / git missing / not a git copy /
-pull failed. It does not switch branches or open GitHub Desktop. A copy that
-is not a git folder, or a PC without git, says so in that same line.
-macOS/Linux launch stays `launch.sh` and is **pinned later** — not graded on
-this family-PC path.
+These are the family-PC shell. They belong on the DoD checklist. They are
+not Soon.
 
-**Add folder.** Browse opens the native folder picker on this computer and
-fills the path. Typed or pasted paths still work; they are not required.
-After Add, the dialog closes on the 202 (or on `busy`). The library confirms
-the folder. Scan progress appears in `#scan-status` and the server console.
-Pictures show as they become ready. The dialog never stays open on a dead
-`busy` wait. No upload control.
+**1. Fullscreen / Esc dismiss.** F11 or F toggles viewer fullscreen. Esc
+leaves fullscreen, then the viewer (then the rest of the Esc stack). Not
+a native window rewrite. F means fullscreen, not favorite.
 
-**Reliability.** Back (in-app or the browser button) stays on the live
-`window.location.origin` and port. It must not jump to a leftover QA listen
-such as `127.0.0.1:18765`. History, links, and fetches use the current origin
-or root-relative paths. A client abort (`BrokenPipeError`,
-`ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is
-non-fatal: no 500, no `internal-error`, server keeps serving. Normal scan
-progress prints on stdout, not only failures. Disconnected banner:
+**2. Slideshow.** F5 starts a slideshow of the current filter/sort from
+the open item (or the first item if started from the grid). Interval 5 s,
+session-only — **no** 17th setting. Space pauses and resumes. Esc stops
+and leaves the current item. Arrows still step. Videos play the proxy for
+the interval. Empty library: “Add photos first”. Not the globe tour.
+
+**3. Viewer keyboard parity.** Arrows prev/next and stop at the ends.
+Ctrl++ / Ctrl+- or wheel zooms (Ctrl+wheel stays; wheel without Ctrl may
+zoom in the viewer). Ctrl+0 fits. Ctrl+1 is 100% (one image pixel per
+CSS pixel at rotation 0). Ctrl+R rotates the display 90°, same as the
+Rotate button — does not rewrite the file. Space plays or pauses video
+when a slideshow is not running. Tooltips on chrome name the shortcut
+(Previous ←, Next →, Rotate Ctrl+R, Slideshow F5, Fullscreen F11).
+Focused text fields keep their keys.
+
+**4. Info = file facts, then names.** `#viewer-info` is a top-right
+dropdown, not overlay pills. First block: date taken, camera, dimensions,
+size, path, GPS from the item record. Missing camera/EXIF: “No camera
+info”. Then people / places / things already on the record; clicking one
+filters the grid and closes the viewer. Type-in fields stay below that
+and stay labeled Person, Place, and Thing. No “Showing original”.
+
+**5. Open with default app.** Sits beside Reveal in Explorer. Both always
+visible in the viewer. Open launches the original (`POST /api/items/<id>/open`,
+`os.startfile` on Windows). Disabled with the missing-original banner.
+**Implemented-or-in-PR:** [PR #2](https://github.com/imsly2/photoLibrary/pull/2)
+(`cursor/viewer-chrome-2bd1`, TASTE-VIEWER 72/72) ships Open + Reveal +
+Win7 chrome + Update Library. `taste/windows-abc` merged an earlier
+viewer-chrome tip plus a parallel Win7/Update commit; its on-disk
+TASTE-VIEWER packet may still be the older 47-assertion run. Grade PR #2
+as the proof; do not treat abc’s older packet as a gap in Open.
+
+**6. Empty / first-run / error.** No folders: “No pictures yet” and Add
+folder is the CTA. Scan failure: counts, readable error, **Retry** — never
+a blank page or a stuck dialog. Missing file: existing “Preview is not
+available” / “Original is not on this computer” placeholders. Reconnect:
 “Library is not responding”; retry until health is 200.
 
-**Grid.** Hovered video proxy fills the whole tile; the still stays underneath
-as the poster. No split still-on-one-side / video-on-the-other. Every video
-cell shows a VIDEO badge (play mark + VIDEO + duration when known); live
-cells keep LIVE. Toolbar **Videos** is a transient `kind=video` filter, not
-a setting. Size has eight discrete stops (72, 104, 144, 192, 256, 336, 420,
-520). Already-decoded thumbs stay painted through Size, level, and scroll —
-the grid does not blank. Dates off is one continuous wall (2 px gaps, no
-heading rows). Library and Globe in the header are pressed/unpressed
-**buttons**: idle border, hover fill, `:active` inset, `aria-pressed`
-selected fill. They must not read as heading text.
+**7. Remove vs Delete file.** Delete key (and a Remove control) **removes
+from the library**: one confirm (“Remove from Library? The file stays on
+disk.”). Catalog record and favorite drop; original bytes stay. Undo
+restores the catalog. **Delete file** is a separate control with an extra
+confirm (“Delete this file from disk?”). Windows sends the original to
+the Recycle Bin when it can, then removes the catalog record. Undo
+restores catalog only — not the bytes. Linked and copied files both
+require that extra confirm. Never make Delete file the Delete-key
+default. Commands: CONTRACTS `remove` and `delete-file`.
 
-**Favorites.** Viewer heart marks or clears the item in `catalog/favorites.json`.
-Tile hearts appear at Size 144 and up, same badge-corner language, and do
-not open the viewer. At 72 and 104 the tile heart hides. A Favorites strip
-sits at the top of the Library grid whenever any current result is hearted;
-it starts expanded and can collapse to its heading. Hearted items also stay
-in their date or wall positions. Ctrl+Z undoes a heart. This is not an
-album system.
+**8. Sort + filters.** Presentable sort labels: Newest, Oldest, Name
+(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
+stays available so F11 is not weakened. Filters are a mutually exclusive
+toolbar: All (no kind, no favorite), Photos (`kind=photo,live`), Videos
+(`kind=video`), Favorites (`favorite=1`). The Favorites strip still
+appears when All is selected and any current result is hearted.
 
-**Viewer (Windows Photo Viewer–ish).** Bottom bar holds Previous, Rotate,
-zoom **slider**, Next. Left/Right arrows change photo and stop at the ends.
-Back (and Esc) returns to the grid he came from on the same live origin.
-Zoom is the slider (`#viewer-zoom`, 0.25×–16×) plus existing Ctrl+wheel —
-not Zoom in / Zoom out buttons. Click-and-drag pans while zoomed; a still
-also left-drags at fit; middle-drag pans stills and video. Rotate turns the
-displayed still 90° and does not rewrite the file. No “Showing original”
-button, badge, or highlight — preview loads first, then the original when
-it is here. Person / Place / Thing are **not** pills painted over the
-preview. Top-right **Info** (`#viewer-info`) opens a dropdown of those
-entities; clicking one filters the grid to that entity and closes the
-viewer. Type-in fields stay inside Info and stay labeled Person, Place,
-and Thing. **Reveal in Explorer** opens the original's folder
-(`explorer /select` on Windows) when the file is here; disabled with the
-missing-original banner otherwise. **Open with default program** is
-optional and launches that file. Play preview still toggles pause/play on
-click. Space plays or pauses video.
+**9. Search.** The box matches filename, capturedAt date text (YYYY,
+YYYY-MM, YYYY-MM-DD), and existing person/place/thing names (and thing
+aliases). Chips still restrict to People / Places / Things. Empty:
+“No matches”. Clearing query/chip returns the broader grid.
 
-**Globe.** Shipped realistic local Earth texture (`/assets/earth.png`), no
-network tiles. Drag right yaws east (inverted from the first grab); up/down
-pitch is unchanged. Cluster click already opens the newest item and leaves
-a filtered grid on Esc.
+**10. Update UX finish.** Launcher and in-app (`#update-library`, label
+Update or Update Library). No command prompt. While the pull runs:
+Updating… Then one sentence: updated / already current / git missing /
+not a git copy / pull failed. Does not switch branches. **Implemented-
+or-in-PR** on PR #2 (72/72) and the abc Win7/Update commit; prove the
+progress sentence on a real git copy.
 
-**Pinned later.** macOS/Linux `launch.sh` and those platforms' volume
-identity. Do not block the family-PC path on them.
+Also still locked from the earlier Windows notes (already on the DoD
+path): `Library.bat`; native Add folder; 202-before-finish; live-origin
+Back; non-fatal abort; full-tile video hover; VIDEO badge; eight Size
+stops; thumbs stay painted; Dates-off wall; Library/Globe buttons;
+viewer heart + tile hearts + Favorites strip; bottom Prev/Next; zoom
+slider; click-drag pan; no overlay pills; inverted globe yaw; local
+Earth. macOS/Linux launch stays pinned later.
 
 ### Spec target vs current implementation
 
-`taste/windows-abc` (merged Track A + globe + Track B viewer + Track C grid)
-already carries most of the locked chrome. This table is so the next
-implementer changes the remaining gaps and does **not** revive retired
-chrome.
+Honesty rule: **PR #2** (`cursor/viewer-chrome-2bd1`) just landed Win7
+viewer chrome + Update Library with TASTE-VIEWER **72/72**. That tip can
+be ahead of `taste/windows-abc`. Mark those rows implemented-or-in-PR.
+Do not revive retired chrome.
 
-| Surface | Spec target | On `taste/windows-abc` | Gap |
+| Surface | Spec target | Where it lives | Gap |
 |---|---|---|---|
-| Launch | Double-click `Library.bat` → visible console + browser | `Library.bat` present | F2 Check still pending; family-PC pull not graded |
-| Update | Header Update; one status sentence; no CMD | `#update-library` / `#update-status` | Prove on a real git copy; fail sentences must stay family-readable |
-| Add folder | Native Browse; close on 202; confirm; progress; items as ready | Picker + 202-before-finish + `#scan-status` | Linux QA gets `picker-unavailable` (expected). Busy-limbo must stay gone |
-| Back / origin | Stay on live origin/port | Track A live-origin | Do not reintroduce `settings.port` URLs |
-| Disconnect | Non-fatal abort; banner + retry | Non-fatal + banner | — |
-| Video tile | Full-tile hover; VIDEO badge | Track C | — |
-| Videos filter | Transient `kind=video` | `#filter-videos` | — |
-| Size / zoom | ≥8 stops; thumbs stay painted | 8 stops 72–520 | — |
-| Dates off | Dense wall, no section gaps | `data-group-dates` | — |
-| Library / Globe | Button affordances | `aria-pressed` toggles | — |
-| Hearts | Viewer + tile ≥144 + Favorites strip | Shared `favorites.json` | — |
-| Prev / Next | Bottom bar; arrow keys; stop at ends | `#viewer-nav` / `#viewer-bottom` | — |
-| Zoom | Slider + Ctrl+wheel; **no** zoom buttons | `#viewer-zoom` range | Do not bring back Zoom in / Zoom out |
-| Pan / rotate | Click-drag pan; Rotate beside Prev/Next | Present | — |
-| Overlay pills | **Forbidden** — Info dropdown only | Info dropdown; labels are buttons inside it | Do not paint Person/Place/Thing over the preview |
-| “Showing original” | **Forbidden** — no control, no highlight | Control removed; leftover JS only deletes `dataset.showingOriginal` | Do not restore a highlight or button |
-| Reveal / open | Reveal in Explorer; optional default app | Both buttons | — |
-| Info filter | Click entity → filtered grid, viewer closes | `filterByEntity` | Keep type-in fields inside Info |
-| Globe | Invert yaw; realistic local Earth | `earth.png` + inverted yaw | Cluster hover polish is Soon, not a gap in this lock |
-| macOS / Linux launch | Pinned later | `launch.sh` exists; not graded | Do not claim F2 from Windows alone |
+| Launch | Double-click `Library.bat` | abc Track A | F2 Check pending |
+| Update | In-app + launcher; Updating… then a sentence | **PR #2 72/72** + abc Update commit | Progress sentence on a real git copy |
+| Add folder | Native Browse; close on 202; items as ready | abc Track A | Linux QA `picker-unavailable` (expected) |
+| Back / origin | Stay on live origin/port | abc Track A | Do not reintroduce `settings.port` URLs |
+| Disconnect / reconnect | Banner + retry | abc Track A | — |
+| Video tile / Videos | Full-tile hover; VIDEO badge; `kind=video` | abc Track C | Photos / All / Favorites filters still Must |
+| Size / wall | ≥8 stops; thumbs stay; Dates-off wall | abc Track C | — |
+| Library / Globe | Button affordances | abc Track C | — |
+| Hearts / Favorites strip | Viewer + tile ≥144 + strip | abc B+C | — |
+| Prev / Next / slider / pan / rotate | Bottom bar; slider; no zoom buttons | **PR #2 72/72** + abc Win7 commit | Keyboard Ctrl+0 / Ctrl+1 / Ctrl+R / tooltips still Must |
+| Overlay pills / “Showing original” | **Forbidden** | **PR #2** removed them | Do not restore |
+| Reveal + Open | Side by side | **PR #2** Open + Reveal | Keep beside each other |
+| Info | File facts first, then names | **PR #2** has names dropdown | EXIF/file facts + “No camera info” still Must |
+| Fullscreen / slideshow | F11 or F; F5; Esc stack | Not present | Must gap |
+| Remove / Delete file | Delete key vs extra confirm | Not present | Must gap; CONTRACTS routes locked |
+| Sort Newest/Oldest/Name | Presentable labels | Date/name exist; labels differ | Must gap (Location stays) |
+| Filters All/Photos/Videos/Favorites | Mutually exclusive toolbar | Videos only | Must gap |
+| Search | Filename + date + tags; “No matches” | Filename + tags | Date match + empty copy |
+| Globe basics | Invert yaw; local Earth | abc globe taste | Polish is Later |
+| macOS / Linux launch | Pinned later | `launch.sh` exists | Do not claim F2 |
 
-Retired chrome (do not ship, do not treat reference art as permission to
-return): overlay Person/Place/Thing pills, “Showing original”, discrete
-Zoom in / Zoom out buttons, Albums, storage meter, keybinding editor.
+Retired chrome: overlay Person/Place/Thing pills, “Showing original”,
+discrete Zoom in / Zoom out buttons, Albums, storage meter, keybinding
+editor.
 
-### Anticipated shell backlog
+### Soon (backlog — does not block presentable DoD)
 
-Studied, then filtered to this product (portable USB library, no accounts,
-preserve originals, no editing suite): Windows Photo Viewer, Windows Photos,
-Apple Photos browse/viewer chrome only, Google Photos local-feel browse,
-Lightroom/Bridge-lite, Digikam, XnView-class browsers. Each row is a
-feature Steve has not yet named and will almost certainly want. **Must**
-means the family-PC path feels unfinished without it. **Soon** is the next
-obvious ask after that path is green. **Later** waits, or conflicts with a
-locked boundary.
+| Feature | Bound |
+|---|---|
+| Filmstrip under the viewer | Neighbors; click jumps; hide in fullscreen if chrome hides. XnView / Lightroom. |
+| Multi-select + batch favorite / remove | Shift+click range, Ctrl+click toggle. Batch favorite or batch **remove-from-library** only. No batch Delete file, no batch export. |
+| Print Ctrl+P | Browser print of the current still. No print suite. Photo Viewer had this. |
+| Copy path / copy file | Ctrl+C already copies the path (F18). Copy file (bytes to a folder) needs a CONTRACTS promotion first. |
+| Fit / Fill / 100% near the zoom slider | Visible twins of Ctrl+0 / Ctrl+1. Fill is Soon; Fit and 100% keys are already Must. |
+| Tile badges LIVE / ♥ / missing | LIVE and heart already exist. Missing-original badge on the tile is Soon polish. |
+| Recently added + per-folder browse | Session “Recently added” after a scan; filter to one source. Not albums. |
+| Keyboard help `?` | Overlay of locked keys. Not an editor. I / Alt+Enter may toggle Info here. |
+| Remember window / last view | Last Library vs Globe and last filter for the session. Zoom/sort already persist. This is a browser tab — do not persist OS window size via Electron. |
+| Missing-original polish | Stronger banner / disabled Open+Reveal+Delete-file. Core placeholders are already Must. |
 
-Do **not** add: cloud accounts, phone sync, editing, albums-as-cloud,
-ratings-as-albums, compare/survey modules, a keybinding editor, or map
-tile networks.
+### Later / non-goals
 
-A Soon/Later row that needs a new route, setting, or error is **not**
-authorized to start until CONTRACTS lists it. Slideshow, fullscreen,
-cheat-sheet, multi-select, and window title are page chrome on existing
-APIs.
-
-| Pri | Feature | Why it belongs (and the bound) |
-|---|---|---|
-| Must | First-run empty library | Header + Add folder + plain “No pictures yet”. Add is the obvious next click. No fake samples. Already named in Empty library; this row forbids shipping a dead empty page. |
-| Must | Scan / add empty states | After Add: confirmation + counts. An error leaves counts and readable error text, never a blank page or a stuck dialog. Already named in Scanning. |
-| Must | Window title / taskbar identity | Document title stays `Library` (optionally `Library — N pictures` when N is known). The tab and taskbar must not look like a raw `file://` or a random localhost mystery. No Electron chrome. Favicon may be a small mark later; a blank `data:,` icon is acceptable until then. |
-| Soon | Slideshow | Every family viewer has this (Photo Viewer F11, Photos F5, Apple Photos slideshow, XnView). Play from the viewer (and optionally the grid). Default interval 5 s, session-only — **no** 17th setting. Esc stops and leaves the current item. Space pauses/resumes the slideshow; arrows still step. Videos play the proxy for the interval, not the whole file. Reuse the current filter/sort. |
-| Soon | Fullscreen / F11 | Photo Viewer and Photos both fullscreen the picture. F11 toggles viewer fullscreen; Esc leaves fullscreen first, then the viewer (existing Esc stack). Double-click the still may toggle fullscreen. Not a native window chrome rewrite. |
-| Soon | Keyboard cheat-sheet | In-app `?` or F1 overlay listing the locked keys. Not an editor. Proposed additions once this row is built: Space play/pause video (already locked); F favorite; I toggle Info; `+` / `-` or wheel zoom (Ctrl+wheel already locked); F11 fullscreen; Home/End first/last in the current set. Do not steal those letters from focused text fields. |
-| Soon | Copy path (already F18) + copy file | Ctrl+C already copies the primary path. A named **Copy file** that writes bytes somewhere else is a copy-originals operation — promote in CONTRACTS first, never silently duplicate a folder. Until then, Reveal and Copy path are enough. |
-| Soon | Multi-select | Shift+click range and Ctrl+click toggle on the grid, Lightroom/XnView/Explorer-style. Batch favorite or batch Reveal only. No batch delete, no batch export. Selection is session-only. Esc clears selection after other innermost layers. |
-| Soon | Right-click on a tile / open item | Favorite, Reveal in Explorer, Copy path. Same actions as the buttons. No “Send to”, no cloud share. |
-| Soon | Viewer “n of N” and filename | Photo Viewer showed where you are. A quiet `3 of 128` plus the filename on the viewer bar. Not a metadata editor. |
-| Soon | Filmstrip under the viewer | XnView / Lightroom / several local viewers keep neighbors visible. Optional strip of nearby thumbs; click jumps. Session-only; hide in fullscreen if chrome is hidden. |
-| Soon | Cluster UX polish | Pin → viewer already exists. Hover shows count; overlapping pins stay one cluster; after Esc the filtered grid names the place if it has one. No geocoder. |
-| Soon | Remember last view | Last Library vs Globe, and last entity filter, for the browser session. Zoom level and sort already persist in settings.json. Size and Dates stay session (locked). Do not persist browser window size — this is a tab, not Electron. |
-| Soon | Remove from library | Apple Photos distinguishes “remove from library” vs “delete photo”. Here: drop the catalog records / source registration and **leave original bytes**. Confirm. Undo restores catalog, not a recycle-bin dance. Needs a CONTRACTS command before code. This is not Delete. |
-| Later | Delete / trash originals | Conflicts with “never overwrite or reorganize originals” unless it is an explicit, confirmed send-to-Recycle-Bin of a **copied** original, never a linked one. Default is off the family path. Do not add a toolbar Delete until Steve asks. |
-| Later | Print | Photos/Photo Viewer have Ctrl+P. Browser print of the current still is enough if anyone asks. No print layout suite. |
-| Later | Share / export | USB copy-here is already the product. A share sheet or cloud export fights “no accounts”. A later “copy these files to a folder” may be the same as Copy file. |
-| Later | Face / people browser | Info already lists people and filters the grid. A People view that groups faces is a later F14 surface, not tonight’s shell. No on-device model. |
-| Later | macOS / Linux launch | Already pinned. F2 stays pending until those runners exist. |
-| Later | Compare, ratings 1–5, contact sheets | Lightroom/Digikam features. Hearts cover “keep this one”. Out of scope. |
-
-Forbidden even as Later flavor: accounts, Immich-style remote hosting, phone
-sync, destructive auto-organize, albums, storage meters.
+Accounts, cloud sync, share links, cloud AI, in-app edit (use Open with),
+cloud albums, light-table / compare, batch convert, burn, email.
+macOS/Linux launch stays pinned. Globe polish beyond F12 waits until this
+shell path is green. Ratings 1–5 and contact sheets stay out; hearts cover
+“keep this one”.
 
 ### Presentable for family PC — definition of done
 
 One path. Until every row is green on a Windows family PC (double-click,
-not a developer shell), S13-class settings/keyboard matrix work is
+not a developer shell), S13-class settings work and Soon rows are
 secondary. Fixture Checks stay the grade for F-ids; this checklist is the
-taste gate that tells Steve the box is presentable.
+taste gate.
 
 | # | Step | Pass |
 |---|---|---|
-| 1 | Double-click `Library.bat` | Visible console; browser opens on this PC at the live listen URL; title reads Library; empty library shows “No pictures yet” and Add folder |
-| 2 | Update | Header Update runs without a command prompt. Status sentence is readable (updated / already current / git missing / not a git copy / pull failed). Does not switch branches |
-| 3 | Add folder | Browse opens the native picker; path fills; copy-or-link confirmed; Add closes the dialog |
-| 4 | Progress | `#scan-status` and the console show work; no busy-limbo dialog; items appear as they become ready |
-| 5 | Wall | Dates off is a dense thumbnail wall; Size has ≥8 stops; thumbs stay painted while zooming; Library/Globe look like buttons |
-| 6 | Open | Click a cell; preview then original; no “Showing original”; no overlay pills |
-| 7 | Next / Prev / arrows | Bottom Previous and Next; Left/Right arrows; stop at the ends; Back returns to the same origin/port |
-| 8 | Zoom / pan / rotate | Slider zooms; click-drag pans; Rotate beside Prev/Next turns the display only |
-| 9 | Favorite | Viewer heart writes `catalog/favorites.json`; tile heart at large Size; Favorites strip can collapse |
-| 10 | Reveal in Explorer | Opens the original's folder with the file selected when the file is here |
-| 11 | Info filter | Info dropdown; click a person/place/thing; grid filters to that entity; viewer closes |
-| 12 | Videos filter | Toolbar Videos keeps only videos; hover fills the tile; VIDEO badge visible |
-| 13 | Globe basics | Realistic local Earth; drag right yaws east; cluster opens the newest item; Esc leaves the filtered grid |
+| 1 | Double-click `Library.bat` | Visible console; browser opens on the live listen URL; title reads Library |
+| 2 | Empty / first-run | “No pictures yet”; Add folder is the CTA; no fake samples |
+| 3 | Update | Launcher or header Update; Updating… then updated / already current / failed / git missing. No CMD. No branch switch |
+| 4 | Add folder | Native picker; copy-or-link; dialog closes on 202 |
+| 5 | Progress / scan error | Status + console; items as ready; failure shows Retry, never a blank page |
+| 6 | Wall + sort + filters | Dates-off wall; ≥8 sizes; thumbs stay; Newest/Oldest/Name; All / Photos / Videos / Favorites |
+| 7 | Search | Filename, date, or a tag; empty “No matches” |
+| 8 | Open | Preview then original; no “Showing original”; no overlay pills; missing-file placeholder |
+| 9 | Next / Prev / arrows | Bottom Previous and Next; arrows; stop at ends; Back stays on this origin |
+| 10 | Keyboard parity | Ctrl++/− or wheel zoom; Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause video; tooltips show shortcuts |
+| 11 | Zoom slider / pan / rotate | Slider; click-drag pan; Rotate beside Prev/Next |
+| 12 | Fullscreen | F11 or F; Esc exits fullscreen, then the viewer |
+| 13 | Slideshow | F5 starts; Space pauses; Esc stops; empty “Add photos first” |
+| 14 | Favorite | Viewer heart; tile heart at large Size; Favorites strip can collapse |
+| 15 | Reveal + Open | Side by side; Reveal selects in Explorer; Open launches the default app |
+| 16 | Info | File facts first (or “No camera info”), then people/places/things; click filters the grid |
+| 17 | Remove / Delete file | Delete key removes from library (confirm, bytes stay). Delete file extra-confirms and Recycle-Bins |
+| 18 | Reconnect | Kill the server: “Library is not responding”; restore health clears it |
+| 19 | Globe basics | Local Earth; drag right yaws east; cluster opens newest; Esc leaves the filtered grid |
 
-All 13 green ⇒ presentable for the family PC. Slideshow, fullscreen,
-cheat-sheet, multi-select, and remove-from-library are Soon — they do not
-block this gate. Deeper settings, F3 parity, and macOS/Linux launch do not
-block this gate. A missing row on this path **does** block calling the
-shell presentable, even if an F-id already has an API artifact.
+All 19 green ⇒ presentable. Soon rows (filmstrip, multi-select, Print,
+copy file, `?`, recently added) do **not** block this gate. Deeper
+settings, F3 parity, globe polish, and macOS/Linux launch do not block
+it. A missing Must row **does**, even if an F-id already has an API
+artifact.

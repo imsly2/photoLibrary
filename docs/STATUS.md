@@ -65,14 +65,16 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   original, Prev/Next/Rotate bottom, zoom slider, click-drag pan) are
   on this branch for tonight's pull. Does not start S13/S14.
 - 2026-10-13 — **Windows Presentable Shell** locked in North Star docs
-  (UI-SPEC primary). Steve's stated launch/update/Add/grid/favorites/
-  Win7-viewer/globe requirements are first-class shell, not a taste
-  overlay. Spec-vs-gap table records what `taste/windows-abc` already
-  ships vs retired chrome (overlay pills, Showing original, zoom
-  buttons). Anticipated family-viewer backlog is Must / Soon / Later.
-  **Presentable for family PC** is the 13-step checklist in UI-SPEC.
-  Until that path is green, S13/S14 stay secondary. Docs only; no new
-  Check; 16/22 unchanged. Pointer:
+  (UI-SPEC primary). Must-for-presentable now includes fullscreen,
+  slideshow, viewer keyboard parity, EXIF-first Info, Open with, empty/
+  error states, remove vs delete-file, Newest/Oldest/Name +
+  All/Photos/Videos/Favorites, search, and Update UX finish — plus the
+  earlier launch/grid/Win7/globe locks. Soon (filmstrip, multi-select,
+  Print, `?`, …) does not block the 19-step family-PC checklist.
+  [PR #2](https://github.com/imsly2/photoLibrary/pull/2) TASTE-VIEWER
+  72/72 is implemented-or-in-PR for Win7 chrome + Open + Update Library;
+  `taste/windows-abc` may lag that packet. Docs only; no new Check;
+  16/22 unchanged. Pointer:
   [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
@@ -342,10 +344,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal). Browser
   proof TASTE-VIEWER 47 assertions exit 0; F10 stayed green. Heart and
   Reveal are viewer-only. No new Check closed (16/22).
-- 2026-10-13 — Windows Presentable Shell North Star lock. Docs only on
-  top of `taste/windows-abc`. PRODUCT locked-decision + help section;
-  UI-SPEC target-vs-gap + anticipated backlog + family-PC DoD;
-  CONTRACTS: Soon routes wait for an edit; SLICES: S13/S14 secondary
-  until the checklist is green; CONVENTIONS: Photo Viewer / Photos /
-  XnView survey; [PICKUP](PICKUP.md) doorway points at the checklist.
-  No code rewrite. 16/22 unchanged.
+- 2026-10-13 — Windows Presentable Shell North Star lock, then Must
+  backlog folded in. Docs only. PRODUCT Must list + F3 remove/
+  delete-file; UI-SPEC 19-step DoD; CONTRACTS `remove` / `delete-file`
+  and `kind=photo,live`; SLICES: S13/S14 secondary; PR #2 72/72 marked
+  implemented-or-in-PR. No code rewrite. 16/22 unchanged.
