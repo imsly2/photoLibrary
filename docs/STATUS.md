@@ -16,6 +16,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - S03 is green: JPEG thumb.webp and preview.webp are oriented, GET /api/media
   returns real bytes, and a minimal page opens the oriented still. Closes no
   Check. F7 stays open until S06. F10 stays open until S09.
+- S04 / M1 is green: Add folder (linked), four zoom levels, date/location/name
+  sort, and open one still. Closes F9 and F11. F10 browse subset is present
+  but the Check stays open until S09.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -25,8 +28,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**1 / 22 Checks = 4.5% tested.** Only F6 has a fresh-verifier artifact.
-The other commands remain pending.
+**3 / 22 Checks = 13.6% tested.** F6, F9, and F11 have fresh-verifier artifacts.
+M1 browse is recorded. The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
@@ -38,9 +41,9 @@ The other commands remain pending.
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
 | F7 | Previews | pending | — | Not run; no artifact |
 | F8 | Preview storage | pending | — | Not run; no artifact |
-| F9 | Zoom | pending | — | Not run; no artifact |
+| F9 | Zoom | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F9` [verify-1](features/S04/Rev1.0/assets/verify-1/f9/result.json); orchestrator rerun [f9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json) |
 | F10 | Viewer | pending | — | Not run; no artifact |
-| F11 | Sort | pending | — | Not run; no artifact |
+| F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |
 | F12 | Globe | pending | — | Not run; no artifact |
 | F13 | Tour | pending | — | Not run; no artifact |
 | F14 | People / places / things | pending | — | Not run; no artifact |
@@ -129,4 +132,16 @@ environments must be supplied by the build or F2 remains pending; do not claim
   fixture mtimes, S02 and F6 exited 0 on this Linux runner
   ([S02](features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/result.json),
   [F6](features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/result.json)).
-  Next action is S04 (closes F9, F11).
+  Next action was S04 (closes F9, F11).
+- 2026-10-13 — S04 / M1 green. Closes F9 and F11 (**3/22**). Fresh Grok 4.7
+  verifier [S04](features/S04/Rev1.0/assets/verify-1/result.json) 86
+  assertions, [F9](features/S04/Rev1.0/assets/verify-1/f9/result.json) 45,
+  [F11](features/S04/Rev1.0/assets/verify-1/f11/result.json) 26, all exit 0.
+  Orchestrator rerun [F9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json)
+  and [F11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json)
+  also exit 0. Years has two groups; date desc is 2024 then 2023 then pinned
+  2022 mtime; zoom drift 0 px; pan error 0 px. M1 packet:
+  [years](features/S04/Rev1.0/assets/verify-1/years.png),
+  [all](features/S04/Rev1.0/assets/verify-1/all.png),
+  [viewer](features/S04/Rev1.0/assets/verify-1/viewer.png).
+  Do not wait for taste. Next action is S05 (closes F1, F4).

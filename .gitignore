@@ -31,6 +31,9 @@ docs/features/**/date-edge-library-data/
 docs/features/**/date-edge-media/
 docs/features/**/three-jpeg-library-data/
 docs/features/**/three-jpeg-media/
+docs/features/**/two-year-media/
+docs/features/**/date-sort-media/
+docs/features/**/date-sort-library-data/
 
 # Python
 __pycache__/

@@ -1,0 +1,18 @@
+[
+  {
+    "type": "hover",
+    "filename": "oriented.jpg",
+    "x": 118.0,
+    "y": 171.15625
+  },
+  {
+    "type": "ctrl-wheel",
+    "deltaY": -100,
+    "levelFrom": "years"
+  },
+  {
+    "type": "slider",
+    "value": 3,
+    "level": "all"
+  }
+]
