@@ -1,0 +1,6 @@
+# Library — agent door
+
+North star: [docs/PRODUCT.md](docs/PRODUCT.md). That file is the product.
+Status: [docs/STATUS.md](docs/STATUS.md). Conventions: [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
+
+Build only what a feature section in PRODUCT.md describes. A feature is done when its **Check** has been run and the artifact path is written in STATUS. Do not treat an unimplemented Check as a pass.

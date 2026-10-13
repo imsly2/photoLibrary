@@ -1,0 +1,188 @@
+{
+  "kind": "spec-only structural validation",
+  "feature_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "F13",
+    "F14",
+    "F15",
+    "F16",
+    "F17",
+    "F18",
+    "F19",
+    "F20",
+    "F21",
+    "F22"
+  ],
+  "check_count": 22,
+  "slice_ids": [
+    "S00",
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14"
+  ],
+  "dependencies": [
+    {
+      "slice": "S00",
+      "depends": []
+    },
+    {
+      "slice": "S01",
+      "depends": [
+        "S00"
+      ]
+    },
+    {
+      "slice": "S02",
+      "depends": [
+        "S01"
+      ]
+    },
+    {
+      "slice": "S03",
+      "depends": [
+        "S02"
+      ]
+    },
+    {
+      "slice": "S04",
+      "depends": [
+        "S03"
+      ]
+    },
+    {
+      "slice": "S05",
+      "depends": [
+        "S04"
+      ]
+    },
+    {
+      "slice": "S06",
+      "depends": [
+        "S05"
+      ]
+    },
+    {
+      "slice": "S07",
+      "depends": [
+        "S06"
+      ]
+    },
+    {
+      "slice": "S08",
+      "depends": [
+        "S07"
+      ]
+    },
+    {
+      "slice": "S09",
+      "depends": [
+        "S08"
+      ]
+    },
+    {
+      "slice": "S10",
+      "depends": [
+        "S09"
+      ]
+    },
+    {
+      "slice": "S11",
+      "depends": [
+        "S10"
+      ]
+    },
+    {
+      "slice": "S12",
+      "depends": [
+        "S11"
+      ]
+    },
+    {
+      "slice": "S13",
+      "depends": [
+        "S12"
+      ]
+    },
+    {
+      "slice": "S14",
+      "depends": [
+        "S13"
+      ]
+    }
+  ],
+  "missing_local_links": [],
+  "assertions": {
+    "feature_ids_contiguous": true,
+    "one_check_per_feature": true,
+    "check_total_22": true,
+    "slices_contiguous": true,
+    "dependencies_precede_slice": true,
+    "full_coverage_table": true,
+    "local_links_exist": true
+  },
+  "product_checks_run": 0,
+  "server_started": false,
+  "real_photo_disks_scanned": false,
+  "git_commit": "not possible: no Git repository at workspace or product root",
+  "files": [
+    {
+      "path": "projects\\photoLibrary\\README.md",
+      "sha256": "409ec7371f780c362b1d96312e7ef4dd692c7940ce15adeeee8fcbc5bbb86bfc"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\PRODUCT.md",
+      "sha256": "60ef8ce2fd45c9b000fcaf61004f6b5c93455b2d9a9bdb8e74b27505fc0ce315"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\CONTRACTS.md",
+      "sha256": "5678f196a26f4d57b5183401ed95e4e445a0abdd3c25f29f7a2129bb554ab229"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\UI-SPEC.md",
+      "sha256": "3c56ae73401566ece302fa8239cf0f1e0691d3864d4e322feeb9c12bdbf60b80"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\FIXTURES.md",
+      "sha256": "41e3b8d3c5a962a9d934c4158c7c9b9f4b6072f90f49eef30d352cfe16e9dca3"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\SLICES.md",
+      "sha256": "2c249363b6cd465f195ca2d433d72097f8e200543367210eb3585506e2105b0f"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\AGENT-BUILD-MODE.md",
+      "sha256": "aa65bae6939b4b865d99bed44e5464b42e1ba48350becad6df6700e3d043c713"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\CONVENTIONS.md",
+      "sha256": "1491ecd6361ee216cf7e063f09d1316fe993f334a95e94d9aeae71694fb99aeb"
+    },
+    {
+      "path": "projects\\photoLibrary\\docs\\STATUS.md",
+      "sha256": "b5d56d5fc17651a1b9f251a916bc5b7dcf95ba7a5ce452773204d659ef032eca"
+    }
+  ],
+  "pass": true
+}

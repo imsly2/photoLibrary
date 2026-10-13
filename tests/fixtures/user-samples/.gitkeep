@@ -1,0 +1,2 @@
+# Drop optional personal samples here. They are gitignored, never required, and never uploaded.
+# Automated acceptance uses the generated fixtures under tests/fixtures/media/.

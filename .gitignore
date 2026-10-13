@@ -1,0 +1,24 @@
+# Runtime catalog, originals, renditions, locks, and logs. Never track these.
+library-data/
+
+# Optional private samples. Deterministic fixtures elsewhere may be tracked.
+tests/fixtures/user-samples/*
+!tests/fixtures/user-samples/.gitkeep
+
+# Local QA sandboxes created inside the tree.
+.qa/
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

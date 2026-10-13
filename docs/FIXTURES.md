@@ -1,0 +1,90 @@
+# Library — fixed acceptance fixtures
+
+2026-10-12. This is a fixture specification, not media generated in this task.
+Future S00 supplies `tests/fixtures/`, a reproducible generator and manifest.
+Use synthetic pictures/clips and intentionally supplied licensed codec samples;
+never enumerate a real photo drive or borrow Steve's family pictures for tests.
+
+## Base set
+
+Images are 640×480 color quadrants with visible filenames; JPEG has EXIF orientation
+1 unless noted. Distinct patterns ensure distinct hashes. mtime is pinned to the
+value below after copying fixtures, so dates cannot depend on checkout time.
+
+| File under tests/fixtures/media/ | Exact facts | Checks |
+|---|---|---|
+| a/IMG_1042.jpg | DateTimeOriginal 2024:06:12 15:04:00; GPS 41.880000,-87.630000; mtime 2022-01-01T00:00:00Z | F4–F16,F20 |
+| a/near.jpg | DateTimeOriginal 2024:06:12 15:05:00; GPS 41.880450,-87.630000 (~50 m north) | F6,F9,F12,F13 |
+| b/far.jpg | DateTimeOriginal 2023:06:12 15:04:00; GPS 41.925000,-87.630000 (~5 km north) | F6,F9,F11–F13 |
+| b/no-exif.jpg | No EXIF/GPS/date in filename; mtime 2022-02-03T04:05:06Z | F6,F11–F13,F16 |
+| b/created.jpg | CreateDate 2024:07:04 12:00:00 only; no GPS | F6,F9 |
+| b/holiday_20200102.jpg | No EXIF/GPS; mtime 2022-01-01T00:00:00Z | F6 filename fallback |
+| b/holiday_2020-01-03.jpg | No EXIF/GPS; same pinned mtime | F6 filename fallback |
+| b/oriented.jpg | Raw 640×480, orientation 6; DateTimeOriginal 2024:06:12 15:06:00; no GPS | F6,F7,F10,F14 box orientation |
+| a/clip.mp4 | H.264 640×480, 30 fps, 2.000 s, audible test tone; QuickTime location +41.8800-087.6300+000.0/; CreateDate 2024-06-12T15:07:00Z | F4,F6,F7,F10,F12,F13 |
+| live/LIVE_0001.jpg | Still, content identifier 11111111-2222-4333-8444-555555555555; date 2024:06:13 10:00:00; GPS absent | F19 |
+| live/LIVE_0001.mov | H.264 640×480 30 fps 2.000 s, matching Apple content identifier in metadata; no GPS | F19 |
+
+Identifiers must be embedded in media, not merely asserted by a test stub. Store
+the metadata extraction dump and generator recipe in `tests/fixtures/manifest.json`.
+Live metadata that the chosen writer cannot produce is a fixture gap, not a reason
+to pair by filename. A supplied tiny pair needs origin/license and independently
+verified content identifiers before S00 passes.
+
+The original F6 three-JPEG check uses IMG_1042, near, far only: exactly two places.
+The no-GPS fixture is added for globe omission. Use named subsets, never assert
+the same total against the entire growing test tree. Original F11 uses IMG_1042,
+far and no-exif: newest 2024, then 2023, then pinned 2022.
+
+## Fixed variants and failure cases
+
+Generate these from the base set into a fresh sandbox for each scenario. List their
+hashes and expected relationships in manifest; builders may not invent extra media
+or change expected counts in a slice to make a test pass.
+
+| Variant / scenario | Construction and expected result |
+|---|---|
+| duplicate | Byte-copy IMG_1042 to second/source/same.jpg; one hash item, two locations, one search result. Seed different explicit place assignments in ordered history on pending/existing records; latest wins, exactly one primary remains, face/thing associations union. |
+| collision | Seed a different destination photo.jpg and photo_2.jpg; copying photo.jpg writes photo_3.jpg, both seeded hashes unchanged |
+| modified | Same source path gets different quadrant bytes and later mtime; new hash item, old annotations remain with old hash and historical current=false primary. Old item cannot serve new bytes; clipboard retains lastKnownPath. |
+| unsafe/Unicode paths | `family/旅行 photo.jpg` and a nested long filename; pending JSON remains flat, final id hashes correctly; path traversal requests rejected |
+| interruption | Kill at copy temporary write, hash publication, catalog transaction and SQLite rebuild boundaries; restart then rescan; no duplicate items or lost annotation |
+| pending annotation | Seed a valid pending record with Ada/mug associations and matching history transaction before releasing the hash barrier; later repeat through real annotate in F14. Final item preserves association and history. |
+| absent source | Resolver maps test volume `windows:fixture-offline` to no mount, with a known cached preview. Never unplug a real drive. |
+| moved library | Copy app+data sandbox to a new absolute directory/drive mapping, original root made inaccessible; relative originals still resolve |
+| moved linked volume | Test resolver remounts the same serial at a different letter; primary resolves there; a different serial at the old letter must not resolve |
+| preview missing | Remove only sandbox generated rendition; record survives, 404 preview-unavailable and stable placeholder |
+| denied/relocate interrupted | Test filesystem denies write or interrupts copy of rendition; old reference/bytes survive, original checksums unchanged |
+| HEIC failure | Invalid `broken.heic` plus valid JPEG in same scan; failed item/placeholder preserved, JPEG completes, scan error reported |
+| format coverage | One valid PNG,GIF,WebP,HEIC,HEIF,TIFF,BMP and MOV,M4V,AVI,MKV,WEBM. Same quadrant/test-tone recipe, distinct hashes. Codec samples require metadata dump and provenance. GIF/TIFF use first frame/page. Browser-unsupported original must play proxy. |
+| orphan/mismatch live | Still alone, movie alone, then complete pair in opposite orders; different identifiers with same basename must stay separate |
+| date edge | Invalid date substring falls back to mtime; valid offset EXIF normalizes UTC; two equal timestamps tie by id; filename containing two valid dates uses leftmost |
+| empty/no-GPS | Empty media directory and subset of no-exif only; empty grid/search/globe/tour without failures |
+| settings/history | Port 8765 → 8770 → undo → redo, restart between steps; 501 changes caps 500; new edit clears redo; copy undo leaves every original byte |
+| annotation | Ada on first photo, mug on first+second; alias Cup → mug; second person id merged into Ada; rename place Kitchen; out-of-range boxes rejected |
+
+## QA interface to build, not an existing command
+
+S00 creates `python -m tests.qa fixtures --output <sandbox>` and
+`python -m tests.qa slice <S-id> --root <sandbox>/library-data --artifacts <dir>`.
+Use `python -m tests.qa check F<n> ...` for one complete Check, and
+`python -m tests.qa all ...` at the final stop. Every invocation fails nonzero if
+an assertion is missing, skipped, or fails. No placeholder green Checks.
+
+The runner refuses a nonempty/unmarked root, writes a fixture-owned marker, uses
+an isolated port from the sandbox settings when 8765 is occupied, and cleans up
+only processes/files it owns. One explicit isolated default-port test is required
+for Launch; do not kill Command Center. A resolver injection is a test seam only,
+never a UI setting or a production identity shortcut.
+
+`manifest.json` has `{schemaVersion:1,files:[{path,sha256,sizeBytes,mtime,
+expectedMetadata,provenance}],scenarios:[{id,inputs,expected}]}`. Freeze generated
+bytes and expected metadata before implementation gates use them. Manifest hash
+goes in each result. Expose interruption barriers only in test harness. PNG capture
+and measurements must use actual browser controls and rendered pixels.
+
+Each gate writes `result.json` (check/slice, pass/fail, assertions, platform,
+fixture-manifest hash, revision, commands, artifact paths), `stdout.log`, relevant
+canonical JSON/response captures, and browser `*.png`, `measurements.json`,
+`network.json`, `console.json` when applicable. Exact fixture hashes cannot be
+claimed today: the generator and media do not yet exist.
