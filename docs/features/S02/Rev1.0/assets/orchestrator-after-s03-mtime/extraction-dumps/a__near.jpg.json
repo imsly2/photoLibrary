@@ -1,0 +1,18 @@
+{
+  "path": "/workspace/docs/features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/fixture-sandbox/media/a/near.jpg",
+  "sha256": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+  "sizeBytes": 12642,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": 1,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": "2024:06:12 15:05:00",
+  "capturedAtSource": "exif",
+  "latitude": 41.88045,
+  "longitude": -87.63,
+  "contentIdentifier": null,
+  "validImage": true
+}

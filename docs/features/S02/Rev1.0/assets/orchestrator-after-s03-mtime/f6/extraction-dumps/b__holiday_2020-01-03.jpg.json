@@ -1,0 +1,18 @@
+{
+  "path": "/workspace/docs/features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/fixture-sandbox/media/b/holiday_2020-01-03.jpg",
+  "sha256": "888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+  "sizeBytes": 16822,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": null,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": null,
+  "capturedAtSource": null,
+  "latitude": null,
+  "longitude": null,
+  "contentIdentifier": null,
+  "validImage": true
+}

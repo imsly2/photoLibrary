@@ -1,0 +1,318 @@
+{
+  "slice": "S03",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "broken-heic-scan-error",
+      "pass": true,
+      "detail": "[{'path': 'formats/broken.heic', 'error': 'decode-error'}]"
+    },
+    {
+      "name": "oriented-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-store",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-queued",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "oriented-paths-null",
+      "pass": true,
+      "detail": "{'store': 'with-server', 'sourceId': 'src_54c8de3788c0', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}"
+    },
+    {
+      "name": "oriented-video-slots",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-raw-size",
+      "pass": true,
+      "detail": "{'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}"
+    },
+    {
+      "name": "scan-no-thumb-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-no-preview-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-unchanged-after-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-paths-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "png-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "png-still-queued",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "png-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "serve-health",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "runtime-pid",
+      "pass": true,
+      "detail": "8958"
+    },
+    {
+      "name": "oriented-ready",
+      "pass": true,
+      "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "ready-thumb-rel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ready-preview-rel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "metadata-stays-raw",
+      "pass": true,
+      "detail": "{'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}"
+    },
+    {
+      "name": "original-unchanged-after-ready",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-size",
+      "pass": true,
+      "detail": "{'width': 240, 'height': 320, 'bytes': 1740}"
+    },
+    {
+      "name": "preview-size",
+      "pass": true,
+      "detail": "{'width': 480, 'height': 640, 'bytes': 4154}"
+    },
+    {
+      "name": "thumb-cap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-cap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-after-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-stays-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-still-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-decode-error-kept",
+      "pass": true,
+      "detail": "['formats/broken.heic']"
+    },
+    {
+      "name": "png-after-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "png-still-queued-after-serve",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "png-still-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-length",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-length",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-length",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "range-206",
+      "pass": true,
+      "detail": "{\"status\": 206, \"contentType\": \"image/webp\", \"contentLength\": 1, \"contentRange\": \"bytes 0-0/1740\", \"bodyLength\": 1, \"sha256\": \"8c2574892063f995fdf756bce07f46c1a5193e54cd52837ed91e32008ccf41ac\", \"body\": null}"
+    },
+    {
+      "name": "bad-range-416",
+      "pass": true,
+      "detail": "{\"status\": 416, \"contentType\": \"application/json\", \"contentLength\": 25, \"contentRange\": null, \"bodyLength\": 25, \"sha256\": \"53a9beda5df606f8f0b0b6b8f54e27bbc240e55a93acd5ae5b58d69446ddb2d3\", \"body\": {\"error\": \"invalid-range\"}}"
+    },
+    {
+      "name": "unknown-id-404",
+      "pass": true,
+      "detail": "{\"status\": 404, \"contentType\": \"application/json\", \"contentLength\": 21, \"contentRange\": null, \"bodyLength\": 21, \"sha256\": \"803cb0e9b33bf52c5617f82d9857d432d8b080c0d2adc0a8bf7727bd04547256\", \"body\": {\"error\": \"not-found\"}}"
+    },
+    {
+      "name": "page-no-empty-state-copy-baked-pixels",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-has-script",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-not-empty",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "viewer-src-preview",
+      "pass": true,
+      "detail": "/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview"
+    },
+    {
+      "name": "esc-closes-viewer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "first-still-exists",
+      "pass": true,
+      "detail": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/first-still.png"
+    },
+    {
+      "name": "first-still-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "preview-file-deleted",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "deleted-preview-unavailable",
+      "pass": true,
+      "detail": "{\"status\": 404, \"contentType\": \"application/json\", \"contentLength\": 31, \"contentRange\": null, \"bodyLength\": 31, \"sha256\": \"ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7\", \"body\": {\"error\": \"preview-unavailable\"}}"
+    },
+    {
+      "name": "deleted-preview-status-unchanged",
+      "pass": true,
+      "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "deleted-preview-not-recreated",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "ba155f94a72fb114bc60221a8a0d23824ec818a2",
+  "commands": [
+    "python -m library scan <media> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/result.json",
+    "stdout.log": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/stdout.log",
+    "sizes.json": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/sizes.json",
+    "media-responses.json": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/media-responses.json",
+    "first-still.png": "/workspace/docs/features/S03/Rev1.0/assets/orchestrator-rerun/first-still.png"
+  }
+}

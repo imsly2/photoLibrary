@@ -4,22 +4,24 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
-- S00 is green: an empty fixture-owned library launches, persists the 16 default
-  settings, reuses a matching-root server, refuses a foreign port without
-  killing it, recovers a settings transaction, and undoes a settings change.
-- S01 is green: a linked fixture folder scans in place, item ids match file
-  bytes, a second scan adds nothing, originals are unchanged, and the embedded
-  Live Photo pair is one item.
+- S00 is green on its Windows verifier: an empty fixture-owned library launches,
+  persists the 16 default settings, reuses a matching-root server, refuses a
+  foreign port without killing it, recovers a settings transaction, and undoes
+  a settings change.
+- S01 is green on its Windows verifier: a linked fixture folder scans in place,
+  item ids match file bytes, a second scan adds nothing, originals are
+  unchanged, and the embedded Live Photo pair is one item.
 - F6 is closed: fixture dates follow EXIF, then filename, then modified time,
   and the three-JPEG set becomes two unnamed places 100 meters apart.
+- S03 is green: JPEG thumb.webp and preview.webp are oriented, GET /api/media
+  returns real bytes, and a minimal page opens the oriented still. Closes no
+  Check. F7 stays open until S06. F10 stays open until S09.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
 - [CONTRACTS](CONTRACTS.md), [UI-SPEC](UI-SPEC.md), [FIXTURES](FIXTURES.md),
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
-- No server, scanner, web page, fixture media, Python package or QA runner exists.
-  No server was launched and no real photo disk was scanned for this task.
 
 ## Completion
 
@@ -109,4 +111,22 @@ environments must be supplied by the build or F2 remains pending; do not claim
   filename.
 - 2026-10-13 — S03 plan locked in `docs/features/S03/Rev1.0/PLAN.md` after
   still-rendition recon. JPEG thumbs and previews only. F7 and F10 stay open.
-  Next action is the S03 implementation.
+- 2026-10-13 — S03 green. Closes no Check (1/22 remains). Fresh Grok 4.7
+  verifier [verify-1](features/S03/Rev1.0/assets/verify-1/result.json): 59
+  assertions, exit 0. Orchestrator rerun
+  [orchestrator-rerun](features/S03/Rev1.0/assets/orchestrator-rerun/result.json)
+  also exit 0. Thumb 240×320, preview 480×640, `first-still.png` is a real
+  1280×720 viewer shot of the upright oriented JPEG. Implementer model was
+  Grok 4.6 (`cursor-grok-4.6-high-fast`); the requested 4.5 slug is not
+  available. Recon was Composer 2.5 Fast. Linux S00 after S03 failed two
+  HEIC ffprobe metadata reads (`quad.heic` / `quad.heif`); hashes and ftyp
+  brands still match
+  ([orchestrator-after-s03](features/S00/Rev1.0/assets/orchestrator-after-s03/result.json)).
+  Linux S01 aborted at the Windows `cmd /c mklink /J` junction helper
+  ([after-s03 stdout](features/S01/Rev1.0/assets/after-s03/stdout.log)).
+  Those are runner-platform facts, not S03 product failures. Windows S00/S01
+  evidence remains the grade for those slices. After pinning checkout-rewritten
+  fixture mtimes, S02 and F6 exited 0 on this Linux runner
+  ([S02](features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/result.json),
+  [F6](features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/result.json)).
+  Next action is S04 (closes F9, F11).

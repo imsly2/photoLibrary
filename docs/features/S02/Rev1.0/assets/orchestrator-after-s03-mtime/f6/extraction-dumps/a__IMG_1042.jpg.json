@@ -1,0 +1,18 @@
+{
+  "path": "/workspace/docs/features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/fixture-sandbox/media/a/IMG_1042.jpg",
+  "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+  "sizeBytes": 15274,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": 1,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": "2024:06:12 15:04:00",
+  "capturedAtSource": "exif",
+  "latitude": 41.88,
+  "longitude": -87.63,
+  "contentIdentifier": null,
+  "validImage": true
+}
