@@ -1,6 +1,6 @@
 # S12 — Pair still and motion as Live Photos
 
-Locked 2026-10-13 after S11. **Closes F19.** Re-run F5, F7, F10, F14, F16. Do not wait for taste.
+Locked 2026-10-13 after S11 at `f27917f`. **Closes F19.** Re-run F5, F7, F10, F14, F16. Do not wait for taste.
 
 Read PRODUCT F19, CONTRACTS Live pairing, UI-SPEC LIVE badge/hover, FIXTURES live pair, and this file. Do not invent fields, errors, settings, or screens.
 
