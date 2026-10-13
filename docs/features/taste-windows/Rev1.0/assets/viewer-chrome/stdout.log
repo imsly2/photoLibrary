@@ -1,0 +1,52 @@
+PASS scan-exit
+PASS playwright-import
+PASS back-visible: {"present": true, "text": "Back", "disabled": false, "hidden": false, "width": 56.828125, "height": 26.1875}
+PASS prev-visible: {"present": true, "text": "Previous", "disabled": false, "hidden": false, "width": 77.453125, "height": 27.78125}
+PASS next-visible: {"present": true, "text": "Next", "disabled": false, "hidden": false, "width": 53, "height": 27.78125}
+PASS zoomOut-visible: {"present": true, "text": "Zoom out", "disabled": false, "hidden": false, "width": 81.90625, "height": 27.78125}
+PASS zoomIn-visible: {"present": true, "text": "Zoom in", "disabled": false, "hidden": false, "width": 73.75, "height": 27.78125}
+PASS rotate-visible: {"present": true, "text": "Rotate", "disabled": false, "hidden": false, "width": 64.875, "height": 27.78125}
+PASS favorite-visible: {"present": true, "text": "\u2661", "disabled": false, "hidden": false, "width": 41.59375, "height": 38.390625}
+PASS reveal-visible: {"present": true, "text": "Reveal in Explorer", "disabled": false, "hidden": false, "width": 144, "height": 27.78125}
+PASS back-label: {"present": true, "text": "Back", "disabled": false, "hidden": false, "width": 56.828125, "height": 26.1875}
+PASS prev-label: {"present": true, "text": "Previous", "disabled": false, "hidden": false, "width": 77.453125, "height": 27.78125}
+PASS next-label: {"present": true, "text": "Next", "disabled": false, "hidden": false, "width": 53, "height": 27.78125}
+PASS prev-or-next-enabled: {"prev": {"present": true, "text": "Previous", "disabled": false, "hidden": false, "width": 77.453125, "height": 27.78125}, "next": {"present": true, "text": "Next", "disabled": false, "hidden": false, "width": 53, "height": 27.78125}}
+PASS reveal-label: {"present": true, "text": "Reveal in Explorer", "disabled": false, "hidden": false, "width": 144, "height": 27.78125}
+PASS heart-unfilled: {"present": true, "text": "\u2661", "disabled": false, "hidden": false, "width": 41.59375, "height": 38.390625}
+PASS crumb-filename: IMG_1042.jpg
+PASS person-field-labeled: Person Place Thing
+PASS place-field-labeled: Person Place Thing
+PASS thing-field-labeled: Person Place Thing
+PASS no-mystery-inputs: 0
+PASS viewer-chrome-png: 1280x720
+PASS next-moves: /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview
+PASS prev-returns: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
+PASS open-original-shows-state: {"text": "Showing original", "pressed": "true", "showing": "1", "originalSrc": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original", "originalHidden": false}
+PASS open-original-toggles-off: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
+PASS open-original-toggles-on
+PASS heart-favorites
+PASS reveal-http: 200
+PASS reveal-folder: {"path": "/tmp/taste-viewer-artifacts/taste-viewer-media/a/IMG_1042.jpg", "folder": "/tmp/taste-viewer-artifacts/taste-viewer-media/a", "opened": true}
+PASS reveal-file: {"path": "/tmp/taste-viewer-artifacts/taste-viewer-media/a/IMG_1042.jpg", "folder": "/tmp/taste-viewer-artifacts/taste-viewer-media/a", "opened": true}
+PASS zoom-in-enlarges: {"before": {"left": 160, "top": 0, "width": 960, "height": 720, "complete": true, "naturalWidth": 640}, "after": {"left": 112, "top": -36, "width": 1056, "height": 792, "complete": true, "naturalWidth": 640}}
+PASS zoom-out-below-fit: {"fit": {"left": 160, "top": 0, "width": 960, "height": 720, "complete": true, "naturalWidth": 640}, "out": {"left": 203.63636779785156, "top": 32.727272033691406, "width": 872.727294921875, "height": 654.5454711914062, "complete": true, "naturalWidth": 640}}
+PASS rotate-90: 90
+PASS back-same-url: http://127.0.0.1:18767/ -> http://127.0.0.1:18767/
+PASS back-same-port: http://127.0.0.1:18767/
+PASS back-shows-grid
+PASS video-zoom-out: {"fit": {"left": 160, "top": 0, "width": 960, "height": 720}, "out": {"left": 203.63636779785156, "top": 32.727272033691406, "width": 872.727294921875, "height": 654.5454711914062}}
+PASS video-pan-zoomed: {"errorPx": 0, "before": {"left": 112, "top": -36, "width": 1056, "height": 792}, "after": {"left": 152, "top": -11, "width": 1056, "height": 792}}
+PASS play-preview-click-pauses
+PASS play-preview-click-plays
+PASS video-back-same-url: http://127.0.0.1:18767/
+PASS no-console-errors: []
+PASS api-favorite-after-heart: true
+PASS favorites-json: /tmp/taste-viewer-artifacts/taste-viewer-root/catalog/favorites.json
+PASS favorites-has-photo: {"schemaVersion": 1, "itemIds": ["1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS http-unfavorite: 200
+PASS rotate-original-unchanged: 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran

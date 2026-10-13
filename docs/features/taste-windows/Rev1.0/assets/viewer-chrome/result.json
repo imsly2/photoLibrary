@@ -1,0 +1,282 @@
+{
+  "slice": "TASTE-VIEWER",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "back-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Back\", \"disabled\": false, \"hidden\": false, \"width\": 56.828125, \"height\": 26.1875}"
+    },
+    {
+      "name": "prev-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 77.453125, \"height\": 27.78125}"
+    },
+    {
+      "name": "next-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 53, \"height\": 27.78125}"
+    },
+    {
+      "name": "zoomOut-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Zoom out\", \"disabled\": false, \"hidden\": false, \"width\": 81.90625, \"height\": 27.78125}"
+    },
+    {
+      "name": "zoomIn-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Zoom in\", \"disabled\": false, \"hidden\": false, \"width\": 73.75, \"height\": 27.78125}"
+    },
+    {
+      "name": "rotate-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Rotate\", \"disabled\": false, \"hidden\": false, \"width\": 64.875, \"height\": 27.78125}"
+    },
+    {
+      "name": "favorite-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"\\u2661\", \"disabled\": false, \"hidden\": false, \"width\": 41.59375, \"height\": 38.390625}"
+    },
+    {
+      "name": "reveal-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Reveal in Explorer\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125}"
+    },
+    {
+      "name": "back-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Back\", \"disabled\": false, \"hidden\": false, \"width\": 56.828125, \"height\": 26.1875}"
+    },
+    {
+      "name": "prev-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 77.453125, \"height\": 27.78125}"
+    },
+    {
+      "name": "next-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 53, \"height\": 27.78125}"
+    },
+    {
+      "name": "prev-or-next-enabled",
+      "pass": true,
+      "detail": "{\"prev\": {\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 77.453125, \"height\": 27.78125}, \"next\": {\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 53, \"height\": 27.78125}}"
+    },
+    {
+      "name": "reveal-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Reveal in Explorer\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125}"
+    },
+    {
+      "name": "heart-unfilled",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"\\u2661\", \"disabled\": false, \"hidden\": false, \"width\": 41.59375, \"height\": 38.390625}"
+    },
+    {
+      "name": "crumb-filename",
+      "pass": true,
+      "detail": "IMG_1042.jpg"
+    },
+    {
+      "name": "person-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "place-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "thing-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "no-mystery-inputs",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "viewer-chrome-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "next-moves",
+      "pass": true,
+      "detail": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview"
+    },
+    {
+      "name": "prev-returns",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "open-original-shows-state",
+      "pass": true,
+      "detail": "{\"text\": \"Showing original\", \"pressed\": \"true\", \"showing\": \"1\", \"originalSrc\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original\", \"originalHidden\": false}"
+    },
+    {
+      "name": "open-original-toggles-off",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "open-original-toggles-on",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heart-favorites",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reveal-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "reveal-folder",
+      "pass": true,
+      "detail": "{\"path\": \"/tmp/taste-viewer-artifacts/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/tmp/taste-viewer-artifacts/taste-viewer-media/a\", \"opened\": true}"
+    },
+    {
+      "name": "reveal-file",
+      "pass": true,
+      "detail": "{\"path\": \"/tmp/taste-viewer-artifacts/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/tmp/taste-viewer-artifacts/taste-viewer-media/a\", \"opened\": true}"
+    },
+    {
+      "name": "zoom-in-enlarges",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": 112, \"top\": -36, \"width\": 1056, \"height\": 792, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "zoom-out-below-fit",
+      "pass": true,
+      "detail": "{\"fit\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}, \"out\": {\"left\": 203.63636779785156, \"top\": 32.727272033691406, \"width\": 872.727294921875, \"height\": 654.5454711914062, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "rotate-90",
+      "pass": true,
+      "detail": "90"
+    },
+    {
+      "name": "back-same-url",
+      "pass": true,
+      "detail": "http://127.0.0.1:18767/ -> http://127.0.0.1:18767/"
+    },
+    {
+      "name": "back-same-port",
+      "pass": true,
+      "detail": "http://127.0.0.1:18767/"
+    },
+    {
+      "name": "back-shows-grid",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-zoom-out",
+      "pass": true,
+      "detail": "{\"fit\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720}, \"out\": {\"left\": 203.63636779785156, \"top\": 32.727272033691406, \"width\": 872.727294921875, \"height\": 654.5454711914062}}"
+    },
+    {
+      "name": "video-pan-zoomed",
+      "pass": true,
+      "detail": "{\"errorPx\": 0, \"before\": {\"left\": 112, \"top\": -36, \"width\": 1056, \"height\": 792}, \"after\": {\"left\": 152, \"top\": -11, \"width\": 1056, \"height\": 792}}"
+    },
+    {
+      "name": "play-preview-click-pauses",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "play-preview-click-plays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-back-same-url",
+      "pass": true,
+      "detail": "http://127.0.0.1:18767/"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "api-favorite-after-heart",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "favorites-json",
+      "pass": true,
+      "detail": "/tmp/taste-viewer-artifacts/taste-viewer-root/catalog/favorites.json"
+    },
+    {
+      "name": "favorites-has-photo",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"itemIds\": [\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "http-unfavorite",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "rotate-original-unchanged",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "b5daf6fad63b0085602f8bd57113df5abee2c795",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "/tmp/taste-viewer-artifacts/result.json",
+    "stdout.log": "/tmp/taste-viewer-artifacts/stdout.log",
+    "viewer-chrome.json": "/tmp/taste-viewer-artifacts/viewer-chrome.json",
+    "viewer-chrome.png": "/tmp/taste-viewer-artifacts/viewer-chrome.png"
+  }
+}

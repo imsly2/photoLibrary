@@ -59,12 +59,28 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   rightward drag increases yaw; up/down unchanged. Favorite star and
   Reveal in Explorer are specified for sibling tracks. F12 stays the
   Check; do not reopen S13/S14.
+- Windows taste merge `taste/windows-abc` stacks Track A + globe, Track B
+  viewer, and Track C grid. Shared `catalog/favorites.json`. Family
+  Update (header, no CMD) and Win7-style viewer (Info, no Showing
+  original, Prev/Next/Rotate bottom, zoom slider, click-drag pan) are
+  on this branch for tonight's pull. Does not start S13/S14.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
 - [CONTRACTS](CONTRACTS.md), [UI-SPEC](UI-SPEC.md), [FIXTURES](FIXTURES.md),
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
+- 2026-10-13 — Windows taste Track B (viewer) is implemented on
+  `cursor/viewer-chrome-2bd1`. Visible Back / Previous / Next, zoom out
+  below fit on stills and video, pan, display-only rotate, labeled
+  Person/Place/Thing fields, Open original swaps in-page to original
+  bytes with a “Showing original” state, Reveal in Explorer opens the
+  folder, and a viewer heart writes `catalog/favorites.json`. Back stays
+  on the live listen URL. Does not close a new Check. F10 stayed green.
+  Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-chrome/result.json),
+  [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-chrome/viewer-chrome.png),
+  [F10](features/taste-windows/Rev1.0/assets/viewer-chrome/f10/result.json).
+  No grid hearts, launcher, or Add-folder picker.
 
 ## Completion
 
@@ -112,6 +128,18 @@ environments must be supplied by the build or F2 remains pending; do not claim
 100% while excluding that existing promise.
 
 ## Notes and spec evidence
+
+- 2026-10-13 — Windows taste Track C (grid) locked and implemented on
+  `cursor/s03-still-renditions-8e1d`: whole-tile video hover, VIDEO badge,
+  `kind=video` filter, Size 72–520 with distinct level defaults (All 420),
+  thumbs stay painted through zoom, Dates-off wall, tile hearts with
+  collapsible Favorites (`catalog/favorites.json`), Library/Globe toggle
+  chrome. No 17th setting. Does not close a Check. Plan:
+  [taste-grid](features/taste-grid/Rev1.0/PLAN.md). Browser proof
+  [verify-1](features/taste-grid/Rev1.0/assets/verify-1/result.json)
+  26/26: whole-tile hover, VIDEO badge, kind=video, All 420 / Years 72 /
+  Months 104, thumbs stay painted, wall, hearts + Favorites, view chrome.
+
 
 - 2026-10-12 — Original help file and six layout references created; no code.
 - 2026-10-12 baseline refinement — Added technical contracts, screen-state/input
@@ -297,3 +325,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.
+- 2026-10-13 — Windows taste Track B viewer chrome. Specs first
+  (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal). Browser
+  proof TASTE-VIEWER 47 assertions exit 0; F10 stayed green. Heart and
+  Reveal are viewer-only. No new Check closed (16/22).

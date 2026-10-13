@@ -29,6 +29,9 @@ setting, upload, or Electron.
 5. **Disconnect.** Client abort is non-fatal. Banner “Library is not responding”;
    retry health/catalog until 200.
 
+Viewer chrome (Previous/Next, zoom, heart, Reveal) is a sibling track and is
+not this Track A gate.
+
 ## Out of scope
 
 S13/S14, macOS/Linux F2, F3 matrix, F22 gallery, viewer/grid visual chrome

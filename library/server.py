@@ -305,6 +305,17 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 chosen = pick_folder()
                 self._send_json(200, {"path": chosen})
                 return
+            if route == "/api/update" and method == "GET":
+                from library.app_update import update_status
+
+                self._send_json(200, update_status())
+                return
+            if route == "/api/update" and method == "POST":
+                from library.app_update import pull_latest
+
+                self._read_json()
+                self._send_json(200, pull_latest())
+                return
             if (
                 route.startswith("/api/sources/")
                 and route.endswith("/copy-here")
@@ -363,6 +374,21 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if (
                 route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "PUT"
+            ):
+                from library.favorites import parse_favorite_body
+
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                on = parse_favorite_body(body)
+                with self.lock:
+                    self._send_json(200, self.library.set_favorite(item_id, on))
+                return
+            if (
+                route.startswith("/api/items/")
                 and route.endswith("/annotations")
                 and method == "POST"
             ):
@@ -372,6 +398,42 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 body = self._read_json()
                 with self.lock:
                     self._send_json(200, self.library.annotate(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.favorite(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/reveal")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/reveal")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.reveal(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/open")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/open")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.open_default(item_id))
                 return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)

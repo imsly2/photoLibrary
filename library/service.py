@@ -272,10 +272,23 @@ class Library:
         extra = set(query) - ITEM_QUERY_KEYS
         if extra:
             raise fail("invalid-argument")
-        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        from library.favorites import favorite_ids
+
+        marked = favorite_ids(self.root)
+        items = [
+            item_read(load_item(self.root, item_id), self.root, marked)
+            for item_id in iter_item_ids(self.root)
+        ]
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
+
+    def set_favorite(self, item_id: str, favorite: bool) -> dict[str, Any]:
+        from library.favorites import set_item_favorite
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return set_item_favorite(self.root, item_id, favorite)
 
     def places_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         self.recover()
@@ -389,6 +402,51 @@ class Library:
         self.ensure_settings()
         return apply_annotate(self.root, item_id, payload)
 
+    def favorite(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.favorites import parse_favorite_body
+
+        return self.set_favorite(item_id, parse_favorite_body(payload))
+
+    def reveal(self, item_id: str) -> dict[str, Any]:
+        from library.favorites import open_containing_folder
+
+        self.recover()
+        self.ensure_settings()
+        if type(item_id) is not str or not item_id:
+            raise fail("invalid-argument")
+        item = load_item(self.root, item_id)
+        if item.get("kind") == "video":
+            component = "motion"
+        else:
+            component = "still"
+        path = _readable_component_file(item, component, self.root)
+        if path is None:
+            raise fail("unavailable")
+        opened = open_containing_folder(path)
+        return {
+            "path": str(path),
+            "folder": str(path.parent),
+            "opened": opened,
+        }
+
+    def open_default(self, item_id: str) -> dict[str, Any]:
+        from library.favorites import open_path_with_default
+
+        self.recover()
+        self.ensure_settings()
+        if type(item_id) is not str or not item_id:
+            raise fail("invalid-argument")
+        item = load_item(self.root, item_id)
+        if item.get("kind") == "video":
+            component = "motion"
+        else:
+            component = "still"
+        path = _readable_component_file(item, component, self.root)
+        if path is None:
+            raise fail("unavailable")
+        opened = open_path_with_default(path)
+        return {"path": str(path), "opened": opened}
+
     def people_merge(self, keep_id: str, drop_id: str) -> dict[str, Any]:
         from library.annotate import apply_people_merge
 
@@ -454,8 +512,22 @@ class Library:
 
 
 ITEM_QUERY_KEYS = frozenset(
-    {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
+    {
+        "sort",
+        "dir",
+        "person",
+        "place",
+        "thing",
+        "kind",
+        "favorite",
+        "from",
+        "to",
+        "unavailable",
+        "q",
+        "scope",
+    }
 )
+ITEM_KINDS = frozenset({"photo", "video", "live"})
 MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
 
 
@@ -598,6 +670,18 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
             raise fail("invalid-argument")
         ids = {rec.get("id") for rec in things}
         if token not in ids and not any(_entity_name_match(rec, token) for rec in things):
+            return False
+    kind = query.get("kind")
+    if kind is not None:
+        if type(kind) is not str or kind not in ITEM_KINDS:
+            raise fail("invalid-argument")
+        if item.get("kind") != kind:
+            return False
+    raw_favorite = query.get("favorite")
+    if raw_favorite is not None:
+        if raw_favorite != "1":
+            raise fail("invalid-argument")
+        if item.get("favorite") is not True:
             return False
     q = query.get("q")
     if q:

@@ -47,7 +47,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 
 | Decision | Locked behavior / reason |
 |---|---|
-| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite star and Windows Reveal in Explorer are authorized sibling tracks, not settings. |
+| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite heart writes `catalog/favorites.json` (viewer heart, tile hearts, collapsible Favorites). Windows Reveal in Explorer is a named action, not a setting. Neither is an album system. |
 | Packaging | Folder, Python + ffmpeg, local browser, CLI and HTTP. Windows first; macOS/Linux launcher promises need their own verification. |
 | Catalog | JSON is authoritative; SQLite is disposable. Relative local paths; volume identity for linked drives. |
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
@@ -101,6 +101,7 @@ library-data/
     people/<id>.json
     places/<id>.json
     things/<id>.json
+    favorites.json       # item ids marked with a heart
     catalog.sqlite       # rebuilt from the JSON
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
@@ -143,6 +144,12 @@ must not jump to another host or port — including a leftover QA listen such as
 root-relative paths. Never embed `settings.port` or a stored runtime URL from
 a previous listen.
 
+Family installs update without a command prompt. A header **Update** control
+pulls the current git branch (`git fetch` then `git pull --ff-only`, or the
+equivalent) and shows a clear success or fail sentence. It does not ask anyone
+to type git, open GitHub Desktop, or switch branches. A copy that is not a
+git folder, or a PC without git, says so in that same status line.
+
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
 URL `http://127.0.0.1:8765/` and `GET /api/health` returns
@@ -166,6 +173,10 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
+| `favorite <id> --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the heart in `catalog/favorites.json`. |
+| `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
+| `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original with the default program. |
+| `update` | `POST /api/update` `{}` | Pulls the current git branch. `GET /api/update` reports branch and revision. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -173,9 +184,13 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
-`person=`, `place=`, `thing=`, `from=`, `to=`, `unavailable=0|1`, `q=` for a
-name or filename. Names match case-insensitively. `scope=people|places|things`
-restricts the query for the existing search chips.
+`person=`, `place=`, `thing=`, `kind=photo|video|live`, `from=`, `to=`,
+`unavailable=0|1`, `q=` for a name or filename. Names match
+case-insensitively. `scope=people|places|things` restricts the query for the
+existing search chips. `kind` keeps only that media kind; the toolbar Videos
+control sends `kind=video`. Kind is a transient filter, not a setting.
+`favorite=1` keeps only hearted items. Item reads include computed
+`favorite` (not stored on the item JSON).
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
 file. `original` on a missing disk returns HTTP 404 and
@@ -311,7 +326,10 @@ The grid shows a placeholder until the thumb exists, then the thumb.
 
 Years and months show stills under the default setting. Days and All play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
-`days-and-all` (default), `always`, or `off`.
+`days-and-all` (default), `always`, or `off`. Hover playback fills the whole
+tile; the still stays underneath as a poster. The tile never splits still on
+one side and video on the other. Every video cell shows a VIDEO badge; live
+cells keep LIVE.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
@@ -347,14 +365,36 @@ source tree. Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 
-Four levels: Years, Months, Days, All. The slider and Ctrl+wheel move between
-them. The item under the cursor stays in view. The level is saved in
+Four levels: Years, Months, Days, All. The level slider and Ctrl+wheel move
+between them. The item under the cursor stays in view. The level is saved in
 `zoomLevel`.
 
 Years is one card per year, a mosaic of that year's thumbs.
-Months is one card per month.
-Days is a header per day and the photos from that day.
-All is every item under day headers.
+Months is one card per month. Months cells are visibly larger than Years.
+Days is a header per day and the photos from that day, medium cells.
+All is every item under day headers at the closest default size — large
+enough to read faces. All is not a second-smallest dense copy of Days.
+
+A separate Size control steps cell pixels at the current level (eight
+useful stops, including a closer max than the old 160 px All). Changing
+level or size must keep already-loaded thumbnails on screen; the grid does
+not blank during the interaction.
+
+Dates can be turned off. With Dates off, every matching thumb sits on one
+continuous wall — no date-section gaps. Dates on remains the default.
+Size and Dates are session view options, not settings.json keys.
+
+Tiles that are large enough (Size 144 px and up) show a heart control in
+the same corner language as the VIDEO/LIVE badge — under or beside that
+badge. At the two tiniest stops (72 and 104) the heart hides so a wall
+stays readable. Clicking the heart marks or clears the item; it does not
+open the viewer. A Favorites section sits at the top of the Library grid
+whenever any current result is hearted. It starts expanded and can
+collapse to its heading. Hearted items also stay in their date or wall
+positions. Ctrl+Z undoes a heart.
+
+Library and Globe in the header are view toggles, not plain labels: hover
+and active/click states are visible, and the pressed view stays marked.
 
 Reference: [years](reference/library-years.jpg), [grid](reference/library-grid.jpg).
 
@@ -370,18 +410,35 @@ Click a cell to open the viewer. Previous and Next buttons, and the arrow
 keys, move to the next and previous item in the current sort. Back (and Esc)
 returns to the grid he came from on the **same** live origin and port.
 Browser Back does the same while the page is open; it must not load a
-stale port. Zoom in/out and pan work on the opened still. Rotate turns
-the displayed still 90° and does not change the file.
+stale port or call a hop that leaves this listen URL.
 
-For a photo the viewer shows `preview.webp` first, then the original if available.
-For video it shows the poster, then plays the original or proxy; a browser that
-cannot decode the original falls back to the proxy.
-Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it.
-Click a video, or press Space, to play or pause. Playback of a video uses the
-original when available, otherwise the proxy.
+The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
+the **bottom**; Left/Right arrows still change photo and stop at the ends.
+Rotate sits next to them. Zoom is a **slider** (plus existing Ctrl+wheel),
+not discrete zoom-in/out buttons. Click-and-drag pans while zoomed.
+Rotate turns the displayed still 90° and does not change the file.
 
-The viewer lists the place, the people, and the things already written on the
-record.
+A heart in the viewer favorites or unfavorites that item. The mark is
+stored in `catalog/favorites.json` and is visible on the heart.
+
+For a photo the viewer shows `preview.webp` first, then the original if
+available, with no “Showing original” button or notification. Reveal in
+Explorer opens the original's containing folder on this computer whenever
+the file is here (`explorer /select` on Windows). Open with default
+program launches that file in the usual Windows app. For video the viewer
+shows the poster, then plays the original or proxy; a browser that cannot
+decode the original falls back to the proxy. Play preview still toggles
+pause/play on click. Ctrl+wheel zooms the picture, anchored at the cursor.
+Middle-click drags it; a still also pans with a left drag, and any zoomed
+item pans with a left drag. Click a video, or press Space, to play or
+pause. Playback of a video uses the original when available, otherwise
+the proxy.
+
+Person, Place, and Thing are **not** pills painted over the preview. A
+top-right **Info** control lists the people, places, and things already
+written on the record; clicking one filters the grid to that entity.
+The three type-in fields stay inside Info and stay labeled Person, Place,
+and Thing.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.
@@ -391,7 +448,9 @@ source is available. Artifact: both responses' content types and lengths.
 ## F11 — Sort
 
 The toolbar sorts by date, location, or name. Direction is ascending or
-descending. Default is date, newest first (`sort=date`, `dir=desc`).
+descending. Default is date, newest first (`sort=date`, `dir=desc`). A
+Videos control filters to `kind=video` and keeps the current sort among
+those items.
 
 Date uses `capturedAt`. Location groups by place name, then unnamed GPS
 places, then "No location", and by date inside a group. Name uses the filename.
@@ -641,9 +700,9 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section, Update. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, people and things. Sibling tracks add a favorite star and, on Windows, Reveal in Explorer for the current original path. |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, Info dropdown, viewer heart, Reveal in Explorer, Open with default program. |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 

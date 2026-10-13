@@ -19,11 +19,13 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Scan progress | Persist progress in the source record; HTTP POST starts work and returns 202 before the scan finishes, with `scan.state` running. Poll sources; no additional jobs screen/API. Reads (items, groups, sources, settings, media, health) stay available during scan. CLI waits for completion and prints the final summary. The serve process prints scan progress lines on stdout during normal work, not only on failure. |
 | Client disconnect | A client that aborts a response (`BrokenPipeError`, `ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is non-fatal. Do not write 500, do not treat it as `internal-error`, and do not stop the server. |
 | Folder picker | `POST /api/pick-folder` `{}` opens the server computer's native folder dialog on Windows and returns 200 `{path}` or `{path:null}` if cancelled. Non-Windows or no UI returns 404 `picker-unavailable`. Typed paths remain valid. No upload. |
+| Family update | `GET /api/update` reports `{ok,branch,revision,dirty,message}` for the app-folder git copy. `POST /api/update` `{}` fetches and fast-forwards the **current** branch only (`git pull --ff-only`). 200 always, with `ok` true/false and a family-readable `message`. Never force, never checkout another branch, never a command prompt. Missing git or a non-git folder is `ok:false`, not a crash. |
+| Open default | `POST /api/items/<id>/open` `{}` launches the current original with the OS default program (`os.startfile` on Windows). 200 `{path,opened}` or 404 `unavailable`. |
 | Windows double-click | `Library.bat` at the app folder starts `launch.ps1` in a visible console and opens the browser. F2 still grades `powershell -File launch.ps1`. Do not claim macOS/Linux launch from this change. |
 | Live page origin | The page is same-origin with `/api`. Navigation, History API, Back, and links use the current `window.location.origin` or root-relative paths. Never construct `http://<host>:<settings.port>` or a stored runtime URL from another listen. Browser Back while this document is open stays on that origin (close viewer or remain on the grid); it must not load a stale port such as 18765 when the server is on 8765. |
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
-| Days vs All | Both include every matching item under day headings. Days has larger cells; All is denser. No representative-photo selection algorithm. |
+| Days vs All | Both include every matching item under day headings when Dates is on. Days is the medium cell size; All is the closest default (largest of the four level defaults). A session Size control refines cell pixels at the current level. Dates off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
 | Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
@@ -31,9 +33,9 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite and Windows Reveal in Explorer are sibling tracks, not settings. |
-| Favorite | Sibling track. Per-item boolean on the catalog item, default false. Not a setting and not an album. Lock the field and write path in that track before inventing a route. |
-| Reveal in Explorer | Sibling track. Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. |
+| Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
+| Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
 
 ## Files and atomic writes
@@ -121,8 +123,24 @@ live items all four. An error never removes the item. Explicit rescan retries
 failed renditions even if original bytes are unchanged. Missing previews show a
 placeholder; no request automatically mutates the source disk to repair them.
 
-Availability and entity expansion are computed, not persisted: HTTP/CLI item reads
-extend disk records with `available` and `motionAvailable` booleans and `entities`:
+Favorites are a separate catalog file `catalog/favorites.json`:
+`{schemaVersion:1,itemIds:[…]}` with unique item ids, sorted. Missing file is
+empty. HTTP/CLI item reads add computed `favorite` true when the id is listed.
+`PUT` or `POST /api/items/<id>/favorite` `{favorite:true|false}` rewrites that
+file in a history transaction (`operation: favorite`) and returns the updated
+item read. Unknown ids are `not-found`. Pending-id hearts remap to the hash id
+on publication. `favorite=1` on items/groups keeps hearted items.
+
+`POST /api/items/<id>/reveal` `{}` resolves the current original the same way
+media `which=original` does. 200 `{path,folder,opened}` with absolute local
+paths; Windows opens Explorer with the file selected, macOS `open -R`, Linux
+the folder via `xdg-open` when present. `opened` is false when the OS helper
+cannot run. Missing original is 404 `unavailable`. Reveal never accepts a raw
+path from the client.
+
+Availability, motion, favorite, and entity expansion are computed, not persisted:
+HTTP/CLI item reads extend disk records with `available`, `motionAvailable`,
+and `favorite` booleans and `entities`:
 `{people:[person-record],places:[place-record],things:[thing-record]}` containing
 every referenced entity exactly once, sorted by id (places empty or one). These
 are the complete record shapes above/below, including names and aliases; no extra
@@ -210,7 +228,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|people-merge|settings|relocate`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -249,6 +267,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | serve / GET `/api/health` | health 200 `{"ok":true}`; root identity uses GET `/api/runtime` |
 | scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. HTTP 202 source record is sent before the scan finishes (`scan.state` running). Rescan same origin reuses source. CLI still waits and prints the final summary. |
 | POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
+| GET `/api/update` | 200 `{ok,branch,revision,dirty,message}` for the app-folder git copy |
+| POST `/api/update` | `{}`; 200 `{ok,branch,revision,alreadyCurrent,message}` after fetch+ff-only pull of the current branch |
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
@@ -256,6 +276,9 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | GET `/api/places` | array `{id,latitude,longitude,name,itemCount,newestItemId}` for places with coordinates and visible items; same unavailable policy as items |
 | GET `/api/globe/tour` | array `{placeId,itemIds}` ordered newest item date descending then place id; items newest first capped by tourPictures, only readable ready preview (still/live) or proxy (video). Skip empty places. |
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
+| favorite id --on/--off / PUT or POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; writes `catalog/favorites.json`; no-op success when unchanged |
+| reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
+| open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable` |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -276,7 +299,9 @@ coordinates. Empty payload is invalid. CLI shorthand `--person Ada --thing mug`
 maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
-normalized exact name; place also comma-separated ids. `q` is normalized substring
+normalized exact name; place also comma-separated ids. `kind` is exactly one of
+`photo|video|live` and keeps only that item kind. `favorite=1` keeps hearted
+items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring
 against names, thing aliases and filename. Scope chips restrict q to that entity
 type. `from` inclusive and `to` exclusive ISO date/timestamp filter capturedAt.
 unavailable omitted follows settings; 0 means available only, 1 means include both.
