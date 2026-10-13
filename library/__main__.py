@@ -216,6 +216,14 @@ def build_parser() -> argparse.ArgumentParser:
     annotate.add_argument("--thing")
     annotate.add_argument("--place")
 
+    favorite = sub.add_parser("favorite")
+    favorite.add_argument("id")
+    favorite.add_argument("--on", action="store_true")
+    favorite.add_argument("--off", action="store_true")
+
+    reveal = sub.add_parser("reveal")
+    reveal.add_argument("id")
+
     people = sub.add_parser("people")
     people_sub = people.add_subparsers(dest="people_cmd")
     merge = people_sub.add_parser("merge")
@@ -370,6 +378,29 @@ def main(argv: list[str] | None = None) -> int:
                 "POST",
                 f"/api/items/{args.id}/annotations",
                 payload,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "favorite":
+            if bool(args.on) == bool(args.off):
+                raise fail("invalid-argument")
+            body = {"favorite": bool(args.on)}
+            result = _mutation(
+                root,
+                lambda: Library(root).favorite(args.id, body),
+                "POST",
+                f"/api/items/{args.id}/favorite",
+                body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "reveal":
+            result = _mutation(
+                root,
+                lambda: Library(root).reveal(args.id),
+                "POST",
+                f"/api/items/{args.id}/reveal",
+                {},
             )
             _print_json(result)
             return 0

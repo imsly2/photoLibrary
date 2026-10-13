@@ -31,9 +31,9 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite and Windows Reveal in Explorer are sibling tracks, not settings. |
-| Favorite | Sibling track. Per-item boolean on the catalog item, default false. Not a setting and not an album. Lock the field and write path in that track before inventing a route. |
-| Reveal in Explorer | Sibling track. Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. |
+| Favorite | Per-item mark in `catalog/favorites.json` (`schemaVersion` 1, `itemIds`). Default unfavorited. Not a setting and not an album. Viewer and grid share this file and API. |
+| Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
 
 ## Files and atomic writes
@@ -121,8 +121,22 @@ live items all four. An error never removes the item. Explicit rescan retries
 failed renditions even if original bytes are unchanged. Missing previews show a
 placeholder; no request automatically mutates the source disk to repair them.
 
+Favorites are a separate catalog file `catalog/favorites.json`:
+`{schemaVersion:1,itemIds:[…]}` with unique item ids, sorted. Missing file is
+empty. HTTP/CLI item reads add computed `favorite` true when the id is listed.
+`POST /api/items/<id>/favorite` `{favorite:true|false}` rewrites that file in a
+history transaction (`operation: favorite`) and returns the updated item read.
+Unknown ids are `not-found`. This is not a grid filter and not a 17th setting.
+
+`POST /api/items/<id>/reveal` `{}` resolves the current original the same way
+media `which=original` does. 200 `{path,folder,opened}` with absolute local
+paths; Windows opens Explorer with the file selected, macOS `open -R`, Linux
+the folder via `xdg-open` when present. `opened` is false when the OS helper
+cannot run. Missing original is 404 `unavailable`. Reveal never accepts a raw
+path from the client.
+
 Availability and entity expansion are computed, not persisted: HTTP/CLI item reads
-extend disk records with `available` and `motionAvailable` booleans and `entities`:
+extend disk records with `available`, `motionAvailable`, and `favorite` booleans and `entities`:
 `{people:[person-record],places:[place-record],things:[thing-record]}` containing
 every referenced entity exactly once, sorted by id (places empty or one). These
 are the complete record shapes above/below, including names and aliases; no extra
@@ -210,7 +224,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|people-merge|settings|relocate`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -256,6 +270,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | GET `/api/places` | array `{id,latitude,longitude,name,itemCount,newestItemId}` for places with coordinates and visible items; same unavailable policy as items |
 | GET `/api/globe/tour` | array `{placeId,itemIds}` ordered newest item date descending then place id; items newest first capped by tourPictures, only readable ready preview (still/live) or proxy (video). Skip empty places. |
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
+| favorite id / POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item; writes `catalog/favorites.json` |
+| reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |

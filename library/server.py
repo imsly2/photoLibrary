@@ -373,6 +373,30 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.annotate(item_id, body))
                 return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.favorite(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/reveal")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/reveal")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.reveal(item_id))
+                return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)
                 return

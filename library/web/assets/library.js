@@ -5,16 +5,19 @@
   const viewerOriginal = document.getElementById("viewer-original");
   const viewerVideo = document.getElementById("viewer-video");
   const viewerBack = document.getElementById("viewer-back");
+  const viewerCrumb = document.getElementById("viewer-crumb");
   const viewerPrev = document.getElementById("viewer-prev");
   const viewerNext = document.getElementById("viewer-next");
-  const viewerZoomIn = document.getElementById("viewer-zoom-in");
   const viewerZoomOut = document.getElementById("viewer-zoom-out");
+  const viewerZoomIn = document.getElementById("viewer-zoom-in");
   const viewerRotate = document.getElementById("viewer-rotate");
+  const viewerFavorite = document.getElementById("viewer-favorite");
   const unavailableBanner = document.getElementById("unavailable-banner");
   const disconnectedBanner = document.getElementById("disconnected-banner");
   const addBrowse = document.getElementById("add-browse");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const openOriginalBtn = document.getElementById("open-original");
+  const revealOriginalBtn = document.getElementById("reveal-original");
   const playPreviewBtn = document.getElementById("play-preview");
   const searchInput = document.getElementById("search");
   const searchChips = document.getElementById("search-chips");
@@ -47,6 +50,12 @@
     return;
   }
   if (!unavailableBanner || !viewerPlaceholder || !openOriginalBtn || !playPreviewBtn || !viewerBack) {
+    return;
+  }
+  if (!viewerPrev || !viewerNext || !viewerZoomOut || !viewerZoomIn || !viewerRotate) {
+    return;
+  }
+  if (!viewerFavorite || !revealOriginalBtn) {
     return;
   }
 
@@ -86,8 +95,11 @@
   let ty = 0;
   let naturalW = 0;
   let naturalH = 0;
-  let fitOnLoad = false;
   let rotation = 0;
+  let showingOriginal = false;
+  let fitOnLoad = false;
+  const MIN_ZOOM_FACTOR = 0.25;
+  const MAX_ZOOM_FACTOR = 16;
   let renderKey = "";
   let loadGen = 0;
   let currentView = "library";
@@ -552,20 +564,32 @@
     });
   }
 
-  function applyTransform() {
-    const cx = (naturalW || 0) / 2;
-    const cy = (naturalH || 0) / 2;
-    const transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ") translate(" + cx + "px, " + cy + "px) rotate(" + rotation + "deg) translate(" + (-cx) + "px, " + (-cy) + "px)";
-    viewerImage.style.transformOrigin = "0 0";
-    viewerImage.style.transform = transform;
-    viewerImage.style.width = naturalW + "px";
-    viewerImage.style.height = naturalH + "px";
-    if (viewerOriginal) {
-      viewerOriginal.style.transformOrigin = "0 0";
-      viewerOriginal.style.transform = transform;
-      viewerOriginal.style.width = naturalW + "px";
-      viewerOriginal.style.height = naturalH + "px";
+  function mediaTransform() {
+    let transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ")";
+    if (rotation) {
+      const cx = naturalW / 2;
+      const cy = naturalH / 2;
+      transform += " translate(" + cx + "px, " + cy + "px) rotate(" + rotation + "deg) translate(" + (-cx) + "px, " + (-cy) + "px)";
     }
+    return transform;
+  }
+
+  function applyMediaBox(el) {
+    if (!el) {
+      return;
+    }
+    el.style.transformOrigin = "0 0";
+    el.style.transform = mediaTransform();
+    if (naturalW && naturalH) {
+      el.style.width = naturalW + "px";
+      el.style.height = naturalH + "px";
+    }
+  }
+
+  function applyTransform() {
+    applyMediaBox(viewerImage);
+    applyMediaBox(viewerOriginal);
+    applyMediaBox(viewerVideo);
   }
 
   function fitViewer() {
@@ -574,7 +598,10 @@
     if (!naturalW || !naturalH || !sw || !sh) {
       return;
     }
-    fitScale = Math.min(sw / naturalW, sh / naturalH);
+    const oriented = rotation % 180 === 0;
+    const boxW = oriented ? naturalW : naturalH;
+    const boxH = oriented ? naturalH : naturalW;
+    fitScale = Math.min(sw / boxW, sh / boxH);
     if (!isFinite(fitScale) || fitScale <= 0) {
       fitScale = 1;
     }
@@ -582,6 +609,130 @@
     tx = (sw - naturalW * scale) / 2;
     ty = (sh - naturalH * scale) / 2;
     applyTransform();
+    syncZoomChrome();
+  }
+
+  function itemPixelSize(item) {
+    const meta = (item && item.metadata) || {};
+    const w = Number(meta.width) || 0;
+    const h = Number(meta.height) || 0;
+    if (w > 0 && h > 0) {
+      return { w: w, h: h };
+    }
+    return null;
+  }
+
+  function adoptMediaSize(item, el) {
+    const meta = itemPixelSize(item);
+    if (meta) {
+      naturalW = meta.w;
+      naturalH = meta.h;
+      return true;
+    }
+    if (el && el.videoWidth > 0 && el.videoHeight > 0) {
+      naturalW = el.videoWidth;
+      naturalH = el.videoHeight;
+      return true;
+    }
+    if (el && el.naturalWidth > 0 && el.naturalHeight > 0) {
+      naturalW = el.naturalWidth;
+      naturalH = el.naturalHeight;
+      return true;
+    }
+    return false;
+  }
+
+  function resetViewTransform() {
+    rotation = 0;
+    scale = 1;
+    fitScale = 1;
+    tx = 0;
+    ty = 0;
+    naturalW = 0;
+    naturalH = 0;
+    showingOriginal = false;
+    panning = false;
+    if (viewer) {
+      viewer.dataset.rotation = "0";
+    }
+    syncOriginalChrome();
+    syncZoomChrome();
+  }
+
+  function zoomRange() {
+    return {
+      min: fitScale * MIN_ZOOM_FACTOR,
+      max: fitScale * MAX_ZOOM_FACTOR,
+    };
+  }
+
+  function zoomAt(factor, cx, cy) {
+    if (!naturalW || viewer.hidden) {
+      return;
+    }
+    fitOnLoad = false;
+    const range = zoomRange();
+    const next = Math.min(range.max, Math.max(range.min, scale * factor));
+    if (next === scale) {
+      syncZoomChrome();
+      return;
+    }
+    const ix = (cx - tx) / scale;
+    const iy = (cy - ty) / scale;
+    scale = next;
+    tx = cx - ix * scale;
+    ty = cy - iy * scale;
+    applyTransform();
+    syncZoomChrome();
+  }
+
+  function rotateDisplay() {
+    if (viewer.hidden) {
+      return;
+    }
+    rotation = (rotation + 90) % 360;
+    viewer.dataset.rotation = String(rotation);
+    fitViewer();
+  }
+
+  function syncNavChrome() {
+    const item = viewerIndex >= 0 ? items[viewerIndex] : null;
+    if (viewerCrumb) {
+      viewerCrumb.textContent = item && item.filename ? item.filename : "";
+    }
+    viewerPrev.disabled = viewerIndex <= 0;
+    viewerNext.disabled = viewerIndex < 0 || viewerIndex >= items.length - 1;
+    syncFavoriteChrome(item);
+  }
+
+  function syncZoomChrome() {
+    const range = zoomRange();
+    const sized = naturalW > 0 && naturalH > 0;
+    viewerZoomOut.disabled = !sized || scale <= range.min + 1e-9;
+    viewerZoomIn.disabled = !sized || scale >= range.max - 1e-9;
+  }
+
+  function syncFavoriteChrome(item) {
+    const on = !!(item && item.favorite);
+    viewerFavorite.textContent = on ? "♥" : "♡";
+    viewerFavorite.setAttribute("aria-pressed", on ? "true" : "false");
+    viewerFavorite.setAttribute("aria-label", on ? "Unfavorite" : "Favorite");
+  }
+
+  function syncOriginalChrome() {
+    const label = showingOriginal ? "Showing original" : "Open original";
+    openOriginalBtn.textContent = label;
+    openOriginalBtn.setAttribute("aria-pressed", showingOriginal ? "true" : "false");
+    viewer.dataset.showingOriginal = showingOriginal ? "1" : "0";
+  }
+
+  function stepViewer(delta) {
+    syncViewerIndex();
+    const next = viewerIndex + delta;
+    if (next < 0 || next >= items.length) {
+      return;
+    }
+    openViewerAt(next);
   }
 
   function resetViewerOriginal() {
@@ -607,6 +758,8 @@
   function loadViewerOriginal(item) {
     if (!viewerOriginal || !item || item.available === false || item.kind === "video") {
       resetViewerOriginal();
+      showingOriginal = false;
+      syncOriginalChrome();
       return;
     }
     const itemId = item.id;
@@ -621,10 +774,14 @@
           return;
         }
         viewerOriginal.hidden = false;
+        showingOriginal = true;
         applyTransform();
+        syncOriginalChrome();
       };
       viewerOriginal.onerror = function () {
         resetViewerOriginal();
+        showingOriginal = false;
+        syncOriginalChrome();
       };
       viewerOriginal.src = url;
       viewerOriginal.setAttribute("data-which", "original");
@@ -652,7 +809,11 @@
     const available = !!(item && item.available);
     unavailableBanner.hidden = available;
     openOriginalBtn.disabled = !available;
+    revealOriginalBtn.disabled = !available;
     playPreviewBtn.disabled = true;
+    syncNavChrome();
+    syncOriginalChrome();
+    syncZoomChrome();
     if (!item || !proxyReady(item)) {
       return;
     }
@@ -702,14 +863,19 @@
     viewerImage.hidden = false;
     resetViewerOriginal();
     resetViewerVideo();
+    resetViewTransform();
     unavailableBanner.hidden = true;
     viewerPlaceholder.hidden = true;
     openOriginalBtn.disabled = true;
+    revealOriginalBtn.disabled = true;
     playPreviewBtn.disabled = true;
+    syncFavoriteChrome(null);
     viewerIndex = -1;
     viewerItemId = null;
     panning = false;
-    rotation = 0;
+    if (viewerCrumb) {
+      viewerCrumb.textContent = "";
+    }
     clearAnnotateError();
     clearAnnotateFields();
     if (peopleLabels) {
@@ -793,6 +959,12 @@
       viewerVideo.src = proxyUrl;
     }
     viewerVideo.onerror = useProxy;
+    viewerVideo.onloadedmetadata = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      layoutVideo(item);
+    };
     viewerVideo.setAttribute("data-source-ready", item.id);
     if (!browserCanPlayOriginal(item)) {
       useProxy();
@@ -935,6 +1107,9 @@
   function openStillViewer(item, index) {
     resetViewerVideo();
     resetViewerOriginal();
+    resetViewTransform();
+    viewerIndex = index;
+    viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
     const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
@@ -978,11 +1153,36 @@
     viewerImage.setAttribute("data-which", "preview");
   }
 
+  function layoutVideo(item) {
+    const had = naturalW > 0 && naturalH > 0;
+    if (viewerVideo.videoWidth > 0 && viewerVideo.videoHeight > 0) {
+      naturalW = viewerVideo.videoWidth;
+      naturalH = viewerVideo.videoHeight;
+    } else if (!had) {
+      const meta = itemPixelSize(item);
+      if (!meta) {
+        return;
+      }
+      naturalW = meta.w;
+      naturalH = meta.h;
+    }
+    if (!had) {
+      fitViewer();
+      return;
+    }
+    applyTransform();
+    syncZoomChrome();
+  }
+
   function openVideoViewer(item, index) {
     viewerImage.removeAttribute("src");
     viewerImage.hidden = true;
     resetViewerOriginal();
     resetViewerVideo();
+    resetViewTransform();
+    showingOriginal = false;
+    viewerIndex = index;
+    viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
     viewerIndex = index;
@@ -997,6 +1197,13 @@
     showViewerPlaceholder(false);
     viewerVideo.hidden = false;
     viewerVideo.poster = "/api/media/" + encodeURIComponent(item.id) + "?which=poster";
+    viewerVideo.onloadedmetadata = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      layoutVideo(item);
+    };
+    layoutVideo(item);
   }
 
   function openViewerAt(index) {
@@ -1185,6 +1392,9 @@
       const open = syncViewerIndex();
       if (open) {
         renderViewerLabels(open);
+        syncViewerChrome(open);
+      } else if (!viewer.hidden) {
+        syncNavChrome();
       }
       render();
       if (filter.person || filter.place || filter.thing) {
@@ -1227,32 +1437,9 @@
     stepLevel(event.deltaY < 0 ? 1 : -1);
   }
 
-  function zoomAt(factor, cx, cy) {
-    if (!naturalW || viewer.hidden) {
-      return;
-    }
-    fitOnLoad = false;
-    const next = Math.min(fitScale * 16, Math.max(fitScale, scale * factor));
-    if (next === scale) {
-      return;
-    }
-    const ix = (cx - tx) / scale;
-    const iy = (cy - ty) / scale;
-    scale = next;
-    tx = cx - ix * scale;
-    ty = cy - iy * scale;
-    applyTransform();
-  }
-
   function handleViewerZoom(event) {
     const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
     zoomAt(factor, event.clientX, event.clientY);
-  }
-
-  function zoomFromButton(factor) {
-    const stage = document.getElementById("viewer-stage") || viewer;
-    const rect = stage.getBoundingClientRect();
-    zoomAt(factor, rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
 
   function stepViewer(delta) {
@@ -1262,14 +1449,6 @@
       return;
     }
     openViewerAt(next);
-  }
-
-  function rotateStill() {
-    if (viewer.hidden) {
-      return;
-    }
-    rotation = (rotation + 90) % 360;
-    applyTransform();
   }
 
   function textFocused() {
@@ -1511,16 +1690,10 @@
     }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      syncViewerIndex();
-      if (viewerIndex > 0) {
-        openViewerAt(viewerIndex - 1);
-      }
+      stepViewer(-1);
     } else if (event.key === "ArrowRight") {
       event.preventDefault();
-      syncViewerIndex();
-      if (viewerIndex >= 0 && viewerIndex < items.length - 1) {
-        openViewerAt(viewerIndex + 1);
-      }
+      stepViewer(1);
     }
   });
 
@@ -1530,15 +1703,37 @@
     }
   }, true);
 
-  viewer.addEventListener("mousedown", function (event) {
-    if (event.button !== 1 || viewer.hidden) {
+  function startPan(event) {
+    if (viewer.hidden) {
       return;
     }
-    event.preventDefault();
     fitOnLoad = false;
     panning = true;
     panLastX = event.clientX;
     panLastY = event.clientY;
+  }
+
+  viewer.addEventListener("mousedown", function (event) {
+    if (viewer.hidden) {
+      return;
+    }
+    if (event.button === 1) {
+      event.preventDefault();
+      startPan(event);
+      return;
+    }
+    if (event.button !== 0) {
+      return;
+    }
+    if (event.target.closest("button, input, label, a, select, textarea")) {
+      return;
+    }
+    const item = syncViewerIndex();
+    if (!item || item.kind === "video" || item.kind === "live") {
+      return;
+    }
+    event.preventDefault();
+    startPan(event);
   });
   window.addEventListener("mousemove", function (event) {
     if (!panning || viewer.hidden) {
@@ -1551,10 +1746,8 @@
     panLastY = event.clientY;
     applyTransform();
   });
-  window.addEventListener("mouseup", function (event) {
-    if (event.button === 1) {
-      panning = false;
-    }
+  window.addEventListener("mouseup", function () {
+    panning = false;
   });
   viewer.addEventListener("auxclick", function (event) {
     if (event.button === 1) {
@@ -1600,31 +1793,60 @@
   viewerBack.addEventListener("click", function () {
     closeViewer();
   });
-  if (viewerPrev) {
-    viewerPrev.addEventListener("click", function () {
-      stepViewer(-1);
+  viewerPrev.addEventListener("click", function () {
+    stepViewer(-1);
+  });
+  viewerNext.addEventListener("click", function () {
+    stepViewer(1);
+  });
+  viewerZoomOut.addEventListener("click", function () {
+    const cx = viewer.clientWidth / 2;
+    const cy = viewer.clientHeight / 2;
+    zoomAt(1 / 1.1, cx, cy);
+  });
+  viewerZoomIn.addEventListener("click", function () {
+    const cx = viewer.clientWidth / 2;
+    const cy = viewer.clientHeight / 2;
+    zoomAt(1.1, cx, cy);
+  });
+  viewerRotate.addEventListener("click", function () {
+    rotateDisplay();
+  });
+  viewerFavorite.addEventListener("click", function () {
+    const item = syncViewerIndex();
+    if (!item) {
+      return;
+    }
+    const next = !item.favorite;
+    viewerFavorite.disabled = true;
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/favorite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ favorite: next }),
+    }).then(readJson).then(function (updated) {
+      viewerFavorite.disabled = false;
+      if (viewerIndex >= 0 && items[viewerIndex] && items[viewerIndex].id === item.id) {
+        items[viewerIndex] = updated;
+        syncFavoriteChrome(updated);
+      }
+    }).catch(function () {
+      viewerFavorite.disabled = false;
     });
-  }
-  if (viewerNext) {
-    viewerNext.addEventListener("click", function () {
-      stepViewer(1);
-    });
-  }
-  if (viewerZoomIn) {
-    viewerZoomIn.addEventListener("click", function () {
-      zoomFromButton(1.1);
-    });
-  }
-  if (viewerZoomOut) {
-    viewerZoomOut.addEventListener("click", function () {
-      zoomFromButton(1 / 1.1);
-    });
-  }
-  if (viewerRotate) {
-    viewerRotate.addEventListener("click", function () {
-      rotateStill();
-    });
-  }
+  });
+  revealOriginalBtn.addEventListener("click", function () {
+    if (revealOriginalBtn.disabled) {
+      return;
+    }
+    const item = syncViewerIndex();
+    if (!item || item.available === false) {
+      return;
+    }
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/reveal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).catch(function () {});
+  });
   openOriginalBtn.addEventListener("click", function () {
     if (openOriginalBtn.disabled) {
       return;
@@ -1633,18 +1855,26 @@
     if (!item || item.available === false) {
       return;
     }
-    const originalUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=original";
     if (item.kind === "video") {
       playOriginalOrProxy(item);
       const play = viewerVideo.play();
       if (play && play.catch) {
         play.catch(function () {});
       }
+      showingOriginal = true;
+      syncOriginalChrome();
+      return;
+    }
+    if (showingOriginal) {
+      resetViewerOriginal();
+      showingOriginal = false;
+      viewerImage.hidden = false;
+      syncOriginalChrome();
       return;
     }
     showViewerPlaceholder(false);
     viewerImage.hidden = false;
-    viewerImage.src = originalUrl;
+    loadViewerOriginal(item);
   });
   playPreviewBtn.addEventListener("click", function () {
     if (playPreviewBtn.disabled) {
@@ -1659,10 +1889,19 @@
     showViewerPlaceholder(false);
     viewerImage.hidden = true;
     resetViewerOriginal();
+    showingOriginal = false;
+    syncOriginalChrome();
     viewerVideo.hidden = false;
     viewerVideo.setAttribute("data-using-proxy", "1");
     viewerVideo.setAttribute("data-source-ready", item.id);
+    viewerVideo.onloadedmetadata = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      layoutVideo(item);
+    };
     viewerVideo.src = proxyUrl;
+    layoutVideo(item);
     const play = viewerVideo.play();
     if (play && play.catch) {
       play.catch(function () {});

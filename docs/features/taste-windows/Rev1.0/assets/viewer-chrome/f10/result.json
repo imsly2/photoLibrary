@@ -1,0 +1,172 @@
+{
+  "check": "F10",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jpeg-two-locations",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "photo-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-preview",
+      "pass": true,
+      "detail": "{\"status\": 200, \"contentType\": \"image/webp\", \"contentLength\": 2698, \"bodyLength\": 2698}"
+    },
+    {
+      "name": "photo-original",
+      "pass": true,
+      "detail": "{\"status\": 200, \"contentType\": \"image/jpeg\", \"contentLength\": 15274, \"bodyLength\": 15274}"
+    },
+    {
+      "name": "video-poster",
+      "pass": true,
+      "detail": "{\"status\": 200, \"contentType\": \"image/webp\", \"contentLength\": 224, \"bodyLength\": 224}"
+    },
+    {
+      "name": "video-original",
+      "pass": true,
+      "detail": "{\"status\": 200, \"contentType\": \"video/mp4\", \"contentLength\": 23631, \"bodyLength\": 23631}"
+    },
+    {
+      "name": "video-proxy",
+      "pass": true,
+      "detail": "{\"status\": 200, \"contentType\": \"video/mp4\", \"contentLength\": 3467, \"bodyLength\": 3467}"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "still-preview-first",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "still-original-after",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original"
+    },
+    {
+      "name": "still-preview-kept",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "video-poster-first",
+      "pass": true,
+      "detail": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster"
+    },
+    {
+      "name": "video-original-or-proxy",
+      "pass": true,
+      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\", \"paused\": false, \"usingProxy\": false}"
+    },
+    {
+      "name": "video-fallback-proxy",
+      "pass": true,
+      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"usingProxy\": true}"
+    },
+    {
+      "name": "viewer-ada-label",
+      "pass": true,
+      "detail": "Ada"
+    },
+    {
+      "name": "viewer-mug-label",
+      "pass": true,
+      "detail": "mug"
+    },
+    {
+      "name": "viewer-kitchen-label",
+      "pass": true,
+      "detail": "Kitchen"
+    },
+    {
+      "name": "viewer-annotations-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "failed-annotate-keeps-text",
+      "pass": true,
+      "detail": "Nope"
+    },
+    {
+      "name": "failed-annotate-inline-error",
+      "pass": true,
+      "detail": "invalid-argument"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 400 (Bad Request)\"]"
+    },
+    {
+      "name": "ada-on-jpeg",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_f314d4b73b5d\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "mug-on-jpeg",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_49d758cf227b\", \"name\": \"mug\", \"aliases\": []}]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "b5daf6fad63b0085602f8bd57113df5abee2c795",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "GET /api/media/<photo-id>?which=preview",
+    "GET /api/media/<photo-id>?which=original",
+    "GET /api/media/<video-id>?which=poster",
+    "GET /api/media/<video-id>?which=original",
+    "GET /api/media/<video-id>?which=proxy"
+  ],
+  "artifactPaths": {
+    "result.json": "/tmp/f10-artifacts/result.json",
+    "stdout.log": "/tmp/f10-artifacts/stdout.log",
+    "playback.json": "/tmp/f10-artifacts/playback.json",
+    "viewer-annotations.png": "/tmp/f10-artifacts/viewer-annotations.png"
+  }
+}

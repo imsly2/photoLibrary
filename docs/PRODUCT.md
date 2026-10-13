@@ -47,7 +47,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 
 | Decision | Locked behavior / reason |
 |---|---|
-| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite star and Windows Reveal in Explorer are authorized sibling tracks, not settings. |
+| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite heart writes `catalog/favorites.json` (viewer and grid). Windows Reveal in Explorer is a named action, not a setting. Neither is an album system. |
 | Packaging | Folder, Python + ffmpeg, local browser, CLI and HTTP. Windows first; macOS/Linux launcher promises need their own verification. |
 | Catalog | JSON is authoritative; SQLite is disposable. Relative local paths; volume identity for linked drives. |
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
@@ -166,6 +166,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
+| `favorite <id> --on\|--off` | `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the viewer heart. |
+| `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -370,18 +372,28 @@ Click a cell to open the viewer. Previous and Next buttons, and the arrow
 keys, move to the next and previous item in the current sort. Back (and Esc)
 returns to the grid he came from on the **same** live origin and port.
 Browser Back does the same while the page is open; it must not load a
-stale port. Zoom in/out and pan work on the opened still. Rotate turns
-the displayed still 90° and does not change the file.
+stale port or call a hop that leaves this listen URL. Zoom in/out
+(including smaller than fit) and pan work on the opened still and on
+video. Rotate turns the displayed still 90° and does not change the file.
+
+A heart in the viewer favorites or unfavorites that item. The mark is
+stored in `catalog/favorites.json` and is visible on the heart.
 
 For a photo the viewer shows `preview.webp` first, then the original if available.
-For video it shows the poster, then plays the original or proxy; a browser that
-cannot decode the original falls back to the proxy.
-Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it.
-Click a video, or press Space, to play or pause. Playback of a video uses the
-original when available, otherwise the proxy.
+Open original stays in this viewer: it swaps the on-screen bytes to the original
+and stays pressed as “Showing original” until clicked again to return to the
+preview. It does not launch another app. Reveal in Explorer opens the
+original's containing folder on this computer whenever the file is here
+(`explorer /select` on Windows). For video the viewer shows the poster, then
+plays the original or proxy; a browser that cannot decode the original
+falls back to the proxy. Play preview still toggles pause/play on click.
+Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it;
+a still also pans with a left drag. Click a video, or press Space, to play
+or pause. Playback of a video uses the original when available, otherwise
+the proxy.
 
 The viewer lists the place, the people, and the things already written on the
-record.
+record. The three type-in fields are labeled Person, Place, and Thing.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.

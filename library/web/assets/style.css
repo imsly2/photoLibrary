@@ -515,7 +515,7 @@ dialog h2 {
 #viewer {
   position: fixed;
   inset: 0;
-  background: rgba(8, 8, 10, 0.92);
+  background: #111114;
   z-index: 10;
   overflow: hidden;
 }
@@ -548,11 +548,12 @@ dialog h2 {
 
 #viewer-video {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  left: 0;
+  top: 0;
+  max-width: none;
+  max-height: none;
   background: transparent;
+  user-select: none;
 }
 
 #viewer-bar {
@@ -561,28 +562,72 @@ dialog h2 {
   left: 0;
   right: 0;
   z-index: 13;
-  padding: 0.75rem 1.25rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.75rem;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  padding: 0.75rem 1.25rem;
+  pointer-events: none;
 }
 
-#viewer-back,
-#viewer-prev,
-#viewer-next,
-#viewer-zoom-in,
-#viewer-zoom-out,
-#viewer-rotate {
-  background: transparent;
+#viewer-bar > * {
+  pointer-events: auto;
+}
+
+#viewer-back {
+  background: #2d4a7a;
   border: 0;
   color: #f2f2f4;
-  padding: 0.2rem 0.35rem;
+  padding: 0.35rem 0.85rem;
+}
+
+#viewer-crumb {
+  margin: 0;
+  color: #c8c8d0;
+  font-size: 0.9rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#viewer-nav,
+#viewer-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+#viewer-tools {
+  margin-left: auto;
+}
+
+#viewer-prev,
+#viewer-next,
+#viewer-zoom-out,
+#viewer-zoom-in,
+#viewer-rotate,
+#reveal-original {
+  background: #2a2a32;
+}
+
+#viewer-favorite {
+  background: #2a2a32;
+  min-width: 2.6rem;
+  min-height: 2.4rem;
+  font-size: 1.45rem;
+  line-height: 1;
+  padding: 0.2rem 0.55rem;
+}
+
+#viewer-favorite[aria-pressed="true"] {
+  background: #7a2d3a;
+  color: #ffd0d6;
 }
 
 #unavailable-banner {
   position: absolute;
-  top: 3.4rem;
+  top: 5.2rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 13;
@@ -640,6 +685,14 @@ dialog h2 {
   padding: 0.25rem 0.75rem;
 }
 
+.annotate-field {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #c8c8d0;
+  font-size: 0.8rem;
+}
+
 #viewer-fields input {
   background: #1b1b22;
   color: #f2f2f4;
@@ -672,7 +725,12 @@ dialog h2 {
 }
 
 #open-original,
+#reveal-original,
 #play-preview {
   background: #2a2a32;
   min-width: 9rem;
+}
+
+#open-original[aria-pressed="true"] {
+  background: #2d4a7a;
 }

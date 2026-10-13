@@ -289,11 +289,13 @@ def try_load_thing(root: Path, thing_id: str) -> dict[str, Any] | None:
 
 
 def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
+    from library.favorites import favorite_ids
     from library.volumes import item_available, item_motion_available
 
     out = ordered_item(item)
     out["available"] = item_available(item, root)
     out["motionAvailable"] = item_motion_available(item, root)
+    out["favorite"] = item.get("id") in favorite_ids(root)
     places: list[dict[str, Any]] = []
     place_id = item.get("placeId")
     if type(place_id) is str and place_id:
