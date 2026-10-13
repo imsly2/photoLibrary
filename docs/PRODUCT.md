@@ -60,6 +60,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
+| Windows Presentable Shell | First-class family-PC surface, not a taste overlay. Locked launch/update, Add folder, live-origin Back, grid, favorites, Win7-style viewer, and globe yaw/texture live in [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell). The **Presentable for family PC** checklist there is the taste definition of done. Until that path is green, S13-class settings/keyboard work is secondary. Anticipated shell (slideshow, fullscreen, cheat-sheet, …) is backlog in that same section — not new F-ids, not accounts, not an editor. |
 
 Technical decisions not previously specified are listed explicitly at the top of
 CONTRACTS. Changing them requires a doc edit before implementation.
@@ -80,6 +81,29 @@ CONTRACTS. Changing them requires a doc edit before implementation.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
+
+## Windows Presentable Shell
+
+The family Windows PC is the primary surface. Steve's stated requirements
+are locked in [UI-SPEC](UI-SPEC.md#windows-presentable-shell): double-click
+`Library.bat`, in-app Update (no command prompt), native Add folder, scan
+progress, live-origin Back, full-tile video hover, VIDEO badge, Videos
+filter, eight Size stops, Dates-off wall, Library/Globe buttons, hearts and
+Favorites, Win7-style viewer (bottom Prev/Next, zoom slider, pan, rotate,
+Info dropdown — **no** overlay pills, **no** “Showing original”), Reveal in
+Explorer, optional open-in-default-app, inverted globe yaw, local Earth
+texture. macOS/Linux launch is pinned later.
+
+**Presentable for family PC** is one checklist in UI-SPEC: double-click →
+Update → Add folder via picker → progress → wall → open → next/prev/arrows
+→ zoom slider/pan/rotate → favorite → Reveal in Explorer → Info filter →
+Videos filter → globe basics. Until that path is green, do not call the
+shell presentable, and do not prioritize deeper settings over a gap on
+that path. Anticipated but unnamed shell (slideshow, F11, cheat-sheet,
+multi-select, remove-from-library, …) is prioritized Must / Soon / Later
+in the same UI-SPEC section. Those rows are not F23–Fn and do not change
+the 22-Check denominator. A Soon row that needs a new route still waits
+on a CONTRACTS edit.
 
 ## F1 — Two folders
 
@@ -689,6 +713,11 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Ctrl+C | Copy the primary path |
 | Esc during the tour | Stop the tour and stay on the globe |
 
+Anticipated presentable-shell keys (F favorite, I Info, F11 fullscreen, `?`
+cheat-sheet, Home/End) are UI-SPEC Soon backlog. They are not this table
+until that row is built. Do not fail this Check for keys that are still
+backlog.
+
 
 **Check:** `python -m tests.qa check F21` (planned runner; common root/artifact
 arguments and full assertions in SLICES). Drive every key and gesture in the table in the browser, including focused-text exceptions, cursor anchors, pan, clipboard, and Esc during each tour phase. Artifact: input trace, clipboard text, numeric measurements and screenshots.
@@ -702,7 +731,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 |------|----------------|
 | Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section, Update. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, Info dropdown, viewer heart, Reveal in Explorer, Open with default program. |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, Info dropdown, viewer heart, Reveal in Explorer, Open with default program. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 
@@ -719,6 +748,9 @@ Every F1–F22 Check above. The exact fixture set and scenarios are in
 All checks use a fixture-owned temp library and never a real photo disk.
 
 Build in [SLICES.md](SLICES.md) dependency order. First taste is small fixture
-pictures on screen and one photo opened; names and globe come later. Then continue
-to 100% (22/22) fresh-verifier-backed Checks. [STATUS.md](STATUS.md) records what
-actually passed, not what the help file promises.
+pictures on screen and one photo opened; names and globe come later. The
+family-PC gate after A+B+C is the UI-SPEC **Presentable for family PC**
+checklist — close gaps on that path before treating S13 settings as the
+next taste job. Then continue to 100% (22/22) fresh-verifier-backed
+Checks. [STATUS.md](STATUS.md) records what actually passed, not what the
+help file promises.

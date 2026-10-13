@@ -64,6 +64,16 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Update (header, no CMD) and Win7-style viewer (Info, no Showing
   original, Prev/Next/Rotate bottom, zoom slider, click-drag pan) are
   on this branch for tonight's pull. Does not start S13/S14.
+- 2026-10-13 — **Windows Presentable Shell** locked in North Star docs
+  (UI-SPEC primary). Steve's stated launch/update/Add/grid/favorites/
+  Win7-viewer/globe requirements are first-class shell, not a taste
+  overlay. Spec-vs-gap table records what `taste/windows-abc` already
+  ships vs retired chrome (overlay pills, Showing original, zoom
+  buttons). Anticipated family-viewer backlog is Must / Soon / Later.
+  **Presentable for family PC** is the 13-step checklist in UI-SPEC.
+  Until that path is green, S13/S14 stay secondary. Docs only; no new
+  Check; 16/22 unchanged. Pointer:
+  [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -81,6 +91,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-chrome/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-chrome/f10/result.json).
   No grid hearts, launcher, or Add-folder picker.
+  **Superseded on `taste/windows-abc`:** “Showing original” and overlay-style
+  Person/Place/Thing pills are retired. Spec target is the Win7-style
+  viewer in UI-SPEC (Info dropdown, zoom slider, no highlight).
 
 ## Completion
 
@@ -329,3 +342,10 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal). Browser
   proof TASTE-VIEWER 47 assertions exit 0; F10 stayed green. Heart and
   Reveal are viewer-only. No new Check closed (16/22).
+- 2026-10-13 — Windows Presentable Shell North Star lock. Docs only on
+  top of `taste/windows-abc`. PRODUCT locked-decision + help section;
+  UI-SPEC target-vs-gap + anticipated backlog + family-PC DoD;
+  CONTRACTS: Soon routes wait for an edit; SLICES: S13/S14 secondary
+  until the checklist is green; CONVENTIONS: Photo Viewer / Photos /
+  XnView survey; [PICKUP](PICKUP.md) doorway points at the checklist.
+  No code rewrite. 16/22 unchanged.

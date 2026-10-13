@@ -37,6 +37,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
+| Presentable shell | Family-PC chrome is specified in UI-SPEC **Windows Presentable Shell**. No 17th setting, no Electron, no accounts. Anticipated Soon/Later rows that need a new route, setting, or error (remove-from-library, copy-file-to-folder, delete-to-Recycle-Bin) wait for an explicit edit in this file before code. Slideshow, fullscreen, cheat-sheet, multi-select, window title, filmstrip, and “n of N” are page chrome on existing APIs. |
 
 ## Files and atomic writes
 

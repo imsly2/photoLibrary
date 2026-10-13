@@ -24,6 +24,14 @@ add a 23rd Check and does **not** start S13 or S14. Pin macOS/Linux F2.
 Viewer/grid chrome is a separate track. Gate: `python -m tests.qa slice TASTE-WIN`
 plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/PLAN.md).
 
+**Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
+is now the North Star shell. Merged A+B+C on `taste/windows-abc` already
+carries most locked chrome. Until the 13-step family-PC checklist in that
+section is green, do **not** start S13 or S14 to chase settings/keyboard
+matrix completeness, and do not treat anticipated Soon rows (slideshow,
+F11, multi-select) as the next build unless a gap on the checklist is
+already closed. Pin macOS/Linux F2. No 23rd Check.
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.
@@ -115,7 +123,7 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | Check | Complete acceptance / slice that closes it |
 |---|---|
 | F1 | Data outside tracked source; relocation with relative originals, volume remount and missing files; no drive-letter identity. S05. |
-| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. Windows double-click `Library.bat` is required product (not a new Check); macOS/Linux launch stays pinned. |
+| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. Windows double-click `Library.bat` is required product (not a new Check); macOS/Linux launch stays pinned. Family Update is presentable-shell (UI-SPEC), not a 23rd Check. |
 | F3 | Every listed mutation CLI/HTTP equivalent; read filters/media/parity, content types/ranges; unknown ids/fields/errors, success/empty/failure/argument exits. Normalize only generated ids/root prefixes, never names/values/relations. S14. |
 | F4 | Original two-file copy/link example plus Add choice/default, source override, conversion id+annotation preservation, collision and interruption. S05. Windows Browse picker, 202-before-finish for both modes, close-on-busy, scan progress, and live-origin Back are the same feature — re-prove with TASTE-WIN, do not weaken this Check. |
 | F5 | Original second-scan skipped/added=0 plus exclusions, formats, pending hash+annotations, duplicates, changed path, restart and HEIC failure. S06, refreshed S08/S12. |
@@ -123,7 +131,7 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | F7 | Original rendition bytes and ffprobe plus oriented dimensions, full duration/audio absent, queued/error states and all three hover policies. S06, refreshed S12. |
 | F8 | Original with-source→server relocation plus reverse, overrides, dedup owner, unavailable/unwritable destination and interruption; originals unchanged. S07. |
 | F9 | Original four groups responses plus rendered levels, all items retained, slider/Ctrl+wheel anchors and saved level. S04. |
-| F10 | Original media responses plus preview/original display, filtered arrows/Esc, zoom/pan, playback/fallback, annotations shown, absent source behavior. S09, refreshed S12. |
+| F10 | Original media responses plus preview/original display, filtered arrows/Esc, zoom/pan, playback/fallback, annotations shown, absent source behavior. S09, refreshed S12. Presentable chrome (bottom Prev/Next, zoom slider, Info, no overlay pills, no “Showing original”) is UI-SPEC Windows Presentable Shell — do not weaken this Check. |
 | F11 | Original known-date sorting plus all three sorts/directions, pinned no-EXIF fallback, deterministic ties and toolbar. S04. |
 | F12 | Original places/filter responses plus offline globe, visible pins/clusters/counts, drag/zoom, clicked cluster→newest viewer→Esc filtered grid. S10. Taste refresh: realistic local `earth.png`, rightward drag increases yaw; do not weaken this Check. |
 | F13 | Original tour membership plus eligible previews, complete timed motion, settings, looping/no-location behavior, Esc in every phase and offline requests. S11. |
@@ -135,7 +143,7 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | F19 | Original one live item/two locations plus real identifiers, arrival order/restart/orphans/mismatch, identity/annotation retention, LIVE badge/proxy and missing motion. S12. |
 | F20 | Original annotated thing after deleting index plus all filter/group/merge ids before/after rebuild, startup auto-rebuild and interrupted rebuild; JSON byte hashes unchanged. S08. |
 | F21 | Every documented key/gesture works in correct context; measured cursor anchors/pan, no text-field hijacking, tour Esc. S13. |
-| F22 | All five views and UI state gallery; reference-scope fidelity, responsive usable 1280×720/1920×1080, no blank/error loops, console/network clean on valid actions. S14. |
+| F22 | All five views and UI state gallery; reference-scope fidelity, responsive usable 1280×720/1920×1080, no blank/error loops, console/network clean on valid actions. S14. Anticipated Soon states (slideshow, fullscreen, cheat-sheet) are not this Check until that UI-SPEC row is built. The Presentable for family PC checklist is the taste gate, not a 23rd F-id. |
 
 ## Readiness and blocking prerequisites
 
