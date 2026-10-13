@@ -1,0 +1,22 @@
+{
+  "afterLaunchUnplug": {
+    "serial": "windows:s07-a",
+    "sourceAvailable": false,
+    "original": {
+      "error": "unavailable"
+    },
+    "thumbStatus": 200
+  },
+  "wrongSerial": {
+    "mounted": "windows:s07-b",
+    "stored": "windows:s07-a",
+    "available": false
+  },
+  "availableAlternate": {
+    "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "available": true,
+    "locationCount": 2,
+    "originalStatus": 200,
+    "scan": "src_de243af00ba8"
+  }
+}

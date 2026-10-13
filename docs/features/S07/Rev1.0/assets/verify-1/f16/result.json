@@ -1,0 +1,184 @@
+{
+  "check": "F16",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "f16-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sources-before-unplug",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "source-available-before",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "after-launch-unplug-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "after-launch-source-unavailable",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"src_f1dfb21c087c\", \"name\": \"f16-folder\", \"mode\": \"serve-from-there\", \"origin\": {\"volumeSerial\": \"windows:s07-a\", \"pathFromVolumeRoot\": \"\", \"lastKnownPath\": \"/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/f16-folder\"}, \"copyRoot\": null, \"previewStore\": null, \"files\": {\"a/IMG_1042.jpg\": {\"destination\": null, \"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"component\": \"still\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"state\": \"indexed\"}, \"a/clip.mp4\": {\"destination\": null, \"itemId\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"component\": \"motion\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"state\": \"indexed\"}, \"b/no-exif.jpg\": {\"destination\": null, \"itemId\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"component\": \"still\", \"sizeBytes\": 13170, \"modifiedAt\": \"2022-02-03T04:05:06Z\", \"sha256\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"state\": \"indexed\"}}, \"scan\": {\"state\": \"complete\", \"added\": 3, \"skipped\": 0, \"errors\": []}, \"available\": false}"
+    },
+    {
+      "name": "show-includes-unavailable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-404-unavailable",
+      "pass": true,
+      "detail": "{\"error\": \"unavailable\"}"
+    },
+    {
+      "name": "thumb-still-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "hide-omits-unavailable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-1-includes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-unavailable-1-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "wrong-serial-not-resolve",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"kind\": \"photo\", \"filename\": \"no-exif.jpg\", \"capturedAt\": \"2022-02-03T04:05:06Z\", \"capturedAtSource\": \"mtime\", \"placeId\": null, \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": null, \"longitude\": null}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_f1dfb21c087c\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"windows:s07-a\", \"pathFromVolumeRoot\": \"b/no-exif.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/f16-folder/b/no-exif.jpg\", \"sizeBytes\": 13170, \"modifiedAt\": \"2022-02-03T04:05:06Z\", \"sha256\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_f1dfb21c087c\", \"thumb\": \"renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp\", \"preview\": \"renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp\", \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"ready\", \"preview\": \"ready\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": false, \"motionAvailable\": false, \"entities\": {\"people\": [], \"places\": [], \"things\": []}}"
+    },
+    {
+      "name": "available-alternate",
+      "pass": true,
+      "detail": "{\"locations\": [{\"sourceId\": \"src_f1dfb21c087c\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"windows:s07-a\", \"pathFromVolumeRoot\": \"a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/f16-folder/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, {\"sourceId\": \"src_5fb3f796255c\", \"role\": \"alternate\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"windows:s07-b\", \"pathFromVolumeRoot\": \"a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/f16-alt/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"available\": true}"
+    },
+    {
+      "name": "alternate-original-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "banner-exact",
+      "pass": true,
+      "detail": "Original is not on this computer"
+    },
+    {
+      "name": "open-original-disabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-png-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "video-play-preview-enabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-open-original-disabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-file-before-remove",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-unavailable-404",
+      "pass": true,
+      "detail": "{\"error\": \"preview-unavailable\"}"
+    },
+    {
+      "name": "placeholder-exact",
+      "pass": true,
+      "detail": "Preview is not available"
+    },
+    {
+      "name": "no-preview-banner-hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-preview-png-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "both-missing-banner",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "both-missing-placeholder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "play-preview-disabled-without-proxy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "a442e8f0f3dfdd43af7d41b8c9c1ba50c32ee049",
+  "commands": [
+    "scan linked fixture for F16",
+    "scan alternate location"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/result.json",
+    "stdout.log": "/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/stdout.log",
+    "source-resolution.json": "/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/source-resolution.json",
+    "unavailable.png": "/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/unavailable.png",
+    "no-preview.png": "/workspace/docs/features/S07/Rev1.0/assets/verify-1/f16/no-preview.png"
+  }
+}

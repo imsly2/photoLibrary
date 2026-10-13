@@ -28,6 +28,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   hover respects off / days-and-all / always with one cell. Closes F5 and F7.
   This Linux ffmpeg cannot decode `quad.heic` / `quad.heif`; they stay error
   plus placeholder. F9 and F11 stayed green after S06.
+- S07 is green: with-source thumbs land under `.library/renditions/`, relocate
+  both directions with rollback, after-launch unplug, show/hide, and the
+  missing-original / missing-preview screens. Closes F8 and F16. F5 and F7
+  stayed green after S07.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -37,7 +41,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**7 / 22 Checks = 31.8% tested.** F1, F4, F5, F6, F7, F9, and F11 have fresh-verifier artifacts.
+**9 / 22 Checks = 40.9% tested.** F1, F4, F5, F6, F7, F8, F9, F11, and F16 have fresh-verifier artifacts.
 M1 browse is recorded. The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
@@ -49,7 +53,7 @@ M1 browse is recorded. The other commands remain pending.
 | F5 | Scan | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F5` [verify-1](features/S06/Rev1.0/assets/verify-1/f5/result.json); orchestrator rerun [f5](features/S06/Rev1.0/assets/orchestrator-rerun/f5/result.json) |
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
 | F7 | Previews | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F7` [verify-1](features/S06/Rev1.0/assets/verify-1/f7/result.json); orchestrator rerun [f7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) |
-| F8 | Preview storage | pending | — | Not run; no artifact |
+| F8 | Preview storage | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F8` [verify-1](features/S07/Rev1.0/assets/verify-1/f8/result.json); orchestrator rerun [f8](features/S07/Rev1.0/assets/orchestrator-rerun/f8/result.json) |
 | F9 | Zoom | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F9` [verify-1](features/S04/Rev1.0/assets/verify-1/f9/result.json); orchestrator rerun [f9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json) |
 | F10 | Viewer | pending | — | Not run; no artifact |
 | F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |
@@ -57,7 +61,7 @@ M1 browse is recorded. The other commands remain pending.
 | F13 | Tour | pending | — | Not run; no artifact |
 | F14 | People / places / things | pending | — | Not run; no artifact |
 | F15 | Search | pending | — | Not run; no artifact |
-| F16 | Unavailable originals | pending | — | Not run; no artifact |
+| F16 | Unavailable originals | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F16` [verify-1](features/S07/Rev1.0/assets/verify-1/f16/result.json); orchestrator rerun [f16](features/S07/Rev1.0/assets/orchestrator-rerun/f16/result.json) |
 | F17 | Settings | pending | — | Not run; no artifact |
 | F18 | Undo / Esc / clipboard / log | pending | — | Not run; no artifact |
 | F19 | Live Photos | pending | — | Not run; no artifact |
@@ -187,6 +191,21 @@ environments must be supplied by the build or F2 remains pending; do not claim
   [F7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) also
   exit 0. Implementer model was Grok 4.6 (`cursor-grok-4.6-high-fast`).
   Next action is S07 (closes F8, F16).
+- 2026-10-13 — S07 green. Closes F8 and F16 (**9/22**). Fresh Grok 4.7
+  verifier [S07](features/S07/Rev1.0/assets/verify-1/result.json) 83
+  assertions, [F8](features/S07/Rev1.0/assets/verify-1/f8/result.json) 54,
+  [F16](features/S07/Rev1.0/assets/verify-1/f16/result.json) 32, all exit 0
+  at `a442e8f`. F5 and F7 stayed green after S07
+  ([F5](features/S06/Rev1.0/assets/after-s07/f5/result.json) 66,
+  [F7](features/S06/Rev1.0/assets/after-s07/f7/result.json) 89, exit 0).
+  With-source thumb under `.library/renditions/`. Relocate both ways. Denied
+  and interrupt leave old bytes. Banner exact. Placeholder exact. Orchestrator
+  rerun [F8](features/S07/Rev1.0/assets/orchestrator-rerun/f8/result.json) and
+  [F16](features/S07/Rev1.0/assets/orchestrator-rerun/f16/result.json) also
+  exit 0. Next action is S08 (closes F14, F20).
+- 2026-10-13 — S08 plan locked in `docs/features/S08/Rev1.0/PLAN.md` after
+  S07. Annotate, merge, pending-during-hash, and rebuild-index. Viewer
+  typing stays open until S09.
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.
