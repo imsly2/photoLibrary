@@ -93,4 +93,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
   exit 0, second scan added 0 / skipped 27. Orchestrator rerun
   [orchestrator-rerun](features/S01/Rev1.0/assets/orchestrator-rerun/result.json)
   also exit 0. S00 stayed green after the scan work
-  [after-s01](features/S00/Rev1.0/assets/after-s01/result.json). Next slice is S02.
+  [after-s01](features/S00/Rev1.0/assets/after-s01/result.json).
+- 2026-10-13 — S02 plan locked in `docs/features/S02/Rev1.0/PLAN.md` after
+  metadata recon. F6 is not closed until its verifier artifacts exist.
