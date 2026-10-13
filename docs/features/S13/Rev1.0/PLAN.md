@@ -1,6 +1,6 @@
 # S13 — Complete settings, history and keyboard across views
 
-Locked 2026-10-13 after S12. **Closes F17, F18, F21.** Do not invent settings or keys.
+Locked 2026-10-13 after S12 at `a11e55c`. **Closes F17, F18, F21.** Do not invent settings or keys.
 
 Read PRODUCT F17, F18, F21, CONTRACTS settings/undo/errors, UI-SPEC settings and keyboard, and this file.
 
