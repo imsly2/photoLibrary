@@ -31,7 +31,10 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, albums, favorites, or other controls because a reference or general baseline mentions them. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite and Windows Reveal in Explorer are sibling tracks, not settings. |
+| Favorite | Sibling track. Per-item boolean on the catalog item, default false. Not a setting and not an album. Lock the field and write path in that track before inventing a route. |
+| Reveal in Explorer | Sibling track. Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
+| Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
 
 ## Files and atomic writes
 

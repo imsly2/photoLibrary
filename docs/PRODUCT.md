@@ -47,18 +47,18 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 
 | Decision | Locked behavior / reason |
 |---|---|
-| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, favorites or editing tools. |
+| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite star and Windows Reveal in Explorer are authorized sibling tracks, not settings. |
 | Packaging | Folder, Python + ffmpeg, local browser, CLI and HTTP. Windows first; macOS/Linux launcher promises need their own verification. |
 | Catalog | JSON is authoritative; SQLite is disposable. Relative local paths; volume identity for linked drives. |
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
 | Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
-| Globe | Shipped texture, no network; cluster opens filtered items; orbit/place/media/orbit tour. |
+| Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
-| Scope over mockups | Reference extras are decoration, not features. No added keybinding editor or filesystem clipboard actions from the generic app baseline. |
+| Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
 
 Technical decisions not previously specified are listed explicitly at the top of
@@ -405,9 +405,13 @@ Artifact: the items JSON.
 ## F12 — Globe
 
 A Globe view draws every place that has coordinates. The earth is a WebGL
-globe with a texture shipped inside the app folder. The page does not load
-map tiles and does not send coordinates anywhere. Drag spins the globe.
-The wheel zooms it, and the point under the cursor stays put.
+globe with a **realistic** equirectangular Earth texture shipped as
+`library/web/assets/earth.png` (license beside it). Abstract blob continents
+are not presentable. The page does not load map tiles and does not send
+coordinates anywhere. Drag spins the globe: left-right yaw is inverted from
+the first grab (drag right turns the globe so the surface follows the pointer
+east); up/down pitch is unchanged. The wheel zooms it, and the point under
+the cursor stays put.
 
 Pins that overlap at the current zoom draw as one cluster with a count.
 Pictures with no coordinates are absent.
@@ -637,9 +641,9 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort. |
-| Globe | The WebGL earth, clusters, Play for the tour. |
-| Viewer | One item, preview then original, people and things. |
+| Library | The zoomed grid, Add folder, search, sort. Header Library is a pressed button when this view is current. |
+| Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
+| Viewer | One item, preview then original, people and things. Sibling tracks add a favorite star and, on Windows, Reveal in Explorer for the current original path. |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 

@@ -125,7 +125,7 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | F9 | Original four groups responses plus rendered levels, all items retained, slider/Ctrl+wheel anchors and saved level. S04. |
 | F10 | Original media responses plus preview/original display, filtered arrows/Esc, zoom/pan, playback/fallback, annotations shown, absent source behavior. S09, refreshed S12. |
 | F11 | Original known-date sorting plus all three sorts/directions, pinned no-EXIF fallback, deterministic ties and toolbar. S04. |
-| F12 | Original places/filter responses plus offline globe, visible pins/clusters/counts, drag/zoom, clicked cluster→newest viewer→Esc filtered grid. S10. |
+| F12 | Original places/filter responses plus offline globe, visible pins/clusters/counts, drag/zoom, clicked cluster→newest viewer→Esc filtered grid. S10. Taste refresh: realistic local `earth.png`, rightward drag increases yaw; do not weaken this Check. |
 | F13 | Original tour membership plus eligible previews, complete timed motion, settings, looping/no-location behavior, Esc in every phase and offline requests. S11. |
 | F14 | Original Ada/mug reuse/search plus explicit-id naming, aliases/boxes, place handling, people merge, pending/hash preservation and viewer writes in S09 regression. Close after S08 service checks; the viewer interaction belongs F10. |
 | F15 | Original filename query plus typed entity search/chips, casefold/aliases, empty results, inspector ids/count/filenames, no duplicate locations in results. S09. |

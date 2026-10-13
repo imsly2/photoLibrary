@@ -18,12 +18,16 @@ taste surface; use a 1280×720 viewport for comparison and 1920×1080 for overfl
 
 Reference styling is the baseline: dark surfaces, restrained borders, readable
 labels, blue selection. Do not redesign layout as a build task. Do not implement
-Favorites, Albums, a storage meter, native window chrome, duplicate navigation,
-or “Written by an agent into JSON” copy from these mockups. Dates, photos, counts
-and names in the art are illustrative. Actual fixture content determines results.
-Use one consistent header across the views; the grid reference's unrelated sidebar
-entries do not create another navigation system. Library, Globe and Settings are
-the existing view destinations; Search is the filtered Library, Viewer is open media.
+Albums, a storage meter, native window chrome, duplicate navigation, or
+“Written by an agent into JSON” copy from these mockups. **Favorite** (per-item
+star) and **Reveal in Explorer** (Windows, selected original or lastKnownPath)
+are authorized sibling tracks — not a 17th setting and not albums. Dates, photos,
+counts and names in the art are illustrative. Actual fixture content determines
+results. Use one consistent header across the views; the grid reference's
+unrelated sidebar entries do not create another navigation system. Library and
+Globe are header **buttons** with a visible idle border and a pressed fill when
+that view is current; Settings is the third view destination. Search is the
+filtered Library, Viewer is open media.
 
 ## State transitions
 
@@ -40,7 +44,7 @@ the existing view destinations; Search is the filtered Library, Viewer is open m
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matching pictures”. Clearing query/chip returns matching broader grid, no catalog mutation. |
 | Settings | Existing 16 settings only, grouped as the reference; change persists through HTTP immediately on valid commit. Inline validation preserves last valid value. Host/port label says “Applies next launch”. Esc returns to prior Library/Globe view. |
-| Globe | Locally textured earth and clusters from visible located items; no-location items absent. Plain “No locations to show” if empty. WebGL unavailable produces inline error text, not another map provider. |
+| Globe | Realistic local Earth texture (oceans, continents, ice — not abstract blobs) and clusters from visible located items; no-location items absent. Plain “No locations to show” if empty. WebGL unavailable produces inline error text, not another map provider. Horizontal drag yaws with the pointer (inverted from the first grab); vertical drag pitch is unchanged. |
 | Tour | Existing globe motion plus media presentation, as specified below. Esc stops motion/playback at current globe position and leaves Globe. No new slideshow settings beyond the three existing tour settings. |
 
 Settings and annotation text input keep normal editing keys: arrows, Space,
@@ -91,8 +95,10 @@ operation; no merge wizard is authorized. Labels update after rename/merge.
 
 ## Globe and tour motion (no reference image exists)
 
-Ship the earth texture locally, record its license in the app. Drag rotates earth
-by 0.25 degrees per pixel; clamp poles just before inversion. Wheel zooms by 1.1,
+Ship a realistic equirectangular Earth texture locally (`/assets/earth.png`),
+record its license in the app. No network tiles. Drag rotates earth by 0.25
+degrees per pixel; **rightward drag increases yaw** (eastward turn); upward
+drag increases pitch. Clamp poles just before inversion. Wheel zooms by 1.1,
 keeping the picked surface point within 2 screen pixels; use center anchoring if
 pointer misses the globe. No network tiles, geocoder, analytics or coordinate upload.
 
