@@ -25,6 +25,8 @@ from tests.qa.s01 import run_slice as run_s01  # noqa: E402
 from tests.qa.s02 import run_check as run_f6  # noqa: E402
 from tests.qa.s02 import run_slice as run_s02  # noqa: E402
 from tests.qa.s03 import run_slice as run_s03  # noqa: E402
+from tests.qa.s04 import run_check_f9, run_check_f11  # noqa: E402
+from tests.qa.s04 import run_slice as run_s04  # noqa: E402
 
 
 class _Tee:
@@ -121,13 +123,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"copied fixtures to {args.output}", flush=True)
         return 0
     if args.cmd == "slice":
-        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02, "S03": run_s03}
+        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02, "S03": run_s03, "S04": run_s04}
         runner = runners.get(args.slice_id)
         if runner is None:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "check":
-        runners = {"F6": run_f6}
+        runners = {"F6": run_f6, "F9": run_check_f9, "F11": run_check_f11}
         runner = runners.get(args.feature_id)
         if runner is None:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))

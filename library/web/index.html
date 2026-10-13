@@ -4,17 +4,63 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Library</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
   <header>
     <h1>Library</h1>
-    <button type="button" disabled>Add folder</button>
+    <button type="button" id="add-folder">Add folder</button>
+    <div id="sort-toolbar">
+      <label>Sort
+        <select id="sort">
+          <option value="date">Date</option>
+          <option value="location">Location</option>
+          <option value="name">Name</option>
+        </select>
+      </label>
+      <label>Direction
+        <select id="dir">
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </label>
+    </div>
   </header>
-  <main>
+  <main id="library-main">
+    <p id="status" hidden></p>
     <p id="empty">No pictures yet</p>
     <div id="grid" hidden></div>
   </main>
+  <footer id="zoom-bar">
+    <span>Years</span>
+    <input id="zoom-slider" type="range" min="0" max="3" step="1" value="0">
+    <span>Months</span>
+    <span>Days</span>
+    <span>All</span>
+  </footer>
+  <dialog id="add-dialog" aria-labelledby="add-title">
+    <h2 id="add-title">Add folder</h2>
+    <label>Path
+      <input type="text" id="add-path" autocomplete="off">
+    </label>
+    <fieldset>
+      <legend>How to add</legend>
+      <label>
+        <input type="radio" name="add-mode" value="copy-here">
+        Copy onto this drive
+      </label>
+      <label>
+        <input type="radio" name="add-mode" value="serve-from-there">
+        Serve from that folder
+      </label>
+    </fieldset>
+    <p id="add-error" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" id="add-cancel">Cancel</button>
+      <button type="button" id="add-submit" disabled>Add</button>
+    </div>
+  </dialog>
   <div id="viewer" hidden>
     <img id="viewer-image" alt="">
   </div>

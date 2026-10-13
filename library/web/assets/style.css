@@ -4,24 +4,57 @@
 
 html, body {
   margin: 0;
-  min-height: 100%;
+  height: 100%;
   background: #111114;
   color: #f2f2f4;
   font-family: Segoe UI, sans-serif;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
 header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem 1.25rem;
   border-bottom: 1px solid #2a2a32;
+  flex-shrink: 0;
 }
 
 h1 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+#sort-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+#sort-toolbar label,
+#add-dialog label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #c8c8d0;
+}
+
+select,
+input[type="text"] {
+  background: #1c1c22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a44;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
 }
 
 button {
@@ -38,33 +71,76 @@ button:disabled {
 }
 
 main {
-  padding: 2rem 1.25rem;
+  padding: 1.25rem;
+  flex: 1;
+  overflow: auto;
 }
 
 main p {
-  margin: 0;
+  margin: 0 0 1rem;
   color: #c8c8d0;
 }
 
-#grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+#status[hidden],
+#empty[hidden],
+#grid[hidden],
+#add-error[hidden] {
+  display: none;
 }
 
-#grid[hidden],
-#empty[hidden] {
-  display: none;
+.group {
+  margin-bottom: 1.5rem;
+}
+
+.group-title {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d8d8e0;
+}
+
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.group.days .row {
+  min-height: 240px;
+}
+
+.group.all .row {
+  min-height: 160px;
 }
 
 .cell {
   position: relative;
-  width: 160px;
-  height: 160px;
   padding: 0;
   overflow: hidden;
   background: #1c1c22;
   cursor: pointer;
+}
+
+.mosaic .cell {
+  width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+}
+
+.group.days .cell {
+  width: 240px;
+  height: 240px;
+}
+
+.group.all .cell {
+  width: 160px;
+  height: 160px;
 }
 
 .cell .placeholder {
@@ -86,12 +162,74 @@ main p {
   object-fit: cover;
 }
 
+#zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  border-top: 1px solid #2a2a32;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: #c8c8d0;
+}
+
+#zoom-slider {
+  width: 220px;
+}
+
+dialog {
+  background: #1c1c22;
+  color: #f2f2f4;
+  border: 1px solid #2a2a32;
+  border-radius: 8px;
+  padding: 1.25rem;
+  min-width: 28rem;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+dialog h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+dialog fieldset {
+  border: 0;
+  margin: 1rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+dialog legend {
+  padding: 0;
+  margin-bottom: 0.4rem;
+  color: #c8c8d0;
+}
+
+#add-path {
+  flex: 1;
+  min-width: 18rem;
+}
+
+#add-error {
+  color: #f0b4b4;
+  margin: 0 0 0.75rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
 #viewer {
   position: fixed;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   background: rgba(0, 0, 0, 0.86);
   z-index: 10;
 }
@@ -101,7 +239,12 @@ main p {
 }
 
 #viewer-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  max-height: none;
+  transform-origin: 0 0;
+  user-select: none;
+  pointer-events: none;
 }

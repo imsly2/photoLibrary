@@ -168,6 +168,27 @@ class Library:
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
 
+    def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        query = dict(query or {})
+        extra = set(query) - ITEM_QUERY_KEYS - {"level"}
+        if extra:
+            raise fail("invalid-argument")
+        level = query.pop("level", None)
+        if level not in GROUP_LEVELS:
+            raise fail("invalid-argument")
+        items = self.items_list(query)
+        groups: list[dict[str, Any]] = []
+        buckets: dict[str, list[str]] = {}
+        for item in items:
+            key = calendar_group_key(item.get("capturedAt") or "", level)
+            bucket = buckets.get(key)
+            if bucket is None:
+                bucket = []
+                buckets[key] = bucket
+                groups.append({"key": key, "itemIds": bucket})
+            bucket.append(item["id"])
+        return groups
+
     def rebuild_index(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
@@ -250,6 +271,7 @@ class Library:
 ITEM_QUERY_KEYS = frozenset(
     {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
 )
+GROUP_LEVELS = frozenset({"years", "months", "days", "all"})
 MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
 COMPONENTS = frozenset({"still", "motion"})
 
@@ -338,6 +360,60 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
     return True
 
 
+def calendar_group_key(captured_at: str, level: str) -> str:
+    date = captured_at.split("T", 1)[0]
+    if level == "years":
+        return date[:4]
+    if level == "months":
+        return date[:7]
+    return date
+
+
+def _place_record(item: dict[str, Any]) -> dict[str, Any] | None:
+    places = ((item.get("entities") or {}).get("places")) or []
+    if places and isinstance(places[0], dict):
+        return places[0]
+    return None
+
+
+def _sort_location(items: list[dict[str, Any]], reverse: bool) -> list[dict[str, Any]]:
+    named: list[dict[str, Any]] = []
+    unnamed: list[dict[str, Any]] = []
+    missing: list[dict[str, Any]] = []
+    for item in items:
+        place = _place_record(item)
+        name = place.get("name") if place else None
+        lat = place.get("latitude") if place else None
+        lon = place.get("longitude") if place else None
+        if place is not None and type(name) is str and name:
+            named.append(item)
+        elif place is not None and lat is not None and lon is not None:
+            unnamed.append(item)
+        else:
+            missing.append(item)
+
+    def named_key(item: dict[str, Any]) -> tuple:
+        place = _place_record(item) or {}
+        return ((place.get("name") or "").casefold(), item.get("capturedAt") or "", item["id"])
+
+    def unnamed_key(item: dict[str, Any]) -> tuple:
+        place = _place_record(item) or {}
+        return (
+            float(place.get("latitude")),
+            float(place.get("longitude")),
+            item.get("capturedAt") or "",
+            item["id"],
+        )
+
+    def missing_key(item: dict[str, Any]) -> tuple:
+        return (item.get("capturedAt") or "", item["id"])
+
+    named = sorted(named, key=named_key, reverse=reverse)
+    unnamed = sorted(unnamed, key=unnamed_key, reverse=reverse)
+    missing = sorted(missing, key=missing_key, reverse=reverse)
+    return named + unnamed + missing
+
+
 def _sort_items(
     items: list[dict[str, Any]],
     query: dict[str, str],
@@ -348,14 +424,15 @@ def _sort_items(
     if sort not in {"date", "location", "name"} or direction not in {"asc", "desc"}:
         raise fail("invalid-argument")
     reverse = direction == "desc"
+    if sort == "location":
+        return _sort_location(items, reverse)
 
     def key(item: dict[str, Any]) -> tuple:
         if sort == "name":
-            return (item.get("filename") or "", item.get("capturedAt") or "", item["id"])
+            return ((item.get("filename") or "").casefold(), item.get("capturedAt") or "", item["id"])
         return (item.get("capturedAt") or "", item["id"])
 
-    items = sorted(items, key=key, reverse=reverse)
-    return items
+    return sorted(items, key=key, reverse=reverse)
 
 
 def _read_relative_json(root: Path, relative: str) -> Any:
