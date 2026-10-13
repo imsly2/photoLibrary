@@ -34,7 +34,7 @@ the existing view destinations; Search is the filtered Library, Viewer is open m
 | Scanning | Close Add as soon as `POST /api/sources` returns 202. Never leave the dialog open on `busy` or a long scan. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts and readable error text, never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
 | Ready | Years/Months/Days/All, search, sort and open work on the same current item set. Level and sort persist to settings; selection and current filter are transient. No localStorage truth. |
-| Viewer | Show still preview first, then readable original; video uses poster then original/proxy, live uses still with motion playback. Visible Previous/Next and Back; arrows still move. Next/previous use the current filtered order, stop at ends without wrapping. Back/Esc restores the grid he came from (filter, level, scroll). Zoom in/out buttons plus existing Ctrl+wheel; middle-drag pans. Rotate turns the displayed still 90° per click and does not rewrite the original. Labels list existing annotations; typing a person/place/thing and committing sends annotate. No box-drawing editor. |
+| Viewer | Show still preview first, then readable original; video uses poster then original/proxy, live uses still with motion playback. Visible Previous/Next and Back; arrows still move. Next/previous use the current filtered order, stop at ends without wrapping. Back/Esc restores the grid he came from (filter, level, scroll) on this same listen URL — never `history.back()` or a port change. Zoom in/out buttons plus existing Ctrl+wheel; stills also left-drag pan, middle-drag pans stills and video. Rotate turns the displayed still 90° per click and does not rewrite the original. A large heart toggles favorite; pressed/filled means favorited. Open original stays in this page and is pressed as “Showing original” when original bytes are on screen; click toggles back to the preview — it does not open another program. Reveal in Explorer is always present in the viewer and opens the original's folder when the file is on this computer; disabled with the missing-original banner otherwise. Play preview keeps click-to-pause. Person/Place/Thing fields are labeled; no unlabeled pills. Labels list existing annotations; typing a person/place/thing and committing sends annotate. No box-drawing editor. No grid-only favorite density in this slice. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matching pictures”. Clearing query/chip returns matching broader grid, no catalog mutation. |
@@ -66,11 +66,13 @@ because a mosaic changes shape. The level control uses the central visible item
 as anchor when no pointer item exists. It cannot jump to an unrelated year.
 
 Click a cell opens it. ArrowLeft/ArrowRight navigate. Ctrl+wheel zooms an opened
-still around the cursor's image coordinate; middle drag moves it 1:1. No reflow
-or automatic fit during a gesture. Step factor 1.1 per wheel step, fit scale minimum,
-16× fit maximum. Images initially fit; each newly opened item resets fit. A still
-click does nothing. Video/live click or Space toggles playback. Normal scrolling
-does not seek. Unsupported original codec falls back to proxy, not a silent freeze.
+still or video around the cursor's image coordinate; middle drag moves it 1:1,
+and a still also pans with a left drag. No reflow or automatic fit during a
+gesture. Step factor 1.1 per wheel or button step, 0.25× fit minimum, 16× fit
+maximum (zoom out from the opening fit is required). Images and video initially
+fit; each newly opened item resets fit and rotation. A still click does
+nothing. Video/live click or Space toggles playback. Normal scrolling does
+not seek. Unsupported original codec falls back to proxy, not a silent freeze.
 
 Proxy policy: `off` never autoplays; `days-and-all` plays only the hovered cell at
 those levels; `always` also permits hover playback within Years/Months mosaics.

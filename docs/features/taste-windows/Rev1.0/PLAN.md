@@ -8,7 +8,7 @@ Read PRODUCT F2/F4/F10, CONTRACTS scan/picker/disconnect, UI-SPEC Add/Scanning/D
 
 1. **Add folder.** `POST /api/sources` returns 202 with `scan.state` running **before** the scan finishes. Close the dialog on 202. Confirm the folder, show scan status, poll, show items as they become ready. Never leave the dialog open on `busy`. Browse → `POST /api/pick-folder` (Windows native picker; 404 `picker-unavailable` here). Typed path still works. Serve stdout prints scan progress during normal work.
 2. **Server hardness.** Client abort (`BrokenPipeError`, `ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is non-fatal: no 500, no `internal-error`, server keeps serving. Page shows “Library is not responding” and retries health/catalog until 200.
-3. **Viewer.** Visible Previous/Next/Back. Zoom in/out buttons (existing Ctrl+wheel stays). Display-only 90° rotate; do not rewrite originals. Arrows and Esc unchanged.
+3. **Viewer.** Visible Previous/Next/Back. Zoom in/out buttons (existing Ctrl+wheel stays), including zoom out below fit on stills and video; pan while zoomed. Display-only 90° rotate; do not rewrite originals. Open original swaps to original bytes with a visible “Showing original” state and does not launch another app. Reveal in Explorer opens the original's folder (required). Large heart toggles favorite in `catalog/favorites.json`. Person/Place/Thing fields are labeled. Back closes the overlay on this listen URL and must not call `history.back()`. Arrows, Esc, and video click-to-pause unchanged. No grid hearts.
 4. **Windows launcher.** `Library.bat` at the app folder runs `launch.ps1` in a visible console and opens the browser. Do not change `launch.sh`. Do not claim F2.
 
 ## Out of scope
