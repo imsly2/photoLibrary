@@ -25,6 +25,12 @@ docs/features/**/skip-extra/
 docs/features/**/skip-media/
 docs/features/**/impl-*/
 docs/features/**/test-volumes.json
+docs/features/**/changed-library-data/
+docs/features/**/changed-media/
+docs/features/**/date-edge-library-data/
+docs/features/**/date-edge-media/
+docs/features/**/three-jpeg-library-data/
+docs/features/**/three-jpeg-media/
 
 # Python
 __pycache__/
