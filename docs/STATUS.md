@@ -55,6 +55,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   a sibling track. Evidence:
   [TASTE-WIN](features/taste-windows/Rev1.0/assets/orchestrator-rerun/result.json),
   [F4 rerun](features/taste-windows/Rev1.0/assets/orchestrator-rerun/f4/result.json).
+- Globe taste: local realistic `earth.png` (not blob continents);
+  rightward drag increases yaw; up/down unchanged. Favorite star and
+  Reveal in Explorer are specified for sibling tracks. F12 stays the
+  Check; do not reopen S13/S14.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.

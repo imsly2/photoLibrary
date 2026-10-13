@@ -39,9 +39,9 @@ h1 {
 }
 
 .views button {
-  background: transparent;
+  background: #1b1b22;
   color: #f2f2f4;
-  border: 1px solid transparent;
+  border: 1px solid #3a3a44;
   border-radius: 4px;
   padding: 0.25rem 0.65rem;
 }

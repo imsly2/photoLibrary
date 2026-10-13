@@ -321,6 +321,7 @@ def prove_globe_page(
             "degPerPixel": rate,
         }
         checks.check("drag-0.25-deg-per-px", abs(rate - 0.25) <= 0.03, json.dumps(members_doc["rotation"]))
+        checks.check("drag-right-increases-yaw", delta > 0, json.dumps(members_doc["rotation"]))
 
         pick2 = page.evaluate(
             """() => {

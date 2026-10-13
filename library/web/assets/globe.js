@@ -712,7 +712,7 @@
   }
 
   function applyDrag(dx, dy) {
-    yaw = wrapYaw(yaw - (dx * DEG_PER_PIXEL) * Math.PI / 180);
+    yaw = wrapYaw(yaw + (dx * DEG_PER_PIXEL) * Math.PI / 180);
     pitch = clamp(pitch + (dy * DEG_PER_PIXEL) * Math.PI / 180, -PITCH_MAX, PITCH_MAX);
   }
 

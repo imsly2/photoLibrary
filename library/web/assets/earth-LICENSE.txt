@@ -1,6 +1,7 @@
-This equirectangular earth texture (earth.png) was generated for this
-application as original synthetic artwork. It is not derived from map
-tiles, satellite imagery, or third-party geodata.
+This equirectangular earth texture (earth.png) is original synthetic
+artwork painted from public geographic outlines for this application.
+It is not derived from map tiles, satellite imagery, or third-party
+geodata. No network resource is required at runtime.
 
 License: CC0 1.0 Universal
 https://creativecommons.org/publicdomain/zero/1.0/
