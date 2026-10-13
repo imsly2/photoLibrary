@@ -1,0 +1,468 @@
+{
+  "check": "F7",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "indexed:quad.png",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.png",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.gif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.gif",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.webp",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.heic",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.heif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.heif",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.tiff",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.tiff",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:quad.bmp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:quad.bmp",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "indexed:clip.mov",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.mov",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:clip.m4v",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.m4v",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:clip.avi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.avi",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:clip.mkv",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.mkv",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:clip.webm",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.webm",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:broken.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-error",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"error\", \"preview\": \"error\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "broken-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "indexed:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-queued:clip.mp4",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\"}}"
+    },
+    {
+      "name": "indexed:oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "photo-queued:oriented.jpg",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_626bebfd5fda\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}}"
+    },
+    {
+      "name": "scan-no-rendition-files",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "broken-decode-error",
+      "pass": true,
+      "detail": "[{'path': 'formats/broken.heic', 'error': 'decode-error'}]"
+    },
+    {
+      "name": "core-ready",
+      "pass": true,
+      "detail": "{\"oriented\": {\"thumb\": \"ready\", \"preview\": \"ready\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\"}, \"clip\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"ready\", \"proxy\": \"ready\"}, \"ready\": true}"
+    },
+    {
+      "name": "thumb-size",
+      "pass": true,
+      "detail": "{\"codec\": \"webp\", \"width\": 240, \"height\": 320, \"duration\": null, \"audioStreamCount\": 0, \"bytes\": 1740, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "preview-size",
+      "pass": true,
+      "detail": "{\"codec\": \"webp\", \"width\": 480, \"height\": 640, \"duration\": null, \"audioStreamCount\": 0, \"bytes\": 4154, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "proxy-width",
+      "pass": true,
+      "detail": "{\"codec\": \"h264\", \"width\": 480, \"height\": 360, \"duration\": 2.0, \"audioStreamCount\": 0, \"bytes\": 3467, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "proxy-codec",
+      "pass": true,
+      "detail": "{\"codec\": \"h264\", \"width\": 480, \"height\": 360, \"duration\": 2.0, \"audioStreamCount\": 0, \"bytes\": 3467, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "proxy-audio-0",
+      "pass": true,
+      "detail": "{\"codec\": \"h264\", \"width\": 480, \"height\": 360, \"duration\": 2.0, \"audioStreamCount\": 0, \"bytes\": 3467, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "proxy-duration",
+      "pass": true,
+      "detail": "{\"codec\": \"h264\", \"width\": 480, \"height\": 360, \"duration\": 2.0, \"audioStreamCount\": 0, \"bytes\": 3467, \"returncode\": 0, \"stderr\": \"\"}"
+    },
+    {
+      "name": "oriented-raw-size",
+      "pass": true,
+      "detail": "{\"width\": 640, \"height\": 480, \"orientation\": 6, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": null, \"longitude\": null}"
+    },
+    {
+      "name": "matrix-row:formats/quad.png",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:quad.png",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.png\", \"hash\": \"4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/quad.gif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:quad.gif",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.gif\", \"hash\": \"d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/quad.webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:quad.webp",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.webp\", \"hash\": \"c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/quad.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-heic-not-ready:quad.heic",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.heic\", \"hash\": \"5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": \"ffprobe cannot decode (moov atom not found); stays error + placeholder\"}"
+    },
+    {
+      "name": "matrix-row:formats/quad.heif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-heic-not-ready:quad.heif",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.heif\", \"hash\": \"a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": \"ffprobe cannot decode (moov atom not found); stays error + placeholder\"}"
+    },
+    {
+      "name": "matrix-row:formats/quad.tiff",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:quad.tiff",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.tiff\", \"hash\": \"566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/quad.bmp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:quad.bmp",
+      "pass": true,
+      "detail": "{\"path\": \"formats/quad.bmp\", \"hash\": \"c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/clip.mov",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.mov",
+      "pass": true,
+      "detail": "{\"path\": \"formats/clip.mov\", \"hash\": \"b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/clip.m4v",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.m4v",
+      "pass": true,
+      "detail": "{\"path\": \"formats/clip.m4v\", \"hash\": \"79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/clip.avi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.avi",
+      "pass": true,
+      "detail": "{\"path\": \"formats/clip.avi\", \"hash\": \"a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/clip.mkv",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.mkv",
+      "pass": true,
+      "detail": "{\"path\": \"formats/clip.mkv\", \"hash\": \"4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/clip.webm",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.webm",
+      "pass": true,
+      "detail": "{\"path\": \"formats/clip.webm\", \"hash\": \"ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:formats/broken.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-broken-error",
+      "pass": true,
+      "detail": "{\"path\": \"formats/broken.heic\", \"hash\": \"592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"error\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": \"invalid HEIF brand; decode-error; no WebP\"}"
+    },
+    {
+      "name": "matrix-row:a/clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-video-ready:clip.mp4",
+      "pass": true,
+      "detail": "{\"path\": \"a/clip.mp4\", \"hash\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"slots\": {\"thumb\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"preview\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"poster\": {\"status\": \"ready\", \"path\": \"renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/poster.webp\", \"readyNonEmpty\": true}, \"proxy\": {\"status\": \"ready\", \"path\": \"renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/proxy.mp4\", \"readyNonEmpty\": true}}, \"note\": null}"
+    },
+    {
+      "name": "matrix-row:b/oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "matrix-photo-ready:oriented.jpg",
+      "pass": true,
+      "detail": "{\"path\": \"b/oriented.jpg\", \"hash\": \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"kind\": \"photo\", \"slots\": {\"thumb\": {\"status\": \"ready\", \"path\": \"renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/thumb.webp\", \"readyNonEmpty\": true}, \"preview\": {\"status\": \"ready\", \"path\": \"renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/preview.webp\", \"readyNonEmpty\": true}, \"poster\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}, \"proxy\": {\"status\": \"not-applicable\", \"path\": null, \"readyNonEmpty\": false}}, \"note\": null}"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "hover-video-cells",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "days-and-all-years-silent",
+      "pass": true,
+      "detail": "{\"videoCount\": 0, \"playingCount\": 0, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": []}"
+    },
+    {
+      "name": "hover-all-two-videos",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "days-and-all-one-plays",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}"
+    },
+    {
+      "name": "only-one-hovered-plays",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9\"]}"
+    },
+    {
+      "name": "hover-muted",
+      "pass": true,
+      "detail": "{\"first\": {\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}, \"second\": {\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9\"]}}"
+    },
+    {
+      "name": "leave-restores-poster",
+      "pass": true,
+      "detail": "id=b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9"
+    },
+    {
+      "name": "off-plays-none",
+      "pass": true,
+      "detail": "{\"videoCount\": 0, \"playingCount\": 0, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": []}"
+    },
+    {
+      "name": "always-plays-at-years",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}"
+    },
+    {
+      "name": "viewer-poster-first",
+      "pass": true,
+      "detail": "/api/media/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c?which=poster"
+    },
+    {
+      "name": "viewer-no-autoplay-src",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "viewer-fallback-proxy",
+      "pass": true,
+      "detail": "{\"src\": \"http://127.0.0.1:18767/api/media/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c?which=proxy\", \"usingProxy\": true, \"paused\": false}"
+    },
+    {
+      "name": "hover-shot-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "original-hashes-unchanged",
+      "pass": true,
+      "detail": "{\"before\": 15, \"after\": 15}"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "c3cf37679cb8bf305fddf011dd83ad23773ddc6a",
+  "commands": [
+    "python -m library scan <media> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S06/Rev1.0/assets/implementer-1/f7/result.json",
+    "stdout.log": "/workspace/docs/features/S06/Rev1.0/assets/implementer-1/f7/stdout.log",
+    "ffprobe.json": "/workspace/docs/features/S06/Rev1.0/assets/implementer-1/f7/ffprobe.json",
+    "format-matrix.json": "/workspace/docs/features/S06/Rev1.0/assets/implementer-1/f7/format-matrix.json",
+    "hover-playback.json": "/workspace/docs/features/S06/Rev1.0/assets/implementer-1/f7/hover-playback.json"
+  }
+}

@@ -197,7 +197,8 @@ main > p {
   text-align: center;
 }
 
-.cell img {
+.cell img,
+.cell video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -310,4 +311,13 @@ dialog h2 {
   max-height: none;
   user-select: none;
   pointer-events: none;
+}
+
+#viewer-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent;
 }

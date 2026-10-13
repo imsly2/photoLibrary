@@ -274,8 +274,19 @@ MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
 
 
 def original_content_type(path: Path) -> str:
-    if file_suffix(path) in {".jpg", ".jpeg"}:
+    suffix = file_suffix(path)
+    if suffix in {".jpg", ".jpeg"}:
         return "image/jpeg"
+    if suffix in {".mp4", ".m4v"}:
+        return "video/mp4"
+    if suffix == ".mov":
+        return "video/quicktime"
+    if suffix == ".webm":
+        return "video/webm"
+    if suffix == ".avi":
+        return "video/x-msvideo"
+    if suffix == ".mkv":
+        return "video/x-matroska"
     return "application/octet-stream"
 
 

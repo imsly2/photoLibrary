@@ -2,6 +2,7 @@
   const main = document.getElementById("grid");
   const viewer = document.getElementById("viewer");
   const viewerImage = document.getElementById("viewer-image");
+  const viewerVideo = document.getElementById("viewer-video");
   const addFolderBtn = document.getElementById("add-folder-btn");
   const addDialog = document.getElementById("add-folder");
   const addPath = document.getElementById("add-path");
@@ -12,7 +13,7 @@
   const dirSelect = document.getElementById("dir");
   const zoomSlider = document.getElementById("zoom-slider");
   const scanStatus = document.getElementById("scan-status");
-  if (!main || !viewer || !viewerImage || !addFolderBtn || !addDialog) {
+  if (!main || !viewer || !viewerImage || !viewerVideo || !addFolderBtn || !addDialog) {
     return;
   }
 
@@ -25,6 +26,7 @@
     dir: "desc",
     zoomLevel: "years",
     addFolderDefault: "ask",
+    playProxies: "days-and-all",
   };
   let items = [];
   let groups = [];
@@ -85,12 +87,21 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     }).then(readJson).then(function (next) {
-      settings.sort = next.sort;
-      settings.dir = next.dir;
-      settings.zoomLevel = next.zoomLevel;
-      settings.addFolderDefault = next.addFolderDefault;
+      applySettings(next);
       return next;
     });
+  }
+
+  function applySettings(data) {
+    if (!data) {
+      return;
+    }
+    settings.sort = data.sort || settings.sort;
+    settings.dir = data.dir || settings.dir;
+    settings.zoomLevel = data.zoomLevel || settings.zoomLevel;
+    settings.addFolderDefault = data.addFolderDefault || settings.addFolderDefault;
+    settings.playProxies = data.playProxies || settings.playProxies;
+    main.dataset.playProxies = settings.playProxies;
   }
 
   function selectedMode() {
@@ -163,18 +174,96 @@
     };
   }
 
-  function requestThumb(cell, id) {
-    const img = cell.querySelector("img");
-    const placeholder = cell.querySelector(".placeholder");
-    const url = "/api/media/" + encodeURIComponent(id) + "?which=thumb";
-    if (img.getAttribute("data-thumb") === url && !img.hidden && img.complete && img.naturalWidth > 0) {
+  function stillWhich(item) {
+    return item && item.kind === "video" ? "poster" : "thumb";
+  }
+
+  function hoverAllowed() {
+    const policy = settings.playProxies || "days-and-all";
+    if (policy === "off") {
+      return false;
+    }
+    const level = settings.zoomLevel;
+    if (policy === "always") {
+      return true;
+    }
+    return level === "days" || level === "all";
+  }
+
+  let hoverVideo = null;
+  let hoverCell = null;
+
+  function stopHover() {
+    if (hoverVideo) {
+      hoverVideo.pause();
+      hoverVideo.removeAttribute("src");
+      hoverVideo.load();
+      if (hoverVideo.parentNode) {
+        hoverVideo.parentNode.removeChild(hoverVideo);
+      }
+      hoverVideo = null;
+    }
+    if (hoverCell) {
+      const img = hoverCell.querySelector("img");
+      if (img) {
+        img.hidden = false;
+      }
+      hoverCell = null;
+    }
+  }
+
+  function startHover(cell, item) {
+    stopHover();
+    if (!hoverAllowed() || !item || item.kind !== "video") {
       return;
     }
+    const proxyStatus = ((item.renditions || {}).status || {}).proxy;
+    if (proxyStatus !== "ready") {
+      return;
+    }
+    const video = document.createElement("video");
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+    video.loop = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.src = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    const img = cell.querySelector("img");
+    if (img) {
+      img.hidden = true;
+    }
+    cell.appendChild(video);
+    hoverVideo = video;
+    hoverCell = cell;
+    const play = video.play();
+    if (play && play.catch) {
+      play.catch(function () {});
+    }
+  }
+
+  function requestStill(cell, id) {
+    const img = cell.querySelector("img");
+    const placeholder = cell.querySelector(".placeholder");
     const item = itemById(id);
-    const thumbStatus = ((item.renditions || {}).status || {}).thumb;
-    if (thumbStatus !== "ready") {
+    const which = stillWhich(item);
+    const url = "/api/media/" + encodeURIComponent(id) + "?which=" + which;
+    if (hoverCell === cell) {
+      return;
+    }
+    if (img.getAttribute("data-still") === url && !img.hidden && img.complete && img.naturalWidth > 0) {
+      return;
+    }
+    const slotStatus = ((item.renditions || {}).status || {})[which];
+    if (slotStatus === "error" || slotStatus === "not-applicable") {
+      placeholder.hidden = false;
+      img.hidden = true;
+      return;
+    }
+    if (slotStatus !== "ready") {
       window.setTimeout(function () {
-        requestThumb(cell, id);
+        requestStill(cell, id);
       }, 1000);
       return;
     }
@@ -183,26 +272,28 @@
         placeholder.hidden = false;
         img.hidden = true;
         window.setTimeout(function () {
-          requestThumb(cell, id);
+          requestStill(cell, id);
         }, 1000);
         return;
       }
       img.onload = function () {
         placeholder.hidden = true;
-        img.hidden = false;
+        if (hoverCell !== cell) {
+          img.hidden = false;
+        }
       };
       img.onerror = function () {
         img.hidden = true;
         placeholder.hidden = false;
         window.setTimeout(function () {
-          requestThumb(cell, id);
+          requestStill(cell, id);
         }, 1000);
       };
-      img.setAttribute("data-thumb", url);
+      img.setAttribute("data-still", url);
       img.src = url;
     }).catch(function () {
       window.setTimeout(function () {
-        requestThumb(cell, id);
+        requestStill(cell, id);
       }, 1000);
     });
   }
@@ -230,9 +321,21 @@
     applyTransform();
   }
 
+  function resetViewerVideo() {
+    viewerVideo.pause();
+    viewerVideo.removeAttribute("src");
+    viewerVideo.removeAttribute("poster");
+    viewerVideo.removeAttribute("data-source-ready");
+    viewerVideo.removeAttribute("data-using-proxy");
+    viewerVideo.load();
+    viewerVideo.hidden = true;
+  }
+
   function closeViewer() {
     viewer.hidden = true;
     viewerImage.removeAttribute("src");
+    viewerImage.hidden = false;
+    resetViewerVideo();
     viewerIndex = -1;
     panning = false;
     window.requestAnimationFrame(function () {
@@ -240,11 +343,89 @@
     });
   }
 
-  function openViewerAt(index) {
-    if (index < 0 || index >= items.length) {
+  function originalVideoType(item) {
+    const name = ((item && item.filename) || "").toLowerCase();
+    if (name.endsWith(".mp4") || name.endsWith(".m4v")) {
+      return "video/mp4";
+    }
+    if (name.endsWith(".webm")) {
+      return "video/webm";
+    }
+    if (name.endsWith(".mov")) {
+      return "video/quicktime";
+    }
+    if (name.endsWith(".avi")) {
+      return "video/x-msvideo";
+    }
+    if (name.endsWith(".mkv")) {
+      return "video/x-matroska";
+    }
+    return "";
+  }
+
+  function browserCanPlayOriginal(item) {
+    const type = originalVideoType(item);
+    if (!type) {
+      return false;
+    }
+    const result = viewerVideo.canPlayType(type);
+    return result === "probably" || result === "maybe";
+  }
+
+  function playOriginalOrProxy(item) {
+    const originalUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=original";
+    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    if (viewerVideo.getAttribute("data-source-ready") === item.id) {
       return;
     }
-    const item = items[index];
+    function useProxy() {
+      if (viewerVideo.getAttribute("data-using-proxy") === "1") {
+        return;
+      }
+      viewerVideo.setAttribute("data-using-proxy", "1");
+      viewerVideo.src = proxyUrl;
+    }
+    viewerVideo.onerror = useProxy;
+    viewerVideo.setAttribute("data-source-ready", item.id);
+    if (!browserCanPlayOriginal(item)) {
+      useProxy();
+      return;
+    }
+    viewerVideo.src = originalUrl;
+  }
+
+  function toggleViewerPlay() {
+    if (viewerIndex < 0 || viewer.hidden) {
+      return;
+    }
+    const item = items[viewerIndex];
+    if (!item || item.kind !== "video") {
+      return;
+    }
+    playOriginalOrProxy(item);
+    if (viewerVideo.paused) {
+      const play = viewerVideo.play();
+      if (play && play.catch) {
+        play.catch(function () {
+          const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+          if (viewerVideo.getAttribute("data-using-proxy") !== "1") {
+            viewerVideo.setAttribute("data-using-proxy", "1");
+            viewerVideo.src = proxyUrl;
+            const retry = viewerVideo.play();
+            if (retry && retry.catch) {
+              retry.catch(function () {});
+            }
+          }
+        });
+      }
+    } else {
+      viewerVideo.pause();
+    }
+  }
+
+  function openStillViewer(item, index) {
+    resetViewerVideo();
+    viewerImage.hidden = false;
     const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
     const same = viewerIndex === index && !viewer.hidden && viewerImage.getAttribute("src") === url;
     viewerIndex = index;
@@ -263,6 +444,28 @@
       }
     };
     viewerImage.src = url;
+  }
+
+  function openVideoViewer(item, index) {
+    viewerImage.removeAttribute("src");
+    viewerImage.hidden = true;
+    resetViewerVideo();
+    viewerIndex = index;
+    viewer.hidden = false;
+    viewerVideo.hidden = false;
+    viewerVideo.poster = "/api/media/" + encodeURIComponent(item.id) + "?which=poster";
+  }
+
+  function openViewerAt(index) {
+    if (index < 0 || index >= items.length) {
+      return;
+    }
+    const item = items[index];
+    if (item.kind === "video") {
+      openVideoViewer(item, index);
+      return;
+    }
+    openStillViewer(item, index);
   }
 
   function openViewer(id) {
@@ -314,6 +517,7 @@
     cell.className = "cell";
     cell.dataset.id = item.id;
     cell.dataset.filename = item.filename || "";
+    cell.dataset.kind = item.kind || "";
     const placeholder = document.createElement("span");
     placeholder.className = "placeholder";
     placeholder.textContent = PLACEHOLDER;
@@ -324,11 +528,18 @@
     cell.appendChild(img);
     cell.addEventListener("mouseenter", function () {
       hoveredId = item.id;
+      startHover(cell, item);
+    });
+    cell.addEventListener("mouseleave", function () {
+      if (hoveredId === item.id) {
+        hoveredId = null;
+      }
+      stopHover();
     });
     cell.addEventListener("click", function () {
       openViewer(item.id);
     });
-    requestThumb(cell, item.id);
+    requestStill(cell, item.id);
     return cell;
   }
 
@@ -358,7 +569,7 @@
     }).join(";");
     if (key === renderKey) {
       main.querySelectorAll(".cell").forEach(function (cell) {
-        requestThumb(cell, cell.dataset.id);
+        requestStill(cell, cell.dataset.id);
       });
       return;
     }
@@ -397,6 +608,7 @@
       fetch("/api/items?" + qs).then(readJson),
       fetch("/api/groups?" + queryString({ level: settings.zoomLevel })).then(readJson),
       fetch("/api/sources").then(readJson),
+      fetch("/api/settings").then(readJson),
     ]).then(function (parts) {
       if (gen !== loadGen) {
         return;
@@ -404,6 +616,7 @@
       const nextItems = Array.isArray(parts[0]) ? parts[0] : [];
       const nextGroups = Array.isArray(parts[1]) ? parts[1] : [];
       const sources = Array.isArray(parts[2]) ? parts[2] : [];
+      applySettings(parts[3]);
       const status = sourcesStatus(sources);
       scanning = status.running;
       if (sources.length) {
@@ -561,6 +774,11 @@
     if (textFocused() || viewer.hidden) {
       return;
     }
+    if (event.key === " " || event.key === "Spacebar") {
+      event.preventDefault();
+      toggleViewerPlay();
+      return;
+    }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
       if (viewerIndex > 0) {
@@ -611,12 +829,13 @@
       event.preventDefault();
     }
   });
+  viewerVideo.addEventListener("click", function (event) {
+    event.preventDefault();
+    toggleViewerPlay();
+  });
 
   fetch("/api/settings").then(readJson).then(function (data) {
-    settings.sort = data.sort || settings.sort;
-    settings.dir = data.dir || settings.dir;
-    settings.zoomLevel = data.zoomLevel || settings.zoomLevel;
-    settings.addFolderDefault = data.addFolderDefault || settings.addFolderDefault;
+    applySettings(data);
     sortSelect.value = settings.sort;
     dirSelect.value = settings.dir;
     zoomSlider.value = String(levelIndex(settings.zoomLevel));

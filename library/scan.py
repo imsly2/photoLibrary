@@ -39,6 +39,7 @@ from library.places import resolve_place
 from library.paths import normalize_root, roots_equal
 from library.records import (
     clone,
+    location_key,
     make_file_entry,
     make_item,
     make_location,
@@ -225,6 +226,64 @@ def _start_source(
     return source
 
 
+def _retry_error_renditions(root: Path, entry: dict[str, Any] | None, path: Path) -> None:
+    if entry is None:
+        return
+    item_id = entry.get("itemId")
+    if type(item_id) is not str or item_id.startswith("pending-"):
+        return
+    if file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path):
+        return
+    item = try_load_item(root, item_id)
+    if item is None:
+        return
+    status = ((item.get("renditions") or {}).get("status") or {})
+    slots = [slot for slot in ("thumb", "preview", "poster", "proxy") if status.get(slot) == "error"]
+    if not slots:
+        return
+    before = clone(item)
+    after = clone(item)
+    for slot in slots:
+        after["renditions"][slot] = None
+        after["renditions"]["status"][slot] = "queued"
+    transact(
+        root,
+        [{"path": item_rel(item_id), "before": before, "after": ordered_item(after)}],
+    )
+
+
+def _retire_replaced_location(
+    root: Path,
+    prev_item_id: str | None,
+    new_item_id: str,
+    incoming: dict[str, Any],
+) -> list[dict[str, Any]]:
+    if type(prev_item_id) is not str or not prev_item_id:
+        return []
+    if prev_item_id.startswith("pending-") or prev_item_id == new_item_id:
+        return []
+    old = try_load_item(root, prev_item_id)
+    if old is None:
+        return []
+    before = clone(old)
+    after = clone(old)
+    key = location_key(incoming)
+    changed = False
+    for loc in after["locations"]:
+        if location_key(loc) == key and loc.get("current") is True:
+            loc["current"] = False
+            changed = True
+    if not changed:
+        return []
+    return [
+        {
+            "path": item_rel(prev_item_id),
+            "before": before,
+            "after": ordered_item(after),
+        }
+    ]
+
+
 def _index_file(
     root: Path,
     source: dict[str, Any],
@@ -236,6 +295,8 @@ def _index_file(
 ) -> str:
     from library.copy import make_library_location
 
+    prev_entry = (source.get("files") or {}).get(rel)
+    prev_item_id = prev_entry.get("itemId") if prev_entry else None
     kind = media_kind(path)
     component = default_component(kind)
     try:
@@ -369,6 +430,7 @@ def _index_file(
                 "before": before_source,
                 "after": ordered_source(source),
             },
+            *_retire_replaced_location(root, prev_item_id, published["id"], location),
         ],
     )
     if decode_error:
@@ -395,6 +457,7 @@ def scan_serve_from_there(
         entry = source["files"].get(rel)
         if _unchanged(entry, path, root):
             skipped += 1
+            _retry_error_renditions(root, entry, path)
             if on_progress is not None:
                 on_progress("skipped", rel)
             continue
@@ -479,6 +542,7 @@ def scan_copy_here(
                 dest_path = path
         if _unchanged(entry, dest_path, root):
             skipped += 1
+            _retry_error_renditions(root, entry, dest_path)
             if on_progress is not None:
                 on_progress("skipped", rel)
             continue
