@@ -1,0 +1,85 @@
+PASS scan-exit
+PASS catalog-five: 5
+PASS clip-proxy-ready: {"thumb": "not-applicable", "preview": "not-applicable", "poster": "ready", "proxy": "ready"}
+PASS settings-http: 200
+PASS tour-orbit-default: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years"}
+PASS tour-pictures-default: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years"}
+PASS tour-picture-sec-default: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years"}
+PASS tour-http-200: 200
+PASS chicago-same-place: {'place_698478b54f57'}
+PASS far-other-place: place_c1efc7273798
+PASS clip-chicago-place: place_698478b54f57
+PASS no-exif-no-place: None
+PASS tour-fields: [{"placeId": "place_698478b54f57", "itemIds": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}, {"placeId": "place_c1efc7273798", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}]
+PASS tour-two-places: [{"placeId": "place_698478b54f57", "itemIds": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}, {"placeId": "place_c1efc7273798", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}]
+PASS tour-omit-no-exif: ["place_698478b54f57", "place_c1efc7273798"]
+PASS tour-place-order: ["place_698478b54f57", "place_c1efc7273798"]
+PASS chicago-items-newest: {"placeId": "place_698478b54f57", "itemIds": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS far-items-newest: {"placeId": "place_c1efc7273798", "itemIds": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS tour-capped: [3, 1]
+PASS tour-http-cap: 200
+PASS tour-cap-two: {"placeId": "place_698478b54f57", "itemIds": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"]}
+PASS tour-unavailable-0: 200
+PASS ineligible-scan-exit
+PASS ineligible-preview-file: renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp
+PASS ineligible-http: 200
+PASS ineligible-omits-missing-preview: ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"]
+PASS ineligible-keeps-ready: ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"]
+PASS playwright-import
+PASS globe-play-control
+PASS play-not-viewer-preview
+PASS trace-has-orbit: ["orbit", "ease-in", "media", "media", "media", "ease-out", "orbit", "ease-in", "media", "ease-out", "orbit"]
+PASS trace-has-ease-in: ["orbit", "ease-in", "media", "media", "media", "ease-out", "orbit", "ease-in", "media", "ease-out", "orbit"]
+PASS trace-has-media: ["orbit", "ease-in", "media", "media", "media", "ease-out", "orbit", "ease-in", "media", "ease-out", "orbit"]
+PASS trace-has-ease-out: ["orbit", "ease-in", "media", "media", "media", "ease-out", "orbit", "ease-in", "media", "ease-out", "orbit"]
+PASS trace-next-place: ["place_698478b54f57", "place_c1efc7273798", "place_698478b54f57"]
+PASS trace-wrap: ["place_698478b54f57", "place_c1efc7273798", "place_698478b54f57"]
+PASS orbit-duration: {"phase": "orbit", "placeId": "place_698478b54f57", "itemId": "", "started": 0.0023, "ended": 2.0148, "durationSec": 2.0125, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoTime": 0}
+PASS orbit-6-deg-s: {"dyaw": 11.699399999998874, "rate": 5.81336645962677}
+PASS ease-in-duration: {"phase": "ease-in", "placeId": "place_698478b54f57", "itemId": "", "started": 2.0148, "ended": 3.0363, "durationSec": 1.0215, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoTime": 0}
+PASS ease-out-duration: {"phase": "ease-out", "placeId": "place_698478b54f57", "itemId": "", "started": 6.1157, "ended": 7.1679, "durationSec": 1.0522, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoTime": 0}
+PASS video-media-present: ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]
+PASS video-uses-proxy: http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy
+PASS video-not-original: http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy
+PASS video-muted: {"phase": "media", "placeId": "place_698478b54f57", "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "started": 3.0363, "ended": 4.0844, "durationSec": 1.0481, "imageSrc": "", "videoSrc": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "videoMuted": true, "videoTime": 0.962944}
+PASS video-timed-not-whole-file: {"phase": "media", "placeId": "place_698478b54f57", "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "started": 3.0363, "ended": 4.0844, "durationSec": 1.0481, "imageSrc": "", "videoSrc": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "videoMuted": true, "videoTime": 0.962944}
+PASS tour-never-original
+PASS still-uses-preview: http://127.0.0.1:18765/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview
+PASS offline-no-external: []
+PASS no-console-errors: []
+PASS tour-mp4: 658690
+PASS esc-orbit-stops: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-orbit-stays-globe: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-orbit-camera: {"before": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}, "after": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}}
+PASS esc-orbit-media-off: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-in-stops: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 99.62879999999888, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-in-stays-globe: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 99.62879999999888, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-in-camera: {"before": {"yawDeg": 99.62879999999888, "pitchDeg": 41.9025, "distance": 2.85}, "after": {"yawDeg": 99.62879999999888, "pitchDeg": 41.9025, "distance": 2.85}}
+PASS esc-ease-in-media-off: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 99.62879999999888, "pitchDeg": 41.9025, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-media-stops: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-media-stays-globe: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-media-camera: {"before": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "after": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}}
+PASS esc-media-media-off: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-out-stops: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 3}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-out-stays-globe: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 3}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS esc-ease-out-camera: {"before": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "after": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}}
+PASS esc-ease-out-media-off: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 3}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS stopped-globe-png: 1280x720
+PASS stopped-camera-recorded: {"yawDeg": 87.63, "pitchDeg": 41.88, "distance": 1.45}
+PASS drag-stops-tour: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 77.73020000000002, "pitchDeg": 41.88, "distance": 1.45}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS drag-applies: {"delta": -9.89979999999997, "after": {"yawDeg": 77.73020000000002, "pitchDeg": 41.88, "distance": 1.45}}
+PASS wheel-stops-tour: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 73.58158584745263, "pitchDeg": 40.90117375237298, "distance": 1.595}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": true, "emptyText": "No locations to show", "playVisible": true}
+PASS wheel-applies: {"before": {"yawDeg": 77.73020000000002, "pitchDeg": 41.88, "distance": 1.45}, "after": {"yawDeg": 73.58158584745263, "pitchDeg": 40.90117375237298, "distance": 1.595}}
+PASS empty-scan-exit
+PASS empty-tour-http: []
+PASS empty-play-noop-tour: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 0, "pitchDeg": 0, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": false, "emptyText": "No locations to show", "playVisible": true}
+PASS empty-play-camera-still: {"before": {"yawDeg": 0, "pitchDeg": 0, "distance": 2.85}, "after": {"yawDeg": 0, "pitchDeg": 0, "distance": 2.85}}
+PASS empty-play-message: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 0, "pitchDeg": 0, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": false, "emptyText": "No locations to show", "playVisible": true}
+PASS empty-stays-globe: {"view": "globe", "globeHidden": false, "tour": "0", "phase": "idle", "placeId": "", "itemId": "", "camera": {"yawDeg": 0, "pitchDeg": 0, "distance": 2.85}, "tourState": {"touring": false, "phase": "idle", "placeId": "", "itemId": "", "placeIndex": 0, "itemIndex": 0}, "imageSrc": "", "videoSrc": "", "videoMuted": true, "videoPaused": true, "videoTime": 0, "mediaHidden": true, "emptyHidden": false, "emptyText": "No locations to show", "playVisible": true}
+PASS page-has-globe-play
+PASS page-no-view-play
+PASS page-no-settings
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran

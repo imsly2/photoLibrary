@@ -278,6 +278,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.places_list(query))
                 return
+            if route == "/api/globe/tour" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.globe_tour(query))
+                return
             if route == "/api/groups" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
                 with self.lock:

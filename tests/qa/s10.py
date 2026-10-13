@@ -599,7 +599,7 @@ def run_session(
     globe_js = (PRODUCT_ROOT / "library" / "web" / "assets" / "globe.js").read_text(encoding="utf-8")
     checks.check("page-has-globe", 'id="view-globe"' in html and 'id="globe-view"' in html)
     checks.check("page-no-settings", "Settings" not in html and "view-settings" not in html)
-    checks.check("page-no-play", 'id="view-play"' not in html and "globe/tour" not in js and "globe/tour" not in globe_js)
+    checks.check("page-no-play", 'id="view-play"' not in html)
     checks.check("texture-shipped", (PRODUCT_ROOT / "library" / "web" / "assets" / "earth.png").is_file())
     checks.check("texture-license", (PRODUCT_ROOT / "library" / "web" / "assets" / "earth-LICENSE.txt").is_file())
     checks.check("original-fixture-bytes", hash_tree(media_src) == before)

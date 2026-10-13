@@ -1,0 +1,534 @@
+{
+  "events": [
+    {
+      "t": 0.0017,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "orbit",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.9025,
+        "distance": 2.85
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "orbit",
+        "placeId": "place_5c33a6614679",
+        "itemId": "",
+        "placeIndex": 0,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 99.5291999999991,
+        "pitchDeg": 41.9025,
+        "distance": 2.85
+      }
+    },
+    {
+      "t": 2.0337,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "ease-in",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 99.59106040507471,
+        "pitchDeg": 41.902428109665,
+        "distance": 2.8455268236
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "ease-in",
+        "placeId": "place_5c33a6614679",
+        "itemId": "",
+        "placeIndex": 0,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.64040623459825,
+        "pitchDeg": 41.880019512665505,
+        "distance": 1.4512141214092
+      }
+    },
+    {
+      "t": 3.04,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "media",
+        "placeId": "place_5c33a6614679",
+        "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+        "placeIndex": 0,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "http://127.0.0.1:18768/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0.981984,
+      "mediaHidden": false,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      }
+    },
+    {
+      "t": 4.1143,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "media",
+        "placeId": "place_5c33a6614679",
+        "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+        "placeIndex": 0,
+        "itemIndex": 1
+      },
+      "imageSrc": "http://127.0.0.1:18768/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": false,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      }
+    },
+    {
+      "t": 5.1368,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "media",
+        "placeId": "place_5c33a6614679",
+        "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "placeIndex": 0,
+        "itemIndex": 2
+      },
+      "imageSrc": "http://127.0.0.1:18768/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": false,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      }
+    },
+    {
+      "t": 6.2069,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "ease-out",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "ease-out",
+        "placeId": "place_5c33a6614679",
+        "itemId": "",
+        "placeIndex": 0,
+        "itemIndex": 3
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.88,
+        "distance": 2.849979701814407
+      }
+    },
+    {
+      "t": 7.2525,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "orbit",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 87.72959999999999,
+        "pitchDeg": 41.88,
+        "distance": 2.85
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "orbit",
+        "placeId": "place_54cabdf5a3f1",
+        "itemId": "",
+        "placeIndex": 1,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 99.62939999999999,
+        "pitchDeg": 41.88,
+        "distance": 2.85
+      }
+    },
+    {
+      "t": 9.2953,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "ease-in",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 99.68543287796277,
+        "pitchDeg": 41.88016426332207,
+        "distance": 2.8448895855357064
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "ease-in",
+        "placeId": "place_54cabdf5a3f1",
+        "itemId": "",
+        "placeIndex": 1,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.77539593180906,
+        "pitchDeg": 41.924459253452056,
+        "distance": 1.466823225935789
+      }
+    },
+    {
+      "t": 10.2655,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "media",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.925,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "media",
+        "placeId": "place_54cabdf5a3f1",
+        "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+        "placeIndex": 1,
+        "itemIndex": 0
+      },
+      "imageSrc": "http://127.0.0.1:18768/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": false,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.925,
+        "distance": 1.45
+      }
+    },
+    {
+      "t": 11.3074,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "ease-out",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.925,
+        "distance": 1.45
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "ease-out",
+        "placeId": "place_54cabdf5a3f1",
+        "itemId": "",
+        "placeIndex": 1,
+        "itemIndex": 1
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true,
+      "cameraEnd": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.925,
+        "distance": 2.85
+      }
+    },
+    {
+      "t": 12.3786,
+      "view": "globe",
+      "globeHidden": false,
+      "tour": "1",
+      "phase": "orbit",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "camera": {
+        "yawDeg": 87.63,
+        "pitchDeg": 41.925,
+        "distance": 2.85
+      },
+      "tourState": {
+        "touring": true,
+        "phase": "orbit",
+        "placeId": "place_5c33a6614679",
+        "itemId": "",
+        "placeIndex": 0,
+        "itemIndex": 0
+      },
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoPaused": true,
+      "videoTime": 0,
+      "mediaHidden": true,
+      "emptyHidden": true,
+      "emptyText": "No locations to show",
+      "playVisible": true
+    }
+  ],
+  "spans": [
+    {
+      "phase": "orbit",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "started": 0.0017,
+      "ended": 2.0337,
+      "durationSec": 2.032,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "ease-in",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "started": 2.0337,
+      "ended": 3.04,
+      "durationSec": 1.0063,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "started": 3.04,
+      "ended": 4.1143,
+      "durationSec": 1.0743,
+      "imageSrc": "",
+      "videoSrc": "http://127.0.0.1:18768/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+      "videoMuted": true,
+      "videoTime": 0.981984
+    },
+    {
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "started": 4.1143,
+      "ended": 5.1368,
+      "durationSec": 1.0225,
+      "imageSrc": "http://127.0.0.1:18768/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "media",
+      "placeId": "place_5c33a6614679",
+      "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "started": 5.1368,
+      "ended": 6.2069,
+      "durationSec": 1.0701,
+      "imageSrc": "http://127.0.0.1:18768/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "ease-out",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "started": 6.2069,
+      "ended": 7.2525,
+      "durationSec": 1.0456,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "orbit",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "started": 7.2525,
+      "ended": 9.2953,
+      "durationSec": 2.0428,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "ease-in",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "started": 9.2953,
+      "ended": 10.2655,
+      "durationSec": 0.9702,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "media",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "started": 10.2655,
+      "ended": 11.3074,
+      "durationSec": 1.0419,
+      "imageSrc": "http://127.0.0.1:18768/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=preview",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "ease-out",
+      "placeId": "place_54cabdf5a3f1",
+      "itemId": "",
+      "started": 11.3074,
+      "ended": 12.3786,
+      "durationSec": 1.0712,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    },
+    {
+      "phase": "orbit",
+      "placeId": "place_5c33a6614679",
+      "itemId": "",
+      "started": 12.3786,
+      "ended": 12.3786,
+      "durationSec": 0.0,
+      "imageSrc": "",
+      "videoSrc": "",
+      "videoMuted": true,
+      "videoTime": 0
+    }
+  ],
+  "settings": {
+    "tourOrbitSec": 2,
+    "tourPictureSec": 1,
+    "tourPictures": 5
+  }
+}

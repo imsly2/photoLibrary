@@ -4,6 +4,10 @@
   const pinsEl = document.getElementById("globe-pins");
   const emptyEl = document.getElementById("globe-empty");
   const errorEl = document.getElementById("globe-error");
+  const playBtn = document.getElementById("globe-play");
+  const tourMedia = document.getElementById("globe-tour-media");
+  const tourImage = document.getElementById("globe-tour-image");
+  const tourVideo = document.getElementById("globe-tour-video");
   if (!view || !canvas || !pinsEl) {
     return;
   }
@@ -16,6 +20,9 @@
   const MAX_DIST = 6.5;
   const FOV = 45 * Math.PI / 180;
   const DRAG_SLOP = 4;
+  const ORBIT_DEG_PER_SEC = 6;
+  const EASE_SEC = 1;
+  const CLOSE_DIST = 1.45;
 
   let gl = null;
   let program = null;
@@ -41,6 +48,24 @@
   let cssWidth = 1;
   let cssHeight = 1;
   let pinSig = "";
+  let touring = false;
+  let phase = "idle";
+  let phaseStarted = 0;
+  let tourLastTs = 0;
+  let tourList = [];
+  let placeIndex = 0;
+  let itemIndex = 0;
+  let currentPlaceId = "";
+  let currentItemId = "";
+  let itemById = {};
+  let orbitSec = 8;
+  let pictureSec = 3;
+  let orbitDistance = 2.85;
+  let easeFrom = { yaw: 0, pitch: 0, distance: 2.85 };
+  let easeTo = { yaw: 0, pitch: 0, distance: 2.85 };
+  let mediaArmed = false;
+  let loadTimer = 0;
+  let emptyFromTour = false;
 
   function failWebgl(message) {
     if (errorEl) {
@@ -386,12 +411,28 @@
     };
   }
 
+  function syncTourDataset() {
+    canvas.dataset.tour = touring ? "1" : "0";
+    canvas.dataset.tourPhase = phase;
+    if (currentPlaceId) {
+      canvas.dataset.tourPlaceId = currentPlaceId;
+    } else {
+      delete canvas.dataset.tourPlaceId;
+    }
+    if (currentItemId) {
+      canvas.dataset.tourItemId = currentItemId;
+    } else {
+      delete canvas.dataset.tourItemId;
+    }
+  }
+
   function syncCameraDataset() {
     canvas.dataset.yaw = String(toDeg(yaw));
     canvas.dataset.pitch = String(toDeg(pitch));
     canvas.dataset.distance = String(distance);
     canvas.dataset.ready = textureReady ? "1" : "0";
     canvas.dataset.webgl = gl ? "1" : "0";
+    syncTourDataset();
   }
 
   function framePlaces() {
@@ -646,12 +687,17 @@
     syncCameraDataset();
     if (emptyEl) {
       const webglFailed = errorEl && !errorEl.hidden;
-      emptyEl.hidden = webglFailed || places.length > 0 || !textureReady;
+      if (emptyFromTour && !webglFailed) {
+        emptyEl.hidden = false;
+      } else {
+        emptyEl.hidden = webglFailed || places.length > 0 || !textureReady;
+      }
     }
   }
 
-  function loop() {
+  function loop(now) {
     raf = 0;
+    tickTour(now || performance.now());
     drawGlobe();
     if (active) {
       raf = window.requestAnimationFrame(loop);
@@ -809,8 +855,470 @@
     });
   }
 
+  function fetchJson(url) {
+    return fetch(url).then(function (res) {
+      if (!res.ok) {
+        throw new Error("http");
+      }
+      return res.json();
+    });
+  }
+
+  function applyTourSettings(settings) {
+    if (!settings || typeof settings !== "object") {
+      return;
+    }
+    if (typeof settings.tourOrbitSec === "number" && settings.tourOrbitSec > 0) {
+      orbitSec = settings.tourOrbitSec;
+    }
+    if (typeof settings.tourPictureSec === "number" && settings.tourPictureSec > 0) {
+      pictureSec = settings.tourPictureSec;
+    }
+  }
+
+  function indexItems(items) {
+    itemById = {};
+    if (!Array.isArray(items)) {
+      return;
+    }
+    items.forEach(function (item) {
+      if (item && item.id) {
+        itemById[item.id] = item;
+      }
+    });
+  }
+
+  function placeById(id) {
+    for (let i = 0; i < places.length; i += 1) {
+      if (places[i].id === id) {
+        return places[i];
+      }
+    }
+    return null;
+  }
+
+  function itemRecord(id) {
+    return itemById[id] || null;
+  }
+
+  function lookAtPlace(place, dist) {
+    return {
+      yaw: wrapYaw(-place.longitude * Math.PI / 180),
+      pitch: clamp(place.latitude * Math.PI / 180, -PITCH_MAX, PITCH_MAX),
+      distance: dist,
+    };
+  }
+
+  function shortestYaw(from, to) {
+    let delta = to - from;
+    const two = Math.PI * 2;
+    while (delta > Math.PI) {
+      delta -= two;
+    }
+    while (delta < -Math.PI) {
+      delta += two;
+    }
+    return delta;
+  }
+
+  function applyEase(t) {
+    if (!touring) {
+      return;
+    }
+    const e = t * t * (3 - 2 * t);
+    yaw = wrapYaw(easeFrom.yaw + shortestYaw(easeFrom.yaw, easeTo.yaw) * e);
+    pitch = clamp(easeFrom.pitch + (easeTo.pitch - easeFrom.pitch) * e, -PITCH_MAX, PITCH_MAX);
+    distance = easeFrom.distance + (easeTo.distance - easeFrom.distance) * e;
+  }
+
+  function clearLoadTimer() {
+    if (loadTimer) {
+      window.clearTimeout(loadTimer);
+      loadTimer = 0;
+    }
+  }
+
+  function hideTourMedia() {
+    clearLoadTimer();
+    if (tourVideo) {
+      tourVideo.onloadeddata = null;
+      tourVideo.onerror = null;
+      tourVideo.pause();
+      tourVideo.removeAttribute("src");
+      try {
+        tourVideo.load();
+      } catch (err) {}
+      tourVideo.hidden = true;
+    }
+    if (tourImage) {
+      tourImage.onload = null;
+      tourImage.onerror = null;
+      tourImage.removeAttribute("src");
+      tourImage.hidden = true;
+    }
+    if (tourMedia) {
+      tourMedia.hidden = true;
+    }
+  }
+
+  function showTourEmpty() {
+    emptyFromTour = true;
+    if (emptyEl) {
+      emptyEl.textContent = "No locations to show";
+      emptyEl.hidden = false;
+    }
+  }
+
+  function clientEligible(item) {
+    if (!item) {
+      return false;
+    }
+    const status = ((item.renditions || {}).status || {});
+    if (item.kind === "video") {
+      return status.proxy === "ready";
+    }
+    if (item.kind === "photo" || item.kind === "live") {
+      return status.preview === "ready";
+    }
+    return false;
+  }
+
+  function armMedia() {
+    if (!touring || phase !== "media") {
+      return;
+    }
+    clearLoadTimer();
+    mediaArmed = true;
+    phaseStarted = performance.now();
+    syncTourDataset();
+  }
+
+  function skipCurrentMedia() {
+    if (!touring || phase !== "media") {
+      return;
+    }
+    hideTourMedia();
+    currentItemId = "";
+    itemIndex += 1;
+    mediaArmed = false;
+    presentNextItem();
+  }
+
+  function showTourItem(item) {
+    currentItemId = item.id;
+    mediaArmed = false;
+    phaseStarted = performance.now();
+    syncTourDataset();
+    clearLoadTimer();
+    loadTimer = window.setTimeout(function () {
+      skipCurrentMedia();
+    }, 8000);
+    if (item.kind === "video" && tourVideo && tourMedia) {
+      if (tourImage) {
+        tourImage.hidden = true;
+      }
+      tourVideo.hidden = false;
+      tourMedia.hidden = false;
+      tourVideo.muted = true;
+      tourVideo.defaultMuted = true;
+      tourVideo.volume = 0;
+      tourVideo.loop = false;
+      tourVideo.playsInline = true;
+      tourVideo.onloadeddata = function () {
+        if (!touring || phase !== "media" || currentItemId !== item.id) {
+          return;
+        }
+        const play = tourVideo.play();
+        if (play && play.catch) {
+          play.catch(function () {});
+        }
+        armMedia();
+      };
+      tourVideo.onerror = function () {
+        skipCurrentMedia();
+      };
+      tourVideo.src = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+      return;
+    }
+    if ((item.kind === "photo" || item.kind === "live") && tourImage && tourMedia) {
+      if (tourVideo) {
+        tourVideo.hidden = true;
+      }
+      tourImage.hidden = false;
+      tourMedia.hidden = false;
+      tourImage.onload = function () {
+        if (!touring || phase !== "media" || currentItemId !== item.id) {
+          return;
+        }
+        armMedia();
+      };
+      tourImage.onerror = function () {
+        skipCurrentMedia();
+      };
+      tourImage.src = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
+      return;
+    }
+    skipCurrentMedia();
+  }
+
+  function presentNextItem() {
+    const row = tourList[placeIndex];
+    const ids = (row && row.itemIds) || [];
+    while (itemIndex < ids.length) {
+      const item = itemRecord(ids[itemIndex]);
+      if (clientEligible(item)) {
+        showTourItem(item);
+        return;
+      }
+      itemIndex += 1;
+    }
+    startEaseOut();
+  }
+
+  function startOrbit() {
+    const row = tourList[placeIndex];
+    if (!row) {
+      refetchCycle();
+      return;
+    }
+    const place = placeById(row.placeId);
+    if (!place) {
+      placeIndex += 1;
+      if (placeIndex >= tourList.length) {
+        refetchCycle();
+      } else {
+        startOrbit();
+      }
+      return;
+    }
+    currentPlaceId = row.placeId;
+    currentItemId = "";
+    itemIndex = 0;
+    mediaArmed = false;
+    hideTourMedia();
+    phase = "orbit";
+    phaseStarted = performance.now();
+    syncTourDataset();
+  }
+
+  function startEaseIn() {
+    const place = placeById(currentPlaceId);
+    if (!place) {
+      advancePlace();
+      return;
+    }
+    phase = "ease-in";
+    phaseStarted = performance.now();
+    easeFrom = { yaw: yaw, pitch: pitch, distance: distance };
+    easeTo = lookAtPlace(place, CLOSE_DIST);
+    syncTourDataset();
+  }
+
+  function startMedia() {
+    phase = "media";
+    mediaArmed = false;
+    itemIndex = 0;
+    currentItemId = "";
+    hideTourMedia();
+    presentNextItem();
+    syncTourDataset();
+  }
+
+  function startEaseOut() {
+    hideTourMedia();
+    currentItemId = "";
+    mediaArmed = false;
+    phase = "ease-out";
+    phaseStarted = performance.now();
+    const place = placeById(currentPlaceId);
+    easeFrom = { yaw: yaw, pitch: pitch, distance: distance };
+    easeTo = place ? lookAtPlace(place, orbitDistance) : {
+      yaw: yaw,
+      pitch: pitch,
+      distance: orbitDistance,
+    };
+    syncTourDataset();
+  }
+
+  function advancePlace() {
+    placeIndex += 1;
+    if (placeIndex >= tourList.length) {
+      refetchCycle();
+      return;
+    }
+    startOrbit();
+  }
+
+  function advanceMedia() {
+    hideTourMedia();
+    currentItemId = "";
+    itemIndex += 1;
+    mediaArmed = false;
+    presentNextItem();
+  }
+
+  function finishEase(target) {
+    if (!touring) {
+      return;
+    }
+    yaw = target.yaw;
+    pitch = target.pitch;
+    distance = target.distance;
+  }
+
+  function cancelTourFrame() {
+    if (raf) {
+      window.cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    tourLastTs = 0;
+  }
+
+  function tickTour(now) {
+    if (!touring) {
+      tourLastTs = 0;
+      return;
+    }
+    const dt = tourLastTs ? Math.min(0.05, (now - tourLastTs) / 1000) : 0;
+    tourLastTs = now;
+    const elapsed = (now - phaseStarted) / 1000;
+    if (phase === "orbit") {
+      if (!touring) {
+        return;
+      }
+      yaw = wrapYaw(yaw + (ORBIT_DEG_PER_SEC * Math.PI / 180) * dt);
+      if (elapsed >= orbitSec) {
+        startEaseIn();
+      }
+    } else if (phase === "ease-in") {
+      if (!touring) {
+        return;
+      }
+      applyEase(Math.min(1, elapsed / EASE_SEC));
+      if (elapsed >= EASE_SEC) {
+        finishEase(easeTo);
+        startMedia();
+      }
+    } else if (phase === "media") {
+      if (mediaArmed && elapsed >= pictureSec) {
+        advanceMedia();
+      }
+    } else if (phase === "ease-out") {
+      if (!touring) {
+        return;
+      }
+      applyEase(Math.min(1, elapsed / EASE_SEC));
+      if (elapsed >= EASE_SEC) {
+        finishEase(easeTo);
+        advancePlace();
+      }
+    }
+  }
+
+  function filterTourRows(list) {
+    if (!Array.isArray(list)) {
+      return [];
+    }
+    return list.filter(function (row) {
+      return row && row.placeId && Array.isArray(row.itemIds) && row.itemIds.length;
+    });
+  }
+
+  function refetchCycle() {
+    Promise.all([
+      fetchJson("/api/globe/tour"),
+      fetchJson("/api/settings"),
+      fetchJson("/api/items"),
+    ]).then(function (pair) {
+      if (!touring) {
+        return;
+      }
+      applyTourSettings(pair[1]);
+      indexItems(pair[2]);
+      const next = filterTourRows(pair[0]);
+      if (!next.length) {
+        stopTour();
+        showTourEmpty();
+        return;
+      }
+      tourList = next;
+      placeIndex = 0;
+      startOrbit();
+    }).catch(function () {
+      if (touring) {
+        stopTour();
+      }
+    });
+  }
+
+  function beginTour(list, settings, items) {
+    const rows = filterTourRows(list);
+    if (!rows.length) {
+      showTourEmpty();
+      return;
+    }
+    emptyFromTour = false;
+    if (emptyEl && places.length > 0) {
+      emptyEl.hidden = true;
+    }
+    applyTourSettings(settings);
+    indexItems(items);
+    tourList = rows;
+    placeIndex = 0;
+    orbitDistance = distance;
+    touring = true;
+    tourLastTs = 0;
+    beginMovement();
+    startOrbit();
+  }
+
+  function startTour() {
+    if (touring || !active) {
+      return;
+    }
+    Promise.all([
+      fetchJson("/api/globe/tour"),
+      fetchJson("/api/settings"),
+      fetchJson("/api/items"),
+    ]).then(function (pair) {
+      if (!active || touring) {
+        return;
+      }
+      const list = filterTourRows(pair[0]);
+      if (!list.length) {
+        showTourEmpty();
+        return;
+      }
+      beginTour(pair[0], pair[1], pair[2]);
+    }).catch(function () {});
+  }
+
+  function stopTour() {
+    const was = touring;
+    if (!was && phase === "idle") {
+      syncTourDataset();
+      return false;
+    }
+    touring = false;
+    cancelTourFrame();
+    phase = "idle";
+    currentPlaceId = "";
+    currentItemId = "";
+    mediaArmed = false;
+    hideTourMedia();
+    endMovement();
+    syncTourDataset();
+    if (active) {
+      requestDraw();
+    }
+    return was;
+  }
+
   function setActive(on) {
     active = !!on;
+    if (!active) {
+      stopTour();
+    }
     if (active) {
       if (!gl && !canvas.dataset.webglTried) {
         canvas.dataset.webglTried = "1";
@@ -825,9 +1333,20 @@
     syncCameraDataset();
   }
 
+  if (playBtn) {
+    playBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      startTour();
+    });
+  }
+
   view.addEventListener("wheel", function (event) {
     if (!active || event.ctrlKey) {
       return;
+    }
+    if (touring) {
+      stopTour();
     }
     applyWheel(event);
   }, { passive: false });
@@ -836,8 +1355,11 @@
     if (!active || event.button !== 0) {
       return;
     }
-    if (event.target && event.target.closest && event.target.closest(".globe-cluster")) {
+    if (event.target && event.target.closest && event.target.closest(".globe-cluster, #globe-play")) {
       return;
+    }
+    if (touring) {
+      stopTour();
     }
     dragging = true;
     dragStartX = event.clientX;
@@ -877,6 +1399,20 @@
   window.libraryGlobe = {
     setActive: setActive,
     refresh: loadPlaces,
+    stopTour: stopTour,
+    isTouring: function () {
+      return touring;
+    },
+    getTour: function () {
+      return {
+        touring: touring,
+        phase: phase,
+        placeId: currentPlaceId,
+        itemId: currentItemId,
+        placeIndex: placeIndex,
+        itemIndex: itemIndex,
+      };
+    },
     getCamera: function () {
       return {
         yawDeg: toDeg(yaw),

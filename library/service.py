@@ -264,6 +264,52 @@ class Library:
         out.sort(key=lambda rec: rec["id"])
         return out
 
+    def globe_tour(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        self.recover()
+        settings = self.ensure_settings()
+        query = query or {}
+        extra = set(query) - {"unavailable"}
+        if extra:
+            raise fail("invalid-argument")
+        cap = settings["tourPictures"]
+        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        items = [item for item in items if _item_visible(item, settings, query)]
+        places_by_id = {place["id"]: place for place in load_places(self.root)}
+        by_place: dict[str, list[dict[str, Any]]] = {}
+        for item in items:
+            place_id = item.get("placeId")
+            if type(place_id) is not str or not place_id:
+                continue
+            place = places_by_id.get(place_id)
+            if place is None:
+                continue
+            if place.get("latitude") is None or place.get("longitude") is None:
+                continue
+            if not _item_tour_eligible(item, self.root):
+                continue
+            by_place.setdefault(place_id, []).append(item)
+        decorated: list[tuple[str, str, dict[str, Any]]] = []
+        for place_id, members in by_place.items():
+            members_sorted = sorted(
+                members,
+                key=lambda item: (item.get("capturedAt") or "", item["id"]),
+                reverse=True,
+            )
+            newest = members_sorted[0]
+            decorated.append(
+                (
+                    newest.get("capturedAt") or "",
+                    place_id,
+                    {
+                        "placeId": place_id,
+                        "itemIds": [item["id"] for item in members_sorted[:cap]],
+                    },
+                )
+            )
+        decorated.sort(key=lambda row: row[1])
+        decorated.sort(key=lambda row: row[0], reverse=True)
+        return [row[2] for row in decorated]
+
     def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         query = dict(query or {})
         extra = set(query) - ITEM_QUERY_KEYS - {"level"}
@@ -396,6 +442,31 @@ def _readable_component_file(item: dict[str, Any], component: str, root: Path) -
         if location_matches_stat(loc, path):
             return path
     return None
+
+
+def _tour_slot(item: dict[str, Any]) -> str | None:
+    kind = item.get("kind")
+    if kind == "video":
+        return "proxy"
+    if kind in {"photo", "live"}:
+        return "preview"
+    return None
+
+
+def _item_tour_eligible(item: dict[str, Any], root: Path) -> bool:
+    which = _tour_slot(item)
+    if which is None:
+        return False
+    rend = item.get("renditions") or {}
+    status = (rend.get("status") or {}).get(which)
+    relative = rend.get(which)
+    if relative is None or status != "ready":
+        return False
+    try:
+        path = rendition_abs(item, which, root)
+    except Exception:
+        return False
+    return path is not None and path.is_file() and path.stat().st_size > 0
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:

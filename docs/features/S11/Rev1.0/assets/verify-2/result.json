@@ -1,0 +1,460 @@
+{
+  "slice": "S11",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "catalog-five",
+      "pass": true,
+      "detail": "5"
+    },
+    {
+      "name": "clip-proxy-ready",
+      "pass": true,
+      "detail": "{\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"ready\", \"proxy\": \"ready\"}"
+    },
+    {
+      "name": "settings-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "tour-orbit-default",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "tour-pictures-default",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "tour-picture-sec-default",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "tour-http-200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "chicago-same-place",
+      "pass": true,
+      "detail": "{'place_b44d81561b78'}"
+    },
+    {
+      "name": "far-other-place",
+      "pass": true,
+      "detail": "place_4680ef1e8a39"
+    },
+    {
+      "name": "clip-chicago-place",
+      "pass": true,
+      "detail": "place_b44d81561b78"
+    },
+    {
+      "name": "no-exif-no-place",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "tour-fields",
+      "pass": true,
+      "detail": "[{\"placeId\": \"place_b44d81561b78\", \"itemIds\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}, {\"placeId\": \"place_4680ef1e8a39\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}]"
+    },
+    {
+      "name": "tour-two-places",
+      "pass": true,
+      "detail": "[{\"placeId\": \"place_b44d81561b78\", \"itemIds\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}, {\"placeId\": \"place_4680ef1e8a39\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}]"
+    },
+    {
+      "name": "tour-omit-no-exif",
+      "pass": true,
+      "detail": "[\"place_b44d81561b78\", \"place_4680ef1e8a39\"]"
+    },
+    {
+      "name": "tour-place-order",
+      "pass": true,
+      "detail": "[\"place_b44d81561b78\", \"place_4680ef1e8a39\"]"
+    },
+    {
+      "name": "chicago-items-newest",
+      "pass": true,
+      "detail": "{\"placeId\": \"place_b44d81561b78\", \"itemIds\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "far-items-newest",
+      "pass": true,
+      "detail": "{\"placeId\": \"place_4680ef1e8a39\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "tour-capped",
+      "pass": true,
+      "detail": "[3, 1]"
+    },
+    {
+      "name": "tour-http-cap",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "tour-cap-two",
+      "pass": true,
+      "detail": "{\"placeId\": \"place_b44d81561b78\", \"itemIds\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"]}"
+    },
+    {
+      "name": "tour-unavailable-0",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "ineligible-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ineligible-preview-file",
+      "pass": true,
+      "detail": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp"
+    },
+    {
+      "name": "ineligible-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "ineligible-omits-missing-preview",
+      "pass": true,
+      "detail": "[\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"]"
+    },
+    {
+      "name": "ineligible-keeps-ready",
+      "pass": true,
+      "detail": "[\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "globe-play-control",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "play-not-viewer-preview",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "trace-has-orbit",
+      "pass": true,
+      "detail": "[\"orbit\", \"ease-in\", \"media\", \"media\", \"media\", \"ease-out\", \"orbit\", \"ease-in\", \"media\", \"ease-out\", \"orbit\"]"
+    },
+    {
+      "name": "trace-has-ease-in",
+      "pass": true,
+      "detail": "[\"orbit\", \"ease-in\", \"media\", \"media\", \"media\", \"ease-out\", \"orbit\", \"ease-in\", \"media\", \"ease-out\", \"orbit\"]"
+    },
+    {
+      "name": "trace-has-media",
+      "pass": true,
+      "detail": "[\"orbit\", \"ease-in\", \"media\", \"media\", \"media\", \"ease-out\", \"orbit\", \"ease-in\", \"media\", \"ease-out\", \"orbit\"]"
+    },
+    {
+      "name": "trace-has-ease-out",
+      "pass": true,
+      "detail": "[\"orbit\", \"ease-in\", \"media\", \"media\", \"media\", \"ease-out\", \"orbit\", \"ease-in\", \"media\", \"ease-out\", \"orbit\"]"
+    },
+    {
+      "name": "trace-next-place",
+      "pass": true,
+      "detail": "[\"place_b44d81561b78\", \"place_4680ef1e8a39\", \"place_b44d81561b78\"]"
+    },
+    {
+      "name": "trace-wrap",
+      "pass": true,
+      "detail": "[\"place_b44d81561b78\", \"place_4680ef1e8a39\", \"place_b44d81561b78\"]"
+    },
+    {
+      "name": "orbit-duration",
+      "pass": true,
+      "detail": "{\"phase\": \"orbit\", \"placeId\": \"place_b44d81561b78\", \"itemId\": \"\", \"started\": 0.0125, \"ended\": 2.0077, \"durationSec\": 1.9952, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoTime\": 0}"
+    },
+    {
+      "name": "orbit-6-deg-s",
+      "pass": true,
+      "detail": "{\"dyaw\": 11.699399999998931, \"rate\": 5.8637730553322625}"
+    },
+    {
+      "name": "ease-in-duration",
+      "pass": true,
+      "detail": "{\"phase\": \"ease-in\", \"placeId\": \"place_b44d81561b78\", \"itemId\": \"\", \"started\": 2.0077, \"ended\": 3.0311, \"durationSec\": 1.0234, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoTime\": 0}"
+    },
+    {
+      "name": "ease-out-duration",
+      "pass": true,
+      "detail": "{\"phase\": \"ease-out\", \"placeId\": \"place_b44d81561b78\", \"itemId\": \"\", \"started\": 6.159, \"ended\": 7.1565, \"durationSec\": 0.9975, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoTime\": 0}"
+    },
+    {
+      "name": "video-media-present",
+      "pass": true,
+      "detail": "[\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]"
+    },
+    {
+      "name": "video-uses-proxy",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy"
+    },
+    {
+      "name": "video-not-original",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy"
+    },
+    {
+      "name": "video-muted",
+      "pass": true,
+      "detail": "{\"phase\": \"media\", \"placeId\": \"place_b44d81561b78\", \"itemId\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"started\": 3.0311, \"ended\": 4.1121, \"durationSec\": 1.081, \"imageSrc\": \"\", \"videoSrc\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"videoMuted\": true, \"videoTime\": 0.977587}"
+    },
+    {
+      "name": "video-timed-not-whole-file",
+      "pass": true,
+      "detail": "{\"phase\": \"media\", \"placeId\": \"place_b44d81561b78\", \"itemId\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"started\": 3.0311, \"ended\": 4.1121, \"durationSec\": 1.081, \"imageSrc\": \"\", \"videoSrc\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"videoMuted\": true, \"videoTime\": 0.977587}"
+    },
+    {
+      "name": "tour-never-original",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "still-uses-preview",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview"
+    },
+    {
+      "name": "offline-no-external",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "tour-mp4",
+      "pass": true,
+      "detail": "662109"
+    },
+    {
+      "name": "esc-orbit-stops",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-orbit-stays-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-orbit-camera",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"after\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}}"
+    },
+    {
+      "name": "esc-orbit-media-off",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-in-stops",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 99.62939999999897, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-in-stays-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 99.62939999999897, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-in-camera",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 99.62939999999897, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"after\": {\"yawDeg\": 99.62939999999897, \"pitchDeg\": 41.9025, \"distance\": 2.85}}"
+    },
+    {
+      "name": "esc-ease-in-media-off",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 99.62939999999897, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-media-stops",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-media-stays-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-media-camera",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"after\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}}"
+    },
+    {
+      "name": "esc-media-media-off",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-out-stops",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 3}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-out-stays-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 3}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "esc-ease-out-camera",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"after\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}}"
+    },
+    {
+      "name": "esc-ease-out-media-off",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 3}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "stopped-globe-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "stopped-camera-recorded",
+      "pass": true,
+      "detail": "{\"yawDeg\": 87.63, \"pitchDeg\": 41.88, \"distance\": 1.45}"
+    },
+    {
+      "name": "drag-stops-tour",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 77.82979999999996, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "drag-applies",
+      "pass": true,
+      "detail": "{\"delta\": -9.800200000000032, \"after\": {\"yawDeg\": 77.82979999999996, \"pitchDeg\": 41.88, \"distance\": 1.45}}"
+    },
+    {
+      "name": "wheel-stops-tour",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 73.68178584745255, \"pitchDeg\": 40.90117375237298, \"distance\": 1.595}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": true, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "wheel-applies",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 77.82979999999996, \"pitchDeg\": 41.88, \"distance\": 1.45}, \"after\": {\"yawDeg\": 73.68178584745255, \"pitchDeg\": 40.90117375237298, \"distance\": 1.595}}"
+    },
+    {
+      "name": "empty-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-tour-http",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "empty-play-noop-tour",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 0, \"pitchDeg\": 0, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": false, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "empty-play-camera-still",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 0, \"pitchDeg\": 0, \"distance\": 2.85}, \"after\": {\"yawDeg\": 0, \"pitchDeg\": 0, \"distance\": 2.85}}"
+    },
+    {
+      "name": "empty-play-message",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 0, \"pitchDeg\": 0, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": false, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "empty-stays-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"tour\": \"0\", \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"camera\": {\"yawDeg\": 0, \"pitchDeg\": 0, \"distance\": 2.85}, \"tourState\": {\"touring\": false, \"phase\": \"idle\", \"placeId\": \"\", \"itemId\": \"\", \"placeIndex\": 0, \"itemIndex\": 0}, \"imageSrc\": \"\", \"videoSrc\": \"\", \"videoMuted\": true, \"videoPaused\": true, \"videoTime\": 0, \"mediaHidden\": true, \"emptyHidden\": false, \"emptyText\": \"No locations to show\", \"playVisible\": true}"
+    },
+    {
+      "name": "page-has-globe-play",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-no-view-play",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-no-settings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "01a28a589dec019edd881cc68a4806bdb35011f6",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "GET /api/settings",
+    "GET /api/globe/tour",
+    "PUT /api/settings tourPictures=2",
+    "GET /api/globe/tour cap",
+    "PUT /api/settings tourPictures=5",
+    "GET /api/globe/tour?unavailable=0",
+    "python -m library scan <folder> --serve-from-there",
+    "GET /api/globe/tour ineligible",
+    "PUT /api/settings tourOrbitSec/tourPictureSec",
+    "python -m library scan <folder> --serve-from-there",
+    "GET /api/globe/tour empty"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/result.json",
+    "stdout.log": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/stdout.log",
+    "tour.json": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/tour.json",
+    "tour-trace.json": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/tour-trace.json",
+    "tour.mp4": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/tour.mp4",
+    "stopped-globe.png": "/workspace/docs/features/S11/Rev1.0/assets/verify-2/stopped-globe.png"
+  }
+}

@@ -1338,6 +1338,10 @@
       if (addDialog.open) {
         return;
       }
+      if (window.libraryGlobe && window.libraryGlobe.stopTour && window.libraryGlobe.stopTour()) {
+        event.preventDefault();
+        return;
+      }
       if (!viewer.hidden) {
         closeViewer();
       }

@@ -40,7 +40,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Closes F10 and F15. Do not wait for taste.
 - S10 / M3 globe is green: `GET /api/places` returns two GPS places and
   omits no-exif; local WebGL earth; 32 px cluster; click opens newest;
-  Esc leaves the filtered grid. Closes F12. Tour stays S11.
+  Esc leaves the filtered grid. Closes F12.
+- S11 / M3 tour is green: `GET /api/globe/tour` lists both GPS places and
+  omits no-exif; Play orbits, eases, shows preview/proxy, wraps; Esc
+  freezes the camera. Closes F13. Do not wait for taste.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -50,8 +53,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**14 / 22 Checks = 63.6% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F14, F15, F16, and F20 have fresh-verifier artifacts.
-M1 browse, M2 search, and the M3 globe half are recorded. Tour and later commands remain pending.
+**15 / 22 Checks = 68.2% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, and F20 have fresh-verifier artifacts.
+M1, M2, and M3 are recorded. Later commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
@@ -67,7 +70,7 @@ M1 browse, M2 search, and the M3 globe half are recorded. Tour and later command
 | F10 | Viewer | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `b8e2663` | `python -m tests.qa check F10` [verify-1](features/S09/Rev1.0/assets/verify-1/f10/result.json); orchestrator rerun [f10](features/S09/Rev1.0/assets/orchestrator-rerun/f10/result.json) |
 | F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |
 | F12 | Globe | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `9c2ab3a` + S10 | `python -m tests.qa check F12` [verify-1](features/S10/Rev1.0/assets/verify-1/f12/result.json); orchestrator rerun [f12](features/S10/Rev1.0/assets/orchestrator-rerun/f12/result.json) |
-| F13 | Tour | pending | — | Not run; no artifact |
+| F13 | Tour | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `01a28a5` + S11 | `python -m tests.qa check F13` [verify-2](features/S11/Rev1.0/assets/verify-2/f13/result.json); orchestrator rerun [f13](features/S11/Rev1.0/assets/orchestrator-rerun/f13/result.json) |
 | F14 | People / places / things | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `59ab5ab` | `python -m tests.qa check F14` [verify-1](features/S08/Rev1.0/assets/verify-1/f14/result.json); orchestrator rerun [f14](features/S08/Rev1.0/assets/orchestrator-rerun/f14/result.json) |
 | F15 | Search | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `b8e2663` | `python -m tests.qa check F15` [verify-1](features/S09/Rev1.0/assets/verify-1/f15/result.json); orchestrator rerun [f15](features/S09/Rev1.0/assets/orchestrator-rerun/f15/result.json) |
 | F16 | Unavailable originals | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F16` [verify-1](features/S07/Rev1.0/assets/verify-1/f16/result.json); orchestrator rerun [f16](features/S07/Rev1.0/assets/orchestrator-rerun/f16/result.json) |
@@ -253,6 +256,17 @@ environments must be supplied by the build or F2 remains pending; do not claim
   also exit 0. Implementer model was Grok 4.6
   (`cursor-grok-4.6-high-fast`). This Linux ffmpeg still cannot decode
   `quad.heic` / `quad.heif`. Next action is S11 (closes F13).
+- 2026-10-13 — S11 / M3 green. Closes F13 (**15/22**). Fresh Grok 4.7
+  verifier [S11](features/S11/Rev1.0/assets/verify-2/result.json) 85
+  assertions, [F13](features/S11/Rev1.0/assets/verify-2/f13/result.json)
+  85, both exit 0 after one Esc-orbit freeze correction. Tour JSON has
+  both GPS places and omits no-exif; clip uses muted timed proxy.
+  [tour](features/S11/Rev1.0/assets/verify-2/tour.mp4),
+  [stopped](features/S11/Rev1.0/assets/verify-2/stopped-globe.png).
+  Orchestrator rerun
+  [F13](features/S11/Rev1.0/assets/orchestrator-rerun/f13/result.json)
+  also exit 0. F12 stayed green after the S10 `page-no-play` retarget.
+  Next action is S12 (closes F19).
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.

@@ -186,6 +186,44 @@ button:disabled {
   z-index: 2;
 }
 
+#globe-play {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+}
+
+#globe-tour-media {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  max-width: min(420px, 46vw);
+  max-height: 52vh;
+  z-index: 4;
+  pointer-events: none;
+  background: #111114;
+  border: 1px solid #2a2a32;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#globe-tour-media[hidden] {
+  display: none;
+}
+
+#globe-tour-image,
+#globe-tour-video {
+  display: block;
+  max-width: 100%;
+  max-height: 52vh;
+}
+
+#globe-tour-image[hidden],
+#globe-tour-video[hidden] {
+  display: none;
+}
+
 #globe-empty,
 #globe-error {
   position: absolute;
