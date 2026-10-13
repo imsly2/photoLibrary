@@ -15,13 +15,19 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   and the three-JPEG set becomes two unnamed places 100 meters apart.
 - S03 is green: JPEG thumb.webp and preview.webp are oriented, GET /api/media
   returns real bytes, and a minimal page opens the oriented still. Closes no
-  Check. F7 stays open until S06. F10 stays open until S09.
+  Check. F10 stays open until S09.
 - S04 / M1 is green: Add folder (linked), four zoom levels, date/location/name
   sort, and open one still. Closes F9 and F11. F10 browse subset is present
   but the Check stays open until S09.
 - S05 is green: copy onto this drive, collisions, interrupt resume, convert a
   linked source, move the library, undo leaves bytes. Closes F1 and F4.
   F9 and F11 stayed green after S05.
+- S06 is green: every fixture format is indexed; JPEG/PNG/GIF/WebP/TIFF/BMP
+  stills and all video containers get ffmpeg renditions; `broken.heic` stays
+  an error placeholder; `clip.mp4` proxy is silent H.264 ≤480 px and 2.000 s;
+  hover respects off / days-and-all / always with one cell. Closes F5 and F7.
+  This Linux ffmpeg cannot decode `quad.heic` / `quad.heif`; they stay error
+  plus placeholder. F9 and F11 stayed green after S06.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -31,7 +37,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**5 / 22 Checks = 22.7% tested.** F1, F4, F6, F9, and F11 have fresh-verifier artifacts.
+**7 / 22 Checks = 31.8% tested.** F1, F4, F5, F6, F7, F9, and F11 have fresh-verifier artifacts.
 M1 browse is recorded. The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
@@ -40,9 +46,9 @@ M1 browse is recorded. The other commands remain pending.
 | F2 | Launch | pending | — | Not run; no artifact |
 | F3 | CLI / HTTP | pending | — | Not run; no artifact |
 | F4 | Add folder | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F4` [verify-1](features/S05/Rev1.0/assets/verify-1/f4/result.json); orchestrator rerun [f4](features/S05/Rev1.0/assets/orchestrator-rerun/f4/result.json) |
-| F5 | Scan | pending | — | Not run; no artifact |
+| F5 | Scan | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F5` [verify-1](features/S06/Rev1.0/assets/verify-1/f5/result.json); orchestrator rerun [f5](features/S06/Rev1.0/assets/orchestrator-rerun/f5/result.json) |
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
-| F7 | Previews | pending | — | Not run; no artifact |
+| F7 | Previews | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F7` [verify-1](features/S06/Rev1.0/assets/verify-1/f7/result.json); orchestrator rerun [f7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) |
 | F8 | Preview storage | pending | — | Not run; no artifact |
 | F9 | Zoom | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F9` [verify-1](features/S04/Rev1.0/assets/verify-1/f9/result.json); orchestrator rerun [f9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json) |
 | F10 | Viewer | pending | — | Not run; no artifact |
@@ -166,3 +172,21 @@ environments must be supplied by the build or F2 remains pending; do not claim
   S05. All fixture formats, HEIC failure placeholder, full-length silent
   ≤480 px H.264 proxy, and the three hover policies. F8 stays open until
   S07. F10 stays open until S09.
+- 2026-10-13 — S06 green. Closes F5 and F7 (**7/22**). Fresh Grok 4.7
+  verifier [S06](features/S06/Rev1.0/assets/verify-1/result.json) 89
+  assertions, [F5](features/S06/Rev1.0/assets/verify-1/f5/result.json) 66,
+  [F7](features/S06/Rev1.0/assets/verify-1/f7/result.json) 89, all exit 0
+  at `d55a569`. F9 and F11 stayed green after S06
+  ([F9](features/S04/Rev1.0/assets/after-s06/f9/result.json) 45,
+  [F11](features/S04/Rev1.0/assets/after-s06/f11/result.json) 26, exit 0).
+  Oriented JPEG 240×320 / 480×640. `clip.mp4` proxy 480×360 h264, 0 audio,
+  2.000 s. Hover: one cell, off none, always at Years, leave restores poster.
+  `broken.heic` error / no WebP. `quad.heic` / `quad.heif` stay error on this
+  runner's ffmpeg. Original hashes unchanged. Orchestrator rerun
+  [F5](features/S06/Rev1.0/assets/orchestrator-rerun/f5/result.json) and
+  [F7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) also
+  exit 0. Implementer model was Grok 4.6 (`cursor-grok-4.6-high-fast`).
+  Next action is S07 (closes F8, F16).
+- 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
+  S06. Preview store, relocate both ways, unavailable originals, and the
+  missing-preview screen. F10 stays open until S09.

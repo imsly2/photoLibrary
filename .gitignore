@@ -53,6 +53,10 @@ docs/features/**/vol-a/
 docs/features/**/vol-b/
 docs/features/**/s06-media/
 docs/features/**/f5-media/
+docs/features/**/f5-heic-media/
+docs/features/**/f5-interrupt-media/
+docs/features/**/f5-modified-media/
+docs/features/**/f5-skip-media/
 
 # Python
 __pycache__/

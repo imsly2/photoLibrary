@@ -1,0 +1,42 @@
+{
+  "thumb": {
+    "codec": "webp",
+    "width": 240,
+    "height": 320,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 1740,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "preview": {
+    "codec": "webp",
+    "width": 480,
+    "height": 640,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 4154,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "poster": {
+    "codec": "webp",
+    "width": 320,
+    "height": 240,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 224,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "proxy": {
+    "codec": "h264",
+    "width": 480,
+    "height": 360,
+    "duration": 2.0,
+    "audioStreamCount": 0,
+    "bytes": 3467,
+    "returncode": 0,
+    "stderr": ""
+  }
+}

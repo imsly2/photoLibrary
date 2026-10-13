@@ -1,0 +1,42 @@
+{
+  "thumb": {
+    "codec": "webp",
+    "width": 240,
+    "height": 320,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 1740,
+    "returncode": 0,
+    "stderr": "ffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)\nffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)"
+  },
+  "preview": {
+    "codec": "webp",
+    "width": 480,
+    "height": 640,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 4154,
+    "returncode": 0,
+    "stderr": "ffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)\nffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)"
+  },
+  "poster": {
+    "codec": "webp",
+    "width": 320,
+    "height": 240,
+    "duration": null,
+    "audioStreamCount": 0,
+    "bytes": 224,
+    "returncode": 0,
+    "stderr": "ffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)\nffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)"
+  },
+  "proxy": {
+    "codec": "h264",
+    "width": 480,
+    "height": 360,
+    "duration": 2.0,
+    "audioStreamCount": 0,
+    "bytes": 3467,
+    "returncode": 0,
+    "stderr": "ffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)\nffprobe: /exec-daemon/tmux-root/lib/libncursesw.so.6: no version information available (required by /lib/x86_64-linux-gnu/libcaca.so.0)"
+  }
+}
