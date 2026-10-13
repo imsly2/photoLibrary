@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "library"
+version = "0.0.0"
+description = "Local photo and video library server"
+requires-python = ">=3.12"
+
+[tool.setuptools.packages.find]
+include = ["library*"]
+
+[tool.setuptools.package-data]
+library = ["web/**/*"]

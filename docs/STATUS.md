@@ -4,6 +4,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- S00 is green: an empty fixture-owned library launches, persists the 16 default
+  settings, reuses a matching-root server, refuses a foreign port without
+  killing it, recovers a settings transaction, and undoes a settings change.
+  Fixed fixtures exist, including real HEIC/HEIF and a Live Photo pair whose
+  content identifier is embedded in both files. No feature Check is closed.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -75,3 +80,10 @@ environments must be supplied by the build or F2 remains pending; do not claim
   repository initialized. Software Checks remain 0/22.
 - 2026-10-13 — S00 plan locked in `docs/features/S00/Rev1.0/PLAN.md`. Foundation
   and generator ambiguities are now in CONTRACTS and FIXTURES. No Check has run.
+- 2026-10-13 — S00 green. Closes no Check (0/22 remains). Fresh verifier
+  [verify-2](features/S00/Rev1.0/assets/verify-2/result.json) after one test
+  correction: 251 assertions, exit 0. Orchestrator rerun
+  [orchestrator-rerun](features/S00/Rev1.0/assets/orchestrator-rerun/result.json)
+  also exit 0. Implementer model was Grok 4.6 because the documented 4.5 slug
+  is not available; verifier was a fresh Grok 4.7. macOS/Linux was not run.
+  No workflow-engine packet. Next slice is S01.

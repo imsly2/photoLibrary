@@ -9,6 +9,14 @@ tests/fixtures/user-samples/*
 .qa/
 tmp/
 
+# Slice evidence may keep summary JSON. Do not track the temporary roots
+# or fixture copies the runner leaves beside those summaries.
+docs/features/**/fixture-sandbox/
+docs/features/**/*-root/
+docs/features/**/barrier-*/
+docs/features/**/unmarked-root/
+docs/features/**/write.lock
+
 # Python
 __pycache__/
 *.py[cod]

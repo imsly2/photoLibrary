@@ -1,0 +1,47 @@
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #111114;
+  color: #f2f2f4;
+  font-family: Segoe UI, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #2a2a32;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+button {
+  background: #2d4a7a;
+  color: #f2f2f4;
+  border: 0;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+main {
+  padding: 2rem 1.25rem;
+}
+
+main p {
+  margin: 0;
+  color: #c8c8d0;
+}
