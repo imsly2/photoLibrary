@@ -227,8 +227,8 @@ def build_parser() -> argparse.ArgumentParser:
     reveal = sub.add_parser("reveal")
     reveal.add_argument("id")
 
-    open_cmd = sub.add_parser("open")
-    open_cmd.add_argument("id")
+    open_item = sub.add_parser("open")
+    open_item.add_argument("id")
 
     sub.add_parser("update")
 
@@ -417,7 +417,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "open":
             result = _mutation(
                 root,
-                lambda: Library(root).open_default(args.id),
+                lambda: Library(root).open(args.id),
                 "POST",
                 f"/api/items/{args.id}/open",
                 {},
@@ -425,20 +425,15 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "update":
-            from library.app_update import pull_latest
-
-            url = _running_server_url(root)
-            if url is not None:
-                status, payload = _forward(url, "POST", "/api/update", {})
-                if status != 200:
-                    if isinstance(payload, dict) and "error" in payload:
-                        raise AppError(payload["error"], status)
-                    raise fail_from_status(status)
-                _print_json(payload)
-                return 0 if payload.get("ok") else 1
-            payload = pull_latest()
-            _print_json(payload)
-            return 0 if payload.get("ok") else 1
+            result = _mutation(
+                root,
+                lambda: Library(root).update(),
+                "POST",
+                "/api/update",
+                {},
+            )
+            _print_json(result)
+            return 0
         if args.command == "people":
             if args.people_cmd != "merge":
                 _print_error("invalid-argument")

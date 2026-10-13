@@ -15,6 +15,7 @@ HTTP_STATUS = {
     "choice-required": 400,
     "not-found": 404,
     "unavailable": 404,
+    "update-unavailable": 404,
     "preview-unavailable": 404,
     "picker-unavailable": 404,
     "busy": 409,

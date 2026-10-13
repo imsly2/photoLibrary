@@ -21,6 +21,7 @@ from tests.qa.s09 import (
     stop_owned,
     wait_catalog,
     wait_viewer_closed,
+    wait_viewer_original,
     wait_viewer_still,
 )
 
@@ -49,6 +50,16 @@ def image_rect(page: Any) -> dict[str, float]:
     )
 
 
+def set_zoom_slider(page: Any, percent: int) -> None:
+    page.locator("#viewer-zoom-slider").evaluate(
+        """(el, value) => {
+          el.value = String(value);
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }""",
+        percent,
+    )
+
+
 def media_box(page: Any, selector: str) -> dict[str, float]:
     return page.evaluate(
         """(sel) => {
@@ -72,6 +83,47 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=15000)
     start_url = page.url
 
+    update_chrome = page.evaluate(
+        """() => {
+          const el = document.getElementById('update-library');
+          if (!el) {
+            return { present: false };
+          }
+          const r = el.getBoundingClientRect();
+          return {
+            present: true,
+            text: (el.textContent || '').trim(),
+            hidden: el.hidden,
+            width: r.width,
+            height: r.height,
+          };
+        }"""
+    )
+    record["update"] = update_chrome
+    checks.check(
+        "update-library-visible",
+        bool(update_chrome.get("present"))
+        and not update_chrome.get("hidden")
+        and (update_chrome.get("width") or 0) > 8
+        and update_chrome.get("text") == "Update Library",
+        json.dumps(update_chrome),
+    )
+    with page.expect_response(lambda res: res.url.endswith("/api/update") and res.request.method == "POST") as update_info:
+        page.locator("#update-library").click()
+    update_res = update_info.value
+    update_body = update_res.json()
+    record["updateHttp"] = {"status": update_res.status, "body": update_body}
+    checks.check(
+        "update-http-shape",
+        update_res.status == 200
+        and isinstance(update_body, dict)
+        and "ok" in update_body
+        and "updated" in update_body
+        and "revision" in update_body
+        and "message" in update_body,
+        json.dumps(record["updateHttp"]),
+    )
+
     page.locator('[data-filename="IMG_1042.jpg"]').click()
     wait_viewer_still(page)
     chrome = page.evaluate(
@@ -90,37 +142,52 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
               hidden: el.hidden || style.display === 'none',
               width: r.width,
               height: r.height,
+              top: r.top,
+              left: r.left,
+              bottom: r.bottom,
             };
           }
           const fields = Array.from(document.querySelectorAll('#viewer-fields .annotate-field')).map(function (label) {
             return (label.textContent || '').replace(/\\s+/g, ' ').trim();
           });
-          const prev = document.getElementById('viewer-prev');
-          const next = document.getElementById('viewer-next');
-          const stage = document.getElementById('viewer-stage');
+          const slider = document.getElementById('viewer-zoom-slider');
+          const sliderRect = slider ? slider.getBoundingClientRect() : null;
           return {
             back: info('viewer-back'),
             prev: info('viewer-prev'),
             next: info('viewer-next'),
-            zoom: info('viewer-zoom'),
+            zoomOut: info('viewer-zoom-out'),
+            zoomIn: info('viewer-zoom-in'),
+            zoomSlider: {
+              present: !!slider,
+              type: slider ? slider.type : '',
+              min: slider ? slider.min : '',
+              max: slider ? slider.max : '',
+              hidden: slider ? slider.hidden : true,
+              width: sliderRect ? sliderRect.width : 0,
+              top: sliderRect ? sliderRect.top : 0,
+            },
             rotate: info('viewer-rotate'),
             favorite: info('viewer-favorite'),
-            info: info('viewer-info'),
             reveal: info('reveal-original'),
-            openDefault: info('open-default'),
-            openOriginal: info('open-original'),
+            info: info('viewer-info'),
+            open: info('open-original'),
             crumb: (document.getElementById('viewer-crumb') || {}).textContent || '',
             fields: fields,
             personPlaceholder: (document.getElementById('person-field') || {}).placeholder || '',
             placePlaceholder: (document.getElementById('place-field') || {}).placeholder || '',
             thingPlaceholder: (document.getElementById('thing-field') || {}).placeholder || '',
+            overlayLabels: !!document.getElementById('viewer-labels'),
+            stagePills: document.querySelectorAll('#viewer-stage .entity-label').length,
+            showingOriginalText: Array.from(document.querySelectorAll('#viewer button')).some(function (btn) {
+              return (btn.textContent || '').trim() === 'Showing original';
+            }),
             href: location.href,
-            navBottom: !!(prev && next && stage && prev.getBoundingClientRect().top > stage.getBoundingClientRect().top + 40),
           };
         }"""
     )
     record["chrome"] = chrome
-    for name in ("back", "prev", "next", "zoom", "rotate", "favorite", "info", "reveal"):
+    for name in ("back", "prev", "next", "rotate", "favorite", "reveal", "info", "open"):
         node = chrome.get(name) or {}
         min_w = 24 if name == "favorite" else 8
         checks.check(
@@ -128,12 +195,24 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
             bool(node.get("present")) and not node.get("hidden") and (node.get("width") or 0) > min_w,
             json.dumps(node),
         )
-    checks.check("no-showing-original-button", chrome.get("openOriginal", {}).get("present") is False)
-    checks.check("open-default-present", chrome.get("openDefault", {}).get("present") is True, json.dumps(chrome.get("openDefault")))
-    checks.check("prev-next-bottom", chrome.get("navBottom") is True, json.dumps(chrome))
+    checks.check("no-zoom-minus", not (chrome.get("zoomOut") or {}).get("present"), json.dumps(chrome.get("zoomOut")))
+    checks.check("no-zoom-plus", not (chrome.get("zoomIn") or {}).get("present"), json.dumps(chrome.get("zoomIn")))
+    slider = chrome.get("zoomSlider") or {}
+    checks.check(
+        "zoom-is-slider",
+        bool(slider.get("present"))
+        and slider.get("type") == "range"
+        and slider.get("min") == "25"
+        and slider.get("max") == "1600"
+        and (slider.get("width") or 0) > 80,
+        json.dumps(slider),
+    )
     checks.check("back-label", chrome.get("back", {}).get("text") == "Back", json.dumps(chrome.get("back")))
     checks.check("prev-label", chrome.get("prev", {}).get("text") == "Previous", json.dumps(chrome.get("prev")))
     checks.check("next-label", chrome.get("next", {}).get("text") == "Next", json.dumps(chrome.get("next")))
+    checks.check("info-label", chrome.get("info", {}).get("text") == "Info", json.dumps(chrome.get("info")))
+    checks.check("open-label", chrome.get("open", {}).get("text") == "Open", json.dumps(chrome.get("open")))
+    checks.check("no-showing-original-button", chrome.get("showingOriginalText") is False, json.dumps(chrome.get("showingOriginalText")))
     checks.check(
         "prev-or-next-enabled",
         (not chrome.get("prev", {}).get("disabled")) or (not chrome.get("next", {}).get("disabled")),
@@ -142,10 +221,56 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     checks.check("reveal-label", chrome.get("reveal", {}).get("text") == "Reveal in Explorer", json.dumps(chrome.get("reveal")))
     checks.check("heart-unfilled", chrome.get("favorite", {}).get("text") == "♡", json.dumps(chrome.get("favorite")))
     checks.check("crumb-filename", "IMG_1042.jpg" in (chrome.get("crumb") or ""), chrome.get("crumb"))
-    field_blob = " ".join(chrome.get("fields") or [])
-    checks.check("person-field-labeled", "Person" in field_blob and chrome.get("personPlaceholder") == "Person", field_blob)
-    checks.check("place-field-labeled", "Place" in field_blob and chrome.get("placePlaceholder") == "Place", field_blob)
-    checks.check("thing-field-labeled", "Thing" in field_blob and chrome.get("thingPlaceholder") == "Thing", field_blob)
+    checks.check(
+        "nav-at-bottom",
+        (chrome.get("prev", {}).get("top") or 0) > 500
+        and (chrome.get("next", {}).get("top") or 0) > 500
+        and (chrome.get("rotate", {}).get("top") or 0) > 500,
+        json.dumps({"prev": chrome.get("prev"), "next": chrome.get("next"), "rotate": chrome.get("rotate")}),
+    )
+    checks.check(
+        "info-top-right",
+        (chrome.get("info", {}).get("top") or 999) < 80
+        and (chrome.get("info", {}).get("left") or 0) > 900,
+        json.dumps(chrome.get("info")),
+    )
+    checks.check("no-overlay-label-row", chrome.get("overlayLabels") is False, json.dumps(chrome.get("overlayLabels")))
+    checks.check("no-stage-pills", chrome.get("stagePills") == 0, str(chrome.get("stagePills")))
+
+    page.locator("#viewer-info").click()
+    page.wait_for_function(
+        """() => {
+          const btn = document.getElementById('viewer-info');
+          const panel = document.getElementById('viewer-info-panel');
+          return btn && btn.getAttribute('aria-expanded') === 'true' && panel && !panel.hidden;
+        }""",
+        timeout=5000,
+    )
+    info_open = page.evaluate(
+        """() => {
+          const panel = document.getElementById('viewer-info-panel');
+          const fields = Array.from(document.querySelectorAll('#viewer-fields .annotate-field')).map(function (label) {
+            return (label.textContent || '').replace(/\\s+/g, ' ').trim();
+          });
+          return {
+            headings: Array.from(panel.querySelectorAll('.info-heading')).map(function (el) {
+              return (el.textContent || '').trim();
+            }),
+            fields: fields,
+            personPlaceholder: (document.getElementById('person-field') || {}).placeholder || '',
+            placePlaceholder: (document.getElementById('place-field') || {}).placeholder || '',
+            thingPlaceholder: (document.getElementById('thing-field') || {}).placeholder || '',
+            personInPanel: !!(document.getElementById('person-field') && panel.contains(document.getElementById('person-field'))),
+          };
+        }"""
+    )
+    record["infoOpen"] = info_open
+    field_blob = " ".join(info_open.get("fields") or [])
+    checks.check("info-lists-kinds", info_open.get("headings") == ["People", "Places", "Things"], json.dumps(info_open.get("headings")))
+    checks.check("person-field-labeled", "Person" in field_blob and info_open.get("personPlaceholder") == "Person", field_blob)
+    checks.check("place-field-labeled", "Place" in field_blob and info_open.get("placePlaceholder") == "Place", field_blob)
+    checks.check("thing-field-labeled", "Thing" in field_blob and info_open.get("thingPlaceholder") == "Thing", field_blob)
+    checks.check("fields-in-info", info_open.get("personInPanel") is True, json.dumps(info_open))
     blank_inputs = page.evaluate(
         """() => Array.from(document.querySelectorAll('#viewer-fields input')).filter(function (input) {
           const label = input.closest('label');
@@ -154,6 +279,16 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         }).length"""
     )
     checks.check("no-mystery-inputs", blank_inputs == 0, str(blank_inputs))
+    page.locator("#viewer-info").click()
+    page.wait_for_function(
+        """() => {
+          const btn = document.getElementById('viewer-info');
+          const panel = document.getElementById('viewer-info-panel');
+          return btn && btn.getAttribute('aria-expanded') === 'false' && panel && panel.hidden;
+        }""",
+        timeout=5000,
+    )
+    checks.check("info-closes", True)
 
     shot = artifacts / "viewer-chrome.png"
     page.screenshot(path=str(shot), full_page=False)
@@ -185,18 +320,65 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     back_src = page.locator("#viewer-image").get_attribute("src") or ""
     checks.check("prev-returns", back_src == start_src, back_src)
 
-    page.locator("#viewer-info").click()
+    page.keyboard.press("ArrowRight")
     page.wait_for_function(
-        "() => { const panel = document.getElementById('viewer-info-panel'); return panel && !panel.hidden; }",
-        timeout=5000,
+        """(prev) => {
+          const img = document.getElementById('viewer-image');
+          return img && img.getAttribute('src') && img.getAttribute('src') !== prev
+            && img.complete && img.naturalWidth > 0;
+        }""",
+        arg=start_src,
+        timeout=10000,
     )
-    checks.check("info-opens", True)
-    page.locator("#viewer-info").click()
+    arrow_src = page.locator("#viewer-image").get_attribute("src") or ""
+    checks.check("arrow-right-moves", arrow_src != start_src, arrow_src)
+    page.keyboard.press("ArrowLeft")
     page.wait_for_function(
-        "() => { const panel = document.getElementById('viewer-info-panel'); return panel && panel.hidden; }",
-        timeout=5000,
+        """(want) => {
+          const img = document.getElementById('viewer-image');
+          return img && img.getAttribute('src') === want && img.complete && img.naturalWidth > 0;
+        }""",
+        arg=start_src,
+        timeout=10000,
     )
-    checks.check("info-closes", True)
+    checks.check("arrow-left-returns", (page.locator("#viewer-image").get_attribute("src") or "") == start_src)
+
+    wait_viewer_original(page)
+    original_state = page.evaluate(
+        """() => {
+          const btn = document.getElementById('open-original');
+          const original = document.getElementById('viewer-original');
+          return {
+            text: (btn && btn.textContent || '').trim(),
+            pressed: btn ? btn.getAttribute('aria-pressed') : '',
+            showing: document.getElementById('viewer').dataset.showingOriginal || '',
+            originalSrc: original ? (original.getAttribute('src') || '') : '',
+            originalHidden: original ? original.hidden : true,
+          };
+        }"""
+    )
+    record["originalAuto"] = original_state
+    checks.check(
+        "original-autoload-no-toggle",
+        original_state.get("text") == "Open"
+        and not original_state.get("pressed")
+        and "which=original" in (original_state.get("originalSrc") or "")
+        and original_state.get("originalHidden") is False,
+        json.dumps(original_state),
+    )
+    with page.expect_response(lambda res: "/open" in res.url and res.request.method == "POST") as open_info:
+        page.locator("#open-original").click()
+    open_res = open_info.value
+    open_body = open_res.json()
+    record["open"] = open_body
+    checks.check("open-http", open_res.status == 200, str(open_res.status))
+    checks.check(
+        "open-path",
+        bool(open_body.get("path")) and Path(open_body.get("path") or "").is_file(),
+        json.dumps(open_body),
+    )
+    preview_kept = page.locator("#viewer-image").get_attribute("src") or ""
+    checks.check("open-keeps-preview", "which=preview" in preview_kept, preview_kept)
 
     page.locator("#viewer-favorite").click()
     page.wait_for_function(
@@ -225,17 +407,48 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
 
     before = image_rect(page)
-    page.locator("#viewer-zoom").fill("850")
+    set_zoom_slider(page, 200)
+    page.wait_for_function(
+        """(fit) => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return r.width > fit.width + 1 && r.height > fit.height + 1;
+        }""",
+        arg=before,
+        timeout=5000,
+    )
     after_in = image_rect(page)
     checks.check(
-        "zoom-slider-enlarges",
+        "zoom-slider-in",
         after_in["width"] > before["width"] + 1 and after_in["height"] > before["height"] + 1,
         json.dumps({"before": before, "after": after_in}),
     )
-    page.locator("#viewer-zoom").fill("0")
+    pre_pan = image_rect(page)
+    pan_x = pre_pan["left"] + pre_pan["width"] / 2
+    pan_y = pre_pan["top"] + pre_pan["height"] / 2
+    page.mouse.move(pan_x, pan_y)
+    page.mouse.down()
+    page.mouse.move(pan_x + 40, pan_y + 25)
+    page.mouse.up()
+    post_pan = image_rect(page)
+    moved_x = post_pan["left"] - pre_pan["left"]
+    moved_y = post_pan["top"] - pre_pan["top"]
+    pan_err = max(abs(moved_x - 40), abs(moved_y - 25))
+    record["stillPan"] = {"errorPx": pan_err, "before": pre_pan, "after": post_pan}
+    checks.check("click-hold-pan-zoomed", pan_err <= 2, json.dumps(record["stillPan"]))
+    set_zoom_slider(page, 50)
+    page.wait_for_function(
+        """(fit) => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return r.width < fit.width - 1 && r.height < fit.height - 1;
+        }""",
+        arg=before,
+        timeout=5000,
+    )
     after_out = image_rect(page)
     checks.check(
-        "zoom-slider-below-fit",
+        "zoom-slider-out-below-fit",
         after_out["width"] < before["width"] - 1 and after_out["height"] < before["height"] - 1,
         json.dumps({"fit": before, "out": after_out}),
     )
@@ -271,14 +484,32 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         timeout=8000,
     )
     video_fit = media_box(page, "#viewer-video")
-    page.locator("#viewer-zoom").fill("0")
+    set_zoom_slider(page, 50)
+    page.wait_for_function(
+        """(fit) => {
+          const video = document.getElementById('viewer-video');
+          const r = video.getBoundingClientRect();
+          return r.width < fit.width - 1 && r.height < fit.height - 1;
+        }""",
+        arg=video_fit,
+        timeout=5000,
+    )
     video_out = media_box(page, "#viewer-video")
     checks.check(
         "video-zoom-out",
         video_out["width"] < video_fit["width"] - 1 and video_out["height"] < video_fit["height"] - 1,
         json.dumps({"fit": video_fit, "out": video_out}),
     )
-    page.locator("#viewer-zoom").fill("700")
+    set_zoom_slider(page, 200)
+    page.wait_for_function(
+        """(fit) => {
+          const video = document.getElementById('viewer-video');
+          const r = video.getBoundingClientRect();
+          return r.width > fit.width + 1 && r.height > fit.height + 1;
+        }""",
+        arg=video_fit,
+        timeout=5000,
+    )
     pre_pan = media_box(page, "#viewer-video")
     pan_x = pre_pan["left"] + pre_pan["width"] / 2
     pan_y = pre_pan["top"] + pre_pan["height"] / 2
@@ -306,6 +537,17 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     pan_err = max(abs(moved_x - 40), abs(moved_y - 25))
     record["videoPan"] = {"errorPx": pan_err, "before": pre_pan, "after": post_pan}
     checks.check("video-pan-zoomed", pan_err <= 2, json.dumps(record["videoPan"]))
+    hold_before = media_box(page, "#viewer-video")
+    hold_x = hold_before["left"] + hold_before["width"] / 2
+    hold_y = hold_before["top"] + hold_before["height"] / 2
+    page.mouse.move(hold_x, hold_y)
+    page.mouse.down()
+    page.mouse.move(hold_x + 30, hold_y + 20)
+    page.mouse.up()
+    hold_after = media_box(page, "#viewer-video")
+    hold_err = max(abs((hold_after["left"] - hold_before["left"]) - 30), abs((hold_after["top"] - hold_before["top"]) - 20))
+    record["videoHoldPan"] = {"errorPx": hold_err, "before": hold_before, "after": hold_after}
+    checks.check("video-click-hold-pan-zoomed", hold_err <= 2, json.dumps(record["videoHoldPan"]))
 
     page.locator("#play-preview").click()
     page.wait_for_function(

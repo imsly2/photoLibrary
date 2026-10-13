@@ -429,8 +429,8 @@ class Library:
             "opened": opened,
         }
 
-    def open_default(self, item_id: str) -> dict[str, Any]:
-        from library.favorites import open_path_with_default
+    def open(self, item_id: str) -> dict[str, Any]:
+        from library.favorites import open_file
 
         self.recover()
         self.ensure_settings()
@@ -444,8 +444,16 @@ class Library:
         path = _readable_component_file(item, component, self.root)
         if path is None:
             raise fail("unavailable")
-        opened = open_path_with_default(path)
-        return {"path": str(path), "opened": opened}
+        opened = open_file(path)
+        return {
+            "path": str(path),
+            "opened": opened,
+        }
+
+    def update(self) -> dict[str, Any]:
+        from library.update import pull_latest
+
+        return pull_latest()
 
     def people_merge(self, keep_id: str, drop_id: str) -> dict[str, Any]:
         from library.annotate import apply_people_merge
