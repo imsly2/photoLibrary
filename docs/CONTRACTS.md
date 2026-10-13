@@ -16,7 +16,10 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Copy resume | Persist source-to-destination mappings before publishing catalog changes; resume verifies completed copies by hash. A partial file never counts as an original. Existing unrelated files use `_2`, `_3`, etc. |
 | Availability | Test existence of individual components, not merely the drive. Resolve again on source/item/media requests, so unplugging after launch is reflected. A present duplicate can serve an absent primary without changing identity. |
 | Preview ownership | A deduplicated item has one rendition set. Use its primary still/photo/video source's override or the global setting. Relocation verifies destination bytes before removing old generated files. |
-| Scan progress | Persist progress in the source record; POST starts work and returns 202. Poll sources; no additional jobs screen/API. CLI waits for completion and prints the final summary. |
+| Scan progress | Persist progress in the source record; HTTP POST starts work and returns 202 before the scan finishes, with `scan.state` running. Poll sources; no additional jobs screen/API. Reads (items, groups, sources, settings, media, health) stay available during scan. CLI waits for completion and prints the final summary. The serve process prints scan progress lines on stdout during normal work, not only on failure. |
+| Client disconnect | A client that aborts a response (`BrokenPipeError`, `ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is non-fatal. Do not write 500, do not treat it as `internal-error`, and do not stop the server. |
+| Folder picker | `POST /api/pick-folder` `{}` opens the server computer's native folder dialog on Windows and returns 200 `{path}` or `{path:null}` if cancelled. Non-Windows or no UI returns 404 `picker-unavailable`. Typed paths remain valid. No upload. |
+| Windows double-click | `Library.bat` at the app folder starts `launch.ps1` in a visible console and opens the browser. F2 still grades `powershell -File launch.ps1`. Do not claim macOS/Linux launch from this change. |
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings. Days has larger cells; All is denser. No representative-photo selection algorithm. |
@@ -240,7 +243,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | Command / request | Body / response |
 |---|---|
 | serve / GET `/api/health` | health 200 `{"ok":true}`; root identity uses GET `/api/runtime` |
-| scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. 202 source record; rescan same origin reuses source. |
+| scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. HTTP 202 source record is sent before the scan finishes (`scan.state` running). Rescan same origin reuses source. CLI still waits and prints the final summary. |
+| POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
@@ -290,7 +294,7 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |

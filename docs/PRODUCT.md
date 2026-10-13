@@ -124,7 +124,10 @@ arguments and full assertions in SLICES). Move a fixture app/data folder to anot
 
 ## F2 — Launch
 
-`launch.ps1` on Windows, `launch.sh` on macOS and Linux.
+`launch.ps1` on Windows, `launch.sh` on macOS and Linux. On Windows,
+double-click `Library.bat` in the app folder; it runs `launch.ps1` in a
+visible console so scan progress is readable. Do not require typing a
+command prompt. macOS/Linux launch stays `launch.sh` and is not graded here.
 
 The launcher checks for Python 3.12+ and ffmpeg on PATH. If either is missing
 on Windows it installs them with winget (`Python.Python.3.12`, `Gyan.FFmpeg`)
@@ -182,7 +185,12 @@ arguments and full assertions in SLICES). Run every mutation through CLI and HTT
 
 ## F4 — Add a folder
 
-The Add folder dialog shows the path and two choices.
+The Add folder dialog shows the path and two choices. On Windows, Browse
+opens a native folder picker on this computer and fills the path. You can
+still type or paste a path. After Add, the dialog closes, the library
+confirms the folder, and scan progress appears in the page and the server
+console. Pictures show as they become ready. The dialog never stays open
+on a dead `busy` wait.
 
 **Copy onto this drive.** Files are copied under
 `library-data/originals/<safe-name>-<source-id>/`, keeping the folder structure below
@@ -352,8 +360,10 @@ JSON responses.
 
 ## F10 — Open a picture
 
-Click a cell to open the viewer. Arrow keys move to the next and previous item
-in the current sort. Esc returns to the grid.
+Click a cell to open the viewer. Previous and Next buttons, and the arrow
+keys, move to the next and previous item in the current sort. Back (and Esc)
+returns to the grid he came from. Zoom in/out and pan work on the opened
+still. Rotate turns the displayed still 90° and does not change the file.
 
 For a photo the viewer shows `preview.webp` first, then the original if available.
 For video it shows the poster, then plays the original or proxy; a browser that
