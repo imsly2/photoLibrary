@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+  "kind": "photo",
+  "filename": "far.jpg",
+  "capturedAt": "2023-06-12T15:04:00",
+  "capturedAtSource": "exif",
+  "placeId": "place_0f81dbf8a585",
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": 41.925,
+    "longitude": -87.63
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_9b7581e363fb",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/verify-2/fixture-sandbox/media/b/far.jpg",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-2\\fixture-sandbox\\media\\b\\far.jpg",
+      "sizeBytes": 12289,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_9b7581e363fb",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

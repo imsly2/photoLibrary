@@ -1,0 +1,18 @@
+{
+  "path": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1\\fixture-sandbox\\media\\b\\created.jpg",
+  "sha256": "35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6",
+  "sizeBytes": 13587,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": 1,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": "2024:07:04 12:00:00",
+  "capturedAtSource": "exif",
+  "latitude": null,
+  "longitude": null,
+  "contentIdentifier": null,
+  "validImage": true
+}

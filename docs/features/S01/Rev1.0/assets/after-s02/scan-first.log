@@ -1,0 +1,40 @@
+added a/IMG_1042.jpg
+added a/clip.mp4
+added a/near.jpg
+added b/created.jpg
+added b/far.jpg
+added b/holiday_2020-01-03.jpg
+added b/holiday_20200102.jpg
+added b/no-exif.jpg
+added b/oriented.jpg
+added family/æ—…è¡Œ photo.jpg
+added formats/broken.heic
+added formats/clip.avi
+added formats/clip.m4v
+added formats/clip.mkv
+added formats/clip.mov
+added formats/clip.webm
+added formats/quad.bmp
+added formats/quad.gif
+added formats/quad.heic
+added formats/quad.heif
+added formats/quad.png
+added formats/quad.tiff
+added formats/quad.webp
+added live/LIVE_0001.jpg
+added live/LIVE_0001.mov
+added nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+added second/source/same.jpg
+{
+  "sourceId": "src_d0d4a58746cd",
+  "added": 27,
+  "skipped": 0,
+  "errors": [
+    {
+      "path": "formats/broken.heic",
+      "error": "decode-error"
+    }
+  ]
+}
+
+--- stderr ---

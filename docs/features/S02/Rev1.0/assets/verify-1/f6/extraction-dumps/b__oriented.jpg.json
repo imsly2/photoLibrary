@@ -1,0 +1,18 @@
+{
+  "path": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-1\\f6\\fixture-sandbox\\media\\b\\oriented.jpg",
+  "sha256": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+  "sizeBytes": 21251,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": 6,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": "2024:06:12 15:06:00",
+  "capturedAtSource": "exif",
+  "latitude": null,
+  "longitude": null,
+  "contentIdentifier": null,
+  "validImage": true
+}

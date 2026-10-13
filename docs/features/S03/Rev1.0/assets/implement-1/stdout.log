@@ -1,0 +1,62 @@
+PASS library-no-pillow
+PASS library-no-pillow-heif
+PASS library-no-playwright
+PASS library-no-noautorotate
+PASS scan-exit: exit=1 stderr=''
+PASS one-source: 1
+PASS oriented-present
+PASS broken-present
+PASS oriented-thumb-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-preview-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-thumb-path-null
+PASS oriented-preview-path-null
+PASS oriented-raw-width: 640
+PASS oriented-raw-height: 480
+PASS oriented-orientation: 6
+PASS broken-thumb-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-preview-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-thumb-path-null
+PASS broken-preview-path-null
+PASS scan-no-webp: []
+PASS scan-history-present: 1
+FAIL oriented-ready-timeout-not-hit: timeout
+FAIL thumb-file
+FAIL preview-file
+FAIL thumb-size: NonexNone
+FAIL preview-size: NonexNone
+PASS history-unchanged-by-renditions: 2 vs 2
+PASS png-thumb-still-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS png-paths-null
+PASS video-poster-still-queued: {'thumb': 'not-applicable', 'preview': 'not-applicable', 'poster': 'queued', 'proxy': 'queued'}
+PASS video-paths-null
+PASS broken-still-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-still-null
+PASS broken-no-webp
+FAIL thumb-200: 404
+FAIL thumb-type: application/json
+FAIL preview-200: 404
+FAIL preview-type: application/json
+PASS original-200: 200
+PASS original-type: image/jpeg
+PASS original-sha256: 52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7
+FAIL range-206: 404
+FAIL bad-range: {'error': 'preview-unavailable'}
+FAIL multi-range
+FAIL non-bytes-range
+PASS missing-which
+PASS unknown-which
+PASS unknown-id: {'error': 'not-found'}
+PASS unknown-id-logged: a11c056c7?which=nope	invalid-argument
+2026-10-13T16:19:18.760056Z	/api/media/missing?which=original	not-found
+2026-10-13T16:19:18.766326Z	/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=original&component=motion	invalid-argument
+2026-10-13T16:19:18.769232Z	/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=poster	preview-unavailable
+
+PASS motion-on-photo
+PASS poster-unavailable
+PASS broken-thumb-unavailable
+PASS empty-hidden-when-items
+FAIL browser-preview: Page.wait_for_function: Timeout 30000ms exceeded.
+PASS deleted-preview-unavailable: {'error': 'preview-unavailable'}
+FAIL deleted-status-unchanged: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS deleted-not-recreated
+PASS originals-unchanged

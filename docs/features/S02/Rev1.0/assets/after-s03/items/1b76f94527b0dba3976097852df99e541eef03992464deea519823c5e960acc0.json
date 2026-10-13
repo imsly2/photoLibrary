@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+  "kind": "photo",
+  "filename": "IMG_1042.jpg",
+  "capturedAt": "2024-06-12T15:04:00",
+  "capturedAtSource": "exif",
+  "placeId": "place_8248ba220440",
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": 41.88,
+    "longitude": -87.63
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_8c478640748b",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/after-s03/fixture-sandbox/media/a/IMG_1042.jpg",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\fixture-sandbox\\media\\a\\IMG_1042.jpg",
+      "sizeBytes": 15274,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_8c478640748b",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

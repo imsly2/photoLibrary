@@ -1,0 +1,29 @@
+{
+  "path": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\fixture-sandbox\\media\\a\\clip.mp4",
+  "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+  "sizeBytes": 23631,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "video",
+  "width": 640,
+  "height": 480,
+  "orientation": null,
+  "durationSec": 2.0,
+  "hasAudio": true,
+  "capturedAt": "2024-06-12T15:07:00Z",
+  "capturedAtSource": "exif",
+  "latitude": 41.88,
+  "longitude": -87.63,
+  "contentIdentifier": null,
+  "tags": {
+    "major_brand": "isom",
+    "minor_version": "512",
+    "compatible_brands": "isomiso2avc1mp41",
+    "com.apple.quicktime.creationdate": "2024-06-12T15:07:00Z",
+    "com.apple.quicktime.location.ISO6709": "+41.8800-087.6300+000.0/",
+    "creation_time": "2024-06-12T15:07:00.000000Z",
+    "encoder": "Lavc63.1.100 libx264",
+    "language": "und",
+    "handler_name": "VideoHandler"
+  },
+  "validImage": true
+}

@@ -1,0 +1,18 @@
+{
+  "path": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-2\\f6\\fixture-sandbox\\media\\b\\holiday_20200102.jpg",
+  "sha256": "c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+  "sizeBytes": 17123,
+  "mtime": "2022-01-01T00:00:00Z",
+  "kind": "photo",
+  "width": 640,
+  "height": 480,
+  "orientation": null,
+  "durationSec": null,
+  "hasAudio": null,
+  "capturedAt": null,
+  "capturedAtSource": null,
+  "latitude": null,
+  "longitude": null,
+  "contentIdentifier": null,
+  "validImage": true
+}

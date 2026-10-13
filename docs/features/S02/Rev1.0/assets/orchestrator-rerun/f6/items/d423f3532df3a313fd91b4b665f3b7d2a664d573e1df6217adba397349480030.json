@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030",
+  "kind": "photo",
+  "filename": "quad.gif",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_bb3d187df16d",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/orchestrator-rerun/f6/fixture-sandbox/media/formats/quad.gif",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\orchestrator-rerun\\f6\\fixture-sandbox\\media\\formats\\quad.gif",
+      "sizeBytes": 6012,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_bb3d187df16d",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

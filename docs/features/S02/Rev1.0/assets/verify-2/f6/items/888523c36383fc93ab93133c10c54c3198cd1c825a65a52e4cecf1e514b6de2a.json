@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+  "kind": "photo",
+  "filename": "holiday_2020-01-03.jpg",
+  "capturedAt": "2020-01-03T00:00:00",
+  "capturedAtSource": "filename",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_5c73455bc376",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/verify-2/f6/fixture-sandbox/media/b/holiday_2020-01-03.jpg",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-2\\f6\\fixture-sandbox\\media\\b\\holiday_2020-01-03.jpg",
+      "sizeBytes": 16822,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_5c73455bc376",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

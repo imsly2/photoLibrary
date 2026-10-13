@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+  "kind": "photo",
+  "filename": "quad.heic",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_5c73455bc376",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/verify-2/f6/fixture-sandbox/media/formats/quad.heic",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-2\\f6\\fixture-sandbox\\media\\formats\\quad.heic",
+      "sizeBytes": 7752,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_5c73455bc376",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

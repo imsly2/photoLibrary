@@ -1,0 +1,91 @@
+{
+  "thumb": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "31",
+    "contentRange": null,
+    "bodyLen": 31,
+    "bodySha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "firstByte": 123,
+    "error": "preview-unavailable",
+    "json": {
+      "error": "preview-unavailable"
+    }
+  },
+  "preview": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "31",
+    "contentRange": null,
+    "bodyLen": 31,
+    "bodySha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "firstByte": 123,
+    "error": "preview-unavailable",
+    "json": {
+      "error": "preview-unavailable"
+    }
+  },
+  "original": {
+    "status": 200,
+    "contentType": "image/jpeg",
+    "contentLength": "21251",
+    "contentRange": null,
+    "bodyLen": 21251,
+    "bodySha256": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+    "firstByte": 255,
+    "error": null,
+    "json": null
+  },
+  "range": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "31",
+    "contentRange": null,
+    "bodyLen": 31,
+    "bodySha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "firstByte": 123,
+    "error": "preview-unavailable",
+    "json": {
+      "error": "preview-unavailable"
+    }
+  },
+  "badRange": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "31",
+    "contentRange": null,
+    "bodyLen": 31,
+    "bodySha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "firstByte": 123,
+    "error": "preview-unavailable",
+    "json": {
+      "error": "preview-unavailable"
+    }
+  },
+  "unknownId": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "21",
+    "contentRange": null,
+    "bodyLen": 21,
+    "bodySha256": "803cb0e9b33bf52c5617f82d9857d432d8b080c0d2adc0a8bf7727bd04547256",
+    "firstByte": 123,
+    "error": "not-found",
+    "json": {
+      "error": "not-found"
+    }
+  },
+  "deletedPreview": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": "31",
+    "contentRange": null,
+    "bodyLen": 31,
+    "bodySha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "firstByte": 123,
+    "error": "preview-unavailable",
+    "json": {
+      "error": "preview-unavailable"
+    }
+  }
+}

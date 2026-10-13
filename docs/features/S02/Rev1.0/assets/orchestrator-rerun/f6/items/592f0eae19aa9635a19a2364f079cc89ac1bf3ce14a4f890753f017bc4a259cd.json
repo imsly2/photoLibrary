@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+  "kind": "photo",
+  "filename": "broken.heic",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": null,
+    "height": null,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_bb3d187df16d",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/orchestrator-rerun/f6/fixture-sandbox/media/formats/broken.heic",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\orchestrator-rerun\\f6\\fixture-sandbox\\media\\formats\\broken.heic",
+      "sizeBytes": 512,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_bb3d187df16d",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "error",
+      "preview": "error",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

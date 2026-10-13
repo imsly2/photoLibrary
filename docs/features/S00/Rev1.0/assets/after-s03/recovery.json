@@ -1,0 +1,18 @@
+{
+  "prepared": {
+    "exit": 86,
+    "stderr": "{\"error\":\"test-barrier\",\"barrier\":\"settings-prepared\"}",
+    "port": 8765,
+    "transactionsPresent": false
+  },
+  "committed": {
+    "exit": 86,
+    "stderr": "{\"error\":\"test-barrier\",\"barrier\":\"settings-committed\"}",
+    "port": 8770,
+    "transactionsPresent": false
+  },
+  "defaultPort": {
+    "8765": "owned-launch-then-stopped",
+    "pid": 36068
+  }
+}

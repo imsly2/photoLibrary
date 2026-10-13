@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+  "kind": "photo",
+  "filename": "near.jpg",
+  "capturedAt": "2024-06-12T15:05:00",
+  "capturedAtSource": "exif",
+  "placeId": "place_42b7557894c4",
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": 41.88045,
+    "longitude": -87.63
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_9b7581e363fb",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/verify-2/fixture-sandbox/media/a/near.jpg",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-2\\fixture-sandbox\\media\\a\\near.jpg",
+      "sizeBytes": 12642,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_9b7581e363fb",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

@@ -1,0 +1,219 @@
+PASS scan-first-json
+PASS scan-first-exit: exit=1 stderr=''
+PASS scan-first-added
+PASS scan-first-source-id
+PASS originals-byte-identical
+PASS no-library-dir-in-media
+PASS ignored-txt-untouched
+PASS one-source: 1
+PASS source-mode
+PASS source-id-reused-field
+PASS linked-destination-null
+PASS ignored-not-indexed
+PASS duplicate-path-indexed
+PASS broken-heic-indexed
+PASS no-pending-after-scan: []
+PASS one-live-item: 1
+PASS live-id-is-still-hash: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS live-components: ['motion', 'still']
+PASS live-has-primaries: locations=2 still_primary=1 motion_primary=1
+PASS duplicate-one-item
+PASS duplicate-two-locations: 2
+PASS duplicate-one-primary: 1
+PASS duplicate-kind-volume: {'volume'}
+PASS broken-heic-item
+PASS broken-heic-rendition-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-heic-no-rendition-path
+PASS broken-heic-source-error: [{'path': 'formats/broken.heic', 'error': 'decode-error'}]
+PASS format-indexed:quad.png
+PASS format-indexed:quad.gif
+PASS format-indexed:quad.webp
+PASS format-indexed:quad.heic
+PASS format-indexed:quad.heif
+PASS format-indexed:quad.tiff
+PASS format-indexed:quad.bmp
+PASS format-indexed:clip.mov
+PASS format-indexed:clip.m4v
+PASS format-indexed:clip.avi
+PASS format-indexed:clip.mkv
+PASS format-indexed:clip.webm
+PASS format-indexed:broken.heic
+PASS unicode-indexed
+PASS long-path-indexed
+PASS item-id-hash:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81: id='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' expected='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/no-exif.jpg')
+PASS rendition-paths-null:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81
+PASS location-kind-volume:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81
+PASS item-id-hash:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0: id='1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0' expected='1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/a/IMG_1042.jpg')
+PASS rendition-paths-null:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS location-kind-volume:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS location-kind-volume:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS item-id-hash:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54: id='20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54' expected='20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg')
+PASS rendition-paths-null:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54
+PASS location-kind-volume:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54
+PASS item-id-hash:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6: id='35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6' expected='35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/created.jpg')
+PASS rendition-paths-null:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6
+PASS location-kind-volume:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6
+PASS item-id-hash:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938: id='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' expected='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.png')
+PASS rendition-paths-null:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938
+PASS location-kind-volume:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938
+PASS item-id-hash:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7: id='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' expected='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/clip.mkv')
+PASS rendition-paths-null:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7
+PASS location-kind-volume:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7
+PASS item-id-hash:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7: id='52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7' expected='52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/oriented.jpg')
+PASS rendition-paths-null:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7
+PASS location-kind-volume:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7
+PASS item-id-hash:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91: id='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' expected='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.tiff')
+PASS rendition-paths-null:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91
+PASS location-kind-volume:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91
+PASS item-id-hash:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a: id='5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a' expected='5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/family/旅行 photo.jpg')
+PASS rendition-paths-null:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a
+PASS location-kind-volume:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a
+PASS item-id-hash:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd: id='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' expected='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/broken.heic')
+PASS rendition-paths-null:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd
+PASS location-kind-volume:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd
+PASS item-id-hash:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a: id='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' expected='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.heic')
+PASS rendition-paths-null:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a
+PASS location-kind-volume:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a
+PASS item-id-hash:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad: id='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' expected='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/clip.m4v')
+PASS rendition-paths-null:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad
+PASS location-kind-volume:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad
+PASS item-id-hash:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a: id='888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a' expected='888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/holiday_2020-01-03.jpg')
+PASS rendition-paths-null:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a
+PASS location-kind-volume:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a
+PASS item-id-hash:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913: id='93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913' expected='93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/a/clip.mp4')
+PASS rendition-paths-null:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913
+PASS location-kind-volume:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913
+PASS item-id-hash:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875: id='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' expected='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.heif')
+PASS rendition-paths-null:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875
+PASS location-kind-volume:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875
+PASS item-id-hash:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c: id='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' expected='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/clip.avi')
+PASS rendition-paths-null:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c
+PASS location-kind-volume:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c
+PASS item-id-hash:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c: id='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' expected='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/clip.webm')
+PASS rendition-paths-null:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c
+PASS location-kind-volume:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c
+PASS item-id-hash:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9: id='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' expected='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/clip.mov')
+PASS rendition-paths-null:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9
+PASS location-kind-volume:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9
+PASS item-id-hash:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a: id='b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a' expected='b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/a/near.jpg')
+PASS rendition-paths-null:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a
+PASS location-kind-volume:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a
+PASS item-id-hash:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015: id='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' expected='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.bmp')
+PASS rendition-paths-null:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015
+PASS location-kind-volume:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015
+PASS item-id-hash:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c: id='c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c' expected='c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/holiday_20200102.jpg')
+PASS rendition-paths-null:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c
+PASS location-kind-volume:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c
+PASS item-id-hash:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc: id='c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc' expected='c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/b/far.jpg')
+PASS rendition-paths-null:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc
+PASS location-kind-volume:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc
+PASS item-id-hash:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6: id='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' expected='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.webp')
+PASS rendition-paths-null:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6
+PASS location-kind-volume:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6
+PASS item-id-hash:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030: id='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' expected='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/formats/quad.gif')
+PASS rendition-paths-null:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030
+PASS location-kind-volume:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030
+PASS item-id-hash:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1: id='db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1' expected='db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/after-s03/fixture-sandbox/media/live/LIVE_0001.jpg')
+PASS rendition-paths-null:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS location-kind-volume:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS location-kind-volume:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS scan-history-one: 1
+PASS scan-second-json: skipped a/IMG_1042.jpg
+skipped a/clip.mp4
+skipped a/near.jpg
+skipped b/created.jpg
+skipped b/far.jpg
+skipped b/holiday_2020-01-03.jpg
+skipped b/holiday_20200102.jpg
+skipped b/no-exif.jpg
+skipped b/oriented.jpg
+skipped family/æ—…è¡Œ photo.jpg
+skipped formats/broken.heic
+skipped formats/clip.avi
+skipped formats/clip.m4v
+skipped formats/clip.mkv
+skipped formats/clip.mov
+skipped formats/clip.webm
+skipped formats/quad.bmp
+skipped formats/quad.gif
+skipped formats/quad.heic
+skipped formats/quad.heif
+skipped formats/quad.png
+skipped formats/quad.tiff
+skipped formats/quad.webp
+skipped live/LIVE_0001.jpg
+skipped live/LIVE_0001.mov
+skipped nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+skipped second/source/same.jpg
+{
+  "sourceId": "src_43a54026ef05",
+  "added": 0,
+  "skipped": 27,
+  "errors": []
+}
+
+PASS scan-second-added-0: 0
+PASS scan-second-skipped
+PASS scan-second-same-source
+PASS scan-second-stdout-skipped
+PASS rescan-same-item-count: 25 vs 25
+PASS scan-history-two: 2
+PASS copy-here-cli-not-found-exit: {"error":"not-found"}
+
+PASS copy-here-cli-not-found: {"error":"not-found"}
+
+PASS choice-required-exit: {"error":"choice-required"}
+
+PASS choice-required-code
+PASS copy-here-scan-not-found-exit
+PASS copy-here-scan-not-found
+PASS sqlite-exists-after-scan
+PASS rebuild-cli-exit
+PASS sqlite-exists-after-rebuild
+PASS rebuild-same-item-ids
+PASS s01-health
+PASS http-sources
+PASS http-source-available
+PASS http-source-id
+PASS http-items
+PASS http-item-count: 25
+PASS http-one-live
+PASS http-item-available-field
+PASS http-item-entities
+PASS http-rescan-202: 202
+PASS http-rescan-added-0
+PASS http-rescan-same-source
+PASS http-copy-here-not-found: {'error': 'not-found'}
+PASS http-rebuild
+PASS sqlite-ids-match: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54', '35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6', '4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938', '4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7', '52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7', '566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91', '5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a', '592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd', '5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a', '79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad', '888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a', '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875', 'a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c', 'ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c', 'b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9', 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a', 'c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015', 'c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c', 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc', 'c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6', 'd423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030', 'db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1']
+PASS junction-created: exit=0 stdout='Junction created for J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\after-s03\\skip-media\\junction-dir <<===>> J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\after-s03\\skip-extra\n' stderr=''
+PASS skip-keep-indexed: {'keep.jpg'}
+PASS skip-hidden-library
+PASS skip-notes
+PASS skip-junction-file
+PASS skip-added-one: {'sourceId': 'src_62286d07c920', 'added': 1, 'skipped': 0, 'errors': []}
+PASS scan-library-data-rejected-exit: {"error":"invalid-argument"}
+
+PASS scan-library-data-invalid: {"error":"invalid-argument"}
+
+PASS barrier-hash-exit-86: {"error":"test-barrier","barrier":"hash-publication"}
+
+PASS barrier-hash-payload: {"error":"test-barrier","barrier":"hash-publication"}
+
+PASS barrier-pending-present: 1
+PASS barrier-hash-not-only-published: 0
+PASS barrier-recover-exit
+PASS barrier-pending-cleared
+PASS barrier-one-item: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS barrier-pending-not-published-id: pending='pending-src_8f2968927a4c-703239fa3dea919c8ec4be274679b0c1466a9d1c12327b0804a4d14716394f01' published='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'
+PASS barrier-item-is-hash: id='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' expected='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'
+PASS barrier-rescan-one-item
+PASS barrier-rescan-same-id
+PASS unavailable-sources-exit
+PASS unavailable-source-present
+PASS unavailable-source-flag
+PASS unavailable-items-exit
+PASS unavailable-item-listed
+PASS unavailable-item-flag
+PASS unavailable-item-id
+PASS unavailable-location-retained

@@ -1,0 +1,314 @@
+{
+  "slice": "S03",
+  "pass": false,
+  "assertions": [
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-no-pillow-heif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-no-playwright",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-no-noautorotate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "one-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "oriented-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-thumb-queued",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "oriented-preview-queued",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "oriented-thumb-path-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-preview-path-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-raw-width",
+      "pass": true,
+      "detail": "640"
+    },
+    {
+      "name": "oriented-raw-height",
+      "pass": true,
+      "detail": "480"
+    },
+    {
+      "name": "oriented-orientation",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "broken-thumb-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-preview-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-thumb-path-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-preview-path-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-no-webp",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "scan-history-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "oriented-ready-timeout-not-hit",
+      "pass": false,
+      "detail": "timeout"
+    },
+    {
+      "name": "thumb-file",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "preview-file",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "thumb-size",
+      "pass": false,
+      "detail": "NonexNone"
+    },
+    {
+      "name": "preview-size",
+      "pass": false,
+      "detail": "NonexNone"
+    },
+    {
+      "name": "history-unchanged-by-renditions",
+      "pass": true,
+      "detail": "2 vs 2"
+    },
+    {
+      "name": "png-thumb-still-queued",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "png-paths-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-poster-still-queued",
+      "pass": true,
+      "detail": "{'thumb': 'not-applicable', 'preview': 'not-applicable', 'poster': 'queued', 'proxy': 'queued'}"
+    },
+    {
+      "name": "video-paths-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-still-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-still-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-200",
+      "pass": false,
+      "detail": "404"
+    },
+    {
+      "name": "thumb-type",
+      "pass": false,
+      "detail": "application/json"
+    },
+    {
+      "name": "preview-200",
+      "pass": false,
+      "detail": "404"
+    },
+    {
+      "name": "preview-type",
+      "pass": false,
+      "detail": "application/json"
+    },
+    {
+      "name": "original-200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "original-type",
+      "pass": true,
+      "detail": "image/jpeg"
+    },
+    {
+      "name": "original-sha256",
+      "pass": true,
+      "detail": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7"
+    },
+    {
+      "name": "range-206",
+      "pass": false,
+      "detail": "404"
+    },
+    {
+      "name": "bad-range",
+      "pass": false,
+      "detail": "{'error': 'preview-unavailable'}"
+    },
+    {
+      "name": "multi-range",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "non-bytes-range",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "missing-which",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unknown-which",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unknown-id",
+      "pass": true,
+      "detail": "{'error': 'not-found'}"
+    },
+    {
+      "name": "unknown-id-logged",
+      "pass": true,
+      "detail": "a11c056c7?which=nope\tinvalid-argument\n2026-10-13T16:19:18.760056Z\t/api/media/missing?which=original\tnot-found\n2026-10-13T16:19:18.766326Z\t/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=original&component=motion\tinvalid-argument\n2026-10-13T16:19:18.769232Z\t/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=poster\tpreview-unavailable\n"
+    },
+    {
+      "name": "motion-on-photo",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "poster-unavailable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-thumb-unavailable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-hidden-when-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "browser-preview",
+      "pass": false,
+      "detail": "Page.wait_for_function: Timeout 30000ms exceeded."
+    },
+    {
+      "name": "deleted-preview-unavailable",
+      "pass": true,
+      "detail": "{'error': 'preview-unavailable'}"
+    },
+    {
+      "name": "deleted-status-unchanged",
+      "pass": false,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "deleted-not-recreated",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "originals-unchanged",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "18f28e52e6622a499ec02e2155d2585811cb0934",
+  "commands": [
+    "python -m library scan <media> --serve-from-there",
+    "python -m library serve"
+  ],
+  "artifactPaths": {
+    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\implement-1\\result.json",
+    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\implement-1\\stdout.log",
+    "sizes.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\implement-1\\sizes.json",
+    "media-responses.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\implement-1\\media-responses.json",
+    "first-still.png": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\implement-1\\first-still.png"
+  }
+}

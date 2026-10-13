@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54",
+  "kind": "photo",
+  "filename": "raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_618c153b03d7",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/implementer-1-f6/fixture-sandbox/media/nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\fixture-sandbox\\media\\nested\\deep\\level03\\level04\\level05\\dir\\dir\\dir\\raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
+      "sizeBytes": 22746,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_618c153b03d7",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

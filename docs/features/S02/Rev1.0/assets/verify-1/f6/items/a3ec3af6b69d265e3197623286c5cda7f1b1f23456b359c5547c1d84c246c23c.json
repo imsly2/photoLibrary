@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+  "kind": "video",
+  "filename": "clip.avi",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 2.0,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_e15ba172f67b",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "windows:CC4B95CA",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/verify-1/f6/fixture-sandbox/media/formats/clip.avi",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\verify-1\\f6\\fixture-sandbox\\media\\formats\\clip.avi",
+      "sizeBytes": 192104,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_e15ba172f67b",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued"
+    }
+  },
+  "faces": [],
+  "things": []
+}

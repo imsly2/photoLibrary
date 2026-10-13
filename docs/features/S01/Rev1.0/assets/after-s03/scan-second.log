@@ -1,0 +1,35 @@
+skipped a/IMG_1042.jpg
+skipped a/clip.mp4
+skipped a/near.jpg
+skipped b/created.jpg
+skipped b/far.jpg
+skipped b/holiday_2020-01-03.jpg
+skipped b/holiday_20200102.jpg
+skipped b/no-exif.jpg
+skipped b/oriented.jpg
+skipped family/æ—…è¡Œ photo.jpg
+skipped formats/broken.heic
+skipped formats/clip.avi
+skipped formats/clip.m4v
+skipped formats/clip.mkv
+skipped formats/clip.mov
+skipped formats/clip.webm
+skipped formats/quad.bmp
+skipped formats/quad.gif
+skipped formats/quad.heic
+skipped formats/quad.heif
+skipped formats/quad.png
+skipped formats/quad.tiff
+skipped formats/quad.webp
+skipped live/LIVE_0001.jpg
+skipped live/LIVE_0001.mov
+skipped nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+skipped second/source/same.jpg
+{
+  "sourceId": "src_43a54026ef05",
+  "added": 0,
+  "skipped": 27,
+  "errors": []
+}
+
+--- stderr ---
