@@ -1,0 +1,109 @@
+{
+  "chrome": {
+    "back": {
+      "present": true,
+      "text": "Back",
+      "disabled": false,
+      "hidden": false,
+      "width": 56.828125,
+      "height": 26.1875
+    },
+    "prev": {
+      "present": true,
+      "text": "Previous",
+      "disabled": false,
+      "hidden": false,
+      "width": 77.453125,
+      "height": 27.78125
+    },
+    "next": {
+      "present": true,
+      "text": "Next",
+      "disabled": false,
+      "hidden": false,
+      "width": 53,
+      "height": 27.78125
+    },
+    "zoomOut": {
+      "present": true,
+      "text": "Zoom out",
+      "disabled": false,
+      "hidden": false,
+      "width": 81.90625,
+      "height": 27.78125
+    },
+    "zoomIn": {
+      "present": true,
+      "text": "Zoom in",
+      "disabled": false,
+      "hidden": false,
+      "width": 73.75,
+      "height": 27.78125
+    },
+    "rotate": {
+      "present": true,
+      "text": "Rotate",
+      "disabled": false,
+      "hidden": false,
+      "width": 64.875,
+      "height": 27.78125
+    },
+    "favorite": {
+      "present": true,
+      "text": "\u2661",
+      "disabled": false,
+      "hidden": false,
+      "width": 41.59375,
+      "height": 38.390625
+    },
+    "reveal": {
+      "present": true,
+      "text": "Reveal in Explorer",
+      "disabled": false,
+      "hidden": false,
+      "width": 144,
+      "height": 27.78125
+    },
+    "crumb": "IMG_1042.jpg",
+    "fields": [
+      "Person",
+      "Place",
+      "Thing"
+    ],
+    "personPlaceholder": "Person",
+    "placePlaceholder": "Place",
+    "thingPlaceholder": "Thing",
+    "href": "http://127.0.0.1:18767/"
+  },
+  "originalAuto": {
+    "text": "Showing original",
+    "pressed": "true",
+    "showing": "1",
+    "originalSrc": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original",
+    "originalHidden": false
+  },
+  "reveal": {
+    "path": "/tmp/taste-viewer-artifacts/taste-viewer-media/a/IMG_1042.jpg",
+    "folder": "/tmp/taste-viewer-artifacts/taste-viewer-media/a",
+    "opened": true
+  },
+  "backUrl": {
+    "before": "http://127.0.0.1:18767/",
+    "after": "http://127.0.0.1:18767/"
+  },
+  "videoPan": {
+    "errorPx": 0,
+    "before": {
+      "left": 112,
+      "top": -36,
+      "width": 1056,
+      "height": 792
+    },
+    "after": {
+      "left": 152,
+      "top": -11,
+      "width": 1056,
+      "height": 792
+    }
+  }
+}

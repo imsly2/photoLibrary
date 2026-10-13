@@ -10,7 +10,6 @@ from library.httpjson import request_json
 from library.media import sha256_file
 from tests.qa.s00 import Checks, assert_no_pillow_in_server
 from tests.qa.s03 import find_item, png_size
-from tests.qa.s04 import collect_console, image_rect
 from tests.qa.s06 import set_settings, wait_level
 from tests.qa.s08 import fresh_root, write_result
 from tests.qa.s09 import (
@@ -25,6 +24,30 @@ from tests.qa.s09 import (
     wait_viewer_original,
     wait_viewer_still,
 )
+
+
+def collect_console(page: Any) -> list[str]:
+    errors: list[str] = []
+    page.on("pageerror", lambda exc: errors.append(str(exc)))
+    page.on("console", lambda msg: errors.append(msg.text) if msg.type == "error" else None)
+    return errors
+
+
+def image_rect(page: Any) -> dict[str, float]:
+    return page.evaluate(
+        """() => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return {
+            left: r.left,
+            top: r.top,
+            width: r.width,
+            height: r.height,
+            complete: img.complete,
+            naturalWidth: img.naturalWidth
+          };
+        }"""
+    )
 
 
 def media_box(page: Any, selector: str) -> dict[str, float]:
@@ -103,6 +126,11 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     checks.check("back-label", chrome.get("back", {}).get("text") == "Back", json.dumps(chrome.get("back")))
     checks.check("prev-label", chrome.get("prev", {}).get("text") == "Previous", json.dumps(chrome.get("prev")))
     checks.check("next-label", chrome.get("next", {}).get("text") == "Next", json.dumps(chrome.get("next")))
+    checks.check(
+        "prev-or-next-enabled",
+        (not chrome.get("prev", {}).get("disabled")) or (not chrome.get("next", {}).get("disabled")),
+        json.dumps({"prev": chrome.get("prev"), "next": chrome.get("next")}),
+    )
     checks.check("reveal-label", chrome.get("reveal", {}).get("text") == "Reveal in Explorer", json.dumps(chrome.get("reveal")))
     checks.check("heart-unfilled", chrome.get("favorite", {}).get("text") == "♡", json.dumps(chrome.get("favorite")))
     checks.check("crumb-filename", "IMG_1042.jpg" in (chrome.get("crumb") or ""), chrome.get("crumb"))

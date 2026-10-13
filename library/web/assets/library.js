@@ -1096,6 +1096,8 @@
     resetViewerVideo();
     resetViewerOriginal();
     resetViewTransform();
+    viewerIndex = index;
+    viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
     const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
@@ -1166,6 +1168,8 @@
     resetViewerVideo();
     resetViewTransform();
     showingOriginal = false;
+    viewerIndex = index;
+    viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
     viewerIndex = index;
