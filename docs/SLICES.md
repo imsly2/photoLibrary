@@ -24,6 +24,15 @@ add a 23rd Check and does **not** start S13 or S14. Pin macOS/Linux F2.
 Viewer/grid chrome is a separate track. Gate: `python -m tests.qa slice TASTE-WIN`
 plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/PLAN.md).
 
+**Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
+is the North Star shell. Must items (fullscreen, slideshow, viewer keys,
+EXIF Info, Open with, empty/error, remove vs delete-file, sort/filters,
+search, Update UX) are on the 19-step checklist. Until that path is
+green, do **not** start S13 or S14 to chase settings completeness, and do
+not treat Soon rows (filmstrip, multi-select, Print, `?`) as the next
+build. PR #2 TASTE-VIEWER 72/72 is implemented-or-in-PR for Win7 chrome +
+Update + Open. Pin macOS/Linux F2. No 23rd Check.
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.
@@ -115,27 +124,27 @@ behavior not previously proved. No standalone UI/API subtest is a numerator unit
 | Check | Complete acceptance / slice that closes it |
 |---|---|
 | F1 | Data outside tracked source; relocation with relative originals, volume remount and missing files; no drive-letter identity. S05. |
-| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. Windows double-click `Library.bat` is required product (not a new Check); macOS/Linux launch stays pinned. |
-| F3 | Every listed mutation CLI/HTTP equivalent; read filters/media/parity, content types/ranges; unknown ids/fields/errors, success/empty/failure/argument exits. Normalize only generated ids/root prefixes, never names/values/relations. S14. |
+| F2 | Windows health/default URL, prerequisites present/missing/install failure, matching-root relaunch and port conflict; macOS/Linux shell launch with stable volume identity. S14. Windows double-click `Library.bat` is required product (not a new Check); macOS/Linux launch stays pinned. Family Update is presentable-shell (UI-SPEC), not a 23rd Check. |
+| F3 | Every listed mutation CLI/HTTP equivalent; read filters/media/parity, content types/ranges; unknown ids/fields/errors, success/empty/failure/argument exits. Normalize only generated ids/root prefixes, never names/values/relations. S14. Presentable `remove` / `delete-file` and `kind=photo,live` are the same matrix — do not invent a 23rd Check. |
 | F4 | Original two-file copy/link example plus Add choice/default, source override, conversion id+annotation preservation, collision and interruption. S05. Windows Browse picker, 202-before-finish for both modes, close-on-busy, scan progress, and live-origin Back are the same feature — re-prove with TASTE-WIN, do not weaken this Check. |
 | F5 | Original second-scan skipped/added=0 plus exclusions, formats, pending hash+annotations, duplicates, changed path, restart and HEIC failure. S06, refreshed S08/S12. |
 | F6 | Original two places from three JPEGs plus all date fallbacks, orientation, dimensions/duration, EXIF/QuickTime GPS, absent GPS, tie behavior. S02. |
 | F7 | Original rendition bytes and ffprobe plus oriented dimensions, full duration/audio absent, queued/error states and all three hover policies. S06, refreshed S12. |
 | F8 | Original with-source→server relocation plus reverse, overrides, dedup owner, unavailable/unwritable destination and interruption; originals unchanged. S07. |
 | F9 | Original four groups responses plus rendered levels, all items retained, slider/Ctrl+wheel anchors and saved level. S04. |
-| F10 | Original media responses plus preview/original display, filtered arrows/Esc, zoom/pan, playback/fallback, annotations shown, absent source behavior. S09, refreshed S12. |
-| F11 | Original known-date sorting plus all three sorts/directions, pinned no-EXIF fallback, deterministic ties and toolbar. S04. |
+| F10 | Original media responses plus preview/original display, filtered arrows/Esc, zoom/pan, playback/fallback, annotations shown, absent source behavior. S09, refreshed S12. Presentable chrome (slider, Info facts-then-names, fullscreen, slideshow, Open beside Reveal, remove/delete-file) is UI-SPEC Windows Presentable Shell — do not weaken this Check. PR #2 72/72 covers Win7 chrome + Open + Update. |
+| F11 | Original known-date sorting plus all three sorts/directions, pinned no-EXIF fallback, deterministic ties and toolbar. S04. Presentable labels Newest/Oldest/Name and All/Photos/Videos/Favorites are the same Check, not a new one. |
 | F12 | Original places/filter responses plus offline globe, visible pins/clusters/counts, drag/zoom, clicked cluster→newest viewer→Esc filtered grid. S10. Taste refresh: realistic local `earth.png`, rightward drag increases yaw; do not weaken this Check. |
 | F13 | Original tour membership plus eligible previews, complete timed motion, settings, looping/no-location behavior, Esc in every phase and offline requests. S11. |
 | F14 | Original Ada/mug reuse/search plus explicit-id naming, aliases/boxes, place handling, people merge, pending/hash preservation and viewer writes in S09 regression. Close after S08 service checks; the viewer interaction belongs F10. |
 | F15 | Original filename query plus typed entity search/chips, casefold/aliases, empty results, inspector ids/count/filenames, no duplicate locations in results. S09. |
 | F16 | Original offline show/hide/404 plus after-launch unplug, same letter/wrong volume, available alternate and both missing-preview screen cases. S07, refreshed S12. |
 | F17 | Original settings file match plus each key/default, source override precedence, invalid values, restart behavior and page edits; no localStorage authority. S13. |
-| F18 | Original port undo+404 log plus redo, 500 cap, branch, restart, every mutation's undo semantics, preserved original bytes, Esc priorities and clipboard. S13. |
+| F18 | Original port undo+404 log plus redo, 500 cap, branch, restart, every mutation's undo semantics, preserved original bytes, Esc priorities and clipboard. S13. Presentable remove undo restores catalog; delete-file undo does not restore bytes. |
 | F19 | Original one live item/two locations plus real identifiers, arrival order/restart/orphans/mismatch, identity/annotation retention, LIVE badge/proxy and missing motion. S12. |
 | F20 | Original annotated thing after deleting index plus all filter/group/merge ids before/after rebuild, startup auto-rebuild and interrupted rebuild; JSON byte hashes unchanged. S08. |
-| F21 | Every documented key/gesture works in correct context; measured cursor anchors/pan, no text-field hijacking, tour Esc. S13. |
-| F22 | All five views and UI state gallery; reference-scope fidelity, responsive usable 1280×720/1920×1080, no blank/error loops, console/network clean on valid actions. S14. |
+| F21 | Every documented key/gesture works in correct context; measured cursor anchors/pan, no text-field hijacking, tour Esc. S13. Presentable Must keys (F11/F, F5, Ctrl+0/1/R, Delete) are this table; `?` / Ctrl+P stay Soon. |
+| F22 | All five views and UI state gallery; reference-scope fidelity, responsive usable 1280×720/1920×1080, no blank/error loops, console/network clean on valid actions. S14. Presentable Must states (fullscreen, slideshow, empty/error, Info facts) belong here once built. Soon states (filmstrip, `?`) do not. The family-PC checklist is the taste gate, not a 23rd F-id. |
 
 ## Readiness and blocking prerequisites
 

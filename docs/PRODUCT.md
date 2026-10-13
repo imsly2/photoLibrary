@@ -60,6 +60,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
+| Windows Presentable Shell | First-class family-PC surface, not a taste overlay. Must-for-presentable (fullscreen, slideshow, viewer keys, EXIF Info, Open with, empty/error, remove vs delete-file, sort/filters, search, Update UX) plus the earlier launch/grid/viewer locks live in [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell). The **Presentable for family PC** checklist there is the taste definition of done. Soon rows do not block it. No 23rd Check. No accounts or editor. |
 
 Technical decisions not previously specified are listed explicitly at the top of
 CONTRACTS. Changing them requires a doc edit before implementation.
@@ -80,6 +81,37 @@ CONTRACTS. Changing them requires a doc edit before implementation.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
+
+## Windows Presentable Shell
+
+The family Windows PC is the primary surface. Locked Must-for-presentable
+in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
+
+1. Fullscreen (F11 or F); Esc exits fullscreen then the viewer
+2. Slideshow (F5; Space pause; Esc stop; empty “Add photos first”)
+3. Viewer keys: arrows; Ctrl++/− or wheel zoom; Ctrl+0 fit; Ctrl+1 100%;
+   Ctrl+R rotate; Space play/pause video; tooltips show shortcuts
+4. Info = EXIF/file facts first (date, camera, dimensions, size, path,
+   GPS; empty “No camera info”), then people/places/things
+5. Open with default app beside Reveal in Explorer
+6. Empty / first-run / error: Add-folder CTA; scan Retry; missing-file
+   placeholder; reconnect banner
+7. Remove from library (Delete key + confirm, originals stay) vs Delete
+   file (extra confirm, Recycle Bin)
+8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
+9. Search filename + date + existing tags; empty “No matches”
+10. Update UX finish (launcher + in-app; Updating…; already current / failed)
+
+Also locked: `Library.bat`, native Add folder, live-origin Back, grid
+wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
+“Showing original”, globe yaw + local Earth. macOS/Linux launch is pinned
+later.
+
+**Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
+that path is green, do not call the shell presentable, and do not
+prioritize S13 settings or Soon rows (filmstrip, multi-select, Print,
+`?`, recently added) over a Must gap. Those rows are not F23–Fn. Remove
+and delete-file are CONTRACTS commands, not a new Check.
 
 ## F1 — Two folders
 
@@ -144,11 +176,13 @@ must not jump to another host or port — including a leftover QA listen such as
 root-relative paths. Never embed `settings.port` or a stored runtime URL from
 a previous listen.
 
-Family installs update without a command prompt. A header **Update** control
-pulls the current git branch (`git fetch` then `git pull --ff-only`, or the
-equivalent) and shows a clear success or fail sentence. It does not ask anyone
-to type git, open GitHub Desktop, or switch branches. A copy that is not a
-git folder, or a PC without git, says so in that same status line.
+Family installs update without a command prompt. A header **Update** (or
+Update Library) control, and the same action from the launcher, pulls the
+current git branch (`git fetch` then `git pull --ff-only`, or the
+equivalent). While it runs the page says Updating… Then one sentence:
+updated / already current / git missing / not a git copy / pull failed.
+It does not ask anyone to type git, open GitHub Desktop, or switch
+branches.
 
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
@@ -176,6 +210,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `favorite <id> --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the heart in `catalog/favorites.json`. |
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
 | `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original with the default program. |
+| `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
+| `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
 | `update` | `POST /api/update` `{}` | Pulls the current git branch. `GET /api/update` reports branch and revision. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
@@ -184,13 +220,16 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
-`person=`, `place=`, `thing=`, `kind=photo|video|live`, `from=`, `to=`,
-`unavailable=0|1`, `q=` for a name or filename. Names match
-case-insensitively. `scope=people|places|things` restricts the query for the
-existing search chips. `kind` keeps only that media kind; the toolbar Videos
-control sends `kind=video`. Kind is a transient filter, not a setting.
+`person=`, `place=`, `thing=`, `kind=photo|video|live` or a comma list,
+`from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
+Names match case-insensitively. `scope=people|places|things` restricts
+the query for the existing search chips. `kind` keeps only those media
+kinds (`photo,live` for Photos). The toolbar All / Photos / Videos /
+Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
+`favorite=1`. Kind and favorite are transient filters, not settings.
 `favorite=1` keeps only hearted items. Item reads include computed
-`favorite` (not stored on the item JSON).
+`favorite` (not stored on the item JSON). `q` also matches a capturedAt
+date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
 file. `original` on a missing disk returns HTTP 404 and
@@ -414,31 +453,35 @@ stale port or call a hop that leaves this listen URL.
 
 The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
 the **bottom**; Left/Right arrows still change photo and stop at the ends.
-Rotate sits next to them. Zoom is a **slider** (plus existing Ctrl+wheel),
-not discrete zoom-in/out buttons. Click-and-drag pans while zoomed.
-Rotate turns the displayed still 90° and does not change the file.
+Rotate sits next to them (button or Ctrl+R). Zoom is a **slider** plus
+Ctrl+wheel and Ctrl++/− — not discrete zoom-in/out buttons. Ctrl+0 fits;
+Ctrl+1 is 100%. Click-and-drag pans while zoomed. Rotate turns the
+displayed still 90° and does not change the file. F11 or F toggles
+fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a
+slideshow; Space pauses it; Esc stops it.
 
 A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
 
 For a photo the viewer shows `preview.webp` first, then the original if
 available, with no “Showing original” button or notification. Reveal in
-Explorer opens the original's containing folder on this computer whenever
-the file is here (`explorer /select` on Windows). Open with default
-program launches that file in the usual Windows app. For video the viewer
-shows the poster, then plays the original or proxy; a browser that cannot
-decode the original falls back to the proxy. Play preview still toggles
-pause/play on click. Ctrl+wheel zooms the picture, anchored at the cursor.
-Middle-click drags it; a still also pans with a left drag, and any zoomed
-item pans with a left drag. Click a video, or press Space, to play or
-pause. Playback of a video uses the original when available, otherwise
-the proxy.
+Explorer and Open with default program sit side by side. Reveal opens the
+original's containing folder (`explorer /select` on Windows). Open
+launches that file in the usual Windows app. Delete removes the catalog
+record (confirm; bytes stay). Delete file extra-confirms and Recycle-Bins
+the original. For video the viewer shows the poster, then plays the
+original or proxy; a browser that cannot decode the original falls back
+to the proxy. Play preview still toggles pause/play on click. Middle-click
+drags; a still also pans with a left drag, and any zoomed item pans with
+a left drag. Click a video, or press Space (when no slideshow), to play
+or pause.
 
 Person, Place, and Thing are **not** pills painted over the preview. A
-top-right **Info** control lists the people, places, and things already
-written on the record; clicking one filters the grid to that entity.
-The three type-in fields stay inside Info and stay labeled Person, Place,
-and Thing.
+top-right **Info** control shows file facts first (date taken, camera,
+dimensions, size, path, GPS; empty “No camera info”), then the people,
+places, and things already written on the record; clicking one filters
+the grid to that entity. The three type-in fields stay inside Info and
+stay labeled Person, Place, and Thing. Tooltips name the shortcuts.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.
@@ -447,10 +490,12 @@ source is available. Artifact: both responses' content types and lengths.
 
 ## F11 — Sort
 
-The toolbar sorts by date, location, or name. Direction is ascending or
-descending. Default is date, newest first (`sort=date`, `dir=desc`). A
-Videos control filters to `kind=video` and keeps the current sort among
-those items.
+The toolbar’s presentable sort labels are Newest, Oldest, and Name
+(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
+stays available. Default is Newest. Filters All / Photos / Videos /
+Favorites are mutually exclusive: no kind, `kind=photo,live`,
+`kind=video`, or `favorite=1`. They keep the current sort among those
+items.
 
 Date uses `capturedAt`. Location groups by place name, then unnamed GPS
 places, then "No location", and by date inside a group. Name uses the filename.
@@ -552,8 +597,9 @@ Artifact: the people file, the thing file, and the search JSON.
 
 ## F15 — Search
 
-The search box matches a person, place, or thing name, or a filename.
-Chips limit the match to People, Places, or Things. Reference:
+The search box matches a person, place, or thing name, a filename, or a
+capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Chips limit the match
+to People, Places, or Things. Empty results say “No matches”. Reference:
 [search](reference/library-search.jpg).
 
 The inspector for a thing shows its name, how many pictures point at it, and
@@ -578,8 +624,8 @@ Setting `unavailableItems`:
 | `hide` | The item is left out of the grid and out of `GET /api/items` unless `unavailable=1`. |
 
 Opening an unavailable item shows the preview when the preview file is here,
-a banner "Original is not on this computer", and Open original does nothing.
-Play preview plays the proxy for a video. Reference:
+a banner "Original is not on this computer", and Open with default program
+and Reveal do nothing. Play preview plays the proxy for a video. Reference:
 [unavailable](reference/library-unavailable.jpg).
 
 **Check:** `python -m tests.qa check F16` (planned runner; common root/artifact
@@ -634,10 +680,14 @@ History is files in `library-data/undo/`, about 500 steps, then the oldest
 file is dropped. Undo of a newly added copied source removes its catalog registration and
 does not delete the copied originals. Undo of converting an existing linked source
 restores its earlier catalog locations. Those files stay until a person deletes
-them.
+them. Undo of remove-from-library restores the catalog record. Undo of
+delete-file restores the catalog only — not the Recycle-Binned bytes.
 
-Esc cancels the innermost active interaction: tour or gesture, dialog, viewer,
-settings, then selection. Text fields retain their standard editing shortcuts.
+Esc cancels the innermost active interaction: confirm dialog, Info,
+slideshow, fullscreen, tour or gesture, Add dialog, viewer, settings, then
+selection. Text fields retain their standard editing shortcuts. Delete
+removes from the library after confirm. Delete file is a separate extra
+confirm.
 
 Ctrl+C copies the primary path of the selected item as text. If the item is
 unavailable, the copied text is the last known path and the page says it is
@@ -677,17 +727,25 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Key | Action |
 |-----|--------|
 | Ctrl+wheel on the grid | Change year / month / day / all, cursor stays put |
-| Ctrl+wheel in the viewer | Zoom the picture, cursor stays put |
+| Ctrl+wheel or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
+| Ctrl+0 / Ctrl+1 | Fit / 100% in the viewer |
+| Ctrl+R | Rotate the displayed still 90° |
 | Middle-click drag | Pan the open picture |
 | Click a cell | Open it |
-| Click or Space in the viewer | Play or pause video |
+| Click or Space in the viewer | Play or pause video (Space pauses a slideshow if one is running) |
 | Arrows | Previous and next open item |
-| Esc | Active tour/gesture, dialog, viewer, settings, then selection |
+| F11 or F | Toggle viewer fullscreen |
+| F5 | Start slideshow of the current set |
+| Delete | Remove from library (confirm; originals stay) |
+| Esc | Confirm, Info, slideshow, fullscreen, tour/gesture, dialog, viewer, settings, then selection |
 | Ctrl+F | Search |
 | Ctrl+, | Settings |
 | Ctrl+Z / Ctrl+Shift+Z | Undo / redo |
 | Ctrl+C | Copy the primary path |
 | Esc during the tour | Stop the tour and stay on the globe |
+
+`?` cheat-sheet, Print Ctrl+P, and I / Alt+Enter for Info are UI-SPEC Soon.
+F is fullscreen, not favorite. Do not fail this Check for Soon keys.
 
 
 **Check:** `python -m tests.qa check F21` (planned runner; common root/artifact
@@ -700,9 +758,9 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section, Update. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates, Favorites section, Update. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, Info dropdown, viewer heart, Reveal in Explorer, Open with default program. |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 
@@ -719,6 +777,9 @@ Every F1–F22 Check above. The exact fixture set and scenarios are in
 All checks use a fixture-owned temp library and never a real photo disk.
 
 Build in [SLICES.md](SLICES.md) dependency order. First taste is small fixture
-pictures on screen and one photo opened; names and globe come later. Then continue
-to 100% (22/22) fresh-verifier-backed Checks. [STATUS.md](STATUS.md) records what
-actually passed, not what the help file promises.
+pictures on screen and one photo opened; names and globe come later. The
+family-PC gate after A+B+C is the UI-SPEC **Presentable for family PC**
+checklist — close gaps on that path before treating S13 settings as the
+next taste job. Then continue to 100% (22/22) fresh-verifier-backed
+Checks. [STATUS.md](STATUS.md) records what actually passed, not what the
+help file promises.

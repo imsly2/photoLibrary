@@ -37,6 +37,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
+| Presentable shell | Family-PC chrome is specified in UI-SPEC **Windows Presentable Shell**. No 17th setting, no Electron, no accounts. Must remove / delete-file routes are below. Slideshow, fullscreen, viewer keys, Info facts, and Update progress are page chrome on existing APIs (item reads already carry capturedAt, camera, dimensions, size, path, GPS). Soon rows that need a new route (copy-file-to-folder) still wait for an edit here. |
 
 ## Files and atomic writes
 
@@ -228,7 +229,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -279,6 +280,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | favorite id --on/--off / PUT or POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; writes `catalog/favorites.json`; no-op success when unchanged |
 | reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
 | open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable` |
+| remove id / POST `/api/items/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops item JSON, favorite entry, and index row; original bytes stay; undoable `remove`. Unknown id is `not-found`. |
+| delete-file id / POST `/api/items/<id>/delete-file` | `{}`; 200 `{ok:true,id,trashed}`; Windows Recycle Bin the current original when possible (`trashed` true/false), then the same catalog drop as remove; undoable `delete-file` restores catalog only. 404 `unavailable` if no current file. UI extra-confirms; CLI is explicit. |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -299,10 +302,12 @@ coordinates. Empty payload is invalid. CLI shorthand `--person Ada --thing mug`
 maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
-normalized exact name; place also comma-separated ids. `kind` is exactly one of
-`photo|video|live` and keeps only that item kind. `favorite=1` keeps hearted
+normalized exact name; place also comma-separated ids. `kind` is one of
+`photo|video|live` or a comma-separated list of those (Photos filter is
+`photo,live`). Unknown kind is `invalid-argument`. `favorite=1` keeps hearted
 items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring
-against names, thing aliases and filename. Scope chips restrict q to that entity
+against names, thing aliases, filename, and capturedAt calendar text
+(`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Scope chips restrict q to that entity
 type. `from` inclusive and `to` exclusive ISO date/timestamp filter capturedAt.
 unavailable omitted follows settings; 0 means available only, 1 means include both.
 Sort ties: date then id; name then date then id; location puts named, unnamed GPS,
