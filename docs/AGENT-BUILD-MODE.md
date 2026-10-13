@@ -40,8 +40,11 @@ cannot silently expand it. Reference art is a target, never a passing artifact.
    was tried. Do not take over the code, ask Steve to debug, or mark a failed Check
    green to unblock the queue.
 7. When green, record evidence in STATUS, update packet notes/engine phase using
-   the existing workflow where registered, and make one **local** commit named
-   `slice(Snn): <result>`. Never push, rebase or amend somebody else's work.
+   the existing workflow where registered, and make one commit named
+   `slice(Snn): <result>`. On 2026-10-13 Steve made the private GitHub repository
+   `imsly2/photoLibrary` the remote for cloud continuation. After that green
+   commit, push `main` to `origin`. Do not push a dirty tree, a failed slice, or
+   unrelated files. Never force-push, rebase, or amend somebody else's work.
    Keep earlier unrelated changes separate; never blindly checkpoint the workspace.
 8. Continue by dependencies. Prepare M1, M2, and M3 evidence packets (screenshots,
    fixture URL, artifact paths) and continue without waiting for inspection.

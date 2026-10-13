@@ -1,5 +1,7 @@
 # Library — agent door
 
+Start at [docs/PICKUP.md](docs/PICKUP.md). That file is the current build doorway.
+
 North star: [docs/PRODUCT.md](docs/PRODUCT.md). That file is the product.
 Status: [docs/STATUS.md](docs/STATUS.md). Conventions: [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
 

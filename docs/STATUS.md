@@ -1,6 +1,8 @@
 # Library — status
 
-Spec baseline: 2026-10-12. This is a planning result, not a software release.
+Spec baseline: 2026-10-12. Pickup: [PICKUP.md](PICKUP.md).
+Private remote: https://github.com/imsly2/photoLibrary `main`.
+This is not a finished release.
 
 ## True now
 
@@ -18,8 +20,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - [CONTRACTS](CONTRACTS.md), [UI-SPEC](UI-SPEC.md), [FIXTURES](FIXTURES.md),
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
-- No server, scanner, web page, fixture media, Python package or QA runner exists.
-  No server was launched and no real photo disk was scanned for this task.
+- On `main` at `9f6094c`: the Python server, linked scan, metadata, fixture
+  media, and QA runner exist. The web page is still the empty-library shell.
+  Rendition bytes are not implemented. No personal photo disk has been scanned.
 
 ## Completion
 
@@ -109,4 +112,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
   filename.
 - 2026-10-13 — S03 plan locked in `docs/features/S03/Rev1.0/PLAN.md` after
   still-rendition recon. JPEG thumbs and previews only. F7 and F10 stay open.
-  Next action is the S03 implementation.
+  Next action is the S03 implementation from that plan.
+- 2026-10-13 — Pickup index added at [PICKUP.md](PICKUP.md). Steve authorized
+  the private GitHub remote so a cloud clone can continue. Unpublished local
+  S03 edits are not on `main` and are not the baseline.
