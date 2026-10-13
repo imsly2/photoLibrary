@@ -19,6 +19,8 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Scan progress | Persist progress in the source record; HTTP POST starts work and returns 202 before the scan finishes, with `scan.state` running. Poll sources; no additional jobs screen/API. Reads (items, groups, sources, settings, media, health) stay available during scan. CLI waits for completion and prints the final summary. The serve process prints scan progress lines on stdout during normal work, not only on failure. |
 | Client disconnect | A client that aborts a response (`BrokenPipeError`, `ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is non-fatal. Do not write 500, do not treat it as `internal-error`, and do not stop the server. |
 | Folder picker | `POST /api/pick-folder` `{}` opens the server computer's native folder dialog on Windows and returns 200 `{path}` or `{path:null}` if cancelled. Non-Windows or no UI returns 404 `picker-unavailable`. Typed paths remain valid. No upload. |
+| Family update | `GET /api/update` reports `{ok,branch,revision,dirty,message}` for the app-folder git copy. `POST /api/update` `{}` fetches and fast-forwards the **current** branch only (`git pull --ff-only`). 200 always, with `ok` true/false and a family-readable `message`. Never force, never checkout another branch, never a command prompt. Missing git or a non-git folder is `ok:false`, not a crash. |
+| Open default | `POST /api/items/<id>/open` `{}` launches the current original with the OS default program (`os.startfile` on Windows). 200 `{path,opened}` or 404 `unavailable`. |
 | Windows double-click | `Library.bat` at the app folder starts `launch.ps1` in a visible console and opens the browser. F2 still grades `powershell -File launch.ps1`. Do not claim macOS/Linux launch from this change. |
 | Live page origin | The page is same-origin with `/api`. Navigation, History API, Back, and links use the current `window.location.origin` or root-relative paths. Never construct `http://<host>:<settings.port>` or a stored runtime URL from another listen. Browser Back while this document is open stays on that origin (close viewer or remain on the grid); it must not load a stale port such as 18765 when the server is on 8765. |
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
@@ -265,6 +267,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | serve / GET `/api/health` | health 200 `{"ok":true}`; root identity uses GET `/api/runtime` |
 | scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. HTTP 202 source record is sent before the scan finishes (`scan.state` running). Rescan same origin reuses source. CLI still waits and prints the final summary. |
 | POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
+| GET `/api/update` | 200 `{ok,branch,revision,dirty,message}` for the app-folder git copy |
+| POST `/api/update` | `{}`; 200 `{ok,branch,revision,alreadyCurrent,message}` after fetch+ff-only pull of the current branch |
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
@@ -274,6 +278,7 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
 | favorite id --on/--off / PUT or POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; writes `catalog/favorites.json`; no-op success when unchanged |
 | reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
+| open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable` |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |

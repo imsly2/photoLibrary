@@ -656,6 +656,37 @@ dialog h2 {
   border: 1px solid #2a2a32;
 }
 
+.update-box {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-left: auto;
+}
+
+#update-library {
+  background: #2a2a32;
+  border: 1px solid #3a3a46;
+  color: #f2f2f4;
+  border-radius: 6px;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+}
+
+#update-status {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #c8c8d0;
+  max-width: 22rem;
+}
+
+#update-status[data-ok="true"] {
+  color: #9fd4a8;
+}
+
+#update-status[data-ok="false"] {
+  color: #e0a0a0;
+}
+
 #viewer {
   position: fixed;
   inset: 0;
@@ -735,23 +766,36 @@ dialog h2 {
   white-space: nowrap;
 }
 
-#viewer-nav,
 #viewer-tools {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  margin-left: auto;
 }
 
-#viewer-tools {
-  margin-left: auto;
+#viewer-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.85rem;
+  z-index: 13;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+#viewer-bottom > * {
+  pointer-events: auto;
 }
 
 #viewer-prev,
 #viewer-next,
-#viewer-zoom-out,
-#viewer-zoom-in,
 #viewer-rotate,
-#reveal-original {
+#reveal-original,
+#open-default,
+#viewer-info {
   background: #2a2a32;
 }
 
@@ -767,6 +811,55 @@ dialog h2 {
 #viewer-favorite[aria-pressed="true"] {
   background: #7a2d3a;
   color: #ffd0d6;
+}
+
+#viewer-info-wrap {
+  position: relative;
+}
+
+#viewer-info-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  width: 18rem;
+  max-height: min(70vh, 28rem);
+  overflow: auto;
+  background: #1b1b22;
+  border: 1px solid #3a3a46;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+#viewer-info-panel[hidden] {
+  display: none;
+}
+
+.info-heading {
+  margin: 0.35rem 0 0.25rem;
+  color: #a8a8b4;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-empty {
+  margin: 0;
+  color: #8a8a96;
+  font-size: 0.85rem;
+}
+
+.viewer-zoom-field {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #c8c8d0;
+  font-size: 0.85rem;
+}
+
+#viewer-zoom {
+  width: 10rem;
+  accent-color: #4a7ac8;
 }
 
 #unavailable-banner {
@@ -799,26 +892,11 @@ dialog h2 {
   font-size: 1.05rem;
 }
 
-#viewer-labels {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4.2rem;
-  z-index: 13;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.45rem;
-  pointer-events: none;
-}
-
-#viewer-labels .label-row,
+#viewer-info-panel .label-row,
 #viewer-fields {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 0.4rem;
-  pointer-events: auto;
 }
 
 .entity-label {
@@ -861,20 +939,16 @@ dialog h2 {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 1.4rem;
+  bottom: 3.55rem;
   z-index: 13;
   display: flex;
   justify-content: center;
   gap: 0.85rem;
 }
 
-#open-original,
 #reveal-original,
+#open-default,
 #play-preview {
   background: #2a2a32;
   min-width: 9rem;
-}
-
-#open-original[aria-pressed="true"] {
-  background: #2d4a7a;
 }

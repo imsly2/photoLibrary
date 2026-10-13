@@ -37,6 +37,10 @@
       <button type="button" id="group-dates" class="toolbar-toggle" aria-pressed="true">Dates</button>
     </div>
     <button type="button" id="add-folder-btn">Add folder</button>
+    <div class="update-box">
+      <button type="button" id="update-library">Update</button>
+      <p id="update-status" hidden></p>
+    </div>
   </header>
   <p id="disconnected-banner" hidden>Library is not responding</p>
   <p id="scan-status" class="status" hidden></p>
@@ -107,15 +111,31 @@
     <div id="viewer-bar">
       <button type="button" id="viewer-back">Back</button>
       <p id="viewer-crumb"></p>
-      <div id="viewer-nav">
-        <button type="button" id="viewer-prev">Previous</button>
-        <button type="button" id="viewer-next">Next</button>
-      </div>
       <div id="viewer-tools">
         <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite">♡</button>
-        <button type="button" id="viewer-zoom-out">Zoom out</button>
-        <button type="button" id="viewer-zoom-in">Zoom in</button>
-        <button type="button" id="viewer-rotate">Rotate</button>
+        <div id="viewer-info-wrap">
+          <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel">Info</button>
+          <div id="viewer-info-panel" hidden>
+            <p class="info-heading">People</p>
+            <div id="viewer-people" class="label-row"></div>
+            <p class="info-heading">Places</p>
+            <div id="viewer-place" class="label-row"></div>
+            <p class="info-heading">Things</p>
+            <div id="viewer-things" class="label-row"></div>
+            <div id="viewer-fields">
+              <label class="annotate-field">Person
+                <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false">
+              </label>
+              <label class="annotate-field">Place
+                <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false">
+              </label>
+              <label class="annotate-field">Thing
+                <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false">
+              </label>
+            </div>
+            <p id="annotate-error" hidden></p>
+          </div>
+        </div>
       </div>
     </div>
     <p id="unavailable-banner" hidden>Original is not on this computer</p>
@@ -125,26 +145,17 @@
       <video id="viewer-video" hidden playsinline></video>
       <p id="viewer-placeholder" hidden>Preview is not available</p>
     </div>
-    <div id="viewer-labels">
-      <div id="viewer-place" class="label-row"></div>
-      <div id="viewer-people" class="label-row"></div>
-      <div id="viewer-things" class="label-row"></div>
-      <div id="viewer-fields">
-        <label class="annotate-field">Person
-          <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false">
-        </label>
-        <label class="annotate-field">Place
-          <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false">
-        </label>
-        <label class="annotate-field">Thing
-          <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false">
-        </label>
-      </div>
-      <p id="annotate-error" hidden></p>
+    <div id="viewer-bottom">
+      <button type="button" id="viewer-prev">Previous</button>
+      <button type="button" id="viewer-rotate">Rotate</button>
+      <label class="viewer-zoom-field" for="viewer-zoom">Zoom
+        <input type="range" id="viewer-zoom" min="0" max="1000" step="1" value="0" aria-label="Zoom">
+      </label>
+      <button type="button" id="viewer-next">Next</button>
     </div>
     <div id="viewer-actions">
-      <button type="button" id="open-original" aria-pressed="false">Open original</button>
       <button type="button" id="reveal-original">Reveal in Explorer</button>
+      <button type="button" id="open-default">Open with default program</button>
       <button type="button" id="play-preview" disabled>Play preview</button>
     </div>
   </div>

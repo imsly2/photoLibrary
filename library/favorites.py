@@ -122,6 +122,23 @@ def parse_favorite_body(body: Any) -> bool:
     return value
 
 
+def open_path_with_default(path: Path) -> bool:
+    try:
+        if os.name == "nt":
+            os.startfile(path)  # type: ignore[attr-defined]
+            return True
+        if sys.platform == "darwin":
+            subprocess.Popen(["open", str(path)])
+            return True
+        opener = _which("xdg-open")
+        if opener:
+            subprocess.Popen([opener, str(path)])
+            return True
+    except OSError:
+        return False
+    return False
+
+
 def open_containing_folder(path: Path) -> bool:
     folder = path.parent
     try:

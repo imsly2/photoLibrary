@@ -21,7 +21,6 @@ from tests.qa.s09 import (
     stop_owned,
     wait_catalog,
     wait_viewer_closed,
-    wait_viewer_original,
     wait_viewer_still,
 )
 
@@ -96,26 +95,32 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
           const fields = Array.from(document.querySelectorAll('#viewer-fields .annotate-field')).map(function (label) {
             return (label.textContent || '').replace(/\\s+/g, ' ').trim();
           });
+          const prev = document.getElementById('viewer-prev');
+          const next = document.getElementById('viewer-next');
+          const stage = document.getElementById('viewer-stage');
           return {
             back: info('viewer-back'),
             prev: info('viewer-prev'),
             next: info('viewer-next'),
-            zoomOut: info('viewer-zoom-out'),
-            zoomIn: info('viewer-zoom-in'),
+            zoom: info('viewer-zoom'),
             rotate: info('viewer-rotate'),
             favorite: info('viewer-favorite'),
+            info: info('viewer-info'),
             reveal: info('reveal-original'),
+            openDefault: info('open-default'),
+            openOriginal: info('open-original'),
             crumb: (document.getElementById('viewer-crumb') || {}).textContent || '',
             fields: fields,
             personPlaceholder: (document.getElementById('person-field') || {}).placeholder || '',
             placePlaceholder: (document.getElementById('place-field') || {}).placeholder || '',
             thingPlaceholder: (document.getElementById('thing-field') || {}).placeholder || '',
             href: location.href,
+            navBottom: !!(prev && next && stage && prev.getBoundingClientRect().top > stage.getBoundingClientRect().top + 40),
           };
         }"""
     )
     record["chrome"] = chrome
-    for name in ("back", "prev", "next", "zoomOut", "zoomIn", "rotate", "favorite", "reveal"):
+    for name in ("back", "prev", "next", "zoom", "rotate", "favorite", "info", "reveal"):
         node = chrome.get(name) or {}
         min_w = 24 if name == "favorite" else 8
         checks.check(
@@ -123,6 +128,9 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
             bool(node.get("present")) and not node.get("hidden") and (node.get("width") or 0) > min_w,
             json.dumps(node),
         )
+    checks.check("no-showing-original-button", chrome.get("openOriginal", {}).get("present") is False)
+    checks.check("open-default-present", chrome.get("openDefault", {}).get("present") is True, json.dumps(chrome.get("openDefault")))
+    checks.check("prev-next-bottom", chrome.get("navBottom") is True, json.dumps(chrome))
     checks.check("back-label", chrome.get("back", {}).get("text") == "Back", json.dumps(chrome.get("back")))
     checks.check("prev-label", chrome.get("prev", {}).get("text") == "Previous", json.dumps(chrome.get("prev")))
     checks.check("next-label", chrome.get("next", {}).get("text") == "Next", json.dumps(chrome.get("next")))
@@ -177,61 +185,18 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     back_src = page.locator("#viewer-image").get_attribute("src") or ""
     checks.check("prev-returns", back_src == start_src, back_src)
 
-    wait_viewer_original(page)
+    page.locator("#viewer-info").click()
     page.wait_for_function(
-        """() => {
-          const btn = document.getElementById('open-original');
-          return btn && btn.getAttribute('aria-pressed') === 'true'
-            && (btn.textContent || '').trim() === 'Showing original';
-        }""",
-        timeout=8000,
+        "() => { const panel = document.getElementById('viewer-info-panel'); return panel && !panel.hidden; }",
+        timeout=5000,
     )
-    original_state = page.evaluate(
-        """() => {
-          const btn = document.getElementById('open-original');
-          const original = document.getElementById('viewer-original');
-          return {
-            text: (btn && btn.textContent || '').trim(),
-            pressed: btn ? btn.getAttribute('aria-pressed') : '',
-            showing: document.getElementById('viewer').dataset.showingOriginal || '',
-            originalSrc: original ? (original.getAttribute('src') || '') : '',
-            originalHidden: original ? original.hidden : true,
-          };
-        }"""
-    )
-    record["originalAuto"] = original_state
-    checks.check(
-        "open-original-shows-state",
-        original_state.get("text") == "Showing original"
-        and original_state.get("pressed") == "true"
-        and "which=original" in (original_state.get("originalSrc") or ""),
-        json.dumps(original_state),
-    )
-    page.locator("#open-original").click()
+    checks.check("info-opens", True)
+    page.locator("#viewer-info").click()
     page.wait_for_function(
-        """() => {
-          const btn = document.getElementById('open-original');
-          const original = document.getElementById('viewer-original');
-          return btn && btn.getAttribute('aria-pressed') === 'false'
-            && (btn.textContent || '').trim() === 'Open original'
-            && original && original.hidden;
-        }""",
-        timeout=8000,
+        "() => { const panel = document.getElementById('viewer-info-panel'); return panel && panel.hidden; }",
+        timeout=5000,
     )
-    preview_kept = page.locator("#viewer-image").get_attribute("src") or ""
-    checks.check("open-original-toggles-off", "which=preview" in preview_kept, preview_kept)
-    page.locator("#open-original").click()
-    page.wait_for_function(
-        """() => {
-          const original = document.getElementById('viewer-original');
-          const btn = document.getElementById('open-original');
-          return original && !original.hidden
-            && (original.getAttribute('src') || '').indexOf('which=original') !== -1
-            && btn && btn.getAttribute('aria-pressed') === 'true';
-        }""",
-        timeout=8000,
-    )
-    checks.check("open-original-toggles-on", True)
+    checks.check("info-closes", True)
 
     page.locator("#viewer-favorite").click()
     page.wait_for_function(
@@ -260,18 +225,17 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
 
     before = image_rect(page)
-    page.locator("#viewer-zoom-in").click()
+    page.locator("#viewer-zoom").fill("850")
     after_in = image_rect(page)
     checks.check(
-        "zoom-in-enlarges",
+        "zoom-slider-enlarges",
         after_in["width"] > before["width"] + 1 and after_in["height"] > before["height"] + 1,
         json.dumps({"before": before, "after": after_in}),
     )
-    page.locator("#viewer-zoom-out").click()
-    page.locator("#viewer-zoom-out").click()
+    page.locator("#viewer-zoom").fill("0")
     after_out = image_rect(page)
     checks.check(
-        "zoom-out-below-fit",
+        "zoom-slider-below-fit",
         after_out["width"] < before["width"] - 1 and after_out["height"] < before["height"] - 1,
         json.dumps({"fit": before, "out": after_out}),
     )
@@ -307,15 +271,14 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         timeout=8000,
     )
     video_fit = media_box(page, "#viewer-video")
-    page.locator("#viewer-zoom-out").click()
+    page.locator("#viewer-zoom").fill("0")
     video_out = media_box(page, "#viewer-video")
     checks.check(
         "video-zoom-out",
         video_out["width"] < video_fit["width"] - 1 and video_out["height"] < video_fit["height"] - 1,
         json.dumps({"fit": video_fit, "out": video_out}),
     )
-    page.locator("#viewer-zoom-in").click()
-    page.locator("#viewer-zoom-in").click()
+    page.locator("#viewer-zoom").fill("700")
     pre_pan = media_box(page, "#viewer-video")
     pan_x = pre_pan["left"] + pre_pan["width"] / 2
     pan_y = pre_pan["top"] + pre_pan["height"] / 2

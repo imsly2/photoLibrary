@@ -45,7 +45,8 @@ fill. They must read as clickable toggles, not heading text.
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
 | Ready | Years/Months/Days/All, search, sort, Videos, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
-| Viewer | Show still preview first, then readable original; video uses poster then original/proxy, live uses still with motion playback. Visible Previous/Next and Back; arrows still move. Next/previous use the current filtered order, stop at ends without wrapping. Back/Esc restores the grid he came from (filter, level, scroll) on the same origin. Zoom in/out (including smaller than fit) plus existing Ctrl+wheel; left-drag pans stills, middle-drag pans stills and video. Rotate turns the displayed still 90° per click and does not rewrite the original. A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Open original stays in this page and is pressed as “Showing original” when original bytes are on screen; click toggles back to the preview — it does not open another program. Reveal in Explorer is always present in the viewer and opens the original's folder when the file is on this computer; disabled with the missing-original banner otherwise. Play preview keeps click-to-pause. Person/Place/Thing fields are labeled; no unlabeled pills. Labels list existing annotations; typing a person/place/thing and committing sends annotate. No box-drawing editor. |
+| Update | Header `#update-library` is labeled Update. Click runs `POST /api/update` and writes a short sentence into `#update-status` (updated / already current / git missing / not a git copy / pull failed). No command prompt. Does not switch branches. |
+| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then original/proxy, live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom` (range slider) plus existing Ctrl+wheel; no Zoom in/Zoom out buttons. Click-and-drag pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate turns the displayed still 90° per click and does not rewrite the original. A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer is always present and opens the original's folder when the file is on this computer; disabled with the missing-original banner otherwise. Open with default program is optional and launches that file. Play preview keeps click-to-pause. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown that lists those entities; a click filters the grid to that entity and closes the viewer. Type-in fields stay inside Info and stay labeled. Esc closes Info first, then the viewer. No box-drawing editor. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matching pictures”. Clearing query/chip returns matching broader grid, no catalog mutation. |
@@ -114,13 +115,13 @@ tiles use `data-slot="fav"` so the same id can also sit in its date/wall
 row. Collapse is session-only.
 
 Click a cell opens it. ArrowLeft/ArrowRight navigate. Ctrl+wheel zooms an opened
-still or video around the cursor's image coordinate; middle drag moves it 1:1,
-and a still also pans with a left drag. No reflow or automatic fit during a
-gesture. Step factor 1.1 per wheel or button step, 0.25× fit minimum, 16× fit
-maximum (zoom out from the opening fit is required). Images and video initially
-fit; each newly opened item resets fit and rotation. A still click does
-nothing. Video/live click or Space toggles playback. Normal scrolling does
-not seek. Unsupported original codec falls back to proxy, not a silent freeze.
+still or video around the cursor's image coordinate; the viewer zoom slider
+maps the same 0.25×–16× fit range. Middle drag moves it 1:1, a still also
+pans with a left drag, and any zoomed item pans with a left drag. No reflow
+or automatic fit during a gesture. Images and video initially fit; each newly
+opened item resets fit and rotation. A still click does nothing. Video/live
+click or Space toggles playback. Normal scrolling does not seek. Unsupported
+original codec falls back to proxy, not a silent freeze.
 
 Proxy policy: `off` never autoplays; `days-and-all` plays only the hovered cell at
 those levels; `always` also permits hover playback within Years/Months mosaics.

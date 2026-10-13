@@ -144,6 +144,12 @@ must not jump to another host or port — including a leftover QA listen such as
 root-relative paths. Never embed `settings.port` or a stored runtime URL from
 a previous listen.
 
+Family installs update without a command prompt. A header **Update** control
+pulls the current git branch (`git fetch` then `git pull --ff-only`, or the
+equivalent) and shows a clear success or fail sentence. It does not ask anyone
+to type git, open GitHub Desktop, or switch branches. A copy that is not a
+git folder, or a PC without git, says so in that same status line.
+
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
 URL `http://127.0.0.1:8765/` and `GET /api/health` returns
@@ -169,6 +175,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
 | `favorite <id> --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the heart in `catalog/favorites.json`. |
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
+| `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original with the default program. |
+| `update` | `POST /api/update` `{}` | Pulls the current git branch. `GET /api/update` reports branch and revision. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -402,28 +410,35 @@ Click a cell to open the viewer. Previous and Next buttons, and the arrow
 keys, move to the next and previous item in the current sort. Back (and Esc)
 returns to the grid he came from on the **same** live origin and port.
 Browser Back does the same while the page is open; it must not load a
-stale port or call a hop that leaves this listen URL. Zoom in/out
-(including smaller than fit) and pan work on the opened still and on
-video. Rotate turns the displayed still 90° and does not change the file.
+stale port or call a hop that leaves this listen URL.
+
+The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
+the **bottom**; Left/Right arrows still change photo and stop at the ends.
+Rotate sits next to them. Zoom is a **slider** (plus existing Ctrl+wheel),
+not discrete zoom-in/out buttons. Click-and-drag pans while zoomed.
+Rotate turns the displayed still 90° and does not change the file.
 
 A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
 
-For a photo the viewer shows `preview.webp` first, then the original if available.
-Open original stays in this viewer: it swaps the on-screen bytes to the original
-and stays pressed as “Showing original” until clicked again to return to the
-preview. It does not launch another app. Reveal in Explorer opens the
-original's containing folder on this computer whenever the file is here
-(`explorer /select` on Windows). For video the viewer shows the poster, then
-plays the original or proxy; a browser that cannot decode the original
-falls back to the proxy. Play preview still toggles pause/play on click.
-Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it;
-a still also pans with a left drag. Click a video, or press Space, to play
-or pause. Playback of a video uses the original when available, otherwise
+For a photo the viewer shows `preview.webp` first, then the original if
+available, with no “Showing original” button or notification. Reveal in
+Explorer opens the original's containing folder on this computer whenever
+the file is here (`explorer /select` on Windows). Open with default
+program launches that file in the usual Windows app. For video the viewer
+shows the poster, then plays the original or proxy; a browser that cannot
+decode the original falls back to the proxy. Play preview still toggles
+pause/play on click. Ctrl+wheel zooms the picture, anchored at the cursor.
+Middle-click drags it; a still also pans with a left drag, and any zoomed
+item pans with a left drag. Click a video, or press Space, to play or
+pause. Playback of a video uses the original when available, otherwise
 the proxy.
 
-The viewer lists the place, the people, and the things already written on the
-record. The three type-in fields are labeled Person, Place, and Thing.
+Person, Place, and Thing are **not** pills painted over the preview. A
+top-right **Info** control lists the people, places, and things already
+written on the record; clicking one filters the grid to that entity.
+The three type-in fields stay inside Info and stay labeled Person, Place,
+and Thing.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.
@@ -685,9 +700,9 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section, Update. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, people and things. Viewer heart and, on Windows, Reveal in Explorer for the current original path. |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, Info dropdown, viewer heart, Reveal in Explorer, Open with default program. |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 
