@@ -1,0 +1,18 @@
+{
+  "beforeRoot": "/workspace/docs/features/S05/Rev1.0/assets/orchestrator-rerun/f1/move-library-data",
+  "beforeOriginals": {
+    "originals/move-copy-media-src_3b908536207c/a/clip.mp4": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+    "originals/move-copy-media-src_3b908536207c/a/photo.jpg": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+  },
+  "afterRoot": "/workspace/docs/features/S05/Rev1.0/assets/orchestrator-rerun/f1/moved-library-data",
+  "afterOriginals": {
+    "originals/move-copy-media-src_3b908536207c/a/clip.mp4": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+    "originals/move-copy-media-src_3b908536207c/a/photo.jpg": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+  },
+  "linked": {
+    "serial": "windows:s05-linked",
+    "before": "/workspace/docs/features/S05/Rev1.0/assets/orchestrator-rerun/f1/vol-a",
+    "after": "/workspace/docs/features/S05/Rev1.0/assets/orchestrator-rerun/f1/vol-b",
+    "otherSerial": "windows:s05-other"
+  }
+}

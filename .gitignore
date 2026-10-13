@@ -39,6 +39,18 @@ docs/features/**/dialog-page-library-data/
 docs/features/**/remap-library-data/
 docs/features/**/moved-library-data/
 docs/features/**/old-library-data-hidden/
+docs/features/**/choice-media/
+docs/features/**/collision-media/
+docs/features/**/convert-media/
+docs/features/**/copied-items-media/
+docs/features/**/dialog-link-media/
+docs/features/**/dialog-media/
+docs/features/**/f4-copy-media/
+docs/features/**/f4-link-media/
+docs/features/**/move-copy-media/
+docs/features/**/undo-media/
+docs/features/**/vol-a/
+docs/features/**/vol-b/
 
 # Python
 __pycache__/
