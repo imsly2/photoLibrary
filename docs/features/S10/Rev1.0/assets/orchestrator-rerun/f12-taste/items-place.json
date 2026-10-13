@@ -1,0 +1,207 @@
+{
+  "place_9c0759888ce6": [
+    {
+      "schemaVersion": 1,
+      "id": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "kind": "photo",
+      "filename": "near.jpg",
+      "capturedAt": "2024-06-12T15:05:00",
+      "capturedAtSource": "exif",
+      "placeId": "place_9c0759888ce6",
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": 1,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": 41.88045,
+        "longitude": -87.63
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_7f9087caa0e9",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/a/near.jpg",
+          "lastKnownPath": "/workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/a/near.jpg",
+          "sizeBytes": 12642,
+          "modifiedAt": "2022-01-01T00:00:00Z",
+          "sha256": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_7f9087caa0e9",
+        "thumb": "renditions/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a/thumb.webp",
+        "preview": "renditions/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable"
+        }
+      },
+      "faces": [],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "entities": {
+        "people": [],
+        "places": [
+          {
+            "schemaVersion": 1,
+            "id": "place_9c0759888ce6",
+            "name": null,
+            "latitude": 41.88,
+            "longitude": -87.63
+          }
+        ],
+        "things": []
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "kind": "photo",
+      "filename": "IMG_1042.jpg",
+      "capturedAt": "2024-06-12T15:04:00",
+      "capturedAtSource": "exif",
+      "placeId": "place_9c0759888ce6",
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": 1,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": 41.88,
+        "longitude": -87.63
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_7f9087caa0e9",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/a/IMG_1042.jpg",
+          "lastKnownPath": "/workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/a/IMG_1042.jpg",
+          "sizeBytes": 15274,
+          "modifiedAt": "2022-01-01T00:00:00Z",
+          "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_7f9087caa0e9",
+        "thumb": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp",
+        "preview": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable"
+        }
+      },
+      "faces": [],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "entities": {
+        "people": [],
+        "places": [
+          {
+            "schemaVersion": 1,
+            "id": "place_9c0759888ce6",
+            "name": null,
+            "latitude": 41.88,
+            "longitude": -87.63
+          }
+        ],
+        "things": []
+      }
+    }
+  ],
+  "place_dbc9a0f22827": [
+    {
+      "schemaVersion": 1,
+      "id": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "kind": "photo",
+      "filename": "far.jpg",
+      "capturedAt": "2023-06-12T15:04:00",
+      "capturedAtSource": "exif",
+      "placeId": "place_dbc9a0f22827",
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": 1,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": 41.925,
+        "longitude": -87.63
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_7f9087caa0e9",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/b/far.jpg",
+          "lastKnownPath": "/workspace/docs/features/S10/Rev1.0/assets/orchestrator-rerun/f12-taste/s10-media/b/far.jpg",
+          "sizeBytes": 12289,
+          "modifiedAt": "2022-01-01T00:00:00Z",
+          "sha256": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_7f9087caa0e9",
+        "thumb": "renditions/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc/thumb.webp",
+        "preview": "renditions/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable"
+        }
+      },
+      "faces": [],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "entities": {
+        "people": [],
+        "places": [
+          {
+            "schemaVersion": 1,
+            "id": "place_dbc9a0f22827",
+            "name": null,
+            "latitude": 41.925,
+            "longitude": -87.63
+          }
+        ],
+        "things": []
+      }
+    }
+  ]
+}
