@@ -413,7 +413,11 @@ def pair_live_items(root: Path, source_id: str) -> None:
         for loc in motion_item["locations"]:
             live = merge_location(live, loc)
         live = merge_associations(live, motion_item)
-        live["renditions"] = renditions_for("live", source_id)
+        live["renditions"] = renditions_for(
+            "live",
+            still_item["renditions"]["sourceId"],
+            store=still_item["renditions"].get("store") or "with-server",
+        )
         live = ordered_item(live)
         source = load_source(root, source_id)
         before_source = clone(source)

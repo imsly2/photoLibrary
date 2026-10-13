@@ -1,0 +1,61 @@
+PASS with-source-item
+PASS thumb-under-source: docs/features/S07/Rev1.0/assets/implementer-1/f8/f8-folder/.library/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp
+PASS thumb-not-on-server-yet: /tmp/s07-qa/library-data/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp
+PASS item-store-with-source
+PASS setting-without-relocate-keeps-source-bytes
+PASS relocate-to-server-exit
+PASS relocate-to-server-ok: {
+  "ok": true
+}
+
+PASS thumb-on-server
+PASS thumb-gone-from-source
+PASS item-store-with-server
+PASS relocate-to-source-exit
+PASS reverse-thumb-under-source
+PASS reverse-thumb-gone-from-server
+PASS reverse-store-with-source
+PASS relocate-undo-exit
+PASS undo-store-with-server
+PASS undo-bytes-on-server
+PASS undo-media-serves
+PASS undo-files-kept: /tmp/s07-qa/library-data/undo/files/25f5458fdb6e/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS undo-files-kept: /tmp/s07-qa/library-data/undo/files/6ca8cacde19c/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS history-operation-relocate
+PASS original-hashes-unchanged-f8
+PASS override-item
+PASS override-wins-source
+PASS override-not-server
+PASS override-source-field: "with-source"
+PASS dedup-one-item: 1
+PASS dedup-two-locations
+PASS dedup-one-primary
+PASS dedup-owner-is-primary-source
+PASS dedup-one-rendition-dir
+PASS dedup-second-has-no-copy
+PASS dedup-owner-first
+PASS copy-here-item
+PASS copy-here-copyRoot: originals/copy-src-src_54a8d4965bec
+PASS copy-here-writes-under-copyRoot: docs/features/S07/Rev1.0/assets/implementer-1/f8/copy-library-data/originals/copy-src-src_54a8d4965bec/.library/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp
+PASS copy-here-not-old-disk
+PASS deny-item
+PASS denied-exit-1: exit=1 {"error":"io-error"}
+
+PASS denied-existing-error: {"error":"io-error"}
+
+PASS denied-old-store
+PASS denied-old-bytes
+PASS interrupt-item
+PASS interrupt-old-refs
+PASS interrupt-old-bytes
+PASS unavail-relocate-items
+PASS unavail-relocate-exit-1: {"error":"unavailable"}
+
+PASS unavail-relocate-error: {"error":"unavailable"}
+
+PASS unavail-keeps-old-refs
+PASS unavail-keeps-old-files
+PASS unavail-continues-others
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes

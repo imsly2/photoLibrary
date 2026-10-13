@@ -355,6 +355,10 @@ def _index_file(
             root, float(latitude), float(longitude), match_meters
         )
     existing_pending = try_load_item(root, pending)
+    settings = load_settings_file(root) if settings_path(root).exists() else defaults()
+    from library.renditions import effective_preview_store
+
+    store = effective_preview_store(source, settings)
     item = make_item(
         item_id=pending,
         kind=kind,
@@ -363,7 +367,7 @@ def _index_file(
         captured_at_source=captured_source,
         content_identifier=content_id,
         locations=[location],
-        renditions=renditions_for(kind, source_id, decode_error=decode_error),
+        renditions=renditions_for(kind, source_id, decode_error=decode_error, store=store),
         place_id=place_id,
         metadata=metadata,
         faces=(existing_pending.get("faces") if existing_pending else None),

@@ -154,14 +154,14 @@ def port_open(port: int, host: str = "127.0.0.1") -> bool:
         return False
 
 
-def start_server(root: Path) -> subprocess.Popen[str]:
+def start_server(root: Path, env: dict[str, str] | None = None) -> subprocess.Popen[str]:
     return subprocess.Popen(
         [sys.executable, "-m", "library", "--root", str(root), "serve"],
         cwd=str(PRODUCT_ROOT),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
-        env=_env(),
+        env=env or _env(),
     )
 
 

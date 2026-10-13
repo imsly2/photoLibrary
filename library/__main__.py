@@ -21,7 +21,6 @@ from library.settings import parse_cli_value
 UNIMPLEMENTED = {
     "annotate",
     "people",
-    "renditions",
 }
 
 
@@ -189,6 +188,7 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--sort")
     items.add_argument("--dir")
     items.add_argument("--q")
+    items.add_argument("--unavailable")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -309,6 +309,8 @@ def main(argv: list[str] | None = None) -> int:
                 query["dir"] = args.dir
             if args.q:
                 query["q"] = args.q
+            if args.unavailable is not None:
+                query["unavailable"] = args.unavailable
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -322,6 +324,20 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).items_list(query))
             _print_json(payload)
+            return 0
+        if args.command == "renditions":
+            if getattr(args, "action", None) != "relocate":
+                _print_error("invalid-argument")
+                return 2
+            result = _mutation(
+                root,
+                lambda: Library(root).relocate(),
+                "POST",
+                "/api/renditions/relocate",
+                {},
+                timeout=300.0,
+            )
+            _print_json(result)
             return 0
         if args.command == "rebuild-index":
             result = _mutation(

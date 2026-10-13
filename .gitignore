@@ -57,6 +57,8 @@ docs/features/**/f5-heic-media/
 docs/features/**/f5-interrupt-media/
 docs/features/**/f5-modified-media/
 docs/features/**/f5-skip-media/
+docs/features/**/*-library-data/
+docs/features/**/f8-folder/
 
 # Python
 __pycache__/

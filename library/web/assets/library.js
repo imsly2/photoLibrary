@@ -3,6 +3,11 @@
   const viewer = document.getElementById("viewer");
   const viewerImage = document.getElementById("viewer-image");
   const viewerVideo = document.getElementById("viewer-video");
+  const viewerBack = document.getElementById("viewer-back");
+  const unavailableBanner = document.getElementById("unavailable-banner");
+  const viewerPlaceholder = document.getElementById("viewer-placeholder");
+  const openOriginalBtn = document.getElementById("open-original");
+  const playPreviewBtn = document.getElementById("play-preview");
   const addFolderBtn = document.getElementById("add-folder-btn");
   const addDialog = document.getElementById("add-folder");
   const addPath = document.getElementById("add-path");
@@ -14,6 +19,9 @@
   const zoomSlider = document.getElementById("zoom-slider");
   const scanStatus = document.getElementById("scan-status");
   if (!main || !viewer || !viewerImage || !viewerVideo || !addFolderBtn || !addDialog) {
+    return;
+  }
+  if (!unavailableBanner || !viewerPlaceholder || !openOriginalBtn || !playPreviewBtn || !viewerBack) {
     return;
   }
 
@@ -331,11 +339,59 @@
     viewerVideo.hidden = true;
   }
 
+  function proxyReady(item) {
+    return !!item && ((item.renditions || {}).status || {}).proxy === "ready";
+  }
+
+  function stillPreviewReady(item) {
+    if (!item) {
+      return false;
+    }
+    const status = (item.renditions || {}).status || {};
+    if (item.kind === "video") {
+      return status.poster === "ready";
+    }
+    return status.preview === "ready";
+  }
+
+  function syncViewerChrome(item) {
+    const available = !!(item && item.available);
+    unavailableBanner.hidden = available;
+    openOriginalBtn.disabled = !available;
+    playPreviewBtn.disabled = true;
+    if (!item || !proxyReady(item)) {
+      return;
+    }
+    const itemId = item.id;
+    fetch("/api/media/" + encodeURIComponent(itemId) + "?which=proxy", { method: "HEAD" }).then(function (res) {
+      if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId) {
+        return;
+      }
+      playPreviewBtn.disabled = !res.ok;
+    }).catch(function () {
+      if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId) {
+        return;
+      }
+      playPreviewBtn.disabled = true;
+    });
+  }
+
+  function showViewerPlaceholder(show) {
+    viewerPlaceholder.hidden = !show;
+    if (show) {
+      viewerImage.hidden = true;
+    }
+  }
+
   function closeViewer() {
     viewer.hidden = true;
     viewerImage.removeAttribute("src");
     viewerImage.hidden = false;
     resetViewerVideo();
+    unavailableBanner.hidden = true;
+    viewerPlaceholder.hidden = true;
+    openOriginalBtn.disabled = true;
+    playPreviewBtn.disabled = true;
     viewerIndex = -1;
     panning = false;
     window.requestAnimationFrame(function () {
@@ -425,23 +481,36 @@
 
   function openStillViewer(item, index) {
     resetViewerVideo();
-    viewerImage.hidden = false;
+    syncViewerChrome(item);
     const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
     const same = viewerIndex === index && !viewer.hidden && viewerImage.getAttribute("src") === url;
     viewerIndex = index;
     viewer.hidden = false;
     viewerImage.draggable = false;
+    if (!stillPreviewReady(item)) {
+      viewerImage.removeAttribute("src");
+      showViewerPlaceholder(true);
+      return;
+    }
+    showViewerPlaceholder(false);
+    viewerImage.hidden = false;
     if (same && viewerImage.complete && viewerImage.naturalWidth > 0) {
       return;
     }
     fitOnLoad = true;
     viewerImage.onload = function () {
+      showViewerPlaceholder(false);
+      viewerImage.hidden = false;
       naturalW = viewerImage.naturalWidth;
       naturalH = viewerImage.naturalHeight;
       if (fitOnLoad) {
         fitViewer();
         fitOnLoad = false;
       }
+    };
+    viewerImage.onerror = function () {
+      viewerImage.removeAttribute("src");
+      showViewerPlaceholder(true);
     };
     viewerImage.src = url;
   }
@@ -450,8 +519,15 @@
     viewerImage.removeAttribute("src");
     viewerImage.hidden = true;
     resetViewerVideo();
+    syncViewerChrome(item);
     viewerIndex = index;
     viewer.hidden = false;
+    if (!stillPreviewReady(item)) {
+      showViewerPlaceholder(true);
+      viewerVideo.hidden = true;
+      return;
+    }
+    showViewerPlaceholder(false);
     viewerVideo.hidden = false;
     viewerVideo.poster = "/api/media/" + encodeURIComponent(item.id) + "?which=poster";
   }
@@ -832,6 +908,54 @@
   viewerVideo.addEventListener("click", function (event) {
     event.preventDefault();
     toggleViewerPlay();
+  });
+  viewerBack.addEventListener("click", function () {
+    if (settings.zoomLevel !== savedLevel) {
+      setLevel(savedLevel, true).then(closeViewer);
+    } else {
+      closeViewer();
+    }
+  });
+  openOriginalBtn.addEventListener("click", function () {
+    if (openOriginalBtn.disabled || viewerIndex < 0) {
+      return;
+    }
+    const item = items[viewerIndex];
+    if (!item || item.available === false) {
+      return;
+    }
+    const originalUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=original";
+    if (item.kind === "video") {
+      playOriginalOrProxy(item);
+      const play = viewerVideo.play();
+      if (play && play.catch) {
+        play.catch(function () {});
+      }
+      return;
+    }
+    showViewerPlaceholder(false);
+    viewerImage.hidden = false;
+    viewerImage.src = originalUrl;
+  });
+  playPreviewBtn.addEventListener("click", function () {
+    if (playPreviewBtn.disabled || viewerIndex < 0) {
+      return;
+    }
+    const item = items[viewerIndex];
+    if (!item || !proxyReady(item)) {
+      return;
+    }
+    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    resetViewerVideo();
+    showViewerPlaceholder(false);
+    viewerVideo.hidden = false;
+    viewerVideo.setAttribute("data-using-proxy", "1");
+    viewerVideo.setAttribute("data-source-ready", item.id);
+    viewerVideo.src = proxyUrl;
+    const play = viewerVideo.play();
+    if (play && play.catch) {
+      play.catch(function () {});
+    }
   });
 
   fetch("/api/settings").then(readJson).then(function (data) {

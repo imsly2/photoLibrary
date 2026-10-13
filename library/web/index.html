@@ -72,9 +72,18 @@
     </div>
   </dialog>
   <div id="viewer" hidden>
+    <div id="viewer-bar">
+      <button type="button" id="viewer-back">Library</button>
+    </div>
+    <p id="unavailable-banner" hidden>Original is not on this computer</p>
     <div id="viewer-stage">
       <img id="viewer-image" alt="">
       <video id="viewer-video" hidden playsinline></video>
+      <p id="viewer-placeholder" hidden>Preview is not available</p>
+    </div>
+    <div id="viewer-actions">
+      <button type="button" id="open-original">Open original</button>
+      <button type="button" id="play-preview" disabled>Play preview</button>
     </div>
   </div>
   <script src="/assets/library.js"></script>

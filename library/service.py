@@ -18,8 +18,9 @@ from library.catalog_io import (
 from library.groups import LEVELS, groups_from_items
 from library.errors import AppError, fail
 from library.media import file_suffix
-from library.paths import library_path
 from library.renditions import drain_step as drain_queued_jpegs
+from library.renditions import relocate as relocate_renditions
+from library.renditions import rendition_abs, restore_relocate_files
 from library.volumes import location_file, location_matches_stat
 from library.history import (
     load_entry,
@@ -114,6 +115,8 @@ class Library:
             self.root,
             plan_cursor_move(self.root, state["cursor"] - 1, file_changes),
         )
+        if entry.get("operation") == "relocate":
+            restore_relocate_files(self.root, entry_id)
         return {"ok": True}
 
     def redo(self) -> dict[str, bool]:
@@ -221,6 +224,11 @@ class Library:
         self.ensure_settings()
         return drain_queued_jpegs(self.root)
 
+    def relocate(self) -> dict[str, bool]:
+        self.recover()
+        self.ensure_settings()
+        return relocate_renditions(self.root)
+
     def media_resolve(self, item_id: str, query: dict[str, str]) -> dict[str, Any]:
         extra = set(query) - {"which", "component"}
         if extra:
@@ -258,10 +266,10 @@ class Library:
         if relative is None or status != "ready":
             raise fail("preview-unavailable")
         try:
-            path = library_path(self.root, relative)
+            path = rendition_abs(item, which, self.root)
         except Exception as exc:
             raise fail("preview-unavailable") from exc
-        if not path.is_file() or path.stat().st_size <= 0:
+        if path is None or not path.is_file() or path.stat().st_size <= 0:
             raise fail("preview-unavailable")
         content_type = "video/mp4" if which == "proxy" else "image/webp"
         return {"path": path, "content_type": content_type}

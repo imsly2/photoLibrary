@@ -136,6 +136,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.s05 import run_slice as runner
         elif args.slice_id == "S06":
             from tests.qa.s06 import run_slice as runner
+        elif args.slice_id == "S07":
+            from tests.qa.s07 import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
@@ -154,6 +156,10 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.s06 import run_check_f5 as runner
         elif args.feature_id == "F7":
             from tests.qa.s06 import run_check_f7 as runner
+        elif args.feature_id == "F8":
+            from tests.qa.s07 import run_check_f8 as runner
+        elif args.feature_id == "F16":
+            from tests.qa.s07 import run_check_f16 as runner
         else:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))

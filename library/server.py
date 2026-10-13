@@ -267,6 +267,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.rebuild_index())
                 return
+            if route == "/api/renditions/relocate" and method == "POST":
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.relocate())
+                return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)
                 return

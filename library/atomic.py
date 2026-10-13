@@ -116,7 +116,28 @@ def transact(
     remaining = _transaction_root(root)
     if remaining.exists() and not any(remaining.iterdir()):
         remaining.rmdir()
+    purge_orphan_undo_files(root)
     return tid
+
+
+def purge_orphan_undo_files(root: Path) -> None:
+    files_dir = root / "undo" / "files"
+    if not files_dir.exists():
+        return
+    kept: set[str] = set()
+    state_file = root / "undo" / "state.json"
+    if state_file.exists():
+        try:
+            state = load_json(state_file)
+        except (OSError, json.JSONDecodeError):
+            return
+        if isinstance(state, dict):
+            for entry_id in state.get("entries") or []:
+                if type(entry_id) is str:
+                    kept.add(entry_id)
+    for child in list(files_dir.iterdir()):
+        if child.is_dir() and child.name not in kept:
+            shutil.rmtree(child, ignore_errors=True)
 
 
 def recover_transactions(root: Path) -> dict[str, Any]:

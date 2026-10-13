@@ -533,7 +533,15 @@ def empty_metadata() -> dict[str, Any]:
     return {key: None for key in METADATA_KEYS}
 
 
-def renditions_for(kind: str, source_id: str, *, decode_error: bool = False) -> dict[str, Any]:
+def renditions_for(
+    kind: str,
+    source_id: str,
+    *,
+    decode_error: bool = False,
+    store: str = "with-server",
+) -> dict[str, Any]:
+    if store not in PREVIEW_STORES:
+        raise fail("invalid-catalog")
     if kind == "photo":
         status = {
             "thumb": "error" if decode_error else "queued",
@@ -556,7 +564,7 @@ def renditions_for(kind: str, source_id: str, *, decode_error: bool = False) -> 
             "proxy": "error" if decode_error else "queued",
         }
     return {
-        "store": "with-server",
+        "store": store,
         "sourceId": source_id,
         "thumb": None,
         "preview": None,

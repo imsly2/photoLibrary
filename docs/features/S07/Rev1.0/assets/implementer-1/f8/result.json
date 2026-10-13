@@ -1,0 +1,302 @@
+{
+  "check": "F8",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "with-source-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-under-source",
+      "pass": true,
+      "detail": "docs/features/S07/Rev1.0/assets/implementer-1/f8/f8-folder/.library/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    },
+    {
+      "name": "thumb-not-on-server-yet",
+      "pass": true,
+      "detail": "/tmp/s07-qa/library-data/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    },
+    {
+      "name": "item-store-with-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-without-relocate-keeps-source-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-server-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-server-ok",
+      "pass": true,
+      "detail": "{\n  \"ok\": true\n}\n"
+    },
+    {
+      "name": "thumb-on-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-gone-from-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-store-with-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-source-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-thumb-under-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-thumb-gone-from-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-store-with-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-store-with-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-bytes-on-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-media-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-files-kept",
+      "pass": true,
+      "detail": "/tmp/s07-qa/library-data/undo/files/25f5458fdb6e/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "undo-files-kept",
+      "pass": true,
+      "detail": "/tmp/s07-qa/library-data/undo/files/6ca8cacde19c/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "history-operation-relocate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-hashes-unchanged-f8",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "override-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "override-wins-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "override-not-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "override-source-field",
+      "pass": true,
+      "detail": "\"with-source\""
+    },
+    {
+      "name": "dedup-one-item",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "dedup-two-locations",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dedup-one-primary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dedup-owner-is-primary-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dedup-one-rendition-dir",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dedup-second-has-no-copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dedup-owner-first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copy-here-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copy-here-copyRoot",
+      "pass": true,
+      "detail": "originals/copy-src-src_54a8d4965bec"
+    },
+    {
+      "name": "copy-here-writes-under-copyRoot",
+      "pass": true,
+      "detail": "docs/features/S07/Rev1.0/assets/implementer-1/f8/copy-library-data/originals/copy-src-src_54a8d4965bec/.library/renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    },
+    {
+      "name": "copy-here-not-old-disk",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "deny-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "denied-exit-1",
+      "pass": true,
+      "detail": "exit=1 {\"error\":\"io-error\"}\n"
+    },
+    {
+      "name": "denied-existing-error",
+      "pass": true,
+      "detail": "{\"error\":\"io-error\"}\n"
+    },
+    {
+      "name": "denied-old-store",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "denied-old-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-old-refs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-old-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavail-relocate-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavail-relocate-exit-1",
+      "pass": true,
+      "detail": "{\"error\":\"unavailable\"}\n"
+    },
+    {
+      "name": "unavail-relocate-error",
+      "pass": true,
+      "detail": "{\"error\":\"unavailable\"}\n"
+    },
+    {
+      "name": "unavail-keeps-old-refs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavail-keeps-old-files",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavail-continues-others",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "dd620bb391d4c5314585ebfba660027fa22d37e4",
+  "commands": [
+    "settings set previewStore with-source",
+    "POST /api/sources serve-from-there",
+    "settings set previewStore with-server",
+    "python -m library renditions relocate",
+    "renditions relocate reverse",
+    "undo relocate",
+    "scan with per-source previewStore=with-source",
+    "scan duplicate second location",
+    "scan --copy-here with-source",
+    "renditions relocate chmod-denied",
+    "kill during renditions relocate",
+    "relocate with unavailable owning source"
+  ],
+  "artifactPaths": {
+    "result.json": "docs/features/S07/Rev1.0/assets/implementer-1/f8/result.json",
+    "stdout.log": "docs/features/S07/Rev1.0/assets/implementer-1/f8/stdout.log",
+    "relocation-before-after.json": "docs/features/S07/Rev1.0/assets/implementer-1/f8/relocation-before-after.json"
+  }
+}

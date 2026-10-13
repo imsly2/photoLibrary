@@ -1,0 +1,32 @@
+PASS f16-items
+PASS sources-before-unplug
+PASS source-available-before
+PASS after-launch-unplug-http
+PASS after-launch-source-unavailable: {"schemaVersion": 1, "id": "src_d4499ba5dd1c", "name": "f16-folder", "mode": "serve-from-there", "origin": {"volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "", "lastKnownPath": "/workspace/docs/features/S07/Rev1.0/assets/implementer-1/f16/f16-folder"}, "copyRoot": null, "previewStore": null, "files": {"a/IMG_1042.jpg": {"destination": null, "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "component": "still", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "state": "indexed"}, "a/clip.mp4": {"destination": null, "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "component": "motion", "sizeBytes": 23631, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "state": "indexed"}, "b/no-exif.jpg": {"destination": null, "itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "component": "still", "sizeBytes": 13170, "modifiedAt": "2022-02-03T04:05:06Z", "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "state": "indexed"}}, "scan": {"state": "complete", "added": 3, "skipped": 0, "errors": []}, "available": false}
+PASS show-includes-unavailable
+PASS original-404-unavailable: {"error": "unavailable"}
+PASS thumb-still-serves
+PASS hide-omits-unavailable
+PASS unavailable-1-includes
+PASS cli-unavailable-1-exit
+PASS wrong-serial-not-resolve: {"schemaVersion": 1, "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "kind": "photo", "filename": "no-exif.jpg", "capturedAt": "2022-02-03T04:05:06Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 480, "orientation": null, "camera": null, "lens": null, "durationSec": null, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_d4499ba5dd1c", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "b/no-exif.jpg", "lastKnownPath": "/workspace/docs/features/S07/Rev1.0/assets/implementer-1/f16/f16-folder/b/no-exif.jpg", "sizeBytes": 13170, "modifiedAt": "2022-02-03T04:05:06Z", "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}], "renditions": {"store": "with-server", "sourceId": "src_d4499ba5dd1c", "thumb": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp", "preview": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp", "poster": null, "proxy": null, "status": {"thumb": "ready", "preview": "ready", "poster": "not-applicable", "proxy": "not-applicable"}}, "faces": [], "things": [], "available": false, "motionAvailable": false, "entities": {"people": [], "places": [], "things": []}}
+PASS available-alternate: {"locations": [{"sourceId": "src_d4499ba5dd1c", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "a/IMG_1042.jpg", "lastKnownPath": "/workspace/docs/features/S07/Rev1.0/assets/implementer-1/f16/f16-folder/a/IMG_1042.jpg", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, {"sourceId": "src_b223f17a2769", "role": "alternate", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-b", "pathFromVolumeRoot": "a/IMG_1042.jpg", "lastKnownPath": "/workspace/docs/features/S07/Rev1.0/assets/implementer-1/f16/f16-alt/a/IMG_1042.jpg", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}], "available": true}
+PASS alternate-original-serves
+PASS playwright-import
+PASS banner-exact: Original is not on this computer
+PASS open-original-disabled
+PASS preview-visible
+PASS unavailable-png-1280x720: 1280x720
+PASS video-play-preview-enabled
+PASS video-open-original-disabled
+PASS preview-file-before-remove
+PASS preview-unavailable-404: {"error": "preview-unavailable"}
+PASS placeholder-exact: Preview is not available
+PASS no-preview-banner-hidden
+PASS no-preview-png-1280x720: 1280x720
+PASS both-missing-banner
+PASS both-missing-placeholder
+PASS play-preview-disabled-without-proxy
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes
