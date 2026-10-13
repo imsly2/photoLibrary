@@ -108,7 +108,7 @@ def heif_has_valid_brand(path: Path) -> bool:
     return any(brand.strip() in VALID_HEIF_BRANDS for brand in brands)
 
 
-def video_content_identifier(path: Path) -> str | None:
+def ffprobe_json(path: Path) -> dict[str, Any] | None:
     proc = subprocess.run(
         [
             "ffprobe",
@@ -127,13 +127,23 @@ def video_content_identifier(path: Path) -> str | None:
     if proc.returncode != 0:
         return None
     try:
-        payload = json.loads(proc.stdout or "{}")
+        return json.loads(proc.stdout or "{}")
     except json.JSONDecodeError:
         return None
+
+
+def ffprobe_tags(payload: dict[str, Any]) -> dict[str, Any]:
     tags: dict[str, Any] = dict((payload.get("format") or {}).get("tags") or {})
     for stream in payload.get("streams") or []:
         tags.update(stream.get("tags") or {})
-    value = tags.get("com.apple.quicktime.content.identifier")
+    return tags
+
+
+def video_content_identifier(path: Path) -> str | None:
+    payload = ffprobe_json(path)
+    if payload is None:
+        return None
+    value = ffprobe_tags(payload).get("com.apple.quicktime.content.identifier")
     if type(value) is str and value.strip():
         return value.strip()
     return None

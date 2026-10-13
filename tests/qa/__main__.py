@@ -22,6 +22,8 @@ _add_venv()
 
 from tests.qa.s00 import copy_committed_fixtures, run_slice as run_s00  # noqa: E402
 from tests.qa.s01 import run_slice as run_s01  # noqa: E402
+from tests.qa.s02 import run_check as run_f6  # noqa: E402
+from tests.qa.s02 import run_slice as run_s02  # noqa: E402
 
 
 class _Tee:
@@ -78,6 +80,18 @@ def _utf8_stdio() -> None:
             pass
 
 
+def _run_logged(runner, root: Path, artifacts: Path) -> int:
+    artifacts.mkdir(parents=True, exist_ok=True)
+    tee = _Tee(artifacts / "stdout.log")
+    prev = sys.stdout
+    sys.stdout = tee  # type: ignore[assignment]
+    try:
+        return runner(root, artifacts)
+    finally:
+        sys.stdout = prev
+        tee.close()
+
+
 def main(argv: list[str] | None = None) -> int:
     _utf8_stdio()
     parser = argparse.ArgumentParser(prog="python -m tests.qa")
@@ -106,21 +120,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"copied fixtures to {args.output}", flush=True)
         return 0
     if args.cmd == "slice":
-        runners = {"S00": run_s00, "S01": run_s01}
+        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02}
         runner = runners.get(args.slice_id)
         if runner is None:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
-        artifacts = Path(args.artifacts)
-        tee = _Tee(artifacts / "stdout.log")
-        prev = sys.stdout
-        sys.stdout = tee  # type: ignore[assignment]
-        try:
-            return runner(Path(args.root), artifacts)
-        finally:
-            sys.stdout = prev
-            tee.close()
+        return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "check":
-        return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
+        runners = {"F6": run_f6}
+        runner = runners.get(args.feature_id)
+        if runner is None:
+            return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
+        return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "all":
         return _fail_unimplemented("all", "all", Path(args.artifacts))
     parser.print_help()

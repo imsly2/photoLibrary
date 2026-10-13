@@ -13,8 +13,10 @@ from library.records import (
     location_key,
     make_file_entry,
     ordered_item,
+    ordered_place,
     ordered_source,
     read_item,
+    read_place,
     read_source,
     renditions_for,
 )
@@ -33,9 +35,14 @@ def sources_dir(root: Path) -> Path:
     return catalog_root(root) / "sources"
 
 
+def places_dir(root: Path) -> Path:
+    return catalog_root(root) / "places"
+
+
 def ensure_catalog_dirs(root: Path) -> None:
     items_dir(root).mkdir(parents=True, exist_ok=True)
     sources_dir(root).mkdir(parents=True, exist_ok=True)
+    places_dir(root).mkdir(parents=True, exist_ok=True)
 
 
 def item_rel(item_id: str) -> str:
@@ -44,6 +51,10 @@ def item_rel(item_id: str) -> str:
 
 def source_rel(source_id: str) -> str:
     return f"catalog/sources/{source_id}.json"
+
+
+def place_rel(place_id: str) -> str:
+    return f"catalog/places/{place_id}.json"
 
 
 def iter_source_ids(root: Path) -> list[str]:
@@ -94,6 +105,43 @@ def try_load_source(root: Path, source_id: str) -> dict[str, Any] | None:
     return read_source(load_json(path))
 
 
+def iter_place_ids(root: Path) -> list[str]:
+    folder = places_dir(root)
+    if not folder.exists():
+        return []
+    return sorted(path.stem for path in folder.glob("*.json"))
+
+
+def load_place(root: Path, place_id: str) -> dict[str, Any]:
+    path = places_dir(root) / f"{place_id}.json"
+    try:
+        return read_place(load_json(path))
+    except FileNotFoundError as exc:
+        raise fail("not-found") from exc
+    except OSError as exc:
+        raise fail("io-error") from exc
+
+
+def try_load_place(root: Path, place_id: str) -> dict[str, Any] | None:
+    path = places_dir(root) / f"{place_id}.json"
+    if not path.exists():
+        return None
+    return read_place(load_json(path))
+
+
+def load_places(root: Path) -> list[dict[str, Any]]:
+    return [load_place(root, place_id) for place_id in iter_place_ids(root)]
+
+
+def new_place_id(root: Path) -> str:
+    existing = set(iter_place_ids(root))
+    for _ in range(32):
+        candidate = "place_" + secrets.token_hex(6)
+        if candidate not in existing:
+            return candidate
+    raise fail("internal-error")
+
+
 def new_source_id(root: Path) -> str:
     existing = set(iter_source_ids(root))
     for _ in range(32):
@@ -135,7 +183,13 @@ def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
     out = ordered_item(item)
     out["available"] = item_available(item, root)
     out["motionAvailable"] = item_motion_available(item, root)
-    out["entities"] = {"people": [], "places": [], "things": []}
+    places: list[dict[str, Any]] = []
+    place_id = item.get("placeId")
+    if type(place_id) is str and place_id:
+        place = try_load_place(root, place_id)
+        if place is not None:
+            places = [ordered_place(place)]
+    out["entities"] = {"people": [], "places": places, "things": []}
     return out
 
 

@@ -1,0 +1,162 @@
+{
+  "a/IMG_1042.jpg": {
+    "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "capturedAt": "2024-06-12T15:04:00",
+    "capturedAtSource": "exif",
+    "placeId": "place_363ffb915915",
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 1,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": 41.88,
+      "longitude": -87.63
+    }
+  },
+  "a/near.jpg": {
+    "id": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+    "capturedAt": "2024-06-12T15:05:00",
+    "capturedAtSource": "exif",
+    "placeId": "place_363ffb915915",
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 1,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": 41.88045,
+      "longitude": -87.63
+    }
+  },
+  "b/far.jpg": {
+    "id": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+    "capturedAt": "2023-06-12T15:04:00",
+    "capturedAtSource": "exif",
+    "placeId": "place_545daf373227",
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 1,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": 41.925,
+      "longitude": -87.63
+    }
+  },
+  "b/no-exif.jpg": {
+    "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+    "capturedAt": "2022-02-03T04:05:06Z",
+    "capturedAtSource": "mtime",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "b/created.jpg": {
+    "id": "35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6",
+    "capturedAt": "2024-07-04T12:00:00",
+    "capturedAtSource": "exif",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 1,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "b/holiday_20200102.jpg": {
+    "id": "c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+    "capturedAt": "2020-01-02T00:00:00",
+    "capturedAtSource": "filename",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "b/holiday_2020-01-03.jpg": {
+    "id": "888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+    "capturedAt": "2020-01-03T00:00:00",
+    "capturedAtSource": "filename",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "b/oriented.jpg": {
+    "id": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+    "capturedAt": "2024-06-12T15:06:00",
+    "capturedAtSource": "exif",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 6,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "a/clip.mp4": {
+    "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+    "capturedAt": "2024-06-12T15:07:00Z",
+    "capturedAtSource": "exif",
+    "placeId": "place_363ffb915915",
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": 2.0,
+      "latitude": 41.88,
+      "longitude": -87.63
+    }
+  },
+  "live/LIVE_0001.jpg": {
+    "id": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+    "capturedAt": "2024-06-13T10:00:00",
+    "capturedAtSource": "exif",
+    "placeId": null,
+    "metadata": {
+      "width": 640,
+      "height": 480,
+      "orientation": 1,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    }
+  }
+}

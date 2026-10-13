@@ -1,0 +1,570 @@
+{
+  "check": "F6",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "library-metadata-no-probe",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-places-no-probe",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-scan-no-probe",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "one-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "item-present:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": "'2024-06-12T15:04:00' != '2024-06-12T15:04:00'"
+    },
+    {
+      "name": "capturedAtSource:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:a/IMG_1042.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:a/near.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:a/near.jpg",
+      "pass": true,
+      "detail": "'2024-06-12T15:05:00' != '2024-06-12T15:05:00'"
+    },
+    {
+      "name": "capturedAtSource:a/near.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:a/near.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:a/near.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:a/near.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/far.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/far.jpg",
+      "pass": true,
+      "detail": "'2023-06-12T15:04:00' != '2023-06-12T15:04:00'"
+    },
+    {
+      "name": "capturedAtSource:b/far.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:b/far.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/far.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/far.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/no-exif.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/no-exif.jpg",
+      "pass": true,
+      "detail": "'2022-02-03T04:05:06Z' != '2022-02-03T04:05:06Z'"
+    },
+    {
+      "name": "capturedAtSource:b/no-exif.jpg",
+      "pass": true,
+      "detail": "mtime"
+    },
+    {
+      "name": "metadata:b/no-exif.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/no-exif.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/no-exif.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/created.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/created.jpg",
+      "pass": true,
+      "detail": "'2024-07-04T12:00:00' != '2024-07-04T12:00:00'"
+    },
+    {
+      "name": "capturedAtSource:b/created.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:b/created.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/created.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/created.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": "'2020-01-02T00:00:00' != '2020-01-02T00:00:00'"
+    },
+    {
+      "name": "capturedAtSource:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": "filename"
+    },
+    {
+      "name": "metadata:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": "'2020-01-03T00:00:00' != '2020-01-03T00:00:00'"
+    },
+    {
+      "name": "capturedAtSource:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": "filename"
+    },
+    {
+      "name": "metadata:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:b/oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:b/oriented.jpg",
+      "pass": true,
+      "detail": "'2024-06-12T15:06:00' != '2024-06-12T15:06:00'"
+    },
+    {
+      "name": "capturedAtSource:b/oriented.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:b/oriented.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:b/oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:b/oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:a/clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:a/clip.mp4",
+      "pass": true,
+      "detail": "'2024-06-12T15:07:00Z' != '2024-06-12T15:07:00Z'"
+    },
+    {
+      "name": "capturedAtSource:a/clip.mp4",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:a/clip.mp4",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:a/clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:a/clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-present:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "capturedAt:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": "'2024-06-13T10:00:00' != '2024-06-13T10:00:00'"
+    },
+    {
+      "name": "capturedAtSource:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": "exif"
+    },
+    {
+      "name": "metadata:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "camera-null:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lens-null:live/LIVE_0001.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-width",
+      "pass": true,
+      "detail": "640"
+    },
+    {
+      "name": "oriented-height",
+      "pass": true,
+      "detail": "480"
+    },
+    {
+      "name": "oriented-orientation",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "clip-duration",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "clip-gps",
+      "pass": true,
+      "detail": "{'width': 640, 'height': 480, 'orientation': None, 'camera': None, 'lens': None, 'durationSec': 2.0, 'latitude': 41.88, 'longitude': -87.63}"
+    },
+    {
+      "name": "img-source-exif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "img-place-id-shape",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "near-same-place",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "far-different-place",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "far-place-id-shape",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "clip-joins-img-place",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "img-place-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "far-place-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "img-place-name-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "img-place-coords",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'place_33965210b536', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
+    },
+    {
+      "name": "far-place-name-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "far-place-coords",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'place_f95c0023d999', 'name': None, 'latitude': 41.925, 'longitude': -87.63}"
+    },
+    {
+      "name": "no-place:b/no-exif.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-place:b/created.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-place:b/holiday_20200102.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-place:b/holiday_2020-01-03.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-place:b/oriented.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-added-0",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "rescan-skipped",
+      "pass": true,
+      "detail": "26"
+    },
+    {
+      "name": "rescan-keeps-capture",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-keeps-places",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "subset-scan-ok",
+      "pass": true,
+      "detail": "exit=0 {'sourceId': 'src_e12810ab9f69', 'added': 3, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "subset-two-places",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "subset-near-same-place",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "subset-far-other-place",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "subset-shared-seed-coords",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'place_b949762c104a', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
+    },
+    {
+      "name": "subset-shared-name-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "edge-scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "offset-utc",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca', 'kind': 'photo', 'filename': 'offset.jpg', 'capturedAt': '2024-06-12T20:04:00Z', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_0012e63a65d7', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/implementer-1-f6/date-edge-media/offset.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\implementer-1-f6\\\\date-edge-media\\\\offset.jpg', 'sizeBytes': 778, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_0012e63a65d7', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+    },
+    {
+      "name": "filename-leftmost",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39', 'kind': 'photo', 'filename': 'left_20200102_2021-03-04.jpg', 'capturedAt': '2020-01-02T00:00:00', 'capturedAtSource': 'filename', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_0012e63a65d7', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/implementer-1-f6/date-edge-media/left_20200102_2021-03-04.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\implementer-1-f6\\\\date-edge-media\\\\left_20200102_2021-03-04.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_0012e63a65d7', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+    },
+    {
+      "name": "invalid-filename-mtime",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b', 'kind': 'photo', 'filename': 'bad_20201332.jpg', 'capturedAt': '2022-03-04T05:06:07Z', 'capturedAtSource': 'mtime', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_0012e63a65d7', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/implementer-1-f6/date-edge-media/bad_20201332.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\implementer-1-f6\\\\date-edge-media\\\\bad_20201332.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-03-04T05:06:07Z', 'sha256': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_0012e63a65d7', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+    },
+    {
+      "name": "tie-pair",
+      "pass": true,
+      "detail": "['tie-a.jpg', 'tie-b.jpg']"
+    },
+    {
+      "name": "tie-same-capturedAt",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tie-lower-id-first",
+      "pass": true,
+      "detail": "3e4f352734d806c5349f4b9ca97fa21b97e1bf6799d79efbca650cba1aae5054 then 94e8699fcab6fde3ccb727feabc598d690df8be2cb1373b0edab0c25612eb3b3"
+    },
+    {
+      "name": "changed-first-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "changed-rescan-added",
+      "pass": true,
+      "detail": "{'sourceId': 'src_a35c8e83d123', 'added': 1, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "changed-old-kept",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "changed-new-metadata",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617', 'kind': 'photo', 'filename': 'shot.jpg', 'capturedAt': '2024-08-08T08:08:08', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_a35c8e83d123', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/implementer-1-f6/changed-media/shot.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\implementer-1-f6\\\\changed-media\\\\shot.jpg', 'sizeBytes': 759, 'modifiedAt': '2022-04-05T06:07:08Z', 'sha256': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_a35c8e83d123', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "35ab4e4951e5deca4f2626a22e2853f0bc4ff8ac",
+  "commands": [
+    "python -m library scan <media> --serve-from-there",
+    "python -m library scan <media> --serve-from-there #2",
+    "python -m library scan <three-jpeg> --serve-from-there",
+    "python -m library scan <date-edge> --serve-from-there",
+    "python -m library items --sort date --dir asc",
+    "python -m library scan <changed> --serve-from-there",
+    "python -m library scan <changed> --serve-from-there #2"
+  ],
+  "artifactPaths": {
+    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\result.json",
+    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\stdout.log",
+    "metadata.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\metadata.json",
+    "items": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\items",
+    "places": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\places",
+    "extraction-dumps": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\implementer-1-f6\\extraction-dumps"
+  }
+}

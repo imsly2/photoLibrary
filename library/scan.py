@@ -14,6 +14,7 @@ from library.catalog_io import (
     item_rel,
     new_source_id,
     pair_live_items,
+    place_rel,
     relative_from_origin,
     source_rel,
     try_load_item,
@@ -33,6 +34,8 @@ from library.media import (
     sha256_file,
     sha256_text,
 )
+from library.metadata import read_capture
+from library.places import resolve_place
 from library.paths import normalize_root, roots_equal
 from library.records import (
     clone,
@@ -45,6 +48,7 @@ from library.records import (
     read_source,
     renditions_for,
 )
+from library.settings import defaults, load_settings_file, settings_path
 from library.volumes import last_known_text, path_from_volume_root, volume_of_path
 
 ProgressFn = Callable[[str, str], None]
@@ -123,6 +127,13 @@ def iter_media_files(scan_path: Path, library_root: Path) -> list[tuple[str, Pat
     return found
 
 
+def _place_match_meters(root: Path) -> float:
+    path = settings_path(root)
+    if not path.exists():
+        return float(defaults()["placeMatchMeters"])
+    return float(load_settings_file(root)["placeMatchMeters"])
+
+
 def _unchanged(entry: dict[str, Any] | None, path: Path) -> bool:
     if entry is None:
         return False
@@ -195,6 +206,7 @@ def _index_file(
     source: dict[str, Any],
     rel: str,
     path: Path,
+    match_meters: float,
 ) -> str:
     kind = media_kind(path)
     component = default_component(kind)
@@ -228,15 +240,29 @@ def _index_file(
         modified_at=modified,
         sha256=digest,
     )
+    try:
+        captured_at, captured_source, metadata = read_capture(path)
+    except OSError:
+        captured_at, captured_source, metadata = modified, "mtime", None
+    latitude = None if metadata is None else metadata.get("latitude")
+    longitude = None if metadata is None else metadata.get("longitude")
+    place_id = None
+    new_place: dict[str, Any] | None = None
+    if latitude is not None and longitude is not None:
+        place_id, new_place = resolve_place(
+            root, float(latitude), float(longitude), match_meters
+        )
     item = make_item(
         item_id=pending,
         kind=kind,
         filename=path.name,
-        captured_at=modified,
-        captured_at_source="mtime",
+        captured_at=captured_at,
+        captured_at_source=captured_source,
         content_identifier=content_id,
         locations=[location],
         renditions=renditions_for(kind, source_id, decode_error=decode_error),
+        place_id=place_id,
+        metadata=metadata,
     )
     before_source = clone(source)
     source["files"][rel] = make_file_entry(
@@ -248,17 +274,19 @@ def _index_file(
         state="pending",
         destination=None,
     )
-    _extend(
-        root,
-        [
-            {"path": item_rel(pending), "before": None, "after": item},
-            {
-                "path": source_rel(source_id),
-                "before": before_source,
-                "after": ordered_source(source),
-            },
-        ],
-    )
+    changes: list[dict[str, Any]] = [
+        {"path": item_rel(pending), "before": None, "after": item},
+        {
+            "path": source_rel(source_id),
+            "before": before_source,
+            "after": ordered_source(source),
+        },
+    ]
+    if new_place is not None:
+        changes.append(
+            {"path": place_rel(new_place["id"]), "before": None, "after": new_place}
+        )
+    _extend(root, changes)
     maybe_test_barrier("hash-publication")
     existing = try_load_item(root, digest)
     published = clone(item)
@@ -316,6 +344,7 @@ def scan_serve_from_there(
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []
+    match_meters = _place_match_meters(root)
     files = iter_media_files(scan_path, root)
     for rel, path in files:
         source = try_load_source(root, source["id"]) or source
@@ -326,7 +355,7 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            _index_file(root, source, rel, path)
+            _index_file(root, source, rel, path, match_meters)
             added += 1
             if on_progress is not None:
                 on_progress("added", rel)

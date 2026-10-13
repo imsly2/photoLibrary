@@ -72,6 +72,7 @@ FILE_ENTRY_KEYS = (
 )
 SCAN_KEYS = ("state", "added", "skipped", "errors")
 SCAN_ERROR_KEYS = ("path", "error")
+PLACE_KEYS = ("schemaVersion", "id", "name", "latitude", "longitude")
 SOURCE_MODES = frozenset({"copy-here", "serve-from-there"})
 ITEM_KINDS = frozenset({"photo", "video", "live"})
 CAPTURE_SOURCES = frozenset({"exif", "filename", "mtime"})
@@ -425,6 +426,54 @@ def read_source(value: Any) -> dict[str, Any]:
 def ordered_source(source: dict[str, Any]) -> dict[str, Any]:
     source = read_source(source)
     return {key: source[key] for key in SOURCE_KEYS}
+
+
+def read_place(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, PLACE_KEYS)
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    name = _null_or_str(data["name"])
+    if name is not None and name == "":
+        raise fail("invalid-catalog")
+    latitude = _null_or_number(data["latitude"])
+    longitude = _null_or_number(data["longitude"])
+    if (latitude is None) != (longitude is None):
+        raise fail("invalid-catalog")
+    if latitude is not None and not (-90 <= float(latitude) <= 90):
+        raise fail("invalid-catalog")
+    if longitude is not None and not (-180 <= float(longitude) <= 180):
+        raise fail("invalid-catalog")
+    return {
+        "schemaVersion": 1,
+        "id": _str(data["id"]),
+        "name": name,
+        "latitude": latitude,
+        "longitude": longitude,
+    }
+
+
+def ordered_place(place: dict[str, Any]) -> dict[str, Any]:
+    place = read_place(place)
+    return {key: place[key] for key in PLACE_KEYS}
+
+
+def make_place(
+    *,
+    place_id: str,
+    latitude: int | float,
+    longitude: int | float,
+    name: str | None = None,
+) -> dict[str, Any]:
+    return ordered_place(
+        {
+            "schemaVersion": 1,
+            "id": place_id,
+            "name": name,
+            "latitude": latitude,
+            "longitude": longitude,
+        }
+    )
 
 
 def empty_metadata() -> dict[str, Any]:

@@ -9,7 +9,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   killing it, recovers a settings transaction, and undoes a settings change.
 - S01 is green: a linked fixture folder scans in place, item ids match file
   bytes, a second scan adds nothing, originals are unchanged, and the embedded
-  Live Photo pair is one item. No feature Check is closed.
+  Live Photo pair is one item.
+- F6 is closed: fixture dates follow EXIF, then filename, then modified time,
+  and the three-JPEG set becomes two unnamed places 100 meters apart.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -21,8 +23,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**0 / 22 Checks = 0% tested.** The commands in the plan are future deliverables.
-No implementation Check has been run; a reviewed specification is not a pass.
+**1 / 22 Checks = 4.5% tested.** Only F6 has a fresh-verifier artifact.
+The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
@@ -31,7 +33,7 @@ No implementation Check has been run; a reviewed specification is not a pass.
 | F3 | CLI / HTTP | pending | — | Not run; no artifact |
 | F4 | Add folder | pending | — | Not run; no artifact |
 | F5 | Scan | pending | — | Not run; no artifact |
-| F6 | Metadata | pending | — | Not run; no artifact |
+| F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
 | F7 | Previews | pending | — | Not run; no artifact |
 | F8 | Preview storage | pending | — | Not run; no artifact |
 | F9 | Zoom | pending | — | Not run; no artifact |
@@ -95,4 +97,13 @@ environments must be supplied by the build or F2 remains pending; do not claim
   also exit 0. S00 stayed green after the scan work
   [after-s01](features/S00/Rev1.0/assets/after-s01/result.json).
 - 2026-10-13 — S02 plan locked in `docs/features/S02/Rev1.0/PLAN.md` after
-  metadata recon. F6 is not closed until its verifier artifacts exist.
+  metadata recon.
+- 2026-10-13 — F6 passed. Fresh verifier
+  [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json): 108
+  assertions, exit 0. Orchestrator rerun
+  [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) also
+  exit 0. S00 and S01 stayed green
+  ([after-s02 S00](features/S00/Rev1.0/assets/after-s02/result.json),
+  [after-s02 S01](features/S01/Rev1.0/assets/after-s02/result.json)).
+  One test correction made the equal-timestamp tie sort by id rather than
+  filename. Next slice is S03.
