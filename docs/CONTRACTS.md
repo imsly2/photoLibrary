@@ -317,15 +317,26 @@ occupant running. Never terminate another process.
 `launch.ps1 -NoBrowser` and `launch.sh --no-browser` skip opening a browser.
 The default remains to open one. This is not a settings key.
 
-When `LIBRARY_TEST=1`, `LIBRARY_TEST_BARRIER` may be `settings-prepared` or
-`settings-committed`. The process flushes the transaction manifest, then exits
-86 with stderr `{"error":"test-barrier","barrier":"<name>"}` before the next
-step. Recovery on the next open rolls `prepared` back and `committed` forward,
-then serves. Without `LIBRARY_TEST=1` the variable is ignored. It is not an
-HTTP parameter or a setting. Order for a settings change: write manifest
-`prepared` (full before/after) → barrier `settings-prepared` → atomic replace
-→ history entry → manifest `committed` → barrier `settings-committed` → delete
-the transaction directory.
+When `LIBRARY_TEST=1`, `LIBRARY_TEST_BARRIER` may be `settings-prepared`,
+`settings-committed`, `hash-publication`, `catalog-committed`, or
+`sqlite-rebuild`. The process flushes the named boundary, then exits 86 with
+stderr `{"error":"test-barrier","barrier":"<name>"}` before the next step.
+Recovery on the next open rolls `prepared` back and `committed` forward, then
+serves. Without `LIBRARY_TEST=1` the variable is ignored. It is not an HTTP
+parameter or a setting. Order for a settings change: write manifest `prepared`
+(full before/after) → barrier `settings-prepared` → atomic replace → history
+entry → manifest `committed` → barrier `settings-committed` → delete the
+transaction directory. Scan barriers: `hash-publication` after the pending
+record and its sha256 are durable and before the final item is the only
+published record; `catalog-committed` after that item JSON and the one scan
+history entry are committed and before SQLite changes; `sqlite-rebuild` after
+`catalog.sqlite` is removed and before the replacement is durable. The next
+open finishes publication or rebuild and must not create a second item.
+
+When `LIBRARY_TEST=1`, `LIBRARY_TEST_VOLUMES` may be a path to JSON mapping a
+volume serial to an absolute mount path or null. Null means not mounted. This
+is the only test seam for volume identity. Production ignores it. It is not a
+setting. A missing real volume still uses the OS serial lookup.
 
 Log lines are UTF-8 `{utc-iso}\t{path}\t{error}\n`. `path` is the request path
 including query. Unknown media ids log `not-found`.
