@@ -128,3 +128,5 @@ environments must be supplied by the build or F2 remains pending; do not claim
   [after-s03 S02](features/S02/Rev1.0/assets/after-s03/result.json)).
   Implementer model was Grok 4.6 because the documented 4.5 slug is not
   available; verifier was a fresh Grok 4.7. Next slice is S04.
+- 2026-10-13 — S04 plan locked in `docs/features/S04/Rev1.0/PLAN.md` after
+  browse recon. Next action is the S04 implementation.
