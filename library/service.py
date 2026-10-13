@@ -369,6 +369,32 @@ class Library:
             "opened": opened,
         }
 
+    def open(self, item_id: str) -> dict[str, Any]:
+        from library.favorites import open_file
+
+        self.recover()
+        self.ensure_settings()
+        if type(item_id) is not str or not item_id:
+            raise fail("invalid-argument")
+        item = load_item(self.root, item_id)
+        if item.get("kind") == "video":
+            component = "motion"
+        else:
+            component = "still"
+        path = _readable_component_file(item, component, self.root)
+        if path is None:
+            raise fail("unavailable")
+        opened = open_file(path)
+        return {
+            "path": str(path),
+            "opened": opened,
+        }
+
+    def update(self) -> dict[str, Any]:
+        from library.update import pull_latest
+
+        return pull_latest()
+
     def people_merge(self, keep_id: str, drop_id: str) -> dict[str, Any]:
         from library.annotate import apply_people_merge
 

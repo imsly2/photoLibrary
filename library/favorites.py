@@ -1,4 +1,4 @@
-"""Viewer heart marks and reveal-in-folder. Favorites are not item JSON."""
+"""Viewer heart marks, reveal-in-folder, and default-app open. Favorites are not item JSON."""
 
 from __future__ import annotations
 
@@ -93,6 +93,23 @@ def open_containing_folder(path: Path) -> bool:
         opener = _which("xdg-open")
         if opener:
             subprocess.Popen([opener, str(folder)])
+            return True
+    except OSError:
+        return False
+    return False
+
+
+def open_file(path: Path) -> bool:
+    try:
+        if os.name == "nt":
+            os.startfile(path)  # type: ignore[attr-defined]
+            return True
+        if sys.platform == "darwin":
+            subprocess.Popen(["open", str(path)])
+            return True
+        opener = _which("xdg-open")
+        if opener:
+            subprocess.Popen([opener, str(path)])
             return True
     except OSError:
         return False

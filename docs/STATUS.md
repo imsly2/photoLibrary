@@ -54,12 +54,13 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
 - 2026-10-13 — Windows taste Track B (viewer) is implemented on
-  `cursor/viewer-chrome-2bd1`. Visible Back / Previous / Next, zoom out
-  below fit on stills and video, pan, display-only rotate, labeled
-  Person/Place/Thing fields, Open original swaps in-page to original
-  bytes with a “Showing original” state, Reveal in Explorer opens the
-  folder, and a viewer heart writes `catalog/favorites.json`. Back stays
-  on the live listen URL. Does not close a new Check. F10 stayed green.
+  `cursor/viewer-chrome-2bd1`. Win7 Photo Viewer chrome: Back top-left,
+  Previous/Next + Rotate at the bottom, zoom slider (no +/−), click-hold
+  pan while zoomed, top-right Info dropdown (no overlay pills), Reveal
+  in Explorer, Open in the default app (no “Showing original” button),
+  viewer heart, and header Update Library (`POST /api/update`). Back
+  stays on the live listen URL. Does not close a new Check. F10 stayed
+  green.
   Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-chrome/result.json),
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-chrome/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-chrome/f10/result.json).
@@ -297,6 +298,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.
 - 2026-10-13 — Windows taste Track B viewer chrome. Specs first
-  (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal). Browser
-  proof TASTE-VIEWER 47 assertions exit 0; F10 stayed green. Heart and
-  Reveal are viewer-only. No new Check closed (16/22).
+  (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal/open/update).
+  Win7 chrome: Info dropdown, zoom slider, bottom Prev/Next/Rotate,
+  click-hold pan, Reveal, default-app Open, Update Library hook.
+  Browser proof TASTE-VIEWER; F10 stayed green. No new Check closed (16/22).

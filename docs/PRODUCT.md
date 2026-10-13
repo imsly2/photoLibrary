@@ -162,11 +162,16 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
 | `favorite <id> --on\|--off` | `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the viewer heart. |
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
+| `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
+| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
+
+The header **Update Library** button calls `POST /api/update` so a family
+install can pull a newer app folder without opening a command prompt.
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
 `person=`, `place=`, `thing=`, `from=`, `to=`, `unavailable=0|1`, `q=` for a
@@ -362,31 +367,27 @@ JSON responses.
 
 ## F10 — Open a picture
 
-Click a cell to open the viewer. Previous and Next buttons, and the arrow
-keys, move to the next and previous item in the current sort. Back (and Esc)
-returns to the grid he came from without leaving this server URL. Zoom in,
-zoom out (including smaller than fit), and pan work on the opened still and
-on video. Rotate turns the displayed still 90° and does not change the file.
+Click a cell to open the viewer. Previous and Next sit at the bottom with
+Rotate, Windows Photo Viewer style. Arrow keys move in the current sort and
+stop at the ends. Back (and Esc) returns to the grid he came from without
+leaving this server URL. Zoom is a slider (Ctrl+wheel still works), including
+smaller than fit. Click-hold pans while zoomed. Rotate turns the displayed
+still 90° and does not change the file.
 
 A clear heart in the viewer favorites or unfavorites that item. The mark is
 stored in the catalog and is visible on the heart; this slice does not add
 grid hearts or a favorites album.
 
 For a photo the viewer shows `preview.webp` first, then the original if available.
-Open original stays in this viewer: it swaps the on-screen bytes to the original
-and stays pressed as “Showing original” until clicked again to return to the
-preview. It does not launch another app. Reveal in Explorer opens the
-original's containing folder on this computer whenever the file is here
-(`explorer /select` on Windows). For video the viewer shows the poster, then
-plays the original or proxy; a browser that cannot decode the original
-falls back to the proxy. Play preview still toggles pause/play on click.
-Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it;
-a still also pans with a left drag. Click a video, or press Space, to play
-or pause. Playback of a video uses the original when available, otherwise
-the proxy.
+There is no “Showing original” button. Reveal in Explorer opens the original's
+containing folder (`explorer /select` on Windows). Open launches that file in
+the computer's default app. For video the viewer shows the poster, then plays
+the original or proxy; a browser that cannot decode the original falls back to
+the proxy. Play preview still toggles pause/play on click.
 
-The viewer lists the place, the people, and the things already written on the
-record. The three type-in fields are labeled Person, Place, and Thing.
+People, places, and things are listed in a top-right Info dropdown, not as
+pills on the picture. Clicking a name filters the grid. Typing a person,
+place, or thing inside Info still commits annotate.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.

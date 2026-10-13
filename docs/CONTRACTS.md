@@ -129,7 +129,11 @@ media `which=original` does. 200 `{path,folder,opened}` with absolute local
 paths; Windows opens Explorer with the file selected, macOS `open -R`, Linux
 the folder via `xdg-open` when present. `opened` is false when the OS helper
 cannot run. Missing original is 404 `unavailable`. Reveal never accepts a raw
-path from the client.
+path from the client. `POST /api/items/<id>/open` uses the same resolution and
+opens the file itself (`os.startfile` / `open` / `xdg-open`).
+
+`POST /api/update` runs `git pull` in the app folder when `.git` exists.
+It is not a setting. A copied folder without git returns 404 `update-unavailable`.
 
 Availability and entity expansion are computed, not persisted: HTTP/CLI item reads
 extend disk records with `available`, `motionAvailable`, and `favorite` booleans and `entities`:
@@ -268,6 +272,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
 | favorite id / POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item; writes `catalog/favorites.json` |
 | reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
+| open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable`; default-app launch |
+| update / POST `/api/update` | `{}`; 200 `{ok,updated,revision,message}`; 404 `update-unavailable` when the app folder is not a git checkout |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -310,7 +316,7 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |

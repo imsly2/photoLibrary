@@ -205,6 +205,11 @@ def build_parser() -> argparse.ArgumentParser:
     reveal = sub.add_parser("reveal")
     reveal.add_argument("id")
 
+    open_item = sub.add_parser("open")
+    open_item.add_argument("id")
+
+    sub.add_parser("update")
+
     people = sub.add_parser("people")
     people_sub = people.add_subparsers(dest="people_cmd")
     merge = people_sub.add_parser("merge")
@@ -377,6 +382,26 @@ def main(argv: list[str] | None = None) -> int:
                 lambda: Library(root).reveal(args.id),
                 "POST",
                 f"/api/items/{args.id}/reveal",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "open":
+            result = _mutation(
+                root,
+                lambda: Library(root).open(args.id),
+                "POST",
+                f"/api/items/{args.id}/open",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "update":
+            result = _mutation(
+                root,
+                lambda: Library(root).update(),
+                "POST",
+                "/api/update",
                 {},
             )
             _print_json(result)

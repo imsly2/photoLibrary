@@ -484,6 +484,10 @@ dialog h2 {
   border: 1px solid #2a2a32;
 }
 
+#update-library {
+  background: #2a2a32;
+}
+
 #viewer {
   position: fixed;
   inset: 0;
@@ -563,24 +567,70 @@ dialog h2 {
   white-space: nowrap;
 }
 
-#viewer-nav,
 #viewer-tools {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-}
-
-#viewer-tools {
   margin-left: auto;
 }
 
+#viewer-info-wrap {
+  position: relative;
+}
+
+#viewer-info,
 #viewer-prev,
 #viewer-next,
-#viewer-zoom-out,
-#viewer-zoom-in,
 #viewer-rotate,
 #reveal-original {
   background: #2a2a32;
+}
+
+#viewer-info[aria-expanded="true"] {
+  background: #2d4a7a;
+}
+
+#viewer-info-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  width: 16.5rem;
+  max-height: min(28rem, 70vh);
+  overflow: auto;
+  background: #1b1b22;
+  border: 1px solid #2a2a32;
+  border-radius: 6px;
+  padding: 0.75rem 0.85rem;
+  z-index: 14;
+}
+
+#viewer-info-panel[hidden] {
+  display: none;
+}
+
+.info-heading {
+  margin: 0.35rem 0 0.2rem;
+  color: #c8c8d0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-heading:first-child {
+  margin-top: 0;
+}
+
+#viewer-info-panel .label-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 1.4rem;
+}
+
+#viewer-info-panel .label-row:empty::after {
+  content: "None";
+  color: #8a8a94;
+  font-size: 0.8rem;
 }
 
 #viewer-favorite {
@@ -627,26 +677,11 @@ dialog h2 {
   font-size: 1.05rem;
 }
 
-#viewer-labels {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4.2rem;
-  z-index: 13;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.45rem;
-  pointer-events: none;
-}
-
-#viewer-labels .label-row,
 #viewer-fields {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
   gap: 0.4rem;
-  pointer-events: auto;
+  margin-top: 0.65rem;
 }
 
 .entity-label {
@@ -685,12 +720,50 @@ dialog h2 {
   display: none;
 }
 
-#viewer-actions {
+#viewer-bottom {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 1.4rem;
+  bottom: 0;
   z-index: 13;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1.25rem 1.1rem;
+  background: linear-gradient(transparent, #111114 35%);
+  pointer-events: none;
+}
+
+#viewer-bottom > * {
+  pointer-events: auto;
+}
+
+#viewer-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+#viewer-prev,
+#viewer-next,
+#viewer-rotate {
+  min-width: 6.5rem;
+}
+
+.viewer-zoom-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c8c8d0;
+  font-size: 0.85rem;
+}
+
+#viewer-zoom-slider {
+  width: min(22rem, 70vw);
+}
+
+#viewer-actions {
   display: flex;
   justify-content: center;
   gap: 0.85rem;
@@ -701,8 +774,4 @@ dialog h2 {
 #play-preview {
   background: #2a2a32;
   min-width: 9rem;
-}
-
-#open-original[aria-pressed="true"] {
-  background: #2d4a7a;
 }

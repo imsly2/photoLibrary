@@ -193,6 +193,26 @@ def wait_viewer_closed(page: Any) -> None:
     )
 
 
+def open_viewer_info(page: Any) -> None:
+    expanded = page.evaluate(
+        """() => {
+          const btn = document.getElementById('viewer-info');
+          return btn && btn.getAttribute('aria-expanded') === 'true';
+        }"""
+    )
+    if not expanded:
+        page.locator("#viewer-info").click()
+    page.wait_for_function(
+        """() => {
+          const btn = document.getElementById('viewer-info');
+          const panel = document.getElementById('viewer-info-panel');
+          return btn && btn.getAttribute('aria-expanded') === 'true'
+            && panel && !panel.hidden;
+        }""",
+        timeout=5000,
+    )
+
+
 def grid_cell_count(page: Any) -> int:
     return int(page.evaluate("() => document.querySelectorAll('#grid .cell').length"))
 
@@ -490,6 +510,7 @@ def prove_browser(
             if do_annotate:
                 page.locator('[data-filename="IMG_1042.jpg"]').click()
                 wait_viewer_still(page)
+                open_viewer_info(page)
                 page.locator("#person-field").fill("Ada")
                 page.locator("#person-field").press("Enter")
                 page.wait_for_selector('#viewer-people .entity-label', timeout=10000)
@@ -561,6 +582,7 @@ def prove_browser(
 
                 page.locator('[data-filename="IMG_1042.jpg"]').click()
                 wait_viewer_still(page)
+                open_viewer_info(page)
                 page.locator('#viewer-things .entity-label').click()
                 page.wait_for_function(
                     "() => { const el = document.getElementById('inspector'); return el && !el.hidden && el.dataset.count === '2'; }",
