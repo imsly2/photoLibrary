@@ -32,6 +32,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   both directions with rollback, after-launch unplug, show/hide, and the
   missing-original / missing-preview screens. Closes F8 and F16. F5 and F7
   stayed green after S07.
+- S08 is green: annotate Ada/mug with reuse, unnamed face naming, place
+  rename, alias Cup→mug, people merge, pending annotate through hash, and
+  rebuild-index search parity. Closes F14 and F20. Viewer typing stays S09.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -41,7 +44,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**9 / 22 Checks = 40.9% tested.** F1, F4, F5, F6, F7, F8, F9, F11, and F16 have fresh-verifier artifacts.
+**11 / 22 Checks = 50.0% tested.** F1, F4, F5, F6, F7, F8, F9, F11, F14, F16, and F20 have fresh-verifier artifacts.
 M1 browse is recorded. The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
@@ -59,13 +62,13 @@ M1 browse is recorded. The other commands remain pending.
 | F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |
 | F12 | Globe | pending | — | Not run; no artifact |
 | F13 | Tour | pending | — | Not run; no artifact |
-| F14 | People / places / things | pending | — | Not run; no artifact |
+| F14 | People / places / things | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `59ab5ab` | `python -m tests.qa check F14` [verify-1](features/S08/Rev1.0/assets/verify-1/f14/result.json); orchestrator rerun [f14](features/S08/Rev1.0/assets/orchestrator-rerun/f14/result.json) |
 | F15 | Search | pending | — | Not run; no artifact |
 | F16 | Unavailable originals | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F16` [verify-1](features/S07/Rev1.0/assets/verify-1/f16/result.json); orchestrator rerun [f16](features/S07/Rev1.0/assets/orchestrator-rerun/f16/result.json) |
 | F17 | Settings | pending | — | Not run; no artifact |
 | F18 | Undo / Esc / clipboard / log | pending | — | Not run; no artifact |
 | F19 | Live Photos | pending | — | Not run; no artifact |
-| F20 | Rebuild | pending | — | Not run; no artifact |
+| F20 | Rebuild | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `59ab5ab` | `python -m tests.qa check F20` [verify-1](features/S08/Rev1.0/assets/verify-1/f20/result.json); orchestrator rerun [f20](features/S08/Rev1.0/assets/orchestrator-rerun/f20/result.json) |
 | F21 | Keyboard | pending | — | Not run; no artifact |
 | F22 | Web page states | pending | — | Not run; no artifact |
 
@@ -206,6 +209,18 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-13 — S08 plan locked in `docs/features/S08/Rev1.0/PLAN.md` after
   S07. Annotate, merge, pending-during-hash, and rebuild-index. Viewer
   typing stays open until S09.
+- 2026-10-13 — S08 green. Closes F14 and F20 (**11/22**). Fresh Grok 4.7
+  verifier [S08](features/S08/Rev1.0/assets/verify-1/result.json) 104
+  assertions, [F14](features/S08/Rev1.0/assets/verify-1/f14/result.json) 84,
+  [F20](features/S08/Rev1.0/assets/verify-1/f20/result.json) 23, all exit 0
+  at `59ab5ab`. Ada/mug reuse, `?thing=mug` both ids, pending annotate
+  survives hash, rebuild search ids identical. Orchestrator rerun
+  [F14](features/S08/Rev1.0/assets/orchestrator-rerun/f14/result.json) and
+  [F20](features/S08/Rev1.0/assets/orchestrator-rerun/f20/result.json) also
+  exit 0. Next action is S09 / M2 (closes F10, F15).
+- 2026-10-13 — S09 plan locked in `docs/features/S09/Rev1.0/PLAN.md` after
+  S08. Viewer annotation fields, search chips, and preview/original playback.
+  This is M2. Do not wait for taste.
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.

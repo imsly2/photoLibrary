@@ -1,0 +1,18 @@
+{
+  "pendingId": "pending-src_fdea37da8406-083c13707f3ed56a1fd0779aa98dc01d17881aab0042d30665a718d8443d4c28",
+  "hashId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+  "annotateHistoryPaths": [
+    "catalog/items/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81.json"
+  ],
+  "pendingHistoryPaths": [],
+  "faces": [
+    {
+      "personId": "person_d294ac156552"
+    }
+  ],
+  "things": [
+    {
+      "thingId": "thing_12eccf7325de"
+    }
+  ]
+}

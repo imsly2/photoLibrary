@@ -1,0 +1,89 @@
+PASS ada-scan-exit
+PASS ada-two-items
+PASS annotate-cli-exit
+PASS created-ada: [{"schemaVersion": 1, "id": "person_e304c0866f17", "name": "Ada"}]
+PASS created-mug: [{"schemaVersion": 1, "id": "thing_f13fc6222ca2", "name": "mug", "aliases": []}]
+PASS item-lists-ada: ["person_e304c0866f17"]
+PASS item-lists-mug: ["thing_f13fc6222ca2"]
+PASS cli-item-id: 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS reuse-cli-exit
+PASS mug-reused: [{"schemaVersion": 1, "id": "thing_f13fc6222ca2", "name": "mug", "aliases": []}]
+PASS second-lists-mug
+PASS items-thing-cli-exit
+PASS cli-thing-mug-both: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-thing-mug-status: 200
+PASS http-thing-mug-both: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q-ada: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-person-ada: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q-filename: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS edges-items
+PASS unnamed-exit
+PASS unnamed-created: [{"schemaVersion": 1, "id": "person_cbef0232e9b6", "name": null}]
+PASS name-assign-exit
+PASS name-assigned: [{"schemaVersion": 1, "id": "person_cbef0232e9b6", "name": "Ada"}]
+PASS place-exit
+PASS place-renamed: [{"schemaVersion": 1, "id": "place_1c2a08cbbdb7", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS place-kept-gps: [{"schemaVersion": 1, "id": "place_1c2a08cbbdb7", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS box-rejected-exit: {"error":"invalid-argument"}
+
+PASS box-rejected-code: {"error":"invalid-argument"}
+
+PASS box-accepted
+PASS mug-create
+PASS alias-exit
+PASS one-mug: [{"schemaVersion": 1, "id": "thing_35674cbc7171", "name": "mug", "aliases": ["Cup"]}]
+PASS alias-cup: [{"schemaVersion": 1, "id": "thing_35674cbc7171", "name": "mug", "aliases": ["Cup"]}]
+PASS cup-reuses-mug
+PASS cup-same-id
+PASS other-created: [{"schemaVersion": 1, "id": "person_433e3faca4d0", "name": "Other"}, {"schemaVersion": 1, "id": "person_cbef0232e9b6", "name": "Ada"}]
+PASS self-merge-exit: {"error":"invalid-argument"}
+
+PASS self-merge-code: {"error":"invalid-argument"}
+
+PASS merge-exit
+PASS merge-kept-id: {"schemaVersion": 1, "id": "person_cbef0232e9b6", "name": "Ada"}
+PASS drop-file-gone: /workspace/docs/features/S08/Rev1.0/assets/verify-1/f14/edges-root/catalog/people/person_433e3faca4d0.json
+PASS no-drop-faces: []
+PASS keep-faces-present: [{"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "personId": "person_cbef0232e9b6"}, {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "personId": "person_cbef0232e9b6"}, {"itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "personId": "person_cbef0232e9b6", "box": [0.1, 0.2, 0.3, 0.4]}, {"itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "personId": "person_cbef0232e9b6"}]
+PASS one-merge-history: 1
+PASS undo-ada-exists
+PASS undo-exit
+PASS undo-no-dangling-ada
+PASS reannotate-after-undo
+PASS reannotate-creates-ada
+PASS pending-barrier-86: {"error":"test-barrier","barrier":"hash-publication"}
+
+PASS pending-present: 1
+PASS hash-not-published
+PASS pending-annotate-exit
+PASS pending-not-rejected
+PASS pending-has-faces: [{"personId": "person_d294ac156552"}]
+PASS pending-recover-exit
+PASS pending-cleared
+PASS one-hash-item: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS hash-has-ada: [{"personId": "person_d294ac156552"}]
+PASS hash-has-mug: [{"thingId": "thing_12eccf7325de"}]
+PASS history-after-id-hash: 1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81
+PASS history-no-pending-path: []
+PASS history-refs-hash: ["catalog/items/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81.json"]
+PASS pending-undo-exit
+PASS pending-restart-exit
+PASS undo-keeps-hash
+PASS undo-clears-associations
+PASS undo-no-dangling-name
+PASS pending-redo-exit
+PASS redo-restores
+PASS http-scan: 202
+PASS http-items
+PASS http-annotate: 200
+PASS empty-payload: {'error': 'invalid-argument'}
+PASS http-self-merge: {'error': 'invalid-argument'}
+PASS scan-was-running
+PASS rebuild-busy-status: 409
+PASS rebuild-busy-code: {'error': 'busy'}
+PASS annotate-allowed-during-scan: 200
+PASS annotate-not-busy: 200
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes
+PASS seed-ids-untouched: person_aaaaaaaaaaaa / thing_bbbbbbbbbbbb not rewritten
