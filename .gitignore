@@ -15,6 +15,8 @@ docs/features/**/fixture-sandbox/
 docs/features/**/*-root/
 docs/features/**/barrier-*/
 docs/features/**/unmarked-root/
+docs/features/**/offline-history/
+docs/features/**/lock-holder.log
 docs/features/**/write.lock
 
 # Python
