@@ -1,6 +1,6 @@
 # S11 — Tour the places (M3)
 
-Locked 2026-10-13 after S10. **Closes F13.** This is the M3 packet with S10. Do not wait for taste.
+Locked 2026-10-13 after S10 at `49f8c03`. **Closes F13.** This is the M3 packet with S10. Do not wait for taste.
 
 Read PRODUCT F13, CONTRACTS `GET /api/globe/tour`, UI-SPEC tour motion, FIXTURES GPS set, and this file. Do not invent fields, errors, settings, or screens.
 
