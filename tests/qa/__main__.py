@@ -20,7 +20,8 @@ def _add_venv() -> None:
 
 _add_venv()
 
-from tests.qa.s00 import copy_committed_fixtures, run_slice  # noqa: E402
+from tests.qa.s00 import copy_committed_fixtures, run_slice as run_s00  # noqa: E402
+from tests.qa.s01 import run_slice as run_s01  # noqa: E402
 
 
 class _Tee:
@@ -105,14 +106,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"copied fixtures to {args.output}", flush=True)
         return 0
     if args.cmd == "slice":
-        if args.slice_id != "S00":
+        runners = {"S00": run_s00, "S01": run_s01}
+        runner = runners.get(args.slice_id)
+        if runner is None:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         artifacts = Path(args.artifacts)
         tee = _Tee(artifacts / "stdout.log")
         prev = sys.stdout
         sys.stdout = tee  # type: ignore[assignment]
         try:
-            return run_slice(Path(args.root), artifacts)
+            return runner(Path(args.root), artifacts)
         finally:
             sys.stdout = prev
             tee.close()

@@ -9,7 +9,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from library.atomic import atomic_write_json
 from library.errors import AppError, fail
@@ -21,6 +21,15 @@ from library.service import Library
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
 RUNTIME_NAME = "runtime.json"
+
+
+def _query_map(query: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for key, values in parse_qs(query, keep_blank_values=True).items():
+        if len(values) != 1:
+            raise fail("invalid-argument")
+        out[key] = values[0]
+    return out
 
 
 def listen_url(host: str, port: int) -> str:
@@ -184,6 +193,25 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._read_json()
                 with self.lock:
                     self._send_json(200, self.library.redo())
+                return
+            if route == "/api/sources" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.sources_list())
+                return
+            if route == "/api/sources" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(202, self.library.scan(body))
+                return
+            if route == "/api/items" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.items_list(query))
+                return
+            if route == "/api/rebuild-index" and method == "POST":
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.rebuild_index())
                 return
             if route == "/" and method in {"GET", "HEAD"}:
                 self._send_static(WEB_DIR / "index.html", "text/html; charset=utf-8")

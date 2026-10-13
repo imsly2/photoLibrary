@@ -96,6 +96,54 @@ def make_settings_entry(
     }
 
 
+def make_history_entry(root: Path, operation: str, changes: list[dict[str, Any]]) -> dict[str, Any]:
+    if operation not in OPERATIONS:
+        raise fail("invalid-catalog")
+    return {
+        "schemaVersion": 1,
+        "id": new_entry_id(root),
+        "operation": operation,
+        "createdAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "changes": changes,
+    }
+
+
+def latest_entry_id(root: Path) -> str | None:
+    state = load_state(root)
+    if state["cursor"] == 0:
+        return None
+    return state["entries"][state["cursor"] - 1]
+
+
+def scan_entry_id(root: Path) -> str | None:
+    entry_id = latest_entry_id(root)
+    if entry_id is None:
+        return None
+    entry = load_entry(root, entry_id)
+    if entry.get("operation") != "scan":
+        return None
+    return entry_id
+
+
+def plan_extend_entry(
+    root: Path,
+    entry_id: str,
+    extra_changes: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    entry = load_entry(root, entry_id)
+    before = json.loads(json.dumps(entry))
+    after = json.loads(json.dumps(entry))
+    after["changes"] = list(entry.get("changes") or []) + extra_changes
+    return [
+        {
+            "path": f"undo/entries/{entry_id}.json",
+            "before": before,
+            "after": after,
+        },
+        *extra_changes,
+    ]
+
+
 def plan_append(root: Path, entry: dict[str, Any]) -> list[dict[str, Any]]:
     """History + state file changes for a new committed user operation."""
     state = load_state(root)

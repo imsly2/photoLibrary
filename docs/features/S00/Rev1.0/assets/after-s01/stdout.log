@@ -1,0 +1,260 @@
+PASS python-3.12+: 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+PASS ffmpeg-present: ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+PASS ffprobe-present: ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS committed-manifest-exists: J:\slyOS\projects\photoLibrary\tests\fixtures\manifest.json
+PASS fixture-listed:a/IMG_1042.jpg: a/IMG_1042.jpg
+PASS fixture-listed:a/near.jpg: a/near.jpg
+PASS fixture-listed:b/far.jpg: b/far.jpg
+PASS fixture-listed:b/no-exif.jpg: b/no-exif.jpg
+PASS fixture-listed:b/created.jpg: b/created.jpg
+PASS fixture-listed:b/holiday_20200102.jpg: b/holiday_20200102.jpg
+PASS fixture-listed:b/holiday_2020-01-03.jpg: b/holiday_2020-01-03.jpg
+PASS fixture-listed:b/oriented.jpg: b/oriented.jpg
+PASS fixture-listed:a/clip.mp4: a/clip.mp4
+PASS fixture-listed:live/LIVE_0001.jpg: live/LIVE_0001.jpg
+PASS fixture-listed:live/LIVE_0001.mov: live/LIVE_0001.mov
+PASS fixture-listed:formats/quad.png: formats/quad.png
+PASS fixture-listed:formats/quad.gif: formats/quad.gif
+PASS fixture-listed:formats/quad.webp: formats/quad.webp
+PASS fixture-listed:formats/quad.heic: formats/quad.heic
+PASS fixture-listed:formats/quad.heif: formats/quad.heif
+PASS fixture-listed:formats/quad.tiff: formats/quad.tiff
+PASS fixture-listed:formats/quad.bmp: formats/quad.bmp
+PASS fixture-listed:formats/clip.mov: formats/clip.mov
+PASS fixture-listed:formats/clip.m4v: formats/clip.m4v
+PASS fixture-listed:formats/clip.avi: formats/clip.avi
+PASS fixture-listed:formats/clip.mkv: formats/clip.mkv
+PASS fixture-listed:formats/clip.webm: formats/clip.webm
+PASS fixture-listed:formats/broken.heic: formats/broken.heic
+PASS fixture-listed:family/旅行 photo.jpg: family/旅行 photo.jpg
+PASS long-nested-path-present: ['nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg']
+PASS fixture-exists:a/IMG_1042.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\a\IMG_1042.jpg
+PASS fixture-hash:a/IMG_1042.jpg: want 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0 got 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS fixture-size:a/IMG_1042.jpg
+PASS fixture-mtime:a/IMG_1042.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:a/IMG_1042.jpg
+PASS fixture-exists:a/near.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\a\near.jpg
+PASS fixture-hash:a/near.jpg: want b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a got b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a
+PASS fixture-size:a/near.jpg
+PASS fixture-mtime:a/near.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:a/near.jpg
+PASS fixture-exists:b/far.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\far.jpg
+PASS fixture-hash:b/far.jpg: want c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc got c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc
+PASS fixture-size:b/far.jpg
+PASS fixture-mtime:b/far.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:b/far.jpg
+PASS fixture-exists:b/no-exif.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\no-exif.jpg
+PASS fixture-hash:b/no-exif.jpg: want 1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81 got 1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81
+PASS fixture-size:b/no-exif.jpg
+PASS fixture-mtime:b/no-exif.jpg: want 2022-02-03T04:05:06Z got 2022-02-03T04:05:06Z
+PASS fixture-metadata:b/no-exif.jpg
+PASS fixture-exists:b/created.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\created.jpg
+PASS fixture-hash:b/created.jpg: want 35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6 got 35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6
+PASS fixture-size:b/created.jpg
+PASS fixture-mtime:b/created.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:b/created.jpg
+PASS fixture-exists:b/holiday_20200102.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\holiday_20200102.jpg
+PASS fixture-hash:b/holiday_20200102.jpg: want c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c got c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c
+PASS fixture-size:b/holiday_20200102.jpg
+PASS fixture-mtime:b/holiday_20200102.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:b/holiday_20200102.jpg
+PASS fixture-exists:b/holiday_2020-01-03.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\holiday_2020-01-03.jpg
+PASS fixture-hash:b/holiday_2020-01-03.jpg: want 888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a got 888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a
+PASS fixture-size:b/holiday_2020-01-03.jpg
+PASS fixture-mtime:b/holiday_2020-01-03.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:b/holiday_2020-01-03.jpg
+PASS fixture-exists:b/oriented.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\b\oriented.jpg
+PASS fixture-hash:b/oriented.jpg: want 52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7 got 52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7
+PASS fixture-size:b/oriented.jpg
+PASS fixture-mtime:b/oriented.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:b/oriented.jpg
+PASS fixture-exists:live/LIVE_0001.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\live\LIVE_0001.jpg
+PASS fixture-hash:live/LIVE_0001.jpg: want db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1 got db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS fixture-size:live/LIVE_0001.jpg
+PASS fixture-mtime:live/LIVE_0001.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:live/LIVE_0001.jpg
+PASS fixture-exists:family/旅行 photo.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\family\旅行 photo.jpg
+PASS fixture-hash:family/旅行 photo.jpg: want 5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a got 5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a
+PASS fixture-size:family/旅行 photo.jpg
+PASS fixture-mtime:family/旅行 photo.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:family/旅行 photo.jpg
+PASS fixture-exists:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg: J:\slyOS\projects\photoLibrary\tests\fixtures\media\nested\deep\level03\level04\level05\dir\dir\dir\raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+PASS fixture-hash:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg: want 20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54 got 20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54
+PASS fixture-size:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+PASS fixture-mtime:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg
+PASS fixture-exists:a/clip.mp4: J:\slyOS\projects\photoLibrary\tests\fixtures\media\a\clip.mp4
+PASS fixture-hash:a/clip.mp4: want 93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913 got 93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913
+PASS fixture-size:a/clip.mp4
+PASS fixture-mtime:a/clip.mp4: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:a/clip.mp4
+PASS fixture-exists:live/LIVE_0001.mov: J:\slyOS\projects\photoLibrary\tests\fixtures\media\live\LIVE_0001.mov
+PASS fixture-hash:live/LIVE_0001.mov: want 594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2 got 594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2
+PASS fixture-size:live/LIVE_0001.mov
+PASS fixture-mtime:live/LIVE_0001.mov: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:live/LIVE_0001.mov
+PASS fixture-exists:formats/quad.png: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.png
+PASS fixture-hash:formats/quad.png: want 4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938 got 4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938
+PASS fixture-size:formats/quad.png
+PASS fixture-mtime:formats/quad.png: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.png
+PASS fixture-exists:formats/quad.gif: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.gif
+PASS fixture-hash:formats/quad.gif: want d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030 got d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030
+PASS fixture-size:formats/quad.gif
+PASS fixture-mtime:formats/quad.gif: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.gif
+PASS fixture-exists:formats/quad.webp: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.webp
+PASS fixture-hash:formats/quad.webp: want c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6 got c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6
+PASS fixture-size:formats/quad.webp
+PASS fixture-mtime:formats/quad.webp: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.webp
+PASS fixture-exists:formats/quad.tiff: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.tiff
+PASS fixture-hash:formats/quad.tiff: want 566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91 got 566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91
+PASS fixture-size:formats/quad.tiff
+PASS fixture-mtime:formats/quad.tiff: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.tiff
+PASS fixture-exists:formats/quad.bmp: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.bmp
+PASS fixture-hash:formats/quad.bmp: want c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015 got c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015
+PASS fixture-size:formats/quad.bmp
+PASS fixture-mtime:formats/quad.bmp: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.bmp
+PASS fixture-exists:formats/quad.heic: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.heic
+PASS fixture-hash:formats/quad.heic: want 5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a got 5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a
+PASS fixture-size:formats/quad.heic
+PASS fixture-mtime:formats/quad.heic: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.heic
+PASS heif-ftyp:formats/quad.heic: ['heic', 'mif1', 'heic', 'miaf']
+PASS fixture-exists:formats/quad.heif: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\quad.heif
+PASS fixture-hash:formats/quad.heif: want a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875 got a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875
+PASS fixture-size:formats/quad.heif
+PASS fixture-mtime:formats/quad.heif: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/quad.heif
+PASS heif-ftyp:formats/quad.heif: ['heic', 'mif1', 'heic', 'miaf']
+PASS fixture-exists:formats/clip.mov: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\clip.mov
+PASS fixture-hash:formats/clip.mov: want b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9 got b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9
+PASS fixture-size:formats/clip.mov
+PASS fixture-mtime:formats/clip.mov: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/clip.mov
+PASS fixture-exists:formats/clip.m4v: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\clip.m4v
+PASS fixture-hash:formats/clip.m4v: want 79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad got 79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad
+PASS fixture-size:formats/clip.m4v
+PASS fixture-mtime:formats/clip.m4v: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/clip.m4v
+PASS fixture-exists:formats/clip.mkv: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\clip.mkv
+PASS fixture-hash:formats/clip.mkv: want 4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7 got 4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7
+PASS fixture-size:formats/clip.mkv
+PASS fixture-mtime:formats/clip.mkv: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/clip.mkv
+PASS fixture-exists:formats/clip.avi: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\clip.avi
+PASS fixture-hash:formats/clip.avi: want a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c got a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c
+PASS fixture-size:formats/clip.avi
+PASS fixture-mtime:formats/clip.avi: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/clip.avi
+PASS fixture-exists:formats/clip.webm: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\clip.webm
+PASS fixture-hash:formats/clip.webm: want ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c got ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c
+PASS fixture-size:formats/clip.webm
+PASS fixture-mtime:formats/clip.webm: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS fixture-metadata:formats/clip.webm
+PASS fixture-exists:formats/broken.heic: J:\slyOS\projects\photoLibrary\tests\fixtures\media\formats\broken.heic
+PASS fixture-hash:formats/broken.heic: want 592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd got 592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd
+PASS fixture-size:formats/broken.heic
+PASS fixture-mtime:formats/broken.heic: want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z
+PASS broken-heic-invalid
+PASS broken-heic-not-jpeg
+PASS broken-heic-no-valid-brand: []
+PASS live-content-identifier: still=11111111-2222-4333-8444-555555555555 movie=11111111-2222-4333-8444-555555555555
+PASS scenario-ids: ['duplicate', 'collision', 'modified', 'unsafe/Unicode paths', 'interruption', 'pending annotation', 'absent source', 'moved library', 'moved linked volume', 'preview missing', 'denied/relocate interrupted', 'HEIC failure', 'format coverage', 'orphan/mismatch live', 'date edge', 'empty/no-GPS', 'settings/history', 'annotation']
+PASS fixtures-command-exit
+PASS sandbox-hash:a/IMG_1042.jpg
+PASS sandbox-hash:a/near.jpg
+PASS sandbox-hash:b/far.jpg
+PASS sandbox-hash:b/no-exif.jpg
+PASS sandbox-hash:b/created.jpg
+PASS sandbox-hash:b/holiday_20200102.jpg
+PASS sandbox-hash:b/holiday_2020-01-03.jpg
+PASS sandbox-hash:b/oriented.jpg
+PASS sandbox-hash:a/clip.mp4
+PASS sandbox-hash:live/LIVE_0001.jpg
+PASS sandbox-hash:live/LIVE_0001.mov
+PASS sandbox-hash:formats/quad.png
+PASS sandbox-hash:formats/quad.gif
+PASS sandbox-hash:formats/quad.webp
+PASS sandbox-hash:formats/quad.heic
+PASS sandbox-hash:formats/quad.heif
+PASS sandbox-hash:formats/quad.tiff
+PASS sandbox-hash:formats/quad.bmp
+PASS sandbox-hash:formats/clip.mov
+PASS sandbox-hash:formats/clip.m4v
+PASS sandbox-hash:formats/clip.avi
+PASS sandbox-hash:formats/clip.mkv
+PASS sandbox-hash:formats/clip.webm
+PASS sandbox-hash:formats/broken.heic
+PASS refuse-unmarked-nonempty-root: refusing nonempty root without library-data/.fixture-root: J:\slyOS\projects\photoLibrary\docs\features\S00\Rev1.0\assets\after-s01\unmarked-root
+PASS first-open-settings-exit
+PASS settings-key-order: ['schemaVersion', 'previewStore', 'unavailableItems', 'addFolderDefault', 'playProxies', 'listenHost', 'port', 'thumbPx', 'previewPx', 'proxyWidth', 'placeMatchMeters', 'tourOrbitSec', 'tourPictures', 'tourPictureSec', 'sort', 'dir', 'zoomLevel']
+PASS settings-defaults: {'schemaVersion': 1, 'previewStore': 'with-server', 'unavailableItems': 'show', 'addFolderDefault': 'ask', 'playProxies': 'days-and-all', 'listenHost': '127.0.0.1', 'port': 8765, 'thumbPx': 320, 'previewPx': 1600, 'proxyWidth': 480, 'placeMatchMeters': 100, 'tourOrbitSec': 8, 'tourPictures': 5, 'tourPictureSec': 3, 'sort': 'date', 'dir': 'desc', 'zoomLevel': 'years'}
+PASS settings-file-matches
+PASS empty-undo-success
+PASS offline-set-port
+PASS offline-get-8770: 8770
+PASS offline-undo
+PASS offline-get-8765: 8765
+PASS offline-redo
+PASS offline-redo-8770
+PASS isolated-health: {'ok': True}
+PASS runtime-schema
+PASS runtime-pid: runtime=33196 popen=33196
+PASS runtime-root: C:\Users\sly2.0\AppData\Local\Temp\library-s00-after-s01\library-data
+PASS runtime-url: http://127.0.0.1:18765/
+PASS empty-page-title
+PASS empty-page-copy
+PASS empty-page-add-folder
+PASS reopen-exit
+PASS reopen-url: http://127.0.0.1:18765/
+PASS reopen-same-pid: first=33196 second=33196
+PASS http-set-port
+PASS cli-forwards-get
+PASS http-undo
+PASS http-undo-8765-or-isolated
+PASS http-redo
+PASS http-redo-8770
+PASS cli-forward-undo
+PASS cli-undo-restores-isolated-port
+PASS invalid-port: {'error': 'invalid-argument'}
+PASS unknown-key
+PASS bool-as-number
+PASS invalid-does-not-change-file
+PASS missing-media-not-found: {'error': 'not-found'}
+PASS server-log-404-line: 2026-10-13T05:52:17.940688Z	/api/settings	invalid-argument
+2026-10-13T05:52:17.944023Z	/api/settings	invalid-argument
+2026-10-13T05:52:17.971049Z	/api/settings	invalid-argument
+2026-10-13T05:52:17.975345Z	/api/media/missing?which=original	not-found
+
+PASS unknown-asset-404
+PASS history-501-writes: {'schemaVersion': 1, 'previewStore': 'with-server', 'unavailableItems': 'show', 'addFolderDefault': 'ask', 'playProxies': 'days-and-all', 'listenHost': '127.0.0.1', 'port': 18765, 'thumbPx': 320, 'previewPx': 1600, 'proxyWidth': 480, 'placeMatchMeters': 100, 'tourOrbitSec': 8, 'tourPictures': 501, 'tourPictureSec': 3, 'sort': 'date', 'dir': 'desc', 'zoomLevel': 'years'}
+PASS history-cap-500: 500
+PASS history-entry-files-500: 500
+PASS dummy-port-in-use-exit: {"error":"port-in-use"}
+
+PASS dummy-port-in-use-code: {"error":"port-in-use"}
+
+PASS dummy-still-accepts
+PASS default-port-health
+PASS default-port-pid: 32364
+PASS default-port-reopen
+PASS default-port-same-pid: 32364
+PASS default-port-stopped
+PASS lock-holder-acquired: LOCKED
+
+PASS second-writer-busy-exit: {"error":"busy"}
+
+PASS second-writer-busy-code: {"error":"busy"}
+
+PASS busy-does-not-change-settings
+PASS barrier-prepared-exit-86: {"error":"test-barrier","barrier":"settings-prepared"}
+PASS barrier-prepared-port-8765: 8765
+PASS barrier-committed-exit-86: {"error":"test-barrier","barrier":"settings-committed"}
+PASS barrier-committed-port-8770: 8770
+PASS barrier-committed-txn-removed

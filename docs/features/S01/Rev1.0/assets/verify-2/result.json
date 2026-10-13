@@ -1,0 +1,920 @@
+{
+  "slice": "S01",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-first-json",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-first-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "scan-first-added",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-first-source-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "originals-byte-identical",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-library-dir-in-media",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ignored-txt-untouched",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "one-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "source-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "source-id-reused-field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "linked-destination-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ignored-not-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "duplicate-path-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-heic-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-pending-after-scan",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "one-live-item",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "live-id-is-still-hash",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "live-components",
+      "pass": true,
+      "detail": "['motion', 'still']"
+    },
+    {
+      "name": "live-has-primaries",
+      "pass": true,
+      "detail": "locations=2 still_primary=1 motion_primary=1"
+    },
+    {
+      "name": "duplicate-one-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "duplicate-two-locations",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "duplicate-one-primary",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "duplicate-kind-volume",
+      "pass": true,
+      "detail": "{'volume'}"
+    },
+    {
+      "name": "broken-heic-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-heic-rendition-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-heic-no-rendition-path",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-heic-source-error",
+      "pass": true,
+      "detail": "[{'path': 'formats/broken.heic', 'error': 'decode-error'}]"
+    },
+    {
+      "name": "format-indexed:quad.png",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.gif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.heif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.tiff",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.bmp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:clip.mov",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:clip.m4v",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:clip.avi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:clip.mkv",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:clip.webm",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:broken.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unicode-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "long-path-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+      "pass": true,
+      "detail": "id='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' expected='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/no-exif.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "pass": true,
+      "detail": "id='1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0' expected='1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/a/IMG_1042.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54",
+      "pass": true,
+      "detail": "id='20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54' expected='20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6",
+      "pass": true,
+      "detail": "id='35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6' expected='35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/created.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938",
+      "pass": true,
+      "detail": "id='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' expected='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.png')"
+    },
+    {
+      "name": "rendition-paths-null:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7",
+      "pass": true,
+      "detail": "id='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' expected='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/clip.mkv')"
+    },
+    {
+      "name": "rendition-paths-null:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+      "pass": true,
+      "detail": "id='52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7' expected='52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/oriented.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91",
+      "pass": true,
+      "detail": "id='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' expected='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.tiff')"
+    },
+    {
+      "name": "rendition-paths-null:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a",
+      "pass": true,
+      "detail": "id='5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a' expected='5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/family/\u65c5\u884c photo.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+      "pass": true,
+      "detail": "id='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' expected='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/broken.heic')"
+    },
+    {
+      "name": "rendition-paths-null:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+      "pass": true,
+      "detail": "id='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' expected='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.heic')"
+    },
+    {
+      "name": "rendition-paths-null:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad",
+      "pass": true,
+      "detail": "id='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' expected='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/clip.m4v')"
+    },
+    {
+      "name": "rendition-paths-null:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+      "pass": true,
+      "detail": "id='888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a' expected='888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/holiday_2020-01-03.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "pass": true,
+      "detail": "id='93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913' expected='93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/a/clip.mp4')"
+    },
+    {
+      "name": "rendition-paths-null:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+      "pass": true,
+      "detail": "id='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' expected='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.heif')"
+    },
+    {
+      "name": "rendition-paths-null:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+      "pass": true,
+      "detail": "id='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' expected='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/clip.avi')"
+    },
+    {
+      "name": "rendition-paths-null:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c",
+      "pass": true,
+      "detail": "id='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' expected='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/clip.webm')"
+    },
+    {
+      "name": "rendition-paths-null:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9",
+      "pass": true,
+      "detail": "id='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' expected='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/clip.mov')"
+    },
+    {
+      "name": "rendition-paths-null:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "pass": true,
+      "detail": "id='b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a' expected='b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/a/near.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015",
+      "pass": true,
+      "detail": "id='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' expected='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.bmp')"
+    },
+    {
+      "name": "rendition-paths-null:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+      "pass": true,
+      "detail": "id='c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c' expected='c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/holiday_20200102.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "pass": true,
+      "detail": "id='c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc' expected='c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/b/far.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6",
+      "pass": true,
+      "detail": "id='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' expected='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.webp')"
+    },
+    {
+      "name": "rendition-paths-null:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030",
+      "pass": true,
+      "detail": "id='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' expected='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/formats/quad.gif')"
+    },
+    {
+      "name": "rendition-paths-null:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-id-hash:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+      "pass": true,
+      "detail": "id='db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1' expected='db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1' path=WindowsPath('J:/slyOS/projects/photoLibrary/docs/features/S01/Rev1.0/assets/verify-2/fixture-sandbox/media/live/LIVE_0001.jpg')"
+    },
+    {
+      "name": "rendition-paths-null:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-kind-volume:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-history-one",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "scan-second-json",
+      "pass": true,
+      "detail": "skipped a/IMG_1042.jpg\nskipped a/clip.mp4\nskipped a/near.jpg\nskipped b/created.jpg\nskipped b/far.jpg\nskipped b/holiday_2020-01-03.jpg\nskipped b/holiday_20200102.jpg\nskipped b/no-exif.jpg\nskipped b/oriented.jpg\nskipped family/\u00e6\u2014\u2026\u00e8\u00a1\u0152 photo.jpg\nskipped formats/broken.heic\nskipped formats/clip.avi\nskipped formats/clip.m4v\nskipped formats/clip.mkv\nskipped formats/clip.mov\nskipped formats/clip.webm\nskipped formats/quad.bmp\nskipped formats/quad.gif\nskipped formats/quad.heic\nskipped formats/quad.heif\nskipped formats/quad.png\nskipped formats/quad.tiff\nskipped formats/quad.webp\nskipped live/LIVE_0001.jpg\nskipped live/LIVE_0001.mov\nskipped nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg\nskipped second/source/same.jpg\n{\n  \"sourceId\": \"src_e61d250d4530\",\n  \"added\": 0,\n  \"skipped\": 27,\n  \"errors\": []\n}\n"
+    },
+    {
+      "name": "scan-second-added-0",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "scan-second-skipped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-second-same-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-second-stdout-skipped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-same-item-count",
+      "pass": true,
+      "detail": "25 vs 25"
+    },
+    {
+      "name": "scan-history-two",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "copy-here-cli-not-found-exit",
+      "pass": true,
+      "detail": "{\"error\":\"not-found\"}\n"
+    },
+    {
+      "name": "copy-here-cli-not-found",
+      "pass": true,
+      "detail": "{\"error\":\"not-found\"}\n"
+    },
+    {
+      "name": "choice-required-exit",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "choice-required-code",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copy-here-scan-not-found-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copy-here-scan-not-found",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-exists-after-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-cli-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-exists-after-rebuild",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-same-item-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "s01-health",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-sources",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-source-available",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-source-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-item-count",
+      "pass": true,
+      "detail": "25"
+    },
+    {
+      "name": "http-one-live",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-item-available-field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-item-entities",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-rescan-202",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-rescan-added-0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-rescan-same-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-copy-here-not-found",
+      "pass": true,
+      "detail": "{'error': 'not-found'}"
+    },
+    {
+      "name": "http-rebuild",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-ids-match",
+      "pass": true,
+      "detail": "['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '20d4060f6d595d57cd4f0dc057652429907366ca08db6bde5400e10445f1df54', '35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6', '4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938', '4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7', '52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7', '566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91', '5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a', '592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd', '5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a', '79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad', '888523c36383fc93ab93133c10c54c3198cd1c825a65a52e4cecf1e514b6de2a', '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875', 'a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c', 'ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c', 'b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9', 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a', 'c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015', 'c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c', 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc', 'c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6', 'd423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030', 'db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1']"
+    },
+    {
+      "name": "junction-created",
+      "pass": true,
+      "detail": "exit=0 stdout='Junction created for J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S01\\\\Rev1.0\\\\assets\\\\verify-2\\\\skip-media\\\\junction-dir <<===>> J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S01\\\\Rev1.0\\\\assets\\\\verify-2\\\\skip-extra\\n' stderr=''"
+    },
+    {
+      "name": "skip-keep-indexed",
+      "pass": true,
+      "detail": "{'keep.jpg'}"
+    },
+    {
+      "name": "skip-hidden-library",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-notes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-junction-file",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-added-one",
+      "pass": true,
+      "detail": "{'sourceId': 'src_b639adb2ab70', 'added': 1, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "scan-library-data-rejected-exit",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "scan-library-data-invalid",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "barrier-hash-exit-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "barrier-hash-payload",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "barrier-pending-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "barrier-hash-not-only-published",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "barrier-recover-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-pending-cleared",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-one-item",
+      "pass": true,
+      "detail": "['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "barrier-pending-not-published-id",
+      "pass": true,
+      "detail": "pending='pending-src_11f560f81c28-703239fa3dea919c8ec4be274679b0c1466a9d1c12327b0804a4d14716394f01' published='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'"
+    },
+    {
+      "name": "barrier-item-is-hash",
+      "pass": true,
+      "detail": "id='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81' expected='1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'"
+    },
+    {
+      "name": "barrier-rescan-one-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-rescan-same-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-sources-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-source-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-source-flag",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-items-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-item-listed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-item-flag",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-item-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unavailable-location-retained",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "239d1fbfd0271445015ae4eaf785129f920dead6",
+  "commands": [
+    "python -m library scan <media> --serve-from-there",
+    "python -m library scan <media> --serve-from-there #2"
+  ],
+  "artifactPaths": {
+    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\result.json",
+    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\stdout.log",
+    "scan-first.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\scan-first.log",
+    "scan-second.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\scan-second.log",
+    "original-hashes.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\original-hashes.json",
+    "interruption.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S01\\Rev1.0\\assets\\verify-2\\interruption.json"
+  }
+}

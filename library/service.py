@@ -7,6 +7,14 @@ from pathlib import Path
 from typing import Any
 
 from library.atomic import recover_transactions, transact
+from library.catalog_io import (
+    item_read,
+    iter_item_ids,
+    iter_source_ids,
+    load_item,
+    load_source,
+    source_read,
+)
 from library.errors import AppError, fail
 from library.history import (
     load_entry,
@@ -15,7 +23,10 @@ from library.history import (
     plan_append,
     plan_cursor_move,
 )
+from library.index import maybe_rebuild_missing, rebuild_sqlite
 from library.lock import WriteLock
+from library.records import read_scan_request
+from library.scan import scan_serve_from_there
 from library.settings import (
     defaults,
     dumps_settings,
@@ -34,7 +45,12 @@ class Library:
         self.root.mkdir(parents=True, exist_ok=True)
 
     def recover(self) -> dict[str, Any]:
-        return recover_transactions(self.root)
+        from library.catalog_io import finish_pending_publications
+
+        recovered = recover_transactions(self.root)
+        finish_pending_publications(self.root)
+        maybe_rebuild_missing(self.root)
+        return recovered
 
     def ensure_settings(self) -> dict[str, Any]:
         path = settings_path(self.root)
@@ -114,6 +130,98 @@ class Library:
 
     def history_len(self) -> int:
         return len(load_state(self.root)["entries"])
+
+    def scan(self, body: dict[str, Any], on_progress=None) -> dict[str, Any]:
+        self.recover()
+        settings = self.ensure_settings()
+        req = read_scan_request(body)
+        mode = req["mode"]
+        if mode is None:
+            mode = settings["addFolderDefault"]
+            if mode == "ask":
+                raise fail("choice-required")
+        if mode == "copy-here":
+            raise fail("not-found")
+        source = scan_serve_from_there(
+            self.root,
+            Path(req["path"]),
+            preview_store=req["previewStore"],
+            on_progress=on_progress,
+        )
+        return source_read(source, self.root)
+
+    def sources_list(self) -> list[dict[str, Any]]:
+        self.recover()
+        self.ensure_settings()
+        return [source_read(load_source(self.root, source_id), self.root) for source_id in iter_source_ids(self.root)]
+
+    def items_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        self.recover()
+        settings = self.ensure_settings()
+        query = query or {}
+        extra = set(query) - ITEM_QUERY_KEYS
+        if extra:
+            raise fail("invalid-argument")
+        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        items = [item for item in items if _item_visible(item, settings, query)]
+        items = [item for item in items if _item_matches(item, query)]
+        return _sort_items(items, query, settings)
+
+    def rebuild_index(self) -> dict[str, bool]:
+        self.recover()
+        self.ensure_settings()
+        rebuild_sqlite(self.root, use_barrier=True)
+        return {"ok": True}
+
+
+ITEM_QUERY_KEYS = frozenset(
+    {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
+)
+
+
+def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:
+    raw = query.get("unavailable")
+    if raw is None:
+        include = settings["unavailableItems"] == "show"
+    elif raw == "1":
+        include = True
+    elif raw == "0":
+        include = False
+    else:
+        raise fail("invalid-argument")
+    if include:
+        return True
+    return item["available"] is True
+
+
+def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
+    q = query.get("q")
+    if q:
+        needle = q.casefold()
+        hay = item.get("filename") or ""
+        if needle not in hay.casefold():
+            return False
+    return True
+
+
+def _sort_items(
+    items: list[dict[str, Any]],
+    query: dict[str, str],
+    settings: dict[str, Any],
+) -> list[dict[str, Any]]:
+    sort = query.get("sort") or settings["sort"]
+    direction = query.get("dir") or settings["dir"]
+    if sort not in {"date", "location", "name"} or direction not in {"asc", "desc"}:
+        raise fail("invalid-argument")
+    reverse = direction == "desc"
+
+    def key(item: dict[str, Any]) -> tuple:
+        if sort == "name":
+            return (item.get("filename") or "", item.get("capturedAt") or "", item["id"])
+        return (item.get("capturedAt") or "", item["id"])
+
+    items = sorted(items, key=key, reverse=reverse)
+    return items
 
 
 def _read_relative_json(root: Path, relative: str) -> Any:

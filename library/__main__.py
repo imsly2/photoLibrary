@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from library.atomic import load_json
-from library.errors import AppError, HTTP_STATUS
+from library.errors import AppError, HTTP_STATUS, fail
 from library.httpjson import request_json
 from library.lock import WriteLock
 from library.paths import default_root, normalize_root, roots_equal
@@ -19,13 +19,9 @@ from library.service import Library, error_payload
 from library.settings import parse_cli_value
 
 UNIMPLEMENTED = {
-    "scan",
-    "sources",
     "copy-here",
-    "items",
     "annotate",
     "people",
-    "rebuild-index",
     "renditions",
 }
 
@@ -38,6 +34,28 @@ def _print_error(code: str) -> None:
 def _print_json(obj: Any) -> None:
     sys.stdout.write(json.dumps(obj, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
     sys.stdout.flush()
+
+
+def _print_scan_summary(source: Any) -> None:
+    scan = source.get("scan") if isinstance(source, dict) else None
+    if not isinstance(source, dict) or not isinstance(scan, dict):
+        raise fail("internal-error")
+    _print_json(
+        {
+            "sourceId": source.get("id"),
+            "added": scan.get("added"),
+            "skipped": scan.get("skipped"),
+            "errors": scan.get("errors"),
+        }
+    )
+
+
+def _scan_exit(source: Any) -> int:
+    scan = source.get("scan") if isinstance(source, dict) else None
+    errors = scan.get("errors") if isinstance(scan, dict) else None
+    if errors:
+        return 1
+    return 0
 
 
 def _exit_for(code: str) -> int:
@@ -93,8 +111,14 @@ def _running_server_url(root: Path) -> str | None:
     return url.rstrip("/")
 
 
-def _forward(url: str, method: str, route: str, body: Any | None) -> tuple[int, Any]:
-    return request_json(url + route, method=method, body=body, timeout=5.0)
+def _forward(
+    url: str,
+    method: str,
+    route: str,
+    body: Any | None,
+    timeout: float = 5.0,
+) -> tuple[int, Any]:
+    return request_json(url + route, method=method, body=body, timeout=timeout)
 
 
 def _with_lock(root: Path, fn):
@@ -110,7 +134,7 @@ def _mutation(root: Path, local_fn, method: str, route: str, body: Any | None) -
     url = _running_server_url(root)
     if url is not None:
         status, payload = _forward(url, method, route, body)
-        if status == 200:
+        if status in {200, 202}:
             return payload
         if isinstance(payload, dict) and "error" in payload:
             raise AppError(payload["error"], status)
@@ -221,6 +245,77 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             _print_error("invalid-argument")
             return 2
+        if args.command == "scan":
+            if args.copy_here and args.serve_from_there:
+                raise fail("invalid-argument")
+            if args.copy_here:
+                raise fail("not-found")
+            body: dict[str, Any] = {"path": args.path}
+            if args.serve_from_there:
+                body["mode"] = "serve-from-there"
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "POST", "/api/sources", body, timeout=300.0)
+                if status not in {200, 202}:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_scan_summary(payload)
+                return _scan_exit(payload)
+            source = _with_lock(
+                root,
+                lambda: Library(root).scan(
+                    body,
+                    on_progress=lambda kind, rel: print(f"{kind} {rel}", flush=True),
+                ),
+            )
+            _print_scan_summary(source)
+            return _scan_exit(source)
+        if args.command == "sources":
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "GET", "/api/sources", None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).sources_list())
+            _print_json(payload)
+            return 0
+        if args.command == "items":
+            query = {}
+            if args.sort:
+                query["sort"] = args.sort
+            if getattr(args, "dir", None):
+                query["dir"] = args.dir
+            if args.q:
+                query["q"] = args.q
+            url = _running_server_url(root)
+            if url is not None:
+                qs = "&".join(f"{key}={value}" for key, value in query.items())
+                route = "/api/items" + (("?" + qs) if qs else "")
+                status, payload = _forward(url, "GET", route, None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).items_list(query))
+            _print_json(payload)
+            return 0
+        if args.command == "rebuild-index":
+            result = _mutation(
+                root,
+                lambda: Library(root).rebuild_index(),
+                "POST",
+                "/api/rebuild-index",
+                {},
+            )
+            _print_json(result)
+            return 0
         if args.command == "undo":
             result = _mutation(
                 root,

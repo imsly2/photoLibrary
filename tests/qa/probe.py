@@ -10,69 +10,24 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-APPLE_XMP_NS = "http://ns.apple.com/exif/1.0/"
-CONTENT_ID_RE = re.compile(
-    r"ContentIdentifier(?:\s*=\s*\"([^\"]+)\"|>\s*([^<]+)<)",
-    re.IGNORECASE,
+from library.media import (
+    VALID_HEIF_BRANDS,
+    jpeg_xmp_content_identifier,
+    read_ftyp_brands,
+    sha256_file,
 )
+
 ISO6709_RE = re.compile(
     r"^([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)\/$"
 )
-VALID_HEIF_BRANDS = frozenset({"heic", "heix", "heif", "mif1"})
 STILL_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".tif", ".tiff", ".bmp"}
 HEIF_SUFFIXES = {".heic", ".heif"}
 VIDEO_SUFFIXES = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}
 
 
-def sha256_file(path: Path) -> str:
-    import hashlib
-
-    digest = hashlib.sha256()
-    with open(path, "rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def mtime_utc(path: Path) -> str:
     ts = path.stat().st_mtime
     return datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def read_ftyp_brands(data: bytes) -> list[str]:
-    index = data.find(b"ftyp")
-    if index < 4:
-        return []
-    size = int.from_bytes(data[index - 4 : index], "big")
-    box = data[index - 4 : index - 4 + size] if size >= 16 else data[index - 4 : index + 32]
-    if len(box) < 16:
-        return []
-    brands = [box[8:12].decode("ascii", "replace")]
-    compatible = box[16:]
-    for offset in range(0, len(compatible) - 3, 4):
-        brands.append(compatible[offset : offset + 4].decode("ascii", "replace"))
-    return brands
-
-
-def jpeg_xmp_content_identifier(data: bytes) -> str | None:
-    if not data.startswith(b"\xff\xd8"):
-        return None
-    if APPLE_XMP_NS.encode("ascii") not in data:
-        return None
-    # Search the XMP packet only.
-    start = data.find(b"<x:xmpmeta")
-    end = data.find(b"</x:xmpmeta>")
-    if start < 0 or end < start:
-        blob = data
-    else:
-        blob = data[start : end + len(b"</x:xmpmeta>")]
-    text = blob.decode("utf-8", "replace")
-    if APPLE_XMP_NS not in text:
-        return None
-    match = CONTENT_ID_RE.search(text)
-    if not match:
-        return None
-    return (match.group(1) or match.group(2) or "").strip() or None
 
 
 def _gps_to_deg(values: Any, ref: Any) -> float | None:
