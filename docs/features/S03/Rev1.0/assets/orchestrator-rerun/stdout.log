@@ -1,0 +1,78 @@
+PASS library-no-pillow
+PASS library-no-pillow-heif
+PASS library-no-playwright
+PASS library-no-noautorotate
+PASS scan-exit: exit=1 stderr=''
+PASS one-source: 1
+PASS oriented-present
+PASS broken-present
+PASS oriented-thumb-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-preview-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-thumb-path-null
+PASS oriented-preview-path-null
+PASS oriented-raw-width: 640
+PASS oriented-raw-height: 480
+PASS oriented-orientation: 6
+PASS broken-thumb-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-preview-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-thumb-path-null
+PASS broken-preview-path-null
+PASS scan-no-webp: []
+PASS scan-history-present: 1
+PASS oriented-ready-timeout-not-hit: timeout
+PASS oriented-thumb-ready: {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-preview-ready: {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-thumb-rel: renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/thumb.webp
+PASS oriented-preview-rel: renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/preview.webp
+PASS oriented-meta-width-unchanged: 640
+PASS oriented-meta-height-unchanged: 480
+PASS oriented-meta-orientation-unchanged
+PASS thumb-file
+PASS preview-file
+PASS thumb-size: 240x320
+PASS preview-size: 480x640
+PASS thumb-longest-cap: 320
+PASS preview-longest-cap: 640
+PASS history-unchanged-by-renditions: 2 vs 2
+PASS png-thumb-still-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS png-paths-null
+PASS video-poster-still-queued: {'thumb': 'not-applicable', 'preview': 'not-applicable', 'poster': 'queued', 'proxy': 'queued'}
+PASS video-paths-null
+PASS broken-still-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-still-null
+PASS broken-no-webp
+PASS thumb-200: 200
+PASS thumb-type: image/webp
+PASS thumb-length: 1740
+PASS preview-200: 200
+PASS preview-type: image/webp
+PASS preview-length
+PASS original-200: 200
+PASS original-type: image/jpeg
+PASS original-sha256: 52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7
+PASS range-206: 206
+PASS range-content-range: bytes 0-0/1740
+PASS range-content-length: 1
+PASS range-body: 82
+PASS bad-range: {'error': 'invalid-range'}
+PASS multi-range
+PASS non-bytes-range
+PASS missing-which
+PASS unknown-which
+PASS unknown-id: {'error': 'not-found'}
+PASS unknown-id-logged: a11c056c7?which=nope	invalid-argument
+2026-10-13T16:33:29.922082Z	/api/media/missing?which=original	not-found
+2026-10-13T16:33:29.934135Z	/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=original&component=motion	invalid-argument
+2026-10-13T16:33:29.939585Z	/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=poster	preview-unavailable
+
+PASS motion-on-photo
+PASS poster-unavailable
+PASS broken-thumb-unavailable
+PASS empty-hidden-when-items
+PASS first-still-written
+PASS first-still-size: (1280, 720)
+PASS first-still-png: PNG
+PASS deleted-preview-unavailable: {'error': 'preview-unavailable'}
+PASS deleted-status-unchanged: {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS deleted-not-recreated
+PASS originals-unchanged

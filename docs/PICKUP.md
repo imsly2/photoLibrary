@@ -32,17 +32,16 @@ present, read those four files too. Do not invent a second workflow.
 
 ## What is true on `main`
 
-Commit `9f6094c` is the cloud baseline. It contains the specification, the
-fixture media, and three green slices. Score: **1 / 22 Checks = 4.5%**. Only F6
-is closed. macOS and Linux launch has not been run, so F2 cannot be closed on
-Windows evidence alone.
+`main` contains the specification, the fixture media, and four green slices.
+Score: **1 / 22 Checks = 4.5%**. Only F6 is closed. macOS and Linux launch has
+not been run, so F2 cannot be closed on Windows evidence alone.
 
 | Slice | Commit | Result | Closes |
 |---|---|---|---|
 | S00 | `662789d` | Empty durable library, settings, undo, port reuse, fixture gate | none |
 | S01 | `977af0b` | Linked scan, hash identity, Live Photo pair, originals unchanged | none |
 | S02 | `82c7f06` | Dates and GPS places | F6 |
-| S03 | plan only, `9f6094c` | JPEG thumb and preview plan locked. No rendition code on `main` | none |
+| S03 | this slice commit | Oriented JPEG thumb and preview, media bytes, real page | none |
 
 S00 evidence: [verify-2](features/S00/Rev1.0/assets/verify-2/result.json),
 [orchestrator rerun](features/S00/Rev1.0/assets/orchestrator-rerun/result.json).
@@ -54,17 +53,16 @@ F6 evidence: [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json),
 Correction loops already used: one each for S00, S01, and S02. Each still has
 two remaining. S03 has three.
 
-A Windows checkout may contain unpublished S03 edits (`library/renditions.py`,
-`library/web/assets/library.js`, `tests/qa/s03.py`, and related diffs). Those
-files are not on `main`, have not been independently verified, and are not the
-baseline. Start S03 from [its plan](features/S03/Rev1.0/PLAN.md).
+S03 evidence: [verify-1](features/S03/Rev1.0/assets/verify-1/result.json),
+[screenshot](features/S03/Rev1.0/assets/verify-1/first-still.png),
+[orchestrator rerun](features/S03/Rev1.0/assets/orchestrator-rerun/result.json).
 
 ## Code and tests already on `main`
 
 Python package `library/`: settings, history, lock, atomic writes, HTTP server,
-scan, catalog JSON, disposable SQLite, metadata, and places. The page at
-`library/web/index.html` is still the empty library shell. Launchers are
-`launch.ps1` and `launch.sh`. Package metadata is `pyproject.toml`.
+scan, catalog JSON, disposable SQLite, metadata, places, and JPEG renditions
+(`library/renditions.py`). The page lists catalog items and opens one still.
+Launchers are `launch.ps1` and `launch.sh`. Package metadata is `pyproject.toml`.
 
 Fixture generator: `tests/fixtures/generate.py`. Committed media is under
 `tests/fixtures/media/`. Optional private drops go in the ignored folder
@@ -81,8 +79,8 @@ python -m tests.qa slice S02 --root <library-data> --artifacts <dir>
 python -m tests.qa check F6 --root <library-data> --artifacts <dir>
 ```
 
-On `main`, S03 and later slices, and every Check except F6, exit as
-unimplemented. `python -m tests.qa all` is unimplemented until S14. Run slice
+`python -m tests.qa slice S03` is implemented. Later slices, and every Check
+except F6, exit as unimplemented. `python -m tests.qa all` is unimplemented until S14. Run slice
 gates one at a time. S00 and S01 collide if they run together. Use a
 fixture-owned temporary root and a port in 18765–18864. Leave port 8765 for the
 single occupied-port test. Do not scan a personal folder, the camera roll, or
@@ -105,7 +103,6 @@ Follow [SLICES.md](SLICES.md). Do not skip ahead.
 
 | Next | Closes | Proof |
 |---|---|---|
-| S03 still renditions | none (F7 and F10 stay open) | oriented JPEG thumb/preview, media bytes, real page screenshot |
 | S04 browse (M1) | F9, F11 | grid, viewer, zoom, sort, screenshot packet |
 | S05 copy and move | F1, F4 | both add modes, collisions, interrupted copy, relocation |
 | S06 formats and video | F5, F7 | every fixture extension, silent proxy, hover policy |

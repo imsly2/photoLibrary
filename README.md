@@ -19,4 +19,4 @@ Point this server at the folder that copier already filled.
 | [docs/AGENT-BUILD-MODE.md](docs/AGENT-BUILD-MODE.md) | Orchestrator handoff for the later build. |
 | [docs/reference/](docs/reference/) | Layout targets for the main screens. |
 
-S00, S01, and F6 already run against fixture folders. The remaining work follows [docs/SLICES.md](docs/SLICES.md) until all 22 PRODUCT Checks have independent evidence. Current standing and commands: [docs/PICKUP.md](docs/PICKUP.md).
+S00, S01, S03, and F6 already run against fixture folders. The remaining work follows [docs/SLICES.md](docs/SLICES.md) until all 22 PRODUCT Checks have independent evidence. Current standing and commands: [docs/PICKUP.md](docs/PICKUP.md).

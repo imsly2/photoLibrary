@@ -14,15 +14,17 @@ This is not a finished release.
   Live Photo pair is one item.
 - F6 is closed: fixture dates follow EXIF, then filename, then modified time,
   and the three-JPEG set becomes two unnamed places 100 meters apart.
+- S03 is green: a linked JPEG gets an upright thumb and preview, the media
+  route returns those bytes, and the page opens that still. F7 and F10 stay open.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
 - [CONTRACTS](CONTRACTS.md), [UI-SPEC](UI-SPEC.md), [FIXTURES](FIXTURES.md),
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
-- On `main` at `9f6094c`: the Python server, linked scan, metadata, fixture
-  media, and QA runner exist. The web page is still the empty-library shell.
-  Rendition bytes are not implemented. No personal photo disk has been scanned.
+- The Python server, linked scan, metadata, JPEG renditions, fixture media,
+  and QA runner exist. The page lists items and opens one still. Video proxies,
+  grid zoom, and search are not built. No personal photo disk has been scanned.
 
 ## Completion
 
@@ -112,7 +114,17 @@ environments must be supplied by the build or F2 remains pending; do not claim
   filename.
 - 2026-10-13 — S03 plan locked in `docs/features/S03/Rev1.0/PLAN.md` after
   still-rendition recon. JPEG thumbs and previews only. F7 and F10 stay open.
-  Next action is the S03 implementation from that plan.
 - 2026-10-13 — Pickup index added at [PICKUP.md](PICKUP.md). Steve authorized
-  the private GitHub remote so a cloud clone can continue. Unpublished local
-  S03 edits are not on `main` and are not the baseline.
+  the private GitHub remote so a cloud clone can continue.
+- 2026-10-13 — S03 green. Closes no Check (1/22 remains). Fresh verifier
+  [verify-1](features/S03/Rev1.0/assets/verify-1/result.json): 74 assertions,
+  exit 0. Screenshot
+  [first-still.png](features/S03/Rev1.0/assets/verify-1/first-still.png)
+  shows the upright oriented JPEG. Orchestrator rerun
+  [orchestrator-rerun](features/S03/Rev1.0/assets/orchestrator-rerun/result.json)
+  also exit 0. S00, S01, and S02 stayed green
+  ([after-s03 S00](features/S00/Rev1.0/assets/after-s03/result.json),
+  [after-s03 S01](features/S01/Rev1.0/assets/after-s03/result.json),
+  [after-s03 S02](features/S02/Rev1.0/assets/after-s03/result.json)).
+  Implementer model was Grok 4.6 because the documented 4.5 slug is not
+  available; verifier was a fresh Grok 4.7. Next slice is S04.

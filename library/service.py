@@ -14,6 +14,7 @@ from library.catalog_io import (
     load_item,
     load_source,
     source_read,
+    try_load_item,
 )
 from library.errors import AppError, fail
 from library.history import (
@@ -173,10 +174,143 @@ class Library:
         rebuild_sqlite(self.root, use_barrier=True)
         return {"ok": True}
 
+    def media(
+        self,
+        item_id: str,
+        query: dict[str, str],
+        range_header: str | None,
+    ) -> tuple[int, bytes, str, list[tuple[str, str]]]:
+        extra = set(query) - {"which", "component"}
+        if extra:
+            raise fail("invalid-argument")
+        which = query.get("which")
+        if which not in MEDIA_WHICH:
+            raise fail("invalid-argument")
+        component = query.get("component")
+        if component is not None and component not in COMPONENTS:
+            raise fail("invalid-argument")
+        if not item_id:
+            raise fail("not-found")
+        item = try_load_item(self.root, item_id)
+        if item is None:
+            raise fail("not-found")
+        if which == "original":
+            data, content_type = self._original_bytes(item, component)
+        else:
+            data, content_type = self._rendition_bytes(item, which)
+        return apply_range(data, content_type, range_header)
+
+    def _original_bytes(
+        self, item: dict[str, Any], component: str | None
+    ) -> tuple[bytes, str]:
+        from library.volumes import has_component_location, resolve_component_path
+
+        if component is None:
+            component = "motion" if item.get("kind") == "video" else "still"
+        if not has_component_location(item, component):
+            raise fail("invalid-argument")
+        path = resolve_component_path(item, component, self.root)
+        if path is None:
+            raise fail("unavailable")
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            raise fail("unavailable") from exc
+        if not data:
+            raise fail("unavailable")
+        return data, original_content_type(path)
+
+    def _rendition_bytes(self, item: dict[str, Any], which: str) -> tuple[bytes, str]:
+        from library.paths import PathError, library_path
+
+        rend = item.get("renditions") or {}
+        status = (rend.get("status") or {}).get(which)
+        relative = rend.get(which)
+        if relative is None or status != "ready":
+            raise fail("preview-unavailable")
+        try:
+            path = library_path(self.root, relative)
+        except PathError as exc:
+            raise fail("preview-unavailable") from exc
+        if not path.is_file():
+            raise fail("preview-unavailable")
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            raise fail("preview-unavailable") from exc
+        if not data:
+            raise fail("preview-unavailable")
+        if which in {"thumb", "preview", "poster"}:
+            content_type = "image/webp"
+        else:
+            content_type = "video/mp4"
+        return data, content_type
+
 
 ITEM_QUERY_KEYS = frozenset(
     {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
 )
+MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
+COMPONENTS = frozenset({"still", "motion"})
+
+
+def original_content_type(path: Path) -> str:
+    suffix = path.suffix.lower()
+    if suffix in {".jpg", ".jpeg"}:
+        return "image/jpeg"
+    if suffix == ".png":
+        return "image/png"
+    if suffix == ".gif":
+        return "image/gif"
+    if suffix == ".webp":
+        return "image/webp"
+    if suffix in {".tif", ".tiff"}:
+        return "image/tiff"
+    if suffix == ".bmp":
+        return "image/bmp"
+    if suffix == ".mp4":
+        return "video/mp4"
+    if suffix in {".mov", ".m4v"}:
+        return "video/quicktime"
+    if suffix == ".avi":
+        return "video/x-msvideo"
+    if suffix == ".mkv":
+        return "video/x-matroska"
+    if suffix == ".webm":
+        return "video/webm"
+    return "application/octet-stream"
+
+
+def apply_range(
+    data: bytes,
+    content_type: str,
+    range_header: str | None,
+) -> tuple[int, bytes, str, list[tuple[str, str]]]:
+    if not range_header or not range_header.strip():
+        return 200, data, content_type, []
+    start, end = parse_byte_range(range_header, len(data))
+    sliced = data[start : end + 1]
+    extra = [("Content-Range", f"bytes {start}-{end}/{len(data)}")]
+    return 206, sliced, content_type, extra
+
+
+def parse_byte_range(header: str, size: int) -> tuple[int, int]:
+    text = header.strip()
+    if "," in text or not text.startswith("bytes="):
+        raise fail("invalid-range")
+    spec = text[len("bytes=") :]
+    if "-" not in spec:
+        raise fail("invalid-range")
+    left, right = spec.split("-", 1)
+    if left == "" or right == "" or not left.isdigit() or not right.isdigit():
+        raise fail("invalid-range")
+    start = int(left)
+    end = int(right)
+    if end < start or start >= size:
+        raise fail("invalid-range")
+    if end >= size:
+        end = size - 1
+    return start, end
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:

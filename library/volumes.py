@@ -169,24 +169,42 @@ def source_available(source: dict[str, Any], library_root: Path) -> bool:
     return path is not None and path.exists()
 
 
-def item_component_available(
+def has_component_location(item: dict[str, Any], component: str) -> bool:
+    return any(loc.get("component") == component for loc in item.get("locations") or [])
+
+
+def resolve_component_path(
     item: dict[str, Any],
     component: str,
     library_root: Path,
-) -> bool:
+) -> Path | None:
     candidates = [
         loc
         for loc in item.get("locations") or []
         if loc.get("current") is True and loc.get("component") == component
     ]
-    candidates.sort(key=lambda loc: (0 if loc.get("role") == "primary" else 1, loc.get("sourceId") or "", loc.get("pathFromVolumeRoot") or loc.get("libraryRelativePath") or ""))
+    candidates.sort(
+        key=lambda loc: (
+            0 if loc.get("role") == "primary" else 1,
+            loc.get("sourceId") or "",
+            loc.get("pathFromVolumeRoot") or loc.get("libraryRelativePath") or "",
+        )
+    )
     for loc in candidates:
         path = location_file(loc, library_root)
         if path is None or not path.is_file():
             continue
         if location_matches_stat(loc, path):
-            return True
-    return False
+            return path
+    return None
+
+
+def item_component_available(
+    item: dict[str, Any],
+    component: str,
+    library_root: Path,
+) -> bool:
+    return resolve_component_path(item, component, library_root) is not None
 
 
 def item_available(item: dict[str, Any], library_root: Path) -> bool:

@@ -24,6 +24,7 @@ from tests.qa.s00 import copy_committed_fixtures, run_slice as run_s00  # noqa: 
 from tests.qa.s01 import run_slice as run_s01  # noqa: E402
 from tests.qa.s02 import run_check as run_f6  # noqa: E402
 from tests.qa.s02 import run_slice as run_s02  # noqa: E402
+from tests.qa.s03 import run_slice as run_s03  # noqa: E402
 
 
 class _Tee:
@@ -120,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"copied fixtures to {args.output}", flush=True)
         return 0
     if args.cmd == "slice":
-        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02}
+        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02, "S03": run_s03}
         runner = runners.get(args.slice_id)
         if runner is None:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
