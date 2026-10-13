@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c",
+  "kind": "photo",
+  "filename": "holiday_20200102.jpg",
+  "capturedAt": "2020-01-02T00:00:00",
+  "capturedAtSource": "filename",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_8b6834fa26c9",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/b/holiday_20200102.jpg",
+      "lastKnownPath": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/b/holiday_20200102.jpg",
+      "sizeBytes": 17123,
+      "modifiedAt": "2026-10-13T16:30:22.213305Z",
+      "sha256": "c43f1b28f2389bf939581cc5c9e75c82f4ae0377cd4884a0833cfb27c388109c"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_8b6834fa26c9",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6",
+  "kind": "photo",
+  "filename": "quad.webp",
+  "capturedAt": "2026-10-13T16:30:22Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_8b6834fa26c9",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/formats/quad.webp",
+      "lastKnownPath": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/formats/quad.webp",
+      "sizeBytes": 3780,
+      "modifiedAt": "2026-10-13T16:30:22.221304Z",
+      "sha256": "c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_8b6834fa26c9",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}
