@@ -95,6 +95,16 @@ def resolve_volume_mount(serial: str) -> Path | None:
         return normalize_root(mount)
     if serial.startswith("windows:") and os.name == "nt":
         return _windows_mount_for_serial(serial)
+    if serial.startswith("linux:") and os.name != "nt":
+        mount = Path(serial[len("linux:") :])
+        if mount.exists():
+            return normalize_root(mount)
+        return None
+    if serial.startswith("macos:") and sys.platform == "darwin":
+        mount = Path(serial[len("macos:") :])
+        if mount.exists():
+            return normalize_root(mount)
+        return None
     return None
 
 

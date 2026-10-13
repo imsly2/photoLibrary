@@ -32,6 +32,43 @@ def _query_map(query: str) -> dict[str, str]:
     return out
 
 
+def parse_byte_range(header: str | None, length: int) -> tuple[int, int] | None:
+    if header is None or header == "":
+        return None
+    if not header.startswith("bytes="):
+        raise fail("invalid-range")
+    spec = header[6:]
+    if "," in spec or spec == "" or "-" not in spec:
+        raise fail("invalid-range")
+    start_s, end_s = spec.split("-", 1)
+    if start_s == "":
+        try:
+            suffix = int(end_s)
+        except ValueError as exc:
+            raise fail("invalid-range") from exc
+        if suffix <= 0 or length <= 0:
+            raise fail("invalid-range")
+        start = max(0, length - suffix)
+        return start, length - 1
+    try:
+        start = int(start_s)
+    except ValueError as exc:
+        raise fail("invalid-range") from exc
+    if start < 0 or start >= length:
+        raise fail("invalid-range")
+    if end_s == "":
+        return start, length - 1
+    try:
+        end = int(end_s)
+    except ValueError as exc:
+        raise fail("invalid-range") from exc
+    if end < start:
+        raise fail("invalid-range")
+    if end >= length:
+        end = length - 1
+    return start, end
+
+
 def listen_url(host: str, port: int) -> str:
     display = "127.0.0.1" if host == "0.0.0.0" else host
     return f"http://{display}:{port}/"
@@ -213,6 +250,9 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.rebuild_index())
                 return
+            if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
+                self._send_media(route, parsed.query)
+                return
             if route == "/" and method in {"GET", "HEAD"}:
                 self._send_static(WEB_DIR / "index.html", "text/html; charset=utf-8")
                 return
@@ -227,7 +267,12 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     raise fail("not-found") from exc
                 if not path.is_file():
                     raise fail("not-found")
-                content_type = "text/css; charset=utf-8" if path.suffix == ".css" else "application/octet-stream"
+                if path.suffix == ".css":
+                    content_type = "text/css; charset=utf-8"
+                elif path.suffix == ".js":
+                    content_type = "application/javascript; charset=utf-8"
+                else:
+                    content_type = "application/octet-stream"
                 self._send_static(path, content_type)
                 return
             raise fail("not-found")
@@ -246,6 +291,40 @@ class LibraryHandler(BaseHTTPRequestHandler):
     def _send_static(self, path: Path, content_type: str) -> None:
         data = path.read_bytes()
         self._send(200, data, content_type)
+
+    def _send_media(self, route: str, query: str) -> None:
+        item_id = route[len("/api/media/") :]
+        if not item_id or "/" in item_id:
+            raise fail("not-found")
+        params = _query_map(query)
+        with self.lock:
+            resolved = self.library.media_resolve(item_id, params)
+        path = resolved["path"]
+        content_type = resolved["content_type"]
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            which = params.get("which")
+            raise fail("unavailable" if which == "original" else "preview-unavailable") from exc
+        if not data:
+            which = params.get("which")
+            raise fail("unavailable" if which == "original" else "preview-unavailable")
+        spec = parse_byte_range(self.headers.get("Range"), len(data))
+        if spec is None:
+            self._send(200, data, content_type)
+            return
+        start, end = spec
+        self._send_partial(data[start : end + 1], content_type, start, end, len(data))
+
+    def _send_partial(self, body: bytes, content_type: str, start: int, end: int, total: int) -> None:
+        self.send_response(206)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(body)
 
 
 def _read_listen_target(root: Path) -> tuple[str, int]:
@@ -280,6 +359,8 @@ def serve(root: Path) -> int:
     lock = WriteLock(root)
     lock.acquire()
     httpd = None
+    drain_stop = threading.Event()
+    drain_thread: threading.Thread | None = None
     try:
         library = Library(root)
         library.recover()
@@ -308,12 +389,28 @@ def serve(root: Path) -> int:
             runtime_record(root, os.getpid(), url),
         )
         print(url, flush=True)
+
+        def drain_loop() -> None:
+            while not drain_stop.is_set():
+                worked = False
+                try:
+                    with handler.lock:
+                        worked = library.drain_step()
+                except Exception:
+                    worked = False
+                drain_stop.wait(0.05 if worked else 0.25)
+
+        drain_thread = threading.Thread(target=drain_loop, name="rendition-drain", daemon=True)
+        drain_thread.start()
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass
         return 0
     finally:
+        drain_stop.set()
+        if drain_thread is not None:
+            drain_thread.join(timeout=5)
         if httpd is not None:
             httpd.server_close()
         runtime_path = root / RUNTIME_NAME

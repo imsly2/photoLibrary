@@ -11,19 +11,21 @@ PRODUCT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _add_venv() -> None:
-    site = PRODUCT_ROOT / ".venv" / "Lib" / "site-packages"
-    if site.is_dir() and str(site) not in sys.path:
-        sys.path.insert(0, str(site))
+    windows_site = PRODUCT_ROOT / ".venv" / "Lib" / "site-packages"
+    if windows_site.is_dir() and str(windows_site) not in sys.path:
+        sys.path.insert(0, str(windows_site))
+    linux_root = PRODUCT_ROOT / ".venv" / "lib"
+    if linux_root.is_dir():
+        for linux_site in sorted(linux_root.glob("python3.*/site-packages")):
+            if linux_site.is_dir() and str(linux_site) not in sys.path:
+                sys.path.insert(0, str(linux_site))
     if str(PRODUCT_ROOT) not in sys.path:
         sys.path.insert(0, str(PRODUCT_ROOT))
 
 
 _add_venv()
 
-from tests.qa.s00 import copy_committed_fixtures, run_slice as run_s00  # noqa: E402
-from tests.qa.s01 import run_slice as run_s01  # noqa: E402
-from tests.qa.s02 import run_check as run_f6  # noqa: E402
-from tests.qa.s02 import run_slice as run_s02  # noqa: E402
+from tests.qa.s00 import copy_committed_fixtures  # noqa: E402
 
 
 class _Tee:
@@ -120,15 +122,21 @@ def main(argv: list[str] | None = None) -> int:
         print(f"copied fixtures to {args.output}", flush=True)
         return 0
     if args.cmd == "slice":
-        runners = {"S00": run_s00, "S01": run_s01, "S02": run_s02}
-        runner = runners.get(args.slice_id)
-        if runner is None:
+        if args.slice_id == "S00":
+            from tests.qa.s00 import run_slice as runner
+        elif args.slice_id == "S01":
+            from tests.qa.s01 import run_slice as runner
+        elif args.slice_id == "S02":
+            from tests.qa.s02 import run_slice as runner
+        elif args.slice_id == "S03":
+            from tests.qa.s03 import run_slice as runner
+        else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "check":
-        runners = {"F6": run_f6}
-        runner = runners.get(args.feature_id)
-        if runner is None:
+        if args.feature_id == "F6":
+            from tests.qa.s02 import run_check as runner
+        else:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
     if args.cmd == "all":

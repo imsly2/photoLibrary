@@ -16,6 +16,10 @@ from library.catalog_io import (
     source_read,
 )
 from library.errors import AppError, fail
+from library.media import file_suffix
+from library.paths import library_path
+from library.renditions import drain_step as drain_queued_jpegs
+from library.volumes import location_file, location_matches_stat
 from library.history import (
     load_entry,
     load_state,
@@ -173,10 +177,88 @@ class Library:
         rebuild_sqlite(self.root, use_barrier=True)
         return {"ok": True}
 
+    def drain_step(self) -> bool:
+        self.ensure_settings()
+        return drain_queued_jpegs(self.root)
+
+    def media_resolve(self, item_id: str, query: dict[str, str]) -> dict[str, Any]:
+        extra = set(query) - {"which", "component"}
+        if extra:
+            raise fail("invalid-argument")
+        which = query.get("which")
+        if which not in MEDIA_WHICH:
+            raise fail("invalid-argument")
+        component = query.get("component")
+        if component is not None and component not in {"still", "motion"}:
+            raise fail("invalid-argument")
+        item = load_item(self.root, item_id)
+        if which == "original":
+            return self._resolve_original(item, component)
+        return self._resolve_rendition(item, which)
+
+    def _resolve_original(self, item: dict[str, Any], component: str | None) -> dict[str, Any]:
+        if component == "motion":
+            has_motion = any(loc.get("component") == "motion" for loc in item.get("locations") or [])
+            if not has_motion:
+                raise fail("invalid-argument")
+            wanted = "motion"
+        elif item.get("kind") == "video":
+            wanted = "motion"
+        else:
+            wanted = "still"
+        path = _readable_component_file(item, wanted, self.root)
+        if path is None:
+            raise fail("unavailable")
+        return {"path": path, "content_type": original_content_type(path)}
+
+    def _resolve_rendition(self, item: dict[str, Any], which: str) -> dict[str, Any]:
+        rend = item.get("renditions") or {}
+        status = (rend.get("status") or {}).get(which)
+        relative = rend.get(which)
+        if relative is None or status != "ready":
+            raise fail("preview-unavailable")
+        try:
+            path = library_path(self.root, relative)
+        except Exception as exc:
+            raise fail("preview-unavailable") from exc
+        if not path.is_file() or path.stat().st_size <= 0:
+            raise fail("preview-unavailable")
+        content_type = "video/mp4" if which == "proxy" else "image/webp"
+        return {"path": path, "content_type": content_type}
+
 
 ITEM_QUERY_KEYS = frozenset(
     {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
 )
+MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
+
+
+def original_content_type(path: Path) -> str:
+    if file_suffix(path) in {".jpg", ".jpeg"}:
+        return "image/jpeg"
+    return "application/octet-stream"
+
+
+def _readable_component_file(item: dict[str, Any], component: str, root: Path) -> Path | None:
+    candidates = [
+        loc
+        for loc in item.get("locations") or []
+        if loc.get("current") is True and loc.get("component") == component
+    ]
+    candidates.sort(
+        key=lambda loc: (
+            0 if loc.get("role") == "primary" else 1,
+            loc.get("sourceId") or "",
+            loc.get("pathFromVolumeRoot") or loc.get("libraryRelativePath") or "",
+        )
+    )
+    for loc in candidates:
+        path = location_file(loc, root)
+        if path is None or not path.is_file():
+            continue
+        if location_matches_stat(loc, path):
+            return path
+    return None
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:
