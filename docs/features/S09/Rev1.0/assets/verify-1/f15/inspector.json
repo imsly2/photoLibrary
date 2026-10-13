@@ -1,0 +1,67 @@
+{
+  "name": "mug",
+  "count": 2,
+  "filenames": [
+    "IMG_1042.jpg",
+    "no-exif.jpg"
+  ],
+  "itemIds": [
+    "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+    "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+  ],
+  "queries": {
+    "q_IMG_1042": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "q_mug": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "q_MUG": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "q_Ada": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "q_ada_people": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "q_ada_things": [],
+    "q_mug_things": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "q_Kitchen_places": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "q_Cup_things": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "thing_id": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "person_id": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "place_id": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    ],
+    "q_empty": []
+  },
+  "page": {
+    "name": "mug",
+    "count": 2,
+    "filenames": [
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "entityId": "thing_5f6a62b32ce9",
+    "kind": "thing"
+  },
+  "emptySearch": "No matching pictures"
+}
