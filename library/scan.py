@@ -53,6 +53,7 @@ from library.settings import defaults, load_settings_file, settings_path
 from library.volumes import last_known_text, path_from_volume_root, volume_of_path
 
 ProgressFn = Callable[[str, str], None]
+BetweenFn = Callable[[], None]
 
 
 def is_link_or_junction(path: Path) -> bool:
@@ -292,6 +293,7 @@ def _index_file(
     match_meters: float,
     *,
     original_name: str | None = None,
+    between: BetweenFn | None = None,
 ) -> str:
     from library.copy import make_library_location
 
@@ -355,6 +357,9 @@ def _index_file(
             root, float(latitude), float(longitude), match_meters
         )
     existing_pending = try_load_item(root, pending)
+    if existing_pending is not None and existing_pending.get("placeId"):
+        place_id = existing_pending["placeId"]
+        new_place = None
     settings = load_settings_file(root) if settings_path(root).exists() else defaults()
     from library.renditions import effective_preview_store
 
@@ -384,7 +389,7 @@ def _index_file(
         destination=dest_rel if type(dest_rel) is str else None,
     )
     changes: list[dict[str, Any]] = [
-        {"path": item_rel(pending), "before": None, "after": item},
+        {"path": item_rel(pending), "before": existing_pending, "after": item},
         {
             "path": source_rel(source_id),
             "before": before_source,
@@ -397,18 +402,15 @@ def _index_file(
         )
     _extend(root, changes)
     maybe_test_barrier("hash-publication")
-    existing = try_load_item(root, digest)
-    published = clone(item)
-    published["id"] = digest
-    if existing is not None:
-        from library.catalog_io import merge_associations, merge_location
+    if between is not None:
+        between()
+    from library.annotate import plan_rebase_pending
+    from library.catalog_io import publish_pending
 
-        published = clone(existing)
-        published = merge_location(published, location)
-        published = merge_associations(published, item)
-        published = ordered_item(published)
-    else:
-        published = ordered_item(published)
+    current = try_load_item(root, pending) or item
+    published = publish_pending(root, current)
+    digest = published["id"]
+    existing = try_load_item(root, digest)
     before_source = clone(try_load_source(root, source_id) or source)
     source = read_source(before_source)
     source["files"][rel] = make_file_entry(
@@ -428,13 +430,14 @@ def _index_file(
                 "before": existing,
                 "after": published,
             },
-            {"path": item_rel(pending), "before": item, "after": None},
+            {"path": item_rel(pending), "before": current, "after": None},
             {
                 "path": source_rel(source_id),
                 "before": before_source,
                 "after": ordered_source(source),
             },
             *_retire_replaced_location(root, prev_item_id, published["id"], location),
+            *plan_rebase_pending(root, pending, published),
         ],
     )
     if decode_error:
@@ -448,9 +451,12 @@ def scan_serve_from_there(
     *,
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
+    between: BetweenFn | None = None,
 ) -> dict[str, Any]:
     scan_path = assert_scan_path_allowed(scan_path, root)
     source = _start_source(root, scan_path, preview_store)
+    if between is not None:
+        between()
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []
@@ -466,7 +472,7 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            _index_file(root, source, rel, path, match_meters)
+            _index_file(root, source, rel, path, match_meters, between=between)
             added += 1
             if on_progress is not None:
                 on_progress("added", rel)
@@ -515,6 +521,7 @@ def scan_copy_here(
     *,
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
+    between: BetweenFn | None = None,
 ) -> dict[str, Any]:
     from library.copy import convert_linked_source, copy_media_files
     from library.paths import library_path
@@ -526,6 +533,8 @@ def scan_copy_here(
     if existing is not None and existing.get("mode") == "serve-from-there":
         convert_linked_source(root, existing["id"])
     source = _start_source(root, scan_path, preview_store, mode="copy-here")
+    if between is not None:
+        between()
     files = iter_media_files(scan_path, root)
     source = copy_media_files(root, source, scan_path, files)
     added = 0
@@ -551,7 +560,15 @@ def scan_copy_here(
                 on_progress("skipped", rel)
             continue
         try:
-            _index_file(root, source, rel, dest_path, match_meters, original_name=Path(rel).name)
+            _index_file(
+                root,
+                source,
+                rel,
+                dest_path,
+                match_meters,
+                original_name=Path(rel).name,
+                between=between,
+            )
             added += 1
             if on_progress is not None:
                 on_progress("added", rel)

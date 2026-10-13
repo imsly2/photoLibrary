@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+  "kind": "photo",
+  "filename": "IMG_1042.jpg",
+  "capturedAt": "2024-06-12T15:04:00",
+  "capturedAtSource": "exif",
+  "placeId": "place_106a9ce739ae",
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": 41.88,
+    "longitude": -87.63
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_0855b63d948c",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S08/Rev1.0/assets/implementer-1/f14/ada-mug-media/a/IMG_1042.jpg",
+      "lastKnownPath": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/f14/ada-mug-media/a/IMG_1042.jpg",
+      "sizeBytes": 15274,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_0855b63d948c",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [
+    {
+      "personId": "person_0b0c46e333cc"
+    }
+  ],
+  "things": [
+    {
+      "thingId": "thing_5acbf51464ad"
+    }
+  ]
+}

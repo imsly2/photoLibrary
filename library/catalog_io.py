@@ -71,6 +71,14 @@ def place_rel(place_id: str) -> str:
     return f"catalog/places/{place_id}.json"
 
 
+def person_rel(person_id: str) -> str:
+    return f"catalog/people/{person_id}.json"
+
+
+def thing_rel(thing_id: str) -> str:
+    return f"catalog/things/{thing_id}.json"
+
+
 def iter_source_ids(root: Path) -> list[str]:
     folder = sources_dir(root)
     if not folder.exists():
@@ -154,6 +162,66 @@ def new_place_id(root: Path) -> str:
         if candidate not in existing:
             return candidate
     raise fail("internal-error")
+
+
+def iter_person_ids(root: Path) -> list[str]:
+    folder = people_dir(root)
+    if not folder.exists():
+        return []
+    return sorted(path.stem for path in folder.glob("*.json"))
+
+
+def iter_thing_ids(root: Path) -> list[str]:
+    folder = things_dir(root)
+    if not folder.exists():
+        return []
+    return sorted(path.stem for path in folder.glob("*.json"))
+
+
+def load_person(root: Path, person_id: str) -> dict[str, Any]:
+    path = people_dir(root) / f"{person_id}.json"
+    try:
+        return read_person(load_json(path))
+    except FileNotFoundError as exc:
+        raise fail("not-found") from exc
+    except OSError as exc:
+        raise fail("io-error") from exc
+
+
+def load_thing(root: Path, thing_id: str) -> dict[str, Any]:
+    path = things_dir(root) / f"{thing_id}.json"
+    try:
+        return read_thing(load_json(path))
+    except FileNotFoundError as exc:
+        raise fail("not-found") from exc
+    except OSError as exc:
+        raise fail("io-error") from exc
+
+
+def new_person_id(root: Path) -> str:
+    existing = set(iter_person_ids(root))
+    for _ in range(32):
+        candidate = "person_" + secrets.token_hex(6)
+        if candidate not in existing:
+            return candidate
+    raise fail("internal-error")
+
+
+def new_thing_id(root: Path) -> str:
+    existing = set(iter_thing_ids(root))
+    for _ in range(32):
+        candidate = "thing_" + secrets.token_hex(6)
+        if candidate not in existing:
+            return candidate
+    raise fail("internal-error")
+
+
+def load_people(root: Path) -> list[dict[str, Any]]:
+    return [load_person(root, person_id) for person_id in iter_person_ids(root)]
+
+
+def load_things(root: Path) -> list[dict[str, Any]]:
+    return [load_thing(root, thing_id) for thing_id in iter_thing_ids(root)]
 
 
 def new_source_id(root: Path) -> str:
@@ -370,6 +438,9 @@ def finish_pending_publications(root: Path) -> list[str]:
                 "after": ordered_source(source),
             },
         ]
+        from library.annotate import plan_rebase_pending
+
+        changes.extend(plan_rebase_pending(root, pending["id"], published))
         transact(root, extend_current_operation(root, changes))
         finished.append(published["id"])
     return finished

@@ -6,6 +6,7 @@ import json
 import os
 import socket
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -149,6 +150,17 @@ class LibraryHandler(BaseHTTPRequestHandler):
             allowed.add(f"http://0.0.0.0:{self.port}")
         return origin.rstrip("/") in {item.rstrip("/") for item in allowed}
 
+    def _require_idle(self) -> None:
+        if getattr(self.library, "_scanning", False):
+            raise fail("busy")
+
+    def _yield_scan(self) -> None:
+        self.lock.release()
+        try:
+            time.sleep(0.05)
+        finally:
+            self.lock.acquire()
+
     def _send(self, status: int, body: bytes, content_type: str) -> None:
         self.send_response(status)
         self.send_header("Content-Type", content_type)
@@ -223,11 +235,13 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/undo" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.undo())
                 return
             if route == "/api/redo" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.redo())
                 return
@@ -237,8 +251,9 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/sources" and method == "POST":
                 body = self._read_json()
+                self._require_idle()
                 with self.lock:
-                    self._send_json(202, self.library.scan(body))
+                    self._send_json(202, self.library.scan(body, between=self._yield_scan))
                 return
             if (
                 route.startswith("/api/sources/")
@@ -249,6 +264,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 if not source_id or "/" in source_id:
                     raise fail("not-found")
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(202, self.library.copy_here(source_id))
                 return
@@ -264,13 +280,39 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/rebuild-index" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.rebuild_index())
                 return
             if route == "/api/renditions/relocate" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.relocate())
+                return
+            if route == "/api/people/merge" and method == "POST":
+                from library.annotate import read_merge_payload
+
+                body = self._read_json()
+                payload = read_merge_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(
+                        200,
+                        self.library.people_merge(payload["keepId"], payload["dropId"]),
+                    )
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/annotations")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/annotations")]
+                if not item_id or item_id.endswith("/"):
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.annotate(item_id, body))
                 return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)

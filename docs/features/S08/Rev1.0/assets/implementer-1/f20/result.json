@@ -1,0 +1,138 @@
+{
+  "check": "F20",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "rebuild-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-before",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-ok",
+      "pass": true,
+      "detail": "{\"ok\": true}"
+    },
+    {
+      "name": "sqlite-after",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-thing-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "rebuild-person-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "rebuild-place-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "rebuild-q-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "canonical-json-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-sqlite",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "sqlite-barrier-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"sqlite-rebuild\"}\n"
+    },
+    {
+      "name": "sqlite-deleted-at-barrier",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-barrier-resume",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-one-index",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-barrier-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-rebuild",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "groups-thing-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "ae025b57f97fbba6e991f3af43c32ec67b7e2215",
+  "commands": [
+    "python -m library rebuild-index",
+    "rebuild-index # sqlite-rebuild barrier",
+    "POST /api/rebuild-index"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/f20/result.json",
+    "stdout.log": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/f20/stdout.log",
+    "rebuild-before-after.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/f20/rebuild-before-after.json"
+  }
+}

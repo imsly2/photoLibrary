@@ -18,12 +18,6 @@ from library.server import serve
 from library.service import Library, error_payload
 from library.settings import parse_cli_value
 
-UNIMPLEMENTED = {
-    "annotate",
-    "people",
-}
-
-
 def _print_error(code: str) -> None:
     sys.stderr.buffer.write(error_payload(code) + b"\n")
     sys.stderr.buffer.flush()
@@ -189,6 +183,12 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--dir")
     items.add_argument("--q")
     items.add_argument("--unavailable")
+    items.add_argument("--person")
+    items.add_argument("--place")
+    items.add_argument("--thing")
+    items.add_argument("--from", dest="from_")
+    items.add_argument("--to")
+    items.add_argument("--scope")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -219,11 +219,6 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "serve":
             return serve(root)
-        if args.command in UNIMPLEMENTED or (
-            args.command == "people" and getattr(args, "people_cmd", None) == "merge"
-        ):
-            _print_error("not-found")
-            return 1
         if args.command == "settings":
             if args.settings_cmd == "get":
                 url = _running_server_url(root)
@@ -311,6 +306,18 @@ def main(argv: list[str] | None = None) -> int:
                 query["q"] = args.q
             if args.unavailable is not None:
                 query["unavailable"] = args.unavailable
+            if args.person:
+                query["person"] = args.person
+            if args.place:
+                query["place"] = args.place
+            if args.thing:
+                query["thing"] = args.thing
+            if getattr(args, "from_", None):
+                query["from"] = args.from_
+            if getattr(args, "to", None):
+                query["to"] = args.to
+            if args.scope:
+                query["scope"] = args.scope
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -324,6 +331,38 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).items_list(query))
             _print_json(payload)
+            return 0
+        if args.command == "annotate":
+            from library.annotate import cli_payload_from_flags
+
+            payload = cli_payload_from_flags(
+                json_path=args.json,
+                person=args.person,
+                thing=args.thing,
+                place=args.place,
+            )
+            result = _mutation(
+                root,
+                lambda: Library(root).annotate(args.id, payload),
+                "POST",
+                f"/api/items/{args.id}/annotations",
+                payload,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "people":
+            if args.people_cmd != "merge":
+                _print_error("invalid-argument")
+                return 2
+            body = {"keepId": args.keep, "dropId": args.drop}
+            result = _mutation(
+                root,
+                lambda: Library(root).people_merge(args.keep, args.drop),
+                "POST",
+                "/api/people/merge",
+                body,
+            )
+            _print_json(result)
             return 0
         if args.command == "renditions":
             if getattr(args, "action", None) != "relocate":

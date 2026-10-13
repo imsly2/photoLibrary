@@ -49,12 +49,17 @@ class Library:
     def __init__(self, root: Path) -> None:
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
+        self._scanning = False
 
-    def recover(self) -> dict[str, Any]:
+    def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
 
         recovered = recover_transactions(self.root)
-        finish_pending_publications(self.root)
+        scanning = getattr(self, "_scanning", False)
+        if finish_pending is None:
+            finish_pending = not scanning
+        if finish_pending:
+            finish_pending_publications(self.root)
         maybe_rebuild_missing(self.root)
         return recovered
 
@@ -90,9 +95,14 @@ class Library:
     def settings_set_cli(self, key: str, raw: str) -> dict[str, Any]:
         return self.settings_set({key: parse_cli_value(key, raw)})
 
+    def _assert_idle(self) -> None:
+        if self._scanning:
+            raise fail("busy")
+
     def undo(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
+        self._assert_idle()
         state = load_state(self.root)
         if state["cursor"] == 0:
             return {"ok": True}
@@ -122,6 +132,7 @@ class Library:
     def redo(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
+        self._assert_idle()
         state = load_state(self.root)
         if state["cursor"] >= len(state["entries"]):
             return {"ok": True}
@@ -147,30 +158,37 @@ class Library:
     def history_len(self) -> int:
         return len(load_state(self.root)["entries"])
 
-    def scan(self, body: dict[str, Any], on_progress=None) -> dict[str, Any]:
+    def scan(self, body: dict[str, Any], on_progress=None, between=None) -> dict[str, Any]:
         self.recover()
         settings = self.ensure_settings()
+        self._assert_idle()
         req = read_scan_request(body)
         mode = req["mode"]
         if mode is None:
             mode = settings["addFolderDefault"]
             if mode == "ask":
                 raise fail("choice-required")
-        if mode == "copy-here":
-            source = scan_copy_here(
+        self._scanning = True
+        try:
+            if mode == "copy-here":
+                source = scan_copy_here(
+                    self.root,
+                    Path(req["path"]),
+                    preview_store=req["previewStore"],
+                    on_progress=on_progress,
+                    between=between,
+                )
+                return source_read(source, self.root)
+            source = scan_serve_from_there(
                 self.root,
                 Path(req["path"]),
                 preview_store=req["previewStore"],
                 on_progress=on_progress,
+                between=between,
             )
             return source_read(source, self.root)
-        source = scan_serve_from_there(
-            self.root,
-            Path(req["path"]),
-            preview_store=req["previewStore"],
-            on_progress=on_progress,
-        )
-        return source_read(source, self.root)
+        finally:
+            self._scanning = False
 
     def copy_here(self, source_id: str) -> dict[str, Any]:
         from library.copy import convert_linked_source
@@ -178,6 +196,7 @@ class Library:
 
         self.recover()
         self.ensure_settings()
+        self._assert_idle()
         if type(source_id) is not str or not source_id:
             raise fail("invalid-argument")
         source = load_source(self.root, source_id)
@@ -217,8 +236,24 @@ class Library:
     def rebuild_index(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
+        self._assert_idle()
         rebuild_sqlite(self.root, use_barrier=True)
         return {"ok": True}
+
+    def annotate(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.annotate import apply_annotate
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return apply_annotate(self.root, item_id, payload)
+
+    def people_merge(self, keep_id: str, drop_id: str) -> dict[str, Any]:
+        from library.annotate import apply_people_merge
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return apply_people_merge(self.root, keep_id, drop_id)
 
     def drain_step(self) -> bool:
         self.ensure_settings()
@@ -227,6 +262,7 @@ class Library:
     def relocate(self) -> dict[str, bool]:
         self.recover()
         self.ensure_settings()
+        self._assert_idle()
         return relocate_renditions(self.root)
 
     def media_resolve(self, item_id: str, query: dict[str, str]) -> dict[str, Any]:
@@ -335,12 +371,101 @@ def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[st
     return item["available"] is True
 
 
+def _norm_query(value: str) -> str:
+    import unicodedata
+
+    return unicodedata.normalize("NFC", value.strip()).casefold()
+
+
+def _entity_name_match(record: dict[str, Any], token: str) -> bool:
+    name = record.get("name")
+    if type(name) is str and name and _norm_query(name) == _norm_query(token):
+        return True
+    return False
+
+
 def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
+    captured = item.get("capturedAt") or ""
+    if "from" in query:
+        if type(query["from"]) is not str or query["from"] == "":
+            raise fail("invalid-argument")
+        if captured < query["from"]:
+            return False
+    if "to" in query:
+        if type(query["to"]) is not str or query["to"] == "":
+            raise fail("invalid-argument")
+        if captured >= query["to"]:
+            return False
+    entities = item.get("entities") or {}
+    people = entities.get("people") or []
+    places = entities.get("places") or []
+    things = entities.get("things") or []
+    if "person" in query:
+        token = query["person"]
+        if type(token) is not str or token == "":
+            raise fail("invalid-argument")
+        ids = {rec.get("id") for rec in people}
+        if token not in ids and not any(_entity_name_match(rec, token) for rec in people):
+            return False
+    if "place" in query:
+        raw = query["place"]
+        if type(raw) is not str or raw == "":
+            raise fail("invalid-argument")
+        tokens = [part for part in raw.split(",") if part]
+        if not tokens:
+            raise fail("invalid-argument")
+        place_id = item.get("placeId")
+        matched = False
+        for token in tokens:
+            if token == place_id:
+                matched = True
+                break
+            if any(rec.get("id") == token or _entity_name_match(rec, token) for rec in places):
+                matched = True
+                break
+        if not matched:
+            return False
+    if "thing" in query:
+        token = query["thing"]
+        if type(token) is not str or token == "":
+            raise fail("invalid-argument")
+        ids = {rec.get("id") for rec in things}
+        if token not in ids and not any(_entity_name_match(rec, token) for rec in things):
+            return False
     q = query.get("q")
     if q:
-        needle = q.casefold()
-        hay = item.get("filename") or ""
-        if needle not in hay.casefold():
+        if type(q) is not str:
+            raise fail("invalid-argument")
+        if q == "":
+            return True
+        needle = _norm_query(q)
+        scope = query.get("scope")
+        if scope is not None and scope not in {"people", "places", "things"}:
+            raise fail("invalid-argument")
+        matched = False
+        if scope in {None, "people"}:
+            for rec in people:
+                name = rec.get("name")
+                if type(name) is str and name and needle in _norm_query(name):
+                    matched = True
+        if scope in {None, "places"}:
+            for rec in places:
+                name = rec.get("name")
+                if type(name) is str and name and needle in _norm_query(name):
+                    matched = True
+        if scope in {None, "things"}:
+            for rec in things:
+                name = rec.get("name")
+                if type(name) is str and name and needle in _norm_query(name):
+                    matched = True
+                for alias in rec.get("aliases") or []:
+                    if type(alias) is str and alias and needle in _norm_query(alias):
+                        matched = True
+        if scope is None:
+            filename = item.get("filename") or ""
+            if needle in _norm_query(filename):
+                matched = True
+        if not matched:
             return False
     return True
 
