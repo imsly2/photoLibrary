@@ -68,6 +68,21 @@ def volume_of_path(path: Path) -> tuple[str, Path]:
     resolved = normalize_root(path)
     if not resolved.exists():
         raise fail("invalid-argument")
+    mapping = load_test_volumes()
+    if mapping is not None:
+        matches: list[tuple[str, Path]] = []
+        for serial, mount in mapping.items():
+            if mount is None:
+                continue
+            mount_path = normalize_root(mount)
+            try:
+                resolved.relative_to(mount_path)
+            except ValueError:
+                continue
+            matches.append((serial, mount_path))
+        if matches:
+            matches.sort(key=lambda pair: len(str(pair[1])), reverse=True)
+            return matches[0]
     if os.name == "nt":
         return windows_volume(resolved)
     return posix_volume(resolved)
@@ -170,6 +185,17 @@ def location_matches_stat(location: dict[str, Any], path: Path) -> bool:
 
 
 def source_available(source: dict[str, Any], library_root: Path) -> bool:
+    if source.get("mode") == "copy-here":
+        copy_root = source.get("copyRoot")
+        if type(copy_root) is not str or not copy_root:
+            return False
+        from library.paths import library_path
+
+        try:
+            path = library_path(library_root, copy_root)
+        except Exception:
+            return False
+        return path.exists()
     origin = source.get("origin") or {}
     serial = origin.get("volumeSerial")
     rel = origin.get("pathFromVolumeRoot")

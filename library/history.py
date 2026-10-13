@@ -116,13 +116,31 @@ def latest_entry_id(root: Path) -> str | None:
 
 
 def scan_entry_id(root: Path) -> str | None:
+    return operation_entry_id(root, "scan")
+
+
+def operation_entry_id(root: Path, operation: str) -> str | None:
     entry_id = latest_entry_id(root)
     if entry_id is None:
         return None
     entry = load_entry(root, entry_id)
-    if entry.get("operation") != "scan":
+    if entry.get("operation") != operation:
         return None
     return entry_id
+
+
+def extend_current_operation(
+    root: Path,
+    changes: list[dict[str, Any]],
+    operations: tuple[str, ...] = ("scan", "copy-here"),
+) -> list[dict[str, Any]]:
+    entry_id = latest_entry_id(root)
+    if entry_id is None:
+        return changes
+    entry = load_entry(root, entry_id)
+    if entry.get("operation") in operations:
+        return plan_extend_entry(root, entry_id, changes)
+    return changes
 
 
 def plan_extend_entry(

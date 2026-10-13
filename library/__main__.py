@@ -19,7 +19,6 @@ from library.service import Library, error_payload
 from library.settings import parse_cli_value
 
 UNIMPLEMENTED = {
-    "copy-here",
     "annotate",
     "people",
     "renditions",
@@ -130,10 +129,17 @@ def _with_lock(root: Path, fn):
         lock.release()
 
 
-def _mutation(root: Path, local_fn, method: str, route: str, body: Any | None) -> Any:
+def _mutation(
+    root: Path,
+    local_fn,
+    method: str,
+    route: str,
+    body: Any | None,
+    timeout: float = 5.0,
+) -> Any:
     url = _running_server_url(root)
     if url is not None:
-        status, payload = _forward(url, method, route, body)
+        status, payload = _forward(url, method, route, body, timeout=timeout)
         if status in {200, 202}:
             return payload
         if isinstance(payload, dict) and "error" in payload:
@@ -248,9 +254,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "scan":
             if args.copy_here and args.serve_from_there:
                 raise fail("invalid-argument")
-            if args.copy_here:
-                raise fail("not-found")
             body: dict[str, Any] = {"path": args.path}
+            if args.copy_here:
+                body["mode"] = "copy-here"
             if args.serve_from_there:
                 body["mode"] = "serve-from-there"
             url = _running_server_url(root)
@@ -283,6 +289,17 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).sources_list())
             _print_json(payload)
+            return 0
+        if args.command == "copy-here":
+            result = _mutation(
+                root,
+                lambda: Library(root).copy_here(args.source_id),
+                "POST",
+                f"/api/sources/{args.source_id}/copy-here",
+                {},
+                timeout=300.0,
+            )
+            _print_json(result)
             return 0
         if args.command == "items":
             query = {}

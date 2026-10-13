@@ -240,6 +240,18 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(202, self.library.scan(body))
                 return
+            if (
+                route.startswith("/api/sources/")
+                and route.endswith("/copy-here")
+                and method == "POST"
+            ):
+                source_id = route[len("/api/sources/") : -len("/copy-here")]
+                if not source_id or "/" in source_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(202, self.library.copy_here(source_id))
+                return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
                 with self.lock:

@@ -1,0 +1,608 @@
+{
+  "slice": "S05",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "choice-required-exit",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "choice-required-code",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "cli-flag-wins-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-link-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-no-originals",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-has-originals",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "implicit-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "implicit-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-added-2",
+      "pass": true,
+      "detail": "{\"sourceId\": \"src_9b5abb05d055\", \"added\": 2, \"skipped\": 0, \"errors\": []}"
+    },
+    {
+      "name": "f4-one-copied-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "f4-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-root-shape",
+      "pass": true,
+      "detail": "originals/f4-copy-media-src_9b5abb05d055"
+    },
+    {
+      "name": "f4-copied-photo",
+      "pass": true,
+      "detail": "/tmp/s05-impl/library-data/originals/f4-copy-media-src_9b5abb05d055/a/photo.jpg"
+    },
+    {
+      "name": "f4-copied-clip",
+      "pass": true,
+      "detail": "/tmp/s05-impl/library-data/originals/f4-copy-media-src_9b5abb05d055/a/clip.mp4"
+    },
+    {
+      "name": "f4-structure-kept",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-source-bytes-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-two-items",
+      "pass": true,
+      "detail": "['photo.jpg', 'clip.mp4']"
+    },
+    {
+      "name": "f4-filenames",
+      "pass": true,
+      "detail": "{'photo.jpg', 'clip.mp4'}"
+    },
+    {
+      "name": "f4-loc0-library-relative:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-no-partial-path:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-loc0-library-relative:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-no-partial-path:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copied-items-artifact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-no-extra-originals",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "f4-two-sources",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "f4-linked-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-linked-kind-volume:no-exif.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_d99fd8a314db\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/implementer-1/f4-link-media/b/no-exif.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/f4-link-media/b/no-exif.jpg\", \"sizeBytes\": 13170, \"modifiedAt\": \"2022-02-03T04:05:06Z\", \"sha256\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}]"
+    },
+    {
+      "name": "f4-linked-kind-volume:far.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_d99fd8a314db\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/implementer-1/f4-link-media/b/far.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/f4-link-media/b/far.jpg\", \"sizeBytes\": 12289, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}]"
+    },
+    {
+      "name": "collision-seed-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-rescan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-wrote-photo-3",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/collision-root/originals/collision-media-src_81e3811eb64c/keep.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/collision-root/originals/collision-media-src_81e3811eb64c/photo_2.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/collision-root/originals/collision-media-src_81e3811eb64c/photo.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/collision-root/originals/collision-media-src_81e3811eb64c/photo_3.jpg')]"
+    },
+    {
+      "name": "collision-seed-a-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-seed-b-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-not-overwrite-photo",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-item-filename",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-record-points-photo-3",
+      "pass": true,
+      "detail": "originals/collision-media-src_81e3811eb64c/photo_3.jpg"
+    },
+    {
+      "name": "collision-display-name",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-exit-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"copy-partial\"}\n"
+    },
+    {
+      "name": "interrupt-barrier",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"copy-partial\"}\n"
+    },
+    {
+      "name": "interrupt-no-published-original",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "interrupt-partial-present",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/interrupt-root/originals/interrupt-media-src_a82f64f0a068/photo.jpg.partial-src_a82f64f0a068')]"
+    },
+    {
+      "name": "interrupt-partial-not-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-mapping-persisted",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"src_a82f64f0a068\", \"name\": \"interrupt-media\", \"mode\": \"copy-here\", \"origin\": {\"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/implementer-1/interrupt-media\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/interrupt-media\"}, \"copyRoot\": \"originals/interrupt-media-src_a82f64f0a068\", \"previewStore\": null, \"files\": {\"photo.jpg\": {\"destination\": \"originals/interrupt-media-src_a82f64f0a068/photo.jpg\", \"itemId\": \"pending-src_a82f64f0a068-aff6100bd4df0ea66736e1d3304208069a0f24303e21b43422398c935540a236\", \"component\": \"still\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"state\": \"pending\"}}, \"scan\": {\"state\": \"running\", \"added\": 0, \"skipped\": 0, \"errors\": []}}]"
+    },
+    {
+      "name": "interrupt-resume-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-resume-one-original",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/interrupt-root/originals/interrupt-media-src_a82f64f0a068/photo.jpg')]"
+    },
+    {
+      "name": "interrupt-no-extra-copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-partial-cleared",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "interrupt-one-item",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "interrupt-item-not-partial",
+      "pass": true,
+      "detail": "{'sourceId': 'src_a82f64f0a068', 'role': 'primary', 'component': 'still', 'kind': 'library-relative', 'current': True, 'libraryRelativePath': 'originals/interrupt-media-src_a82f64f0a068/photo.jpg', 'volumeSerial': None, 'pathFromVolumeRoot': None, 'lastKnownPath': '/workspace/docs/features/S05/Rev1.0/assets/implementer-1/interrupt-root/originals/interrupt-media-src_a82f64f0a068/photo.jpg', 'sizeBytes': 15274, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}"
+    },
+    {
+      "name": "interrupt-kind",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-barrier-exit",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "convert-pending-present",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/convert-root/catalog/items/pending-src_7c31876003cb-aff6100bd4df0ea66736e1d3304208069a0f24303e21b43422398c935540a236.json')]"
+    },
+    {
+      "name": "convert-pending-seeded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-recover",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-one-final",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-final-seeded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-source-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-item-id",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "convert-annotations",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_aaaaaaaaaaaa\"}]"
+    },
+    {
+      "name": "convert-copied-primary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-old-volume-alternate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-source-on-locs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-noop-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-noop-no-extra",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/implementer-1/convert-root/originals/convert-media-src_7c31876003cb/photo.jpg')]"
+    },
+    {
+      "name": "undo-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-has-originals",
+      "pass": true,
+      "detail": "{'originals/undo-media-src_a610f2658b10/a/clip.mp4': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'originals/undo-media-src_a610f2658b10/a/photo.jpg': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}"
+    },
+    {
+      "name": "undo-has-catalog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-source-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-items-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-bytes-remain",
+      "pass": true,
+      "detail": "{\"originals/undo-media-src_a610f2658b10/a/clip.mp4\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"originals/undo-media-src_a610f2658b10/a/photo.jpg\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}"
+    },
+    {
+      "name": "undo-source-folder-untouched",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-two-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-catalog-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-rel-resolves:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-rel-resolves:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-http-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-item-available:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes:clip.mp4",
+      "pass": true,
+      "detail": "status=200 len=23631"
+    },
+    {
+      "name": "move-item-available:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes:photo.jpg",
+      "pass": true,
+      "detail": "status=200 len=15274"
+    },
+    {
+      "name": "move-source-untouched",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-catalog-in-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-serial",
+      "pass": true,
+      "detail": "{\"volumeSerial\": \"windows:s05-linked\", \"pathFromVolumeRoot\": \"\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/vol-a\"}"
+    },
+    {
+      "name": "remap-items-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-still-available",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\",\n    \"kind\": \"video\",\n    \"filename\": \"clip.mp4\",\n    \"capturedAt\": \"2024-06-12T15:07:00Z\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_3fec9348a844\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": 2.0,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_e979e5333435\",\n        \"role\": \"primary\",\n        \"component\": \"motion\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/clip.mp4\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/vol-a/a/clip.mp4\",\n        \"sizeBytes\": 23631,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_e979e5333435\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"not-applicable\",\n        \"preview\": \"not-applicable\",\n        \"poster\": \"queued\",\n        \"proxy\": \"queued\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": true,\n    \"motionAvailable\": true,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_3fec9348a844\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  },\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\",\n    \"kind\": \"photo\",\n    \"filename\": \"photo.jpg\",\n    \"capturedAt\": \"2024-06-12T15:04:00\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_3fec9348a844\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": 1,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_e979e5333435\",\n        \"role\": \"primary\",\n        \"component\": \"still\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/photo.jpg\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/vol-a/a/photo.jpg\",\n        \"sizeBytes\": 15274,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_e979e5333435\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"queued\",\n        \"preview\": \"queued\",\n        \"poster\": \"not-applicable\",\n        \"proxy\": \"not-applicable\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": true,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_3fec9348a844\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  }\n]\n"
+    },
+    {
+      "name": "remap-other-serial-ignored",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-old-path-wrong-serial-unavailable",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\",\n    \"kind\": \"video\",\n    \"filename\": \"clip.mp4\",\n    \"capturedAt\": \"2024-06-12T15:07:00Z\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_3fec9348a844\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": 2.0,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_e979e5333435\",\n        \"role\": \"primary\",\n        \"component\": \"motion\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/clip.mp4\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/vol-a/a/clip.mp4\",\n        \"sizeBytes\": 23631,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_e979e5333435\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"not-applicable\",\n        \"preview\": \"not-applicable\",\n        \"poster\": \"queued\",\n        \"proxy\": \"queued\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": false,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_3fec9348a844\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  },\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\",\n    \"kind\": \"photo\",\n    \"filename\": \"photo.jpg\",\n    \"capturedAt\": \"2024-06-12T15:04:00\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_3fec9348a844\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": 1,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_e979e5333435\",\n        \"role\": \"primary\",\n        \"component\": \"still\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/photo.jpg\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/implementer-1/vol-a/a/photo.jpg\",\n        \"sizeBytes\": 15274,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_e979e5333435\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"queued\",\n        \"preview\": \"queued\",\n        \"poster\": \"not-applicable\",\n        \"proxy\": \"not-applicable\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": false,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_3fec9348a844\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  }\n]\n"
+    },
+    {
+      "name": "http-empty-sources",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-ask-choice-required",
+      "pass": true,
+      "detail": "{'error': 'choice-required'}"
+    },
+    {
+      "name": "http-copy-202",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-copy-here-noop",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-copy-here-same-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-ask-neither",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-copy-choice-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-preselect-copy-here",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-add-enabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-wrote-copy-source",
+      "pass": true,
+      "detail": "[{'schemaVersion': 1, 'id': 'src_ce9ea2aaaf29', 'name': 'dialog-media', 'mode': 'copy-here', 'origin': {'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S05/Rev1.0/assets/implementer-1/dialog-media', 'lastKnownPath': '/workspace/docs/features/S05/Rev1.0/assets/implementer-1/dialog-media'}, 'copyRoot': 'originals/dialog-media-src_ce9ea2aaaf29', 'previewStore': None, 'files': {'a/clip.mp4': {'destination': 'originals/dialog-media-src_ce9ea2aaaf29/a/clip.mp4', 'itemId': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'component': 'motion', 'sizeBytes': 23631, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'state': 'indexed'}, 'a/photo.jpg': {'destination': 'originals/dialog-media-src_ce9ea2aaaf29/a/photo.jpg', 'itemId': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'component': 'still', 'sizeBytes': 15274, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'state': 'indexed'}}, 'scan': {'state': 'complete', 'added': 2, 'skipped': 0, 'errors': []}}]"
+    },
+    {
+      "name": "dialog-copied-files",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-default-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "fixture-bytes-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-catalog-in-fixtures",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "d9aefa1e25741fb3c5d58d102954b89bfd003f75",
+  "commands": [
+    "scan <path> # ask default",
+    "addFolderDefault=copy-here scan --serve-from-there",
+    "addFolderDefault=serve-from-there scan --copy-here",
+    "addFolderDefault=copy-here scan <path>",
+    "scan <a/> --copy-here",
+    "scan <second/> --serve-from-there",
+    "scan keep.jpg --copy-here",
+    "scan photo.jpg --copy-here after seeded dest",
+    "scan --copy-here LIBRARY_TEST_BARRIER=copy-partial",
+    "scan --copy-here # resume",
+    "copy-here src_7c31876003cb",
+    "scan --copy-here then undo",
+    "scan --copy-here then move library-data",
+    "scan linked volume then remount",
+    "serve + dialog copy-here"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/result.json",
+    "stdout.log": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/stdout.log",
+    "paths-before-after.json": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/paths-before-after.json",
+    "copied-items": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/copied-items",
+    "collision.json": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/collision.json",
+    "original-hashes.json": "/workspace/docs/features/S05/Rev1.0/assets/implementer-1/original-hashes.json"
+  }
+}

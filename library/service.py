@@ -31,7 +31,7 @@ from library.history import (
 from library.index import maybe_rebuild_missing, rebuild_sqlite
 from library.lock import WriteLock
 from library.records import read_scan_request
-from library.scan import scan_serve_from_there
+from library.scan import scan_copy_here, scan_serve_from_there
 from library.settings import (
     defaults,
     dumps_settings,
@@ -97,13 +97,18 @@ class Library:
             return {"ok": True}
         entry_id = state["entries"][state["cursor"] - 1]
         entry = load_entry(self.root, entry_id)
+        first_before: dict[str, Any] = {}
+        for change in entry["changes"]:
+            path = change["path"]
+            if path not in first_before:
+                first_before[path] = change["before"]
         file_changes = [
             {
-                "path": change["path"],
-                "before": _read_relative_json(self.root, change["path"]),
-                "after": change["before"],
+                "path": path,
+                "before": _read_relative_json(self.root, path),
+                "after": before,
             }
-            for change in entry["changes"]
+            for path, before in first_before.items()
         ]
         transact(
             self.root,
@@ -119,13 +124,16 @@ class Library:
             return {"ok": True}
         entry_id = state["entries"][state["cursor"]]
         entry = load_entry(self.root, entry_id)
+        last_after: dict[str, Any] = {}
+        for change in entry["changes"]:
+            last_after[change["path"]] = change["after"]
         file_changes = [
             {
-                "path": change["path"],
-                "before": _read_relative_json(self.root, change["path"]),
-                "after": change["after"],
+                "path": path,
+                "before": _read_relative_json(self.root, path),
+                "after": after,
             }
-            for change in entry["changes"]
+            for path, after in last_after.items()
         ]
         transact(
             self.root,
@@ -146,13 +154,33 @@ class Library:
             if mode == "ask":
                 raise fail("choice-required")
         if mode == "copy-here":
-            raise fail("not-found")
+            source = scan_copy_here(
+                self.root,
+                Path(req["path"]),
+                preview_store=req["previewStore"],
+                on_progress=on_progress,
+            )
+            return source_read(source, self.root)
         source = scan_serve_from_there(
             self.root,
             Path(req["path"]),
             preview_store=req["previewStore"],
             on_progress=on_progress,
         )
+        return source_read(source, self.root)
+
+    def copy_here(self, source_id: str) -> dict[str, Any]:
+        from library.copy import convert_linked_source
+        from library.catalog_io import load_source
+
+        self.recover()
+        self.ensure_settings()
+        if type(source_id) is not str or not source_id:
+            raise fail("invalid-argument")
+        source = load_source(self.root, source_id)
+        if source["mode"] == "copy-here" and type(source.get("copyRoot")) is str and source["copyRoot"]:
+            return source_read(source, self.root)
+        source = convert_linked_source(self.root, source_id)
         return source_read(source, self.root)
 
     def sources_list(self) -> list[dict[str, Any]]:

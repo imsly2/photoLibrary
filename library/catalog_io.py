@@ -13,11 +13,15 @@ from library.records import (
     location_key,
     make_file_entry,
     ordered_item,
+    ordered_person,
     ordered_place,
     ordered_source,
+    ordered_thing,
     read_item,
+    read_person,
     read_place,
     read_source,
+    read_thing,
     renditions_for,
 )
 from library.volumes import same_origin, source_available
@@ -39,10 +43,20 @@ def places_dir(root: Path) -> Path:
     return catalog_root(root) / "places"
 
 
+def people_dir(root: Path) -> Path:
+    return catalog_root(root) / "people"
+
+
+def things_dir(root: Path) -> Path:
+    return catalog_root(root) / "things"
+
+
 def ensure_catalog_dirs(root: Path) -> None:
     items_dir(root).mkdir(parents=True, exist_ok=True)
     sources_dir(root).mkdir(parents=True, exist_ok=True)
     places_dir(root).mkdir(parents=True, exist_ok=True)
+    people_dir(root).mkdir(parents=True, exist_ok=True)
+    things_dir(root).mkdir(parents=True, exist_ok=True)
 
 
 def item_rel(item_id: str) -> str:
@@ -159,6 +173,21 @@ def find_source_by_origin(root: Path, serial: str, path_from_root: str) -> dict[
     return None
 
 
+def file_key_for_location(source: dict[str, Any], item_id: str, location: dict[str, Any]) -> str | None:
+    for key, entry in (source.get("files") or {}).items():
+        if entry.get("itemId") == item_id:
+            return key
+    dest = location.get("libraryRelativePath")
+    if type(dest) is str and dest:
+        for key, entry in (source.get("files") or {}).items():
+            if entry.get("destination") == dest:
+                return key
+    path = location.get("pathFromVolumeRoot")
+    if type(path) is str:
+        return relative_from_origin(source, path)
+    return None
+
+
 def relative_from_origin(source: dict[str, Any], path_from_volume_root: str) -> str:
     origin = source["origin"]["pathFromVolumeRoot"]
     if origin == "":
@@ -177,6 +206,20 @@ def source_read(source: dict[str, Any], root: Path) -> dict[str, Any]:
     return out
 
 
+def try_load_person(root: Path, person_id: str) -> dict[str, Any] | None:
+    path = people_dir(root) / f"{person_id}.json"
+    if not path.exists():
+        return None
+    return read_person(load_json(path))
+
+
+def try_load_thing(root: Path, thing_id: str) -> dict[str, Any] | None:
+    path = things_dir(root) / f"{thing_id}.json"
+    if not path.exists():
+        return None
+    return read_thing(load_json(path))
+
+
 def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
     from library.volumes import item_available, item_motion_available
 
@@ -189,7 +232,29 @@ def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
         place = try_load_place(root, place_id)
         if place is not None:
             places = [ordered_place(place)]
-    out["entities"] = {"people": [], "places": places, "things": []}
+    people: list[dict[str, Any]] = []
+    seen_people: set[str] = set()
+    for face in item.get("faces") or []:
+        person_id = face.get("personId")
+        if type(person_id) is not str or person_id in seen_people:
+            continue
+        person = try_load_person(root, person_id)
+        if person is not None:
+            people.append(ordered_person(person))
+            seen_people.add(person_id)
+    people.sort(key=lambda rec: rec["id"])
+    things: list[dict[str, Any]] = []
+    seen_things: set[str] = set()
+    for ref in item.get("things") or []:
+        thing_id = ref.get("thingId")
+        if type(thing_id) is not str or thing_id in seen_things:
+            continue
+        thing = try_load_thing(root, thing_id)
+        if thing is not None:
+            things.append(ordered_thing(thing))
+            seen_things.add(thing_id)
+    things.sort(key=lambda rec: rec["id"])
+    out["entities"] = {"people": people, "places": places, "things": things}
     return out
 
 
@@ -261,7 +326,7 @@ def pending_item_ids(root: Path) -> list[str]:
 
 
 def finish_pending_publications(root: Path) -> list[str]:
-    from library.history import plan_extend_entry, scan_entry_id
+    from library.history import extend_current_operation
 
     finished: list[str] = []
     for item_id in pending_item_ids(root):
@@ -277,8 +342,8 @@ def finish_pending_publications(root: Path) -> list[str]:
             continue
         published = publish_pending(root, pending)
         before_source = clone(source)
-        rel = relative_from_origin(source, pending["locations"][0]["pathFromVolumeRoot"])
-        entry = source["files"].get(rel)
+        rel = file_key_for_location(source, pending["id"], pending["locations"][0])
+        entry = source["files"].get(rel) if rel is not None else None
         if entry is not None:
             entry["itemId"] = published["id"]
             entry["sha256"] = sha256
@@ -305,16 +370,13 @@ def finish_pending_publications(root: Path) -> list[str]:
                 "after": ordered_source(source),
             },
         ]
-        entry_id = scan_entry_id(root)
-        if entry_id is not None:
-            changes = plan_extend_entry(root, entry_id, changes)
-        transact(root, changes)
+        transact(root, extend_current_operation(root, changes))
         finished.append(published["id"])
     return finished
 
 
 def pair_live_items(root: Path, source_id: str) -> None:
-    from library.history import plan_extend_entry, scan_entry_id
+    from library.history import extend_current_operation
 
     stills: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     motions: dict[str, list[tuple[str, dict[str, Any]]]] = {}
@@ -382,7 +444,4 @@ def pair_live_items(root: Path, source_id: str) -> None:
                 "after": ordered_source(source),
             }
         )
-        entry_id = scan_entry_id(root)
-        if entry_id is not None:
-            changes = plan_extend_entry(root, entry_id, changes)
-        transact(root, changes)
+        transact(root, extend_current_operation(root, changes))

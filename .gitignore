@@ -34,6 +34,11 @@ docs/features/**/three-jpeg-media/
 docs/features/**/two-year-media/
 docs/features/**/date-sort-media/
 docs/features/**/date-sort-library-data/
+docs/features/**/dialog-library-data/
+docs/features/**/dialog-page-library-data/
+docs/features/**/remap-library-data/
+docs/features/**/moved-library-data/
+docs/features/**/old-library-data-hidden/
 
 # Python
 __pycache__/

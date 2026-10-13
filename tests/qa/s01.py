@@ -352,7 +352,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
         checks.check("scan-history-two", scan_history_count(isolated) == 2, str(scan_history_count(isolated)))
         snapshot_catalog(isolated, artifacts / "catalog-second")
 
-        copy_here = run_library(isolated, ["copy-here", str(source_id)])
+        copy_here = run_library(isolated, ["copy-here", "src_missing0000"])
         checks.check("copy-here-cli-not-found-exit", copy_here.returncode == 1, copy_here.stderr)
         try:
             copy_err = parse_json(copy_here.stderr.strip().splitlines()[-1])
@@ -368,13 +368,13 @@ def run_slice(root: Path, artifacts: Path) -> int:
             choice_err = {}
         checks.check("choice-required-code", choice_err.get("error") == "choice-required")
 
-        copy_flag = run_library(isolated, ["scan", str(media), "--copy-here"])
-        checks.check("copy-here-scan-not-found-exit", copy_flag.returncode == 1)
+        copy_flag = run_library(isolated, ["scan", str(isolated / "no-such-folder"), "--copy-here"])
+        checks.check("copy-here-scan-missing-path-exit", copy_flag.returncode == 1)
         try:
             copy_scan_err = parse_json(copy_flag.stderr.strip().splitlines()[-1])
         except Exception:
             copy_scan_err = {}
-        checks.check("copy-here-scan-not-found", copy_scan_err.get("error") == "not-found")
+        checks.check("copy-here-scan-missing-path", copy_scan_err.get("error") == "invalid-argument")
 
         ids_before = sorted(item["id"] for item in load_items(isolated))
         sqlite_path = isolated / "catalog" / "catalog.sqlite"
@@ -420,7 +420,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
             checks.check("http-rescan-added-0", (post_body.get("scan") or {}).get("added") == 0)
             checks.check("http-rescan-same-source", post_body.get("id") == source_id)
         copy_http_status, copy_http = request_json(
-            url.rstrip("/") + f"/api/sources/{source_id}/copy-here",
+            url.rstrip("/") + "/api/sources/src_missing0000/copy-here",
             method="POST",
             body={},
         )

@@ -73,6 +73,8 @@ FILE_ENTRY_KEYS = (
 SCAN_KEYS = ("state", "added", "skipped", "errors")
 SCAN_ERROR_KEYS = ("path", "error")
 PLACE_KEYS = ("schemaVersion", "id", "name", "latitude", "longitude")
+PERSON_KEYS = ("schemaVersion", "id", "name")
+THING_KEYS = ("schemaVersion", "id", "name", "aliases")
 SOURCE_MODES = frozenset({"copy-here", "serve-from-there"})
 ITEM_KINDS = frozenset({"photo", "video", "live"})
 CAPTURE_SOURCES = frozenset({"exif", "filename", "mtime"})
@@ -456,6 +458,57 @@ def read_place(value: Any) -> dict[str, Any]:
 def ordered_place(place: dict[str, Any]) -> dict[str, Any]:
     place = read_place(place)
     return {key: place[key] for key in PLACE_KEYS}
+
+
+def read_person(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, PERSON_KEYS)
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    name = _null_or_str(data["name"])
+    if name is not None and name == "":
+        raise fail("invalid-catalog")
+    return {
+        "schemaVersion": 1,
+        "id": _str(data["id"]),
+        "name": name,
+    }
+
+
+def ordered_person(person: dict[str, Any]) -> dict[str, Any]:
+    person = read_person(person)
+    return {key: person[key] for key in PERSON_KEYS}
+
+
+def read_thing(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, THING_KEYS)
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    name = _str(data["name"])
+    aliases = data["aliases"]
+    if not isinstance(aliases, list):
+        raise fail("invalid-catalog")
+    seen: set[str] = set()
+    out_aliases: list[str] = []
+    for alias in aliases:
+        text = _str(alias)
+        folded = text.casefold()
+        if folded in seen:
+            continue
+        seen.add(folded)
+        out_aliases.append(text)
+    return {
+        "schemaVersion": 1,
+        "id": _str(data["id"]),
+        "name": name,
+        "aliases": out_aliases,
+    }
+
+
+def ordered_thing(thing: dict[str, Any]) -> dict[str, Any]:
+    thing = read_thing(thing)
+    return {key: thing[key] for key in THING_KEYS}
 
 
 def make_place(
