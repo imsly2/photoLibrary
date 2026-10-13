@@ -41,7 +41,7 @@ A duplicate hash item keeps one rendition directory. Do not write a second copy 
 1. Snapshot current global and per-source store.
 2. For each item with ready rendition files, copy/move to the destination store, then update the item JSON, then remove the old files only after the new files exist and are non-empty.
 3. If the destination cannot be written, or the process is killed at the test barrier, leave the old files and the old references. Do not publish a half-moved set.
-4. If the owning source is unavailable (with-source files not readable), fail that item, keep old files, continue others, and surface the failure. CLI exit 1 when any item fails.
+4. If the owning source is unavailable (with-source files not readable), fail that item, keep old files, continue others, and surface the failure. CLI exit 1 when any item fails. HTTP `200 {"ok":true}` only when every item completed. Any failure uses an existing error (`io-error` or `unavailable`), never a new code.
 5. History entry `operation: relocate`. Undo copies verified bytes back when stored under `undo/files/`.
 
 Use `LIBRARY_TEST=1` plus an existing or documented relocate barrier only if CONTRACTS already names it. Do not invent a new barrier name. An OS-level kill during the write plus restart is enough if no named barrier exists. Unwritable destination can be a chmod-denied folder in the sandbox.
