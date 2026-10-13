@@ -272,10 +272,23 @@ class Library:
         extra = set(query) - ITEM_QUERY_KEYS
         if extra:
             raise fail("invalid-argument")
-        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        from library.favorites import favorite_ids
+
+        marked = favorite_ids(self.root)
+        items = [
+            item_read(load_item(self.root, item_id), self.root, marked)
+            for item_id in iter_item_ids(self.root)
+        ]
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
+
+    def set_favorite(self, item_id: str, favorite: bool) -> dict[str, Any]:
+        from library.favorites import set_item_favorite
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return set_item_favorite(self.root, item_id, favorite)
 
     def places_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         self.recover()
@@ -390,16 +403,9 @@ class Library:
         return apply_annotate(self.root, item_id, payload)
 
     def favorite(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
-        from library.favorites import apply_favorite
+        from library.favorites import parse_favorite_body
 
-        self.recover(finish_pending=False)
-        self.ensure_settings()
-        if not isinstance(payload, dict) or "favorite" not in payload:
-            raise fail("invalid-argument")
-        extra = set(payload) - {"favorite"}
-        if extra:
-            raise fail("invalid-argument")
-        return apply_favorite(self.root, item_id, payload["favorite"])
+        return self.set_favorite(item_id, parse_favorite_body(payload))
 
     def reveal(self, item_id: str) -> dict[str, Any]:
         from library.favorites import open_containing_folder
@@ -488,8 +494,22 @@ class Library:
 
 
 ITEM_QUERY_KEYS = frozenset(
-    {"sort", "dir", "person", "place", "thing", "from", "to", "unavailable", "q", "scope"}
+    {
+        "sort",
+        "dir",
+        "person",
+        "place",
+        "thing",
+        "kind",
+        "favorite",
+        "from",
+        "to",
+        "unavailable",
+        "q",
+        "scope",
+    }
 )
+ITEM_KINDS = frozenset({"photo", "video", "live"})
 MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
 
 
@@ -632,6 +652,18 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
             raise fail("invalid-argument")
         ids = {rec.get("id") for rec in things}
         if token not in ids and not any(_entity_name_match(rec, token) for rec in things):
+            return False
+    kind = query.get("kind")
+    if kind is not None:
+        if type(kind) is not str or kind not in ITEM_KINDS:
+            raise fail("invalid-argument")
+        if item.get("kind") != kind:
+            return False
+    raw_favorite = query.get("favorite")
+    if raw_favorite is not None:
+        if raw_favorite != "1":
+            raise fail("invalid-argument")
+        if item.get("favorite") is not True:
             return False
     q = query.get("q")
     if q:

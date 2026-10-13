@@ -288,14 +288,19 @@ def try_load_thing(root: Path, thing_id: str) -> dict[str, Any] | None:
     return read_thing(load_json(path))
 
 
-def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
+def item_read(
+    item: dict[str, Any],
+    root: Path,
+    favorites: set[str] | None = None,
+) -> dict[str, Any]:
     from library.favorites import favorite_ids
     from library.volumes import item_available, item_motion_available
 
     out = ordered_item(item)
     out["available"] = item_available(item, root)
     out["motionAvailable"] = item_motion_available(item, root)
-    out["favorite"] = item.get("id") in favorite_ids(root)
+    marked = favorite_ids(root) if favorites is None else favorites
+    out["favorite"] = item.get("id") in marked
     places: list[dict[str, Any]] = []
     place_id = item.get("placeId")
     if type(place_id) is str and place_id:
@@ -443,6 +448,9 @@ def finish_pending_publications(root: Path) -> list[str]:
         from library.annotate import plan_rebase_pending
 
         changes.extend(plan_rebase_pending(root, pending["id"], published))
+        from library.favorites import plan_remap_favorite
+
+        changes.extend(plan_remap_favorite(root, pending["id"], published["id"]))
         transact(root, extend_current_operation(root, changes))
         finished.append(published["id"])
     return finished

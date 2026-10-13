@@ -363,6 +363,21 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if (
                 route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "PUT"
+            ):
+                from library.favorites import parse_favorite_body
+
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                on = parse_favorite_body(body)
+                with self.lock:
+                    self._send_json(200, self.library.set_favorite(item_id, on))
+                return
+            if (
+                route.startswith("/api/items/")
                 and route.endswith("/annotations")
                 and method == "POST"
             ):

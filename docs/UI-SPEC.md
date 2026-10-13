@@ -19,15 +19,21 @@ taste surface; use a 1280×720 viewport for comparison and 1920×1080 for overfl
 Reference styling is the baseline: dark surfaces, restrained borders, readable
 labels, blue selection. Do not redesign layout as a build task. Do not implement
 Albums, a storage meter, native window chrome, duplicate navigation, or
-“Written by an agent into JSON” copy from these mockups. **Favorite** (per-item
-star) and **Reveal in Explorer** (Windows, selected original or lastKnownPath)
-are authorized sibling tracks — not a 17th setting and not albums. Dates, photos,
-counts and names in the art are illustrative. Actual fixture content determines
-results. Use one consistent header across the views; the grid reference's
-unrelated sidebar entries do not create another navigation system. Library and
-Globe are header **buttons** with a visible idle border and a pressed fill when
-that view is current; Settings is the third view destination. Search is the
-filtered Library, Viewer is open media.
+“Written by an agent into JSON” copy from these mockups. **Favorite** (viewer
+heart, tile hearts ≥144, collapsible Favorites section) and **Reveal in
+Explorer** (Windows, selected original or lastKnownPath) are authorized named
+actions — not a 17th setting and not albums. Dates, photos, counts and names
+in the art are illustrative. Actual fixture content determines results. Use
+one consistent header across the views; the grid reference's unrelated sidebar
+entries do not create another navigation system. Library and Globe are header
+**buttons** with a visible idle border and a pressed fill when that view is
+current; Settings is the third view destination. Search is the filtered
+Library, Viewer is open media.
+
+Library and Globe (`#view-library`, `#view-globe`) are toggle buttons. Idle
+has a visible border. Hover fills a lighter surface and brightens the
+border. `:active` insets. `aria-pressed="true"` uses the blue selected
+fill. They must read as clickable toggles, not heading text.
 
 ## State transitions
 
@@ -37,7 +43,7 @@ filtered Library, Viewer is open media.
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
 | Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts and readable error text, never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
-| Ready | Years/Months/Days/All, search, sort and open work on the same current item set. Level and sort persist to settings; selection and current filter are transient. No localStorage truth. The page address is the live listen origin. |
+| Ready | Years/Months/Days/All, search, sort, Videos, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Viewer | Show still preview first, then readable original; video uses poster then original/proxy, live uses still with motion playback. Visible Previous/Next and Back; arrows still move. Next/previous use the current filtered order, stop at ends without wrapping. Back/Esc restores the grid he came from (filter, level, scroll) on the same origin. Zoom in/out (including smaller than fit) plus existing Ctrl+wheel; left-drag pans stills, middle-drag pans stills and video. Rotate turns the displayed still 90° per click and does not rewrite the original. A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Open original stays in this page and is pressed as “Showing original” when original bytes are on screen; click toggles back to the preview — it does not open another program. Reveal in Explorer is always present in the viewer and opens the original's folder when the file is on this computer; disabled with the missing-original banner otherwise. Play preview keeps click-to-pause. Person/Place/Thing fields are labeled; no unlabeled pills. Labels list existing annotations; typing a person/place/thing and committing sends annotate. No box-drawing editor. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
@@ -56,8 +62,11 @@ trigger focus. Error text explains the fixed API error without exposing a traceb
 ## Grid, sort, and viewer
 
 Years uses a mosaic per year; Months a mosaic per month. Days includes every
-matching item at nominal 240 px row height; All includes every item at nominal
-160 px row height. Fit cells within available width without cropping controls;
+matching item under day headings at a medium cell size. All includes every
+item under day headings at a closer default size. Nominal cell sizes at the
+level defaults: Years 72 px, Months 104 px, Days 192 px, All 420 px. Those
+four sizes must be visually distinct; Years and Months must not share a
+pixel size. Fit cells within available width without cropping controls;
 thumb crops are permitted in grid, the opened still starts fitted without crop.
 Groups and contents follow current sort; date headings express each item's date.
 For location/name sorts, group order follows the first occurrence in sorted items,
@@ -69,6 +78,40 @@ Keep the hovered item's center/visible representative in view on level change;
 in the new layout it must be within the viewport, not necessarily pixel-identical
 because a mosaic changes shape. The level control uses the central visible item
 as anchor when no pointer item exists. It cannot jump to an unrelated year.
+
+A Size slider has eight discrete stops (72, 104, 144, 192, 256, 336, 420,
+520 px). Changing level sets Size to that level's default. Size only changes
+`--cell`; it does not refetch or rebuild tiles. Already-decoded thumbnails
+stay painted through Size, level, and scroll. The grid must not clear to an
+empty surface while zoom is in progress.
+
+Dates (pressed by default) shows the current level's section headings.
+Dates off flattens every matching item onto one continuous wall — one
+flex wrap, 2 px gaps, no heading rows, no section margins. Date grouping
+stays available; wall is the option for a dense thumbnail sheet at the
+smallest sizes. Size and Dates are session view options (`#grid`
+`data-size`, `data-group-dates`); they are not settings.json keys.
+
+Tiles use one badge system. Video cells show a VIDEO badge (play mark plus
+the word VIDEO, and duration when `metadata.durationSec` exists). Live
+cells keep the existing LIVE badge (`.live-badge` text `LIVE`). Badges sit
+on the tile and do not crop the media.
+
+The toolbar Videos control sets the transient `kind=video` filter and
+`aria-pressed`. Clearing it removes the kind filter. Combined with the
+existing sort, this is how the library is filtered to videos.
+
+Hearts: `#grid` `data-hearts=on` when `--cell` is 144 or larger, `off` at
+72 and 104. The heart is a button `.heart` in the badge corner (top-left
+stack, under the VIDEO/LIVE pill). `aria-pressed` follows the item’s
+computed `favorite`. Click/Space on the heart sends
+`PUT /api/items/<id>/favorite` and does not open the viewer. A
+`#favorites` section is the first block in the grid when the current
+result set has at least one hearted item; otherwise it is hidden. The
+heading control `#favorites-toggle` starts `aria-expanded="true"` and
+collapses only the favorites tiles, not the rest of the grid. Favorites
+tiles use `data-slot="fav"` so the same id can also sit in its date/wall
+row. Collapse is session-only.
 
 Click a cell opens it. ArrowLeft/ArrowRight navigate. Ctrl+wheel zooms an opened
 still or video around the cursor's image coordinate; middle drag moves it 1:1,
@@ -83,6 +126,9 @@ Proxy policy: `off` never autoplays; `days-and-all` plays only the hovered cell 
 those levels; `always` also permits hover playback within Years/Months mosaics.
 No policy autoplays all cells. Hover leave stops and restores still/poster; muted,
 looped proxy never starts audio. Explicit viewer play is independent of hover setting.
+The hover proxy is position-absolute over the still and `object-fit: cover`s the
+entire cell. The still is not hidden by a `display` rule that would leave it
+flex-sharing the tile. No split still+video.
 
 ## Search and annotation
 

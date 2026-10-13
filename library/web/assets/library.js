@@ -41,6 +41,9 @@
   const sortSelect = document.getElementById("sort");
   const dirSelect = document.getElementById("dir");
   const zoomSlider = document.getElementById("zoom-slider");
+  const sizeSlider = document.getElementById("size-slider");
+  const filterVideos = document.getElementById("filter-videos");
+  const groupDatesBtn = document.getElementById("group-dates");
   const scanStatus = document.getElementById("scan-status");
   const viewLibrary = document.getElementById("view-library");
   const viewGlobe = document.getElementById("view-globe");
@@ -61,8 +64,13 @@
 
   const PLACEHOLDER = "Preview is not available";
   const LEVELS = ["years", "months", "days", "all"];
+  const SIZE_STEPS = [72, 104, 144, 192, 256, 336, 420, 520];
+  const DEFAULT_SIZE = { years: 0, months: 1, days: 3, all: 6 };
+  const HEART_MIN = 144;
   const EMPTY = "No pictures yet";
   const EMPTY_SEARCH = "No matching pictures";
+  const PLAY_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.1v7.8L10.2 6z"/></svg>';
+  const HEART_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13.4S2.6 10 1.5 7.1C.6 5.1 1.6 3 3.8 3c1.2 0 2 .7 2.3 1.2C6.4 3.7 7.2 3 8.4 3c2.2 0 3.2 2.1 2.3 4.1C9.6 10 8 13.4 8 13.4z"/></svg>';
 
   let settings = {
     sort: "date",
@@ -78,9 +86,12 @@
   let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
-  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "" };
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "" };
   let savedSearch = "";
-  let filter = { q: "", scope: "", person: "", place: "", thing: "" };
+  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "" };
+  let gridSize = 0;
+  let groupDates = true;
+  let favoritesOpen = true;
   let searchTimer = 0;
   let annotateBusy = false;
   let pollTimer = 0;
@@ -129,6 +140,9 @@
     if (filter.thing) {
       merged.thing = filter.thing;
     }
+    if (filter.kind) {
+      merged.kind = filter.kind;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
         merged[key] = extra[key];
@@ -155,7 +169,7 @@
   }
 
   function hasActiveFilter() {
-    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing);
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind);
   }
 
   function copyFilter(src) {
@@ -165,11 +179,12 @@
       person: src.person || "",
       place: src.place || "",
       thing: src.thing || "",
+      kind: src.kind || "",
     };
   }
 
   function filtersEqual(a, b) {
-    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing;
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind;
   }
 
   function syncFilterDataset() {
@@ -178,6 +193,10 @@
     main.dataset.person = filter.person;
     main.dataset.place = filter.place;
     main.dataset.thing = filter.thing;
+    main.dataset.kind = filter.kind;
+    if (filterVideos) {
+      filterVideos.setAttribute("aria-pressed", filter.kind === "video" ? "true" : "false");
+    }
   }
 
   function syncChips() {
@@ -303,7 +322,7 @@
     if (!ids.length) {
       return Promise.resolve();
     }
-    applyFilterState({ q: "", scope: "", person: "", place: ids.join(","), thing: "" }, "");
+    applyFilterState({ q: "", scope: "", person: "", place: ids.join(","), thing: "", kind: "" }, "");
     renderKey = "";
     showView("library");
     return loadCatalog().then(function () {
@@ -323,6 +342,9 @@
     syncFilterDataset();
     if (!(filter.person || filter.place || filter.thing)) {
       hideInspector();
+    }
+    if (filterVideos) {
+      filterVideos.setAttribute("aria-pressed", filter.kind === "video" ? "true" : "false");
     }
   }
 
@@ -470,10 +492,6 @@
       hoverVideo = null;
     }
     if (hoverCell) {
-      const img = hoverCell.querySelector("img");
-      if (img) {
-        img.hidden = false;
-      }
       hoverCell = null;
     }
   }
@@ -496,10 +514,6 @@
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
     video.src = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
-    const img = cell.querySelector("img");
-    if (img) {
-      img.hidden = true;
-    }
     cell.appendChild(video);
     hoverVideo = video;
     hoverCell = cell;
@@ -515,9 +529,6 @@
     const item = itemById(id);
     const which = stillWhich(item);
     const url = "/api/media/" + encodeURIComponent(id) + "?which=" + which;
-    if (hoverCell === cell) {
-      return;
-    }
     if (img.getAttribute("data-still") === url && !img.hidden && img.complete && img.naturalWidth > 0) {
       return;
     }
@@ -544,9 +555,7 @@
       }
       img.onload = function () {
         placeholder.hidden = true;
-        if (hoverCell !== cell) {
-          img.hidden = false;
-        }
+        img.hidden = false;
       };
       img.onerror = function () {
         img.hidden = true;
@@ -1266,13 +1275,58 @@
     }
   }
 
-  function makeCell(item) {
+  function formatDuration(sec) {
+    if (sec == null || !isFinite(Number(sec))) {
+      return "";
+    }
+    const n = Math.max(0, Math.round(Number(sec)));
+    const m = Math.floor(n / 60);
+    const s = n % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function syncHeartButton(btn, on) {
+    if (!btn) {
+      return;
+    }
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", on ? "Remove favorite" : "Favorite");
+  }
+
+  function setItemFavorite(id, on) {
+    items.forEach(function (item) {
+      if (item.id === id) {
+        item.favorite = on;
+      }
+    });
+    main.querySelectorAll('.cell[data-id="' + id + '"]').forEach(function (cell) {
+      syncHeartButton(cell.querySelector(".heart"), on);
+    });
+    renderKey = "";
+    render();
+  }
+
+  function toggleFavorite(event, item) {
+    event.preventDefault();
+    event.stopPropagation();
+    const next = !item.favorite;
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/favorite", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ favorite: next }),
+    }).then(readJson).then(function (updated) {
+      setItemFavorite(item.id, !!(updated && updated.favorite));
+    }).catch(function () {});
+  }
+
+  function makeCell(item, slot) {
     const cell = document.createElement("button");
     cell.type = "button";
     cell.className = "cell";
     cell.dataset.id = item.id;
     cell.dataset.filename = item.filename || "";
     cell.dataset.kind = item.kind || "";
+    cell.dataset.slot = slot || "grid";
     const placeholder = document.createElement("span");
     placeholder.className = "placeholder";
     placeholder.textContent = PLACEHOLDER;
@@ -1281,15 +1335,39 @@
     img.hidden = true;
     cell.appendChild(placeholder);
     cell.appendChild(img);
+    const badges = document.createElement("div");
+    badges.className = "tile-badges";
     if (item.kind === "live") {
       const badge = document.createElement("span");
-      badge.className = "live-badge";
+      badge.className = "live-badge tile-badge";
       badge.textContent = "LIVE";
-      cell.appendChild(badge);
+      badges.appendChild(badge);
+    } else if (item.kind === "video") {
+      const badge = document.createElement("span");
+      badge.className = "video-badge tile-badge";
+      const duration = formatDuration((item.metadata || {}).durationSec);
+      badge.innerHTML = PLAY_ICON + "<span>VIDEO</span>" + (duration ? "<span>" + duration + "</span>" : "");
+      badges.appendChild(badge);
     }
+    const heart = document.createElement("span");
+    heart.className = "heart";
+    heart.setAttribute("role", "button");
+    heart.tabIndex = 0;
+    heart.innerHTML = HEART_ICON;
+    syncHeartButton(heart, !!item.favorite);
+    heart.addEventListener("click", function (event) {
+      toggleFavorite(event, itemById(item.id));
+    });
+    heart.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        toggleFavorite(event, itemById(item.id));
+      }
+    });
+    badges.appendChild(heart);
+    cell.appendChild(badges);
     cell.addEventListener("mouseenter", function () {
       hoveredId = item.id;
-      startHover(cell, item);
+      startHover(cell, itemById(item.id));
     });
     cell.addEventListener("mouseleave", function () {
       if (hoveredId === item.id) {
@@ -1313,20 +1391,123 @@
     return { id: id, filename: "" };
   }
 
+  function currentCellSize() {
+    return SIZE_STEPS[gridSize] || SIZE_STEPS[0];
+  }
+
+  function applyGridMetrics() {
+    const level = settings.zoomLevel;
+    const size = currentCellSize();
+    main.dataset.level = level;
+    main.dataset.size = String(size);
+    main.dataset.groupDates = groupDates ? "on" : "off";
+    main.dataset.hearts = size >= HEART_MIN ? "on" : "off";
+    main.className = "level-" + level + (groupDates ? "" : " wall");
+    main.style.setProperty("--cell", size + "px");
+    zoomSlider.value = String(levelIndex(level));
+    if (sizeSlider) {
+      sizeSlider.value = String(gridSize);
+    }
+    if (groupDatesBtn) {
+      groupDatesBtn.setAttribute("aria-pressed", groupDates ? "true" : "false");
+    }
+  }
+
+  function groupsFromItems(list, level) {
+    const out = [];
+    const seen = {};
+    (list || []).forEach(function (item) {
+      const captured = (item && item.capturedAt) || "";
+      let key = captured.slice(0, 10);
+      if (level === "years") {
+        key = captured.slice(0, 4);
+      } else if (level === "months") {
+        key = captured.slice(0, 7);
+      }
+      if (seen[key] == null) {
+        seen[key] = out.length;
+        out.push({ key: key, itemIds: [item.id] });
+      } else {
+        out[seen[key]].itemIds.push(item.id);
+      }
+    });
+    return out;
+  }
+
+  function collectCells() {
+    const map = {};
+    main.querySelectorAll(".cell").forEach(function (cell) {
+      map[(cell.dataset.slot || "grid") + ":" + cell.dataset.id] = cell;
+    });
+    return map;
+  }
+
+  function takeCell(existing, id, slot) {
+    const key = (slot || "grid") + ":" + id;
+    let cell = existing[key];
+    if (cell) {
+      delete existing[key];
+      const item = itemById(id);
+      syncHeartButton(cell.querySelector(".heart"), !!(item && item.favorite));
+      return cell;
+    }
+    return makeCell(itemById(id), slot);
+  }
+
+  function makeFavoritesSection(existing, mosaic) {
+    const hearted = items.filter(function (item) {
+      return item && item.favorite;
+    });
+    if (!hearted.length) {
+      return null;
+    }
+    const section = document.createElement("section");
+    section.id = "favorites";
+    section.className = "group favorites" + (favoritesOpen ? "" : " collapsed");
+    const heading = document.createElement("h2");
+    heading.className = "group-key";
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.id = "favorites-toggle";
+    toggle.textContent = "Favorites";
+    toggle.setAttribute("aria-expanded", favoritesOpen ? "true" : "false");
+    toggle.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      favoritesOpen = !favoritesOpen;
+      section.classList.toggle("collapsed", !favoritesOpen);
+      toggle.setAttribute("aria-expanded", favoritesOpen ? "true" : "false");
+    });
+    heading.appendChild(toggle);
+    section.appendChild(heading);
+    const list = document.createElement("div");
+    list.className = mosaic ? "mosaic" : "item-list";
+    hearted.forEach(function (item) {
+      list.appendChild(takeCell(existing, item.id, "fav"));
+    });
+    section.appendChild(list);
+    return section;
+  }
+
   function render() {
     const level = settings.zoomLevel;
-    main.dataset.level = level;
-    main.className = "level-" + level;
-    zoomSlider.value = String(levelIndex(level));
+    applyGridMetrics();
     sortSelect.value = settings.sort;
     dirSelect.value = settings.dir;
     syncFilterDataset();
     if (!items.length) {
+      stopHover();
       main.innerHTML = "<p>" + (hasActiveFilter() ? EMPTY_SEARCH : EMPTY) + "</p>";
+      applyGridMetrics();
       renderKey = hasActiveFilter() ? "empty-search" : "empty";
       return;
     }
-    const key = level + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
+    const favKey = items.filter(function (item) {
+      return item.favorite;
+    }).map(function (item) {
+      return item.id;
+    }).join(",");
+    const key = level + "|" + (groupDates ? "dates" : "wall") + "|" + favKey + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
       return group.key + ":" + (group.itemIds || []).join(",");
     }).join(";");
     if (key === renderKey) {
@@ -1336,26 +1517,47 @@
       return;
     }
     const anchor = visibleAnchorId();
-    const fragment = document.createDocumentFragment();
+    const existing = collectCells();
     const mosaic = level === "years" || level === "months";
-    groups.forEach(function (group) {
-      const section = document.createElement("section");
-      section.className = "group";
-      section.dataset.key = group.key;
-      const heading = document.createElement("h2");
-      heading.className = "group-key";
-      heading.textContent = group.key;
-      section.appendChild(heading);
+    const fragment = document.createDocumentFragment();
+    const fav = makeFavoritesSection(existing, mosaic);
+    if (fav) {
+      fragment.appendChild(fav);
+    }
+    if (!groupDates) {
       const list = document.createElement("div");
-      list.className = mosaic ? "mosaic" : "item-list";
-      (group.itemIds || []).forEach(function (id) {
-        list.appendChild(makeCell(itemById(id)));
+      list.className = (mosaic ? "mosaic" : "item-list") + " wall-list";
+      items.forEach(function (item) {
+        list.appendChild(takeCell(existing, item.id, "grid"));
       });
-      section.appendChild(list);
-      fragment.appendChild(section);
+      fragment.appendChild(list);
+    } else {
+      groups.forEach(function (group) {
+        const section = document.createElement("section");
+        section.className = "group";
+        section.dataset.key = group.key;
+        const heading = document.createElement("h2");
+        heading.className = "group-key";
+        heading.textContent = group.key;
+        section.appendChild(heading);
+        const list = document.createElement("div");
+        list.className = mosaic ? "mosaic" : "item-list";
+        (group.itemIds || []).forEach(function (id) {
+          list.appendChild(takeCell(existing, id, "grid"));
+        });
+        section.appendChild(list);
+        fragment.appendChild(section);
+      });
+    }
+    Object.keys(existing).forEach(function (keyName) {
+      const leftover = existing[keyName];
+      if (leftover && leftover.parentNode) {
+        leftover.parentNode.removeChild(leftover);
+      }
     });
     main.innerHTML = "";
     main.appendChild(fragment);
+    applyGridMetrics();
     renderKey = key;
     if (anchor) {
       scrollIdIntoView(anchor);
@@ -1406,19 +1608,39 @@
   }
 
   function setLevel(level, persistChange) {
-    if (LEVELS.indexOf(level) === -1 || level === settings.zoomLevel) {
+    if (LEVELS.indexOf(level) === -1) {
       return Promise.resolve();
     }
+    const same = level === settings.zoomLevel;
     const anchor = visibleAnchorId();
     settings.zoomLevel = level;
-    zoomSlider.value = String(levelIndex(level));
-    const done = persistChange ? persist({ zoomLevel: level }) : Promise.resolve();
-    return done.then(function () {
+    gridSize = DEFAULT_SIZE[level] != null ? DEFAULT_SIZE[level] : 0;
+    applyGridMetrics();
+    if (!same) {
+      groups = groupsFromItems(items, level);
       renderKey = "";
+      render();
+      scrollIdIntoView(anchor || hoveredId);
+    }
+    const done = persistChange && !same ? persist({ zoomLevel: level }) : Promise.resolve();
+    return done.then(function () {
+      if (same) {
+        return;
+      }
       return loadCatalog();
     }).then(function () {
       scrollIdIntoView(anchor || hoveredId);
     });
+  }
+
+  function setGridSize(index) {
+    const next = Math.max(0, Math.min(SIZE_STEPS.length - 1, Number(index)));
+    if (next === gridSize) {
+      applyGridMetrics();
+      return;
+    }
+    gridSize = next;
+    applyGridMetrics();
   }
 
   function stepLevel(delta) {
@@ -1469,6 +1691,7 @@
     filter.person = "";
     filter.place = "";
     filter.thing = "";
+    filter.kind = filter.kind || "";
     if (kind === "person") {
       filter.person = id;
     } else if (kind === "place") {
@@ -1643,6 +1866,27 @@
     const level = LEVELS[Number(zoomSlider.value)] || "years";
     setLevel(level, true);
   });
+  if (sizeSlider) {
+    sizeSlider.addEventListener("input", function () {
+      setGridSize(Number(sizeSlider.value));
+    });
+  }
+  if (filterVideos) {
+    filterVideos.addEventListener("click", function () {
+      filter.kind = filter.kind === "video" ? "" : "video";
+      syncFilterDataset();
+      renderKey = "";
+      loadCatalog();
+    });
+  }
+  if (groupDatesBtn) {
+    groupDatesBtn.addEventListener("click", function () {
+      groupDates = !groupDates;
+      applyGridMetrics();
+      renderKey = "";
+      render();
+    });
+  }
 
   window.addEventListener("wheel", function (event) {
     if (!event.ctrlKey) {
@@ -1825,6 +2069,8 @@
       body: JSON.stringify({ favorite: next }),
     }).then(readJson).then(function (updated) {
       viewerFavorite.disabled = false;
+      const on = !!(updated && updated.favorite);
+      setItemFavorite(item.id, on);
       if (viewerIndex >= 0 && items[viewerIndex] && items[viewerIndex].id === item.id) {
         items[viewerIndex] = updated;
         syncFavoriteChrome(updated);
@@ -2008,6 +2254,8 @@
     sortSelect.value = settings.sort;
     dirSelect.value = settings.dir;
     zoomSlider.value = String(levelIndex(settings.zoomLevel));
+    gridSize = DEFAULT_SIZE[settings.zoomLevel] != null ? DEFAULT_SIZE[settings.zoomLevel] : 0;
+    applyGridMetrics();
     showDisconnected(false);
     return loadCatalog();
   }).catch(function () {

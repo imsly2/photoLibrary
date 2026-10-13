@@ -33,6 +33,8 @@
           <option value="asc">Oldest first</option>
         </select>
       </label>
+      <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
+      <button type="button" id="group-dates" class="toolbar-toggle" aria-pressed="true">Dates</button>
     </div>
     <button type="button" id="add-folder-btn">Add folder</button>
   </header>
@@ -56,6 +58,8 @@
         <span>Days</span>
         <span>All</span>
       </div>
+      <label class="level-slider-label" for="size-slider">Size</label>
+      <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Thumbnail size">
     </aside>
   </div>
   <div id="globe-view" hidden>

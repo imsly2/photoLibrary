@@ -124,6 +124,18 @@ environments must be supplied by the build or F2 remains pending; do not claim
 
 ## Notes and spec evidence
 
+- 2026-10-13 — Windows taste Track C (grid) locked and implemented on
+  `cursor/s03-still-renditions-8e1d`: whole-tile video hover, VIDEO badge,
+  `kind=video` filter, Size 72–520 with distinct level defaults (All 420),
+  thumbs stay painted through zoom, Dates-off wall, tile hearts with
+  collapsible Favorites (`catalog/favorites.json`), Library/Globe toggle
+  chrome. No 17th setting. Does not close a Check. Plan:
+  [taste-grid](features/taste-grid/Rev1.0/PLAN.md). Browser proof
+  [verify-1](features/taste-grid/Rev1.0/assets/verify-1/result.json)
+  26/26: whole-tile hover, VIDEO badge, kind=video, All 420 / Years 72 /
+  Months 104, thumbs stay painted, wall, hearts + Favorites, view chrome.
+
+
 - 2026-10-12 — Original help file and six layout references created; no code.
 - 2026-10-12 baseline refinement — Added technical contracts, screen-state/input
   contract, fixed fixture specification, dependency plan and orchestrator handoff.
