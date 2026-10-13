@@ -191,18 +191,72 @@ class Library:
         finally:
             self._scanning = False
 
+    def start_http_scan(self, body: dict[str, Any]) -> dict[str, Any]:
+        from library.scan import start_scan_source
+
+        self.recover()
+        settings = self.ensure_settings()
+        self._assert_idle()
+        req = read_scan_request(body)
+        mode = req["mode"]
+        if mode is None:
+            mode = settings["addFolderDefault"]
+            if mode == "ask":
+                raise fail("choice-required")
+        self._scanning = True
+        try:
+            source = start_scan_source(
+                self.root,
+                Path(req["path"]),
+                mode,
+                req["previewStore"],
+            )
+            return source_read(source, self.root)
+        except Exception:
+            self._scanning = False
+            raise
+
+    def finish_http_scan(self, body: dict[str, Any], source: dict[str, Any], on_progress=None, between=None) -> dict[str, Any]:
+        from library.catalog_io import try_load_source
+
+        try:
+            req = read_scan_request(body)
+            mode = source.get("mode") or req["mode"]
+            current = try_load_source(self.root, source["id"]) or source
+            if mode == "copy-here":
+                finished = scan_copy_here(
+                    self.root,
+                    Path(req["path"]),
+                    preview_store=req["previewStore"],
+                    on_progress=on_progress,
+                    between=between,
+                    source=current,
+                )
+                return source_read(finished, self.root)
+            finished = scan_serve_from_there(
+                self.root,
+                Path(req["path"]),
+                preview_store=req["previewStore"],
+                on_progress=on_progress,
+                between=between,
+                source=current,
+            )
+            return source_read(finished, self.root)
+        finally:
+            self._scanning = False
+
     def copy_here(self, source_id: str) -> dict[str, Any]:
         from library.copy import convert_linked_source
         from library.catalog_io import load_source
 
         self.recover()
         self.ensure_settings()
-        self._assert_idle()
         if type(source_id) is not str or not source_id:
             raise fail("invalid-argument")
         source = load_source(self.root, source_id)
         if source["mode"] == "copy-here" and type(source.get("copyRoot")) is str and source["copyRoot"]:
             return source_read(source, self.root)
+        self._assert_idle()
         source = convert_linked_source(self.root, source_id)
         return source_read(source, self.root)
 

@@ -445,6 +445,29 @@ def _index_file(
     return published["id"]
 
 
+def _default_progress(kind: str, rel: str) -> None:
+    print(f"{kind} {rel}", flush=True)
+
+
+def start_scan_source(
+    root: Path,
+    scan_path: Path,
+    mode: str,
+    preview_store: str | None,
+) -> dict[str, Any]:
+    scan_path = assert_scan_path_allowed(scan_path, root)
+    if mode == "copy-here":
+        from library.copy import convert_linked_source
+
+        serial, volume_root = volume_of_path(scan_path)
+        origin_rel = path_from_volume_root(scan_path, volume_root)
+        existing = find_source_by_origin(root, serial, origin_rel)
+        if existing is not None and existing.get("mode") == "serve-from-there":
+            convert_linked_source(root, existing["id"])
+        return _start_source(root, scan_path, preview_store, mode="copy-here")
+    return _start_source(root, scan_path, preview_store)
+
+
 def scan_serve_from_there(
     root: Path,
     scan_path: Path,
@@ -452,9 +475,13 @@ def scan_serve_from_there(
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
     between: BetweenFn | None = None,
+    source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     scan_path = assert_scan_path_allowed(scan_path, root)
-    source = _start_source(root, scan_path, preview_store)
+    if on_progress is None:
+        on_progress = _default_progress
+    if source is None:
+        source = _start_source(root, scan_path, preview_store)
     if between is not None:
         between()
     added = 0
@@ -522,21 +549,25 @@ def scan_copy_here(
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
     between: BetweenFn | None = None,
+    source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     from library.copy import convert_linked_source, copy_media_files
     from library.paths import library_path
 
     scan_path = assert_scan_path_allowed(scan_path, root)
-    serial, volume_root = volume_of_path(scan_path)
-    origin_rel = path_from_volume_root(scan_path, volume_root)
-    existing = find_source_by_origin(root, serial, origin_rel)
-    if existing is not None and existing.get("mode") == "serve-from-there":
-        convert_linked_source(root, existing["id"])
-    source = _start_source(root, scan_path, preview_store, mode="copy-here")
+    if on_progress is None:
+        on_progress = _default_progress
+    if source is None:
+        serial, volume_root = volume_of_path(scan_path)
+        origin_rel = path_from_volume_root(scan_path, volume_root)
+        existing = find_source_by_origin(root, serial, origin_rel)
+        if existing is not None and existing.get("mode") == "serve-from-there":
+            convert_linked_source(root, existing["id"])
+        source = _start_source(root, scan_path, preview_store, mode="copy-here")
     if between is not None:
         between()
     files = iter_media_files(scan_path, root)
-    source = copy_media_files(root, source, scan_path, files)
+    source = copy_media_files(root, source, scan_path, files, between=between)
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []

@@ -36,6 +36,7 @@
     </div>
     <button type="button" id="add-folder-btn">Add folder</button>
   </header>
+  <p id="disconnected-banner" hidden>Library is not responding</p>
   <p id="scan-status" class="status" hidden></p>
   <div class="workspace">
     <main id="grid">
@@ -71,7 +72,10 @@
   <dialog id="add-folder" aria-labelledby="add-folder-title">
     <h2 id="add-folder-title">Add a folder</h2>
     <label class="path-field">Path
-      <input type="text" id="add-path" autocomplete="off" spellcheck="false">
+      <span class="path-row">
+        <input type="text" id="add-path" autocomplete="off" spellcheck="false">
+        <button type="button" id="add-browse">Browse</button>
+      </span>
     </label>
     <div class="choices">
       <label class="choice">
@@ -97,7 +101,12 @@
   </dialog>
   <div id="viewer" hidden>
     <div id="viewer-bar">
-      <button type="button" id="viewer-back">Library</button>
+      <button type="button" id="viewer-back">Back</button>
+      <button type="button" id="viewer-prev">Previous</button>
+      <button type="button" id="viewer-next">Next</button>
+      <button type="button" id="viewer-zoom-in">Zoom in</button>
+      <button type="button" id="viewer-zoom-out">Zoom out</button>
+      <button type="button" id="viewer-rotate">Rotate</button>
     </div>
     <p id="unavailable-banner" hidden>Original is not on this computer</p>
     <div id="viewer-stage">

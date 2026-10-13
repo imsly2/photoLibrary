@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +41,24 @@ def _print_scan_summary(source: Any) -> None:
             "errors": scan.get("errors"),
         }
     )
+
+
+def _wait_scan_complete(url: str, source_id: str, timeout: float = 300.0) -> Any:
+    deadline = time.time() + timeout
+    last: Any = None
+    while time.time() < deadline:
+        status, payload = _forward(url, "GET", "/api/sources", None, timeout=5.0)
+        if status == 200 and isinstance(payload, list):
+            for src in payload:
+                if isinstance(src, dict) and src.get("id") == source_id:
+                    last = src
+                    state = (src.get("scan") or {}).get("state")
+                    if state != "running":
+                        return src
+        time.sleep(0.25)
+    if last is not None:
+        return last
+    raise fail("internal-error")
 
 
 def _scan_exit(source: Any) -> int:
@@ -261,6 +280,10 @@ def main(argv: list[str] | None = None) -> int:
                     if isinstance(payload, dict) and "error" in payload:
                         raise AppError(payload["error"], status)
                     raise fail_from_status(status)
+                source_id = payload.get("id") if isinstance(payload, dict) else None
+                state = (payload.get("scan") or {}).get("state") if isinstance(payload, dict) else None
+                if state == "running" and type(source_id) is str and source_id:
+                    payload = _wait_scan_complete(url, source_id)
                 _print_scan_summary(payload)
                 return _scan_exit(payload)
             source = _with_lock(

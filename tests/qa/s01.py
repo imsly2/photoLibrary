@@ -7,6 +7,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -429,6 +430,17 @@ def run_slice(root: Path, artifacts: Path) -> int:
             copy_http_status == 404 and copy_http == {"error": "not-found"},
             str(copy_http),
         )
+        idle_deadline = time.time() + 180
+        while time.time() < idle_deadline:
+            src_status, src_now = request_json(url.rstrip("/") + "/api/sources", timeout=5)
+            running = (
+                src_status == 200
+                and isinstance(src_now, list)
+                and any((src.get("scan") or {}).get("state") == "running" for src in src_now)
+            )
+            if not running:
+                break
+            time.sleep(0.05)
         rebuild_status, rebuild_body = request_json(
             url.rstrip("/") + "/api/rebuild-index",
             method="POST",

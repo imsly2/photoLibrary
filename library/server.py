@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import json
 import os
 import socket
@@ -68,6 +69,22 @@ def parse_byte_range(header: str | None, length: int) -> tuple[int, int] | None:
     if end >= length:
         end = length - 1
     return start, end
+
+
+def _is_client_disconnect(exc: BaseException) -> bool:
+    if isinstance(exc, (BrokenPipeError, ConnectionResetError, ConnectionAbortedError)):
+        return True
+    if isinstance(exc, OSError):
+        winerror = getattr(exc, "winerror", None)
+        if winerror == 10053:
+            return True
+        if exc.errno in {errno.EPIPE, errno.ECONNRESET, errno.ECONNABORTED}:
+            return True
+    return False
+
+
+def _scan_progress(kind: str, rel: str) -> None:
+    print(f"{kind} {rel}", flush=True)
 
 
 def listen_url(host: str, port: int) -> str:
@@ -251,9 +268,42 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/sources" and method == "POST":
                 body = self._read_json()
-                self._require_idle()
                 with self.lock:
-                    self._send_json(202, self.library.scan(body, between=self._yield_scan))
+                    self._require_idle()
+                    source = self.library.start_http_scan(body)
+                lock = self.lock
+                library = self.library
+
+                def yield_scan() -> None:
+                    lock.release()
+                    try:
+                        time.sleep(0.05)
+                    finally:
+                        lock.acquire()
+
+                def scan_worker() -> None:
+                    lock.acquire()
+                    try:
+                        library.finish_http_scan(
+                            body,
+                            source,
+                            on_progress=_scan_progress,
+                            between=yield_scan,
+                        )
+                    except Exception:
+                        library._scanning = False
+                    finally:
+                        lock.release()
+
+                threading.Thread(target=scan_worker, name="library-scan", daemon=True).start()
+                self._send_json(202, source)
+                return
+            if route == "/api/pick-folder" and method == "POST":
+                self._read_json()
+                from library.picker import pick_folder
+
+                chosen = pick_folder()
+                self._send_json(200, {"path": chosen})
                 return
             if (
                 route.startswith("/api/sources/")
@@ -264,7 +314,6 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 if not source_id or "/" in source_id:
                     raise fail("not-found")
                 self._read_json()
-                self._require_idle()
                 with self.lock:
                     self._send_json(202, self.library.copy_here(source_id))
                 return
@@ -353,16 +402,24 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             raise fail("not-found")
         except AppError as exc:
-            self._error(exc.code, exc.status)
-        except BrokenPipeError:
-            return
-        except Exception:
+            try:
+                self._error(exc.code, exc.status)
+            except Exception as send_exc:
+                if not _is_client_disconnect(send_exc):
+                    raise
+        except Exception as exc:
+            if _is_client_disconnect(exc):
+                return
             append_error(
                 self.library.root,
                 parsed.path + (("?" + parsed.query) if parsed.query else ""),
                 "internal-error",
             )
-            self._send_json(500, {"error": "internal-error"})
+            try:
+                self._send_json(500, {"error": "internal-error"})
+            except Exception as send_exc:
+                if not _is_client_disconnect(send_exc):
+                    raise
 
     def _send_static(self, path: Path, content_type: str) -> None:
         data = path.read_bytes()

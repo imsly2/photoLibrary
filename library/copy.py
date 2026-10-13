@@ -479,6 +479,7 @@ def copy_media_files(
     source: dict[str, Any],
     scan_path: Path,
     files: list[tuple[str, Path]],
+    between=None,
 ) -> dict[str, Any]:
     for rel, path in files:
         source = try_load_source(root, source["id"]) or source
@@ -489,6 +490,8 @@ def copy_media_files(
             and entry.get("state") in {"copied", "indexed"}
             and dest_matches_hash(root, entry["destination"], entry.get("sha256") or "")
         ):
+            if between is not None:
+                between()
             continue
         source = copy_one_file(
             root,
@@ -497,4 +500,6 @@ def copy_media_files(
             path,
             item_id=entry["itemId"] if entry else None,
         )
+        if between is not None:
+            between()
     return try_load_source(root, source["id"]) or source

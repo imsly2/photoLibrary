@@ -535,7 +535,7 @@ def prove_busy_during_scan(
     busy_body: Any = None
     busy_status = 0
     annotate_status = 0
-    while time.time() < deadline and thread.is_alive():
+    while time.time() < deadline:
         status, sources = request_json(url.rstrip("/") + "/api/sources", timeout=2)
         running = (
             status == 200
@@ -563,6 +563,8 @@ def prove_busy_during_scan(
                     timeout=5,
                 )
                 break
+        elif saw_running and annotate_status:
+            break
         time.sleep(0.02)
     thread.join(timeout=180)
     stop_owned(server, extra_pids=pids)
@@ -690,7 +692,13 @@ def prove_http_annotate(checks: Checks, artifacts: Path, media_src: Path, comman
         )
         commands.append("POST /api/sources")
         checks.check("http-scan", status == 202, str(status))
-        items_status, items = request_json(url.rstrip("/") + "/api/items", timeout=5)
+        items_status, items = 0, []
+        ready_deadline = time.time() + 60
+        while time.time() < ready_deadline:
+            items_status, items = request_json(url.rstrip("/") + "/api/items", timeout=5)
+            if items_status == 200 and isinstance(items, list) and items:
+                break
+            time.sleep(0.05)
         checks.check("http-items", items_status == 200 and isinstance(items, list) and items)
         if not isinstance(items, list) or not items:
             return

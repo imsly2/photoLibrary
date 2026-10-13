@@ -16,6 +16,7 @@ HTTP_STATUS = {
     "not-found": 404,
     "unavailable": 404,
     "preview-unavailable": 404,
+    "picker-unavailable": 404,
     "busy": 409,
     "port-in-use": 409,
     "volume-identity-unavailable": 409,

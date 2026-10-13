@@ -197,6 +197,8 @@ def read_merge_payload(value: Any) -> dict[str, str]:
     drop = data.get("dropId")
     if type(keep) is not str or keep == "" or type(drop) is not str or drop == "":
         raise fail("invalid-argument")
+    if keep == drop:
+        raise fail("invalid-argument")
     return {"keepId": keep, "dropId": drop}
 
 

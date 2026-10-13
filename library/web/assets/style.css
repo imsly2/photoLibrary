@@ -135,6 +135,19 @@ button:disabled {
   display: none;
 }
 
+#disconnected-banner {
+  margin: 0;
+  padding: 0.45rem 1.25rem;
+  background: #5a2a2a;
+  color: #f2f2f4;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+#disconnected-banner[hidden] {
+  display: none;
+}
+
 .workspace {
   display: flex;
   flex: 1;
@@ -430,12 +443,27 @@ dialog h2 {
   color: #c8c8d0;
 }
 
+.path-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
 #add-path {
+  flex: 1 1 auto;
   background: #111114;
   color: #f2f2f4;
   border: 1px solid #2a2a32;
   border-radius: 4px;
   padding: 0.45rem 0.6rem;
+}
+
+#add-browse {
+  flex: 0 0 auto;
+  background: #2a2a32;
+  border: 1px solid #2a2a32;
+  color: #f2f2f4;
+  border-radius: 4px;
+  padding: 0.45rem 0.75rem;
 }
 
 .choices {
@@ -534,13 +562,22 @@ dialog h2 {
   right: 0;
   z-index: 13;
   padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  align-items: center;
 }
 
-#viewer-back {
+#viewer-back,
+#viewer-prev,
+#viewer-next,
+#viewer-zoom-in,
+#viewer-zoom-out,
+#viewer-rotate {
   background: transparent;
   border: 0;
   color: #f2f2f4;
-  padding: 0.2rem 0;
+  padding: 0.2rem 0.35rem;
 }
 
 #unavailable-banner {

@@ -5,7 +5,14 @@
   const viewerOriginal = document.getElementById("viewer-original");
   const viewerVideo = document.getElementById("viewer-video");
   const viewerBack = document.getElementById("viewer-back");
+  const viewerPrev = document.getElementById("viewer-prev");
+  const viewerNext = document.getElementById("viewer-next");
+  const viewerZoomIn = document.getElementById("viewer-zoom-in");
+  const viewerZoomOut = document.getElementById("viewer-zoom-out");
+  const viewerRotate = document.getElementById("viewer-rotate");
   const unavailableBanner = document.getElementById("unavailable-banner");
+  const disconnectedBanner = document.getElementById("disconnected-banner");
+  const addBrowse = document.getElementById("add-browse");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const openOriginalBtn = document.getElementById("open-original");
   const playPreviewBtn = document.getElementById("play-preview");
@@ -80,6 +87,7 @@
   let naturalW = 0;
   let naturalH = 0;
   let fitOnLoad = false;
+  let rotation = 0;
   let renderKey = "";
   let loadGen = 0;
   let currentView = "library";
@@ -393,6 +401,13 @@
     scanStatus.textContent = text;
   }
 
+  function showDisconnected(on) {
+    if (!disconnectedBanner) {
+      return;
+    }
+    disconnectedBanner.hidden = !on;
+  }
+
   function sourcesStatus(sources) {
     let added = 0;
     let skipped = 0;
@@ -538,7 +553,9 @@
   }
 
   function applyTransform() {
-    const transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ")";
+    const cx = (naturalW || 0) / 2;
+    const cy = (naturalH || 0) / 2;
+    const transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ") translate(" + cx + "px, " + cy + "px) rotate(" + rotation + "deg) translate(" + (-cx) + "px, " + (-cy) + "px)";
     viewerImage.style.transformOrigin = "0 0";
     viewerImage.style.transform = transform;
     viewerImage.style.width = naturalW + "px";
@@ -692,6 +709,7 @@
     viewerIndex = -1;
     viewerItemId = null;
     panning = false;
+    rotation = 0;
     clearAnnotateError();
     clearAnnotateFields();
     if (peopleLabels) {
@@ -712,6 +730,9 @@
     const restoreSearch = savedSearch;
     const filterChanged = !filtersEqual(filter, restoreFilter);
     hideViewerChrome();
+    if (!skipHistory) {
+      stayOnLiveOrigin({ library: true, view: "grid" }, "", true);
+    }
     applyFilterState(restoreFilter, restoreSearch);
     function finish() {
       refreshInspectorFromItems();
@@ -922,6 +943,7 @@
     viewerItemId = item.id;
     viewer.hidden = false;
     viewerImage.draggable = false;
+    rotation = 0;
     if (!stillPreviewReady(item)) {
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true);
@@ -966,6 +988,7 @@
     viewerIndex = index;
     viewerItemId = item.id;
     viewer.hidden = false;
+    rotation = 0;
     if (!stillPreviewReady(item)) {
       showViewerPlaceholder(true);
       viewerVideo.hidden = true;
@@ -1000,6 +1023,9 @@
     savedFilter = copyFilter(filter);
     savedSearch = searchInput ? searchInput.value : filter.q;
     openViewerAt(index);
+    if (!skipHistory) {
+      stayOnLiveOrigin({ library: true, view: "viewer", id: id }, "#item/" + encodeURIComponent(id), false);
+    }
   }
 
   function visibleAnchorId() {
@@ -1153,6 +1179,7 @@
       } else {
         showStatus("", false);
       }
+      showDisconnected(false);
       items = nextItems;
       groups = nextGroups;
       const open = syncViewerIndex();
@@ -1163,6 +1190,8 @@
       if (filter.person || filter.place || filter.thing) {
         refreshInspectorFromItems();
       }
+    }).catch(function () {
+      showDisconnected(true);
     });
   }
 
@@ -1198,23 +1227,48 @@
     stepLevel(event.deltaY < 0 ? 1 : -1);
   }
 
-  function handleViewerZoom(event) {
+  function zoomAt(factor, cx, cy) {
     if (!naturalW || viewer.hidden) {
       return;
     }
     fitOnLoad = false;
-    const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
     const next = Math.min(fitScale * 16, Math.max(fitScale, scale * factor));
     if (next === scale) {
       return;
     }
-    const cx = event.clientX;
-    const cy = event.clientY;
     const ix = (cx - tx) / scale;
     const iy = (cy - ty) / scale;
     scale = next;
     tx = cx - ix * scale;
     ty = cy - iy * scale;
+    applyTransform();
+  }
+
+  function handleViewerZoom(event) {
+    const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
+    zoomAt(factor, event.clientX, event.clientY);
+  }
+
+  function zoomFromButton(factor) {
+    const stage = document.getElementById("viewer-stage") || viewer;
+    const rect = stage.getBoundingClientRect();
+    zoomAt(factor, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  function stepViewer(delta) {
+    syncViewerIndex();
+    const next = viewerIndex + delta;
+    if (next < 0 || next >= items.length) {
+      return;
+    }
+    openViewerAt(next);
+  }
+
+  function rotateStill() {
+    if (viewer.hidden) {
+      return;
+    }
+    rotation = (rotation + 90) % 360;
     applyTransform();
   }
 
@@ -1326,6 +1380,13 @@
     });
   }
 
+  function afterAddAccepted() {
+    closeAddDialog();
+    showStatus("Folder added", true);
+    renderKey = "";
+    return loadCatalog();
+  }
+
   function submitAdd() {
     const path = addPath.value.trim();
     const mode = selectedMode();
@@ -1338,18 +1399,42 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: path, mode: mode }),
     }).then(readJson).then(function () {
-      closeAddDialog();
-      renderKey = "";
-      return loadCatalog();
+      return afterAddAccepted();
     }).catch(function (err) {
+      if (err && (err.status === 409 || (err.body && err.body.error === "busy"))) {
+        return afterAddAccepted();
+      }
       addError.hidden = false;
       addError.textContent = (err && err.body && err.body.error) || "invalid-argument";
     });
   }
 
+  function browseFolder() {
+    fetch("/api/pick-folder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(function (res) {
+      return res.json().catch(function () {
+        return {};
+      }).then(function (body) {
+        if (res.status === 404 && body && body.error === "picker-unavailable") {
+          return;
+        }
+        if (res.ok && body && body.path) {
+          addPath.value = body.path;
+          syncAddEnabled();
+        }
+      });
+    }).catch(function () {});
+  }
+
   addFolderBtn.addEventListener("click", openAddDialog);
   addCancel.addEventListener("click", closeAddDialog);
   addSubmit.addEventListener("click", submitAdd);
+  if (addBrowse) {
+    addBrowse.addEventListener("click", browseFolder);
+  }
   addPath.addEventListener("input", syncAddEnabled);
   addDialog.querySelectorAll('input[name="add-mode"]').forEach(function (node) {
     node.addEventListener("change", syncAddEnabled);
@@ -1515,6 +1600,31 @@
   viewerBack.addEventListener("click", function () {
     closeViewer();
   });
+  if (viewerPrev) {
+    viewerPrev.addEventListener("click", function () {
+      stepViewer(-1);
+    });
+  }
+  if (viewerNext) {
+    viewerNext.addEventListener("click", function () {
+      stepViewer(1);
+    });
+  }
+  if (viewerZoomIn) {
+    viewerZoomIn.addEventListener("click", function () {
+      zoomFromButton(1.1);
+    });
+  }
+  if (viewerZoomOut) {
+    viewerZoomOut.addEventListener("click", function () {
+      zoomFromButton(1 / 1.1);
+    });
+  }
+  if (viewerRotate) {
+    viewerRotate.addEventListener("click", function () {
+      rotateStill();
+    });
+  }
   openOriginalBtn.addEventListener("click", function () {
     if (openOriginalBtn.disabled) {
       return;
@@ -1608,18 +1718,75 @@
 
   document.body.dataset.view = "library";
 
+  var skipHistory = false;
+
+  function liveHref(hash) {
+    return (window.location.pathname || "/") + (window.location.search || "") + (hash || "");
+  }
+
+  function stayOnLiveOrigin(state, hash, replace) {
+    var next = state || { library: true, view: "grid" };
+    try {
+      if (replace) {
+        history.replaceState(next, "", liveHref(hash));
+      } else {
+        history.pushState(next, "", liveHref(hash));
+      }
+    } catch (err) {}
+  }
+
+  stayOnLiveOrigin({ library: true, view: "grid" }, "", true);
+  stayOnLiveOrigin({ library: true, view: "grid" }, "", false);
+
+  window.addEventListener("popstate", function (event) {
+    var state = event.state;
+    if (!state || !state.library) {
+      stayOnLiveOrigin(
+        { library: true, view: viewer.hidden ? "grid" : "viewer", id: viewerItemId },
+        viewer.hidden ? "" : ("#item/" + encodeURIComponent(viewerItemId || "")),
+        false
+      );
+      return;
+    }
+    skipHistory = true;
+    try {
+      if (state.view === "viewer" && state.id) {
+        if (viewer.hidden || viewerItemId !== state.id) {
+          openViewer(state.id);
+        }
+      } else if (!viewer.hidden) {
+        closeViewer();
+      } else {
+        stayOnLiveOrigin({ library: true, view: "grid" }, "", false);
+      }
+    } finally {
+      skipHistory = false;
+    }
+  });
+
   fetch("/api/settings").then(readJson).then(function (data) {
     applySettings(data);
     sortSelect.value = settings.sort;
     dirSelect.value = settings.dir;
     zoomSlider.value = String(levelIndex(settings.zoomLevel));
+    showDisconnected(false);
     return loadCatalog();
   }).catch(function () {
+    showDisconnected(true);
     return loadCatalog();
   });
 
   pollTimer = window.setInterval(function () {
-    loadCatalog();
+    fetch("/api/health").then(function (res) {
+      if (!res.ok) {
+        showDisconnected(true);
+        return;
+      }
+      showDisconnected(false);
+      return loadCatalog();
+    }).catch(function () {
+      showDisconnected(true);
+    });
   }, 1000);
   window.addEventListener("beforeunload", function () {
     window.clearInterval(pollTimer);
