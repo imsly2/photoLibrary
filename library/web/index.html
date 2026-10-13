@@ -11,6 +11,11 @@
   <header>
     <h1>Library</h1>
     <input type="search" id="search" placeholder="Search" aria-label="Search" autocomplete="off">
+    <div id="search-chips" role="group" aria-label="Search">
+      <button type="button" id="chip-people" data-scope="people" aria-pressed="false">People</button>
+      <button type="button" id="chip-places" data-scope="places" aria-pressed="false">Places</button>
+      <button type="button" id="chip-things" data-scope="things" aria-pressed="false">Things</button>
+    </div>
     <div class="toolbar">
       <label class="toolbar-field">Sort
         <select id="sort" aria-label="Sort">
@@ -33,6 +38,11 @@
     <main id="grid">
       <p>No pictures yet</p>
     </main>
+    <aside id="inspector" hidden>
+      <p id="inspector-name"></p>
+      <p id="inspector-count"></p>
+      <ul id="inspector-filenames"></ul>
+    </aside>
     <aside class="levels" aria-label="Zoom level">
       <label class="level-slider-label" for="zoom-slider">Zoom</label>
       <input type="range" id="zoom-slider" min="0" max="3" step="1" value="0" aria-label="Zoom level">
@@ -78,8 +88,20 @@
     <p id="unavailable-banner" hidden>Original is not on this computer</p>
     <div id="viewer-stage">
       <img id="viewer-image" alt="">
+      <img id="viewer-original" alt="" hidden>
       <video id="viewer-video" hidden playsinline></video>
       <p id="viewer-placeholder" hidden>Preview is not available</p>
+    </div>
+    <div id="viewer-labels">
+      <div id="viewer-place" class="label-row"></div>
+      <div id="viewer-people" class="label-row"></div>
+      <div id="viewer-things" class="label-row"></div>
+      <div id="viewer-fields">
+        <input type="text" id="person-field" aria-label="Person" autocomplete="off" spellcheck="false">
+        <input type="text" id="place-field" aria-label="Place" autocomplete="off" spellcheck="false">
+        <input type="text" id="thing-field" aria-label="Thing" autocomplete="off" spellcheck="false">
+      </div>
+      <p id="annotate-error" hidden></p>
     </div>
     <div id="viewer-actions">
       <button type="button" id="open-original">Open original</button>

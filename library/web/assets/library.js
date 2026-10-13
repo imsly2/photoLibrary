@@ -2,12 +2,26 @@
   const main = document.getElementById("grid");
   const viewer = document.getElementById("viewer");
   const viewerImage = document.getElementById("viewer-image");
+  const viewerOriginal = document.getElementById("viewer-original");
   const viewerVideo = document.getElementById("viewer-video");
   const viewerBack = document.getElementById("viewer-back");
   const unavailableBanner = document.getElementById("unavailable-banner");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const openOriginalBtn = document.getElementById("open-original");
   const playPreviewBtn = document.getElementById("play-preview");
+  const searchInput = document.getElementById("search");
+  const searchChips = document.getElementById("search-chips");
+  const inspector = document.getElementById("inspector");
+  const inspectorName = document.getElementById("inspector-name");
+  const inspectorCount = document.getElementById("inspector-count");
+  const inspectorFiles = document.getElementById("inspector-filenames");
+  const peopleLabels = document.getElementById("viewer-people");
+  const placeLabels = document.getElementById("viewer-place");
+  const thingsLabels = document.getElementById("viewer-things");
+  const personField = document.getElementById("person-field");
+  const placeField = document.getElementById("place-field");
+  const thingField = document.getElementById("thing-field");
+  const annotateError = document.getElementById("annotate-error");
   const addFolderBtn = document.getElementById("add-folder-btn");
   const addDialog = document.getElementById("add-folder");
   const addPath = document.getElementById("add-path");
@@ -28,6 +42,7 @@
   const PLACEHOLDER = "Preview is not available";
   const LEVELS = ["years", "months", "days", "all"];
   const EMPTY = "No pictures yet";
+  const EMPTY_SEARCH = "No matching pictures";
 
   let settings = {
     sort: "date",
@@ -40,8 +55,14 @@
   let groups = [];
   let hoveredId = null;
   let viewerIndex = -1;
+  let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "" };
+  let savedSearch = "";
+  let filter = { q: "", scope: "", person: "", place: "", thing: "" };
+  let searchTimer = 0;
+  let annotateBusy = false;
   let pollTimer = 0;
   let scanning = false;
   let levelWheelLock = false;
@@ -67,12 +88,171 @@
     const params = new URLSearchParams();
     params.set("sort", settings.sort);
     params.set("dir", settings.dir);
+    const merged = {};
+    if (filter.q) {
+      merged.q = filter.q;
+    }
+    if (filter.scope) {
+      merged.scope = filter.scope;
+    }
+    if (filter.person) {
+      merged.person = filter.person;
+    }
+    if (filter.place) {
+      merged.place = filter.place;
+    }
+    if (filter.thing) {
+      merged.thing = filter.thing;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
-        params.set(key, extra[key]);
+        merged[key] = extra[key];
       });
     }
+    Object.keys(merged).forEach(function (key) {
+      if (merged[key] !== "" && merged[key] != null) {
+        params.set(key, merged[key]);
+      }
+    });
     return params.toString();
+  }
+
+  function syncViewerIndex() {
+    if (!viewerItemId) {
+      viewerIndex = -1;
+      return null;
+    }
+    const idx = items.findIndex(function (item) {
+      return item.id === viewerItemId;
+    });
+    viewerIndex = idx;
+    return idx >= 0 ? items[idx] : null;
+  }
+
+  function hasActiveFilter() {
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing);
+  }
+
+  function copyFilter(src) {
+    return {
+      q: src.q || "",
+      scope: src.scope || "",
+      person: src.person || "",
+      place: src.place || "",
+      thing: src.thing || "",
+    };
+  }
+
+  function filtersEqual(a, b) {
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing;
+  }
+
+  function syncFilterDataset() {
+    main.dataset.q = filter.q;
+    main.dataset.scope = filter.scope;
+    main.dataset.person = filter.person;
+    main.dataset.place = filter.place;
+    main.dataset.thing = filter.thing;
+  }
+
+  function syncChips() {
+    if (!searchChips) {
+      return;
+    }
+    searchChips.querySelectorAll("button[data-scope]").forEach(function (btn) {
+      const on = filter.scope === btn.getAttribute("data-scope");
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function hideInspector() {
+    if (!inspector) {
+      return;
+    }
+    inspector.hidden = true;
+    inspector.removeAttribute("data-entity-id");
+    inspector.removeAttribute("data-kind");
+    inspector.removeAttribute("data-count");
+    if (inspectorName) {
+      inspectorName.textContent = "";
+    }
+    if (inspectorCount) {
+      inspectorCount.textContent = "";
+    }
+    if (inspectorFiles) {
+      inspectorFiles.innerHTML = "";
+    }
+  }
+
+  function showInspector(kind, id, name, matchingItems) {
+    if (!inspector || !inspectorName || !inspectorCount || !inspectorFiles) {
+      return;
+    }
+    const seen = {};
+    const filenames = [];
+    let count = 0;
+    (matchingItems || []).forEach(function (item) {
+      if (!item || !item.id || seen[item.id]) {
+        return;
+      }
+      seen[item.id] = true;
+      count += 1;
+      filenames.push(item.filename || "");
+    });
+    inspector.hidden = false;
+    inspector.dataset.entityId = id;
+    inspector.dataset.kind = kind;
+    inspector.dataset.count = String(count);
+    inspectorName.textContent = name || "";
+    inspectorCount.textContent = String(count);
+    inspectorFiles.innerHTML = "";
+    filenames.forEach(function (filename) {
+      const li = document.createElement("li");
+      li.textContent = filename;
+      inspectorFiles.appendChild(li);
+    });
+  }
+
+  function refreshInspectorFromItems() {
+    let kind = "";
+    let id = "";
+    if (filter.person) {
+      kind = "person";
+      id = filter.person;
+    } else if (filter.place) {
+      kind = "place";
+      id = filter.place;
+    } else if (filter.thing) {
+      kind = "thing";
+      id = filter.thing;
+    }
+    if (!kind || !id) {
+      hideInspector();
+      return;
+    }
+    let name = "";
+    items.forEach(function (item) {
+      const entities = (item && item.entities) || {};
+      const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
+      (list || []).forEach(function (rec) {
+        if (rec && rec.id === id && rec.name) {
+          name = rec.name;
+        }
+      });
+    });
+    showInspector(kind, id, name, items);
+  }
+
+  function applyFilterState(next, searchValue) {
+    filter = copyFilter(next);
+    if (searchInput) {
+      searchInput.value = searchValue != null ? searchValue : filter.q;
+    }
+    syncChips();
+    syncFilterDataset();
+    if (!(filter.person || filter.place || filter.thing)) {
+      hideInspector();
+    }
   }
 
   function readJson(res) {
@@ -307,10 +487,17 @@
   }
 
   function applyTransform() {
+    const transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ")";
     viewerImage.style.transformOrigin = "0 0";
-    viewerImage.style.transform = "translate(" + tx + "px, " + ty + "px) scale(" + scale + ")";
+    viewerImage.style.transform = transform;
     viewerImage.style.width = naturalW + "px";
     viewerImage.style.height = naturalH + "px";
+    if (viewerOriginal) {
+      viewerOriginal.style.transformOrigin = "0 0";
+      viewerOriginal.style.transform = transform;
+      viewerOriginal.style.width = naturalW + "px";
+      viewerOriginal.style.height = naturalH + "px";
+    }
   }
 
   function fitViewer() {
@@ -329,6 +516,16 @@
     applyTransform();
   }
 
+  function resetViewerOriginal() {
+    if (!viewerOriginal) {
+      return;
+    }
+    viewerOriginal.onload = null;
+    viewerOriginal.onerror = null;
+    viewerOriginal.removeAttribute("src");
+    viewerOriginal.hidden = true;
+  }
+
   function resetViewerVideo() {
     viewerVideo.pause();
     viewerVideo.removeAttribute("src");
@@ -337,6 +534,35 @@
     viewerVideo.removeAttribute("data-using-proxy");
     viewerVideo.load();
     viewerVideo.hidden = true;
+  }
+
+  function loadViewerOriginal(item) {
+    if (!viewerOriginal || !item || item.available === false || item.kind === "video") {
+      resetViewerOriginal();
+      return;
+    }
+    const itemId = item.id;
+    const url = "/api/media/" + encodeURIComponent(itemId) + "?which=original";
+    const probe = new Image();
+    probe.onload = function () {
+      if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId || viewer.hidden) {
+        return;
+      }
+      viewerOriginal.onload = function () {
+        if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId || viewer.hidden) {
+          return;
+        }
+        viewerOriginal.hidden = false;
+        applyTransform();
+      };
+      viewerOriginal.onerror = function () {
+        resetViewerOriginal();
+      };
+      viewerOriginal.src = url;
+      viewerOriginal.setAttribute("data-which", "original");
+    };
+    probe.onerror = function () {};
+    probe.src = url;
   }
 
   function proxyReady(item) {
@@ -380,23 +606,76 @@
     viewerPlaceholder.hidden = !show;
     if (show) {
       viewerImage.hidden = true;
+      resetViewerOriginal();
     }
   }
 
-  function closeViewer() {
+  function clearAnnotateError() {
+    if (!annotateError) {
+      return;
+    }
+    annotateError.hidden = true;
+    annotateError.textContent = "";
+  }
+
+  function clearAnnotateFields() {
+    [personField, placeField, thingField].forEach(function (field) {
+      if (!field) {
+        return;
+      }
+      field.value = "";
+      delete field.dataset.committed;
+    });
+  }
+
+  function hideViewerChrome() {
     viewer.hidden = true;
     viewerImage.removeAttribute("src");
     viewerImage.hidden = false;
+    resetViewerOriginal();
     resetViewerVideo();
     unavailableBanner.hidden = true;
     viewerPlaceholder.hidden = true;
     openOriginalBtn.disabled = true;
     playPreviewBtn.disabled = true;
     viewerIndex = -1;
+    viewerItemId = null;
     panning = false;
-    window.requestAnimationFrame(function () {
-      main.scrollTop = savedScroll;
-    });
+    clearAnnotateError();
+    clearAnnotateFields();
+    if (peopleLabels) {
+      peopleLabels.innerHTML = "";
+    }
+    if (placeLabels) {
+      placeLabels.innerHTML = "";
+    }
+    if (thingsLabels) {
+      thingsLabels.innerHTML = "";
+    }
+  }
+
+  function closeViewer() {
+    const restoreLevel = savedLevel;
+    const restoreScroll = savedScroll;
+    const restoreFilter = copyFilter(savedFilter);
+    const restoreSearch = savedSearch;
+    const filterChanged = !filtersEqual(filter, restoreFilter);
+    hideViewerChrome();
+    applyFilterState(restoreFilter, restoreSearch);
+    function finish() {
+      refreshInspectorFromItems();
+      window.requestAnimationFrame(function () {
+        main.scrollTop = restoreScroll;
+      });
+    }
+    if (settings.zoomLevel !== restoreLevel) {
+      setLevel(restoreLevel, true).then(finish);
+    } else if (filterChanged) {
+      renderKey = "";
+      loadCatalog().then(finish);
+    } else {
+      finish();
+    }
   }
 
   function originalVideoType(item) {
@@ -451,10 +730,10 @@
   }
 
   function toggleViewerPlay() {
-    if (viewerIndex < 0 || viewer.hidden) {
+    if (viewer.hidden) {
       return;
     }
-    const item = items[viewerIndex];
+    const item = syncViewerIndex();
     if (!item || item.kind !== "video") {
       return;
     }
@@ -479,22 +758,68 @@
     }
   }
 
+  function renderViewerLabels(item) {
+    if (peopleLabels) {
+      peopleLabels.innerHTML = "";
+    }
+    if (placeLabels) {
+      placeLabels.innerHTML = "";
+    }
+    if (thingsLabels) {
+      thingsLabels.innerHTML = "";
+    }
+    if (!item) {
+      return;
+    }
+    const entities = item.entities || {};
+    function addLabels(node, kind, records) {
+      if (!node) {
+        return;
+      }
+      (records || []).forEach(function (rec) {
+        if (!rec || !rec.id || !rec.name) {
+          return;
+        }
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "entity-label";
+        btn.dataset.entityKind = kind;
+        btn.dataset.entityId = rec.id;
+        btn.textContent = rec.name;
+        btn.addEventListener("click", function () {
+          filterByEntity(kind, rec.id);
+        });
+        node.appendChild(btn);
+      });
+    }
+    addLabels(peopleLabels, "person", entities.people);
+    addLabels(placeLabels, "place", entities.places);
+    addLabels(thingsLabels, "thing", entities.things);
+  }
+
   function openStillViewer(item, index) {
     resetViewerVideo();
+    resetViewerOriginal();
     syncViewerChrome(item);
+    renderViewerLabels(item);
     const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
-    const same = viewerIndex === index && !viewer.hidden && viewerImage.getAttribute("src") === url;
+    const same = viewerItemId === item.id && !viewer.hidden && viewerImage.getAttribute("src") === url;
     viewerIndex = index;
+    viewerItemId = item.id;
     viewer.hidden = false;
     viewerImage.draggable = false;
     if (!stillPreviewReady(item)) {
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true);
+      if (item.available !== false) {
+        loadViewerOriginal(item);
+      }
       return;
     }
     showViewerPlaceholder(false);
     viewerImage.hidden = false;
     if (same && viewerImage.complete && viewerImage.naturalWidth > 0) {
+      loadViewerOriginal(item);
       return;
     }
     fitOnLoad = true;
@@ -507,20 +832,25 @@
         fitViewer();
         fitOnLoad = false;
       }
+      loadViewerOriginal(item);
     };
     viewerImage.onerror = function () {
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true);
     };
     viewerImage.src = url;
+    viewerImage.setAttribute("data-which", "preview");
   }
 
   function openVideoViewer(item, index) {
     viewerImage.removeAttribute("src");
     viewerImage.hidden = true;
+    resetViewerOriginal();
     resetViewerVideo();
     syncViewerChrome(item);
+    renderViewerLabels(item);
     viewerIndex = index;
+    viewerItemId = item.id;
     viewer.hidden = false;
     if (!stillPreviewReady(item)) {
       showViewerPlaceholder(true);
@@ -553,6 +883,8 @@
     }
     savedScroll = main.scrollTop;
     savedLevel = settings.zoomLevel;
+    savedFilter = copyFilter(filter);
+    savedSearch = searchInput ? searchInput.value : filter.q;
     openViewerAt(index);
   }
 
@@ -635,12 +967,13 @@
     zoomSlider.value = String(levelIndex(level));
     sortSelect.value = settings.sort;
     dirSelect.value = settings.dir;
+    syncFilterDataset();
     if (!items.length) {
-      main.innerHTML = "<p>" + EMPTY + "</p>";
-      renderKey = "empty";
+      main.innerHTML = "<p>" + (hasActiveFilter() ? EMPTY_SEARCH : EMPTY) + "</p>";
+      renderKey = hasActiveFilter() ? "empty-search" : "empty";
       return;
     }
-    const key = level + "|" + settings.sort + "|" + settings.dir + "|" + groups.map(function (group) {
+    const key = level + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
       return group.key + ":" + (group.itemIds || []).join(",");
     }).join(";");
     if (key === renderKey) {
@@ -702,7 +1035,14 @@
       }
       items = nextItems;
       groups = nextGroups;
+      const open = syncViewerIndex();
+      if (open) {
+        renderViewerLabels(open);
+      }
       render();
+      if (filter.person || filter.place || filter.thing) {
+        refreshInspectorFromItems();
+      }
     });
   }
 
@@ -765,6 +1105,105 @@
     }
     const tag = (node.tagName || "").toLowerCase();
     return tag === "input" || tag === "textarea" || tag === "select" || node.isContentEditable;
+  }
+
+  function filterByEntity(kind, id) {
+    if (!id) {
+      return;
+    }
+    filter.q = "";
+    filter.scope = "";
+    filter.person = "";
+    filter.place = "";
+    filter.thing = "";
+    if (kind === "person") {
+      filter.person = id;
+    } else if (kind === "place") {
+      filter.place = id;
+    } else if (kind === "thing") {
+      filter.thing = id;
+    }
+    if (searchInput) {
+      searchInput.value = "";
+    }
+    syncChips();
+    syncFilterDataset();
+    renderKey = "";
+    const keepId = viewerItemId;
+    return loadCatalog().then(function () {
+      refreshInspectorFromItems();
+      if (keepId && !viewer.hidden) {
+        const index = items.findIndex(function (item) {
+          return item.id === keepId;
+        });
+        if (index >= 0) {
+          viewerIndex = index;
+          viewerItemId = keepId;
+          renderViewerLabels(items[index]);
+        }
+      }
+    });
+  }
+
+  function applySearchFromBox() {
+    filter.q = searchInput ? searchInput.value : "";
+    filter.person = "";
+    filter.place = "";
+    filter.thing = "";
+    hideInspector();
+    syncChips();
+    syncFilterDataset();
+    renderKey = "";
+    return loadCatalog();
+  }
+
+  function commitAnnotate(field, kind) {
+    if (!field || annotateBusy || viewerIndex < 0 || viewer.hidden) {
+      return;
+    }
+    const item = syncViewerIndex();
+    if (!item) {
+      return;
+    }
+    const value = field.value.trim();
+    if (!value) {
+      return;
+    }
+    if (field.dataset.committed === value) {
+      return;
+    }
+    const payload = {};
+    if (kind === "person") {
+      payload.people = [{ name: value }];
+    } else if (kind === "place") {
+      payload.places = [{ name: value }];
+    } else if (kind === "thing") {
+      payload.things = [{ name: value }];
+    } else {
+      return;
+    }
+    clearAnnotateError();
+    annotateBusy = true;
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/annotations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(readJson).then(function (updated) {
+      annotateBusy = false;
+      field.dataset.committed = value;
+      field.value = "";
+      delete field.dataset.committed;
+      if (viewerIndex >= 0) {
+        items[viewerIndex] = updated;
+        renderViewerLabels(updated);
+      }
+    }).catch(function (err) {
+      annotateBusy = false;
+      if (annotateError) {
+        annotateError.hidden = false;
+        annotateError.textContent = (err && err.body && err.body.error) || "invalid-argument";
+      }
+    });
   }
 
   function submitAdd() {
@@ -834,16 +1273,19 @@
   }, { passive: false });
 
   document.addEventListener("keydown", function (event) {
+    if ((event.ctrlKey || event.metaKey) && (event.key === "f" || event.key === "F")) {
+      if (searchInput) {
+        event.preventDefault();
+        searchInput.focus();
+      }
+      return;
+    }
     if (event.key === "Escape") {
       if (addDialog.open) {
         return;
       }
       if (!viewer.hidden) {
-        if (settings.zoomLevel !== savedLevel) {
-          setLevel(savedLevel, true).then(closeViewer);
-        } else {
-          closeViewer();
-        }
+        closeViewer();
       }
       return;
     }
@@ -857,11 +1299,13 @@
     }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
+      syncViewerIndex();
       if (viewerIndex > 0) {
         openViewerAt(viewerIndex - 1);
       }
     } else if (event.key === "ArrowRight") {
       event.preventDefault();
+      syncViewerIndex();
       if (viewerIndex >= 0 && viewerIndex < items.length - 1) {
         openViewerAt(viewerIndex + 1);
       }
@@ -910,17 +1354,13 @@
     toggleViewerPlay();
   });
   viewerBack.addEventListener("click", function () {
-    if (settings.zoomLevel !== savedLevel) {
-      setLevel(savedLevel, true).then(closeViewer);
-    } else {
-      closeViewer();
-    }
+    closeViewer();
   });
   openOriginalBtn.addEventListener("click", function () {
-    if (openOriginalBtn.disabled || viewerIndex < 0) {
+    if (openOriginalBtn.disabled) {
       return;
     }
-    const item = items[viewerIndex];
+    const item = syncViewerIndex();
     if (!item || item.available === false) {
       return;
     }
@@ -938,10 +1378,10 @@
     viewerImage.src = originalUrl;
   });
   playPreviewBtn.addEventListener("click", function () {
-    if (playPreviewBtn.disabled || viewerIndex < 0) {
+    if (playPreviewBtn.disabled) {
       return;
     }
-    const item = items[viewerIndex];
+    const item = syncViewerIndex();
     if (!item || !proxyReady(item)) {
       return;
     }
@@ -957,6 +1397,53 @@
       play.catch(function () {});
     }
   });
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(applySearchFromBox, 150);
+    });
+    searchInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        window.clearTimeout(searchTimer);
+        applySearchFromBox();
+      }
+    });
+  }
+  if (searchChips) {
+    searchChips.querySelectorAll("button[data-scope]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const scope = btn.getAttribute("data-scope") || "";
+        filter.scope = filter.scope === scope ? "" : scope;
+        filter.person = "";
+        filter.place = "";
+        filter.thing = "";
+        hideInspector();
+        syncChips();
+        syncFilterDataset();
+        renderKey = "";
+        loadCatalog();
+      });
+    });
+  }
+  function bindAnnotateField(field, kind) {
+    if (!field) {
+      return;
+    }
+    field.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        commitAnnotate(field, kind);
+      }
+    });
+    field.addEventListener("blur", function () {
+      commitAnnotate(field, kind);
+    });
+  }
+  bindAnnotateField(personField, "person");
+  bindAnnotateField(placeField, "place");
+  bindAnnotateField(thingField, "thing");
 
   fetch("/api/settings").then(readJson).then(function (data) {
     applySettings(data);
