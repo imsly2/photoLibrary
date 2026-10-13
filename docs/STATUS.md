@@ -19,6 +19,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - S04 / M1 is green: Add folder (linked), four zoom levels, date/location/name
   sort, and open one still. Closes F9 and F11. F10 browse subset is present
   but the Check stays open until S09.
+- S05 is green: copy-here and serve-from-there, collision suffixes, interrupted
+  copy resume, convert-after-seed, move plus volume remap, and copy undo that
+  leaves original bytes. Closes F1 and F4. F9 and F11 stayed green after S05.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -28,15 +31,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**3 / 22 Checks = 13.6% tested.** F6, F9, and F11 have fresh-verifier artifacts.
+**5 / 22 Checks = 22.7% tested.** F1, F4, F6, F9, and F11 have fresh-verifier artifacts.
 M1 browse is recorded. The other commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
-| F1 | Two folders | pending | — | Not run; no artifact |
+| F1 | Two folders | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F1` [verify-1](features/S05/Rev1.0/assets/verify-1/f1/result.json) |
 | F2 | Launch | pending | — | Not run; no artifact |
 | F3 | CLI / HTTP | pending | — | Not run; no artifact |
-| F4 | Add folder | pending | — | Not run; no artifact |
+| F4 | Add folder | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F4` [verify-1](features/S05/Rev1.0/assets/verify-1/f4/result.json) |
 | F5 | Scan | pending | — | Not run; no artifact |
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
 | F7 | Previews | pending | — | Not run; no artifact |
@@ -144,4 +147,15 @@ environments must be supplied by the build or F2 remains pending; do not claim
   [years](features/S04/Rev1.0/assets/verify-1/years.png),
   [all](features/S04/Rev1.0/assets/verify-1/all.png),
   [viewer](features/S04/Rev1.0/assets/verify-1/viewer.png).
-  Do not wait for taste. Next action is S05 (closes F1, F4).
+  Do not wait for taste. Next action was S05 (closes F1, F4).
+- 2026-10-13 — S05 green. Closes F1 and F4 (**5/22**). Fresh Grok 4.7
+  verifier [S05](features/S05/Rev1.0/assets/verify-1/result.json) 114
+  assertions, [F1](features/S05/Rev1.0/assets/verify-1/f1/result.json) 22,
+  [F4](features/S05/Rev1.0/assets/verify-1/f4/result.json) 94, all exit 0
+  at `244771d`. F9 and F11 stayed green after S05
+  ([F9](features/S04/Rev1.0/assets/after-s05/f9/result.json) 45,
+  [F11](features/S04/Rev1.0/assets/after-s05/f11/result.json) 26, exit 0).
+  Committed fixture mtimes already matched the manifest, so none were pinned.
+  Original hashes unchanged (26/26). Collisions wrote `photo_2.jpg` and
+  `photo_3.jpg`. Moved library originals still open. Undo left copy bytes
+  after the catalog records were removed. Next action is S06 (closes F5, F7).
