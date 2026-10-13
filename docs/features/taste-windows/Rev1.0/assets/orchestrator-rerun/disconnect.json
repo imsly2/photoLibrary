@@ -1,0 +1,9 @@
+{
+  "healthAfterAbort": {
+    "status": 200,
+    "body": {
+      "ok": true
+    }
+  },
+  "banner": "Library is not responding"
+}

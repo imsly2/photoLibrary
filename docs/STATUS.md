@@ -47,6 +47,14 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - S12 is green: Live pair is one item on the still hash with two
   locations; LIVE badge; hover proxy; missing motion falls back to still.
   Closes F19. F5, F7, F10, F14, F16 stayed green.
+- Windows taste Track A is on this branch for Steve: `Library.bat`,
+  native Browse picker, 202-before-finish Add (dialog closes, scan
+  progress, items as ready), live-origin Back (no jump to a stale
+  18765 port), and non-fatal disconnect. Does not close F2. F4 stayed
+  green. S13/S14 and macOS/Linux F2 are pinned. Viewer/grid chrome is
+  a sibling track. Evidence:
+  [TASTE-WIN](features/taste-windows/Rev1.0/assets/orchestrator-rerun/result.json),
+  [F4 rerun](features/taste-windows/Rev1.0/assets/orchestrator-rerun/f4/result.json).
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -64,7 +72,7 @@ M1, M2, and M3 are recorded. Settings, keyboard, launch, and the full rerun rema
 | F1 | Two folders | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F1` [verify-1](features/S05/Rev1.0/assets/verify-1/f1/result.json); orchestrator rerun [f1](features/S05/Rev1.0/assets/orchestrator-rerun/f1/result.json) |
 | F2 | Launch | pending | — | Not run; no artifact |
 | F3 | CLI / HTTP | pending | — | Not run; no artifact |
-| F4 | Add folder | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F4` [verify-1](features/S05/Rev1.0/assets/verify-1/f4/result.json); orchestrator rerun [f4](features/S05/Rev1.0/assets/orchestrator-rerun/f4/result.json) |
+| F4 | Add folder | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d`; Track A rerun `c4b953e` | `python -m tests.qa check F4` [verify-1](features/S05/Rev1.0/assets/verify-1/f4/result.json); orchestrator rerun [f4](features/S05/Rev1.0/assets/orchestrator-rerun/f4/result.json); Track A [f4](features/taste-windows/Rev1.0/assets/orchestrator-rerun/f4/result.json) |
 | F5 | Scan | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F5` [verify-1](features/S06/Rev1.0/assets/verify-1/f5/result.json); orchestrator rerun [f5](features/S06/Rev1.0/assets/orchestrator-rerun/f5/result.json) |
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
 | F7 | Previews | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F7` [verify-1](features/S06/Rev1.0/assets/verify-1/f7/result.json); orchestrator rerun [f7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) |
