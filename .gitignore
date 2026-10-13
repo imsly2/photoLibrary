@@ -18,6 +18,13 @@ docs/features/**/unmarked-root/
 docs/features/**/offline-history/
 docs/features/**/lock-holder.log
 docs/features/**/write.lock
+docs/features/**/catalog-first/
+docs/features/**/catalog-second/
+docs/features/**/interrupt-media/
+docs/features/**/skip-extra/
+docs/features/**/skip-media/
+docs/features/**/impl-*/
+docs/features/**/test-volumes.json
 
 # Python
 __pycache__/
