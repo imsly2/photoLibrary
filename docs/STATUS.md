@@ -44,6 +44,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - S11 / M3 tour is green: `GET /api/globe/tour` lists both GPS places and
   omits no-exif; Play orbits, eases, shows preview/proxy, wraps; Esc
   freezes the camera. Closes F13. Do not wait for taste.
+- S12 is green: Live pair is one item on the still hash with two
+  locations; LIVE badge; hover proxy; missing motion falls back to still.
+  Closes F19. F5, F7, F10, F14, F16 stayed green.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -53,8 +56,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**15 / 22 Checks = 68.2% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, and F20 have fresh-verifier artifacts.
-M1, M2, and M3 are recorded. Later commands remain pending.
+**16 / 22 Checks = 72.7% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F19, and F20 have fresh-verifier artifacts.
+M1, M2, and M3 are recorded. Settings, keyboard, launch, and the full rerun remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
@@ -76,7 +79,7 @@ M1, M2, and M3 are recorded. Later commands remain pending.
 | F16 | Unavailable originals | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F16` [verify-1](features/S07/Rev1.0/assets/verify-1/f16/result.json); orchestrator rerun [f16](features/S07/Rev1.0/assets/orchestrator-rerun/f16/result.json) |
 | F17 | Settings | pending | — | Not run; no artifact |
 | F18 | Undo / Esc / clipboard / log | pending | — | Not run; no artifact |
-| F19 | Live Photos | pending | — | Not run; no artifact |
+| F19 | Live Photos | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `fccfbe6` + S12 | `python -m tests.qa check F19` [verify-1](features/S12/Rev1.0/assets/verify-1/f19/result.json); orchestrator rerun [f19](features/S12/Rev1.0/assets/orchestrator-rerun/f19/result.json) |
 | F20 | Rebuild | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `59ab5ab` | `python -m tests.qa check F20` [verify-1](features/S08/Rev1.0/assets/verify-1/f20/result.json); orchestrator rerun [f20](features/S08/Rev1.0/assets/orchestrator-rerun/f20/result.json) |
 | F21 | Keyboard | pending | — | Not run; no artifact |
 | F22 | Web page states | pending | — | Not run; no artifact |
@@ -267,6 +270,18 @@ environments must be supplied by the build or F2 remains pending; do not claim
   [F13](features/S11/Rev1.0/assets/orchestrator-rerun/f13/result.json)
   also exit 0. F12 stayed green after the S10 `page-no-play` retarget.
   Next action is S12 (closes F19).
+- 2026-10-13 — S12 green. Closes F19 (**16/22**). Fresh Grok 4.7
+  verifier [S12](features/S12/Rev1.0/assets/verify-1/result.json) 72
+  assertions, [F19](features/S12/Rev1.0/assets/verify-1/f19/result.json)
+  72, both exit 0. Live id is still hash `db41b641…`; LIVE badge;
+  hover proxy; missing motion stays on the still.
+  [live](features/S12/Rev1.0/assets/verify-1/live.png).
+  F5/F7/F10/F14/F16 stayed green in
+  [regression](features/S12/Rev1.0/assets/verify-1/regression.json).
+  Orchestrator rerun
+  [F19](features/S12/Rev1.0/assets/orchestrator-rerun/f19/result.json)
+  also exit 0. `quad.heic` / `quad.heif` stay error + placeholder.
+  Next action is S13 (closes F17, F18, F21).
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.

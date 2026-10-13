@@ -1,0 +1,379 @@
+PASS pair-scan-exit
+PASS one-live-item: ['db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1']
+PASS live-kind: live
+PASS live-id-is-still-hash: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS live-cid: 11111111-2222-4333-8444-555555555555
+PASS live-two-locations: 2
+PASS live-components: ['motion', 'still']
+PASS live-still-primary: 1
+PASS live-motion-primary: 1
+PASS no-stolen-second-live
+PASS orphan-still-one: {"count": 1, "kinds": ["photo"], "ids": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS orphan-still-photo: photo
+PASS orphan-still-id: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS orphan-still-one-location
+PASS orphan-motion-one: {"count": 1, "kinds": ["video"], "ids": ["594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2"]}
+PASS orphan-motion-video: video
+PASS orphan-motion-id: 594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2
+PASS orphan-motion-not-still-hash
+PASS reverse-motion-only-video
+PASS reverse-one-item: {"count": 1, "liveIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "kinds": ["live"]}
+PASS reverse-one-live: {"count": 1, "liveIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "kinds": ["live"]}
+PASS reverse-id-still-hash: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS reverse-did-not-keep-motion-id
+PASS reverse-two-locations
+PASS restart-still-one-item: {"count": 1, "liveIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS restart-same-live-id: {"count": 1, "liveIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS mismatch-two-items: {"count": 2, "kinds": ["video", "photo"], "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "cids": [null, "11111111-2222-4333-8444-555555555555"]}
+PASS mismatch-no-live: {"count": 2, "kinds": ["video", "photo"], "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "cids": [null, "11111111-2222-4333-8444-555555555555"]}
+PASS mismatch-kept-still-id: {"count": 2, "kinds": ["video", "photo"], "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "cids": [null, "11111111-2222-4333-8444-555555555555"]}
+PASS mismatch-kept-clip-id: {"count": 2, "kinds": ["video", "photo"], "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "cids": [null, "11111111-2222-4333-8444-555555555555"]}
+PASS identifier-not-filename-one: {"count": 1, "kinds": ["live"], "ids": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS identifier-not-filename-id: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS absorb-motion-present: 1
+PASS absorb-annotate-exit
+PASS absorb-history-had-motion: ["catalog/items/594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2.json"]
+PASS absorb-one-live: {"count": 1, "liveIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "faces": [{"personId": "person_3dc5f798b3ce"}], "things": [{"thingId": "thing_8b5137b49376"}]}
+PASS absorb-id-still-hash: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS absorb-kept-faces: [{"personId": "person_3dc5f798b3ce"}]
+PASS absorb-kept-things: [{"thingId": "thing_8b5137b49376"}]
+PASS absorb-history-now-live: ["catalog/items/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1.json"]
+PASS absorb-history-dropped-motion: ["catalog/items/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1.json"]
+PASS absorb-motion-file-gone
+PASS live-annotate-exit
+PASS live-annotate-stays
+PASS live-annotate-place: place_6c43ce6d6d39
+PASS live-all-four-ready: {"thumb": "ready", "preview": "ready", "poster": "ready", "proxy": "ready"}
+PASS live-motion-available
+PASS playwright-import
+PASS live-cell-present: 1
+PASS live-badge-text: LIVE
+PASS hover-plays-one: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS hover-muted: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"]}
+PASS hover-uses-proxy: http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=proxy
+PASS hover-leave-restores-still: db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1
+PASS live-shot-1280x720: 1280x720
+PASS viewer-still-first: {"img": "http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=preview", "videoHidden": true}
+PASS viewer-space-plays: {"hidden": false, "paused": false, "src": "http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=original&component=motion", "usingProxy": false}
+PASS missing-motion-live
+PASS missing-motion-flag: false
+PASS missing-motion-stills-ready: {"thumb": "ready", "preview": "ready", "poster": "queued", "proxy": "queued"}
+PASS missing-motion-hover-still: {"videoCount": 0, "playingCount": 0, "muted": true, "volumeZero": true, "looped": true, "ids": []}
+PASS missing-motion-cell-still
+PASS missing-motion-viewer-still: {"videoHidden": true, "videoPaused": true, "imgHidden": false}
+PASS scan-first-exit: exit=1 stderr=''
+PASS scan-first-added
+PASS originals-byte-identical
+PASS format-indexed:quad.png
+PASS format-id-hash:quad.png: id='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' expected='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938'
+PASS format-indexed:quad.gif
+PASS format-id-hash:quad.gif: id='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' expected='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030'
+PASS format-indexed:quad.webp
+PASS format-id-hash:quad.webp: id='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' expected='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6'
+PASS format-indexed:quad.heic
+PASS format-id-hash:quad.heic: id='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' expected='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a'
+PASS format-indexed:quad.heif
+PASS format-id-hash:quad.heif: id='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' expected='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875'
+PASS format-indexed:quad.tiff
+PASS format-id-hash:quad.tiff: id='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' expected='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91'
+PASS format-indexed:quad.bmp
+PASS format-id-hash:quad.bmp: id='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' expected='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015'
+PASS format-indexed:clip.mov
+PASS format-id-hash:clip.mov: id='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' expected='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9'
+PASS format-indexed:clip.m4v
+PASS format-id-hash:clip.m4v: id='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' expected='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad'
+PASS format-indexed:clip.avi
+PASS format-id-hash:clip.avi: id='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' expected='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c'
+PASS format-indexed:clip.mkv
+PASS format-id-hash:clip.mkv: id='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' expected='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7'
+PASS format-indexed:clip.webm
+PASS format-id-hash:clip.webm: id='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' expected='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c'
+PASS format-indexed:broken.heic
+PASS format-id-hash:broken.heic: id='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' expected='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd'
+PASS unicode-indexed
+PASS long-path-indexed
+PASS unicode-hash-id
+PASS duplicate-one-item
+PASS duplicate-two-locations: 2
+PASS scan-second-added-0: 0
+PASS scan-second-skipped: 27
+PASS scan-second-stdout-skipped
+PASS rescan-same-item-count
+PASS skip-keep-indexed: {'keep.jpg'}
+PASS skip-hidden-library
+PASS skip-notes
+PASS skip-added-one: {'sourceId': 'src_8dc566cbec36', 'added': 1, 'skipped': 0, 'errors': []}
+PASS scan-library-data-rejected-exit: {"error":"invalid-argument"}
+
+PASS barrier-hash-exit-86: {"error":"test-barrier","barrier":"hash-publication"}
+
+PASS barrier-pending-present: 1
+PASS barrier-hash-not-published: 0
+PASS pending-name-flat: pending-src_2def7fd95e52-703239fa3dea919c8ec4be274679b0c1466a9d1c12327b0804a4d14716394f01.json
+PASS barrier-recover-exit
+PASS barrier-pending-cleared
+PASS barrier-one-item: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS seeded-annotations-moved: [{"personId": "person_aaaaaaaaaaaa"}]
+PASS barrier-item-is-hash
+PASS modified-bytes-differ
+PASS modified-two-items
+PASS modified-old-current-false: [False]
+PASS modified-new-current-true: [True]
+PASS heic-cli-exit-1
+PASS heic-jpeg-present
+PASS heic-broken-present
+PASS heic-jpeg-queued-or-ready
+PASS heic-broken-error: {"store": "with-server", "sourceId": "src_9d5c38411640", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "error", "preview": "error", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS heic-broken-no-webp
+PASS heic-decode-error: {'sourceId': 'src_9d5c38411640', 'added': 2, 'skipped': 0, 'errors': [{'path': 'formats/broken.heic', 'error': 'decode-error'}]}
+PASS original-hashes-unchanged: {"before": 28, "after": 28}
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS scan-exit: exit=1 stderr=''
+PASS indexed:quad.png
+PASS photo-queued:quad.png: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.gif
+PASS photo-queued:quad.gif: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.webp
+PASS photo-queued:quad.webp: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.heic
+PASS photo-queued:quad.heic: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.heif
+PASS photo-queued:quad.heif: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.tiff
+PASS photo-queued:quad.tiff: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:quad.bmp
+PASS photo-queued:quad.bmp: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS indexed:clip.mov
+PASS video-queued:clip.mov: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:clip.m4v
+PASS video-queued:clip.m4v: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:clip.avi
+PASS video-queued:clip.avi: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:clip.mkv
+PASS video-queued:clip.mkv: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:clip.webm
+PASS video-queued:clip.webm: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:broken.heic
+PASS broken-error: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "error", "preview": "error", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS broken-no-webp
+PASS indexed:clip.mp4
+PASS video-queued:clip.mp4: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "queued", "proxy": "queued"}}
+PASS indexed:oriented.jpg
+PASS photo-queued:oriented.jpg: {"store": "with-server", "sourceId": "src_344898075289", "thumb": null, "preview": null, "poster": null, "proxy": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable"}}
+PASS scan-no-rendition-files: []
+PASS broken-decode-error: [{'path': 'formats/broken.heic', 'error': 'decode-error'}]
+PASS core-ready: {"oriented": {"thumb": "ready", "preview": "ready", "poster": "not-applicable", "proxy": "not-applicable"}, "clip": {"thumb": "not-applicable", "preview": "not-applicable", "poster": "ready", "proxy": "ready"}, "ready": true}
+PASS thumb-size: {"codec": "webp", "width": 240, "height": 320, "duration": null, "audioStreamCount": 0, "bytes": 1740, "returncode": 0, "stderr": ""}
+PASS preview-size: {"codec": "webp", "width": 480, "height": 640, "duration": null, "audioStreamCount": 0, "bytes": 4154, "returncode": 0, "stderr": ""}
+PASS proxy-width: {"codec": "h264", "width": 480, "height": 360, "duration": 2.0, "audioStreamCount": 0, "bytes": 3467, "returncode": 0, "stderr": ""}
+PASS proxy-codec: {"codec": "h264", "width": 480, "height": 360, "duration": 2.0, "audioStreamCount": 0, "bytes": 3467, "returncode": 0, "stderr": ""}
+PASS proxy-audio-0: {"codec": "h264", "width": 480, "height": 360, "duration": 2.0, "audioStreamCount": 0, "bytes": 3467, "returncode": 0, "stderr": ""}
+PASS proxy-duration: {"codec": "h264", "width": 480, "height": 360, "duration": 2.0, "audioStreamCount": 0, "bytes": 3467, "returncode": 0, "stderr": ""}
+PASS oriented-raw-size: {"width": 640, "height": 480, "orientation": 6, "camera": null, "lens": null, "durationSec": null, "latitude": null, "longitude": null}
+PASS matrix-row:formats/quad.png
+PASS matrix-photo-ready:quad.png: {"path": "formats/quad.png", "hash": "4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS matrix-row:formats/quad.gif
+PASS matrix-photo-ready:quad.gif: {"path": "formats/quad.gif", "hash": "d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS matrix-row:formats/quad.webp
+PASS matrix-photo-ready:quad.webp: {"path": "formats/quad.webp", "hash": "c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS matrix-row:formats/quad.heic
+PASS matrix-heic-not-ready:quad.heic: {"path": "formats/quad.heic", "hash": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a", "kind": "photo", "slots": {"thumb": {"status": "error", "path": null, "readyNonEmpty": false}, "preview": {"status": "error", "path": null, "readyNonEmpty": false}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": "ffprobe cannot decode (moov atom not found); stays error + placeholder"}
+PASS matrix-row:formats/quad.heif
+PASS matrix-heic-not-ready:quad.heif: {"path": "formats/quad.heif", "hash": "a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875", "kind": "photo", "slots": {"thumb": {"status": "error", "path": null, "readyNonEmpty": false}, "preview": {"status": "error", "path": null, "readyNonEmpty": false}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": "ffprobe cannot decode (moov atom not found); stays error + placeholder"}
+PASS matrix-row:formats/quad.tiff
+PASS matrix-photo-ready:quad.tiff: {"path": "formats/quad.tiff", "hash": "566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS matrix-row:formats/quad.bmp
+PASS matrix-photo-ready:quad.bmp: {"path": "formats/quad.bmp", "hash": "c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS matrix-row:formats/clip.mov
+PASS matrix-video-ready:clip.mov: {"path": "formats/clip.mov", "hash": "b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:formats/clip.m4v
+PASS matrix-video-ready:clip.m4v: {"path": "formats/clip.m4v", "hash": "79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:formats/clip.avi
+PASS matrix-video-ready:clip.avi: {"path": "formats/clip.avi", "hash": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:formats/clip.mkv
+PASS matrix-video-ready:clip.mkv: {"path": "formats/clip.mkv", "hash": "4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:formats/clip.webm
+PASS matrix-video-ready:clip.webm: {"path": "formats/clip.webm", "hash": "ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:formats/broken.heic
+PASS matrix-broken-error: {"path": "formats/broken.heic", "hash": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd", "kind": "photo", "slots": {"thumb": {"status": "error", "path": null, "readyNonEmpty": false}, "preview": {"status": "error", "path": null, "readyNonEmpty": false}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": "invalid HEIF brand; decode-error; no WebP"}
+PASS matrix-row:a/clip.mp4
+PASS matrix-video-ready:clip.mp4: {"path": "a/clip.mp4", "hash": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "kind": "video", "slots": {"thumb": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "preview": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "poster": {"status": "ready", "path": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/poster.webp", "readyNonEmpty": true}, "proxy": {"status": "ready", "path": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/proxy.mp4", "readyNonEmpty": true}}, "note": null}
+PASS matrix-row:b/oriented.jpg
+PASS matrix-photo-ready:oriented.jpg: {"path": "b/oriented.jpg", "hash": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "kind": "photo", "slots": {"thumb": {"status": "ready", "path": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/thumb.webp", "readyNonEmpty": true}, "preview": {"status": "ready", "path": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/preview.webp", "readyNonEmpty": true}, "poster": {"status": "not-applicable", "path": null, "readyNonEmpty": false}, "proxy": {"status": "not-applicable", "path": null, "readyNonEmpty": false}}, "note": null}
+PASS playwright-import
+PASS hover-video-cells: 6
+PASS days-and-all-years-silent: {"videoCount": 0, "playingCount": 0, "muted": true, "volumeZero": true, "looped": true, "ids": []}
+PASS hover-all-two-videos: 6
+PASS days-and-all-one-plays: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}
+PASS only-one-hovered-plays: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9"]}
+PASS hover-muted: {"first": {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}, "second": {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9"]}}
+PASS leave-restores-poster: id=b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9
+PASS off-plays-none: {"videoCount": 0, "playingCount": 0, "muted": true, "volumeZero": true, "looped": true, "ids": []}
+PASS always-plays-at-years: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}
+PASS viewer-poster-first: /api/media/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c?which=poster
+PASS viewer-no-autoplay-src
+PASS viewer-fallback-proxy: {"src": "http://127.0.0.1:18767/api/media/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c?which=proxy", "usingProxy": true, "paused": false}
+PASS hover-shot-1280x720: 1280x720
+PASS original-hashes-unchanged: {"before": 15, "after": 15}
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS scan-exit
+PASS jpeg-two-locations: 2
+PASS photo-item
+PASS video-item
+PASS photo-preview: {"status": 200, "contentType": "image/webp", "contentLength": 2698, "bodyLength": 2698}
+PASS photo-original: {"status": 200, "contentType": "image/jpeg", "contentLength": 15274, "bodyLength": 15274}
+PASS video-poster: {"status": 200, "contentType": "image/webp", "contentLength": 224, "bodyLength": 224}
+PASS video-original: {"status": 200, "contentType": "video/mp4", "contentLength": 23631, "bodyLength": 23631}
+PASS video-proxy: {"status": 200, "contentType": "video/mp4", "contentLength": 3467, "bodyLength": 3467}
+PASS playwright-import
+PASS still-preview-first: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
+PASS still-original-after: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original
+PASS still-preview-kept: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
+PASS video-poster-first: /api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster
+PASS video-original-or-proxy: {"src": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original", "paused": false, "usingProxy": false}
+PASS video-fallback-proxy: {"src": "http://127.0.0.1:18768/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "usingProxy": true}
+PASS viewer-ada-label: Ada
+PASS viewer-mug-label: mug
+PASS viewer-kitchen-label: Kitchen
+PASS viewer-annotations-png: 1280x720
+PASS failed-annotate-keeps-text: Nope
+PASS failed-annotate-inline-error: invalid-argument
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 400 (Bad Request)"]
+PASS ada-on-jpeg: [{"schemaVersion": 1, "id": "person_dc8d0cf34e8a", "name": "Ada"}]
+PASS mug-on-jpeg: [{"schemaVersion": 1, "id": "thing_b83ab5378a9c", "name": "mug", "aliases": []}]
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran
+PASS ada-scan-exit
+PASS ada-two-items
+PASS annotate-cli-exit
+PASS created-ada: [{"schemaVersion": 1, "id": "person_aa6c477adc20", "name": "Ada"}]
+PASS created-mug: [{"schemaVersion": 1, "id": "thing_303903a29667", "name": "mug", "aliases": []}]
+PASS item-lists-ada: ["person_aa6c477adc20"]
+PASS item-lists-mug: ["thing_303903a29667"]
+PASS cli-item-id: 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS reuse-cli-exit
+PASS mug-reused: [{"schemaVersion": 1, "id": "thing_303903a29667", "name": "mug", "aliases": []}]
+PASS second-lists-mug
+PASS items-thing-cli-exit
+PASS cli-thing-mug-both: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-thing-mug-status: 200
+PASS http-thing-mug-both: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q-ada: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-person-ada: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q-filename: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS edges-items
+PASS unnamed-exit
+PASS unnamed-created: [{"schemaVersion": 1, "id": "person_7a9bdd2cc5ed", "name": null}]
+PASS name-assign-exit
+PASS name-assigned: [{"schemaVersion": 1, "id": "person_7a9bdd2cc5ed", "name": "Ada"}]
+PASS place-exit
+PASS place-renamed: [{"schemaVersion": 1, "id": "place_4e25bee70575", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS place-kept-gps: [{"schemaVersion": 1, "id": "place_4e25bee70575", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS box-rejected-exit: {"error":"invalid-argument"}
+
+PASS box-rejected-code: {"error":"invalid-argument"}
+
+PASS box-accepted
+PASS mug-create
+PASS alias-exit
+PASS one-mug: [{"schemaVersion": 1, "id": "thing_8845ce9d1857", "name": "mug", "aliases": ["Cup"]}]
+PASS alias-cup: [{"schemaVersion": 1, "id": "thing_8845ce9d1857", "name": "mug", "aliases": ["Cup"]}]
+PASS cup-reuses-mug
+PASS cup-same-id
+PASS other-created: [{"schemaVersion": 1, "id": "person_7a9bdd2cc5ed", "name": "Ada"}, {"schemaVersion": 1, "id": "person_b80f7202a197", "name": "Other"}]
+PASS self-merge-exit: {"error":"invalid-argument"}
+
+PASS self-merge-code: {"error":"invalid-argument"}
+
+PASS merge-exit
+PASS merge-kept-id: {"schemaVersion": 1, "id": "person_7a9bdd2cc5ed", "name": "Ada"}
+PASS drop-file-gone: /workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f14/edges-root/catalog/people/person_b80f7202a197.json
+PASS no-drop-faces: []
+PASS keep-faces-present: [{"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "personId": "person_7a9bdd2cc5ed"}, {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "personId": "person_7a9bdd2cc5ed"}, {"itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "personId": "person_7a9bdd2cc5ed", "box": [0.1, 0.2, 0.3, 0.4]}, {"itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7", "personId": "person_7a9bdd2cc5ed"}]
+PASS one-merge-history: 1
+PASS undo-ada-exists
+PASS undo-exit
+PASS undo-no-dangling-ada
+PASS reannotate-after-undo
+PASS reannotate-creates-ada
+PASS pending-barrier-86: {"error":"test-barrier","barrier":"hash-publication"}
+
+PASS pending-present: 1
+PASS hash-not-published
+PASS pending-annotate-exit
+PASS pending-not-rejected
+PASS pending-has-faces: [{"personId": "person_752166e1751b"}]
+PASS pending-recover-exit
+PASS pending-cleared
+PASS one-hash-item: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS hash-has-ada: [{"personId": "person_752166e1751b"}]
+PASS hash-has-mug: [{"thingId": "thing_7f86c616803a"}]
+PASS history-after-id-hash: 1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81
+PASS history-no-pending-path: []
+PASS history-refs-hash: ["catalog/items/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81.json"]
+PASS pending-undo-exit
+PASS pending-restart-exit
+PASS undo-keeps-hash
+PASS undo-clears-associations
+PASS undo-no-dangling-name
+PASS pending-redo-exit
+PASS redo-restores
+PASS http-scan: 202
+PASS http-items
+PASS http-annotate: 200
+PASS empty-payload: {'error': 'invalid-argument'}
+PASS http-self-merge: {'error': 'invalid-argument'}
+PASS scan-was-running
+PASS rebuild-busy-status: 409
+PASS rebuild-busy-code: {'error': 'busy'}
+PASS annotate-allowed-during-scan: 200
+PASS annotate-not-busy: 200
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes
+PASS seed-ids-untouched: person_aaaaaaaaaaaa / thing_bbbbbbbbbbbb not rewritten
+PASS f16-items
+PASS sources-before-unplug
+PASS source-available-before
+PASS after-launch-unplug-http
+PASS after-launch-source-unavailable: {"schemaVersion": 1, "id": "src_4782a6ddb7d4", "name": "f16-folder", "mode": "serve-from-there", "origin": {"volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "", "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16/f16-folder"}, "copyRoot": null, "previewStore": null, "files": {"a/IMG_1042.jpg": {"destination": null, "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "component": "still", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "state": "indexed"}, "a/clip.mp4": {"destination": null, "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "component": "motion", "sizeBytes": 23631, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "state": "indexed"}, "b/no-exif.jpg": {"destination": null, "itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "component": "still", "sizeBytes": 13170, "modifiedAt": "2022-02-03T04:05:06Z", "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "state": "indexed"}}, "scan": {"state": "complete", "added": 3, "skipped": 0, "errors": []}, "available": false}
+PASS show-includes-unavailable
+PASS original-404-unavailable: {"error": "unavailable"}
+PASS thumb-still-serves
+PASS hide-omits-unavailable
+PASS unavailable-1-includes
+PASS cli-unavailable-1-exit
+PASS wrong-serial-not-resolve: {"schemaVersion": 1, "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "kind": "photo", "filename": "no-exif.jpg", "capturedAt": "2022-02-03T04:05:06Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 480, "orientation": null, "camera": null, "lens": null, "durationSec": null, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_4782a6ddb7d4", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "b/no-exif.jpg", "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16/f16-folder/b/no-exif.jpg", "sizeBytes": 13170, "modifiedAt": "2022-02-03T04:05:06Z", "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}], "renditions": {"store": "with-server", "sourceId": "src_4782a6ddb7d4", "thumb": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp", "preview": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp", "poster": null, "proxy": null, "status": {"thumb": "ready", "preview": "ready", "poster": "not-applicable", "proxy": "not-applicable"}}, "faces": [], "things": [], "available": false, "motionAvailable": false, "entities": {"people": [], "places": [], "things": []}}
+PASS available-alternate: {"locations": [{"sourceId": "src_4782a6ddb7d4", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-a", "pathFromVolumeRoot": "a/IMG_1042.jpg", "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16/f16-folder/a/IMG_1042.jpg", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, {"sourceId": "src_b06fd423c160", "role": "alternate", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:s07-b", "pathFromVolumeRoot": "a/IMG_1042.jpg", "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16/f16-alt/a/IMG_1042.jpg", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}], "available": true}
+PASS alternate-original-serves
+PASS playwright-import
+PASS banner-exact: Original is not on this computer
+PASS open-original-disabled
+PASS preview-visible
+PASS unavailable-png-1280x720: 1280x720
+PASS video-play-preview-enabled
+PASS video-open-original-disabled
+PASS preview-file-before-remove
+PASS preview-unavailable-404: {"error": "preview-unavailable"}
+PASS placeholder-exact: Preview is not available
+PASS no-preview-banner-hidden
+PASS no-preview-png-1280x720: 1280x720
+PASS both-missing-banner
+PASS both-missing-placeholder
+PASS play-preview-disabled-without-proxy
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes
+PASS regression-F5: {"pass": true, "exit": 0, "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f5"}
+PASS regression-F7: {"pass": true, "exit": 0, "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f7"}
+PASS regression-F10: {"pass": true, "exit": 0, "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f10"}
+PASS regression-F14: {"pass": true, "exit": 0, "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f14"}
+PASS regression-F16: {"pass": true, "exit": 0, "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16"}
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran

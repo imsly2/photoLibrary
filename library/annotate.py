@@ -521,6 +521,51 @@ def rebase_item_snapshot(snapshot: Any, published: dict[str, Any]) -> Any:
     return ordered_item(out)
 
 
+def plan_absorb_item_refs(
+    root: Path,
+    old_id: str,
+    published: dict[str, Any],
+    *,
+    skip_entry_id: str | None = None,
+) -> list[dict[str, Any]]:
+    old_path = item_rel(old_id)
+    new_path = item_rel(published["id"])
+    if old_path == new_path:
+        return []
+    state = load_state(root)
+    changes: list[dict[str, Any]] = []
+    for entry_id in state["entries"][: state["cursor"]]:
+        if skip_entry_id is not None and entry_id == skip_entry_id:
+            continue
+        entry = load_entry(root, entry_id)
+        rewritten = False
+        new_entry_changes: list[dict[str, Any]] = []
+        for change in entry.get("changes") or []:
+            if change.get("path") == old_path:
+                new_entry_changes.append(
+                    {
+                        "path": new_path,
+                        "before": rebase_item_snapshot(change.get("before"), published),
+                        "after": rebase_item_snapshot(change.get("after"), published),
+                    }
+                )
+                rewritten = True
+            else:
+                new_entry_changes.append(change)
+        if not rewritten:
+            continue
+        after_entry = clone(entry)
+        after_entry["changes"] = new_entry_changes
+        changes.append(
+            {
+                "path": f"undo/entries/{entry_id}.json",
+                "before": entry,
+                "after": after_entry,
+            }
+        )
+    return changes
+
+
 def plan_rebase_pending(
     root: Path,
     pending_id: str,

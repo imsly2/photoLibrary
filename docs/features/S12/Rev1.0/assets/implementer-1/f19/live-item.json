@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1",
+  "kind": "live",
+  "filename": "LIVE_0001.jpg",
+  "capturedAt": "2024-06-13T10:00:00",
+  "capturedAtSource": "exif",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": "11111111-2222-4333-8444-555555555555",
+  "locations": [
+    {
+      "sourceId": "src_b9d4ec2e16e2",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S12/Rev1.0/assets/implementer-1/f19/s12-pair/live/LIVE_0001.jpg",
+      "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/implementer-1/f19/s12-pair/live/LIVE_0001.jpg",
+      "sizeBytes": 13828,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "sourceId": "src_b9d4ec2e16e2",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S12/Rev1.0/assets/implementer-1/f19/s12-pair/live/LIVE_0001.mov",
+      "lastKnownPath": "/workspace/docs/features/S12/Rev1.0/assets/implementer-1/f19/s12-pair/live/LIVE_0001.mov",
+      "sizeBytes": 23611,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_b9d4ec2e16e2",
+    "thumb": "renditions/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1/thumb.webp",
+    "preview": "renditions/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1/preview.webp",
+    "poster": "renditions/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1/poster.webp",
+    "proxy": "renditions/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1/proxy.mp4",
+    "status": {
+      "thumb": "ready",
+      "preview": "ready",
+      "poster": "ready",
+      "proxy": "ready"
+    }
+  },
+  "faces": [],
+  "things": [],
+  "available": true,
+  "motionAvailable": true,
+  "entities": {
+    "people": [],
+    "places": [],
+    "things": []
+  }
+}

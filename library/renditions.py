@@ -316,6 +316,19 @@ def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
                 return item_id, "poster", source, thumb_px
             if status.get("proxy") == "queued":
                 return item_id, "proxy", source, proxy_width
+        elif kind == "live":
+            still_source = _primary_still_path(item, root)
+            if still_source is not None and file_suffix(still_source) in PHOTO_SUFFIXES:
+                for slot in STILL_SLOTS:
+                    if status.get(slot) != "queued":
+                        continue
+                    return item_id, slot, still_source, still_caps[slot]
+            motion_source = _primary_motion_path(item, root)
+            if motion_source is not None and file_suffix(motion_source) in VIDEO_SUFFIXES:
+                if status.get("poster") == "queued":
+                    return item_id, "poster", motion_source, thumb_px
+                if status.get("proxy") == "queued":
+                    return item_id, "proxy", motion_source, proxy_width
     return None
 
 

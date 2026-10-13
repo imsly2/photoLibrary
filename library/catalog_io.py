@@ -446,8 +446,25 @@ def finish_pending_publications(root: Path) -> list[str]:
     return finished
 
 
+def _live_renditions_from_still(still_item: dict[str, Any]) -> dict[str, Any]:
+    rend = still_item.get("renditions") or {}
+    out = renditions_for(
+        "live",
+        rend.get("sourceId") or still_item["locations"][0]["sourceId"],
+        store=rend.get("store") or "with-server",
+    )
+    status = rend.get("status") or {}
+    for slot in ("thumb", "preview"):
+        slot_status = status.get(slot)
+        if slot_status in {"ready", "error"}:
+            out[slot] = rend.get(slot)
+            out["status"][slot] = slot_status
+    return out
+
+
 def pair_live_items(root: Path, source_id: str) -> None:
-    from library.history import extend_current_operation
+    from library.annotate import plan_absorb_item_refs
+    from library.history import extend_current_operation, latest_entry_id
 
     stills: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     motions: dict[str, list[tuple[str, dict[str, Any]]]] = {}
@@ -474,7 +491,9 @@ def pair_live_items(root: Path, source_id: str) -> None:
         motion_list.sort(key=lambda pair: pair[0])
         still_item = clone(still_list[0][1])
         motion_item = clone(motion_list[0][1])
-        if still_item["id"] == motion_item["id"] and still_item["kind"] == "live":
+        if still_item["id"] == motion_item["id"]:
+            continue
+        if still_item["kind"] != "photo" or motion_item["kind"] != "video":
             continue
         before_still = try_load_item(root, still_item["id"])
         before_motion = try_load_item(root, motion_item["id"])
@@ -482,18 +501,15 @@ def pair_live_items(root: Path, source_id: str) -> None:
         live["kind"] = "live"
         live["id"] = still_item["id"]
         for loc in motion_item["locations"]:
-            live = merge_location(live, loc)
+            if loc.get("component") == "motion":
+                live = merge_location(live, loc)
         live = merge_associations(live, motion_item)
-        live["renditions"] = renditions_for(
-            "live",
-            still_item["renditions"]["sourceId"],
-            store=still_item["renditions"].get("store") or "with-server",
-        )
+        live["renditions"] = _live_renditions_from_still(still_item)
         live = ordered_item(live)
         source = load_source(root, source_id)
         before_source = clone(source)
         for rel, entry in list(source["files"].items()):
-            if entry["itemId"] == motion_item["id"]:
+            if entry["itemId"] == motion_item["id"] and entry.get("component") == "motion":
                 entry["itemId"] = live["id"]
                 entry["component"] = "motion"
                 source["files"][rel] = make_file_entry(
@@ -518,5 +534,13 @@ def pair_live_items(root: Path, source_id: str) -> None:
                 "before": before_source,
                 "after": ordered_source(source),
             }
+        )
+        changes.extend(
+            plan_absorb_item_refs(
+                root,
+                motion_item["id"],
+                live,
+                skip_entry_id=latest_entry_id(root),
+            )
         )
         transact(root, extend_current_operation(root, changes))

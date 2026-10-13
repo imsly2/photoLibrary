@@ -346,6 +346,7 @@ main > p {
 }
 
 .cell {
+  position: relative;
   padding: 0;
   background: #1b1b22;
   border: 1px solid #2a2a32;
@@ -355,6 +356,22 @@ main > p {
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
+}
+
+.live-badge {
+  position: absolute;
+  top: 0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: #f2f2f4;
+  color: #1b1b22;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  pointer-events: none;
 }
 
 .mosaic .cell {

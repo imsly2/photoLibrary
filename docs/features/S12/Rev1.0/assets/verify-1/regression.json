@@ -1,0 +1,27 @@
+{
+  "F5": {
+    "pass": true,
+    "exit": 0,
+    "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/verify-1/regression/f5"
+  },
+  "F7": {
+    "pass": true,
+    "exit": 0,
+    "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/verify-1/regression/f7"
+  },
+  "F10": {
+    "pass": true,
+    "exit": 0,
+    "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/verify-1/regression/f10"
+  },
+  "F14": {
+    "pass": true,
+    "exit": 0,
+    "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/verify-1/regression/f14"
+  },
+  "F16": {
+    "pass": true,
+    "exit": 0,
+    "artifacts": "/workspace/docs/features/S12/Rev1.0/assets/verify-1/regression/f16"
+  }
+}

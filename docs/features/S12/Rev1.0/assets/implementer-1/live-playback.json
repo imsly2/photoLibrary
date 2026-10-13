@@ -1,0 +1,46 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "badge": "LIVE",
+  "hover": {
+    "state": {
+      "videoCount": 1,
+      "playingCount": 1,
+      "muted": true,
+      "volumeZero": true,
+      "looped": true,
+      "ids": [
+        "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+      ]
+    },
+    "src": "http://127.0.0.1:18766/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=proxy",
+    "leaveRestoresStill": true
+  },
+  "viewer": {
+    "stillFirst": true,
+    "space": {
+      "hidden": false,
+      "paused": false,
+      "src": "http://127.0.0.1:18766/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=original&component=motion",
+      "usingProxy": false
+    }
+  },
+  "screenshot": "/workspace/docs/features/S12/Rev1.0/assets/implementer-1/live.png",
+  "missingMotion": {
+    "hover": {
+      "videoCount": 0,
+      "playingCount": 0,
+      "muted": true,
+      "volumeZero": true,
+      "looped": true,
+      "ids": []
+    },
+    "viewer": {
+      "videoHidden": true,
+      "videoPaused": true,
+      "imgHidden": false
+    }
+  }
+}
