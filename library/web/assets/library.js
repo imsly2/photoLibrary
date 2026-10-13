@@ -32,6 +32,10 @@
   const dirSelect = document.getElementById("dir");
   const zoomSlider = document.getElementById("zoom-slider");
   const scanStatus = document.getElementById("scan-status");
+  const viewLibrary = document.getElementById("view-library");
+  const viewGlobe = document.getElementById("view-globe");
+  const workspace = document.querySelector(".workspace");
+  const globeView = document.getElementById("globe-view");
   if (!main || !viewer || !viewerImage || !viewerVideo || !addFolderBtn || !addDialog) {
     return;
   }
@@ -78,6 +82,7 @@
   let fitOnLoad = false;
   let renderKey = "";
   let loadGen = 0;
+  let currentView = "library";
 
   function levelIndex(level) {
     const idx = LEVELS.indexOf(level);
@@ -241,6 +246,52 @@
       });
     });
     showInspector(kind, id, name, items);
+  }
+
+  function showView(name) {
+    if (name !== "library" && name !== "globe") {
+      return;
+    }
+    if (name === "globe" && viewer && !viewer.hidden) {
+      hideViewerChrome();
+    }
+    currentView = name;
+    document.body.dataset.view = name;
+    if (workspace) {
+      workspace.hidden = name !== "library";
+    }
+    if (globeView) {
+      globeView.hidden = name !== "globe";
+    }
+    if (viewLibrary) {
+      viewLibrary.setAttribute("aria-pressed", name === "library" ? "true" : "false");
+    }
+    if (viewGlobe) {
+      viewGlobe.setAttribute("aria-pressed", name === "globe" ? "true" : "false");
+    }
+    if (window.libraryGlobe && window.libraryGlobe.setActive) {
+      window.libraryGlobe.setActive(name === "globe");
+    }
+    if (name === "library") {
+      renderKey = "";
+      loadCatalog();
+    }
+  }
+
+  function openCluster(placeIds) {
+    const ids = (placeIds || []).filter(Boolean);
+    if (!ids.length) {
+      return Promise.resolve();
+    }
+    applyFilterState({ q: "", scope: "", person: "", place: ids.join(","), thing: "" }, "");
+    renderKey = "";
+    showView("library");
+    return loadCatalog().then(function () {
+      const newest = items[0];
+      if (newest && newest.id) {
+        openViewer(newest.id);
+      }
+    });
   }
 
   function applyFilterState(next, searchValue) {
@@ -1269,6 +1320,9 @@
       handleViewerZoom(event);
       return;
     }
+    if (currentView !== "library") {
+      return;
+    }
     handleGridWheel(event);
   }, { passive: false });
 
@@ -1353,6 +1407,24 @@
     event.preventDefault();
     toggleViewerPlay();
   });
+  if (viewLibrary) {
+    viewLibrary.addEventListener("click", function () {
+      showView("library");
+    });
+  }
+  if (viewGlobe) {
+    viewGlobe.addEventListener("click", function () {
+      showView("globe");
+    });
+  }
+
+  window.libraryApp = {
+    openCluster: openCluster,
+    currentView: function () {
+      return currentView;
+    },
+  };
+
   viewerBack.addEventListener("click", function () {
     closeViewer();
   });
@@ -1444,6 +1516,8 @@
   bindAnnotateField(personField, "person");
   bindAnnotateField(placeField, "place");
   bindAnnotateField(thingField, "thing");
+
+  document.body.dataset.view = "library";
 
   fetch("/api/settings").then(readJson).then(function (data) {
     applySettings(data);

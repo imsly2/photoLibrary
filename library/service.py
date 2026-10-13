@@ -12,6 +12,7 @@ from library.catalog_io import (
     iter_item_ids,
     iter_source_ids,
     load_item,
+    load_places,
     load_source,
     source_read,
 )
@@ -221,6 +222,47 @@ class Library:
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
+
+    def places_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        self.recover()
+        settings = self.ensure_settings()
+        query = query or {}
+        extra = set(query) - {"unavailable"}
+        if extra:
+            raise fail("invalid-argument")
+        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        items = [item for item in items if _item_visible(item, settings, query)]
+        by_place: dict[str, list[dict[str, Any]]] = {}
+        for item in items:
+            place_id = item.get("placeId")
+            if type(place_id) is str and place_id:
+                by_place.setdefault(place_id, []).append(item)
+        out: list[dict[str, Any]] = []
+        for place in load_places(self.root):
+            latitude = place.get("latitude")
+            longitude = place.get("longitude")
+            if latitude is None or longitude is None:
+                continue
+            members = by_place.get(place["id"]) or []
+            if not members:
+                continue
+            newest = sorted(
+                members,
+                key=lambda item: (item.get("capturedAt") or "", item["id"]),
+                reverse=True,
+            )[0]
+            out.append(
+                {
+                    "id": place["id"],
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "name": place.get("name"),
+                    "itemCount": len(members),
+                    "newestItemId": newest["id"],
+                }
+            )
+        out.sort(key=lambda rec: rec["id"])
+        return out
 
     def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         query = dict(query or {})

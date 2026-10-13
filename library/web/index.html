@@ -9,7 +9,10 @@
 </head>
 <body>
   <header>
-    <h1>Library</h1>
+    <nav class="views" aria-label="Views">
+      <button type="button" id="view-library" class="view-heading" aria-pressed="true">Library</button>
+      <button type="button" id="view-globe" aria-pressed="false">Globe</button>
+    </nav>
     <input type="search" id="search" placeholder="Search" aria-label="Search" autocomplete="off">
     <div id="search-chips" role="group" aria-label="Search">
       <button type="button" id="chip-people" data-scope="people" aria-pressed="false">People</button>
@@ -53,6 +56,12 @@
         <span>All</span>
       </div>
     </aside>
+  </div>
+  <div id="globe-view" hidden>
+    <canvas id="globe-canvas"></canvas>
+    <div id="globe-pins"></div>
+    <p id="globe-empty" hidden>No locations to show</p>
+    <p id="globe-error" hidden></p>
   </div>
   <dialog id="add-folder" aria-labelledby="add-folder-title">
     <h2 id="add-folder-title">Add a folder</h2>
@@ -109,5 +118,6 @@
     </div>
   </div>
   <script src="/assets/library.js"></script>
+  <script src="/assets/globe.js"></script>
 </body>
 </html>

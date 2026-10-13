@@ -38,6 +38,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 - S09 / M2 is green: viewer fields write Ada/mug/Kitchen, search chips,
   inspector unique-item counts, preview-then-original, and proxy fallback.
   Closes F10 and F15. Do not wait for taste.
+- S10 / M3 globe is green: `GET /api/places` returns two GPS places and
+  omits no-exif; local WebGL earth; 32 px cluster; click opens newest;
+  Esc leaves the filtered grid. Closes F12. Tour stays S11.
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -47,8 +50,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**13 / 22 Checks = 59.1% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F14, F15, F16, and F20 have fresh-verifier artifacts.
-M1 browse and M2 search are recorded. The other commands remain pending.
+**14 / 22 Checks = 63.6% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F14, F15, F16, and F20 have fresh-verifier artifacts.
+M1 browse, M2 search, and the M3 globe half are recorded. Tour and later commands remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
 |---|---|---|---|---|
@@ -63,7 +66,7 @@ M1 browse and M2 search are recorded. The other commands remain pending.
 | F9 | Zoom | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F9` [verify-1](features/S04/Rev1.0/assets/verify-1/f9/result.json); orchestrator rerun [f9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json) |
 | F10 | Viewer | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `b8e2663` | `python -m tests.qa check F10` [verify-1](features/S09/Rev1.0/assets/verify-1/f10/result.json); orchestrator rerun [f10](features/S09/Rev1.0/assets/orchestrator-rerun/f10/result.json) |
 | F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |
-| F12 | Globe | pending | — | Not run; no artifact |
+| F12 | Globe | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `9c2ab3a` + S10 | `python -m tests.qa check F12` [verify-1](features/S10/Rev1.0/assets/verify-1/f12/result.json); orchestrator rerun [f12](features/S10/Rev1.0/assets/orchestrator-rerun/f12/result.json) |
 | F13 | Tour | pending | — | Not run; no artifact |
 | F14 | People / places / things | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `59ab5ab` | `python -m tests.qa check F14` [verify-1](features/S08/Rev1.0/assets/verify-1/f14/result.json); orchestrator rerun [f14](features/S08/Rev1.0/assets/orchestrator-rerun/f14/result.json) |
 | F15 | Search | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `b8e2663` | `python -m tests.qa check F15` [verify-1](features/S09/Rev1.0/assets/verify-1/f15/result.json); orchestrator rerun [f15](features/S09/Rev1.0/assets/orchestrator-rerun/f15/result.json) |
@@ -237,6 +240,19 @@ environments must be supplied by the build or F2 remains pending; do not claim
   exit 0. Next action is S10 (closes F12).
 - 2026-10-13 — S10 plan locked in `docs/features/S10/Rev1.0/PLAN.md` after
   S09. Offline WebGL globe, clusters, click→newest viewer→Esc filtered grid.
+- 2026-10-13 — S10 green. Closes F12 (**14/22**). Fresh Grok 4.7 verifier
+  [S10](features/S10/Rev1.0/assets/verify-1/result.json) 56 assertions,
+  [F12](features/S10/Rev1.0/assets/verify-1/f12/result.json) 51, both
+  exit 0. Two GPS places; no-exif omitted; local `earth.png`; cluster
+  count 3; drag 0.25 deg/px; zoom drift 0.13 px. Click opens near.jpg;
+  Esc filtered grid (near, IMG_1042, far).
+  [globe](features/S10/Rev1.0/assets/verify-1/globe.png),
+  [cluster](features/S10/Rev1.0/assets/verify-1/cluster.png).
+  Orchestrator rerun
+  [F12](features/S10/Rev1.0/assets/orchestrator-rerun/f12/result.json)
+  also exit 0. Implementer model was Grok 4.6
+  (`cursor-grok-4.6-high-fast`). This Linux ffmpeg still cannot decode
+  `quad.heic` / `quad.heif`. Next action is S11 (closes F13).
 - 2026-10-13 — S07 plan locked in `docs/features/S07/Rev1.0/PLAN.md` after
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.

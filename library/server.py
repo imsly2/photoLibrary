@@ -273,6 +273,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/places" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.places_list(query))
+                return
             if route == "/api/groups" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
                 with self.lock:
@@ -335,6 +340,8 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     content_type = "text/css; charset=utf-8"
                 elif path.suffix == ".js":
                     content_type = "application/javascript; charset=utf-8"
+                elif path.suffix == ".png":
+                    content_type = "image/png"
                 else:
                     content_type = "application/octet-stream"
                 self._send_static(path, content_type)
