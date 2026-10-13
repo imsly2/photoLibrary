@@ -162,3 +162,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
   [F1](features/S05/Rev1.0/assets/orchestrator-rerun/f1/result.json) and
   [F4](features/S05/Rev1.0/assets/orchestrator-rerun/f4/result.json) also
   exit 0. Next action is S06 (closes F5, F7).
+- 2026-10-13 — S06 plan locked in `docs/features/S06/Rev1.0/PLAN.md` after
+  S05. All fixture formats, HEIC failure placeholder, full-length silent
+  ≤480 px H.264 proxy, and the three hover policies. F8 stays open until
+  S07. F10 stays open until S09.
