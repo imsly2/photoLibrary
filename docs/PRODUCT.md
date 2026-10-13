@@ -47,7 +47,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 
 | Decision | Locked behavior / reason |
 |---|---|
-| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, favorites or editing tools. |
+| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. Tile hearts and a collapsible Favorites section are the one named favorite affordance (Windows taste); not albums and not a second library. |
 | Packaging | Folder, Python + ffmpeg, local browser, CLI and HTTP. Windows first; macOS/Linux launcher promises need their own verification. |
 | Catalog | JSON is authoritative; SQLite is disposable. Relative local paths; volume identity for linked drives. |
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
@@ -101,6 +101,7 @@ library-data/
     people/<id>.json
     places/<id>.json
     things/<id>.json
+    favorites.json       # item ids marked with a heart
     catalog.sqlite       # rebuilt from the JSON
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
@@ -160,6 +161,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
+| `favorite <id> --on` / `--off` | `PUT /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the heart. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -167,9 +169,13 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
-`person=`, `place=`, `thing=`, `from=`, `to=`, `unavailable=0|1`, `q=` for a
-name or filename. Names match case-insensitively. `scope=people|places|things`
-restricts the query for the existing search chips.
+`person=`, `place=`, `thing=`, `kind=photo|video|live`, `from=`, `to=`,
+`unavailable=0|1`, `q=` for a name or filename. Names match
+case-insensitively. `scope=people|places|things` restricts the query for the
+existing search chips. `kind` keeps only that media kind; the toolbar Videos
+control sends `kind=video`. Kind is a transient filter, not a setting.
+`favorite=1` keeps only hearted items. Item reads include computed
+`favorite` (not stored on the item JSON).
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
 file. `original` on a missing disk returns HTTP 404 and
@@ -305,7 +311,10 @@ The grid shows a placeholder until the thumb exists, then the thumb.
 
 Years and months show stills under the default setting. Days and All play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
-`days-and-all` (default), `always`, or `off`.
+`days-and-all` (default), `always`, or `off`. Hover playback fills the whole
+tile; the still stays underneath as a poster. The tile never splits still on
+one side and video on the other. Every video cell shows a VIDEO badge; live
+cells keep LIVE.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
@@ -341,14 +350,36 @@ source tree. Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 
-Four levels: Years, Months, Days, All. The slider and Ctrl+wheel move between
-them. The item under the cursor stays in view. The level is saved in
+Four levels: Years, Months, Days, All. The level slider and Ctrl+wheel move
+between them. The item under the cursor stays in view. The level is saved in
 `zoomLevel`.
 
 Years is one card per year, a mosaic of that year's thumbs.
-Months is one card per month.
-Days is a header per day and the photos from that day.
-All is every item under day headers.
+Months is one card per month. Months cells are visibly larger than Years.
+Days is a header per day and the photos from that day, medium cells.
+All is every item under day headers at the closest default size — large
+enough to read faces. All is not a second-smallest dense copy of Days.
+
+A separate Size control steps cell pixels at the current level (eight
+useful stops, including a closer max than the old 160 px All). Changing
+level or size must keep already-loaded thumbnails on screen; the grid does
+not blank during the interaction.
+
+Dates can be turned off. With Dates off, every matching thumb sits on one
+continuous wall — no date-section gaps. Dates on remains the default.
+Size and Dates are session view options, not settings.json keys.
+
+Tiles that are large enough (Size 144 px and up) show a heart control in
+the same corner language as the VIDEO/LIVE badge — under or beside that
+badge. At the two tiniest stops (72 and 104) the heart hides so a wall
+stays readable. Clicking the heart marks or clears the item; it does not
+open the viewer. A Favorites section sits at the top of the Library grid
+whenever any current result is hearted. It starts expanded and can
+collapse to its heading. Hearted items also stay in their date or wall
+positions. Ctrl+Z undoes a heart.
+
+Library and Globe in the header are view toggles, not plain labels: hover
+and active/click states are visible, and the pressed view stays marked.
 
 Reference: [years](reference/library-years.jpg), [grid](reference/library-grid.jpg).
 
@@ -383,7 +414,9 @@ source is available. Artifact: both responses' content types and lengths.
 ## F11 — Sort
 
 The toolbar sorts by date, location, or name. Direction is ascending or
-descending. Default is date, newest first (`sort=date`, `dir=desc`).
+descending. Default is date, newest first (`sort=date`, `dir=desc`). A
+Videos control filters to `kind=video` and keeps the current sort among
+those items.
 
 Date uses `capturedAt`. Location groups by place name, then unnamed GPS
 places, then "No location", and by date inside a group. Name uses the filename.
@@ -628,7 +661,7 @@ One page, five views. The address is the listen host and port.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort. |
+| Library | The zoomed grid, Add folder, search, sort, Videos filter, Size, Dates, Favorites section. |
 | Globe | The WebGL earth, clusters, Play for the tour. |
 | Viewer | One item, preview then original, people and things. |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

@@ -189,6 +189,14 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--from", dest="from_")
     items.add_argument("--to")
     items.add_argument("--scope")
+    items.add_argument("--kind")
+    items.add_argument("--favorite")
+
+    favorite = sub.add_parser("favorite")
+    favorite.add_argument("id")
+    favorite_on = favorite.add_mutually_exclusive_group(required=True)
+    favorite_on.add_argument("--on", action="store_true")
+    favorite_on.add_argument("--off", action="store_true")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -318,6 +326,10 @@ def main(argv: list[str] | None = None) -> int:
                 query["to"] = args.to
             if args.scope:
                 query["scope"] = args.scope
+            if getattr(args, "kind", None):
+                query["kind"] = args.kind
+            if getattr(args, "favorite", None) is not None:
+                query["favorite"] = args.favorite
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -331,6 +343,17 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).items_list(query))
             _print_json(payload)
+            return 0
+        if args.command == "favorite":
+            body = {"favorite": bool(args.on)}
+            result = _mutation(
+                root,
+                lambda: Library(root).set_favorite(args.id, bool(args.on)),
+                "PUT",
+                f"/api/items/{args.id}/favorite",
+                body,
+            )
+            _print_json(result)
             return 0
         if args.command == "annotate":
             from library.annotate import cli_payload_from_flags

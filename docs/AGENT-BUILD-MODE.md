@@ -94,8 +94,9 @@ test cases are failures. No real disks, no treating mockups as screenshots.”
 ## Boundaries
 
 No phone USB code, cloud hosting, accounts, image model, geocoder, remote photo
-uploads, albums/favorites, photo editing, automatic original rearrangement, new
-gestures, or user-facing debugging panels. Never scan a real photo disk under
+uploads, albums, photo editing, automatic original rearrangement, new
+gestures, or user-facing debugging panels. Tile hearts and a collapsible
+Favorites section are authorized Windows taste (PRODUCT / UI-SPEC), not albums. Never scan a real photo disk under
 this plan. Runtime libraries are agent choices inside the frozen behavior; no new
 dependency that requires a changed user workflow without a contract edit.
 

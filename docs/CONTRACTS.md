@@ -22,7 +22,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Windows double-click | `Library.bat` at the app folder starts `launch.ps1` in a visible console and opens the browser. F2 still grades `powershell -File launch.ps1`. Do not claim macOS/Linux launch from this change. |
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
-| Days vs All | Both include every matching item under day headings. Days has larger cells; All is denser. No representative-photo selection algorithm. |
+| Days vs All | Both include every matching item under day headings when Dates is on. Days is the medium cell size; All is the closest default (largest of the four level defaults). A session Size control refines cell pixels at the current level. Dates off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
 | Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
@@ -30,7 +30,8 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, albums, favorites, or other controls because a reference or general baseline mentions them. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference or general baseline mentions them. Tile hearts persist in `catalog/favorites.json`, not settings.json. |
+| Favorites | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 
 ## Files and atomic writes
 
@@ -117,8 +118,9 @@ live items all four. An error never removes the item. Explicit rescan retries
 failed renditions even if original bytes are unchanged. Missing previews show a
 placeholder; no request automatically mutates the source disk to repair them.
 
-Availability and entity expansion are computed, not persisted: HTTP/CLI item reads
-extend disk records with `available` and `motionAvailable` booleans and `entities`:
+Availability, motion, favorite, and entity expansion are computed, not persisted:
+HTTP/CLI item reads extend disk records with `available`, `motionAvailable`,
+and `favorite` booleans and `entities`:
 `{people:[person-record],places:[place-record],things:[thing-record]}` containing
 every referenced entity exactly once, sorted by id (places empty or one). These
 are the complete record shapes above/below, including names and aliases; no extra
@@ -206,7 +208,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|people-merge|settings|relocate`.
+UTC createdAt; operation `scan|copy-here|annotate|people-merge|settings|relocate|favorite`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -252,6 +254,7 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | GET `/api/places` | array `{id,latitude,longitude,name,itemCount,newestItemId}` for places with coordinates and visible items; same unavailable policy as items |
 | GET `/api/globe/tour` | array `{placeId,itemIds}` ordered newest item date descending then place id; items newest first capped by tourPictures, only readable ready preview (still/live) or proxy (video). Skip empty places. |
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
+| favorite id --on/--off / PUT `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; no-op success when unchanged |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -272,7 +275,9 @@ coordinates. Empty payload is invalid. CLI shorthand `--person Ada --thing mug`
 maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
-normalized exact name; place also comma-separated ids. `q` is normalized substring
+normalized exact name; place also comma-separated ids. `kind` is exactly one of
+`photo|video|live` and keeps only that item kind. `favorite=1` keeps hearted
+items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring
 against names, thing aliases and filename. Scope chips restrict q to that entity
 type. `from` inclusive and `to` exclusive ISO date/timestamp filter capturedAt.
 unavailable omitted follows settings; 0 means available only, 1 means include both.
