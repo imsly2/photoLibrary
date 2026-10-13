@@ -59,6 +59,7 @@ docs/features/**/f5-modified-media/
 docs/features/**/f5-skip-media/
 docs/features/**/*-library-data/
 docs/features/**/f8-folder/
+docs/features/**/s09-media/
 
 # Python
 __pycache__/
