@@ -395,6 +395,14 @@ class Library:
         rebuild_sqlite(self.root, use_barrier=True)
         return {"ok": True}
 
+    def analyze_places(self) -> dict[str, Any]:
+        from library.places import analyze_places as fill_place_names
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return fill_place_names(self.root)
+
     def annotate(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         from library.annotate import apply_annotate
 

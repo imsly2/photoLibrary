@@ -272,9 +272,12 @@ slider, scrub) keeps the native slider behavior.
 **4. Info = file facts, then names.** `#viewer-info` is a top-right
 dropdown, not overlay pills. First block: date taken, camera, dimensions,
 size, path, GPS from the item record. Missing camera/EXIF: “No camera
-info for this file.” Then people / places / things already on the record;
-clicking one filters the grid and closes the viewer. Type-in fields stay
-below that and stay labeled Person, Place, and Thing. No “Showing original”.
+info for this file.” Then people / places / things already on the record
+(a GPS place may already show a local city/region name from the offline
+geo pack); clicking one filters the grid and closes the viewer. Type-in
+fields stay below that and stay labeled Person, Place, and Thing. A
+typed Place name still writes through annotate and is never replaced by
+the geo pack. No “Showing original”.
 **Implemented on this PR.**
 
 **5. Open with default app.** Sits beside Reveal in Explorer. Both always
@@ -309,7 +312,8 @@ appears when All is selected and any current result is hearted.
 
 **9. Search.** The box matches filename, capturedAt date text (YYYY,
 YYYY-MM, YYYY-MM-DD), and existing person/place/thing names (and thing
-aliases). Chips still restrict to People / Places / Things. Empty:
+aliases), including a local city/region written on a GPS place. Chips
+still restrict to People / Places / Things. Empty:
 “No matches for …” (query included). Clearing query/chip returns the broader grid.
 
 **10. Update UX finish.** Launcher and in-app (`#update-library`, label

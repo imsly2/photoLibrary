@@ -12,7 +12,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   item ids match file bytes, a second scan adds nothing, originals are
   unchanged, and the embedded Live Photo pair is one item.
 - F6 is closed: fixture dates follow EXIF, then filename, then modified time,
-  and the three-JPEG set becomes two unnamed places 100 meters apart.
+  and the three-JPEG set becomes two unnamed places 100 meters apart
+  (no geo pack). With a local pack, those GPS places take a city/region
+  name; see places-geo below.
 - S03 is green: JPEG thumb.webp and preview.webp are oriented, GET /api/media
   returns real bytes, and a minimal page opens the oriented still. Closes no
   Check. F10 stays open until S09.
@@ -143,6 +145,19 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   61/61 (tile autoplay + carry time),
   [video-viewer.png](features/taste-video/Rev1.0/assets/verify-3/video-viewer.png),
   [video-grid.png](features/taste-video/Rev1.0/assets/verify-3/video-grid.png).
+- 2026-10-14 — **Phase A offline place names** on
+  `cursor/offline-place-names-10af`, rebased onto the chrome+version tip
+  (`cursor/grid-density-date-6efb`, PR #12). Local GeoNames-class pack in
+  `library-data/geo/` via `python -m library setup-geo` / `Setup-geo.bat`.
+  Scan / `resolve_place` / `analyze-places` fill null GPS `place.name`
+  (e.g. `Chicago, Illinois`); never overwrite a human/agent name; no
+  cloud geocoder; no faces. Info + search show the name. Does not close
+  a new Check. F6 no-pack null names stay the F6 gate. 16/22 unchanged.
+  Plan: [places-geo](features/places-geo/Rev1.0/PLAN.md).
+  Evidence:
+  [GEO](features/places-geo/Rev1.0/assets/verify-1/result.json) 44/44,
+  [Info](features/places-geo/Rev1.0/assets/verify-1/info-chicago.png),
+  [search](features/places-geo/Rev1.0/assets/verify-1/search-chicago.png).
 - 2026-10-14 — Video + zoom taste on the Presentable Shell Must tip
   (`cursor/windows-presentable-shell-must-806a`). Viewer play stays
   fitted/centered across proxy→original; hover plays at every Size and
@@ -435,3 +450,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   `currentTime`. TASTE-VIDEO 61/61. `#library-version` kept (PR #11
   merge); TASTE-VERSION 23/23 on this tip. `GET /api/update` 200. No
   new Check. 16/22 unchanged.
+- 2026-10-14 — Phase A offline place names. Specs first (PRODUCT F6/F3,
+  CONTRACTS local place names, UI-SPEC Info+search). `setup-geo` +
+  `analyze-places`. GEO 44 assertions exit 0. Rebased onto PR #12
+  chrome+version tip. No new Check. 16/22 unchanged. Evidence:
+  [GEO](features/places-geo/Rev1.0/assets/verify-1/result.json).

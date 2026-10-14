@@ -27,7 +27,8 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
-| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
+| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. Annotate remains the write path for people/things and for an explicit place name. |
+| Local place names | Optional offline GeoNames-class cities pack in `library-data/geo/` (fetched by `setup-geo`, never shipped in git). When the pack is present, scan / `resolve_place` / `analyze-places` may set `place.name` to city/region **only when that name is null**. Never overwrite a nonempty name. Never call a cloud geocoder. Missing pack leaves name null. Not a settings key. Not an image model. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
 | Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. Unplayable browser original falls back to proxy. |
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
@@ -214,7 +215,10 @@ both null. A named place without GPS can be searched but has no globe pin.
 Thing `{schemaVersion,id,name,aliases}`; name nonempty, aliases distinct strings.
 GPS place match uses Haversine distance <= placeMatchMeters, nearest candidate,
 id lexical tie break. Enumerate new files by normalized relative path for stable
-results. A matched place keeps its existing coordinates and name.
+results. A matched place keeps its existing coordinates and name. If that name
+is null and `library-data/geo/cities.csv` is present, the name may be filled
+with the nearest city/region from that pack; coordinates stay. A person or
+agent name is never replaced.
 
 Filename date extraction uses the leftmost valid Gregorian `YYYY-MM-DD` or
 `YYYYMMDD` bounded by non-digits or string boundaries. Invalid candidates are
@@ -235,7 +239,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file|analyze-places`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -293,6 +297,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
 | rebuild-index / POST `/api/rebuild-index` | `{}`; 200 `{"ok":true}`; atomic replacement index, unchanged canonical JSON |
+| setup-geo [--from dir] [--force] | CLI only. Writes `geo/cities.csv` under the library root. `--from` copies or converts a local pack (fixture or air-gapped). Default fetches GeoNames cities5000 + admin1 (setup-time network only). Already present is success unless `--force`.  JSON `{ok,path,cityCount,downloaded,source}`. Download/write failure is `io-error`. Missing `--from` path is `invalid-argument`. Not a catalog/history write. |
+| analyze-places / POST `/api/places/analyze` | `{}`; 200 `{ok,named,skipped,packReady}`; fills null GPS place names from the local pack; no-op success when nothing to fill or pack missing (`packReady` false). Undoable `analyze-places`. Busy while scanning. |
 | renditions relocate / POST `/api/renditions/relocate` | `{}`; 200 `{"ok":true}` after completion; unavailable source gives failure and preserves old files/references |
 | undo, redo / POST `/api/undo`, `/api/redo` | `{}`; 200 `{"ok":true}`; empty history also no-op success |
 
@@ -397,4 +403,6 @@ GET `/` serves that page; unknown asset paths return not-found. Mutation
 requests accept application/json from the same origin/CLI; reject unrelated
 browser origins as 400 invalid-argument. No remote account, login, or cloud setup.
 The shipped globe assets and ordinary browsing must work with external network
-blocked. Dependency installation is the one described setup-time network use.
+blocked. Dependency installation and optional `setup-geo` (GeoNames cities
+pack into `library-data/geo/`) are the described setup-time network uses.
+Scan, Info, search, and the globe do not call a geocoder.

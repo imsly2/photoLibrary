@@ -31,6 +31,13 @@ Live metadata that the chosen writer cannot produce is a fixture gap, not a reas
 to pair by filename. A supplied tiny pair needs origin/license and independently
 verified content identifiers before S00 passes.
 
+Offline place names use a tiny shipped pack under `tests/fixtures/geo/`
+(`cities.csv` plus attribution). It is not the full GeoNames dump. Copy
+it into a sandbox `library-data/geo/` with `setup-geo --from`, or let
+production `setup-geo` fetch cities5000. Never commit `library-data/geo/`.
+The Chicago-area GPS JPEGs (IMG_1042, near, far, clip) resolve to
+`Chicago, Illinois` against that fixture pack.
+
 The original F6 three-JPEG check uses IMG_1042, near, far only: exactly two places.
 The no-GPS fixture is added for globe omission. Use named subsets, never assert
 the same total against the entire growing test tree. Original F11 uses IMG_1042,

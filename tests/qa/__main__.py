@@ -158,6 +158,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_video import run_slice as runner
         elif args.slice_id == "TASTE-VERSION":
             from tests.qa.taste_version import run_slice as runner
+        elif args.slice_id == "PLACES-GEO":
+            from tests.qa.places_geo import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
@@ -194,6 +196,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.s11 import run_check_f13 as runner
         elif args.feature_id == "F19":
             from tests.qa.s12 import run_check_f19 as runner
+        elif args.feature_id == "GEO":
+            from tests.qa.places_geo import run_check as runner
         else:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
