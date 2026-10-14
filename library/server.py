@@ -25,6 +25,15 @@ WEB_DIR = Path(__file__).resolve().parent / "web"
 RUNTIME_NAME = "runtime.json"
 
 
+def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
+    etag = '"%x-%x"' % (mtime_ns, size)
+    if which in {"thumb", "preview", "poster"}:
+        return "private, max-age=604800", etag
+    if which in {"proxy", "playback"}:
+        return "private, max-age=86400", etag
+    return "no-store", None
+
+
 def _query_map(query: str) -> dict[str, str]:
     out: dict[str, str] = {}
     for key, values in parse_qs(query, keep_blank_values=True).items():
@@ -180,11 +189,26 @@ class LibraryHandler(BaseHTTPRequestHandler):
         finally:
             self.lock.acquire()
 
-    def _send(self, status: int, body: bytes, content_type: str) -> None:
+    def _send(
+        self,
+        status: int,
+        body: bytes,
+        content_type: str,
+        cache_control: str = "no-store",
+        etag: str | None = None,
+    ) -> None:
+        if etag and (self.headers.get("If-None-Match") or "") == etag:
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", cache_control)
+            self.end_headers()
+            return
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
+        self.send_header("Cache-Control", cache_control)
+        if etag:
+            self.send_header("ETag", etag)
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
@@ -598,31 +622,50 @@ class LibraryHandler(BaseHTTPRequestHandler):
         if not item_id or "/" in item_id:
             raise fail("not-found")
         params = _query_map(query)
-        with self.lock:
-            resolved = self.library.media_resolve(item_id, params)
+        resolved = self.library.media_resolve(item_id, params)
         path = resolved["path"]
         content_type = resolved["content_type"]
+        which = params.get("which")
         try:
             data = path.read_bytes()
+            stat = path.stat()
         except OSError as exc:
-            which = params.get("which")
             raise fail("unavailable" if which == "original" else "preview-unavailable") from exc
         if not data:
-            which = params.get("which")
             raise fail("unavailable" if which == "original" else "preview-unavailable")
+        cache_control, etag = _media_cache(which, stat.st_mtime_ns, stat.st_size)
         spec = parse_byte_range(self.headers.get("Range"), len(data))
         if spec is None:
-            self._send(200, data, content_type)
+            self._send(200, data, content_type, cache_control=cache_control, etag=etag)
             return
         start, end = spec
-        self._send_partial(data[start : end + 1], content_type, start, end, len(data))
+        self._send_partial(
+            data[start : end + 1],
+            content_type,
+            start,
+            end,
+            len(data),
+            cache_control=cache_control,
+            etag=etag,
+        )
 
-    def _send_partial(self, body: bytes, content_type: str, start: int, end: int, total: int) -> None:
+    def _send_partial(
+        self,
+        body: bytes,
+        content_type: str,
+        start: int,
+        end: int,
+        total: int,
+        cache_control: str = "no-store",
+        etag: str | None = None,
+    ) -> None:
         self.send_response(206)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
+        self.send_header("Cache-Control", cache_control)
+        if etag:
+            self.send_header("ETag", etag)
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
@@ -695,8 +738,7 @@ def serve(root: Path) -> int:
             while not drain_stop.is_set():
                 worked = False
                 try:
-                    with handler.lock:
-                        worked = library.drain_step()
+                    worked = library.drain_step()
                 except Exception:
                     worked = False
                 drain_stop.wait(0.05 if worked else 0.25)

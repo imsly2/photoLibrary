@@ -207,8 +207,10 @@ An “all faces” dump of every singleton unnamed cluster is Later.
 Selecting one person opens `#person-profile`: rename (same commit as
 Info’s Person field — `PUT /api/people/<id>` `{name}`) and choose which
 face crop is the thumbnail (`thumbnailItemId`). A profile face choice is
-its own hit target: one click selects exactly one crop and does not
-toggle the person row. The crop image always has width and height; a
+its own hit target: one click selects exactly one crop (a bright ring
+plus a corner dot; never two pressed) and does not toggle the person
+row. The click updates the pressed crop immediately. The crop image
+always has width and height; a
 pending or 404 thumb shows a placeholder and refreshes when the
 rendition is ready. Naming stays available in Info. Person merge stays
 CLI/HTTP; no merge wizard.
