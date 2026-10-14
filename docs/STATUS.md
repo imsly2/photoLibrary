@@ -128,6 +128,18 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Evidence:
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-1/result.json)
   50/50, [shell.png](features/taste-shell/Rev1.0/assets/verify-1/shell.png).
+- 2026-10-14 — Video + zoom taste on the Presentable Shell Must tip
+  (`cursor/windows-presentable-shell-must-806a`). Viewer play stays
+  fitted/centered across proxy→original; hover plays at every Size and
+  on a Dates-off wall; grid **Level** vs **Size** vs viewer Zoom;
+  plain-wheel zoom; `#viewer-scrub` + `.tile-scrub`. `launch.ps1`
+  unwrap/reverse-slice fix from PR #9, `-Update` kept. Does not close a
+  Check. 16/22 unchanged.
+  Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-1/result.json)
+  45/45, [video-viewer.png](features/taste-video/Rev1.0/assets/verify-1/video-viewer.png),
+  [launch-arglist](features/taste-windows/Rev1.0/assets/launch-arglist/result.json).
 
 ## Completion
 
