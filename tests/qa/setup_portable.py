@@ -159,13 +159,20 @@ def prove_probe(checks: Checks) -> dict[str, Any]:
             )
     record["missing"] = missing
     record["wouldExit"] = 1 if missing else 0
-    message = (
-        "This copy does not have the local AI setup commands yet:\n"
-        + "".join(f"  - python -m library {name}\n" for name in missing)
-        + "\nRun Update Library (or Update.bat) to git pull those modules,\n"
-        + "then run Setup.bat again.\n"
-        + "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)\n"
-    )
+    if missing:
+        message = (
+            "This copy does not have the local AI setup commands yet:\n"
+            + "".join(f"  - python -m library {name}\n" for name in missing)
+            + "\nRun Update Library (or Update.bat) to git pull those modules,\n"
+            + "then run Setup.bat again.\n"
+            + "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)\n"
+        )
+    else:
+        message = (
+            "Dry-run: this copy has the local AI setup commands.\n"
+            + "".join(f"  - python -m library {name}\n" for name, _tokens in WANTED)
+            + "\nA real Setup.bat would run those three, then: Ready — run Library.bat\n"
+        )
     record["missingMessage"] = message
     record["networkNote"] = (
         "First real Setup.bat needs the internet for Python/ffmpeg (if missing) "
