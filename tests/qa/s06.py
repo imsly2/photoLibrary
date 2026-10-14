@@ -664,6 +664,30 @@ def prove_ffprobe(checks: Checks, root: Path, artifacts: Path) -> dict[str, Any]
     )
     checks.check("proxy-codec", payload["proxy"]["codec"] == "h264", json.dumps(payload["proxy"]))
     checks.check("proxy-audio-0", payload["proxy"]["audioStreamCount"] == 0, json.dumps(payload["proxy"]))
+    proxy_bytes = payload["proxy"]["bytes"]
+    checks.check(
+        "proxy-bytes-small",
+        type(proxy_bytes) is int and 0 < proxy_bytes <= 500_000,
+        json.dumps(payload["proxy"]),
+    )
+    playback = slot_file(root, clip["id"], "playback")
+    clip_status = (clip.get("renditions") or {}).get("status") or {}
+    deadline = time.time() + 30
+    while time.time() < deadline and clip_status.get("playback") == "queued":
+        time.sleep(0.2)
+        items = load_items(root)
+        clip = find_item(items, "clip.mp4") or clip
+        clip_status = (clip.get("renditions") or {}).get("status") or {}
+    payload["playback"] = {
+        "status": clip_status.get("playback"),
+        "exists": playback.is_file(),
+        "bytes": playback.stat().st_size if playback.is_file() else 0,
+    }
+    checks.check(
+        "mp4-playback-not-applicable",
+        clip_status.get("playback") == "not-applicable" and not playback.is_file(),
+        json.dumps(payload["playback"]),
+    )
     duration = payload["proxy"]["duration"]
     checks.check(
         "proxy-duration",

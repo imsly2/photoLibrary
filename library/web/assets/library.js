@@ -1987,7 +1987,12 @@
       delete viewerSource.dataset.state;
       return;
     }
-    const state = videoSourceState || "preview";
+    let state = videoSourceState || "preview";
+    if (usingProxy() && state !== "loading" && state !== "unavailable") {
+      state = "preview";
+    } else if (usingPlayback() && state !== "loading") {
+      state = "full";
+    }
     viewerSource.hidden = false;
     viewerSource.textContent = sourceLabel(state);
     viewerSource.dataset.state = state;

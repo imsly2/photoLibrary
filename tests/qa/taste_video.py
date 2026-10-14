@@ -3,13 +3,22 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import time
 from pathlib import Path
 from typing import Any
 
 from library.httpjson import request_json
 from library.records import read_renditions, renditions_for
-from library.renditions import browser_safe_mp4, write_playback
+from library.renditions import (
+    PLAYBACK_MAX_WIDTH,
+    browser_safe_mp4,
+    cleanup_tmp_siblings,
+    should_remux_playback,
+    sweep_orphan_tmps,
+    write_playback,
+    write_proxy,
+)
 from tests.qa.launch_ps1_args import run_assertions as launch_arglist_assertions
 from tests.qa.s00 import Checks, assert_no_pillow_in_server, stop_owned
 from tests.qa.s01 import hash_tree
@@ -698,6 +707,191 @@ def prove_playback_http(checks: Checks, url: str, items: list[dict[str, Any]]) -
     orig_code, _, orig_body = request_raw(f"{base}/api/media/{mov['id']}?which=original")
     record["movOriginalHttp"] = orig_code
     checks.check("mov-original-still-there", orig_code == 200 and len(orig_body) > 0, str(orig_code))
+    record["mp4PlaybackBytes"] = len(mp4_body)
+    record["movPlaybackBytes"] = len(mov_body)
+    checks.check("mp4-playback-no-body", len(mp4_body) == 0, str(len(mp4_body)))
+    checks.check(
+        "mov-playback-width-capped",
+        type(probe.get("width")) is int and probe["width"] <= PLAYBACK_MAX_WIDTH,
+        json.dumps(probe),
+    )
+    return record
+
+
+def _make_synthetic_clip(dest: Path, *, width: int, height: int, container: str, seconds: float = 2.0) -> bool:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    proc = subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            f"testsrc=size={width}x{height}:rate=24",
+            "-f",
+            "lavfi",
+            "-i",
+            "sine=frequency=440:sample_rate=44100",
+            "-t",
+            str(seconds),
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-c:a",
+            "aac",
+            "-shortest",
+            "-f",
+            container,
+            str(dest),
+        ],
+        capture_output=True,
+        check=False,
+    )
+    return proc.returncode == 0 and dest.is_file() and dest.stat().st_size > 0
+
+
+def _legacy_crf18_full(source: Path, dest: Path) -> bool:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    proc = subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(source),
+            "-map",
+            "0:v:0",
+            "-map",
+            "0:a?",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "veryfast",
+            "-crf",
+            "18",
+            "-pix_fmt",
+            "yuv420p",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "192k",
+            "-movflags",
+            "+faststart",
+            "-f",
+            "mp4",
+            str(dest),
+        ],
+        capture_output=True,
+        check=False,
+    )
+    return proc.returncode == 0 and dest.is_file() and dest.stat().st_size > 0
+
+
+def prove_rendition_size(checks: Checks, media_src: Path, artifacts: Path) -> dict[str, Any]:
+    record: dict[str, Any] = {
+        "policy": {
+            "proxy": "width <= proxyWidth (480), CRF 28, no audio, scrub-friendly",
+            "playback": "only when not browser-safe MP4; longest side <= 1280; CRF 23; remux only if already <=1280 and <=80MiB",
+        }
+    }
+    mp4 = media_src / "a" / "clip.mp4"
+    mov = media_src / "formats" / "clip.mov"
+    proxy_dest = artifacts / "size-proxy.mp4"
+    checks.check("size-write-proxy", write_proxy(mp4, proxy_dest, 480) is True)
+    proxy_probe = ffprobe_media(proxy_dest)
+    record["fixtureProxy"] = proxy_probe
+    checks.check(
+        "size-proxy-width",
+        type(proxy_probe.get("width")) is int and proxy_probe["width"] <= 480,
+        json.dumps(proxy_probe),
+    )
+    checks.check("size-proxy-silent", proxy_probe.get("audioStreamCount") == 0, json.dumps(proxy_probe))
+    checks.check(
+        "size-proxy-bytes",
+        type(proxy_probe.get("bytes")) is int and 0 < proxy_probe["bytes"] <= 500_000,
+        json.dumps(proxy_probe),
+    )
+    skip = artifacts / "size-mp4-playback.mp4"
+    skip_out = write_playback(mp4, skip)
+    record["browserSafeMp4"] = {"outcome": skip_out, "exists": skip.exists()}
+    checks.check("size-mp4-not-applicable", skip_out == "not-applicable" and not skip.exists(), skip_out)
+    checks.check("size-fixture-mov-may-remux", should_remux_playback(mov) is True)
+
+    synth = artifacts / "synth"
+    wide_mov = synth / "wide.mov"
+    wide_mp4 = synth / "wide.mp4"
+    made_mov = _make_synthetic_clip(wide_mov, width=3840, height=2160, container="mov")
+    made_mp4 = _make_synthetic_clip(wide_mp4, width=3840, height=2160, container="mp4")
+    checks.check("size-synth-mov", made_mov, str(wide_mov))
+    checks.check("size-synth-mp4", made_mp4, str(wide_mp4))
+    record["synthSource"] = {
+        "movBytes": wide_mov.stat().st_size if wide_mov.is_file() else 0,
+        "mp4Bytes": wide_mp4.stat().st_size if wide_mp4.is_file() else 0,
+    }
+    if made_mov:
+        checks.check("size-4k-no-remux", should_remux_playback(wide_mov) is False)
+        new_dest = synth / "policy-playback.mp4"
+        outcome = write_playback(wide_mov, new_dest)
+        new_probe = ffprobe_media(new_dest) if new_dest.is_file() else {}
+        record["policyPlayback"] = {"outcome": outcome, "probe": new_probe}
+        checks.check("size-4k-playback-ready", outcome == "ready" and new_dest.is_file(), outcome)
+        checks.check(
+            "size-4k-playback-width",
+            type(new_probe.get("width")) is int and new_probe["width"] <= PLAYBACK_MAX_WIDTH,
+            json.dumps(new_probe),
+        )
+        checks.check("size-4k-playback-audio", (new_probe.get("audioStreamCount") or 0) >= 1, json.dumps(new_probe))
+        checks.check(
+            "size-4k-playback-bytes",
+            type(new_probe.get("bytes")) is int and 0 < new_probe["bytes"] <= 3_000_000,
+            json.dumps(new_probe),
+        )
+        legacy_dest = synth / "legacy-crf18.mp4"
+        legacy_ok = _legacy_crf18_full(wide_mov, legacy_dest)
+        legacy_probe = ffprobe_media(legacy_dest) if legacy_ok else {}
+        record["legacyCrf18"] = {"ok": legacy_ok, "probe": legacy_probe}
+        if legacy_ok:
+            checks.check(
+                "size-policy-smaller-than-crf18",
+                new_probe.get("bytes", 0) < legacy_probe.get("bytes", 0),
+                json.dumps({"new": new_probe.get("bytes"), "legacy": legacy_probe.get("bytes")}),
+            )
+            record["beforeAfter"] = {
+                "legacyCrf18Full4kBytes": legacy_probe.get("bytes"),
+                "policy1280Crf23Bytes": new_probe.get("bytes"),
+                "note": "Same 2s 3840x2160 MOV. Old write_playback used CRF 18 at original pixels (or remuxed the whole file). New policy transcodes to <=1280 / CRF 23.",
+            }
+        wide_proxy = synth / "wide-proxy.mp4"
+        checks.check("size-4k-proxy", write_proxy(wide_mov, wide_proxy, 480) is True)
+        wide_proxy_probe = ffprobe_media(wide_proxy)
+        record["wideProxy"] = wide_proxy_probe
+        checks.check(
+            "size-4k-proxy-width",
+            type(wide_proxy_probe.get("width")) is int and wide_proxy_probe["width"] <= 480,
+            json.dumps(wide_proxy_probe),
+        )
+        checks.check(
+            "size-4k-proxy-bytes",
+            type(wide_proxy_probe.get("bytes")) is int and 0 < wide_proxy_probe["bytes"] <= 500_000,
+            json.dumps(wide_proxy_probe),
+        )
+    if made_mp4:
+        huge_skip = synth / "wide-mp4-playback.mp4"
+        huge_out = write_playback(wide_mp4, huge_skip)
+        record["wideMp4"] = {"outcome": huge_out, "exists": huge_skip.exists(), "sourceBytes": record["synthSource"]["mp4Bytes"]}
+        checks.check("size-4k-mp4-not-applicable", huge_out == "not-applicable" and not huge_skip.exists(), huge_out)
+
+    planted = artifacts / "renditions" / "orphan" / "playback.mp4.deadbeef.tmp"
+    planted.parent.mkdir(parents=True, exist_ok=True)
+    planted.write_bytes(b"orphan-tmp")
+    sibling = artifacts / "cleanup-target.mp4.deadbeef.tmp"
+    sibling.write_bytes(b"sibling-tmp")
+    target = artifacts / "cleanup-target.mp4"
+    removed_sib = cleanup_tmp_siblings(target)
+    removed_sweep = sweep_orphan_tmps(artifacts)
+    record["tmpCleanup"] = {"siblings": removed_sib, "sweep": removed_sweep}
+    checks.check("size-tmp-sibling-gone", removed_sib >= 1 and not sibling.exists())
+    checks.check("size-tmp-sweep-gone", removed_sweep >= 1 and not planted.exists())
     return record
 
 
@@ -783,6 +977,9 @@ def run_slice(root: Path, artifacts: Path) -> int:
         units = prove_playback_units(checks, media_src, artifacts)
         (artifacts / "playback-units.json").write_text(json.dumps(units, indent=2) + "\n", encoding="utf-8")
         extra["playback-units.json"] = str(artifacts / "playback-units.json")
+        sizes = prove_rendition_size(checks, media_src, artifacts)
+        (artifacts / "rendition-size.json").write_text(json.dumps(sizes, indent=2) + "\n", encoding="utf-8")
+        extra["rendition-size.json"] = str(artifacts / "rendition-size.json")
         arglist = launch_arglist_assertions()
         (artifacts / "launch-arglist.json").write_text(json.dumps(arglist, indent=2) + "\n", encoding="utf-8")
         extra["launch-arglist.json"] = str(artifacts / "launch-arglist.json")
