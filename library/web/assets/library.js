@@ -24,6 +24,7 @@
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const revealOriginalBtn = document.getElementById("reveal-original");
   const openOriginalBtn = document.getElementById("open-original");
+  const revealError = document.getElementById("reveal-error");
   const playPreviewBtn = document.getElementById("play-preview");
   const viewerScrubWrap = document.getElementById("viewer-scrub-wrap");
   const viewerScrub = document.getElementById("viewer-scrub");
@@ -1521,11 +1522,30 @@
     return status.preview === "ready";
   }
 
+  function showRevealFailed() {
+    unavailableBanner.hidden = false;
+    if (revealError) {
+      revealError.hidden = false;
+      revealError.textContent = "Original is not on this computer";
+    }
+    revealOriginalBtn.disabled = true;
+    openOriginalBtn.disabled = true;
+  }
+
+  function clearRevealFailed() {
+    if (revealError) {
+      revealError.hidden = true;
+    }
+  }
+
   function syncViewerChrome(item) {
     const available = !!(item && item.available);
     unavailableBanner.hidden = available;
     revealOriginalBtn.disabled = !available;
     openOriginalBtn.disabled = !available;
+    if (available) {
+      clearRevealFailed();
+    }
     playPreviewBtn.disabled = true;
     syncNavChrome();
     syncOriginalChrome();
@@ -1584,6 +1604,7 @@
     resetViewTransform();
     unavailableBanner.hidden = true;
     viewerPlaceholder.hidden = true;
+    clearRevealFailed();
     revealOriginalBtn.disabled = true;
     openOriginalBtn.disabled = true;
     setInfoOpen(false);
@@ -3284,13 +3305,18 @@
     }
     const item = syncViewerIndex();
     if (!item || item.available === false) {
+      showRevealFailed();
       return;
     }
     fetch("/api/items/" + encodeURIComponent(item.id) + "/reveal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
-    }).then(readJson).catch(function () {});
+    }).then(readJson).then(function () {
+      clearRevealFailed();
+    }).catch(function () {
+      showRevealFailed();
+    });
   });
   openOriginalBtn.addEventListener("click", function () {
     if (openOriginalBtn.disabled) {
@@ -3298,13 +3324,18 @@
     }
     const item = syncViewerIndex();
     if (!item || item.available === false) {
+      showRevealFailed();
       return;
     }
     fetch("/api/items/" + encodeURIComponent(item.id) + "/open", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
-    }).then(readJson).catch(function () {});
+    }).then(readJson).then(function () {
+      clearRevealFailed();
+    }).catch(function () {
+      showRevealFailed();
+    });
   });
   function applyVersion(body) {
     if (!libraryVersion) {

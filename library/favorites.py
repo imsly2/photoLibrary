@@ -122,17 +122,43 @@ def parse_favorite_body(body: Any) -> bool:
     return value
 
 
+def existing_original(path: Path) -> Path | None:
+    """Absolute on-disk file, or None. Directories and missing paths are None."""
+    try:
+        candidate = Path(path).expanduser()
+        if not candidate.is_absolute():
+            candidate = candidate.resolve()
+        elif candidate.exists():
+            candidate = candidate.resolve()
+    except OSError:
+        return None
+    if not candidate.is_absolute() or not candidate.is_file():
+        return None
+    return candidate
+
+
+def windows_reveal_command(path: Path) -> str:
+    """explorer.exe /select,"fullpath" — selects the file, not a folder-only open."""
+    text = str(path)
+    if os.name == "nt":
+        text = os.path.normpath(text)
+    return f'explorer.exe /select,"{text}"'
+
+
 def open_path_with_default(path: Path) -> bool:
+    target = existing_original(path)
+    if target is None:
+        return False
     try:
         if os.name == "nt":
-            os.startfile(path)  # type: ignore[attr-defined]
+            os.startfile(target)  # type: ignore[attr-defined]
             return True
         if sys.platform == "darwin":
-            subprocess.Popen(["open", str(path)])
+            subprocess.Popen(["open", str(target)])
             return True
         opener = _which("xdg-open")
         if opener:
-            subprocess.Popen([opener, str(path)])
+            subprocess.Popen([opener, str(target)])
             return True
     except OSError:
         return False
@@ -140,13 +166,18 @@ def open_path_with_default(path: Path) -> bool:
 
 
 def open_containing_folder(path: Path) -> bool:
-    folder = path.parent
+    target = existing_original(path)
+    if target is None:
+        return False
+    folder = target.parent
     try:
         if os.name == "nt":
-            subprocess.Popen(["explorer", f"/select,{path}"])
+            # String form so CreateProcess does not wrap /select,path as one
+            # quoted argv (that parse fails on spaces and opens Documents).
+            subprocess.Popen(windows_reveal_command(target))
             return True
         if sys.platform == "darwin":
-            subprocess.Popen(["open", "-R", str(path)])
+            subprocess.Popen(["open", "-R", str(target)])
             return True
         opener = _which("xdg-open")
         if opener:

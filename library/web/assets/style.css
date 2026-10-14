@@ -1218,7 +1218,19 @@ dialog h2 {
 #viewer-actions {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 0.85rem;
+}
+
+#reveal-error {
+  margin: 0;
+  color: #e0a0a0;
+  font-size: 0.85rem;
+}
+
+#reveal-error[hidden] {
+  display: none;
 }
 
 #reveal-original,

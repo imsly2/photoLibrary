@@ -469,7 +469,7 @@ taste gate.
 | 12 | Fullscreen | F11 or F; Esc exits fullscreen, then the viewer |
 | 13 | Slideshow | F5 starts; Space pauses; Esc stops; empty “Add photos first” |
 | 14 | Favorite | Viewer heart; tile heart at large Size; Favorites strip can collapse |
-| 15 | Reveal + Open | Side by side; Reveal selects in Explorer; Open launches the default app |
+| 15 | Reveal + Open | Side by side; Reveal selects the on-disk file (`explorer.exe /select,"fullpath"`); missing original shows the banner, never Documents |
 | 16 | Info | File facts first (or “No camera info”), then people/places/things; click filters the grid |
 | 17 | Remove / Delete file | Delete key removes from library (confirm, bytes stay). Delete file extra-confirms and Recycle-Bins |
 | 18 | Reconnect | Kill the server: “Library is not responding”; restore health clears it |

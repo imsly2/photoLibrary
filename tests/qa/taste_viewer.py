@@ -452,6 +452,23 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         bool(reveal_body.get("path")) and Path(reveal_body.get("path") or "").is_file(),
         json.dumps(reveal_body),
     )
+    reveal_path = Path(reveal_body.get("path") or "")
+    reveal_folder = Path(reveal_body.get("folder") or "")
+    checks.check(
+        "reveal-file-absolute",
+        reveal_path.is_absolute() and reveal_path.name == "IMG_1042.jpg",
+        json.dumps(reveal_body),
+    )
+    checks.check(
+        "reveal-folder-is-parent",
+        reveal_folder.is_absolute() and reveal_folder == reveal_path.parent,
+        json.dumps(reveal_body),
+    )
+    checks.check(
+        "reveal-not-documents",
+        "Documents" not in str(reveal_folder) or "IMG_1042" in str(reveal_path),
+        json.dumps(reveal_body),
+    )
 
     before = image_rect(page)
     set_zoom_slider(page, 200)
