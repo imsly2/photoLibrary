@@ -259,7 +259,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   unchanged.
   Plan: [taste-setup](features/taste-setup/Rev1.0/PLAN.md).
   Evidence:
-  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-1/result.json).
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-1/result.json)
+  23/23,
+  [Setup.bat](features/taste-setup/Rev1.0/assets/verify-1/Setup.bat.txt),
+  [help](features/taste-setup/Rev1.0/assets/verify-1/help.txt),
+  [dry-run](features/taste-setup/Rev1.0/assets/verify-1/dry-run.txt).
 
 ## Completion
 

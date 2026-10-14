@@ -203,15 +203,33 @@ def run_slice(root: Path, artifacts: Path) -> int:
         probe["missingMessage"] + "\n" + probe["networkNote"] + "\n",
         encoding="utf-8",
     )
+    extra = {
+        "Setup.bat.txt": str(artifacts / "Setup.bat.txt"),
+        "help.txt": str(artifacts / "help.txt"),
+        "dry-run.txt": str(artifacts / "dry-run.txt"),
+    }
+    code = write_result(
+        "TASTE-SETUP",
+        "slice",
+        checks,
+        artifacts,
+        [
+            "python -m tests.qa slice TASTE-SETUP",
+            f"{sys.executable} -m library --help",
+            f"{sys.executable} -m library setup-geo --help",
+            f"{sys.executable} -m library setup-ml objects --help",
+            f"{sys.executable} -m library setup-ml faces --help",
+        ],
+        extra,
+    )
     payload = {
-        "pass": checks.failed == 0,
+        "pass": checks.ok(),
         "assertions": checks.assertions,
         "static": {"help": static["help"]},
         "probe": probe,
     }
-    write_result(artifacts, payload)
     print(json.dumps(payload, indent=2), flush=True)
-    return 0 if payload["pass"] else 1
+    return code
 
 
 def main(argv: list[str] | None = None) -> int:

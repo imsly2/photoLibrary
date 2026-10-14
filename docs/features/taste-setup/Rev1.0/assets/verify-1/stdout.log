@@ -1,0 +1,202 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS setup-bat-calls-setup-ps1
+PASS setup-bat-echoes-once-daily-update
+PASS setup-bat-ready-or-update
+PASS setup-bat-has-help
+PASS setup-bat-no-msi
+PASS setup-ps1-does-not-serve
+PASS setup-ps1-composes-clis
+PASS setup-ps1-venv-and-pip
+PASS setup-ps1-winget-same-ids
+PASS setup-ps1-dryrun-and-help
+PASS setup-ps1-missing-says-update
+PASS library-bat-still-launch-ps1
+PASS launch-ps1-still-serves
+PASS launch-ps1-no-setup-hijack
+PASS probe-setup-geo-missing-on-this-tip: returncode=2
+PASS probe-setup-ml objects-missing-on-this-tip: returncode=2
+PASS probe-setup-ml faces-missing-on-this-tip: returncode=2
+PASS dry-run-would-exit-nonzero: 1
+PASS dry-run-names-update: This copy does not have the local AI setup commands yet:
+  - python -m library setup-geo
+  - python -m library setup-ml objects
+  - python -m library setup-ml faces
+
+Run Update Library (or Update.bat) to git pull those modules,
+then run Setup.bat again.
+Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)
+
+PASS dry-run-lists-all-missing: This copy does not have the local AI setup commands yet:
+  - python -m library setup-geo
+  - python -m library setup-ml objects
+  - python -m library setup-ml faces
+
+Run Update Library (or Update.bat) to git pull those modules,
+then run Setup.bat again.
+Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)
+
+PASS probe-does-not-serve
+{
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-calls-setup-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-echoes-once-daily-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-or-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-has-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-no-msi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-does-not-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-composes-clis",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-venv-and-pip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-winget-same-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-dryrun-and-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-missing-says-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-still-launch-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-still-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-setup-hijack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "probe-setup-geo-missing-on-this-tip",
+      "pass": true,
+      "detail": "returncode=2"
+    },
+    {
+      "name": "probe-setup-ml objects-missing-on-this-tip",
+      "pass": true,
+      "detail": "returncode=2"
+    },
+    {
+      "name": "probe-setup-ml faces-missing-on-this-tip",
+      "pass": true,
+      "detail": "returncode=2"
+    },
+    {
+      "name": "dry-run-would-exit-nonzero",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "dry-run-names-update",
+      "pass": true,
+      "detail": "This copy does not have the local AI setup commands yet:\n  - python -m library setup-geo\n  - python -m library setup-ml objects\n  - python -m library setup-ml faces\n\nRun Update Library (or Update.bat) to git pull those modules,\nthen run Setup.bat again.\nNeed: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)\n"
+    },
+    {
+      "name": "dry-run-lists-all-missing",
+      "pass": true,
+      "detail": "This copy does not have the local AI setup commands yet:\n  - python -m library setup-geo\n  - python -m library setup-ml objects\n  - python -m library setup-ml faces\n\nRun Update Library (or Update.bat) to git pull those modules,\nthen run Setup.bat again.\nNeed: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)\n"
+    },
+    {
+      "name": "probe-does-not-serve",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "static": {
+    "help": ":help\necho.\necho  Setup.bat  \u2014 one-time portable install on this Windows PC\necho.\necho  Setup once   \u2014 this file  (Python 3.12+, ffmpeg, .venv, local AI models)\necho  Library      \u2014 Library.bat every day\necho  Update       \u2014 Update.bat or Update Library for new code  (git pull)\necho.\necho  First real run needs the internet for Python/ffmpeg (if missing)\necho  and the cities / objects / faces packs. After that, re-runs are local.\necho  Models stay under library-data\\. No cloud APIs. No MSI.\necho.\necho  Then run Library.bat. Use Update.bat / Update Library for new code.\necho.\necho    Setup.bat           run setup\necho    Setup.bat -Help     this text\necho    Setup.bat -DryRun   probe only; do not download, pip install, or winget\necho.\nexit /b 0\n"
+  },
+  "probe": {
+    "libraryHelpReturncode": 0,
+    "libraryHelp": "usage: python -m library [-h] [--root ROOT]\n                         {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,jobs,rebuild-index,renditions}\n                         ...\n\npositional arguments:\n  {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,jobs,rebuild-index,renditions}\n\noptions:\n  -h, --help            show this help message and exit\n  --root ROOT           library-data directory\n",
+    "commands": {
+      "setup-geo": {
+        "tokens": [
+          "setup-geo"
+        ],
+        "returncode": 2,
+        "present": false,
+        "excerpt": "usage: python -m library [-h] [--root ROOT]\n                         {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,jobs,rebuild-index,renditions}\n                         ...\npython -m library: error: argument command: invalid choice: 'setup-geo' (choose from 'serve', 'settings', 'undo', 'redo', 'scan', 'sources', 'copy-here', 'items', 'annotate', 'favorite', 'reveal', 'open', 'remove', 'delete-file', 'update', 'people', 'jobs', 'rebuild-index', 'renditions')\n"
+      },
+      "setup-ml objects": {
+        "tokens": [
+          "setup-ml",
+          "objects"
+        ],
+        "returncode": 2,
+        "present": false,
+        "excerpt": "usage: python -m library [-h] [--root ROOT]\n                         {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,jobs,rebuild-index,renditions}\n                         ...\npython -m library: error: argument command: invalid choice: 'setup-ml' (choose from 'serve', 'settings', 'undo', 'redo', 'scan', 'sources', 'copy-here', 'items', 'annotate', 'favorite', 'reveal', 'open', 'remove', 'delete-file', 'update', 'people', 'jobs', 'rebuild-index', 'renditions')\n"
+      },
+      "setup-ml faces": {
+        "tokens": [
+          "setup-ml",
+          "faces"
+        ],
+        "returncode": 2,
+        "present": false,
+        "excerpt": "usage: python -m library [-h] [--root ROOT]\n                         {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,jobs,rebuild-index,renditions}\n                         ...\npython -m library: error: argument command: invalid choice: 'setup-ml' (choose from 'serve', 'settings', 'undo', 'redo', 'scan', 'sources', 'copy-here', 'items', 'annotate', 'favorite', 'reveal', 'open', 'remove', 'delete-file', 'update', 'people', 'jobs', 'rebuild-index', 'renditions')\n"
+      }
+    },
+    "missing": [
+      "setup-geo",
+      "setup-ml objects",
+      "setup-ml faces"
+    ],
+    "wouldExit": 1,
+    "missingMessage": "This copy does not have the local AI setup commands yet:\n  - python -m library setup-geo\n  - python -m library setup-ml objects\n  - python -m library setup-ml faces\n\nRun Update Library (or Update.bat) to git pull those modules,\nthen run Setup.bat again.\nNeed: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)\n",
+    "networkNote": "First real Setup.bat needs the internet for Python/ffmpeg (if missing) and the cities / YOLO / InsightFace packs. Models stay under library-data/. Dry-run / -Help do not download."
+  }
+}
