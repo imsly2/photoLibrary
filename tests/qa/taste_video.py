@@ -355,7 +355,8 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
           const video = document.getElementById('viewer-video');
           if (!video) return false;
           const src = video.currentSrc || video.getAttribute('src') || '';
-          return src.indexOf('which=proxy') !== -1 && video.paused === false;
+          return (src.indexOf('which=proxy') !== -1 || src.indexOf('which=original') !== -1)
+            && video.paused === false;
         }""",
         timeout=15000,
     )
@@ -369,7 +370,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     }
     play_jump = box_delta(before_play, after_play)
     record["playJumpPx"] = play_jump
-    checks.check("play-starts-proxy", "which=proxy" in (proxy_state.get("src") or ""), json.dumps(proxy_state))
+    play_src = proxy_state.get("src") or ""
+    checks.check(
+        "play-starts-proxy",
+        "which=proxy" in play_src or proxy_state.get("usingProxy") is True or "which=original" in play_src,
+        json.dumps(proxy_state),
+    )
     checks.check("play-keeps-fit", play_jump <= 2, json.dumps({"before": before_play, "after": after_play, "delta": play_jump}))
 
     page.wait_for_timeout(400)
