@@ -303,9 +303,9 @@ def _read_score(value: Any) -> float:
     if type(value) is bool or not isinstance(value, (int, float)):
         raise fail("invalid-catalog")
     number = float(value)
-    if not math.isfinite(number) or number < 0 or number > 1:
+    if not math.isfinite(number) or number < 0 or number > 1.0000001:
         raise fail("invalid-catalog")
-    return number
+    return min(1.0, max(0.0, number))
 
 
 def read_face(value: Any) -> dict[str, Any]:

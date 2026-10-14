@@ -986,14 +986,18 @@ def plan_merge_index(root: Path, keep_id: str, drop_id: str) -> dict[str, Any] |
     return {"path": INDEX_REL, "before": before, "after": after}
 
 
+def _clamp_unit(value: float) -> float:
+    return min(1.0, max(0.0, float(value)))
+
+
 def _face_record(det: dict[str, Any]) -> dict[str, Any]:
     rec: dict[str, Any] = {"personId": det["personId"], "box": det["box"]}
     det_score = det.get("detScore")
     match_score = det.get("matchScore")
     if isinstance(det_score, (int, float)) and not isinstance(det_score, bool):
-        rec["detScore"] = float(det_score)
+        rec["detScore"] = _clamp_unit(det_score)
     if isinstance(match_score, (int, float)) and not isinstance(match_score, bool):
-        rec["matchScore"] = float(match_score)
+        rec["matchScore"] = _clamp_unit(match_score)
     return rec
 
 
