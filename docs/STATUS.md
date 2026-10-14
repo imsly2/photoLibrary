@@ -343,7 +343,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-3/result.json)
   50/50.
 - 2026-10-14 — Family install polish on `cursor/mil-install-update-a762`
-  (rebased on `92d6170` / PR #28). Desktop + Start Menu Library
+  (rebased on `8ede708` / PR #30, includes PR #28). Desktop + Start Menu Library
   shortcut (`CreateShortcut.bat`, `library.ico`). Update always
   tracks `main` over anonymous HTTPS git (no `gh`, no GitHub login;
   credential helper off). If git is missing, overlays a public zip of
