@@ -336,20 +336,14 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     checks.check("tile-scrub-present", small.get("hasScrub") is True, json.dumps(small))
     if small.get("hasScrub"):
-        before_t = page.evaluate(
-            "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
+        record["tileScrub"] = seek_tile_scrub(page)
+        after_t = record["tileScrub"].get("after") or 0
+        expected = record["tileScrub"].get("expected") or 0
+        checks.check(
+            "tile-scrub-seeks",
+            abs(after_t - expected) <= 0.2,
+            json.dumps(record["tileScrub"]),
         )
-        page.locator(".tile-scrub").evaluate(
-            """(el) => {
-              el.value = '600';
-              el.dispatchEvent(new Event('input', { bubbles: true }));
-            }"""
-        )
-        after_t = page.evaluate(
-            "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
-        )
-        record["tileScrub"] = {"before": before_t, "after": after_t}
-        checks.check("tile-scrub-seeks", after_t > before_t + 0.05, json.dumps(record["tileScrub"]))
         tile_time = after_t
         page.locator('.cell[data-slot="grid"][data-kind="video"]').first.click()
         page.wait_for_function(
