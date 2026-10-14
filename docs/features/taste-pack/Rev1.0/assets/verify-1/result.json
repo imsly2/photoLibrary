@@ -1,0 +1,309 @@
+{
+  "slice": "TASTE-PACK",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "pack-bat-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-ps1-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-py-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-ps1-ps51-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"bareUsingLines\": [], \"braceDepth\": 0, \"cp1252EqualsUtf8\": true, \"ok\": true, \"stringsClosed\": true}"
+    },
+    {
+      "name": "pack-bat-calls-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-ps1-calls-py",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-overwrite",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-excludes-named",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-includes-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-pack-exit-0",
+      "pass": true,
+      "detail": "fy-1/sandbox-app\n\nSkipped (present, not packed):\n  .git/\n  .qa/\n  .venv/\n  AGENTS.md\n  CaptureRegion/\n  docs/\n  library-data/\n  library.egg-info/\n  tests/\n\nPacked:\n  create-shortcut.ps1\n  CreateShortcut.bat\n  Launch.bat\n  launch.ps1\n  launch.sh\n  Library.bat\n  library.ico\n  pack-deploy.ps1\n  pack-deploy.py\n  PackDeploy.bat\n  pyproject.toml\n  README.md\n  Setup.bat\n  setup.ps1\n  Update.bat\n  library/  (2 files)\n  17 files total\n\nUncompressed about 162 bytes\nWriting:\n  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip\n\nZip ready: /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip\nSize: about 2.3 KB\nSafe to run again -- it overwrites this same file.\n\nNext step: copy the zip to a USB or family PC, extract it,\nthen double-click Setup.bat.\n\n\n"
+    },
+    {
+      "name": "sandbox-zip-exists",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip"
+    },
+    {
+      "name": "sandbox-has-setup",
+      "pass": true,
+      "detail": "['photoLibrary/create-shortcut.ps1', 'photoLibrary/CreateShortcut.bat', 'photoLibrary/Launch.bat', 'photoLibrary/launch.ps1', 'photoLibrary/launch.sh', 'photoLibrary/Library.bat', 'photoLibrary/library.ico', 'photoLibrary/pack-deploy.ps1', 'photoLibrary/pack-deploy.py', 'photoLibrary/PackDeploy.bat', 'photoLibrary/pyproject.toml', 'photoLibrary/README.md', 'photoLibrary/Setup.bat', 'photoLibrary/setup.ps1', 'photoLibrary/Update.bat', 'photoLibrary/library/__init__.py', 'photoLibrary/library/web/index.html']"
+    },
+    {
+      "name": "sandbox-has-library",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-has-init",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-no-venv",
+      "pass": true,
+      "detail": ".venv/"
+    },
+    {
+      "name": "sandbox-no-venv",
+      "pass": true,
+      "detail": "venv/"
+    },
+    {
+      "name": "sandbox-no-library-data",
+      "pass": true,
+      "detail": "library-data/"
+    },
+    {
+      "name": "sandbox-no-git",
+      "pass": true,
+      "detail": ".git/"
+    },
+    {
+      "name": "sandbox-no-docs",
+      "pass": true,
+      "detail": "docs/"
+    },
+    {
+      "name": "sandbox-no-tests",
+      "pass": true,
+      "detail": "tests/"
+    },
+    {
+      "name": "sandbox-no-qa",
+      "pass": true,
+      "detail": ".qa/"
+    },
+    {
+      "name": "sandbox-no-__pycache__",
+      "pass": true,
+      "detail": "__pycache__/"
+    },
+    {
+      "name": "sandbox-no-captureregion",
+      "pass": true,
+      "detail": "captureregion/"
+    },
+    {
+      "name": "sandbox-no-pyc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-no-egg-info",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-no-agents",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sandbox-skipped-printed",
+      "pass": true,
+      "detail": "/  (2 files)\n  17 files total\n\nUncompressed about 162 bytes\nWriting:\n  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip\n\nZip ready: /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip\nSize: about 2.3 KB\nSafe to run again -- it overwrites this same file.\n\nNext step: copy the zip to a USB or family PC, extract it,\nthen double-click Setup.bat.\n\n\n"
+    },
+    {
+      "name": "dry-run-exit-0",
+      "pass": true,
+      "detail": "acked):\n  .git/\n  __pycache__/\n  AGENTS.md\n  docs/\n  tests/\n\nPacked:\n  create-shortcut.ps1\n  CreateShortcut.bat\n  Launch.bat\n  launch.ps1\n  launch.sh\n  Library.bat\n  library.ico\n  pack-deploy.ps1\n  pack-deploy.py\n  PackDeploy.bat\n  pyproject.toml\n  README.md\n  Setup-geo.bat\n  Setup.bat\n  setup.ps1\n  Update.bat\n  library/  (45 files)\n  61 files total\n\nUncompressed about 836.4 KB\nDry-run -- not writing a zip.\nWould write (overwrite if present):\n  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip\n\nNext step after a real run: copy the zip, extract it, Setup.bat.\n\n\n"
+    },
+    {
+      "name": "dry-run-no-zip",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip"
+    },
+    {
+      "name": "dry-run-mentions-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dry-run-mentions-library",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dry-run-mentions-skip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "repo-pack-exit-0",
+      "pass": true,
+      "detail": " zip\n------------------\nFolder: /workspace\n\nSkipped (present, not packed):\n  .git/\n  __pycache__/\n  AGENTS.md\n  docs/\n  tests/\n\nPacked:\n  create-shortcut.ps1\n  CreateShortcut.bat\n  Launch.bat\n  launch.ps1\n  launch.sh\n  Library.bat\n  library.ico\n  pack-deploy.ps1\n  pack-deploy.py\n  PackDeploy.bat\n  pyproject.toml\n  README.md\n  Setup-geo.bat\n  Setup.bat\n  setup.ps1\n  Update.bat\n  library/  (45 files)\n  61 files total\n\nUncompressed about 836.4 KB\nWriting:\n  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip\n\nZip ready: /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip\nSize: about 274.9 KB\nSafe to run again -- it overwrites this same file.\n\nNext step: copy the zip to a USB or family PC, extract it,\nthen double-click Setup.bat.\n\n\n"
+    },
+    {
+      "name": "repo-zip-exists",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip"
+    },
+    {
+      "name": "repo-zip-small",
+      "pass": true,
+      "detail": "281497"
+    },
+    {
+      "name": "repo-has-setup-bat",
+      "pass": true,
+      "detail": "photoLibrary/Setup.bat"
+    },
+    {
+      "name": "repo-has-setup-ps1",
+      "pass": true,
+      "detail": "photoLibrary/setup.ps1"
+    },
+    {
+      "name": "repo-has-library-bat",
+      "pass": true,
+      "detail": "photoLibrary/Library.bat"
+    },
+    {
+      "name": "repo-has-update-bat",
+      "pass": true,
+      "detail": "photoLibrary/Update.bat"
+    },
+    {
+      "name": "repo-has-pyproject-toml",
+      "pass": true,
+      "detail": "photoLibrary/pyproject.toml"
+    },
+    {
+      "name": "repo-has-readme-md",
+      "pass": true,
+      "detail": "photoLibrary/README.md"
+    },
+    {
+      "name": "repo-has-pack-deploy-py",
+      "pass": true,
+      "detail": "photoLibrary/pack-deploy.py"
+    },
+    {
+      "name": "repo-has-library-tree",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "repo-has-web",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "repo-no-venv",
+      "pass": true,
+      "detail": ".venv/"
+    },
+    {
+      "name": "repo-no-venv",
+      "pass": true,
+      "detail": "venv/"
+    },
+    {
+      "name": "repo-no-library-data",
+      "pass": true,
+      "detail": "library-data/"
+    },
+    {
+      "name": "repo-no-git",
+      "pass": true,
+      "detail": ".git/"
+    },
+    {
+      "name": "repo-no-docs",
+      "pass": true,
+      "detail": "docs/"
+    },
+    {
+      "name": "repo-no-tests",
+      "pass": true,
+      "detail": "tests/"
+    },
+    {
+      "name": "repo-no-qa",
+      "pass": true,
+      "detail": ".qa/"
+    },
+    {
+      "name": "repo-no-__pycache__",
+      "pass": true,
+      "detail": "__pycache__/"
+    },
+    {
+      "name": "repo-no-captureregion",
+      "pass": true,
+      "detail": "captureregion/"
+    },
+    {
+      "name": "repo-no-pyc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "repo-next-step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "repo-overwrite-said",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "632aa1e6b05c9669bfc8874714d100407892d4ca",
+  "commands": [
+    "python -m tests.qa.pack_deploy"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/stdout.log",
+    "sandbox-deploy.zip": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip",
+    "photoLibrary-deploy.zip": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip",
+    "dry-run.txt": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/dry-run.txt",
+    "pack-stdout.txt": "/workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/pack-stdout.txt"
+  }
+}

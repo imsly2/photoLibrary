@@ -4,6 +4,21 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-14 — Lean deploy zip for USB / family PCs: double-click
+  `PackDeploy.bat` (thin `pack-deploy.ps1` + `pack-deploy.py`). Writes
+  `dist/photoLibrary-deploy.zip` and overwrites that file on re-run.
+  Includes Setup / Library / Update launchers and `library/`. Excludes
+  `.venv`, `library-data`, `.git`, `docs`, `tests`, `.qa`, `__pycache__`,
+  egg-info, CaptureRegion screenshots, and other fat/dev trees. ASCII
+  `.bat` / `.ps1` (PowerShell 5.1). README Quick start has one paragraph.
+  Does not close a Check. 16/22 unchanged.
+  Plan: [taste-pack](features/taste-pack/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-PACK](features/taste-pack/Rev1.0/assets/verify-1/result.json)
+  57/57 (sandbox excludes planted fat trees; real zip has Setup.bat +
+  library/, about 275 KB),
+  [dry-run](features/taste-pack/Rev1.0/assets/verify-1/dry-run.txt),
+  [repo names](features/taste-pack/Rev1.0/assets/verify-1/repo-names.json).
 - S00 is green on its Windows verifier: an empty fixture-owned library launches,
   persists the 16 default settings, reuses a matching-root server, refuses a
   foreign port without killing it, recovers a settings transaction, and undoes

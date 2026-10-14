@@ -47,6 +47,12 @@ not rearrange your originals unless you ask it to copy a folder here.
 `Setup.bat -Help` prints that story. `Setup.bat -DryRun` probes without
 downloading.
 
+To put a lean copy on a USB stick or another PC, double-click
+`PackDeploy.bat` in this folder. It writes `dist/photoLibrary-deploy.zip`
+and overwrites that file if you run it again. Copy the zip, extract it,
+then run `Setup.bat` on that PC. The zip is the app only -- your photos,
+`library-data/`, and `.venv` stay behind.
+
 ## Requirements
 
 - **Windows.** This is the family-PC path. `Library.bat` / `Setup.bat`
