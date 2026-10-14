@@ -13,16 +13,16 @@ PASS still-original-after: /api/media/1b76f94527b0dba3976097852df99e541eef039924
 PASS still-preview-kept: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
 PASS video-poster-first: /api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster
 PASS video-original-or-proxy: {"src": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original", "paused": false, "usingProxy": false}
-PASS video-fallback-proxy: {"src": "http://127.0.0.1:18768/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "usingProxy": true}
+PASS video-fallback-proxy: {"src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "usingProxy": true}
 PASS viewer-ada-label: Ada
 PASS viewer-mug-label: mug
 PASS viewer-kitchen-label: Kitchen
 PASS viewer-annotations-png: 1280x720
 PASS failed-annotate-keeps-text: Nope
 PASS failed-annotate-inline-error: invalid-argument
-PASS no-console-errors: ["Failed to load resource: the server responded with a status of 400 (Bad Request)"]
-PASS ada-on-jpeg: [{"schemaVersion": 1, "id": "person_b518f0fd12f3", "name": "Ada"}]
-PASS mug-on-jpeg: [{"schemaVersion": 1, "id": "thing_5af17c439716", "name": "mug", "aliases": []}]
+FAIL browser-proof: Page.wait_for_function: Timeout 8000ms exceeded.
+PASS ada-on-jpeg: [{"schemaVersion": 1, "id": "person_6f8457fc568b", "name": "Ada"}]
+PASS mug-on-jpeg: [{"schemaVersion": 1, "id": "thing_f2ecc976dcbb", "name": "mug", "aliases": []}]
 PASS original-fixture-bytes
 PASS server-does-not-import-pillow
 PASS import-library.server-without-PIL

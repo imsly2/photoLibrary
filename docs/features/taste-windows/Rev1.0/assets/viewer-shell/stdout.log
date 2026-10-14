@@ -1,7 +1,7 @@
 PASS scan-exit
 PASS playwright-import
-PASS update-library-visible: {"present": true, "text": "Update Library", "hidden": false, "width": 113.015625, "height": 27.78125}
-PASS update-http-shape: {"status": 200, "body": {"ok": true, "updated": false, "revision": "08a027584300cb951820fadc9c8f6d308a6dd39b", "message": "Already up to date.\n\nFrom https://github.com/imsly2/photoLibrary\n * [new branch]      cursor/windows-presentable-shell-must-806a -> origin/cursor/windows-presentable-shell-must-806a"}}
+PASS update-library-visible: {"present": true, "text": "Update Library", "hidden": false, "width": 116.609375, "height": 28.1875}
+PASS update-http-shape: {"status": 200, "body": {"ok": true, "updated": false, "revision": "b94209ebe99af29dd4323bdc4033facd1eea367a", "message": "Already up to date."}}
 PASS back-visible: {"present": true, "text": "Back", "disabled": false, "hidden": false, "width": 56.828125, "height": 26.1875, "top": 18.09375, "left": 20, "bottom": 44.28125}
 PASS prev-visible: {"present": true, "text": "Previous", "disabled": false, "hidden": false, "width": 104, "height": 27.78125, "top": 609.25, "left": 475.203125, "bottom": 637.03125}
 PASS next-visible: {"present": true, "text": "Next", "disabled": false, "hidden": false, "width": 104, "height": 27.78125, "top": 609.25, "left": 700.796875, "bottom": 637.03125}
@@ -40,12 +40,12 @@ PASS info-date-taken: "2024-06-12 15:04:00"
 PASS info-no-camera: "No camera info for this file."
 PASS info-dimensions: "640 \u00d7 480"
 PASS info-size: "14.9 KB"
-PASS info-path: "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg"
+PASS info-path: "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg"
 PASS info-gps: "41.88000\u00b0N, 87.63000\u00b0W"
 PASS person-field-labeled: Person Place Thing
 PASS place-field-labeled: Person Place Thing
 PASS thing-field-labeled: Person Place Thing
-PASS fields-in-info: {"headings": ["File", "People", "Places", "Things"], "facts": [{"label": "Date taken", "value": "2024-06-12 15:04:00"}, {"label": "Camera", "value": "No camera info for this file."}, {"label": "Dimensions", "value": "640 \u00d7 480"}, {"label": "Size", "value": "14.9 KB"}, {"label": "Path", "value": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg"}, {"label": "GPS", "value": "41.88000\u00b0N, 87.63000\u00b0W"}], "fields": ["Person", "Place", "Thing"], "personPlaceholder": "Person", "placePlaceholder": "Place", "thingPlaceholder": "Thing", "personInPanel": true}
+PASS fields-in-info: {"headings": ["File", "People", "Places", "Things"], "facts": [{"label": "Date taken", "value": "2024-06-12 15:04:00"}, {"label": "Camera", "value": "No camera info for this file."}, {"label": "Dimensions", "value": "640 \u00d7 480"}, {"label": "Size", "value": "14.9 KB"}, {"label": "Path", "value": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg"}, {"label": "GPS", "value": "41.88000\u00b0N, 87.63000\u00b0W"}], "fields": ["Person", "Place", "Thing"], "personPlaceholder": "Person", "placePlaceholder": "Place", "thingPlaceholder": "Thing", "personInPanel": true}
 PASS no-mystery-inputs: 0
 PASS info-closes
 PASS viewer-chrome-png: 1280x720
@@ -55,12 +55,12 @@ PASS arrow-right-moves: /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e
 PASS arrow-left-returns
 PASS original-autoload-no-toggle: {"text": "Open", "pressed": null, "showing": "1", "originalSrc": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original", "originalHidden": false}
 PASS open-http: 200
-PASS open-path: {"path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg", "opened": true}
+PASS open-path: {"path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg", "opened": true}
 PASS open-keeps-preview: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
 PASS heart-favorites
 PASS reveal-http: 200
-PASS reveal-folder: {"path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg", "folder": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a", "opened": true}
-PASS reveal-file: {"path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg", "folder": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a", "opened": true}
+PASS reveal-folder: {"path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a", "opened": true}
+PASS reveal-file: {"path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a", "opened": true}
 PASS zoom-slider-in: {"before": {"left": 160, "top": 0, "width": 960, "height": 720, "complete": true, "naturalWidth": 640}, "after": {"left": -320, "top": -360, "width": 1920, "height": 1440, "complete": true, "naturalWidth": 640}}
 PASS click-hold-pan-zoomed: {"errorPx": 0, "before": {"left": -320, "top": -360, "width": 1920, "height": 1440, "complete": true, "naturalWidth": 640}, "after": {"left": -280, "top": -335, "width": 1920, "height": 1440, "complete": true, "naturalWidth": 640}}
 PASS zoom-slider-out-below-fit: {"fit": {"left": 160, "top": 0, "width": 960, "height": 720, "complete": true, "naturalWidth": 640}, "out": {"left": 410, "top": 186.25, "width": 480, "height": 360, "complete": true, "naturalWidth": 640}}
@@ -70,9 +70,9 @@ PASS ctrl-plus-zoom-in: {"before": {"left": 320, "top": 120, "width": 640, "heig
 PASS ctrl-minus-zoom-out: {"before": {"left": 288, "top": 96, "width": 704, "height": 528, "complete": true, "naturalWidth": 640}, "after": {"left": 320, "top": 120, "width": 640, "height": 480, "complete": true, "naturalWidth": 640}}
 PASS rotate-90: 90
 PASS ctrl-r-rotate: 180
-PASS back-same-url: http://127.0.0.1:18766/ -> http://127.0.0.1:18766/
-PASS back-same-port: http://127.0.0.1:18766/
-PASS back-shows-grid
+PASS back-same-url: http://127.0.0.1:18765/ -> http://127.0.0.1:18765/
+PASS back-same-port: http://127.0.0.1:18765/
+PASS back-shows-grid: grid=1
 PASS f5-starts-slideshow: {"hidden": false, "slideshow": "1", "paused": "0", "intervalMs": 5000, "active": true}
 PASS space-pauses-slideshow: 1
 PASS paused-slideshow-holds: clip.mp4|||/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy
@@ -87,13 +87,13 @@ PASS video-pan-zoomed: {"errorPx": 0, "before": {"left": -320, "top": -360, "wid
 PASS video-click-hold-pan-zoomed: {"errorPx": 0, "before": {"left": -280, "top": -335, "width": 1920, "height": 1440}, "after": {"left": -250, "top": -315, "width": 1920, "height": 1440}}
 PASS play-preview-click-pauses
 PASS play-preview-click-plays
-PASS video-back-same-url: http://127.0.0.1:18766/
+PASS video-back-same-url: http://127.0.0.1:18765/
 PASS no-console-errors: []
 PASS empty-slideshow-copy: {"text": "Add photos first", "hidden": false, "viewerHidden": true}
 PASS empty-slideshow-no-viewer: {"text": "Add photos first", "hidden": false, "viewerHidden": true}
 PASS empty-slideshow-esc
 PASS api-favorite-after-heart: true
-PASS favorites-json: /tmp/qa-viewer-shell2/taste-viewer/taste-viewer-root/catalog/favorites.json
+PASS favorites-json: docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-root/catalog/favorites.json
 PASS favorites-has-photo: {"schemaVersion": 1, "itemIds": ["1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
 PASS http-unfavorite: 200
 PASS rotate-original-unchanged: 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0

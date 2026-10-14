@@ -15,12 +15,12 @@
     {
       "name": "update-library-visible",
       "pass": true,
-      "detail": "{\"present\": true, \"text\": \"Update Library\", \"hidden\": false, \"width\": 113.015625, \"height\": 27.78125}"
+      "detail": "{\"present\": true, \"text\": \"Update Library\", \"hidden\": false, \"width\": 116.609375, \"height\": 28.1875}"
     },
     {
       "name": "update-http-shape",
       "pass": true,
-      "detail": "{\"status\": 200, \"body\": {\"ok\": true, \"updated\": false, \"revision\": \"08a027584300cb951820fadc9c8f6d308a6dd39b\", \"message\": \"Already up to date.\\n\\nFrom https://github.com/imsly2/photoLibrary\\n * [new branch]      cursor/windows-presentable-shell-must-806a -> origin/cursor/windows-presentable-shell-must-806a\"}}"
+      "detail": "{\"status\": 200, \"body\": {\"ok\": true, \"updated\": false, \"revision\": \"b94209ebe99af29dd4323bdc4033facd1eea367a\", \"message\": \"Already up to date.\"}}"
     },
     {
       "name": "back-visible",
@@ -215,7 +215,7 @@
     {
       "name": "info-path",
       "pass": true,
-      "detail": "\"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg\""
+      "detail": "\"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\""
     },
     {
       "name": "info-gps",
@@ -240,7 +240,7 @@
     {
       "name": "fields-in-info",
       "pass": true,
-      "detail": "{\"headings\": [\"File\", \"People\", \"Places\", \"Things\"], \"facts\": [{\"label\": \"Date taken\", \"value\": \"2024-06-12 15:04:00\"}, {\"label\": \"Camera\", \"value\": \"No camera info for this file.\"}, {\"label\": \"Dimensions\", \"value\": \"640 \\u00d7 480\"}, {\"label\": \"Size\", \"value\": \"14.9 KB\"}, {\"label\": \"Path\", \"value\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg\"}, {\"label\": \"GPS\", \"value\": \"41.88000\\u00b0N, 87.63000\\u00b0W\"}], \"fields\": [\"Person\", \"Place\", \"Thing\"], \"personPlaceholder\": \"Person\", \"placePlaceholder\": \"Place\", \"thingPlaceholder\": \"Thing\", \"personInPanel\": true}"
+      "detail": "{\"headings\": [\"File\", \"People\", \"Places\", \"Things\"], \"facts\": [{\"label\": \"Date taken\", \"value\": \"2024-06-12 15:04:00\"}, {\"label\": \"Camera\", \"value\": \"No camera info for this file.\"}, {\"label\": \"Dimensions\", \"value\": \"640 \\u00d7 480\"}, {\"label\": \"Size\", \"value\": \"14.9 KB\"}, {\"label\": \"Path\", \"value\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\"}, {\"label\": \"GPS\", \"value\": \"41.88000\\u00b0N, 87.63000\\u00b0W\"}], \"fields\": [\"Person\", \"Place\", \"Thing\"], \"personPlaceholder\": \"Person\", \"placePlaceholder\": \"Place\", \"thingPlaceholder\": \"Thing\", \"personInPanel\": true}"
     },
     {
       "name": "no-mystery-inputs",
@@ -290,7 +290,7 @@
     {
       "name": "open-path",
       "pass": true,
-      "detail": "{\"path\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg\", \"opened\": true}"
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"opened\": true}"
     },
     {
       "name": "open-keeps-preview",
@@ -310,12 +310,12 @@
     {
       "name": "reveal-folder",
       "pass": true,
-      "detail": "{\"path\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a\", \"opened\": true}"
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a\", \"opened\": true}"
     },
     {
       "name": "reveal-file",
       "pass": true,
-      "detail": "{\"path\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a\", \"opened\": true}"
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a\", \"opened\": true}"
     },
     {
       "name": "zoom-slider-in",
@@ -365,17 +365,17 @@
     {
       "name": "back-same-url",
       "pass": true,
-      "detail": "http://127.0.0.1:18766/ -> http://127.0.0.1:18766/"
+      "detail": "http://127.0.0.1:18765/ -> http://127.0.0.1:18765/"
     },
     {
       "name": "back-same-port",
       "pass": true,
-      "detail": "http://127.0.0.1:18766/"
+      "detail": "http://127.0.0.1:18765/"
     },
     {
       "name": "back-shows-grid",
       "pass": true,
-      "detail": ""
+      "detail": "grid=1"
     },
     {
       "name": "f5-starts-slideshow",
@@ -450,7 +450,7 @@
     {
       "name": "video-back-same-url",
       "pass": true,
-      "detail": "http://127.0.0.1:18766/"
+      "detail": "http://127.0.0.1:18765/"
     },
     {
       "name": "no-console-errors",
@@ -480,7 +480,7 @@
     {
       "name": "favorites-json",
       "pass": true,
-      "detail": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-root/catalog/favorites.json"
+      "detail": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-root/catalog/favorites.json"
     },
     {
       "name": "favorites-has-photo",
@@ -524,14 +524,14 @@
     "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
   "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
-  "revision": "08a027584300cb951820fadc9c8f6d308a6dd39b",
+  "revision": "b94209ebe99af29dd4323bdc4033facd1eea367a",
   "commands": [
     "python -m library scan <folder> --serve-from-there"
   ],
   "artifactPaths": {
-    "result.json": "/tmp/qa-viewer-shell2/taste-viewer/result.json",
-    "stdout.log": "/tmp/qa-viewer-shell2/taste-viewer/stdout.log",
-    "viewer-chrome.json": "/tmp/qa-viewer-shell2/taste-viewer/viewer-chrome.json",
-    "viewer-chrome.png": "/tmp/qa-viewer-shell2/taste-viewer/viewer-chrome.png"
+    "result.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/result.json",
+    "stdout.log": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/stdout.log",
+    "viewer-chrome.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.json",
+    "viewer-chrome.png": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png"
   }
 }

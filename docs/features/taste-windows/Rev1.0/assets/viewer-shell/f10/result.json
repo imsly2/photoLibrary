@@ -1,6 +1,6 @@
 {
   "check": "F10",
-  "pass": true,
+  "pass": false,
   "assertions": [
     {
       "name": "scan-exit",
@@ -80,7 +80,7 @@
     {
       "name": "video-fallback-proxy",
       "pass": true,
-      "detail": "{\"src\": \"http://127.0.0.1:18768/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"usingProxy\": true}"
+      "detail": "{\"src\": \"http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"usingProxy\": true}"
     },
     {
       "name": "viewer-ada-label",
@@ -113,19 +113,19 @@
       "detail": "invalid-argument"
     },
     {
-      "name": "no-console-errors",
-      "pass": true,
-      "detail": "[\"Failed to load resource: the server responded with a status of 400 (Bad Request)\"]"
+      "name": "browser-proof",
+      "pass": false,
+      "detail": "Page.wait_for_function: Timeout 8000ms exceeded."
     },
     {
       "name": "ada-on-jpeg",
       "pass": true,
-      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_b518f0fd12f3\", \"name\": \"Ada\"}]"
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_6f8457fc568b\", \"name\": \"Ada\"}]"
     },
     {
       "name": "mug-on-jpeg",
       "pass": true,
-      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_5af17c439716\", \"name\": \"mug\", \"aliases\": []}]"
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_f2ecc976dcbb\", \"name\": \"mug\", \"aliases\": []}]"
     },
     {
       "name": "original-fixture-bytes",
@@ -154,7 +154,7 @@
     "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
   "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
-  "revision": "08a027584300cb951820fadc9c8f6d308a6dd39b",
+  "revision": "b94209ebe99af29dd4323bdc4033facd1eea367a",
   "commands": [
     "python -m library scan <folder> --serve-from-there",
     "GET /api/media/<photo-id>?which=preview",
@@ -164,9 +164,9 @@
     "GET /api/media/<video-id>?which=proxy"
   ],
   "artifactPaths": {
-    "result.json": "/tmp/qa-f10-shell/f10/result.json",
-    "stdout.log": "/tmp/qa-f10-shell/f10/stdout.log",
-    "playback.json": "/tmp/qa-f10-shell/f10/playback.json",
-    "viewer-annotations.png": "/tmp/qa-f10-shell/f10/viewer-annotations.png"
+    "result.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json",
+    "stdout.log": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/f10/stdout.log",
+    "playback.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/f10/playback.json",
+    "viewer-annotations.png": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/f10/viewer-annotations.png"
   }
 }

@@ -318,7 +318,9 @@ Honesty rule: this combined taste merge includes **PR #2**
 **72/72**) and **PR #5** Presentable Shell docs. Viewer Must (fullscreen,
 slideshow, keyboard parity, EXIF-first Info) is **this PR**. Mark those
 chrome rows implemented. Do not revive retired chrome. Remaining Must
-rows (remove / sort / search / empty) stay red.
+rows (remove / sort / search / empty) stay red. F10’s one-Esc-from-Info
+close-viewer proof still times out on this stack (same as `d00addb`);
+do not weaken that Check to hide it.
 
 | Surface | Spec target | Where it lives | Gap |
 |---|---|---|---|

@@ -3,16 +3,16 @@
     "present": true,
     "text": "Update Library",
     "hidden": false,
-    "width": 113.015625,
-    "height": 27.78125
+    "width": 116.609375,
+    "height": 28.1875
   },
   "updateHttp": {
     "status": 200,
     "body": {
       "ok": true,
       "updated": false,
-      "revision": "08a027584300cb951820fadc9c8f6d308a6dd39b",
-      "message": "Already up to date.\n\nFrom https://github.com/imsly2/photoLibrary\n * [new branch]      cursor/windows-presentable-shell-must-806a -> origin/cursor/windows-presentable-shell-must-806a"
+      "revision": "b94209ebe99af29dd4323bdc4033facd1eea367a",
+      "message": "Already up to date."
     }
   },
   "chrome": {
@@ -160,7 +160,7 @@
     "overlayLabels": false,
     "stagePills": 0,
     "showingOriginalText": false,
-    "href": "http://127.0.0.1:18766/"
+    "href": "http://127.0.0.1:18765/#item/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
   },
   "infoOpen": {
     "headings": [
@@ -188,7 +188,7 @@
       },
       {
         "label": "Path",
-        "value": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg"
+        "value": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg"
       },
       {
         "label": "GPS",
@@ -210,7 +210,7 @@
     "Camera": "No camera info for this file.",
     "Dimensions": "640 \u00d7 480",
     "Size": "14.9 KB",
-    "Path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
+    "Path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg",
     "GPS": "41.88000\u00b0N, 87.63000\u00b0W"
   },
   "originalAuto": {
@@ -221,12 +221,12 @@
     "originalHidden": false
   },
   "open": {
-    "path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
+    "path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg",
     "opened": true
   },
   "reveal": {
-    "path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
-    "folder": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a",
+    "path": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg",
+    "folder": "/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a",
     "opened": true
   },
   "stillPan": {
@@ -265,8 +265,8 @@
     "naturalWidth": 640
   },
   "backUrl": {
-    "before": "http://127.0.0.1:18766/",
-    "after": "http://127.0.0.1:18766/"
+    "before": "http://127.0.0.1:18765/",
+    "after": "http://127.0.0.1:18765/"
   },
   "slideshowStart": {
     "hidden": false,

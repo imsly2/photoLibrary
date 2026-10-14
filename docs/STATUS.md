@@ -108,8 +108,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   file facts first then names (“No camera info for this file.”). Open +
   Reveal stay. Remove / sort / search / empty-library CTA stay with the
   parallel agent. Does not close a new Check.
-  TASTE-VIEWER **103/103**, exit 0; F10 **29/29** stayed green (re-run on
-  this merge tip).
+  TASTE-VIEWER **103/103**, exit 0 on this merge tip.
+  F10 **28/29**: same `browser-proof` timeout as `d00addb` (Info-first Esc
+  after annotate; F10 still expects one Esc to close the viewer).
+  Assertions not weakened.
   Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-shell/result.json),
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json).
@@ -373,5 +375,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
   keyboard parity, EXIF-first Info) rebased onto
   `cursor/merge-viewer-chrome-7726`. Open + Reveal + Win7 chrome stay.
   Remove/sort/search/empty go to a parallel agent. TASTE-VIEWER 103
-  assertions exit 0; F10 29 stayed green (re-run on merge tip). No new
-  Check. 16/22 unchanged.
+  assertions exit 0 on the merge tip. F10 28/29: `browser-proof` times
+  out on Info-first Esc, same as `d00addb`; assertions not weakened.
+  No new Check. 16/22 unchanged.
