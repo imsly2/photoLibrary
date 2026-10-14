@@ -1,0 +1,227 @@
+{
+  "slice": "TASTE-SETUP",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-calls-setup-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-echoes-once-daily-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-or-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-no-em-dash-or-smart-quotes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ps51-cp1252-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-no-bare-using",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-strings-and-braces-closed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-has-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-no-msi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-does-not-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-composes-clis",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-venv-and-pip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-winget-same-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-dryrun-and-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-missing-says-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-still-launch-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-still-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-setup-hijack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-update-relaunches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-progress-steps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-fail-next",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-creates-shortcut",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-internet-up-front",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-optional-git-or-zip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ps51-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "create-shortcut-writes-lnk",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-ico-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-tracks-main",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "probe-setup-geo-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml objects-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml faces-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "all-three-clis-present",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "probe-does-not-serve",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "74c79cb9d9106549cc6d66ea120b51ee07065c95",
+  "commands": [
+    "python -m tests.qa slice TASTE-SETUP",
+    "/usr/bin/python3 -m library --help",
+    "/usr/bin/python3 -m library setup-geo --help",
+    "/usr/bin/python3 -m library setup-ml objects --help",
+    "/usr/bin/python3 -m library setup-ml faces --help"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-3/result.json",
+    "stdout.log": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-3/stdout.log",
+    "Setup.bat.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-3/Setup.bat.txt",
+    "help.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-3/help.txt",
+    "dry-run.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-3/dry-run.txt"
+  }
+}

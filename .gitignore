@@ -74,6 +74,13 @@ docs/features/faces/**/faces-media/
 # Zip-update stamp when this folder is not a git checkout.
 .library-revision.json
 
+# Isolated Update sandboxes left by TASTE-INSTALL.
+docs/features/taste-install/**/git-pair/
+docs/features/taste-install/**/zip-app/
+docs/features/taste-install/**/zip-incoming/
+docs/features/taste-install/**/zip-pull/
+docs/features/taste-install/**/main.zip
+
 # Python
 __pycache__/
 *.py[cod]

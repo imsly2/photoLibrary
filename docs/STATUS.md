@@ -352,7 +352,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   after a real update. In-app Update strings through i18n. Does not
   close a Check. 16/22 unchanged.
   Plan: [taste-install](features/taste-install/Rev1.0/PLAN.md).
-  Evidence pending TASTE-SETUP / TASTE-INSTALL on this tip.
+  Evidence:
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-3/result.json)
+  40/40 (shortcut script, Update tracks main, optional git/zip),
+  [TASTE-INSTALL](features/taste-install/Rev1.0/assets/verify-1/result.json)
+  51/51 (isolated checkout of main, zip preserves library-data, no gh).
 
 ## Completion
 

@@ -1,0 +1,12 @@
+{
+  "serve": true,
+  "other": false,
+  "update": false,
+  "setup": false,
+  "foreign": false,
+  "listen": [
+    "127.0.0.1",
+    8765
+  ],
+  "skip": false
+}
