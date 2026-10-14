@@ -149,16 +149,19 @@ def seek_tile_scrub(page: Any) -> dict[str, Any]:
     before = page.evaluate(
         "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
     )
+    target = "200" if (before or 0) > 0.8 else "600"
+    expected = 0.4 if target == "200" else 1.2
     page.locator(".tile-scrub").evaluate(
-        """(el) => {
-          el.value = '600';
+        """(el, value) => {
+          el.value = value;
           el.dispatchEvent(new Event('input', { bubbles: true }));
-        }"""
+        }""",
+        target,
     )
     after = page.evaluate(
         "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
     )
-    return {"before": before, "after": after}
+    return {"before": before, "after": after, "target": target, "expected": expected}
 
 
 def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[str, Any]:
@@ -182,7 +185,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["datedYearsScrub"] = years_scrub
     checks.check(
         "dated-years-tile-scrub",
-        (years_scrub.get("after") or 0) > (years_scrub.get("before") or 0) + 0.05,
+        abs((years_scrub.get("after") or 0) - (years_scrub.get("expected") or 0)) <= 0.2,
         json.dumps(years_scrub),
     )
     page.locator("#date-group").select_option("months")
@@ -201,7 +204,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["datedMonthsScrub"] = months_scrub
     checks.check(
         "dated-months-tile-scrub",
-        (months_scrub.get("after") or 0) > (months_scrub.get("before") or 0) + 0.05,
+        abs((months_scrub.get("after") or 0) - (months_scrub.get("expected") or 0)) <= 0.2,
         json.dumps(months_scrub),
     )
     set_settings(url, {"zoomLevel": "all", "playProxies": "days-and-all"})
