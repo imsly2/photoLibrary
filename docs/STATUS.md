@@ -167,6 +167,19 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [verify-2](features/taste-version/Rev1.0/assets/verify-2/result.json)
   23/23 after chrome+autoplay merge (SHA still beside Update Library),
   [version-header.png](features/taste-version/Rev1.0/assets/verify-2/version-header.png).
+- 2026-10-14 — Phase B optional local objects on this tip. `setup-ml objects`
+  (Setup.bat / `launch.ps1 -SetupMl`) downloads YOLOv8n ONNX into
+  `library-data/models/`. `analyze` and a serve-time worker write Things
+  through annotate. Human tags stay. No faces. No cloud APIs. No 17th
+  setting. No new Check; 16/22 unchanged.
+  Plan: [taste-objects](features/taste-objects/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-1/result.json)
+  39/39,
+  [info-things.png](features/taste-objects/Rev1.0/assets/verify-1/info-things.png),
+  [search-thing.png](features/taste-objects/Rev1.0/assets/verify-1/search-thing.png),
+  [analyze.json](features/taste-objects/Rev1.0/assets/verify-1/analyze.json).
+  Fixture still tagged `bus`; prior human `mug` kept; People empty.
 
 ## Completion
 

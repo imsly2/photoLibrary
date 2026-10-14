@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "analyzed": 1,
+  "tagged": 1,
+  "skipped": 0,
+  "items": [
+    {
+      "id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+      "things": [
+        "mug",
+        "bus"
+      ]
+    }
+  ]
+}

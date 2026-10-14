@@ -1,6 +1,7 @@
 param(
     [switch]$NoBrowser,
-    [switch]$Update
+    [switch]$Update,
+    [switch]$SetupMl
 )
 
 $ErrorActionPreference = "Stop"
@@ -98,6 +99,12 @@ try {
         Write-Host "Updating..."
         $updateArgs = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "update")
         & $exe @updateArgs
+        exit $LASTEXITCODE
+    }
+    if ($SetupMl) {
+        Write-Host "Downloading local object model..."
+        $setupArgs = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "setup-ml", "objects")
+        & $exe @setupArgs
         exit $LASTEXITCODE
     }
 

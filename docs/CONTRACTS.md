@@ -27,13 +27,13 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
-| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
+| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. Optional local object detection calls this same annotate path with name-only Things; it never renames by id. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
 | Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. Unplayable browser original falls back to proxy. |
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. Optional local objects are not a 17th setting: the model file in `models/` is the switch. |
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
@@ -295,6 +295,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | rebuild-index / POST `/api/rebuild-index` | `{}`; 200 `{"ok":true}`; atomic replacement index, unchanged canonical JSON |
 | renditions relocate / POST `/api/renditions/relocate` | `{}`; 200 `{"ok":true}` after completion; unavailable source gives failure and preserves old files/references |
 | undo, redo / POST `/api/undo`, `/api/redo` | `{}`; 200 `{"ok":true}`; empty history also no-op success |
+| setup-ml objects | CLI / `Setup.bat` / `launch.ps1 -SetupMl` only. Downloads YOLOv8n ONNX into `models/yolov8n.onnx` and writes `models/objects.json`. Installs `onnxruntime` when missing. No HTTP route. No cloud inference. Already-present matching file is success. |
+| analyze [--item id] / POST `/api/analyze` | `{}` or `{itemId?}`. 200 `{ok,analyzed,tagged,skipped,items}` after local detection writes Things through annotate. Missing model is 404 `model-unavailable`. Missing runtime extra is CLI `dependency-missing`. An explicit itemId re-runs that still; omitted itemId analyzes pending items only. |
 
 Annotate body: `{people?:[{id?,name?,box?}],places?:[{id?,name?}],
 things?:[{id?,name?,aliases?,box?}]}`. At most one place (item has one placeId).
@@ -335,12 +337,13 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout), `model-unavailable` (analyze requested, objects model not installed) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |
 
-CLI-only missing tools use `dependency-missing` and exit 1. Scan per-file errors
+CLI-only missing tools use `dependency-missing` and exit 1, including a
+missing `onnxruntime` during `setup-ml` / `analyze`. Scan per-file errors
 use `io-error|decode-error|invalid-argument`; continue other files but final CLI
 exit is 1 if errors exist. Failed HEIC decode preserves metadata/item and records
 rendition error; it is not proof that every HEIC is decodable. Launcher installs
@@ -397,4 +400,34 @@ GET `/` serves that page; unknown asset paths return not-found. Mutation
 requests accept application/json from the same origin/CLI; reject unrelated
 browser origins as 400 invalid-argument. No remote account, login, or cloud setup.
 The shipped globe assets and ordinary browsing must work with external network
-blocked. Dependency installation is the one described setup-time network use.
+blocked. Dependency installation is the one described setup-time network use:
+Windows launcher Python/ffmpeg, and optional `setup-ml objects` (ONNX model
+plus `onnxruntime`). Inference itself is local CPU and does not call a
+network API.
+
+## Optional local objects (2026-10-14)
+
+`library-data/models/` is not catalog JSON. It is created by `setup-ml objects`.
+
+`models/objects.json`: `{schemaVersion,kind,model,input,labels,sha256,bytes}`.
+kind is `objects`. model is `yolov8n.onnx`. input is 640. labels are the 80
+COCO names. sha256/bytes describe the ONNX file beside it.
+
+`models/objects-state.json`: `{schemaVersion,items}` where items maps item id
+to `{sha256,names}`. sha256 is the still (or poster) file analyzed. A matching
+sha256 means background/`analyze` without `--item` skips that record.
+`analyze --item` / `{itemId}` ignores the skip and rewrites from a fresh pass.
+
+Detection reads the oriented preview when that rendition is ready, else thumb,
+else poster, else the current original still. Boxes are normalized to that
+oriented picture and passed through annotate. The `person` class is dropped;
+no `people` / `faces` payload is sent. Name-only thing entries reuse existing
+ids (including human-created names and aliases). Analyze never sends an entity
+id with a new name, never clears `things` or `faces`, and never writes people.
+
+When `models/yolov8n.onnx` exists, `serve` runs one analyze step after a
+rendition drain miss so previews stay ahead of tagging. Missing model is
+idle, not an error. Scan `busy` skips the background step.
+
+`GET /api/analyze` is 200 `{ok,installed,model,pending}` (`model` is the
+library-relative path or null). It does not start work.

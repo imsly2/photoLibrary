@@ -1,0 +1,81 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS product-setup-ml
+PASS product-analyze
+PASS product-no-faces
+PASS contracts-model-unavailable
+PASS launch-setupml
+PASS setup-bat
+PASS objects-still
+PASS filter-skips-person: ['bus']
+PASS filter-keeps-bus: ['bus']
+PASS filter-name-only: [{'name': 'bus', 'box': [0.2, 0.3, 0.6, 0.4]}]
+PASS analyze-without-model: {"error": "model-unavailable"}
+PASS setup-ml-exit
+PASS setup-ml-ok: {"ok": true, "kind": "objects", "model": "yolov8n.onnx", "path": "models/yolov8n.onnx", "sha256": "65158dad735be799c2466fa15e260c09558080bd530b42a8d0c3d1b419afd8b5", "bytes": 12834838}
+PASS model-bytes: /workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-root/models/yolov8n.onnx
+PASS objects-manifest: /workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-root/models/objects.json
+PASS scan-added-1: {"sourceId": "src_fe7b1aecf9a5", "added": 1, "skipped": 0, "errors": []}
+PASS items-one: [
+  {
+    "schemaVersion": 1,
+    "id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "kind": "photo",
+    "filename": "still.jpg",
+    "capturedAt": "2026-10-14T05:29:54Z",
+    "capturedAtSource": "mtime",
+    "placeId": null,
+    "metadata": {
+      "width": 810,
+      "height": 1080,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    },
+    "contentIdentifier": null,
+    
+PASS item-id: c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63
+PASS human-mug: {'schemaVersion': 1, 'id': 'thing_44d56629f302', 'name': 'mug', 'aliases': []}
+PASS analyze-exit
+PASS analyze-tagged: {"ok": true, "analyzed": 1, "tagged": 1, "skipped": 0, "items": [{"id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63", "things": ["mug", "bus"]}]}
+PASS human-mug-kept: {'schemaVersion': 1, 'id': 'thing_44d56629f302', 'name': 'mug', 'aliases': []}
+PASS auto-thing-present: ["bus", "mug"]
+PASS no-person-thing: ["bus", "mug"]
+PASS no-faces: []
+PASS no-people-files: []
+PASS search-auto-thing: [
+  {
+    "schemaVersion": 1,
+    "id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "kind": "photo",
+    "filename": "still.jpg",
+    "capturedAt": "2026-10-14T05:29:54Z",
+    "capturedAtSource": "mtime",
+    "placeId": null,
+    "metadata": {
+      "width": 810,
+      "height": 1080,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSec": null,
+      "latitude": null,
+      "longitude": null
+    },
+    "contentIdentifier": null,
+    
+PASS health: {'ok': True}
+PASS analyze-get
+PASS http-items
+PASS http-search-things: [{"schemaVersion": 1, "id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63", "kind": "photo", "filename": "still.jpg", "capturedAt": "2026-10-14T05:29:54Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 810, "height": 1080, "orientation": null, "camera": null, "lens": null, "durationSec": null, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_fe7b1aecf9a5", "role": "primary", "component": "still", "kind": "v
+PASS playwright-import
+PASS info-shows-mug: bus
+mug
+PASS info-shows-auto: bus
+mug
+PASS info-png: 1280x720
+PASS search-png: 1280x720
+PASS search-has-cell

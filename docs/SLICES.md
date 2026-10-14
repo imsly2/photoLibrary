@@ -24,6 +24,10 @@ add a 23rd Check and does **not** start S13 or S14. Pin macOS/Linux F2.
 Viewer/grid chrome is a separate track. Gate: `python -m tests.qa slice TASTE-WIN`
 plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/PLAN.md).
 
+Optional local object detection (2026-10-14) is a parallel track on this
+tip: `setup-ml objects` + `analyze` writing Things through annotate. Gate:
+`python -m tests.qa slice TASTE-OBJECTS`. No 23rd Check. No faces.
+
 **Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
 is the North Star shell. Must items (fullscreen, slideshow, viewer keys,
 EXIF Info, Open with, empty/error, remove vs delete-file, sort/filters,

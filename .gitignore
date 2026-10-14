@@ -66,6 +66,7 @@ docs/features/**/s11-media/
 docs/features/**/s12-media/
 docs/features/**/api-media/
 docs/features/**/ui-media/
+docs/features/**/objects-media/
 
 # Python
 __pycache__/

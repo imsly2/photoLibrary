@@ -93,9 +93,11 @@ test cases are failures. No real disks, no treating mockups as screenshots.”
 
 ## Boundaries
 
-No phone USB code, cloud hosting, accounts, image model, geocoder, remote photo
+No phone USB code, cloud hosting, accounts, cloud image model, geocoder, remote photo
 uploads, albums, photo editing, automatic original rearrangement, new
-gestures, or user-facing debugging panels. Tile hearts and a collapsible
+gestures, or user-facing debugging panels. Optional local object detection
+(`setup-ml objects` / `analyze`) is authorized and writes Things only
+through annotate; no faces. Tile hearts and a collapsible
 Favorites section are authorized Windows taste (PRODUCT / UI-SPEC), not albums. Never scan a real photo disk under
 this plan. Runtime libraries are agent choices inside the frozen behavior; no new
 dependency that requires a changed user workflow without a contract edit.
