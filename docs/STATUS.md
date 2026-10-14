@@ -382,6 +382,35 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   44/44,
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-4/result.json)
   50/50.
+- 2026-10-14 — Re-run Faces drain + picker + cached thumbs on
+  `cursor/faces-progress-thumbs-e8d3` (PR #32), rebased on `449f248`
+  / PR #31. Steve: Faces pending after Re-run Faces ticked once
+  (37→36) then stalled; picker still unclear / multi-select / laggy.
+  Cause: `infer_faces_step` with `forceRescan` re-inferred the first
+  item forever and `except: return False` froze the queue; picker
+  rebuild + itemId-only match. Fix: skip already-scanned even when
+  force; mark failed/unreadable items scanned; drain faces first
+  during force rescan; picker is pointerdown single-box with a
+  visible outline. Cache-instant thumbs from the unmerged #29 stack
+  stay. Setup.bat / Library.bat / ASCII `.ps1` untouched on this
+  branch (install files come from #31). Does not close a Check.
+  16/22 unchanged.
+  Evidence:
+  [TASTE-PREVIEWS](features/taste-previews/Rev1.0/assets/verify-5/result.json)
+  41/41 (faces queue 6→0 including planted failure; cached thumbs
+  11 ms; picker immediate + rapid single-select),
+  [faces-progress](features/taste-previews/Rev1.0/assets/verify-5/faces-progress.json),
+  [grid-thumbs](features/taste-previews/Rev1.0/assets/verify-5/grid-thumbs.png),
+  [TASTE-EMPTY-GRID](features/taste-empty-grid/Rev1.0/assets/verify-6/result.json)
+  19/19,
+  [TASTE-SIDEBAR](features/taste-sidebar/Rev1.0/assets/verify-5/result.json)
+  26/26,
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-7/result.json)
+  57/57,
+  [TASTE-FILTERS](features/taste-filters/Rev1.0/assets/verify-5/result.json)
+  44/44,
+  [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-5/result.json)
+  50/50.
 
 ## Completion
 

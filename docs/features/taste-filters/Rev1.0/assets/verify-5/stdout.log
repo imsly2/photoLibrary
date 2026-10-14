@@ -1,0 +1,44 @@
+PASS scan-ok
+PASS has-four-stills
+PASS three-people: {"Ada": "person_acbfdba276c2", "Bob": "person_f6056e63b516", "Cam": "person_4b94cd24927e"}
+PASS items-and-cli
+PASS and-ada-bob: ["near.jpg", "no-exif.jpg"]
+PASS and-three: ["no-exif.jpg"]
+PASS ada-only: ["near.jpg", "IMG_1042.jpg", "no-exif.jpg"]
+PASS tag-create
+PASS hiking-id: {"id": "thing_a4a179fc8dfd", "name": "Hiking", "aliases": [], "itemCount": 0}
+PASS tag-apply-two
+PASS filter-hiking: ["near.jpg", "IMG_1042.jpg"]
+PASS and-tags: ["IMG_1042.jpg"]
+PASS tag-remove
+PASS singing-gone: []
+PASS re-infer-mug
+PASS tag-survives-reannotate: ["near.jpg", "IMG_1042.jpg"]
+PASS rebuild-ok
+PASS tag-survives-rebuild: ["near.jpg", "IMG_1042.jpg"]
+PASS group-people-ada: ["Ada", "Bob"]
+PASS group-people-bob: ["Ada", "Bob"]
+PASS group-people-once: ["b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]
+PASS group-people-no-dupes: ["b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]
+PASS group-places-has-no-place-or-named: ["41.88, -87.63", "41.92, -87.63", "No place"]
+PASS group-tags-hiking: ["Hiking", "Painting", "Untagged"]
+PASS group-tags-untagged: ["Hiking", "Painting", "Untagged"]
+PASS playwright-import
+PASS search-in-filter-bar: {"searchInHeader": false, "searchInBar": true, "filtersInBar": true, "filtersInHeader": false, "searchChips": false, "arrange": "dates", "arrangeOptions": ["dates", "people", "places", "tags"], "arrangeLabels": ["Date", "People", "Places", "Tags"], "clearHidden": true}
+PASS search-not-in-header: {"searchInHeader": false, "searchInBar": true, "filtersInBar": true, "filtersInHeader": false, "searchChips": false, "arrange": "dates", "arrangeOptions": ["dates", "people", "places", "tags"], "arrangeLabels": ["Date", "People", "Places", "Tags"], "clearHidden": true}
+PASS no-search-scope-chips: {"searchInHeader": false, "searchInBar": true, "filtersInBar": true, "filtersInHeader": false, "searchChips": false, "arrange": "dates", "arrangeOptions": ["dates", "people", "places", "tags"], "arrangeLabels": ["Date", "People", "Places", "Tags"], "clearHidden": true}
+PASS filters-in-bar: {"searchInHeader": false, "searchInBar": true, "filtersInBar": true, "filtersInHeader": false, "searchChips": false, "arrange": "dates", "arrangeOptions": ["dates", "people", "places", "tags"], "arrangeLabels": ["Date", "People", "Places", "Tags"], "clearHidden": true}
+PASS filters-not-in-header: {"searchInHeader": false, "searchInBar": true, "filtersInBar": true, "filtersInHeader": false, "searchChips": false, "arrange": "dates", "arrangeOptions": ["dates", "people", "places", "tags"], "arrangeLabels": ["Date", "People", "Places", "Tags"], "clearHidden": true}
+PASS arrange-default-date: "dates"
+PASS arrange-options: ["dates", "people", "places", "tags"]
+PASS click-ada-filters: ["near.jpg", "IMG_1042.jpg", "no-exif.jpg"]
+PASS multiselect-and: ["near.jpg", "no-exif.jpg"]
+PASS click-selected-deselects: {"person": "person_f8c04a163028", "files": ["near.jpg", "far.jpg", "no-exif.jpg"], "chips": ["Person: Bob x"]}
+PASS chip-remove-clears-person
+PASS clear-all
+PASS tag-chip-filters: ["near.jpg", "IMG_1042.jpg"]
+PASS group-collapse: {"before": 1, "after": 1}
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)"]
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
