@@ -74,6 +74,9 @@ docs/features/faces/**/faces-media/
 # Zip-update stamp when this folder is not a git checkout.
 .library-revision.json
 
+# Lean USB / family-PC zip from PackDeploy.bat (overwritten on each run).
+dist/
+
 # Isolated Update sandboxes left by TASTE-INSTALL.
 docs/features/taste-install/**/git-pair/
 docs/features/taste-install/**/zip-app/
