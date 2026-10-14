@@ -734,7 +734,8 @@ def serve(root: Path) -> int:
             while not drain_stop.is_set():
                 worked = False
                 try:
-                    worked = library.drain_step()
+                    with handler.lock:
+                        worked = library.drain_step()
                 except Exception:
                     worked = False
                 drain_stop.wait(0.05 if worked else 0.25)
