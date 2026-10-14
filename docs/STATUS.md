@@ -187,7 +187,13 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   after a catalog rebuild; dated Years/Months stay stills unless
   Dates=Off or `playProxies=always`. `#viewer-source` names Preview /
   Loading full… / Original / Preview — full unavailable. Does not
-  close a Check. 16/22 unchanged.
+  close a Check. 16/22 unchanged. Evidence:
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-3/result.json)
+  53/53 argv + Iphone Backup spaces,
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-4/result.json)
+  65/65 hover at Size 72, dated Years still, Dates-off wall play,
+  `#viewer-source` Original,
+  [video-viewer](features/taste-video/Rev1.0/assets/verify-4/video-viewer.png).
 
 ## Completion
 
@@ -460,3 +466,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (`explorer.exe /select,"fullpath"`). Missing original is 404
   `unavailable` and the viewer banner, not Documents. TASTE-REVEAL
   37/37, then 40/40 with mute + volume. No new Check. 16/22 unchanged.
+- 2026-10-14 — Follow-up: argv `/select,path` for spaced
+  `Iphone Backup` paths; hover resume; `#viewer-source`. TASTE-REVEAL
+  53/53, TASTE-VIDEO 65/65. No new Check. 16/22 unchanged.
