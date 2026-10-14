@@ -155,8 +155,8 @@ def start_owned(root: Path) -> tuple[subprocess.Popen[str], str, list[int]]:
 
 
 def slot_file(root: Path, item_id: str, slot: str) -> Path:
-    if slot == "proxy":
-        return root / "renditions" / item_id / "proxy.mp4"
+    if slot in {"proxy", "playback"}:
+        return root / "renditions" / item_id / f"{slot}.mp4"
     return root / "renditions" / item_id / f"{slot}.webp"
 
 
@@ -175,10 +175,12 @@ def photo_queued(item: dict[str, Any]) -> bool:
         and status.get("preview") == "queued"
         and status.get("poster") == "not-applicable"
         and status.get("proxy") == "not-applicable"
+        and status.get("playback") in {None, "not-applicable"}
         and rend.get("thumb") is None
         and rend.get("preview") is None
         and rend.get("poster") is None
         and rend.get("proxy") is None
+        and rend.get("playback") is None
     )
 
 
@@ -190,10 +192,12 @@ def video_queued(item: dict[str, Any]) -> bool:
         and status.get("preview") == "not-applicable"
         and status.get("poster") == "queued"
         and status.get("proxy") == "queued"
+        and status.get("playback") in {None, "queued"}
         and rend.get("thumb") is None
         and rend.get("preview") is None
         and rend.get("poster") is None
         and rend.get("proxy") is None
+        and rend.get("playback") is None
     )
 
 
@@ -341,7 +345,7 @@ def build_format_matrix(root: Path, media: Path, rels: list[str]) -> list[dict[s
         rend = item.get("renditions") or {}
         status = rend.get("status") or {}
         slots: dict[str, Any] = {}
-        for slot in ("thumb", "preview", "poster", "proxy"):
+        for slot in ("thumb", "preview", "poster", "proxy", "playback"):
             dest = slot_file(root, item["id"], slot)
             ready_file = (
                 status.get(slot) == "ready"
@@ -442,12 +446,17 @@ def prove_hover(
     checks.check("hover-video-cells", years_cells.count() >= 1, str(years_cells.count()))
     if years_cells.count() >= 1:
         years_cells.nth(0).hover()
-        time.sleep(0.6)
+        page.wait_for_function(
+            """() => Array.from(document.querySelectorAll('.cell video')).some(function (v) {
+              return !v.paused && !v.ended;
+            })""",
+            timeout=8000,
+        )
         years_hover = playing_cell_videos(page)
         record["policies"]["days-and-all"] = {"yearsHover": years_hover}
         checks.check(
-            "days-and-all-years-silent",
-            years_hover["playingCount"] == 0,
+            "days-and-all-years-plays",
+            years_hover["playingCount"] == 1,
             json.dumps(years_hover),
         )
 

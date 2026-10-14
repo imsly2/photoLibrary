@@ -51,6 +51,8 @@ class Library:
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self._scanning = False
+        self._jobs_paused = False
+        self._inferring = False
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
@@ -97,7 +99,7 @@ class Library:
         return self.settings_set({key: parse_cli_value(key, raw)})
 
     def _assert_idle(self) -> None:
-        if self._scanning:
+        if self._scanning or getattr(self, "_inferring", False):
             raise fail("busy")
 
     def undo(self) -> dict[str, bool]:
@@ -481,9 +483,126 @@ class Library:
         self._assert_idle()
         return apply_people_merge(self.root, keep_id, drop_id)
 
-    def drain_step(self) -> bool:
+    def people_list(self) -> dict[str, Any]:
+        from library.people_panel import people_index
+
+        self.recover()
         self.ensure_settings()
-        return drain_queued_jpegs(self.root)
+        return people_index(self.root)
+
+    def person_update(self, person_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.people_panel import apply_person_update
+
+        self.recover()
+        self.ensure_settings()
+        return apply_person_update(self.root, person_id, payload)
+
+    def jobs_get(self) -> dict[str, Any]:
+        from library.jobs import jobs_status
+
+        self.recover()
+        self.ensure_settings()
+        return jobs_status(self.root, getattr(self, "_jobs_paused", False))
+
+    def jobs_set(self, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.jobs import jobs_status, read_jobs_action
+
+        action = read_jobs_action(payload)
+        self._jobs_paused = action == "pause"
+        return jobs_status(self.root, self._jobs_paused)
+
+    def analyze_places(self) -> dict[str, Any]:
+        from library.places import analyze_places as fill_place_names
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return fill_place_names(self.root)
+
+    def setup_ml(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        if kind == "objects":
+            from library.objects import setup_objects
+
+            self.root.mkdir(parents=True, exist_ok=True)
+            self.ensure_settings()
+            return setup_objects(self.root)
+        if kind == "faces":
+            return self.setup_faces(payload)
+        raise fail("invalid-argument")
+
+    def setup_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import setup_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return setup_faces(self.root, payload)
+
+    def faces_status(self) -> dict[str, Any]:
+        from library.faces import faces_status
+
+        self.recover()
+        self.ensure_settings()
+        return faces_status(self.root)
+
+    def infer_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import infer_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        self._inferring = True
+        try:
+            return infer_faces(self.root, payload)
+        finally:
+            self._inferring = False
+
+    def analyze(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.objects import analyze_objects, read_analyze_payload
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        parsed = read_analyze_payload(payload)
+        item_id = parsed["itemId"] if parsed else None
+        return analyze_objects(self.root, item_id)
+
+    def analyze_status(self) -> dict[str, Any]:
+        from library.objects import analyze_status
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return analyze_status(self.root)
+
+    def drain_step(self) -> bool:
+        if getattr(self, "_jobs_paused", False):
+            return False
+        if getattr(self, "_scanning", False) or getattr(self, "_inferring", False):
+            return False
+        self.ensure_settings()
+        if drain_queued_jpegs(self.root):
+            return True
+        try:
+            from library.places import analyze_places_step
+
+            if analyze_places_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.faces import infer_faces_step
+
+            if infer_faces_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.objects import analyze_step as run_analyze_step
+
+            if run_analyze_step(self.root):
+                return True
+        except Exception:
+            pass
+        return False
 
     def relocate(self) -> dict[str, bool]:
         self.recover()
@@ -533,7 +652,7 @@ class Library:
             raise fail("preview-unavailable") from exc
         if path is None or not path.is_file() or path.stat().st_size <= 0:
             raise fail("preview-unavailable")
-        content_type = "video/mp4" if which == "proxy" else "image/webp"
+        content_type = "video/mp4" if which in {"proxy", "playback"} else "image/webp"
         return {"path": path, "content_type": content_type}
 
 
@@ -554,7 +673,7 @@ ITEM_QUERY_KEYS = frozenset(
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
-MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
+MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "playback", "original"})
 
 
 def original_content_type(path: Path) -> str:
@@ -670,7 +789,13 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
         if type(token) is not str or token == "":
             raise fail("invalid-argument")
         ids = {rec.get("id") for rec in people}
-        if token not in ids and not any(_entity_name_match(rec, token) for rec in people):
+        if "," in token:
+            tokens = [part for part in token.split(",") if part]
+            if not tokens:
+                raise fail("invalid-argument")
+            if not all(part in ids for part in tokens):
+                return False
+        elif token not in ids and not any(_entity_name_match(rec, token) for rec in people):
             return False
     if "place" in query:
         raw = query["place"]

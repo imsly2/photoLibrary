@@ -18,6 +18,7 @@ from library.catalog_io import (
     relative_from_origin,
     source_rel,
     try_load_item,
+    try_load_place,
     try_load_source,
 )
 from library.errors import fail
@@ -35,7 +36,7 @@ from library.media import (
     sha256_text,
 )
 from library.metadata import read_capture
-from library.places import resolve_place
+from library.places import named_place_update, resolve_place
 from library.paths import normalize_root, roots_equal
 from library.records import (
     clone,
@@ -239,7 +240,7 @@ def _retry_error_renditions(root: Path, entry: dict[str, Any] | None, path: Path
     if item is None:
         return
     status = ((item.get("renditions") or {}).get("status") or {})
-    slots = [slot for slot in ("thumb", "preview", "poster", "proxy") if status.get(slot) == "error"]
+    slots = [slot for slot in ("thumb", "preview", "poster", "proxy", "playback") if status.get(slot) == "error"]
     if not slots:
         return
     before = clone(item)
@@ -359,7 +360,7 @@ def _index_file(
     existing_pending = try_load_item(root, pending)
     if existing_pending is not None and existing_pending.get("placeId"):
         place_id = existing_pending["placeId"]
-        new_place = None
+        new_place = named_place_update(root, place_id)
     settings = load_settings_file(root) if settings_path(root).exists() else defaults()
     from library.renditions import effective_preview_store
 
@@ -397,9 +398,15 @@ def _index_file(
         },
     ]
     if new_place is not None:
-        changes.append(
-            {"path": place_rel(new_place["id"]), "before": None, "after": new_place}
-        )
+        existing_place = try_load_place(root, new_place["id"])
+        if existing_place != new_place:
+            changes.append(
+                {
+                    "path": place_rel(new_place["id"]),
+                    "before": existing_place,
+                    "after": new_place,
+                }
+            )
     _extend(root, changes)
     maybe_test_barrier("hash-publication")
     if between is not None:

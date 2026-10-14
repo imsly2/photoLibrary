@@ -1,4 +1,4 @@
-"""GPS place matching. Names stay null until a person or agent sets them."""
+"""GPS place matching. Local geo pack may name an unnamed coordinate place."""
 
 from __future__ import annotations
 
@@ -6,8 +6,10 @@ from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from typing import Any
 
-from library.catalog_io import load_places, new_place_id
-from library.records import make_place
+from library.atomic import transact
+from library.catalog_io import load_places, new_place_id, place_rel, try_load_place
+from library.history import make_history_entry, plan_append
+from library.records import make_place, ordered_place
 
 EARTH_RADIUS_M = 6371000.0
 
@@ -42,6 +44,30 @@ def nearest_place(
     return candidates[0][2]
 
 
+def apply_local_name(root: Path, place: dict[str, Any]) -> dict[str, Any] | None:
+    """Fill place.name from the local pack when it is null. Never overwrite."""
+    if place.get("name") is not None:
+        return None
+    plat = place.get("latitude")
+    plon = place.get("longitude")
+    if plat is None or plon is None:
+        return None
+    from library.geo import lookup_name
+
+    name = lookup_name(root, float(plat), float(plon))
+    if not name:
+        return None
+    updated = make_place(
+        place_id=str(place["id"]),
+        latitude=float(plat),
+        longitude=float(plon),
+        name=name,
+    )
+    if updated == ordered_place(place):
+        return None
+    return updated
+
+
 def resolve_place(
     root: Path,
     latitude: float,
@@ -50,12 +76,77 @@ def resolve_place(
 ) -> tuple[str, dict[str, Any] | None]:
     matched = nearest_place(load_places(root), latitude, longitude, match_meters)
     if matched is not None:
-        return matched["id"], None
+        return matched["id"], apply_local_name(root, matched)
+    from library.geo import lookup_name
+
     place_id = new_place_id(root)
     place = make_place(
         place_id=place_id,
         latitude=latitude,
         longitude=longitude,
-        name=None,
+        name=lookup_name(root, latitude, longitude),
     )
     return place_id, place
+
+
+def named_place_update(root: Path, place_id: str) -> dict[str, Any] | None:
+    current = try_load_place(root, place_id)
+    if current is None:
+        return None
+    return apply_local_name(root, current)
+
+
+def analyze_places(root: Path) -> dict[str, Any]:
+    from library.geo import pack_ready
+
+    ready = pack_ready(root)
+    named = 0
+    skipped = 0
+    changes: list[dict[str, Any]] = []
+    for place in load_places(root):
+        updated = apply_local_name(root, place) if ready else None
+        if updated is None:
+            skipped += 1
+            continue
+        changes.append(
+            {"path": place_rel(place["id"]), "before": place, "after": updated}
+        )
+        named += 1
+    if changes:
+        entry = make_history_entry(root, "analyze-places", changes)
+        transact(root, plan_append(root, entry) + changes)
+    return {
+        "ok": True,
+        "named": named,
+        "skipped": skipped,
+        "packReady": ready,
+    }
+
+
+def analyze_places_step(root: Path) -> bool:
+    from library.geo import pack_ready
+
+    if not pack_ready(root):
+        return False
+    for place in load_places(root):
+        updated = apply_local_name(root, place)
+        if updated is None:
+            continue
+        changes = [{"path": place_rel(place["id"]), "before": place, "after": updated}]
+        entry = make_history_entry(root, "analyze-places", changes)
+        transact(root, plan_append(root, entry) + changes)
+        return True
+    return False
+
+
+def unnamed_gps_counts(root: Path) -> tuple[int, int, int]:
+    pending = 0
+    done = 0
+    for place in load_places(root):
+        if place.get("latitude") is None or place.get("longitude") is None:
+            continue
+        if place.get("name"):
+            done += 1
+        else:
+            pending += 1
+    return pending, done, 0

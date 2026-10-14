@@ -303,9 +303,7 @@ def _resolve_person(
         if current is None:
             raise fail("not-found")
         if "name" in entry:
-            updated = ordered_person(
-                {"schemaVersion": 1, "id": person_id, "name": entry["name"]}
-            )
+            updated = ordered_person({**current, "name": entry["name"]})
             if updated != current:
                 _record_change(changes, person_rel(person_id), current, updated)
         return person_id
@@ -502,6 +500,14 @@ def apply_people_merge(root: Path, keep_id: str, drop_id: str) -> dict[str, Any]
         if after != before:
             changes.append({"path": item_rel(item_id), "before": before, "after": after})
     changes.append({"path": person_rel(drop_id), "before": drop, "after": None})
+    try:
+        from library.faces import plan_merge_index
+
+        index_change = plan_merge_index(root, keep_id, drop_id)
+        if index_change is not None:
+            changes.append(index_change)
+    except ImportError:
+        pass
     entry = make_history_entry(root, "people-merge", changes)
     transact(root, plan_append(root, entry) + changes)
     return ordered_person(keep)

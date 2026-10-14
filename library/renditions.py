@@ -18,14 +18,17 @@ from library.catalog_io import (
     try_load_source,
 )
 from library.errors import fail
-from library.media import PHOTO_SUFFIXES, VIDEO_SUFFIXES, file_suffix
+from library.media import PHOTO_SUFFIXES, VIDEO_SUFFIXES, ffprobe_json, file_suffix
 from library.paths import library_path
 from library.records import PREVIEW_STORES, clone, ordered_item
 from library.settings import defaults, load_settings_file, settings_path
 from library.volumes import location_file, location_matches_stat, volume_file_path
 
 STILL_SLOTS = ("thumb", "preview")
-VIDEO_SLOTS = ("poster", "proxy")
+VIDEO_SLOTS = ("poster", "proxy", "playback")
+SAFE_VIDEO_CODECS = frozenset({"h264"})
+SAFE_AUDIO_CODECS = frozenset({"aac", "mp3"})
+SAFE_MP4_SUFFIXES = frozenset({".mp4", ".m4v"})
 
 
 def _settings_caps(root: Path) -> tuple[int, int, int]:
@@ -122,6 +125,105 @@ def write_webp(source: Path, dest: Path, cap: int) -> bool:
         return False
 
 
+def _stream_codecs(source: Path) -> tuple[str | None, str | None]:
+    payload = ffprobe_json(source)
+    if not payload:
+        return None, None
+    streams = payload.get("streams") or []
+    video = next((s for s in streams if s.get("codec_type") == "video"), None)
+    audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+    vcodec = video.get("codec_name") if isinstance(video, dict) else None
+    acodec = audio.get("codec_name") if isinstance(audio, dict) else None
+    if type(vcodec) is not str:
+        vcodec = None
+    if type(acodec) is not str:
+        acodec = None
+    return vcodec, acodec
+
+
+def browser_safe_mp4(source: Path) -> bool:
+    if file_suffix(source) not in SAFE_MP4_SUFFIXES:
+        return False
+    video, audio = _stream_codecs(source)
+    if video not in SAFE_VIDEO_CODECS:
+        return False
+    return audio is None or audio in SAFE_AUDIO_CODECS
+
+
+def can_remux_to_mp4(source: Path) -> bool:
+    video, audio = _stream_codecs(source)
+    if video not in SAFE_VIDEO_CODECS:
+        return False
+    return audio is None or audio in SAFE_AUDIO_CODECS
+
+
+def _run_ffmpeg(args: list[str], dest: Path) -> bool:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        proc = subprocess.run(args + [str(tmp)], capture_output=True, check=False)
+        if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
+            if tmp.exists():
+                tmp.unlink()
+            return False
+        tmp.replace(dest)
+        return dest.is_file() and dest.stat().st_size > 0
+    except OSError:
+        if tmp.exists():
+            tmp.unlink()
+        return False
+
+
+def write_playback(source: Path, dest: Path) -> str:
+    """Write full-quality H.264+AAC MP4. Returns ready|not-applicable|error."""
+    if browser_safe_mp4(source):
+        return "not-applicable"
+    if can_remux_to_mp4(source):
+        remux = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(source),
+            "-c",
+            "copy",
+            "-movflags",
+            "+faststart",
+            "-f",
+            "mp4",
+        ]
+        if _run_ffmpeg(remux, dest):
+            return "ready"
+    transcode = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(source),
+        "-map",
+        "0:v:0",
+        "-map",
+        "0:a?",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "-movflags",
+        "+faststart",
+        "-f",
+        "mp4",
+    ]
+    if _run_ffmpeg(transcode, dest):
+        return "ready"
+    return "error"
+
+
 def write_proxy(source: Path, dest: Path, cap: int) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
@@ -159,8 +261,8 @@ def write_proxy(source: Path, dest: Path, cap: int) -> bool:
 
 
 def slot_filename(slot: str) -> str:
-    if slot == "proxy":
-        return "proxy.mp4"
+    if slot in {"proxy", "playback"}:
+        return f"{slot}.mp4"
     return f"{slot}.webp"
 
 
@@ -257,7 +359,7 @@ def ready_slots(item: dict[str, Any]) -> list[str]:
     rend = item.get("renditions") or {}
     status = rend.get("status") or {}
     out: list[str] = []
-    for slot in ("thumb", "preview", "poster", "proxy"):
+    for slot in ("thumb", "preview", "poster", "proxy", "playback"):
         if status.get(slot) == "ready" and type(rend.get(slot)) is str and rend.get(slot):
             out.append(slot)
     return out
@@ -316,6 +418,8 @@ def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
                 return item_id, "poster", source, thumb_px
             if status.get("proxy") == "queued":
                 return item_id, "proxy", source, proxy_width
+            if status.get("playback") == "queued":
+                return item_id, "playback", source, 0
         elif kind == "live":
             still_source = _primary_still_path(item, root)
             if still_source is not None and file_suffix(still_source) in PHOTO_SUFFIXES:
@@ -329,6 +433,8 @@ def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
                     return item_id, "poster", motion_source, thumb_px
                 if status.get("proxy") == "queued":
                     return item_id, "proxy", motion_source, proxy_width
+                if status.get("playback") == "queued":
+                    return item_id, "playback", motion_source, 0
     return None
 
 
@@ -349,13 +455,21 @@ def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str
 
 
 def publish_error(root: Path, item_id: str, slot: str) -> None:
+    publish_slot_status(root, item_id, slot, "error", None)
+
+
+def publish_not_applicable(root: Path, item_id: str, slot: str) -> None:
+    publish_slot_status(root, item_id, slot, "not-applicable", None)
+
+
+def publish_slot_status(root: Path, item_id: str, slot: str, status: str, relative: str | None) -> None:
     before = try_load_item(root, item_id)
     if before is None:
         return
     after = clone(before)
     rend = after["renditions"]
-    rend[slot] = None
-    rend["status"][slot] = "error"
+    rend[slot] = relative
+    rend["status"][slot] = status
     after = ordered_item(after)
     transact(
         root,
@@ -391,6 +505,17 @@ def drain_step(root: Path) -> bool:
         publish_error(root, item_id, slot)
         return True
     dest = dest_dir / slot_filename(slot)
+    if slot == "playback":
+        outcome = write_playback(source, dest)
+        if outcome == "ready":
+            publish_ready(root, item_id, slot, relative, store)
+        elif outcome == "not-applicable":
+            _clear_empty(dest)
+            publish_not_applicable(root, item_id, slot)
+        else:
+            _clear_empty(dest)
+            publish_error(root, item_id, slot)
+        return True
     writer = write_proxy if slot == "proxy" else write_webp
     if not writer(source, dest, cap):
         _clear_empty(dest)
@@ -403,6 +528,8 @@ def drain_step(root: Path) -> bool:
 def _slot_from_name(name: str) -> str | None:
     if name == "proxy.mp4":
         return "proxy"
+    if name == "playback.mp4":
+        return "playback"
     if name.endswith(".webp"):
         slot = name[: -len(".webp")]
         if slot in {"thumb", "preview", "poster"}:

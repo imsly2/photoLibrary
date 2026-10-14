@@ -1,0 +1,223 @@
+{
+  "slice": "TASTE-OBJECTS",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-setup-ml",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-analyze",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-no-faces",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-model-unavailable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-setupml",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "objects-still",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "filter-skips-person",
+      "pass": true,
+      "detail": "['bus']"
+    },
+    {
+      "name": "filter-keeps-bus",
+      "pass": true,
+      "detail": "['bus']"
+    },
+    {
+      "name": "filter-name-only",
+      "pass": true,
+      "detail": "[{'name': 'bus', 'box': [0.2, 0.3, 0.6, 0.4]}]"
+    },
+    {
+      "name": "analyze-without-model",
+      "pass": true,
+      "detail": "{\"error\": \"model-unavailable\"}"
+    },
+    {
+      "name": "setup-ml-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ml-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"kind\": \"objects\", \"model\": \"yolov8n.onnx\", \"path\": \"models/yolov8n.onnx\", \"sha256\": \"65158dad735be799c2466fa15e260c09558080bd530b42a8d0c3d1b419afd8b5\", \"bytes\": 12834838}"
+    },
+    {
+      "name": "model-bytes",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-root/models/yolov8n.onnx"
+    },
+    {
+      "name": "objects-manifest",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-root/models/objects.json"
+    },
+    {
+      "name": "scan-added-1",
+      "pass": true,
+      "detail": "{\"sourceId\": \"src_fe7b1aecf9a5\", \"added\": 1, \"skipped\": 0, \"errors\": []}"
+    },
+    {
+      "name": "items-one",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63\",\n    \"kind\": \"photo\",\n    \"filename\": \"still.jpg\",\n    \"capturedAt\": \"2026-10-14T05:29:54Z\",\n    \"capturedAtSource\": \"mtime\",\n    \"placeId\": null,\n    \"metadata\": {\n      \"width\": 810,\n      \"height\": 1080,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": null,\n      \"longitude\": null\n    },\n    \"contentIdentifier\": null,\n    "
+    },
+    {
+      "name": "item-id",
+      "pass": true,
+      "detail": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+    },
+    {
+      "name": "human-mug",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'thing_44d56629f302', 'name': 'mug', 'aliases': []}"
+    },
+    {
+      "name": "analyze-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "analyze-tagged",
+      "pass": true,
+      "detail": "{\"ok\": true, \"analyzed\": 1, \"tagged\": 1, \"skipped\": 0, \"items\": [{\"id\": \"c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63\", \"things\": [\"mug\", \"bus\"]}]}"
+    },
+    {
+      "name": "human-mug-kept",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'thing_44d56629f302', 'name': 'mug', 'aliases': []}"
+    },
+    {
+      "name": "auto-thing-present",
+      "pass": true,
+      "detail": "[\"bus\", \"mug\"]"
+    },
+    {
+      "name": "no-person-thing",
+      "pass": true,
+      "detail": "[\"bus\", \"mug\"]"
+    },
+    {
+      "name": "no-faces",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no-people-files",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "search-auto-thing",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63\",\n    \"kind\": \"photo\",\n    \"filename\": \"still.jpg\",\n    \"capturedAt\": \"2026-10-14T05:29:54Z\",\n    \"capturedAtSource\": \"mtime\",\n    \"placeId\": null,\n    \"metadata\": {\n      \"width\": 810,\n      \"height\": 1080,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": null,\n      \"longitude\": null\n    },\n    \"contentIdentifier\": null,\n    "
+    },
+    {
+      "name": "health",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "analyze-get",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-search-things",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63\", \"kind\": \"photo\", \"filename\": \"still.jpg\", \"capturedAt\": \"2026-10-14T05:29:54Z\", \"capturedAtSource\": \"mtime\", \"placeId\": null, \"metadata\": {\"width\": 810, \"height\": 1080, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": null, \"longitude\": null}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_fe7b1aecf9a5\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"v"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "info-shows-mug",
+      "pass": true,
+      "detail": "bus\nmug"
+    },
+    {
+      "name": "info-shows-auto",
+      "pass": true,
+      "detail": "bus\nmug"
+    },
+    {
+      "name": "info-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "search-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "search-has-cell",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "d251aa8352effc20257ab4df5923b1c25a9ab2c9",
+  "commands": [
+    "python -m library setup-ml objects",
+    "python -m library analyze --item <id>",
+    "POST /api/analyze"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/stdout.log",
+    "analyze.json": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/analyze.json",
+    "item.json": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/item.json",
+    "search.json": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/search.json",
+    "info-things.png": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/info-things.png",
+    "search-thing.png": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/search-thing.png",
+    "url": "http://127.0.0.1:18766/"
+  }
+}

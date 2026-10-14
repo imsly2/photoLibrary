@@ -6,6 +6,7 @@
   const viewerVideo = document.getElementById("viewer-video");
   const viewerBack = document.getElementById("viewer-back");
   const viewerCrumb = document.getElementById("viewer-crumb");
+  const viewerSource = document.getElementById("viewer-source");
   const viewerPrev = document.getElementById("viewer-prev");
   const viewerNext = document.getElementById("viewer-next");
   const viewerZoomSlider = document.getElementById("viewer-zoom-slider");
@@ -75,6 +76,18 @@
   const viewGlobe = document.getElementById("view-globe");
   const workspace = document.querySelector(".workspace");
   const globeView = document.getElementById("globe-view");
+  const librarySide = document.getElementById("library-side");
+  const librarySplitter = document.getElementById("library-splitter");
+  const sideCollapse = document.getElementById("side-collapse");
+  const peopleList = document.getElementById("people-list");
+  const peopleEmpty = document.getElementById("people-empty");
+  const personProfile = document.getElementById("person-profile");
+  const personNameInput = document.getElementById("person-name");
+  const personFaces = document.getElementById("person-faces");
+  const jobsStatus = document.getElementById("jobs-status");
+  const jobsQueues = document.getElementById("jobs-queues");
+  const jobsPause = document.getElementById("jobs-pause");
+  const jobsResume = document.getElementById("jobs-resume");
   if (!main || !viewer || !viewerImage || !viewerVideo || !addFolderBtn || !addDialog) {
     return;
   }
@@ -128,8 +141,15 @@
   let gridSize = 0;
   let groupDates = true;
   let favoritesOpen = true;
+  let peopleCatalog = [];
+  let personOfInterestMin = 3;
+  let selectedPeople = [];
+  let sideOpen = true;
+  let sideWidth = 264;
+  let splitDragging = false;
   let searchTimer = 0;
   let annotateBusy = false;
+  let namingPersonId = "";
   let pollTimer = 0;
   let scanning = false;
   let levelWheelLock = false;
@@ -148,6 +168,18 @@
   let rotation = 0;
   let originalPreload = null;
   let originalPreloadId = null;
+  let originalSwapTimer = 0;
+  let videoSourceState = "";
+  const ORIGINAL_SWAP_MS = 20000;
+  const PLAYBACK_WAIT_MS = 90000;
+  const PLAYBACK_POLL_MS = 750;
+  const SOURCE_LABELS = {
+    preview: "Preview",
+    loading: "Loading full…",
+    original: "Original",
+    full: "Full",
+    unavailable: "Preview — full unavailable",
+  };
   let scrubbingViewer = false;
   let showingOriginal = false;
   let fitOnLoad = false;
@@ -251,6 +283,11 @@
 
   function filtersEqual(a, b) {
     return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite;
+  }
+
+  function syncPeopleSelectionFromFilter() {
+    selectedPeople = (filter.person || "").split(",").filter(Boolean);
+    renderPeople();
   }
 
   function syncFilterDataset() {
@@ -373,7 +410,7 @@
     inspector.dataset.entityId = id;
     inspector.dataset.kind = kind;
     inspector.dataset.count = String(count);
-    inspectorName.textContent = name || "";
+    inspectorName.textContent = name || (kind === "person" ? "Unnamed" : "");
     inspectorCount.textContent = String(count);
     inspectorFiles.innerHTML = "";
     filenames.forEach(function (filename) {
@@ -405,8 +442,8 @@
       const entities = (item && item.entities) || {};
       const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
       (list || []).forEach(function (rec) {
-        if (rec && rec.id === id && rec.name) {
-          name = rec.name;
+        if (rec && rec.id === id) {
+          name = rec.name || (kind === "person" ? "Unnamed" : "");
         }
       });
     });
@@ -461,6 +498,7 @@
 
   function applyFilterState(next, searchValue) {
     filter = copyFilter(next);
+    selectedPeople = (filter.person || "").split(",").filter(Boolean);
     if (searchInput) {
       searchInput.value = searchValue != null ? searchValue : filter.q;
     }
@@ -660,14 +698,7 @@
     if (policy === "off") {
       return false;
     }
-    const level = settings.zoomLevel;
-    if (policy === "always") {
-      return true;
-    }
-    if (!groupDates) {
-      return true;
-    }
-    return level === "days" || level === "all";
+    return true;
   }
 
   let hoverVideo = null;
@@ -753,14 +784,29 @@
   }
 
   function startHover(cell, item) {
-    stopHover();
     if (!hoverAllowed() || !item || (item.kind !== "video" && item.kind !== "live")) {
+      stopHover();
       return;
     }
     const proxyStatus = ((item.renditions || {}).status || {}).proxy;
     if (proxyStatus !== "ready") {
+      stopHover();
       return;
     }
+    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    if (hoverVideo && hoverCell === cell && hoverCell.isConnected) {
+      const src = hoverVideo.getAttribute("src") || hoverVideo.currentSrc || "";
+      if (src.indexOf(item.id) !== -1) {
+        if (hoverVideo.paused) {
+          const resume = hoverVideo.play();
+          if (resume && resume.catch) {
+            resume.catch(function () {});
+          }
+        }
+        return;
+      }
+    }
+    stopHover();
     const video = document.createElement("video");
     video.muted = true;
     video.defaultMuted = true;
@@ -770,17 +816,34 @@
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
     video.setAttribute("autoplay", "");
-    video.src = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    video.src = proxyUrl;
     cell.appendChild(video);
     bindTileScrub(video, cell);
     hoverVideo = video;
     hoverCell = cell;
     lastHoverId = item.id;
-    lastHoverTime = 0;
-    const play = video.play();
-    if (play && play.catch) {
-      play.catch(function () {});
+    function tryPlay() {
+      if (hoverVideo !== video) {
+        return;
+      }
+      const play = video.play();
+      if (play && play.catch) {
+        play.catch(function () {});
+      }
     }
+    video.addEventListener("loadedmetadata", function () {
+      if (hoverVideo !== video) {
+        return;
+      }
+      if (lastHoverId === item.id && lastHoverTime > 0) {
+        try {
+          video.currentTime = lastHoverTime;
+        } catch (err) {}
+      }
+    });
+    video.addEventListener("canplay", tryPlay);
+    video.addEventListener("loadeddata", tryPlay);
+    tryPlay();
   }
 
   function rearmHover() {
@@ -795,12 +858,25 @@
     startHover(cell, itemById(hoveredId));
   }
 
+  function resumeHoverIfNeeded() {
+    if (!hoveredId || !hoverAllowed()) {
+      return;
+    }
+    if (hoverVideo && hoverCell && hoverCell.isConnected && hoverCell.dataset.id === hoveredId && !hoverVideo.paused) {
+      return;
+    }
+    rearmHover();
+  }
+
   function requestStill(cell, id) {
     const img = cell.querySelector("img");
     const placeholder = cell.querySelector(".placeholder");
     const item = itemById(id);
     const which = stillWhich(item);
     const url = "/api/media/" + encodeURIComponent(id) + "?which=" + which;
+    if (hoverCell === cell && hoverVideo && hoverCell.contains(hoverVideo)) {
+      return;
+    }
     if (img.getAttribute("data-still") === url && !img.hidden && img.complete && img.naturalWidth > 0) {
       return;
     }
@@ -945,6 +1021,10 @@
   }
 
   function cancelOriginalPreload() {
+    if (originalSwapTimer) {
+      window.clearTimeout(originalSwapTimer);
+      originalSwapTimer = 0;
+    }
     if (originalPreload) {
       originalPreload.oncanplay = null;
       originalPreload.onerror = null;
@@ -1030,6 +1110,7 @@
     viewerPrev.disabled = viewerIndex <= 0;
     viewerNext.disabled = viewerIndex < 0 || viewerIndex >= items.length - 1;
     syncFavoriteChrome(item);
+    syncViewerSourceChrome();
   }
 
   function syncZoomChrome() {
@@ -1170,6 +1251,7 @@
     viewerVideo.hidden = false;
     viewerVideo.setAttribute("data-using-proxy", "1");
     viewerVideo.setAttribute("data-source-ready", item.id);
+    setVideoSourceState("preview");
     viewerVideo.onloadedmetadata = function () {
       if (viewerItemId !== item.id || viewer.hidden) {
         return;
@@ -1391,6 +1473,31 @@
     openOriginalBtn.textContent = "Open";
     openOriginalBtn.removeAttribute("aria-pressed");
     viewer.dataset.showingOriginal = showingOriginal ? "1" : "0";
+    syncViewerSourceChrome();
+  }
+
+  function setVideoSourceState(state) {
+    videoSourceState = state || "";
+    syncViewerSourceChrome();
+  }
+
+  function syncViewerSourceChrome() {
+    if (!viewerSource) {
+      return;
+    }
+    const item = viewerIndex >= 0 ? items[viewerIndex] : null;
+    const isVideo = !!(item && (item.kind === "video" || item.kind === "live"));
+    const hasSrc = !!(viewerVideo && (viewerVideo.currentSrc || viewerVideo.getAttribute("src")));
+    if (viewer.hidden || !isVideo || (viewerVideo && viewerVideo.hidden) || !hasSrc) {
+      viewerSource.hidden = true;
+      viewerSource.textContent = "";
+      delete viewerSource.dataset.state;
+      return;
+    }
+    const state = videoSourceState || "preview";
+    viewerSource.hidden = false;
+    viewerSource.textContent = SOURCE_LABELS[state] || SOURCE_LABELS.preview;
+    viewerSource.dataset.state = state;
   }
 
   function stepViewer(delta) {
@@ -1431,9 +1538,12 @@
     viewerVideo.removeAttribute("poster");
     viewerVideo.removeAttribute("data-source-ready");
     viewerVideo.removeAttribute("data-using-proxy");
+    viewerVideo.removeAttribute("data-using-playback");
     viewerVideo.load();
     viewerVideo.hidden = true;
+    videoSourceState = "";
     hideViewerScrub();
+    syncViewerSourceChrome();
   }
 
   let viewerMuted = false;
@@ -1612,7 +1722,12 @@
       }
       field.value = "";
       delete field.dataset.committed;
+      delete field.dataset.renameId;
     });
+    namingPersonId = "";
+    if (personField) {
+      personField.placeholder = "Person";
+    }
   }
 
   function hideViewerChrome() {
@@ -1710,11 +1825,180 @@
     return result === "probably" || result === "maybe";
   }
 
-  function scheduleOriginalSwap(item, originalUrl, startTime) {
-    cancelOriginalPreload();
-    if (!item || item.available === false || !browserCanPlayOriginal(item)) {
+  function playbackStatus(item) {
+    return (((item && item.renditions) || {}).status || {}).playback || "";
+  }
+
+  function playbackReady(item) {
+    return playbackStatus(item) === "ready";
+  }
+
+  function prefersDerivedPlayback(item) {
+    const name = ((item && item.filename) || "").toLowerCase();
+    return name.endsWith(".mov") || name.endsWith(".avi") || name.endsWith(".mkv");
+  }
+
+  function mediaWhichUrl(item, which) {
+    return "/api/media/" + encodeURIComponent(item.id) + "?which=" + which;
+  }
+
+  function usingProxy() {
+    return viewerVideo.getAttribute("data-using-proxy") === "1";
+  }
+
+  function usingPlayback() {
+    return viewerVideo.getAttribute("data-using-playback") === "1";
+  }
+
+  function markVideoWhich(which) {
+    if (which === "proxy") {
+      viewerVideo.setAttribute("data-using-proxy", "1");
+      viewerVideo.removeAttribute("data-using-playback");
       return;
     }
+    if (which === "playback") {
+      viewerVideo.removeAttribute("data-using-proxy");
+      viewerVideo.setAttribute("data-using-playback", "1");
+      return;
+    }
+    viewerVideo.removeAttribute("data-using-proxy");
+    viewerVideo.removeAttribute("data-using-playback");
+  }
+
+  function swapViewerTo(item, url, state, startTime) {
+    const t = Math.max(viewerVideo.currentTime || 0, Number(startTime) || 0);
+    const paused = viewerVideo.paused;
+    const rate = viewerVideo.playbackRate || 1;
+    cancelOriginalPreload();
+    viewerVideo.onloadeddata = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      try {
+        if (isFinite(t)) {
+          viewerVideo.currentTime = t;
+        }
+      } catch (err) {}
+      viewerVideo.playbackRate = rate;
+      layoutVideo(item);
+      applyViewerVolume();
+      setVideoSourceState(state);
+      if (!paused) {
+        const play = viewerVideo.play();
+        if (play && play.catch) {
+          play.catch(function () {});
+        }
+      }
+      syncViewerScrub();
+    };
+    viewerVideo.onerror = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      if (state === "original") {
+        promoteToPlaybackOrUnavailable(item, t);
+        return;
+      }
+      if (!usingProxy()) {
+        markVideoWhich("proxy");
+        viewerVideo.src = mediaWhichUrl(item, "proxy");
+      }
+      setVideoSourceState("unavailable");
+    };
+    markVideoWhich(state === "full" ? "playback" : state === "original" ? "original" : "proxy");
+    viewerVideo.src = url;
+  }
+
+  function pollPlaybackReady(item, startTime) {
+    cancelOriginalPreload();
+    setVideoSourceState("loading");
+    const started = Date.now();
+    function tick() {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      if (usingPlayback() || videoSourceState === "original" || videoSourceState === "full") {
+        return;
+      }
+      const live = items.find(function (row) {
+        return row.id === item.id;
+      }) || item;
+      if (playbackReady(live)) {
+        swapViewerTo(live, mediaWhichUrl(live, "playback"), "full", startTime);
+        return;
+      }
+      const status = playbackStatus(live);
+      if (status === "error" || status === "not-applicable") {
+        setVideoSourceState("unavailable");
+        return;
+      }
+      fetch(mediaWhichUrl(item, "playback"), { method: "HEAD" }).then(function (res) {
+        if (viewerItemId !== item.id || viewer.hidden) {
+          return;
+        }
+        if (res.ok) {
+          swapViewerTo(item, mediaWhichUrl(item, "playback"), "full", startTime);
+          return;
+        }
+        if (Date.now() - started > PLAYBACK_WAIT_MS) {
+          setVideoSourceState("unavailable");
+          return;
+        }
+        originalSwapTimer = window.setTimeout(tick, PLAYBACK_POLL_MS);
+      }).catch(function () {
+        if (Date.now() - started > PLAYBACK_WAIT_MS) {
+          setVideoSourceState("unavailable");
+          return;
+        }
+        originalSwapTimer = window.setTimeout(tick, PLAYBACK_POLL_MS);
+      });
+    }
+    tick();
+  }
+
+  function promoteToPlaybackOrUnavailable(item, startTime) {
+    const status = playbackStatus(item);
+    if (status === "ready") {
+      setVideoSourceState("loading");
+      swapViewerTo(item, mediaWhichUrl(item, "playback"), "full", startTime);
+      return;
+    }
+    if (status === "queued") {
+      pollPlaybackReady(item, startTime);
+      return;
+    }
+    setVideoSourceState("unavailable");
+  }
+
+  function maybePromoteFullSource(item) {
+    if (viewer.hidden || viewerItemId !== item.id) {
+      return;
+    }
+    if (usingPlayback() || videoSourceState === "original" || videoSourceState === "full") {
+      return;
+    }
+    if (videoSourceState !== "loading" && videoSourceState !== "preview" && videoSourceState !== "unavailable") {
+      return;
+    }
+    if (!playbackReady(item)) {
+      return;
+    }
+    if (prefersDerivedPlayback(item) || videoSourceState === "loading" || videoSourceState === "unavailable") {
+      swapViewerTo(item, mediaWhichUrl(item, "playback"), "full", viewerVideo.currentTime);
+    }
+  }
+
+  function scheduleOriginalSwap(item, originalUrl, startTime) {
+    cancelOriginalPreload();
+    if (prefersDerivedPlayback(item)) {
+      promoteToPlaybackOrUnavailable(item, startTime);
+      return;
+    }
+    if (!item || item.available === false || !browserCanPlayOriginal(item)) {
+      promoteToPlaybackOrUnavailable(item, startTime);
+      return;
+    }
+    setVideoSourceState("loading");
     const preload = document.createElement("video");
     preload.preload = "auto";
     preload.muted = true;
@@ -1722,39 +2006,20 @@
     originalPreloadId = item.id;
     preload.onerror = function () {
       if (originalPreloadId === item.id) {
-        cancelOriginalPreload();
+        promoteToPlaybackOrUnavailable(item, startTime);
       }
     };
     preload.oncanplay = function () {
       if (originalPreloadId !== item.id || viewerItemId !== item.id || viewer.hidden) {
         return;
       }
-      const t = Math.max(viewerVideo.currentTime || 0, Number(startTime) || 0);
-      const paused = viewerVideo.paused;
-      const rate = viewerVideo.playbackRate || 1;
-      viewerVideo.onloadeddata = function () {
-        if (viewerItemId !== item.id || viewer.hidden) {
-          return;
-        }
-        try {
-          if (isFinite(t)) {
-            viewerVideo.currentTime = t;
-          }
-        } catch (err) {}
-        viewerVideo.playbackRate = rate;
-        layoutVideo(item);
-        applyViewerVolume();
-        if (!paused) {
-          const play = viewerVideo.play();
-          if (play && play.catch) {
-            play.catch(function () {});
-          }
-        }
-        syncViewerScrub();
-      };
-      viewerVideo.removeAttribute("data-using-proxy");
-      viewerVideo.src = originalUrl;
+      swapViewerTo(item, originalUrl, "original", startTime);
     };
+    originalSwapTimer = window.setTimeout(function () {
+      if (originalPreloadId === item.id && usingProxy()) {
+        promoteToPlaybackOrUnavailable(item, startTime);
+      }
+    }, ORIGINAL_SWAP_MS);
     preload.src = originalUrl;
   }
 
@@ -1774,8 +2039,8 @@
   }
 
   function playOriginalOrProxy(item, startTime, autoplay) {
-    const originalUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=original";
-    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    const originalUrl = mediaWhichUrl(item, "original");
+    const proxyUrl = mediaWhichUrl(item, "proxy");
     viewerVideo.hidden = false;
     showViewerPlaceholder(false);
     function afterReady() {
@@ -1785,6 +2050,7 @@
       applyViewerStartTime(startTime);
       layoutVideo(item);
       showViewerScrub();
+      syncViewerSourceChrome();
       if (autoplay) {
         const play = viewerVideo.play();
         if (play && play.catch) {
@@ -1793,21 +2059,32 @@
       }
     }
     if (viewerVideo.getAttribute("data-source-ready") === item.id && (viewerVideo.currentSrc || viewerVideo.getAttribute("src"))) {
+      if (usingPlayback()) {
+        setVideoSourceState("full");
+      } else if (usingProxy()) {
+        if (!videoSourceState || videoSourceState === "original" || videoSourceState === "full") {
+          setVideoSourceState("preview");
+        }
+      } else {
+        setVideoSourceState("original");
+      }
       afterReady();
       return;
     }
+    setVideoSourceState("preview");
     viewerVideo.onerror = function () {
-      if (viewerVideo.getAttribute("data-using-proxy") === "1") {
+      if (usingProxy()) {
         return;
       }
-      viewerVideo.setAttribute("data-using-proxy", "1");
+      markVideoWhich("proxy");
       viewerVideo.src = proxyUrl;
+      promoteToPlaybackOrUnavailable(item, startTime);
     };
     viewerVideo.onloadedmetadata = function () {
       afterReady();
     };
     viewerVideo.setAttribute("data-source-ready", item.id);
-    viewerVideo.setAttribute("data-using-proxy", "1");
+    markVideoWhich("proxy");
     viewerVideo.src = proxyUrl;
     layoutVideo(item);
     showViewerScrub();
@@ -1828,25 +2105,61 @@
     viewerImage.hidden = true;
     resetViewerOriginal();
     viewerVideo.hidden = false;
-    const originalUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=original&component=motion";
-    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    const originalUrl = mediaWhichUrl(item, "original") + "&component=motion";
+    const proxyUrl = mediaWhichUrl(item, "proxy");
     if (viewerVideo.getAttribute("data-source-ready") === item.id) {
       return;
     }
     function useProxy() {
-      if (viewerVideo.getAttribute("data-using-proxy") === "1") {
+      if (usingProxy()) {
         return;
       }
-      viewerVideo.setAttribute("data-using-proxy", "1");
+      markVideoWhich("proxy");
       viewerVideo.src = proxyUrl;
+      setVideoSourceState(item.motionAvailable ? "unavailable" : "preview");
     }
-    viewerVideo.onerror = useProxy;
+    function usePlayback() {
+      markVideoWhich("playback");
+      viewerVideo.src = mediaWhichUrl(item, "playback");
+      setVideoSourceState("full");
+    }
+    viewerVideo.onerror = function () {
+      if (usingPlayback()) {
+        useProxy();
+        return;
+      }
+      if (usingProxy()) {
+        return;
+      }
+      if (playbackReady(item)) {
+        usePlayback();
+        return;
+      }
+      useProxy();
+      if (playbackStatus(item) === "queued") {
+        pollPlaybackReady(item, 0);
+      }
+    };
     viewerVideo.setAttribute("data-source-ready", item.id);
+    if (playbackReady(item) && !item.motionAvailable) {
+      usePlayback();
+      return;
+    }
     if (item.motionAvailable) {
+      setVideoSourceState("loading");
+      markVideoWhich("original");
       viewerVideo.src = originalUrl;
+      viewerVideo.onloadeddata = function () {
+        if (viewerItemId === item.id && !usingProxy() && !usingPlayback()) {
+          setVideoSourceState("original");
+        }
+      };
       return;
     }
     useProxy();
+    if (playbackStatus(item) === "queued") {
+      pollPlaybackReady(item, 0);
+    }
   }
 
   function toggleViewerPlay() {
@@ -1867,10 +2180,11 @@
         const play = viewerVideo.play();
         if (play && play.catch) {
           play.catch(function () {
-            const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
-            if (viewerVideo.getAttribute("data-using-proxy") !== "1") {
-              viewerVideo.setAttribute("data-using-proxy", "1");
+            const proxyUrl = mediaWhichUrl(item, "proxy");
+            if (!usingProxy()) {
+              markVideoWhich("proxy");
               viewerVideo.src = proxyUrl;
+              promoteToPlaybackOrUnavailable(item, viewerVideo.currentTime);
               const retry = viewerVideo.play();
               if (retry && retry.catch) {
                 retry.catch(function () {});
@@ -1891,10 +2205,11 @@
       const play = viewerVideo.play();
       if (play && play.catch) {
         play.catch(function () {
-          const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
-          if (viewerVideo.getAttribute("data-using-proxy") !== "1") {
-            viewerVideo.setAttribute("data-using-proxy", "1");
+          const proxyUrl = mediaWhichUrl(item, "proxy");
+          if (!usingProxy()) {
+            markVideoWhich("proxy");
             viewerVideo.src = proxyUrl;
+            promoteToPlaybackOrUnavailable(item, viewerVideo.currentTime);
             const retry = viewerVideo.play();
             if (retry && retry.catch) {
               retry.catch(function () {});
@@ -1927,16 +2242,33 @@
         return;
       }
       (records || []).forEach(function (rec) {
-        if (!rec || !rec.id || !rec.name) {
+        if (!rec || !rec.id) {
           return;
         }
+        if (kind !== "person" && !rec.name) {
+          return;
+        }
+        const unnamed = kind === "person" && !rec.name;
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "entity-label";
+        btn.className = unnamed ? "entity-label unnamed" : "entity-label";
         btn.dataset.entityKind = kind;
         btn.dataset.entityId = rec.id;
-        btn.textContent = rec.name;
+        btn.textContent = rec.name || "Unnamed";
+        if (unnamed && rec.id === namingPersonId) {
+          btn.setAttribute("aria-pressed", "true");
+        }
         btn.addEventListener("click", function () {
+          if (unnamed) {
+            namingPersonId = rec.id;
+            if (personField) {
+              personField.dataset.renameId = rec.id;
+              personField.placeholder = "Name this person";
+              personField.focus();
+            }
+            renderViewerLabels(item);
+            return;
+          }
           filterByEntity(kind, rec.id);
         });
         node.appendChild(btn);
@@ -1960,6 +2292,13 @@
   }
 
   function openStillViewer(item, index) {
+    if (viewerItemId !== item.id) {
+      namingPersonId = "";
+      if (personField) {
+        delete personField.dataset.renameId;
+        personField.placeholder = "Person";
+      }
+    }
     resetViewerVideo();
     resetViewerOriginal();
     resetViewTransform();
@@ -2376,6 +2715,7 @@
       main.querySelectorAll(".cell").forEach(function (cell) {
         requestStill(cell, cell.dataset.id);
       });
+      resumeHoverIfNeeded();
       return;
     }
     const anchor = visibleAnchorId();
@@ -2424,12 +2764,331 @@
     if (anchor) {
       scrollIdIntoView(anchor);
     }
+    resumeHoverIfNeeded();
+  }
+
+  function personDisplayName(person) {
+    if (person && person.name) {
+      return person.name;
+    }
+    return "Unnamed";
+  }
+
+  function faceCrop(thumb) {
+    const out = { src: "", left: "0%", top: "0%", width: "100%", height: "100%" };
+    if (!thumb || !thumb.itemId) {
+      return out;
+    }
+    out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=thumb";
+    const box = thumb.box;
+    if (!box || box.length !== 4 || !(box[2] > 0) || !(box[3] > 0)) {
+      return out;
+    }
+    out.width = (100 / box[2]) + "%";
+    out.height = (100 / box[3]) + "%";
+    out.left = ((-box[0] / box[2]) * 100) + "%";
+    out.top = ((-box[1] / box[3]) * 100) + "%";
+    return out;
+  }
+
+  function paintFace(node, thumb) {
+    node.innerHTML = "";
+    const crop = faceCrop(thumb);
+    if (!crop.src) {
+      return;
+    }
+    const img = document.createElement("img");
+    img.alt = "";
+    img.src = crop.src;
+    img.style.left = crop.left;
+    img.style.top = crop.top;
+    img.style.width = crop.width;
+    img.style.height = crop.height;
+    node.appendChild(img);
+  }
+
+  function visiblePeople() {
+    return peopleCatalog.filter(function (person) {
+      if (person.visible === false) {
+        return false;
+      }
+      if (person.named) {
+        return true;
+      }
+      return (person.itemCount || 0) >= personOfInterestMin;
+    });
+  }
+
+  function collectPersonFaces(personId) {
+    const seen = {};
+    const faces = [];
+    items.forEach(function (item) {
+      ((item.faces) || []).forEach(function (face) {
+        if (!face || face.personId !== personId) {
+          return;
+        }
+        const key = item.id + ":" + JSON.stringify(face.box || null);
+        if (seen[key]) {
+          return;
+        }
+        seen[key] = true;
+        faces.push({ itemId: item.id, box: face.box || null });
+      });
+    });
+    return faces;
+  }
+
+  function renderPersonProfile() {
+    if (!personProfile || !personNameInput || !personFaces) {
+      return;
+    }
+    if (selectedPeople.length !== 1) {
+      personProfile.hidden = true;
+      return;
+    }
+    const id = selectedPeople[0];
+    const person = peopleCatalog.filter(function (row) { return row.id === id; })[0] || { id: id, name: null };
+    personProfile.hidden = false;
+    if (document.activeElement !== personNameInput) {
+      personNameInput.value = person.name || "";
+      personNameInput.dataset.personId = id;
+    }
+    const thumbs = collectPersonFaces(id);
+    const chosen = (person.thumbnail && person.thumbnail.itemId) || (person.thumbnailItemId) || "";
+    personFaces.innerHTML = "";
+    thumbs.forEach(function (thumb) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "person-face-choice";
+      btn.setAttribute("aria-pressed", thumb.itemId === chosen ? "true" : "false");
+      btn.title = "Use this face as the thumbnail";
+      const crop = document.createElement("span");
+      crop.className = "person-face";
+      crop.style.width = "100%";
+      crop.style.height = "100%";
+      paintFace(crop, thumb);
+      btn.appendChild(crop);
+      btn.addEventListener("click", function () {
+        choosePersonThumb(id, thumb.itemId);
+      });
+      personFaces.appendChild(btn);
+    });
+  }
+
+  function renderPeople() {
+    if (!peopleList) {
+      return;
+    }
+    const rows = visiblePeople();
+    if (peopleEmpty) {
+      peopleEmpty.hidden = rows.length > 0;
+    }
+    peopleList.innerHTML = "";
+    rows.forEach(function (person) {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "person-row";
+      btn.dataset.personId = person.id;
+      btn.setAttribute("aria-pressed", selectedPeople.indexOf(person.id) >= 0 ? "true" : "false");
+      const face = document.createElement("span");
+      face.className = "person-face";
+      paintFace(face, person.thumbnail);
+      const meta = document.createElement("span");
+      meta.className = "person-meta";
+      const name = document.createElement("span");
+      name.className = "person-name";
+      name.textContent = personDisplayName(person);
+      const count = document.createElement("span");
+      count.className = "person-count";
+      count.textContent = String(person.itemCount || 0);
+      meta.appendChild(name);
+      meta.appendChild(count);
+      btn.appendChild(face);
+      btn.appendChild(meta);
+      btn.addEventListener("click", function (event) {
+        selectPerson(person.id, event.metaKey || event.ctrlKey);
+      });
+      li.appendChild(btn);
+      peopleList.appendChild(li);
+    });
+    renderPersonProfile();
+  }
+
+  function loadPeople() {
+    return fetch("/api/people").then(readJson).then(function (body) {
+      peopleCatalog = (body && body.people) || [];
+      if (body && body.personOfInterestMin != null) {
+        personOfInterestMin = Number(body.personOfInterestMin) || 3;
+      }
+      renderPeople();
+      return body;
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  function selectPerson(id, additive) {
+    if (!id) {
+      return;
+    }
+    if (additive) {
+      const idx = selectedPeople.indexOf(id);
+      if (idx >= 0) {
+        selectedPeople.splice(idx, 1);
+      } else {
+        selectedPeople.push(id);
+      }
+    } else if (selectedPeople.length === 1 && selectedPeople[0] === id) {
+      selectedPeople = [];
+    } else {
+      selectedPeople = [id];
+    }
+    filter.q = "";
+    filter.scope = "";
+    filter.place = "";
+    filter.thing = "";
+    filter.person = selectedPeople.join(",");
+    if (searchInput) {
+      searchInput.value = "";
+    }
+    if (!filter.person) {
+      hideInspector();
+    }
+    syncChips();
+    syncFilterDataset();
+    renderPeople();
+    renderKey = "";
+    return loadCatalog();
+  }
+
+  function savePerson(personId, payload) {
+    return fetch("/api/people/" + encodeURIComponent(personId), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(readJson).then(function () {
+      return loadPeople();
+    });
+  }
+
+  function choosePersonThumb(personId, itemId) {
+    savePerson(personId, { thumbnailItemId: itemId });
+  }
+
+  function commitPersonName() {
+    if (!personNameInput) {
+      return;
+    }
+    const personId = personNameInput.dataset.personId;
+    if (!personId) {
+      return;
+    }
+    const value = personNameInput.value.trim();
+    const current = peopleCatalog.filter(function (row) { return row.id === personId; })[0];
+    const existing = current && current.name ? current.name : "";
+    if (value === existing) {
+      return;
+    }
+    savePerson(personId, { name: value || null }).then(function () {
+      return loadCatalog();
+    });
+  }
+
+  function applySideLayout() {
+    if (!workspace) {
+      return;
+    }
+    workspace.classList.toggle("side-collapsed", !sideOpen);
+    workspace.style.setProperty("--side-width", sideWidth + "px");
+    if (librarySide) {
+      librarySide.setAttribute("aria-hidden", sideOpen ? "false" : "true");
+    }
+    if (sideCollapse) {
+      sideCollapse.setAttribute("aria-expanded", sideOpen ? "true" : "false");
+      sideCollapse.textContent = "Hide";
+    }
+    if (librarySplitter) {
+      librarySplitter.title = sideOpen ? "Resize People panel" : "Show People panel";
+    }
+  }
+
+  function toggleSide(open) {
+    sideOpen = open == null ? !sideOpen : !!open;
+    applySideLayout();
+  }
+
+  function jobsLine(body) {
+    if (!body || body.paused) {
+      const pending = ((body && body.queues) || []).reduce(function (sum, q) {
+        return sum + (q.pending || 0);
+      }, 0);
+      return pending ? ("Paused — " + pending + " waiting") : "Paused";
+    }
+    if (body.processing) {
+      const active = (body.queues || []).filter(function (q) { return q.state === "running"; });
+      const bits = active.map(function (q) {
+        return q.label + " " + q.pending;
+      });
+      return bits.length ? ("Processing — " + bits.join(" · ")) : "Processing";
+    }
+    return "Idle";
+  }
+
+  function renderJobs(body) {
+    if (!jobsStatus || !jobsQueues) {
+      return;
+    }
+    jobsStatus.textContent = jobsLine(body);
+    jobsStatus.dataset.state = body && body.paused ? "paused" : (body && body.processing ? "running" : "idle");
+    jobsQueues.innerHTML = "";
+    ((body && body.queues) || []).forEach(function (queue) {
+      const li = document.createElement("li");
+      li.dataset.id = queue.id;
+      li.dataset.state = queue.state || "idle";
+      const extra = queue.available ? "" : " (queued)";
+      li.textContent = queue.label + " · " + (queue.pending || 0) + " left" + extra;
+      jobsQueues.appendChild(li);
+    });
+    const pending = ((body && body.queues) || []).some(function (q) { return (q.pending || 0) > 0; });
+    if (jobsPause) {
+      jobsPause.disabled = !(body && body.processing);
+    }
+    if (jobsResume) {
+      jobsResume.disabled = !!(body && body.processing);
+      jobsResume.textContent = body && body.paused ? "Resume" : "Start";
+      if (!pending && !(body && body.paused)) {
+        jobsResume.textContent = "Start";
+      }
+    }
+  }
+
+  function loadJobs() {
+    return fetch("/api/jobs").then(readJson).then(function (body) {
+      renderJobs(body);
+      return body;
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  function postJobs(action) {
+    return fetch("/api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: action }),
+    }).then(readJson).then(function (body) {
+      renderJobs(body);
+      return body;
+    });
   }
 
   function loadCatalog() {
     const gen = loadGen + 1;
     loadGen = gen;
     const qs = queryString();
+    loadJobs();
+    loadPeople();
     return Promise.all([
       fetch("/api/items?" + qs).then(readJson),
       fetch("/api/groups?" + queryString({ level: settings.zoomLevel })).then(readJson),
@@ -2456,10 +3115,14 @@
       showDisconnected(false);
       items = nextItems;
       groups = nextGroups;
+      renderPeople();
       const open = syncViewerIndex();
       if (open) {
         renderViewerLabels(open);
         syncViewerChrome(open);
+        if (open.kind === "video" || open.kind === "live") {
+          maybePromoteFullSource(open);
+        }
       } else if (!viewer.hidden) {
         syncNavChrome();
       }
@@ -2584,10 +3247,13 @@
     filter.favorite = "";
     if (kind === "person") {
       filter.person = id;
+      selectedPeople = [id];
     } else if (kind === "place") {
       filter.place = id;
+      selectedPeople = [];
     } else if (kind === "thing") {
       filter.thing = id;
+      selectedPeople = [];
     }
     if (searchInput) {
       searchInput.value = "";
@@ -2611,6 +3277,7 @@
     filter.person = "";
     filter.place = "";
     filter.thing = "";
+    selectedPeople = [];
     hideInspector();
     syncChips();
     syncFilterDataset();
@@ -2635,7 +3302,11 @@
     }
     const payload = {};
     if (kind === "person") {
-      payload.people = [{ name: value }];
+      if (namingPersonId) {
+        payload.people = [{ id: namingPersonId, name: value }];
+      } else {
+        payload.people = [{ name: value }];
+      }
     } else if (kind === "place") {
       payload.places = [{ name: value }];
     } else if (kind === "thing") {
@@ -2654,6 +3325,26 @@
       field.dataset.committed = value;
       field.value = "";
       delete field.dataset.committed;
+      if (kind === "person") {
+        namingPersonId = "";
+        delete field.dataset.renameId;
+        field.placeholder = "Person";
+        const renamed = updated && updated.entities && updated.entities.people
+          ? updated.entities.people
+          : [];
+        items.forEach(function (cached, idx) {
+          if (!cached || !cached.entities || !cached.entities.people) {
+            return;
+          }
+          cached.entities.people = cached.entities.people.map(function (rec) {
+            const fresh = renamed.find(function (row) {
+              return row && rec && row.id === rec.id;
+            });
+            return fresh || rec;
+          });
+          items[idx] = cached;
+        });
+      }
       if (viewerIndex >= 0) {
         items[viewerIndex] = updated;
         renderViewerLabels(updated);
@@ -2942,6 +3633,63 @@
       setDateMode(dateGroupSelect.value, true);
     });
   }
+  if (sideCollapse) {
+    sideCollapse.addEventListener("click", function () {
+      toggleSide(false);
+    });
+  }
+  if (librarySplitter) {
+    librarySplitter.addEventListener("click", function () {
+      if (!splitDragging && !sideOpen) {
+        toggleSide(true);
+      }
+    });
+    librarySplitter.addEventListener("dblclick", function () {
+      toggleSide();
+    });
+    librarySplitter.addEventListener("pointerdown", function (event) {
+      if (!sideOpen) {
+        return;
+      }
+      splitDragging = true;
+      librarySplitter.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    librarySplitter.addEventListener("pointermove", function (event) {
+      if (!splitDragging || !workspace) {
+        return;
+      }
+      const rect = workspace.getBoundingClientRect();
+      const next = Math.round(rect.right - event.clientX);
+      sideWidth = Math.max(180, Math.min(420, next));
+      applySideLayout();
+    });
+    librarySplitter.addEventListener("pointerup", function () {
+      window.setTimeout(function () {
+        splitDragging = false;
+      }, 0);
+    });
+  }
+  if (personNameInput) {
+    personNameInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        commitPersonName();
+      }
+    });
+    personNameInput.addEventListener("blur", commitPersonName);
+  }
+  if (jobsPause) {
+    jobsPause.addEventListener("click", function () {
+      postJobs("pause");
+    });
+  }
+  if (jobsResume) {
+    jobsResume.addEventListener("click", function () {
+      postJobs("resume");
+    });
+  }
+  applySideLayout();
 
   function wheelTargetIsChrome(event) {
     const node = event.target;
@@ -3489,6 +4237,7 @@
         filter.person = "";
         filter.place = "";
         filter.thing = "";
+        selectedPeople = [];
         hideInspector();
         syncChips();
         syncFilterDataset();

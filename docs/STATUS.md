@@ -180,6 +180,92 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   37/37 reveal,
   [verify-2](features/taste-reveal/Rev1.0/assets/verify-2/result.json)
   40/40 after mute + volume beside scrub.
+- 2026-10-14 — Follow-up on PR #14 tip `1cac4c9`: Explorer argv is
+  now `["explorer.exe", "/select," + path]` so spaces
+  (`Iphone Backup`, `Another Rope Swing.MOV`) select the file.
+  Missing originals still 404, never Documents. Grid hover resumes
+  after a catalog rebuild; dated Years/Months stay stills unless
+  Dates=Off or `playProxies=always`. `#viewer-source` names Preview /
+  Loading full… / Original / Preview — full unavailable. Does not
+  close a Check. 16/22 unchanged. Evidence:
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-3/result.json)
+  53/53 argv + Iphone Backup spaces,
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-4/result.json)
+  65/65 hover at Size 72, dated Years still, Dates-off wall play,
+  `#viewer-source` Original,
+  [video-viewer](features/taste-video/Rev1.0/assets/verify-4/video-viewer.png).
+- 2026-10-14 — iPhone `.MOV` no longer stays on the silent 480px
+  proxy. Viewer starts Preview, then swaps to `playback.mp4`
+  (full-size H.264 + AAC; remux when the bitstream allows) and
+  labels **Full**. Browser-safe MP4 still becomes **Original**.
+  Both failing is **Preview — full unavailable**. Preserve
+  Originals keeps the MOV. Reveal argv + grid hover stay.
+  Does not close a Check. 16/22 unchanged. Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-5/result.json)
+  89/89 clip.mov Full + audio, clip.mp4 Original,
+  [video-mov](features/taste-video/Rev1.0/assets/verify-5/video-mov.png),
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-4/result.json)
+  52/52 Iphone Backup argv + Full in UI-SPEC.
+- 2026-10-14 — Dated Years/Months hover play + tile scrub (Steve).
+  Default `playProxies` no longer leaves those mosaics still. Days,
+  Dates=Off, Reveal argv, Preview/Original/Full, and MOV
+  `playback.mp4` stay. Does not close a Check. 16/22 unchanged.
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-8/result.json)
+  92/92 Years + Months play and scrub,
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-5/result.json)
+  52/52.
+- 2026-10-14 — Library chrome taste on the reveal/hover tip
+  (`cursor/reveal-spaces-hover-proxy-c876`). Size + Dates sit in
+  `#library-chrome` at the **bottom-left** of the grid. Right People
+  splitter: named always, unnamed at ≥3 photos, click / Ctrl-click
+  AND, rename + thumbnail. `#jobs-panel` Pause / Start talks to
+  `/api/jobs` (rendition drain is live; analyze / infer-faces /
+  objects honor the same pause). Grid and viewer stay. Does not
+  close a Check. 16/22 unchanged.
+  Plan: [taste-people](features/taste-people/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-1/result.json)
+  52/52,
+  [library-chrome](features/taste-people/Rev1.0/assets/verify-1/library-chrome.png),
+  [people-panel](features/taste-people/Rev1.0/assets/verify-1/people-panel.png).
+- 2026-10-14 — Optional local AI stacked on the People/Processing tip:
+  offline GPS city names (`setup-geo` / `analyze-places`), YOLO Things
+  (`setup-ml objects` / `analyze`; COCO person ignored), InsightFace
+  unnamed clusters (`setup-ml faces` / `infer-faces`). Serve-time
+  `drain_step` runs those workers when jobs are not paused and the
+  pack/models are installed. Missing models stay idle (`available`
+  false) and browse does not crash. People panel reads real face
+  clusters. Tip chrome (bottom Size/Dates, right People+Processing)
+  stays. `Setup.bat` now composes those CLIs (sibling below). Does not close
+  a Check. 16/22 unchanged. Fresh on this stack:
+  [GEO](features/places-geo/Rev1.0/assets/verify-2/result.json) 44/44,
+  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-2/result.json) 39/39,
+  [FACES](features/faces/Rev1.0/assets/verify-2/result.json) 40/40,
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-2/result.json) 52/52.
+  Processing `available=true` + People after infer:
+  [jobs](features/stack-local-ai/Rev1.0/assets/verify-1/jobs-available.png),
+  [people](features/stack-local-ai/Rev1.0/assets/verify-1/people-after-infer.png),
+  [library](features/stack-local-ai/Rev1.0/assets/verify-1/library-stack.png).
+
+- 2026-10-14 — Portable `Setup.bat` on the reveal/hover tip
+  (`cursor/reveal-spaces-hover-proxy-c876`). One-time Windows install:
+  Python 3.12+ / ffmpeg (same winget ids as `launch.ps1`), `.venv`,
+  then `setup-geo` + `setup-ml objects` + `setup-ml faces` when those
+  CLIs exist. Missing modules print that Update Library must pull them
+  and exit non-zero. `Library.bat` / `launch.ps1` serve path unchanged.
+  Story: Setup once → Library daily → Update for code. No MSI. First
+  model download needs the internet. Does not close a Check. 16/22
+  unchanged.
+  Plan: [taste-setup](features/taste-setup/Rev1.0/PLAN.md).
+  After rebase onto the #21 stack tip, the probe finds
+  `setup-geo` / `setup-ml objects` / `setup-ml faces`.
+  Evidence:
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-2/result.json)
+  21/21 (all three CLIs present),
+  [dry-run](features/taste-setup/Rev1.0/assets/verify-2/dry-run.txt),
+  earlier missing-module path
+  [verify-1](features/taste-setup/Rev1.0/assets/verify-1/result.json).
 
 ## Completion
 
@@ -452,3 +538,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (`explorer.exe /select,"fullpath"`). Missing original is 404
   `unavailable` and the viewer banner, not Documents. TASTE-REVEAL
   37/37, then 40/40 with mute + volume. No new Check. 16/22 unchanged.
+- 2026-10-14 — Follow-up: argv `/select,path` for spaced
+  `Iphone Backup` paths; hover resume; `#viewer-source`. TASTE-REVEAL
+  53/53, TASTE-VIDEO 65/65. No new Check. 16/22 unchanged.
+- 2026-10-14 — MOV `playback.mp4` + honest Full badge. TASTE-VIDEO
+  89/89, TASTE-REVEAL 52/52. No new Check. 16/22 unchanged.

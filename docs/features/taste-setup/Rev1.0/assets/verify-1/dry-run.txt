@@ -1,0 +1,10 @@
+This copy does not have the local AI setup commands yet:
+  - python -m library setup-geo
+  - python -m library setup-ml objects
+  - python -m library setup-ml faces
+
+Run Update Library (or Update.bat) to git pull those modules,
+then run Setup.bat again.
+Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)
+
+First real Setup.bat needs the internet for Python/ffmpeg (if missing) and the cities / YOLO / InsightFace packs. Models stay under library-data/. Dry-run / -Help do not download.

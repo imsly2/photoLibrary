@@ -48,8 +48,8 @@ A drain failure on a valid file sets that slot to `error`, keeps the item, and w
 Change `playProxies` only through existing CLI/HTTP settings. No new key.
 
 - `off`: hover never starts a proxy.
-- `days-and-all`: hover plays only at Days and All.
-- `always`: hover also plays inside Years/Months mosaics.
+- `days-and-all`: hover plays at Years, Months, Days, and All (and a Dates-off wall).
+- `always`: same hover as the default (every Dates grouping, including Years/Months mosaics).
 - Only the hovered cell plays. Leave restores the poster/still. Playback is muted and looped. Audio must not start.
 - Explicit viewer play uses the original when the browser can decode it, otherwise the proxy. Poster shows first. This is independent of hover.
 

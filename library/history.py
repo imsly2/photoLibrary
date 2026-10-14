@@ -21,10 +21,13 @@ OPERATIONS = frozenset(
         "annotate",
         "favorite",
         "people-merge",
+        "person-update",
         "settings",
         "relocate",
         "remove",
         "delete-file",
+        "analyze-places",
+        "faces-infer",
     }
 )
 

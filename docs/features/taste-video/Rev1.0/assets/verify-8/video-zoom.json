@@ -1,0 +1,195 @@
+{
+  "datedYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "datedYearsScrub": {
+    "before": 0.0015,
+    "after": 1.2,
+    "target": "600",
+    "expected": 1.2
+  },
+  "datedMonthsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "datedMonthsScrub": {
+    "before": 1.2528,
+    "after": 0.4,
+    "target": "200",
+    "expected": 0.4
+  },
+  "sliders": {
+    "hasLevelSlider": false,
+    "sizeLabel": "Size",
+    "sizeAria": "Grid density thumbnail size",
+    "sizeMax": "7",
+    "dateGroup": true,
+    "dateOptions": [
+      "years",
+      "months",
+      "days",
+      "off"
+    ],
+    "viewerZoom": true,
+    "viewerZoomPct": true,
+    "zoomInBottom": false,
+    "gridHasViewerZoom": false,
+    "rangeCount": 2
+  },
+  "ctrlWheelSize": {
+    "dateBefore": "days",
+    "levelBefore": "all",
+    "after": {
+      "size": "104",
+      "dateGroup": "days",
+      "level": "all"
+    }
+  },
+  "smallHover": {
+    "ok": true,
+    "cell": {
+      "width": 72,
+      "height": 72
+    },
+    "video": {
+      "width": 70,
+      "height": 70,
+      "left": 21,
+      "top": 179.140625
+    },
+    "fillDx": 2,
+    "fillDy": 2,
+    "playing": true,
+    "hasScrub": true,
+    "size": "72"
+  },
+  "tileScrub": {
+    "before": 1.3276,
+    "after": 0.4,
+    "target": "200",
+    "expected": 0.4
+  },
+  "openFromTile": {
+    "tileTime": 0.4,
+    "viewer": {
+      "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+      "paused": false,
+      "hidden": false,
+      "currentTime": 0.4383,
+      "duration": 2,
+      "usingProxy": true,
+      "left": 230.3333282470703,
+      "top": 63.390625,
+      "width": 749.3333740234375,
+      "height": 562
+    }
+  },
+  "datesKeepSize": {
+    "before": "72",
+    "after": "72"
+  },
+  "wallYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "beforePlay": {
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "proxyPlay": {
+    "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.0687,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "playJumpPx": 0.0,
+  "sourceChrome": {
+    "text": "Original",
+    "hidden": false,
+    "state": "original",
+    "usingProxy": false,
+    "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original"
+  },
+  "afterSwap": {
+    "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.386664,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "sourceAfterSwap": {
+    "text": "Original",
+    "hidden": false,
+    "state": "original"
+  },
+  "viewerScrub": {
+    "present": true,
+    "hidden": false,
+    "value": "118"
+  },
+  "chromeLayout": {
+    "scrubInBottom": true,
+    "zoomInBottom": false,
+    "zoomVertical": true,
+    "pctText": "100%",
+    "scrubBelowStage": true,
+    "bottomBelowStage": true
+  },
+  "viewerScrubSeek": 1.4,
+  "wheelZoom": {
+    "before": {
+      "left": 230.3333282470703,
+      "top": 63.390625,
+      "width": 749.3333740234375,
+      "height": 562
+    },
+    "after": {
+      "left": 192.86666870117188,
+      "top": 28.990623474121094,
+      "width": 824.2666015625,
+      "height": 618.2000122070312
+    }
+  },
+  "movSource": {
+    "text": "Full",
+    "hidden": false,
+    "state": "full",
+    "usingProxy": false,
+    "usingPlayback": true,
+    "src": "http://127.0.0.1:18767/api/media/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9?which=playback",
+    "muted": false,
+    "paused": false
+  }
+}

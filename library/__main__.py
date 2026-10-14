@@ -239,10 +239,33 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("update")
 
     people = sub.add_parser("people")
-    people_sub = people.add_subparsers(dest="people_cmd")
+    people_sub = people.add_subparsers(dest="people_cmd", required=False)
+    people_sub.add_parser("list")
     merge = people_sub.add_parser("merge")
     merge.add_argument("keep")
     merge.add_argument("drop")
+    update_person = people_sub.add_parser("update")
+    update_person.add_argument("id")
+    update_person.add_argument("--name")
+    update_person.add_argument("--thumbnail")
+
+    jobs = sub.add_parser("jobs")
+    jobs.add_argument("action", nargs="?", choices=("pause", "resume"))
+
+    setup_geo = sub.add_parser("setup-geo")
+    setup_geo.add_argument("--from", dest="from_path")
+    setup_geo.add_argument("--force", action="store_true")
+    sub.add_parser("analyze-places")
+
+    setup_ml = sub.add_parser("setup-ml")
+    setup_ml.add_argument("target", choices=("objects", "faces"))
+    setup_ml.add_argument("--backend")
+
+    analyze = sub.add_parser("analyze")
+    analyze.add_argument("--item")
+
+    infer_faces = sub.add_parser("infer-faces")
+    infer_faces.add_argument("--force", action="store_true")
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -461,6 +484,34 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "people":
+            if args.people_cmd in {None, "list"}:
+                url = _running_server_url(root)
+                if url is not None:
+                    status, payload = _forward(url, "GET", "/api/people", None)
+                    if status != 200:
+                        if isinstance(payload, dict) and "error" in payload:
+                            raise AppError(payload["error"], status)
+                        raise fail_from_status(status)
+                    _print_json(payload)
+                    return 0
+                payload = _with_lock(root, lambda: Library(root).people_list())
+                _print_json(payload)
+                return 0
+            if args.people_cmd == "update":
+                body: dict[str, Any] = {}
+                if args.name is not None:
+                    body["name"] = args.name
+                if args.thumbnail is not None:
+                    body["thumbnailItemId"] = args.thumbnail
+                result = _mutation(
+                    root,
+                    lambda: Library(root).person_update(args.id, body),
+                    "PUT",
+                    f"/api/people/{args.id}",
+                    body,
+                )
+                _print_json(result)
+                return 0
             if args.people_cmd != "merge":
                 _print_error("invalid-argument")
                 return 2
@@ -471,6 +522,94 @@ def main(argv: list[str] | None = None) -> int:
                 "POST",
                 "/api/people/merge",
                 body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "jobs":
+            action = getattr(args, "action", None)
+            if action in {"pause", "resume"}:
+                body = {"action": action}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).jobs_set(body),
+                    "POST",
+                    "/api/jobs",
+                    body,
+                )
+                _print_json(result)
+                return 0
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "GET", "/api/jobs", None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).jobs_get())
+            _print_json(payload)
+            return 0
+        if args.command == "setup-geo":
+            from library.geo import setup_geo
+
+            result = setup_geo(root, source=args.from_path, force=bool(args.force))
+            _print_json(result)
+            return 0
+        if args.command == "analyze-places":
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze_places(),
+                "POST",
+                "/api/places/analyze",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-ml":
+            if args.target == "objects":
+                result = Library(root).setup_ml("objects")
+                _print_json(result)
+                return 0
+            if args.target != "faces":
+                _print_error("invalid-argument")
+                return 2
+            body: dict[str, Any] = {}
+            if getattr(args, "backend", None):
+                body["backend"] = args.backend
+            result = _mutation(
+                root,
+                lambda: Library(root).setup_faces(body or None),
+                "POST",
+                "/api/faces/setup",
+                body,
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "analyze":
+            body = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze(body or None),
+                "POST",
+                "/api/analyze",
+                body,
+                timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "infer-faces":
+            body = {"force": bool(args.force)}
+            result = _mutation(
+                root,
+                lambda: Library(root).infer_faces(body),
+                "POST",
+                "/api/faces/infer",
+                body,
+                timeout=300.0,
             )
             _print_json(result)
             return 0

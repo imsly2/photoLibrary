@@ -1,0 +1,17 @@
+{
+  "mp4PlaybackStatus": "not-applicable",
+  "movPlaybackStatus": "ready",
+  "mp4PlaybackHttp": 404,
+  "movPlaybackHttp": 200,
+  "movPlaybackProbe": {
+    "codec": "h264",
+    "width": 640,
+    "height": 480,
+    "duration": 2.0,
+    "audioStreamCount": 1,
+    "bytes": 23358,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "movOriginalHttp": 200
+}
