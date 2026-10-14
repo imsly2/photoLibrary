@@ -247,6 +247,13 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
     renditions.add_argument("action", nargs="?")
+
+    setup_ml = sub.add_parser("setup-ml")
+    setup_ml_sub = setup_ml.add_subparsers(dest="setup_ml_cmd")
+    setup_ml_sub.add_parser("objects")
+
+    analyze = sub.add_parser("analyze")
+    analyze.add_argument("--item")
     return parser
 
 
@@ -495,6 +502,27 @@ def main(argv: list[str] | None = None) -> int:
                 "POST",
                 "/api/rebuild-index",
                 {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-ml":
+            if getattr(args, "setup_ml_cmd", None) != "objects":
+                _print_error("invalid-argument")
+                return 2
+            result = Library(root).setup_ml("objects")
+            _print_json(result)
+            return 0
+        if args.command == "analyze":
+            body: dict[str, Any] = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze(body or None),
+                "POST",
+                "/api/analyze",
+                body,
+                timeout=600.0,
             )
             _print_json(result)
             return 0

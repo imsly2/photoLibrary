@@ -7,9 +7,11 @@ those pictures, browse small pictures quickly, and open one. An agent can then
 write who, where, and what is in them so they can be found again.
 
 It is a local library server that travels with its app and data folder. It is not
-the phone copier, a cloud host, a bundled image model, a desktop browser shell, or
-a tool that rearranges originals on its own. Copying originals is an explicit
-choice; linking leaves them where they are. No accounts or separate family mode.
+the phone copier, a cloud host, a required bundled image model, a desktop browser
+shell, or a tool that rearranges originals on its own. Optional local object
+detection can be downloaded into the library folder; it stays off until setup
+and never calls a cloud API. Copying originals is an explicit choice; linking
+leaves them where they are. No accounts or separate family mode.
 
 The pictures you already have stay files on disk. The library adds a catalog
 beside the server: one JSON record per picture, one per person, one per place,
@@ -53,7 +55,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
+| Naming | External agent/person writes entity JSON through annotate. Optional local object inference may add Things the same way after `setup-ml objects`. No automatic geographic names. No face detection in this build. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
@@ -144,6 +146,10 @@ library-data/
     poster.webp          # video
     proxy.mp4            # video
   originals/<source>/    # used when a folder was copied onto this drive
+  models/                # optional; created by setup-ml objects
+    yolov8n.onnx
+    objects.json
+    objects-state.json
 ```
 
 When a source stores previews inside the selected folder, those files go in
@@ -222,6 +228,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
+| `setup-ml objects` | (CLI / Setup.bat; no HTTP) | Downloads a small local YOLO into `models/`. CPU. No cloud inference. |
+| `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Runs local object detection and writes Things through `annotate`. |
 
 The header **Update Library** button calls `POST /api/update` so a family
 install can pull a newer app folder without opening a command prompt.
@@ -586,8 +594,22 @@ These are the serialized index. Each one is a JSON file. Pictures point at
 them by id. Search does not look at pixels. It reads the ids.
 
 An agent, or a person typing in the viewer, writes them with `annotate`.
-The server does not download or run an image model. Analysis is whoever calls
-`annotate` after looking at `preview.webp`.
+Analysis is whoever calls `annotate` after looking at `preview.webp`. That
+caller may be a person, an agent, or the optional local object analyzer.
+
+`setup-ml objects` (or `Setup.bat`) downloads a small YOLO (YOLOv8n / ONNX
+nano) into `library-data/models/`. It is not shipped in the app folder. CPU
+inference is enough. The server never sends pixels to a cloud API.
+
+When the model file is present, `analyze` and a background worker during
+`serve` look at each still (oriented preview when ready) and write Things
+through the existing annotate APIs. Name-only payloads reuse an existing
+thing id when the label matches. Human tags stay: analyze never deletes
+associations, never renames an entity, and never sends an id with a new
+name. A later human `annotate` still wins for names they type.
+
+This build does not detect faces or write people. The COCO `person` class
+is ignored. Face detection is a later phase.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be

@@ -351,6 +351,15 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.groups_list(query))
                 return
+            if route == "/api/analyze" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.analyze_status())
+                return
+            if route == "/api/analyze" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.analyze(body))
+                return
             if route == "/api/rebuild-index" and method == "POST":
                 self._read_json()
                 self._require_idle()
@@ -620,6 +629,8 @@ def serve(root: Path) -> int:
                 try:
                     with handler.lock:
                         worked = library.drain_step()
+                        if not worked:
+                            worked = library.analyze_step()
                 except Exception:
                     worked = False
                 drain_stop.wait(0.05 if worked else 0.25)

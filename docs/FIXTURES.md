@@ -62,6 +62,7 @@ or change expected counts in a slice to make a test pass.
 | empty/no-GPS | Empty media directory and subset of no-exif only; empty grid/search/globe/tour without failures |
 | settings/history | Port 8765 → 8770 → undo → redo, restart between steps; 501 changes caps 500; new edit clears redo; copy undo leaves every original byte |
 | annotation | Ada on first photo, mug on first+second; alias Cup → mug; second person id merged into Ada; rename place Kitchen; out-of-range boxes rejected |
+| local objects | `tests/fixtures/objects/still.jpg` is a supplied still with a COCO-class object (not part of the S00/S01 media tree). After `setup-ml objects` and `analyze`, the item has at least one Thing, Info/search show it, and a prior human `--thing mug` on the same or another still keeps that name and id. No `faces` / people files from this path. |
 
 ## QA interface to build, not an existing command
 

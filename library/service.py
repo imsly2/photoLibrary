@@ -479,6 +479,39 @@ class Library:
         self._assert_idle()
         return apply_people_merge(self.root, keep_id, drop_id)
 
+    def setup_ml(self, kind: str) -> dict[str, Any]:
+        from library.objects import setup_objects
+
+        if kind != "objects":
+            raise fail("invalid-argument")
+        self.root.mkdir(parents=True, exist_ok=True)
+        self.ensure_settings()
+        return setup_objects(self.root)
+
+    def analyze(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.objects import analyze_objects, read_analyze_payload
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        parsed = read_analyze_payload(payload)
+        item_id = parsed["itemId"] if parsed else None
+        return analyze_objects(self.root, item_id)
+
+    def analyze_status(self) -> dict[str, Any]:
+        from library.objects import analyze_status
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return analyze_status(self.root)
+
+    def analyze_step(self) -> bool:
+        from library.objects import analyze_step as run_analyze_step
+
+        if self._scanning:
+            return False
+        self.ensure_settings()
+        return run_analyze_step(self.root)
+
     def drain_step(self) -> bool:
         self.ensure_settings()
         return drain_queued_jpegs(self.root)

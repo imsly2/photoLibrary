@@ -158,6 +158,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_video import run_slice as runner
         elif args.slice_id == "TASTE-VERSION":
             from tests.qa.taste_version import run_slice as runner
+        elif args.slice_id == "TASTE-OBJECTS":
+            from tests.qa.taste_objects import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
