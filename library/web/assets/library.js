@@ -52,15 +52,15 @@
   const sortSelect = document.getElementById("sort");
   const dirSelect = document.getElementById("dir");
   const sortPresentable = document.getElementById("sort-presentable");
-  const zoomSlider = document.getElementById("zoom-slider");
   const sizeSlider = document.getElementById("size-slider");
+  const dateGroupSelect = document.getElementById("date-group");
+  const viewerZoomPct = document.getElementById("viewer-zoom-pct");
   const filterAll = document.getElementById("filter-all");
   const filterPhotos = document.getElementById("filter-photos");
   const filterVideos = document.getElementById("filter-videos");
   const filterFavorites = document.getElementById("filter-favorites");
   const removeItemBtn = document.getElementById("remove-item");
   const deleteFileBtn = document.getElementById("delete-file");
-  const groupDatesBtn = document.getElementById("group-dates");
   const scanStatus = document.getElementById("scan-status");
   const scanStatusText = document.getElementById("scan-status-text");
   const scanErrorText = document.getElementById("scan-error-text");
@@ -89,6 +89,7 @@
 
   const PLACEHOLDER = "Preview is not available";
   const LEVELS = ["years", "months", "days", "all"];
+  const DATE_MODES = ["years", "months", "days", "off"];
   const SIZE_STEPS = [72, 104, 144, 192, 256, 336, 420, 520];
   const DEFAULT_SIZE = { years: 0, months: 1, days: 3, all: 6 };
   const HEART_MIN = 144;
@@ -157,9 +158,16 @@
   let slideshowTimer = 0;
   let fullscreenExitRequested = false;
 
-  function levelIndex(level) {
-    const idx = LEVELS.indexOf(level);
-    return idx === -1 ? 0 : idx;
+  function currentDateMode() {
+    if (!groupDates) {
+      return "off";
+    }
+    return settings.zoomLevel === "all" ? "days" : settings.zoomLevel;
+  }
+
+  function viewerBox() {
+    const stage = document.getElementById("viewer-stage") || viewer;
+    return { w: stage.clientWidth, h: stage.clientHeight };
   }
 
   function queryString(extra) {
@@ -833,8 +841,9 @@
   }
 
   function fitViewer() {
-    const sw = viewer.clientWidth;
-    const sh = viewer.clientHeight;
+    const box = viewerBox();
+    const sw = box.w;
+    const sh = box.h;
     if (!naturalW || !naturalH || !sw || !sh) {
       return;
     }
@@ -1000,6 +1009,9 @@
       viewerZoomSlider.value = String(clamped);
     }
     viewerZoomSlider.disabled = !(naturalW > 0 && naturalH > 0);
+    if (viewerZoomPct) {
+      viewerZoomPct.textContent = clamped + "%";
+    }
   }
 
   function setZoomPercent(percent, cx, cy) {
@@ -1303,8 +1315,9 @@
       return;
     }
     fitOnLoad = false;
-    const sw = viewer.clientWidth;
-    const sh = viewer.clientHeight;
+    const box = viewerBox();
+    const sw = box.w;
+    const sh = box.h;
     scale = 1;
     tx = (sw - naturalW * scale) / 2;
     ty = (sh - naturalH * scale) / 2;
@@ -1316,8 +1329,9 @@
     if (viewer.hidden || !naturalW) {
       return;
     }
-    const cx = viewer.clientWidth / 2;
-    const cy = viewer.clientHeight / 2;
+    const box = viewerBox();
+    const cx = box.w / 2;
+    const cy = box.h / 2;
     zoomAt(direction > 0 ? 1.1 : 1 / 1.1, cx, cy);
   }
 
@@ -1585,7 +1599,7 @@
       });
     }
     if (settings.zoomLevel !== restoreLevel) {
-      setLevel(restoreLevel, true).then(finish);
+      setLevel(restoreLevel, true, true).then(finish);
     } else if (filterChanged) {
       renderKey = "";
       loadCatalog().then(finish);
@@ -2132,18 +2146,19 @@
   function applyGridMetrics() {
     const level = settings.zoomLevel;
     const size = currentCellSize();
+    const dateMode = currentDateMode();
     main.dataset.level = level;
     main.dataset.size = String(size);
     main.dataset.groupDates = groupDates ? "on" : "off";
+    main.dataset.dateGroup = dateMode;
     main.dataset.hearts = size >= HEART_MIN ? "on" : "off";
     main.className = "level-" + level + (groupDates ? "" : " wall");
     main.style.setProperty("--cell", size + "px");
-    zoomSlider.value = String(levelIndex(level));
     if (sizeSlider) {
       sizeSlider.value = String(gridSize);
     }
-    if (groupDatesBtn) {
-      groupDatesBtn.setAttribute("aria-pressed", groupDates ? "true" : "false");
+    if (dateGroupSelect && dateGroupSelect.value !== dateMode) {
+      dateGroupSelect.value = dateMode;
     }
   }
 
@@ -2261,7 +2276,7 @@
     }
     const anchor = visibleAnchorId();
     const existing = collectCells();
-    const mosaic = level === "years" || level === "months";
+    const mosaic = groupDates && (level === "years" || level === "months");
     const fragment = document.createDocumentFragment();
     const fav = makeFavoritesSection(existing, mosaic);
     if (fav) {
@@ -2269,7 +2284,7 @@
     }
     if (!groupDates) {
       const list = document.createElement("div");
-      list.className = (mosaic ? "mosaic" : "item-list") + " wall-list";
+      list.className = "item-list wall-list";
       items.forEach(function (item) {
         list.appendChild(takeCell(existing, item.id, "grid"));
       });
@@ -2353,14 +2368,16 @@
     });
   }
 
-  function setLevel(level, persistChange) {
+  function setLevel(level, persistChange, keepSize) {
     if (LEVELS.indexOf(level) === -1) {
       return Promise.resolve();
     }
     const same = level === settings.zoomLevel;
     const anchor = visibleAnchorId();
     settings.zoomLevel = level;
-    gridSize = DEFAULT_SIZE[level] != null ? DEFAULT_SIZE[level] : 0;
+    if (!keepSize) {
+      gridSize = DEFAULT_SIZE[level] != null ? DEFAULT_SIZE[level] : 0;
+    }
     applyGridMetrics();
     if (!same) {
       groups = groupsFromItems(items, level);
@@ -2380,6 +2397,35 @@
     });
   }
 
+  function setDateMode(mode, persistChange) {
+    if (DATE_MODES.indexOf(mode) === -1) {
+      return Promise.resolve();
+    }
+    if (mode === "off") {
+      if (!groupDates) {
+        applyGridMetrics();
+        return Promise.resolve();
+      }
+      groupDates = false;
+      applyGridMetrics();
+      renderKey = "";
+      render();
+      rearmHover();
+      return Promise.resolve();
+    }
+    const wasOff = !groupDates;
+    groupDates = true;
+    const level = mode === "days" && settings.zoomLevel === "all" ? "all" : mode;
+    if (wasOff && level === settings.zoomLevel) {
+      applyGridMetrics();
+      renderKey = "";
+      render();
+      rearmHover();
+      return Promise.resolve();
+    }
+    return setLevel(level, persistChange, true);
+  }
+
   function setGridSize(index) {
     const next = Math.max(0, Math.min(SIZE_STEPS.length - 1, Number(index)));
     if (next === gridSize) {
@@ -2392,9 +2438,8 @@
     rearmHover();
   }
 
-  function stepLevel(delta) {
-    const next = Math.max(0, Math.min(LEVELS.length - 1, levelIndex(settings.zoomLevel) + delta));
-    return setLevel(LEVELS[next], true);
+  function stepGridSize(delta) {
+    setGridSize(gridSize + delta);
   }
 
   function handleGridWheel(event) {
@@ -2405,7 +2450,7 @@
     window.setTimeout(function () {
       levelWheelLock = false;
     }, 80);
-    stepLevel(event.deltaY < 0 ? 1 : -1);
+    stepGridSize(event.deltaY < 0 ? 1 : -1);
   }
 
   function handleViewerZoom(event) {
@@ -2773,10 +2818,6 @@
       setKindFilter("photo,live", "");
     });
   }
-  zoomSlider.addEventListener("input", function () {
-    const level = LEVELS[Number(zoomSlider.value)] || "years";
-    setLevel(level, true);
-  });
   if (sizeSlider) {
     sizeSlider.addEventListener("input", function () {
       setGridSize(Number(sizeSlider.value));
@@ -2792,13 +2833,9 @@
       setKindFilter("", filter.favorite === "1" ? "" : "1");
     });
   }
-  if (groupDatesBtn) {
-    groupDatesBtn.addEventListener("click", function () {
-      groupDates = !groupDates;
-      applyGridMetrics();
-      renderKey = "";
-      render();
-      rearmHover();
+  if (dateGroupSelect) {
+    dateGroupSelect.addEventListener("change", function () {
+      setDateMode(dateGroupSelect.value, true);
     });
   }
 
@@ -3360,7 +3397,6 @@
   fetch("/api/settings").then(readJson).then(function (data) {
     applySettings(data);
     syncPresentableSort();
-    zoomSlider.value = String(levelIndex(settings.zoomLevel));
     gridSize = DEFAULT_SIZE[settings.zoomLevel] != null ? DEFAULT_SIZE[settings.zoomLevel] : 0;
     applyGridMetrics();
     showDisconnected(false);

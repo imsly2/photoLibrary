@@ -444,7 +444,7 @@ main > p {
 }
 
 .levels {
-  width: 7.5rem;
+  width: 4.5rem;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -459,25 +459,11 @@ main > p {
   color: #c8c8d0;
 }
 
-#zoom-slider,
 #size-slider {
   writing-mode: vertical-lr;
   direction: rtl;
-  height: 12rem;
+  height: 14rem;
   width: 1.4rem;
-}
-
-#size-slider {
-  height: 8rem;
-}
-
-.level-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.8rem;
-  color: #c8c8d0;
-  text-align: center;
 }
 
 #grid {
@@ -786,15 +772,26 @@ dialog h2 {
   background: #111114;
   z-index: 10;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #viewer[hidden] {
   display: none;
 }
 
+#viewer-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+}
+
 #viewer-stage {
-  position: absolute;
-  inset: 0;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
   overflow: hidden;
 }
 
@@ -827,16 +824,16 @@ dialog h2 {
 }
 
 #viewer-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   z-index: 13;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.55rem 0.85rem;
   padding: 0.75rem 1.25rem;
+  flex-shrink: 0;
+  background: #111114;
+  border-bottom: 1px solid #2a2a32;
   pointer-events: none;
 }
 
@@ -1034,22 +1031,9 @@ dialog h2 {
   font-size: 0.85rem;
 }
 
-.viewer-zoom-field {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: #c8c8d0;
-  font-size: 0.85rem;
-}
-
-#viewer-zoom {
-  width: 10rem;
-  accent-color: #4a7ac8;
-}
-
 #unavailable-banner {
   position: absolute;
-  top: 5.2rem;
+  top: 4.4rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 13;
@@ -1127,22 +1111,16 @@ dialog h2 {
 }
 
 #viewer-bottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 13;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.55rem;
   padding: 0.7rem 1.25rem 1.1rem;
-  background: linear-gradient(transparent, #111114 35%);
-  pointer-events: none;
-}
-
-#viewer-bottom > * {
-  pointer-events: auto;
+  flex-shrink: 0;
+  background: #111114;
+  border-top: 1px solid #2a2a32;
 }
 
 #viewer-scrub-wrap {
@@ -1195,16 +1173,32 @@ dialog h2 {
   min-width: 6.5rem;
 }
 
-.viewer-zoom-field {
+.viewer-zoom-field,
+#viewer-zoom {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  padding: 0.75rem 0.55rem;
   color: #c8c8d0;
   font-size: 0.85rem;
+  background: #111114;
+  border-left: 1px solid #2a2a32;
+}
+
+#viewer-zoom-pct {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2rem;
+  text-align: center;
 }
 
 #viewer-zoom-slider {
-  width: min(22rem, 70vw);
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: min(16rem, 46vh);
+  width: 1.4rem;
 }
 
 #viewer-actions {

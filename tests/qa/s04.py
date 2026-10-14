@@ -379,29 +379,30 @@ def run_browser_browse(
         page.mouse.move(hx, hy)
         input_trace.append({"type": "hover", "filename": wait_name, "x": hx, "y": hy})
         dispatch_ctrl_wheel(page, hx, hy, -100)
-        input_trace.append({"type": "ctrl-wheel", "deltaY": -100, "levelFrom": "years"})
+        input_trace.append({"type": "ctrl-wheel", "deltaY": -100, "sizeFrom": "72"})
         page.wait_for_function(
-            "() => document.getElementById('grid') && document.getElementById('grid').dataset.level === 'months'",
+            "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '104'",
             timeout=5000,
         )
         after = page.locator(f'[data-filename="{wait_name}"]')
         after_box = after.bounding_box()
-        checks.check("ctrl-wheel-to-months", page.locator("#grid").get_attribute("data-level") == "months")
+        checks.check("ctrl-wheel-steps-size", page.locator("#grid").get_attribute("data-size") == "104")
+        checks.check("ctrl-wheel-keeps-dates", page.locator("#grid").get_attribute("data-date-group") == "years")
         if after_box:
             visible = after_box["y"] < 720 and (after_box["y"] + after_box["height"]) > 0
             checks.check("hover-stays-in-viewport", visible, json.dumps(after_box))
-            measurements["levelAnchor"] = {"before": box, "after": after_box}
+            measurements["sizeAnchor"] = {"before": box, "after": after_box}
 
-    page.evaluate(
-        """() => {
-          const sl = document.getElementById('zoom-slider');
-          sl.value = '3';
-          sl.dispatchEvent(new Event('input', {bubbles: true}));
+    page.locator("#date-group").select_option("days")
+    input_trace.append({"type": "date-group", "value": "days"})
+    page.locator("#size-slider").evaluate(
+        """(el) => {
+          el.value = '6';
+          el.dispatchEvent(new Event('input', {bubbles: true}));
         }"""
     )
-    input_trace.append({"type": "slider", "value": 3, "level": "all"})
     page.wait_for_function(
-        "() => document.getElementById('grid') && document.getElementById('grid').dataset.level === 'all'",
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'days' && document.getElementById('grid').dataset.size === '420'",
         timeout=5000,
     )
     all_shot = artifacts / "all.png"
@@ -412,7 +413,7 @@ def run_browser_browse(
     page.reload(wait_until="domcontentloaded")
     page.wait_for_selector(f'[data-filename="{wait_name}"]', timeout=30000)
     page.wait_for_function(
-        "() => document.getElementById('grid') && document.getElementById('grid').dataset.level === 'all'",
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'days'",
         timeout=10000,
     )
     settings_status, settings_body = request_json(url.rstrip("/") + "/api/settings", timeout=5)
@@ -420,23 +421,17 @@ def run_browser_browse(
         "zoomLevel-persists",
         settings_status == 200
         and isinstance(settings_body, dict)
-        and settings_body.get("zoomLevel") == "all"
-        and page.locator("#grid").get_attribute("data-level") == "all",
+        and settings_body.get("zoomLevel") == "days"
+        and page.locator("#grid").get_attribute("data-date-group") == "days",
         json.dumps(settings_body) if isinstance(settings_body, dict) else str(settings_body),
     )
 
     if not do_viewer:
         return
 
-    page.evaluate(
-        """() => {
-          const sl = document.getElementById('zoom-slider');
-          sl.value = '2';
-          sl.dispatchEvent(new Event('input', {bubbles: true}));
-        }"""
-    )
+    page.locator("#date-group").select_option("days")
     page.wait_for_function(
-        "() => document.getElementById('grid') && document.getElementById('grid').dataset.level === 'days'",
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'days'",
         timeout=5000,
     )
     page.evaluate(
@@ -717,7 +712,9 @@ def run_slice(root: Path, artifacts: Path) -> int:
         html = (PRODUCT_ROOT / "library" / "web" / "index.html").read_text(encoding="utf-8")
         checks.check("page-no-localStorage", "localStorage" not in js and "localStorage" not in html)
         checks.check("page-has-add-dialog", 'id="add-folder"' in html and 'id="add-folder-btn"' in html)
-        checks.check("page-has-levels", 'id="zoom-slider"' in html)
+        checks.check("page-has-size", 'id="size-slider"' in html)
+        checks.check("page-has-date-group", 'id="date-group"' in html)
+        checks.check("page-no-level-slider", 'id="zoom-slider"' not in html)
         hits = []
         for path in (PRODUCT_ROOT / "library").rglob("*.py"):
             text = path.read_text(encoding="utf-8")

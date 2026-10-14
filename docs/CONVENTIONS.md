@@ -15,7 +15,7 @@ this file does not authorize accounts, editing, or albums.
 
 | Behavior | Where it shows up | Library default |
 |----------|-------------------|-----------------|
-| Years, then months, then days, then every photo | Apple Photos pinch zoom. Immich uses a date timeline with year and month buckets. | Same four levels. On a desktop, Ctrl+wheel and a slider change level. The picture under the cursor stays put. |
+| Years, then months, then days, then every photo | Apple Photos pinch zoom. Immich uses a date timeline with year and month buckets. | Dates dropdown: Years / Months / Days / Off (one wall). On a desktop, Ctrl+wheel and one Size slider change density only. The picture under the cursor stays put. |
 | Originals stay put | Lightroom and Smriti index files in place. digiKam can import or reference. | Add-folder asks: copy onto this drive, or serve that folder in place. Remembered per folder. The default prompt is a setting. |
 | Catalog travels with the disk | Smriti writes `.photovault/` on the drive and stores relative paths. digiKam warns that a SQLite catalog on a USB stick is slow, and still lets you choose the folder. | JSON records live next to the server. SQLite is rebuilt from them. Paths on this drive are relative to the library folder. |
 | Small pictures for browsing | Immich, digiKam, Smriti, and Apple Photos all keep generated thumbnails apart from masters. | A thumb and a medium still for every photo. A poster and a full-length silent low-resolution movie for every video. Where those files sit is a setting. |

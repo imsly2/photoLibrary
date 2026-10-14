@@ -128,13 +128,21 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Evidence:
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-1/result.json)
   50/50, [shell.png](features/taste-shell/Rev1.0/assets/verify-1/shell.png).
+- 2026-10-14 — Grid/viewer chrome taste on the video/zoom tip
+  (`cursor/video-zoom-taste-1d0c`, PR #10). One `#size-slider`; Dates
+  `#date-group` Years/Months/Days/Off (Off = one wall); Ctrl+wheel
+  drives Size only; vertical side `#viewer-zoom-slider` with
+  `#viewer-zoom-pct`; `#viewer-scrub` in `#viewer-bottom`, not over
+  the picture. `launch.ps1` and `/api/update` unchanged. Does not
+  close a Check. 16/22 unchanged.
+  Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
 - 2026-10-14 — Video + zoom taste on the Presentable Shell Must tip
   (`cursor/windows-presentable-shell-must-806a`). Viewer play stays
   fitted/centered across proxy→original; hover plays at every Size and
-  on a Dates-off wall; grid **Level** vs **Size** vs viewer Zoom;
-  plain-wheel zoom; `#viewer-scrub` + `.tile-scrub`. `launch.ps1`
-  unwrap/reverse-slice fix from PR #9, `-Update` kept. Does not close a
-  Check. 16/22 unchanged.
+  on a Dates-off wall; plain-wheel zoom; `#viewer-scrub` + `.tile-scrub`.
+  `launch.ps1` unwrap/reverse-slice fix from PR #9, `-Update` kept.
+  Dual Level+Size sliders and overlay scrub were superseded by the
+  chrome taste above. Does not close a Check. 16/22 unchanged.
   Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
   Evidence:
   [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-1/result.json)
