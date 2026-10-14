@@ -215,6 +215,20 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   92/92 Years + Months play and scrub,
   [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-5/result.json)
   52/52.
+- 2026-10-14 — Library chrome taste on the reveal/hover tip
+  (`cursor/reveal-spaces-hover-proxy-c876`). Size + Dates sit in
+  `#library-chrome` at the **bottom-left** of the grid. Right People
+  splitter: named always, unnamed at ≥3 photos, click / Ctrl-click
+  AND, rename + thumbnail. `#jobs-panel` Pause / Start talks to
+  `/api/jobs` (rendition drain is live; analyze / infer-faces /
+  objects honor the same pause). Grid and viewer stay. Does not
+  close a Check. 16/22 unchanged.
+  Plan: [taste-people](features/taste-people/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-1/result.json)
+  52/52,
+  [library-chrome](features/taste-people/Rev1.0/assets/verify-1/library-chrome.png),
+  [people-panel](features/taste-people/Rev1.0/assets/verify-1/people-panel.png).
 
 ## Completion
 

@@ -18,7 +18,7 @@ MEDIA_RELS = (
     "a/IMG_1042.jpg",
     "b/no-exif.jpg",
     "a/near.jpg",
-    "a/far.jpg",
+    "b/far.jpg",
 )
 
 
@@ -211,6 +211,17 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'off'",
         timeout=5000,
     )
+    page.locator("#size-slider").evaluate(
+        """(el) => {
+          el.value = '3';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '192'",
+        timeout=5000,
+    )
+    page.screenshot(path=str(artifacts / "library-chrome.png"))
     layout = page.evaluate(
         """() => {
           const chrome = document.getElementById('library-chrome');
@@ -278,7 +289,14 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
 
     page.locator(".person-row", has_text="Ada").click()
     page.wait_for_function(
-        "() => document.getElementById('grid') && document.getElementById('grid').dataset.person && document.getElementById('grid').dataset.person.indexOf('person_') === 0 && document.getElementById('grid').dataset.person.indexOf(',') < 0",
+        """() => {
+          const names = Array.from(document.querySelectorAll('#grid .cell')).map(function (el) {
+            return el.getAttribute('data-filename');
+          });
+          const person = (document.getElementById('grid').dataset.person || '');
+          return person.indexOf('person_') === 0 && person.indexOf(',') < 0
+            && names.indexOf('IMG_1042.jpg') >= 0 && names.indexOf('far.jpg') < 0;
+        }""",
         timeout=8000,
     )
     ada_names = page.evaluate(
@@ -293,7 +311,13 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
 
     page.locator(".person-row", has_text="Bob").click(modifiers=["ControlOrMeta"])
     page.wait_for_function(
-        "() => (document.getElementById('grid').dataset.person || '').indexOf(',') >= 0",
+        """() => {
+          const names = Array.from(document.querySelectorAll('#grid .cell')).map(function (el) {
+            return el.getAttribute('data-filename');
+          });
+          const person = (document.getElementById('grid').dataset.person || '');
+          return person.indexOf(',') >= 0 && names.length === 1 && names[0] === 'near.jpg';
+        }""",
         timeout=8000,
     )
     and_names = page.evaluate(
@@ -402,6 +426,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
             (artifacts / "people-browser.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
             extra["people-browser.json"] = str(artifacts / "people-browser.json")
             extra["people-panel.png"] = str(artifacts / "people-panel.png")
+            extra["library-chrome.png"] = str(artifacts / "library-chrome.png")
         finally:
             stop_owned(server, extra_pids=pids)
         checks.check("original-fixture-bytes", hash_tree(media_src) == before)
