@@ -740,9 +740,11 @@ returns 404 `unavailable`. Set `hide` and the item disappears from
 ## F17 — Settings
 
 `library-data/settings.json` holds the 16 settings shown on the settings page
-plus the internal `schemaVersion: 1` field (not a control). The defaults below
-list the user settings. The page edits this
-file. The command line edits this file. The browser does not keep a second copy.
+plus the internal `schemaVersion: 1` field (not a control) and two face-quality
+keys used by optional local InsightFace. The defaults below list those values.
+The page edits the 16 browse keys. The command line edits this file, including
+`faceMatchThreshold` and `faceMinSidePx`, so matching can be tuned without a
+rebuild. The browser does not keep a second copy.
 
 ```json
 {
@@ -761,7 +763,9 @@ file. The command line edits this file. The browser does not keep a second copy.
   "tourPictureSec": 3,
   "sort": "date",
   "dir": "desc",
-  "zoomLevel": "years"
+  "zoomLevel": "years",
+  "faceMatchThreshold": 0.5,
+  "faceMinSidePx": 80
 }
 ```
 

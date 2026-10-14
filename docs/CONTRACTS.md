@@ -35,7 +35,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. Optional local geo/objects/faces are not a 17th setting: the pack or model file is the switch. |
+| Settings scope | Keep the 16 browse settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. Optional local geo/objects/faces stay pack/model switches. Two face-quality keys (`faceMatchThreshold`, `faceMinSidePx`) also live in settings.json so InsightFace matching can be tuned without a rebuild; they are not F17 page chrome. |
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
@@ -97,7 +97,7 @@ Item fields (all required except box):
 | contentIdentifier | Apple identifier string or null |
 | locations | Array of location objects below; one primary per component |
 | renditions | Object below |
-| faces | Array `{personId,box?}` |
+| faces | Array `{personId,box?,detScore?,matchScore?}` |
 | things | Array `{thingId,box?}` |
 
 Location: `{sourceId,role,component,kind,current,libraryRelativePath,volumeSerial,
@@ -218,8 +218,8 @@ volume locations as alternates, and preserves ids and annotations.
 
 Person `{schemaVersion,id,name}` plus optional `thumbnailItemId` (item
 id whose face crop is the sidebar thumbnail). Name is a nonempty string
-or null. Absent `thumbnailItemId` means the first boxed face, else the
-first still that references the person. Unknown extra keys stay rejected.
+or null. Absent `thumbnailItemId` means the largest / highest-score boxed
+face, else the first still that references the person. Unknown extra keys stay rejected.
 Place `{schemaVersion,id,name,latitude,longitude}`; coordinates both numbers or
 both null. A named place without GPS can be searched but has no globe pin.
 Thing `{schemaVersion,id,name,aliases}`; name nonempty, aliases distinct strings.
@@ -238,9 +238,12 @@ when present. A source with no usable metadata still gets dimensions null and
 mtime as capturedAt during initial indexing; metadata enriches it without changing
 identity. Original F11 uses the fixed 2022 mtime, never the current checkout date.
 
-Settings are exactly PRODUCT's existing 16 keys plus schemaVersion=1.
-Enums are those listed in PRODUCT; listenHost is `127.0.0.1|0.0.0.0`, port integer
-1–65535. thumbPx, previewPx, proxyWidth, tourPictures are positive integers;
+Settings are PRODUCT's existing 16 browse keys plus schemaVersion=1 and the
+two face-quality keys `faceMatchThreshold` (0–1 exclusive of 0, default 0.5)
+and `faceMinSidePx` (positive integer, default 80). A pre-face-quality 16-key
+file is filled from those defaults on load. Enums are those listed in PRODUCT;
+listenHost is `127.0.0.1|0.0.0.0`, port integer
+1–65535. thumbPx, previewPx, proxyWidth, tourPictures, faceMinSidePx are positive integers;
 placeMatchMeters, tourOrbitSec, tourPictureSec positive finite numbers.
 Reject booleans as numbers. Do not change settings halfway through a single
 operation: snapshot them at operation start. New preview dimensions affect new
@@ -249,7 +252,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer|faces-cleanup`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -307,13 +310,13 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | people update id / PUT `/api/people/<id>` | `{name?,thumbnailItemId?}`; 200 updated person read (same shape as a people-list row). Name null unnames. `thumbnailItemId` must be an item that already has that person. Undoable `person-update`. Unknown id is `not-found`. |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record, merge `models/faces/index.json` embeddings when that file exists; self merge invalid |
 | jobs / GET `/api/jobs` | 200 `{ok,paused,processing,queues}` where `queues` is renditions, analyze, infer-faces, objects, each `{id,label,pending,done,error,state,available}`. Renditions counts come from item rendition status. Analyze counts unnamed GPS places; `available` is the local geo pack. Infer-faces counts photo/live stills not yet scanned; `available` is face models ready. Objects counts stills not yet analyzed; `available` is the YOLO file. Missing pack/models: `available` false, queue idle, no crash. `state` is `running\|paused\|idle`. Browse stays up. |
-| jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"}`; 200 same body as GET. Pause stops the serve-process drain for renditions, analyze-places, infer-faces, and objects. Resume starts them again. Does not block `GET /api/items`. |
+| jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"\|"rerun-faces"}`; 200 same body as GET. Pause stops the serve-process drain for renditions, analyze-places, infer-faces, and objects. Resume starts them again. `rerun-faces` clears the face scanned map and force-redetects with current quality gates; named people are kept. Does not block `GET /api/items`. |
 | setup-geo [--from dir] [--force] | CLI only. Writes `geo/cities.csv` under the library root. `--from` copies or converts a local pack (fixture or air-gapped). Default fetches GeoNames cities5000 + admin1 (setup-time network only). Already present is success unless `--force`. JSON `{ok,path,cityCount,downloaded,source}`. Download/write failure is `io-error`. Missing `--from` path is `invalid-argument`. Not a catalog/history write. |
 | analyze-places / POST `/api/places/analyze` | `{}`; 200 `{ok,named,skipped,packReady}`; fills null GPS place names from the local pack; no-op success when nothing to fill or pack missing (`packReady` false). Undoable `analyze-places`. Busy while scanning. |
 | setup-ml objects | CLI / `Setup.bat` / `launch.ps1 -SetupMl` only. Downloads YOLOv8n ONNX into `models/yolov8n.onnx` and writes `models/objects.json`. Installs `onnxruntime` when missing. No HTTP route. No cloud inference. Already-present matching file is success. |
 | analyze [--item id] / POST `/api/analyze` | `{}` or `{itemId?}`. 200 `{ok,analyzed,tagged,skipped,items}` after local detection writes Things through annotate. Missing model is 404 `model-unavailable`. An explicit itemId re-runs that still; omitted itemId analyzes pending items only. `GET /api/analyze` is 200 `{ok,installed,model,pending}`. |
 | setup-ml faces / POST `/api/faces/setup` | `{backend?}`; default InsightFace buffalo_s ONNX into `models/faces/`. 200 `{ok,backend,ready,modelsDir}`. Downloads models only; never uploads photos. `backend=fixture` is allowed only when `LIBRARY_TEST=1`. |
-| infer-faces / POST `/api/faces/infer` | `{force?,itemIds?}`; 200 `{ok,backend,items,faces,peopleCreated,peopleReused,skipped}`. Detect → embed → cluster unnamed people; reuse catalog ids on embedding match. Missing models: 404 `models-missing`. Videos skipped. Items that already have faces skipped unless `force`. One undoable `faces-infer` history entry. |
+| infer-faces / POST `/api/faces/infer` | `{force?,cleanup?,itemIds?}`; 200 `{ok,backend,items,faces,peopleCreated,peopleReused,skipped}`. Detect → embed → cluster unnamed people; reuse catalog ids only when cosine is strictly above `faceMatchThreshold` (InsightFace default 0.50; fixture stays 0.85). Detections below `faceMinSidePx` (default 80) or InsightFace det score 0.65 are dropped. `force` re-detects with those gates and rebuilds centroids from the new quality faces; named person files are kept. `cleanup` (without force) drops stored faces that fail min-size / stored scores and rebuilds index face lists. After Update, Steve should run `python -m library infer-faces --force` or Processing **Re-run Faces**. Missing models: 404 `models-missing`. Videos skipped. Items that already have faces skipped unless `force`. One undoable `faces-infer` or `faces-cleanup` history entry. |
 | GET `/api/faces` | 200 `{ok,ready,backend,modelsDir}` ; `ready` false when setup has not run |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -414,8 +417,9 @@ setting. A missing real volume still uses the OS serial lookup.
 Log lines are UTF-8 `{utc-iso}\t{path}\t{error}\n`. `path` is the request path
 including query. Unknown media ids log `not-found`.
 
-Settings JSON key order is `schemaVersion` then the 16 PRODUCT keys in the
-order shown there. Indent 2, trailing newline, UTF-8.
+Settings JSON key order is `schemaVersion` then the 16 PRODUCT browse keys
+and the two face-quality keys `faceMatchThreshold`, `faceMinSidePx`. Indent 2,
+trailing newline, UTF-8.
 
 GET `/` may be the empty-library page (header, Add folder control present but
 inert until a later slice, text “No pictures yet”). No sample pictures and no
@@ -439,12 +443,14 @@ emits a display name. It is not a setting.
 
 Optional local face models live under `models/faces/` inside the library
 root: `manifest.json`, InsightFace ONNX files, and `index.json`
-`{schemaVersion,backend,matchThreshold,people,scanned?}` where `people`
+`{schemaVersion,backend,matchThreshold,people,scanned?,forceRescan?}` where `people`
 maps person id → `{centroid,faces:[{itemId,box}]}` and `scanned` maps
-already-inferred item ids. `index.json` is ML state, not catalog truth;
+already-inferred item ids. InsightFace `matchThreshold` default is 0.50
+ArcFace cosine (fixture 0.85). `index.json` is ML state, not catalog truth;
 person JSON stays `{schemaVersion,id,name}`. Infer never writes a nonempty
 name. Gender/age ONNX files are not loaded and are removed after a
-buffalo_s install.
+buffalo_s install. A catalog face may store `detScore` and `matchScore`
+(0–1) for later cleanup and thumbnail ranking.
 
 `library-data/models/` for objects is created by `setup-ml objects`.
 `models/objects.json`: `{schemaVersion,kind,model,input,labels,sha256,bytes}`.

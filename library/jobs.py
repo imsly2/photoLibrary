@@ -50,10 +50,12 @@ def _photo_like(item: dict[str, Any]) -> bool:
 
 def _faces_counts(root: Path) -> tuple[int, int, int]:
     scanned: set[str] = set()
+    force = False
     try:
-        from library.faces import scanned_item_ids
+        from library.faces import faces_force_rescan, scanned_item_ids
 
         scanned = scanned_item_ids(root)
+        force = faces_force_rescan(root)
     except Exception:
         scanned = set()
     pending = 0
@@ -63,7 +65,12 @@ def _faces_counts(root: Path) -> tuple[int, int, int]:
         if not _photo_like(item):
             continue
         faces = item.get("faces") or []
-        if faces or item_id in scanned:
+        if force:
+            if item_id in scanned:
+                done += 1
+            else:
+                pending += 1
+        elif faces or item_id in scanned:
             done += 1
         else:
             pending += 1
@@ -200,6 +207,6 @@ def read_jobs_action(body: Any) -> str:
     if extra:
         raise fail("invalid-argument")
     action = body.get("action")
-    if action not in {"pause", "resume"}:
+    if action not in {"pause", "resume", "rerun-faces"}:
         raise fail("invalid-argument")
     return action

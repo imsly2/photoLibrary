@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from library.atomic import recover_transactions, transact
+from library.atomic import load_json, recover_transactions, transact
 from library.catalog_io import (
     item_read,
     iter_item_ids,
@@ -71,7 +71,14 @@ class Library:
         if not path.exists():
             write_settings_file(self.root, defaults())
             return defaults()
-        return load_settings_file(self.root)
+        current = load_settings_file(self.root)
+        try:
+            on_disk = load_json(path)
+        except (OSError, json.JSONDecodeError):
+            return current
+        if not isinstance(on_disk, dict) or any(key not in on_disk for key in current):
+            write_settings_file(self.root, current)
+        return current
 
     def settings_get(self) -> dict[str, Any]:
         self.recover()
@@ -508,6 +515,13 @@ class Library:
         from library.jobs import jobs_status, read_jobs_action
 
         action = read_jobs_action(payload)
+        if action == "rerun-faces":
+            from library.faces import request_faces_rescan
+
+            self.recover()
+            self.ensure_settings()
+            request_faces_rescan(self.root)
+            return jobs_status(self.root, getattr(self, "_jobs_paused", False))
         self._jobs_paused = action == "pause"
         return jobs_status(self.root, self._jobs_paused)
 

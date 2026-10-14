@@ -29,26 +29,51 @@ def _face_box(face: dict[str, Any]) -> list[float] | None:
     return None
 
 
+def _face_score(face: dict[str, Any]) -> float:
+    for key in ("detScore", "matchScore"):
+        value = face.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return float(value)
+    return 0.0
+
+
+def _face_area(face: dict[str, Any]) -> float:
+    box = _face_box(face)
+    if box is None:
+        return 0.0
+    return max(0.0, box[2]) * max(0.0, box[3])
+
+
+def _best_face(faces: list[dict[str, Any]]) -> dict[str, Any] | None:
+    boxed = [face for face in faces if _face_box(face) is not None]
+    if not boxed:
+        return faces[0] if faces else None
+    boxed.sort(key=lambda face: (_face_score(face), _face_area(face)), reverse=True)
+    return boxed[0]
+
+
 def _thumbnail_for(
     person: dict[str, Any],
     faces: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
     chosen = person.get("thumbnailItemId")
     if chosen:
-        for face in faces:
-            if face.get("itemId") == chosen:
-                out: dict[str, Any] = {"itemId": chosen}
-                box = _face_box(face)
-                if box is not None:
-                    out["box"] = box
-                return out
-    for face in faces:
-        box = _face_box(face)
-        if box is not None:
-            return {"itemId": face["itemId"], "box": box}
-    if faces:
-        return {"itemId": faces[0]["itemId"]}
-    return None
+        matches = [face for face in faces if face.get("itemId") == chosen]
+        face = _best_face(matches) if matches else None
+        if face is not None:
+            out: dict[str, Any] = {"itemId": chosen}
+            box = _face_box(face)
+            if box is not None:
+                out["box"] = box
+            return out
+    face = _best_face(faces)
+    if face is None:
+        return None
+    out = {"itemId": face["itemId"]}
+    box = _face_box(face)
+    if box is not None:
+        out["box"] = box
+    return out
 
 
 def people_index(root: Path) -> dict[str, Any]:
@@ -61,9 +86,12 @@ def people_index(root: Path) -> dict[str, Any]:
             person_id = face.get("personId")
             if type(person_id) is not str or not person_id:
                 continue
-            faces_by_person.setdefault(person_id, []).append(
-                {"itemId": item_id, "box": face.get("box")}
-            )
+            rec: dict[str, Any] = {"itemId": item_id, "box": face.get("box")}
+            if "detScore" in face:
+                rec["detScore"] = face.get("detScore")
+            if "matchScore" in face:
+                rec["matchScore"] = face.get("matchScore")
+            faces_by_person.setdefault(person_id, []).append(rec)
             if person_id not in seen:
                 item_ids_by_person.setdefault(person_id, set()).add(item_id)
                 seen.add(person_id)

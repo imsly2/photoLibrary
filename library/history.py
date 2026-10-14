@@ -28,6 +28,7 @@ OPERATIONS = frozenset(
         "delete-file",
         "analyze-places",
         "faces-infer",
+        "faces-cleanup",
     }
 )
 
