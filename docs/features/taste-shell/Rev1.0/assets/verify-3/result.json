@@ -1,0 +1,276 @@
+{
+  "slice": "TASTE-SHELL",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-photo-video",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "kind-photos-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "kind-photos-has-jpeg",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'near.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "kind-photos-no-video",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'near.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "kind-video-only",
+      "pass": true,
+      "detail": "['clip.mp4']"
+    },
+    {
+      "name": "kind-invalid",
+      "pass": true,
+      "detail": "{'error': 'invalid-argument'}"
+    },
+    {
+      "name": "q-year",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'clip.mp4', 'near.jpg']"
+    },
+    {
+      "name": "q-month",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'clip.mp4', 'near.jpg']"
+    },
+    {
+      "name": "q-day",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'clip.mp4', 'near.jpg']"
+    },
+    {
+      "name": "favorite-on",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorite-filter",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    },
+    {
+      "name": "remove-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remove-dropped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remove-bytes-stay",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-shell/Rev1.0/assets/verify-3/api-media/a/near.jpg"
+    },
+    {
+      "name": "remove-unknown",
+      "pass": true,
+      "detail": "{'error': 'not-found'}"
+    },
+    {
+      "name": "undo-remove",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-restored-near",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "delete-file-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "delete-file-ok",
+      "pass": true,
+      "detail": "{'ok': True, 'id': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'trashed': True}"
+    },
+    {
+      "name": "delete-file-dropped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "delete-file-trashed",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-shell/Rev1.0/assets/verify-3/api-media/a/clip.mp4"
+    },
+    {
+      "name": "undo-delete-file",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-delete-catalog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jpeg-untouched",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "update-get",
+      "pass": true,
+      "detail": "{'ok': True, 'reason': None, 'git_sha': 'f93de8a', 'git_branch': 'cursor/grid-previews-sidebar-e8d3', 'git_date': '2026-10-14', 'git_subject': 'fix: recover mid-batch grid thumb stalls after refresh', 'revision': 'f93de8a', 'branch': 'cursor/grid-previews-sidebar-e8d3', 'dirty': True, 'label': 'f93de8a', 'message': 'This copy is f93de8a on cursor/grid-previews-sidebar-e8d3.'}"
+    },
+    {
+      "name": "update-cli-json",
+      "pass": true,
+      "detail": "{'ok': True, 'updated': False, 'alreadyCurrent': True, 'revision': 'f93de8a', 'message': 'Already up to date.\\n\\nFrom https://github.com/imsly2/photoLibrary\\n * [new branch]      cursor/empty-grid-chinese-chrome-0c42 -> origin/cursor/empty-grid-chinese-chrome-0c42', 'git_sha': 'f93de8a', 'git_branch': 'cursor/grid-previews-sidebar-e8d3', 'git_date': '2026-10-14', 'git_subject': 'fix: recover mid-batch grid thumb stalls after refresh', 'branch': 'cursor/grid-previews-sidebar-e8d3'}"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-copy",
+      "pass": true,
+      "detail": "{'text': 'No pictures yet', 'add': True, 'samples': 0}"
+    },
+    {
+      "name": "empty-add-cta",
+      "pass": true,
+      "detail": "{'text': 'No pictures yet', 'add': True, 'samples': 0}"
+    },
+    {
+      "name": "empty-no-samples",
+      "pass": true,
+      "detail": "{'text': 'No pictures yet', 'add': True, 'samples': 0}"
+    },
+    {
+      "name": "empty-add-opens",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-progress",
+      "pass": true,
+      "detail": "Updating\u2026"
+    },
+    {
+      "name": "update-sentence",
+      "pass": true,
+      "detail": "Already up to date."
+    },
+    {
+      "name": "sort-labels",
+      "pass": true,
+      "detail": "['Newest', 'Oldest', 'Name', 'Location']"
+    },
+    {
+      "name": "sort-default-newest",
+      "pass": true,
+      "detail": "newest"
+    },
+    {
+      "name": "filter-labels",
+      "pass": true,
+      "detail": "['All', 'Photos', 'Videos', 'Favorites']"
+    },
+    {
+      "name": "filter-photos-hides-video",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "filter-videos-only",
+      "pass": true,
+      "detail": "['video']"
+    },
+    {
+      "name": "filter-favorites",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    },
+    {
+      "name": "sort-oldest-maps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sort-name-maps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-search-for",
+      "pass": true,
+      "detail": "No matches for zzzz-no-such"
+    },
+    {
+      "name": "remove-confirm-title",
+      "pass": true,
+      "detail": "Remove from Library?"
+    },
+    {
+      "name": "remove-confirm-bytes",
+      "pass": true,
+      "detail": "The file stays on disk."
+    },
+    {
+      "name": "delete-file-extra-confirm",
+      "pass": true,
+      "detail": "Delete this file from disk?"
+    },
+    {
+      "name": "remove-from-grid",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remove-left-bytes",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-shell/Rev1.0/assets/verify-3/ui-media/a/IMG_1042.jpg"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "f93de8a53204bf387949ed9652c1438ac96e56d1",
+  "commands": [
+    "python -m library items --kind photo,live",
+    "python -m library remove <id>",
+    "python -m library delete-file <id>",
+    "python -m library update"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-shell/Rev1.0/assets/verify-3/result.json",
+    "stdout.log": "/workspace/docs/features/taste-shell/Rev1.0/assets/verify-3/stdout.log",
+    "api": "{\"updateGet\": \"This copy is f93de8a on cursor/grid-previews-sidebar-e8d3.\", \"updateCli\": \"Already up to date.\\n\\nFrom https://github.com/imsly2/photoLibrary\\n * [new branch]      cursor/empty-grid-chinese-chrome-0c42 -> origin/cursor/empty-grid-chinese-chrome-0c42\", \"updateAlready\": true, \"photoId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}",
+    "ui": "{\"empty\": {\"text\": \"No pictures yet\", \"add\": true, \"samples\": 0}, \"updating\": \"Updating\\u2026\", \"updateDone\": \"Already up to date.\", \"toolbar\": {\"sort\": [\"Newest\", \"Oldest\", \"Name\", \"Location\"], \"filters\": [\"All\", \"Photos\", \"Videos\", \"Favorites\"], \"sortValue\": \"newest\"}, \"emptySearch\": \"No matches for zzzz-no-such\", \"removeConfirm\": {\"title\": \"Remove from Library?\", \"body\": \"The file stays on disk.\"}}",
+    "launcher": "/workspace/Update.bat"
+  }
+}

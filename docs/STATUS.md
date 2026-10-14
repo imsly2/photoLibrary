@@ -314,6 +314,34 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   57/57,
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-2/result.json)
   50/50.
+- 2026-10-14 — Grid thumbs + People/Tags layout on
+  `cursor/grid-previews-sidebar-e8d3` (PR #28). Person-filter chip X
+  and full reload were wiping tiles or stalling mid-batch: a second
+  still job for the same cell leaked the concurrency slot, so the
+  rest of the grid stayed **Preview not available**. One live job
+  per cell; the stall watchdog always releases; a 1s recover pass
+  re-queues hung thumbs; skip `/api/media` until rendition status is
+  ready or error. People and Tags are session-collapsible (People
+  open, Tags collapsed) with `#side-vsplit` so Tags never covers a
+  face. Setup.bat / Library.bat / `.ps1` untouched. Does not close a
+  Check. 16/22 unchanged.
+  Plans: [taste-previews](features/taste-previews/Rev1.0/PLAN.md),
+  [taste-sidebar](features/taste-sidebar/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-PREVIEWS](features/taste-previews/Rev1.0/assets/verify-3/result.json)
+  20/20 (chip X twice, overlapping paints, two reloads stay painted),
+  [grid-thumbs](features/taste-previews/Rev1.0/assets/verify-3/grid-thumbs.png),
+  [TASTE-SIDEBAR](features/taste-sidebar/Rev1.0/assets/verify-3/result.json)
+  26/26,
+  [sidebar](features/taste-sidebar/Rev1.0/assets/verify-3/sidebar-people-tags.png),
+  [TASTE-EMPTY-GRID](features/taste-empty-grid/Rev1.0/assets/verify-3/result.json)
+  19/19,
+  [TASTE-FILTERS](features/taste-filters/Rev1.0/assets/verify-3/result.json)
+  44/44,
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-4/result.json)
+  57/57,
+  [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-3/result.json)
+  50/50.
 
 ## Completion
 

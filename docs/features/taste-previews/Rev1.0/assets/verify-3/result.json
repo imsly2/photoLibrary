@@ -1,0 +1,123 @@
+{
+  "slice": "TASTE-PREVIEWS",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "items-have-photos-and-video",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"far.jpg\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "people-have-ada",
+      "pass": true,
+      "detail": "[{\"id\": \"person_240b3afe9a08\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "first-all-painted",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "first-photos-painted",
+      "pass": true,
+      "detail": "[{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]"
+    },
+    {
+      "name": "first-video-poster",
+      "pass": true,
+      "detail": "[{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}]"
+    },
+    {
+      "name": "person-filter-keeps-thumbs",
+      "pass": true,
+      "detail": "{\"count\": 2, \"painted\": 2, \"missing\": 0, \"files\": [{\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "person-filter-hides-others",
+      "pass": true,
+      "detail": "[{\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}]"
+    },
+    {
+      "name": "chip-x-keeps-thumbs",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "chip-x-no-placeholder",
+      "pass": true,
+      "detail": "[{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]"
+    },
+    {
+      "name": "person-filter-chip-x-cycle",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "video-poster-survives-cycles",
+      "pass": true,
+      "detail": "[{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}]"
+    },
+    {
+      "name": "repaint-does-not-stall",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "reload-keeps-thumbs",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "reload-stays-painted",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "second-reload-keeps-thumbs",
+      "pass": true,
+      "detail": "{\"count\": 5, \"painted\": 5, \"missing\": 0, \"files\": [{\"file\": \"clip.mp4\", \"kind\": \"video\", \"painted\": true, \"which\": \"/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster\", \"placeholder\": false}, {\"file\": \"near.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"placeholder\": false}, {\"file\": \"IMG_1042.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"placeholder\": false}, {\"file\": \"far.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"placeholder\": false}, {\"file\": \"no-exif.jpg\", \"kind\": \"photo\", \"painted\": true, \"which\": \"/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"placeholder\": false}]}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "f93de8a53204bf387949ed9652c1438ac96e56d1",
+  "commands": [
+    "python -m tests.qa slice TASTE-PREVIEWS"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-previews/Rev1.0/assets/verify-3/result.json",
+    "stdout.log": "/workspace/docs/features/taste-previews/Rev1.0/assets/verify-3/stdout.log",
+    "previews-api.json": "/workspace/docs/features/taste-previews/Rev1.0/assets/verify-3/previews-api.json",
+    "previews-browser.json": "/workspace/docs/features/taste-previews/Rev1.0/assets/verify-3/previews-browser.json",
+    "grid-thumbs.png": "/workspace/docs/features/taste-previews/Rev1.0/assets/verify-3/grid-thumbs.png"
+  }
+}
