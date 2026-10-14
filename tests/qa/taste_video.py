@@ -3,24 +3,68 @@
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 from typing import Any
 
+from library.httpjson import request_json
 from tests.qa.launch_ps1_args import run_assertions as launch_arglist_assertions
-from tests.qa.s00 import Checks, assert_no_pillow_in_server
+from tests.qa.s00 import Checks, assert_no_pillow_in_server, stop_owned
+from tests.qa.s01 import hash_tree
 from tests.qa.s03 import find_item
-from tests.qa.s06 import playing_cell_videos, set_settings, wait_level
-from tests.qa.s08 import write_result
-from tests.qa.s09 import (
-    copy_s09_media,
-    hash_tree,
+from tests.qa.s06 import (
+    copy_rels,
+    playing_cell_videos,
     prepare_media,
-    scan_library,
+    set_settings,
     start_owned,
-    stop_owned,
-    wait_catalog,
-    wait_viewer_closed,
+    wait_level,
 )
+from tests.qa.s08 import fresh_root, run_library, write_result
+
+MEDIA_RELS = (
+    "a/IMG_1042.jpg",
+    "b/no-exif.jpg",
+    "a/clip.mp4",
+)
+
+
+def wait_catalog(base: str, names: tuple[str, ...] | list[str], timeout: float = 90) -> list[dict[str, Any]]:
+    deadline = time.time() + timeout
+    last: list[dict[str, Any]] = []
+    while time.time() < deadline:
+        status, payload = request_json(base + "/api/items", timeout=3)
+        if status == 200 and isinstance(payload, list):
+            last = payload
+            have = {item.get("filename") for item in payload}
+            if not all(name in have for name in names):
+                time.sleep(0.25)
+                continue
+            ready = True
+            for name in names:
+                item = find_item(payload, name)
+                if item is None:
+                    ready = False
+                    break
+                rend = ((item.get("renditions") or {}).get("status") or {})
+                if item.get("kind") == "video":
+                    if rend.get("poster") != "ready" or rend.get("proxy") != "ready":
+                        ready = False
+                        break
+                elif rend.get("thumb") != "ready" and rend.get("preview") != "ready":
+                    ready = False
+                    break
+            if ready:
+                return payload
+        time.sleep(0.25)
+    raise RuntimeError("catalog timeout " + json.dumps([item.get("filename") for item in last]))
+
+
+def wait_viewer_closed(page: Any) -> None:
+    page.wait_for_function(
+        "() => document.getElementById('viewer') && document.getElementById('viewer').hidden",
+        timeout=8000,
+    )
 
 
 def collect_console(page: Any) -> list[str]:
@@ -310,12 +354,12 @@ def run_slice(root: Path, artifacts: Path) -> int:
         media_src = prepare_media(artifacts)
         before = hash_tree(media_src)
         isolated = artifacts / "library-root"
-        from tests.qa.s08 import fresh_root
-
         fresh_root(isolated)
-        folder = copy_s09_media(media_src, artifacts / "scan-media")
-        scanned = scan_library(isolated, folder, commands)
-        checks.check("scan-ok", scanned["proc"].returncode == 0, scanned["proc"].stderr[-200:])
+        folder = artifacts / "scan-media"
+        copy_rels(media_src, folder, MEDIA_RELS)
+        scanned = run_library(isolated, ["scan", str(folder), "--serve-from-there"], timeout=180)
+        commands.append("python -m library scan <folder> --serve-from-there")
+        checks.check("scan-ok", scanned.returncode == 0, scanned.stderr[-200:])
         arglist = launch_arglist_assertions()
         (artifacts / "launch-arglist.json").write_text(json.dumps(arglist, indent=2) + "\n", encoding="utf-8")
         extra["launch-arglist.json"] = str(artifacts / "launch-arglist.json")

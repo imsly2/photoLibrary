@@ -1,0 +1,94 @@
+{
+  "sliders": {
+    "levelLabel": "Level",
+    "sizeLabel": "Size",
+    "levelAria": "Grid level Years through All",
+    "sizeAria": "Grid density thumbnail size",
+    "viewerZoom": true,
+    "gridHasViewerZoom": false,
+    "rangeCount": 3
+  },
+  "smallHover": {
+    "ok": true,
+    "cell": {
+      "width": 72,
+      "height": 72
+    },
+    "video": {
+      "width": 70,
+      "height": 70,
+      "left": 21,
+      "top": 179.140625
+    },
+    "fillDx": 2,
+    "fillDy": 2,
+    "playing": true,
+    "hasScrub": true,
+    "size": "72"
+  },
+  "tileScrub": {
+    "before": 0.0009,
+    "after": 1.2
+  },
+  "wallYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "beforePlay": {
+    "left": 160,
+    "top": 0,
+    "width": 960,
+    "height": 720
+  },
+  "proxyPlay": {
+    "src": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0,
+    "duration": 0,
+    "usingProxy": true,
+    "left": 160,
+    "top": 0,
+    "width": 960,
+    "height": 720
+  },
+  "playJumpPx": 0,
+  "afterSwap": {
+    "src": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.328818,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 160,
+    "top": 0,
+    "width": 960,
+    "height": 720
+  },
+  "viewerScrub": {
+    "present": true,
+    "hidden": false,
+    "value": "117"
+  },
+  "viewerScrubSeek": 1.4,
+  "wheelZoom": {
+    "before": {
+      "left": 160,
+      "top": 0,
+      "width": 960,
+      "height": 720
+    },
+    "after": {
+      "left": 112,
+      "top": -36,
+      "width": 1056,
+      "height": 792
+    }
+  }
+}
