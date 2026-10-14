@@ -44,7 +44,9 @@ def collect_console(page: Any) -> list[str]:
 
 
 def annotate_json(root: Path, item_id: str, payload: dict[str, Any], artifacts: Path, name: str) -> Any:
-    path = artifacts / name
+    folder = artifacts / "annotate-json"
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / name
     path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
     return run_library(root, ["annotate", item_id, "--json", str(path)])
 
