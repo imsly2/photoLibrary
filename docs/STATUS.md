@@ -206,6 +206,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [video-mov](features/taste-video/Rev1.0/assets/verify-5/video-mov.png),
   [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-4/result.json)
   52/52 Iphone Backup argv + Full in UI-SPEC.
+- 2026-10-14 — Dated Years/Months hover play + tile scrub (Steve).
+  Default `playProxies` no longer leaves those mosaics still. Days,
+  Dates=Off, Reveal argv, Preview/Original/Full, and MOV
+  `playback.mp4` stay. Does not close a Check. 16/22 unchanged.
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-8/result.json)
+  92/92 Years + Months play and scrub,
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-5/result.json)
+  52/52.
 
 ## Completion
 

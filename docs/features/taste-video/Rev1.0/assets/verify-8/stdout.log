@@ -1,0 +1,92 @@
+PASS scan-ok
+PASS unit-mp4-browser-safe
+PASS unit-mov-needs-derivative
+PASS unit-write-playback: ready
+PASS unit-playback-audio: {"codec": "h264", "width": 640, "height": 480, "duration": 2.0, "audioStreamCount": 1, "bytes": 23358, "returncode": 0, "stderr": ""}
+PASS unit-mp4-not-applicable: not-applicable
+PASS unit-photo-playback-na
+PASS unit-video-playback-queued
+PASS unit-legacy-video-queued: {"thumb": "not-applicable", "preview": "not-applicable", "poster": "ready", "proxy": "ready", "playback": "queued"}
+PASS unit-legacy-photo-na: {"thumb": "ready", "preview": "ready", "poster": "not-applicable", "proxy": "not-applicable", "playback": "not-applicable"}
+PASS launch-unwrapped-string-filepath-before-filepath-is-C: {'FilePath': 'C'}
+PASS launch-unwrapped-string-filepath-after-filepath-is-full-exe: {'FilePath': 'C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe'}
+PASS launch-unwrapped-string-filepath-after-excludes-python-exe: {'ArgumentList': ['-m', 'library', 'serve']}
+PASS launch-length-1-python-exe-before-includes-python-exe: {'ArgumentList': ['C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe', '-m', 'library', 'serve']}
+PASS launch-length-1-python-exe-after-excludes-python-exe: {'ArgumentList': ['-m', 'library', 'serve']}
+PASS launch-length-1-python-exe-after-is-module-serve: {'ArgumentList': ['-m', 'library', 'serve']}
+PASS launch-length-1-python-exe-filepath-is-interpreter: C:\Users\Family\AppData\Local\Programs\Python\Python312\python.exe
+PASS launch-length-2-py-3.12-keeps-launcher-extra: {'ArgumentList': ['-3.12', '-m', 'library', 'serve']}
+PASS launch-length-2-py-3.12-filepath-is-interpreter: C:\Windows\py.exe
+PASS launch-length-1-venv-python-exe-before-includes-python-exe: {'ArgumentList': ['C:\\Library\\.venv\\Scripts\\python.exe', '-m', 'library', 'serve']}
+PASS launch-length-1-venv-python-exe-after-excludes-python-exe: {'ArgumentList': ['-m', 'library', 'serve']}
+PASS launch-length-1-venv-python-exe-after-is-module-serve: {'ArgumentList': ['-m', 'library', 'serve']}
+PASS launch-length-1-venv-python-exe-filepath-is-interpreter: C:\Library\.venv\Scripts\python.exe
+PASS launch-guard-length-gt-1
+PASS launch-prefers-venv-scripts-python
+PASS launch-library-bat-pauses-on-error
+PASS launch-no-unguarded-start-process-slice
+PASS launch-rewrapped-python-array
+PASS launch-exe-is-string-index-zero
+PASS launch-unary-comma-single-source
+PASS launch-keeps-update-switch
+PASS has-clip
+PASS has-mov
+PASS http-has-mp4
+PASS http-has-mov
+PASS mp4-playback-not-applicable: not-applicable
+PASS mov-playback-ready: ready
+PASS mp4-playback-404: 404
+PASS mov-playback-200: 200
+PASS mov-playback-type: video/mp4
+PASS mov-playback-h264: {"codec": "h264", "width": 640, "height": 480, "duration": 2.0, "audioStreamCount": 1, "bytes": 23358, "returncode": 0, "stderr": ""}
+PASS mov-playback-has-audio: {"codec": "h264", "width": 640, "height": 480, "duration": 2.0, "audioStreamCount": 1, "bytes": 23358, "returncode": 0, "stderr": ""}
+PASS mov-playback-full-size: {"codec": "h264", "width": 640, "height": 480, "duration": 2.0, "audioStreamCount": 1, "bytes": 23358, "returncode": 0, "stderr": ""}
+PASS mov-original-still-there: 200
+PASS playwright-import
+PASS dated-years-hover-plays: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}
+PASS dated-years-tile-scrub: {"before": 0.0015, "after": 1.2, "target": "600", "expected": 1.2}
+PASS dated-months-hover-plays: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}
+PASS dated-months-tile-scrub: {"before": 1.2528, "after": 0.4, "target": "200", "expected": 0.4}
+PASS no-level-slider: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS size-label: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS size-has-eight-stops: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS date-group-present: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS date-group-modes: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS viewer-zoom-present: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS viewer-zoom-pct-present: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS viewer-zoom-not-in-bottom: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS no-viewer-zoom-on-grid: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS two-intentional-sliders: {"hasLevelSlider": false, "sizeLabel": "Size", "sizeAria": "Grid density thumbnail size", "sizeMax": "7", "dateGroup": true, "dateOptions": ["years", "months", "days", "off"], "viewerZoom": true, "viewerZoomPct": true, "zoomInBottom": false, "gridHasViewerZoom": false, "rangeCount": 2}
+PASS ctrl-wheel-steps-size: {"dateBefore": "days", "levelBefore": "all", "after": {"size": "104", "dateGroup": "days", "level": "all"}}
+PASS ctrl-wheel-keeps-dates: {"dateBefore": "days", "levelBefore": "all", "after": {"size": "104", "dateGroup": "days", "level": "all"}}
+PASS hover-at-size-72: {"ok": true, "cell": {"width": 72, "height": 72}, "video": {"width": 70, "height": 70, "left": 21, "top": 179.140625}, "fillDx": 2, "fillDy": 2, "playing": true, "hasScrub": true, "size": "72"}
+PASS hover-fills-small-tile: {"ok": true, "cell": {"width": 72, "height": 72}, "video": {"width": 70, "height": 70, "left": 21, "top": 179.140625}, "fillDx": 2, "fillDy": 2, "playing": true, "hasScrub": true, "size": "72"}
+PASS tile-scrub-present: {"ok": true, "cell": {"width": 72, "height": 72}, "video": {"width": 70, "height": 70, "left": 21, "top": 179.140625}, "fillDx": 2, "fillDy": 2, "playing": true, "hasScrub": true, "size": "72"}
+PASS tile-scrub-seeks: {"before": 1.3276, "after": 0.4, "target": "200", "expected": 0.4}
+PASS open-from-tile-autoplay: {"tileTime": 0.4, "viewer": {"src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "paused": false, "hidden": false, "currentTime": 0.4383, "duration": 2, "usingProxy": true, "left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}}
+PASS open-from-tile-keeps-time: {"tileTime": 0.4, "viewer": {"src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy", "paused": false, "hidden": false, "currentTime": 0.4383, "duration": 2, "usingProxy": true, "left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}}
+PASS dates-off-keeps-size: {"before": "72", "after": "72"}
+PASS dates-off-is-wall: off
+PASS wall-years-hover-plays: {"videoCount": 1, "playingCount": 1, "muted": true, "volumeZero": true, "looped": true, "ids": ["93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"]}
+PASS viewer-source-visible: {"text": "Original", "hidden": false, "state": "original", "usingProxy": false, "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original"}
+PASS viewer-source-original: {"text": "Original", "hidden": false, "state": "original", "usingProxy": false, "src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original"}
+PASS play-starts-proxy: {"src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original", "paused": false, "hidden": false, "currentTime": 0.0687, "duration": 2, "usingProxy": false, "left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}
+PASS play-keeps-fit: {"before": {"left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}, "after": {"left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}, "delta": 0.0}
+PASS swap-keeps-fit: {"before": {"left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}, "after": {"left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}, "delta": 0.0}
+PASS swap-keeps-time: {"src": "http://127.0.0.1:18767/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original", "paused": false, "hidden": false, "currentTime": 0.386664, "duration": 2, "usingProxy": false, "left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}
+PASS viewer-source-says-original: {"text": "Original", "hidden": false, "state": "original"}
+PASS viewer-scrub-visible: {"present": true, "hidden": false, "value": "118"}
+PASS scrub-in-bottom-chrome: {"scrubInBottom": true, "zoomInBottom": false, "zoomVertical": true, "pctText": "100%", "scrubBelowStage": true, "bottomBelowStage": true}
+PASS scrub-not-over-picture: {"scrubInBottom": true, "zoomInBottom": false, "zoomVertical": true, "pctText": "100%", "scrubBelowStage": true, "bottomBelowStage": true}
+PASS bottom-chrome-below-stage: {"scrubInBottom": true, "zoomInBottom": false, "zoomVertical": true, "pctText": "100%", "scrubBelowStage": true, "bottomBelowStage": true}
+PASS viewer-zoom-vertical: {"scrubInBottom": true, "zoomInBottom": false, "zoomVertical": true, "pctText": "100%", "scrubBelowStage": true, "bottomBelowStage": true}
+PASS viewer-zoom-shows-percent: {"scrubInBottom": true, "zoomInBottom": false, "zoomVertical": true, "pctText": "100%", "scrubBelowStage": true, "bottomBelowStage": true}
+PASS viewer-scrub-seeks: 1.4
+PASS plain-wheel-zooms: {"before": {"left": 230.3333282470703, "top": 63.390625, "width": 749.3333740234375, "height": 562}, "after": {"left": 192.86666870117188, "top": 28.990623474121094, "width": 824.2666015625, "height": 618.2000122070312}}
+PASS mov-plays-playback: {"text": "Full", "hidden": false, "state": "full", "usingProxy": false, "usingPlayback": true, "src": "http://127.0.0.1:18767/api/media/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9?which=playback", "muted": false, "paused": false}
+PASS mov-source-says-full: {"text": "Full", "hidden": false, "state": "full", "usingProxy": false, "usingPlayback": true, "src": "http://127.0.0.1:18767/api/media/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9?which=playback", "muted": false, "paused": false}
+PASS mov-not-silent-proxy: {"text": "Full", "hidden": false, "state": "full", "usingProxy": false, "usingPlayback": true, "src": "http://127.0.0.1:18767/api/media/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9?which=playback", "muted": false, "paused": false}
+PASS no-console-errors: []
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
