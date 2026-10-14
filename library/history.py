@@ -25,6 +25,7 @@ OPERATIONS = frozenset(
         "relocate",
         "remove",
         "delete-file",
+        "faces-infer",
     }
 )
 

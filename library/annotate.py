@@ -502,6 +502,11 @@ def apply_people_merge(root: Path, keep_id: str, drop_id: str) -> dict[str, Any]
         if after != before:
             changes.append({"path": item_rel(item_id), "before": before, "after": after})
     changes.append({"path": person_rel(drop_id), "before": drop, "after": None})
+    from library.faces import plan_merge_index
+
+    index_change = plan_merge_index(root, keep_id, drop_id)
+    if index_change is not None:
+        changes.append(index_change)
     entry = make_history_entry(root, "people-merge", changes)
     transact(root, plan_append(root, entry) + changes)
     return ordered_person(keep)

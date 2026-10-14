@@ -51,6 +51,7 @@ class Library:
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self._scanning = False
+        self._inferring = False
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
@@ -97,7 +98,7 @@ class Library:
         return self.settings_set({key: parse_cli_value(key, raw)})
 
     def _assert_idle(self) -> None:
-        if self._scanning:
+        if self._scanning or getattr(self, "_inferring", False):
             raise fail("busy")
 
     def undo(self) -> dict[str, bool]:
@@ -478,6 +479,33 @@ class Library:
         self.ensure_settings()
         self._assert_idle()
         return apply_people_merge(self.root, keep_id, drop_id)
+
+    def faces_status(self) -> dict[str, Any]:
+        from library.faces import faces_status
+
+        self.recover()
+        self.ensure_settings()
+        return faces_status(self.root)
+
+    def setup_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import setup_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return setup_faces(self.root, payload)
+
+    def infer_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import infer_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        self._inferring = True
+        try:
+            return infer_faces(self.root, payload)
+        finally:
+            self._inferring = False
 
     def drain_step(self) -> bool:
         self.ensure_settings()

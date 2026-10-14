@@ -27,7 +27,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
-| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
+| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. Optional local face inference (after `setup-ml faces`) may detect boxes and cluster unnamed people from embeddings stored on this computer. No name guessing, caption system, gender/age labels, or box-drawing tool. Faces never leave the machine. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
 | Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. Unplayable browser original falls back to proxy. |
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
@@ -113,7 +113,8 @@ hashed. modifiedAt is UTC ISO with filesystem precision retained; sizeBytes inte
 Boxes are `[x,y,width,height]` normalized to the oriented still or oriented video
 frame: x,y >=0, width,height >0, x+width and y+height <=1. Omitted means association
 without a box. Duplicate identical associations collapse; distinct boxes may share
-an entity. No inferred face matching.
+an entity. Optional local inference may attach a box by matching a face embedding
+to a stored person centroid; it never invents a name.
 
 Renditions: `{store,sourceId,thumb,preview,poster,proxy,status}`. Store is
 `with-server|with-source`; sourceId selects the owning source. Paths are relative
@@ -235,7 +236,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file|faces-infer`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -289,7 +290,10 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable`; default-app launch |
 | remove id / POST `/api/items/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops item JSON, favorite entry, and index row; original bytes stay; undoable `remove`. Unknown id is `not-found`. |
 | delete-file id / POST `/api/items/<id>/delete-file` | `{}`; 200 `{ok:true,id,trashed}`; Windows Recycle Bin the current original when possible (`trashed` true/false), then the same catalog drop as remove; undoable `delete-file` restores catalog only. 404 `unavailable` if no current file. UI extra-confirms; CLI is explicit. |
-| people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
+| people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record, merge `models/faces/index.json` embeddings when that file exists; self merge invalid |
+| setup-ml faces / POST `/api/faces/setup` | `{backend?}`; default InsightFace buffalo_s ONNX into `models/faces/`. 200 `{ok,backend,ready,modelsDir}`. Downloads models only; never uploads photos. `backend=fixture` is allowed only when `LIBRARY_TEST=1`. |
+| infer-faces / POST `/api/faces/infer` | `{force?,itemIds?}`; 200 `{ok,backend,items,faces,peopleCreated,peopleReused,skipped}`. Detect → embed → cluster unnamed people; reuse catalog ids on embedding match. Missing models: 404 `models-missing`. Videos skipped. Items that already have faces skipped unless `force`. One undoable `faces-infer` history entry. |
+| GET `/api/faces` | 200 `{ok,ready,backend,modelsDir}` ; `ready` false when setup has not run |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
 | rebuild-index / POST `/api/rebuild-index` | `{}`; 200 `{"ok":true}`; atomic replacement index, unchanged canonical JSON |
@@ -335,7 +339,7 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout), `models-missing` (face infer/setup files not installed) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |
@@ -382,6 +386,22 @@ When `LIBRARY_TEST=1`, `LIBRARY_TEST_VOLUMES` may be a path to JSON mapping a
 volume serial to an absolute mount path or null. Null means not mounted. This
 is the only test seam for volume identity. Production ignores it. It is not a
 setting. A missing real volume still uses the OS serial lookup.
+
+When `LIBRARY_TEST=1`, `setup-ml faces --backend fixture` (or
+`POST /api/faces/setup` `{"backend":"fixture"}`) installs a deterministic
+local detector that reads synthetic beacon/identity colors from fixture
+stills. Production `setup-ml faces` always installs InsightFace buffalo_s
+and ignores `backend=fixture`. The fixture backend never uploads and never
+emits a display name. It is not a setting.
+
+Optional local face models live under `models/faces/` inside the library
+root: `manifest.json`, InsightFace ONNX files, and `index.json`
+`{schemaVersion,backend,matchThreshold,people}` where `people` maps
+person id → `{centroid,faces:[{itemId,box}]}`. `index.json` is ML state,
+not catalog truth; person JSON stays `{schemaVersion,id,name}`. Infer
+never writes a nonempty name. Gender/age ONNX files are not loaded and
+are removed after a buffalo_s install. Other bulk mutations return `busy`
+while infer runs, and infer returns `busy` while scanning.
 
 Log lines are UTF-8 `{utc-iso}\t{path}\t{error}\n`. `path` is the request path
 including query. Unknown media ids log `not-found`.

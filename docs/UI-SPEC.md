@@ -163,8 +163,13 @@ id filter and inspector; inspector count and filenames come from matching unique
 item ids, never the number of locations. Search matching multiple entities shows
 the grid until a specific entity is selected, avoiding an invented entity chooser.
 Viewer fields append names/associations on Enter or loss-of-focus commit; failed
-requests retain text and show inline error. Person merge is the existing CLI/HTTP
-operation; no merge wizard is authorized. Labels update after rename/merge.
+requests retain text and show inline error. Unnamed people (local face clusters
+or `{name:null}`) appear as **Unnamed** in Info. Clicking Unnamed selects that
+person for naming and focuses Person; Enter then sends `annotate` `{id,name}`
+and does not close the viewer. Clicking a named person still filters the grid.
+Person merge is the existing CLI/HTTP operation; no merge wizard is authorized.
+Labels update after rename/merge. Local face inference never paints a guessed
+real name.
 
 ## Globe and tour motion (no reference image exists)
 

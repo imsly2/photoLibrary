@@ -53,7 +53,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
+| Naming | External agent/person writes entity JSON through annotate. Optional local face inference (after `setup-ml faces`) detects faces, writes embeddings, and clusters unnamed people on this computer. It never uploads faces and never guesses a real name. Geographic names stay manual. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
@@ -76,8 +76,9 @@ CONTRACTS. Changing them requires a doc edit before implementation.
    Spin a globe of every picture that has a location. Click a cluster to
    filter to those pictures and open one. Play a tour that orbits the globe,
    zooms into a place, shows pictures from there, and zooms back out.
-6. An agent writes people, places, and things onto records. Search returns
-   every picture tied to that name.
+6. An agent writes people, places, and things onto records. Optional local
+   face inference can cluster unnamed faces on this computer; a person
+   confirms every name. Search returns every picture tied to that name.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
@@ -143,7 +144,12 @@ library-data/
     preview.webp
     poster.webp          # video
     proxy.mp4            # video
-  originals/<source>/    # used when a folder was copied onto this drive
+    originals/<source>/    # used when a folder was copied onto this drive
+  models/
+    faces/              # optional; created by setup-ml faces
+      manifest.json
+      buffalo_s/        # InsightFace ONNX, local only
+      index.json        # embeddings; not catalog truth
 ```
 
 When a source stores previews inside the selected folder, those files go in
@@ -217,7 +223,10 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
 | `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
-| `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person and merges stored face embeddings. |
+| `setup-ml faces` | `POST /api/faces/setup` | Installs InsightFace buffalo_s ONNX under `library-data/models/faces/`. Not required to browse. |
+| `infer-faces` | `POST /api/faces/infer` | Detects faces locally, embeds, clusters unnamed people. Reuses the people catalog. |
+| — | `GET /api/faces` | Reports whether local face models are ready. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
@@ -586,8 +595,11 @@ These are the serialized index. Each one is a JSON file. Pictures point at
 them by id. Search does not look at pixels. It reads the ids.
 
 An agent, or a person typing in the viewer, writes them with `annotate`.
-The server does not download or run an image model. Analysis is whoever calls
-`annotate` after looking at `preview.webp`.
+The server does not ship a model and does not guess names. An agent or a
+person still writes names with `annotate`. After `setup-ml faces`, optional
+local inference may detect faces and cluster them into unnamed people on
+this computer. Faces, embeddings, and photos are never uploaded. A human
+confirms every name.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be
@@ -608,6 +620,37 @@ with `"name": "Ada"`, `things/thing_*.json` with `"name": "mug"`, and the item
 lists those ids. A second item annotated `--thing mug` reuses the same thing id.
 `GET /api/items?thing=mug` returns both ids and no others.
 Artifact: the people file, the thing file, and the search JSON.
+
+## Optional local face inference
+
+Not a 23rd Check. Extends F14. Object/YOLO inference is a separate track
+and is not part of this section.
+
+`setup-ml faces` installs InsightFace buffalo_s (ONNX, Windows CPU) under
+`library-data/models/faces/`. `infer-faces` then:
+
+1. Decodes each photo or live still locally.
+2. Detects face boxes (`[x,y,width,height]`, 0–1 on the oriented still).
+3. Computes embeddings.
+4. Clusters by cosine similarity.
+5. Reuses an existing person when the embedding matches that person's
+   stored centroid.
+6. Otherwise creates `people/person_*.json` with `"name": null`.
+7. Writes `{personId, box}` on the item.
+8. Stores embeddings in `models/faces/index.json` (not catalog JSON).
+
+It does not run gender/age, does not invent a display name, and does not
+send pixels anywhere. Naming is Info / `annotate` `{id, name}`. Info lists
+unnamed people as **Unnamed**; select one and type a name in Person.
+`people merge` still reassigns faces and merges stored embeddings. Search
+is the existing `person=` / `q=` path.
+
+`GET /api/faces` reports whether models are ready. Missing models:
+`models-missing`. Videos are skipped. Items that already have faces are
+skipped unless `force` is set.
+
+**Proof:** `python -m tests.qa slice FACES` on synthetic face fixtures.
+Artifact path in STATUS.
 
 ## F15 — Search
 

@@ -168,7 +168,9 @@ class LibraryHandler(BaseHTTPRequestHandler):
         return origin.rstrip("/") in {item.rstrip("/") for item in allowed}
 
     def _require_idle(self) -> None:
-        if getattr(self.library, "_scanning", False):
+        if getattr(self.library, "_scanning", False) or getattr(
+            self.library, "_inferring", False
+        ):
             raise fail("busy")
 
     def _yield_scan(self) -> None:
@@ -362,6 +364,27 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.relocate())
+                return
+            if route == "/api/faces" and method in {"GET", "HEAD"}:
+                self._send_json(200, self.library.faces_status())
+                return
+            if route == "/api/faces/setup" and method == "POST":
+                from library.faces import read_setup_payload
+
+                body = self._read_json()
+                payload = read_setup_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.setup_faces(payload))
+                return
+            if route == "/api/faces/infer" and method == "POST":
+                from library.faces import read_infer_payload
+
+                body = self._read_json()
+                payload = read_infer_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.infer_faces(payload))
                 return
             if route == "/api/people/merge" and method == "POST":
                 from library.annotate import read_merge_payload
