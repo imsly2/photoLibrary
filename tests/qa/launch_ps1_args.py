@@ -45,11 +45,28 @@ def looks_like_python_exe(value: str) -> bool:
     return name in {"python.exe", "python", "python3.exe", "python3"}
 
 
+def unwrapped_filepath(python: str) -> str:
+    """PowerShell indexes a STRING as characters, so `$python[0]` is `C`."""
+    return python[0] if python else ""
+
+
 def cases() -> list[dict[str, object]]:
     one = [r"C:\Users\Family\AppData\Local\Programs\Python\Python312\python.exe"]
     py = [r"C:\Windows\py.exe", "-3.12"]
     venv = [r"C:\Library\.venv\Scripts\python.exe"]
     return [
+        {
+            "name": "unwrapped-string-filepath",
+            "python": one[0],
+            "before": {
+                "FilePath": unwrapped_filepath(one[0]),
+                "ArgumentList": buggy_argument_list(list(one[0])),
+            },
+            "after": {
+                "FilePath": one[0],
+                "ArgumentList": serve_argument_list(one),
+            },
+        },
         {
             "name": "length-1-python-exe",
             "python": one,
@@ -95,7 +112,7 @@ def static_source_checks() -> list[dict[str, object]]:
     return [
         {
             "name": "guard-length-gt-1",
-            "pass": "$python.Length -gt 1" in launch or "$Python.Length -gt 1" in launch,
+            "pass": "$python.Count -gt 1" in launch or "$Python.Count -gt 1" in launch or "$python.Length -gt 1" in launch or "$Python.Length -gt 1" in launch,
         },
         {
             "name": "prefers-venv-scripts-python",
@@ -109,6 +126,18 @@ def static_source_checks() -> list[dict[str, object]]:
             "name": "no-unguarded-start-process-slice",
             "pass": "Start-Process -FilePath $python[0] -ArgumentList (@($python[1.." not in launch,
         },
+        {
+            "name": "rewrapped-python-array",
+            "pass": "$python = @(Get-Python312)" in launch,
+        },
+        {
+            "name": "exe-is-string-index-zero",
+            "pass": "$exe = [string]$python[0]" in launch and "Start-Process -FilePath $exe" in launch,
+        },
+        {
+            "name": "unary-comma-single-source",
+            "pass": "return ,@($cmd.Source)" in launch or "return ,@($venv)" in launch,
+        },
     ]
 
 
@@ -120,6 +149,29 @@ def run_assertions() -> dict[str, object]:
         before = case["before"]["ArgumentList"]
         python = case["python"]
         name = str(case["name"])
+        if name == "unwrapped-string-filepath":
+            assertions.append(
+                {
+                    "name": f"{name}-before-filepath-is-C",
+                    "pass": case["before"]["FilePath"] == "C",
+                    "detail": {"FilePath": case["before"]["FilePath"]},
+                }
+            )
+            assertions.append(
+                {
+                    "name": f"{name}-after-filepath-is-full-exe",
+                    "pass": case["after"]["FilePath"] == python and looks_like_python_exe(str(case["after"]["FilePath"])),
+                    "detail": {"FilePath": case["after"]["FilePath"]},
+                }
+            )
+            assertions.append(
+                {
+                    "name": f"{name}-after-excludes-python-exe",
+                    "pass": after == ["-m", "library", "serve"],
+                    "detail": {"ArgumentList": after},
+                }
+            )
+            continue
         if name.startswith("length-1"):
             ok_before_has_exe = any(looks_like_python_exe(part) for part in before)
             assertions.append(

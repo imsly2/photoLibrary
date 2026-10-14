@@ -2,6 +2,91 @@
   "pass": true,
   "beforeAfter": [
     {
+      "name": "unwrapped-string-filepath",
+      "python": "C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "before": {
+        "FilePath": "C",
+        "ArgumentList": [
+          ":",
+          "\\",
+          "U",
+          "s",
+          "e",
+          "r",
+          "s",
+          "\\",
+          "F",
+          "a",
+          "m",
+          "i",
+          "l",
+          "y",
+          "\\",
+          "A",
+          "p",
+          "p",
+          "D",
+          "a",
+          "t",
+          "a",
+          "\\",
+          "L",
+          "o",
+          "c",
+          "a",
+          "l",
+          "\\",
+          "P",
+          "r",
+          "o",
+          "g",
+          "r",
+          "a",
+          "m",
+          "s",
+          "\\",
+          "P",
+          "y",
+          "t",
+          "h",
+          "o",
+          "n",
+          "\\",
+          "P",
+          "y",
+          "t",
+          "h",
+          "o",
+          "n",
+          "3",
+          "1",
+          "2",
+          "\\",
+          "p",
+          "y",
+          "t",
+          "h",
+          "o",
+          "n",
+          ".",
+          "e",
+          "x",
+          "e",
+          "-m",
+          "library",
+          "serve"
+        ]
+      },
+      "after": {
+        "FilePath": "C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "ArgumentList": [
+          "-m",
+          "library",
+          "serve"
+        ]
+      }
+    },
+    {
       "name": "length-1-python-exe",
       "python": [
         "C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
@@ -74,6 +159,31 @@
     }
   ],
   "assertions": [
+    {
+      "name": "unwrapped-string-filepath-before-filepath-is-C",
+      "pass": true,
+      "detail": {
+        "FilePath": "C"
+      }
+    },
+    {
+      "name": "unwrapped-string-filepath-after-filepath-is-full-exe",
+      "pass": true,
+      "detail": {
+        "FilePath": "C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+      }
+    },
+    {
+      "name": "unwrapped-string-filepath-after-excludes-python-exe",
+      "pass": true,
+      "detail": {
+        "ArgumentList": [
+          "-m",
+          "library",
+          "serve"
+        ]
+      }
+    },
     {
       "name": "length-1-python-exe-before-includes-python-exe",
       "pass": true,
@@ -186,6 +296,21 @@
     },
     {
       "name": "no-unguarded-start-process-slice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rewrapped-python-array",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "exe-is-string-index-zero",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unary-comma-single-source",
       "pass": true,
       "detail": ""
     }

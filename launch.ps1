@@ -7,12 +7,16 @@ $AppFolder = $PSScriptRoot
 Set-Location $AppFolder
 
 # ArgumentList before/after for a 1-element Get-Python312 result @($python.exe):
-#   Before: $python[1..($python.Length - 1)] is $python[1..0] (indices 1, then 0),
-#           so ArgumentList became python.exe, -m, library, serve.
-#           Python then died with SyntaxError: Non-UTF-8 code starting with '\x90'
-#           in file ... python.exe — or Start-Process could not find the file.
-#   After:  extras only when Length -gt 1 (py -3.12). Length-1 ArgumentList is
-#           -m, library, serve. FilePath stays the interpreter.
+#   Before: PowerShell unwraps `return @($cmd.Source)` into a STRING, so
+#           $python[0] is the character C and Start-Process FilePath is C
+#           ("The system cannot find the file specified."). Separately,
+#           $python[1..($python.Length - 1)] is $python[1..0] (indices 1,
+#           then 0), so ArgumentList became python.exe, -m, library, serve.
+#           Python then died with SyntaxError: Non-UTF-8 code starting with
+#           '\x90' in file ... python.exe.
+#   After:  return ,@(...) and $python = @(Get-Python312). $exe is
+#           [string]$python[0]. Extras only when Count/Length -gt 1
+#           (py -3.12). Length-1 ArgumentList is -m, library, serve.
 
 function Test-PythonVersion {
     param(
@@ -51,8 +55,8 @@ function Get-ServeArgumentList {
         [Parameter(Mandatory = $true)][AllowEmptyCollection()][object[]]$Python
     )
     $extras = @()
-    if ($Python.Length -gt 1) {
-        $extras = @($Python[1..($Python.Length - 1)] | Where-Object { $_ })
+    if ($Python.Count -gt 1) {
+        $extras = @($Python[1..($Python.Count - 1)] | Where-Object { $_ })
     }
     return ,($extras + @("-m", "library", "serve"))
 }
@@ -62,16 +66,15 @@ function Test-Ffmpeg {
 }
 
 try {
-    $python = Get-Python312
-    if ($null -eq $python) { $python = [string[]]@() }
+    $python = @(Get-Python312)
     $ffmpegOk = Test-Ffmpeg
-    if ($python.Count -lt 1 -or -not $ffmpegOk) {
-        if ($python.Count -gt 0) {
+    if ($python.Count -lt 1 -or -not $python[0] -or -not $ffmpegOk) {
+        if ($python.Count -gt 0 -and $python[0]) {
             Write-Host "Installing missing ffmpeg with winget..."
         } else {
             Write-Host "Installing missing Python 3.12 / ffmpeg with winget..."
         }
-        if ($python.Count -lt 1) {
+        if ($python.Count -lt 1 -or -not $python[0]) {
             winget install --id Python.Python.3.12 -e --accept-package-agreements --accept-source-agreements
         }
         if (-not $ffmpegOk) {
@@ -79,17 +82,17 @@ try {
         }
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
             [System.Environment]::GetEnvironmentVariable("Path", "User")
-        $python = Get-Python312
-        if ($null -eq $python) { $python = [string[]]@() }
+        $python = @(Get-Python312)
         $ffmpegOk = Test-Ffmpeg
-        if ($python.Count -lt 1 -or -not $ffmpegOk) {
+        if ($python.Count -lt 1 -or -not $python[0] -or -not $ffmpegOk) {
             Write-Error "Python 3.12+ and ffmpeg are required on PATH."
             exit 1
         }
     }
 
+    $exe = [string]$python[0]
     $argumentList = Get-ServeArgumentList -Python $python
-    $proc = Start-Process -FilePath ([string]$python[0]) -ArgumentList $argumentList -WorkingDirectory $AppFolder -PassThru -NoNewWindow
+    $proc = Start-Process -FilePath $exe -ArgumentList $argumentList -WorkingDirectory $AppFolder -PassThru -NoNewWindow
     $url = "http://127.0.0.1:8765/"
     $deadline = (Get-Date).AddSeconds(20)
     $ready = $false
