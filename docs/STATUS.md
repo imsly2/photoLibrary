@@ -139,9 +139,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   16/22 unchanged.
   Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
   Evidence:
-  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-2/result.json)
-  59/59, [video-viewer.png](features/taste-video/Rev1.0/assets/verify-2/video-viewer.png),
-  [video-grid.png](features/taste-video/Rev1.0/assets/verify-2/video-grid.png).
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-3/result.json)
+  61/61 (tile autoplay + carry time),
+  [video-viewer.png](features/taste-video/Rev1.0/assets/verify-3/video-viewer.png),
+  [video-grid.png](features/taste-video/Rev1.0/assets/verify-3/video-grid.png).
 - 2026-10-14 — Video + zoom taste on the Presentable Shell Must tip
   (`cursor/windows-presentable-shell-must-806a`). Viewer play stays
   fitted/centered across proxy→original; hover plays at every Size and
@@ -428,5 +429,5 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-14 — Grid/viewer chrome taste after PR #10. One Size slider;
   Dates Years/Months/Days/Off; vertical side viewer zoom; scrub in
   `#viewer-bottom`. Clicking a video tile autoplays at the tile
-  `currentTime`. TASTE-VIDEO 59/59. `GET /api/update` 200. No new
+  `currentTime`. TASTE-VIDEO 61/61. `GET /api/update` 200. No new
   Check. 16/22 unchanged.
