@@ -1,0 +1,66 @@
+{
+  "layout": {
+    "chrome": {
+      "top": 677.625,
+      "left": 0,
+      "bottom": 720,
+      "right": 1010,
+      "width": 1010,
+      "height": 42.375
+    },
+    "grid": {
+      "top": 127.734375,
+      "left": 0,
+      "bottom": 677.625,
+      "right": 1010,
+      "width": 1010,
+      "height": 549.890625
+    },
+    "side": {
+      "top": 127.734375,
+      "left": 1016,
+      "bottom": 720,
+      "right": 1280,
+      "width": 264,
+      "height": 592.265625
+    },
+    "splitter": {
+      "top": 127.734375,
+      "left": 1010,
+      "bottom": 720,
+      "right": 1016,
+      "width": 6,
+      "height": 592.265625
+    },
+    "dateInToolbar": false,
+    "sizeInChrome": true,
+    "dateInChrome": true,
+    "dateOptions": [
+      "years",
+      "months",
+      "days",
+      "off"
+    ],
+    "people": [
+      "Ada",
+      "Bob",
+      "Pat"
+    ],
+    "jobs": "Processing \u2014 Previews 3",
+    "pause": true,
+    "resume": "Start",
+    "sideCollapsed": false
+  },
+  "adaGrid": [
+    "near.jpg",
+    "IMG_1042.jpg"
+  ],
+  "andGrid": [
+    "near.jpg"
+  ],
+  "renamed": [
+    "Ada",
+    "Bob",
+    "Patricia"
+  ]
+}
