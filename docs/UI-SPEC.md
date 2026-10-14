@@ -55,7 +55,7 @@ fill. They must read as clickable toggles, not heading text.
 | Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then original/proxy, live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom-slider` (range 25–1600, 0.25×–16× fit) plus Ctrl+wheel and Ctrl++/−; Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
-| Empty search | Query/chips remain; “No matches”. Clearing query/chip returns matching broader grid, no catalog mutation. |
+| Empty search | Query/chips remain; “No matches for …” including the query (or “No matches” when only a chip/filter is empty). Clearing query/chip returns matching broader grid, no catalog mutation. |
 | Settings | Existing 16 settings only, grouped as the reference; change persists through HTTP immediately on valid commit. Inline validation preserves last valid value. Host/port label says “Applies next launch”. Esc returns to prior Library/Globe view. |
 | Globe | Realistic local Earth texture (oceans, continents, ice — not abstract blobs) and clusters from visible located items; no-location items absent. Plain “No locations to show” if empty. WebGL unavailable produces inline error text, not another map provider. Horizontal drag yaws with the pointer (inverted from the first grab); vertical drag pitch is unchanged. |
 | Tour | Existing globe motion plus media presentation, as specified below. Esc stops motion/playback at current globe position and leaves Globe. No new slideshow settings beyond the three existing tour settings. |
@@ -294,14 +294,15 @@ appears when All is selected and any current result is hearted.
 **9. Search.** The box matches filename, capturedAt date text (YYYY,
 YYYY-MM, YYYY-MM-DD), and existing person/place/thing names (and thing
 aliases). Chips still restrict to People / Places / Things. Empty:
-“No matches”. Clearing query/chip returns the broader grid.
+“No matches for …” (query included). Clearing query/chip returns the broader grid.
 
 **10. Update UX finish.** Launcher and in-app (`#update-library`, label
 Update or Update Library). No command prompt. While the pull runs:
 Updating… Then one sentence: updated / already current / git missing /
 not a git copy / pull failed. Does not switch branches. **Implemented
-on this merge** (PR #2 72/72 plus the abc Update commit). Prove the
-progress sentence on a real git copy. Launcher Update is still a gap.
+on this merge** (PR #2 72/72 plus the abc Update commit). `Update.bat` /
+`launch.ps1 -Update` is the launcher. Prove the progress sentence on a
+real git copy.
 
 Also still locked from the earlier Windows notes (already on the DoD
 path): `Library.bat`; native Add folder; 202-before-finish; live-origin
@@ -316,19 +317,20 @@ Earth. macOS/Linux launch stays pinned later.
 Honesty rule: this combined taste merge includes **PR #2**
 (`cursor/viewer-chrome-2bd1`) Win7 chrome + Update Library (TASTE-VIEWER
 **72/72**) and **PR #5** Presentable Shell docs. Viewer Must (fullscreen,
-slideshow, keyboard parity, EXIF-first Info) is **this PR**. Mark those
-chrome rows implemented. Do not revive retired chrome. Remaining Must
-rows (remove / sort / search / empty) stay red. F10’s one-Esc-from-Info
-close-viewer proof still times out on this stack (same as `d00addb`);
-do not weaken that Check to hide it.
+slideshow, keyboard parity, EXIF-first Info) is **PR #7**. Mark those
+chrome rows implemented. Do not revive retired chrome. Must 6–10
+(empty/error, remove vs delete-file, sort/filters, search, Update
+launcher) is this shell PR. F10’s one-Esc-from-Info close-viewer proof
+still times out on this stack (same as `d00addb`); do not weaken that
+Check to hide it.
 
 | Surface | Spec target | Where it lives | Gap |
 |---|---|---|---|
 | Launch | Double-click `Library.bat` | abc Track A | F2 Check pending |
-| Update | In-app + launcher; Updating… then a sentence | **This merge** (PR #2 72/72 + abc) | Launcher Update still separate; prove sentence on a real git copy |
+| Update | In-app + launcher; Updating… then a sentence | **This merge** (PR #2 72/72 + abc) + `Update.bat` | Progress sentence on a real git copy |
 | Add folder | Native Browse; close on 202; items as ready | abc Track A | Linux QA `picker-unavailable` (expected) |
 | Back / origin | Stay on live origin/port | abc Track A | Do not reintroduce `settings.port` URLs |
-| Disconnect / reconnect | Banner + retry | abc Track A | — |
+| Disconnect / reconnect | Banner + Retry | abc Track A + this shell | `#reconnect-retry` beside exact banner text |
 | Video tile / Videos | Full-tile hover; VIDEO badge; `kind=video` | abc Track C | Photos / All / Favorites filters still Must |
 | Size / wall | ≥8 stops; thumbs stay; Dates-off wall | abc Track C | — |
 | Library / Globe | Button affordances | abc Track C | — |
@@ -338,10 +340,10 @@ do not weaken that Check to hide it.
 | Reveal + Open | Side by side | **This merge** Open + Reveal | Keep beside each other |
 | Info | File facts first, then names | **This PR** facts + names | Empty camera: “No camera info for this file.” |
 | Fullscreen / slideshow | F11 or F; F5; Esc stack | **This PR** | Esc: Info, then slideshow, then fullscreen, then viewer |
-| Remove / Delete file | Delete key vs extra confirm | Not present | Must gap; CONTRACTS routes locked |
-| Sort Newest/Oldest/Name | Presentable labels | Date/name exist; labels differ | Must gap (Location stays) |
-| Filters All/Photos/Videos/Favorites | Mutually exclusive toolbar | Videos only | Must gap |
-| Search | Filename + date + tags; “No matches” | Filename + tags | Date match + empty copy |
+| Remove / Delete file | Delete key vs extra confirm | This shell PR | CONTRACTS `remove` / `delete-file`; toolbar + dialogs |
+| Sort Newest/Oldest/Name | Presentable labels | This shell PR | Hidden `#sort`/`#dir` stay for F11 |
+| Filters All/Photos/Videos/Favorites | Mutually exclusive toolbar | This shell PR | Videos id kept; Photos is `kind=photo,live` |
+| Search | Filename + date + tags; “No matches for …” | This shell PR | Date `YYYY` / `YYYY-MM` / `YYYY-MM-DD` |
 | Globe basics | Invert yaw; local Earth | abc globe taste | Polish is Later |
 | macOS / Linux launch | Pinned later | `launch.sh` exists | Do not claim F2 |
 
@@ -387,7 +389,7 @@ taste gate.
 | 4 | Add folder | Native picker; copy-or-link; dialog closes on 202 |
 | 5 | Progress / scan error | Status + console; items as ready; failure shows Retry, never a blank page |
 | 6 | Wall + sort + filters | Dates-off wall; ≥8 sizes; thumbs stay; Newest/Oldest/Name; All / Photos / Videos / Favorites |
-| 7 | Search | Filename, date, or a tag; empty “No matches” |
+| 7 | Search | Filename, date, or a tag; empty “No matches for …” |
 | 8 | Open | Preview then original; no “Showing original”; no overlay pills; missing-file placeholder |
 | 9 | Next / Prev / arrows | Bottom Previous and Next; arrows; stop at ends; Back stays on this origin |
 | 10 | Keyboard parity | Ctrl++/− or wheel zoom; Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause video; tooltips show shortcuts |

@@ -19,6 +19,7 @@
   const slideshowEmpty = document.getElementById("slideshow-empty");
   const unavailableBanner = document.getElementById("unavailable-banner");
   const disconnectedBanner = document.getElementById("disconnected-banner");
+  const reconnectRetry = document.getElementById("reconnect-retry");
   const addBrowse = document.getElementById("add-browse");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const revealOriginalBtn = document.getElementById("reveal-original");
@@ -47,11 +48,22 @@
   const addError = document.getElementById("add-error");
   const sortSelect = document.getElementById("sort");
   const dirSelect = document.getElementById("dir");
+  const sortPresentable = document.getElementById("sort-presentable");
   const zoomSlider = document.getElementById("zoom-slider");
   const sizeSlider = document.getElementById("size-slider");
+  const filterAll = document.getElementById("filter-all");
+  const filterPhotos = document.getElementById("filter-photos");
   const filterVideos = document.getElementById("filter-videos");
+  const filterFavorites = document.getElementById("filter-favorites");
+  const removeItemBtn = document.getElementById("remove-item");
+  const deleteFileBtn = document.getElementById("delete-file");
   const groupDatesBtn = document.getElementById("group-dates");
   const scanStatus = document.getElementById("scan-status");
+  const scanStatusText = document.getElementById("scan-status-text");
+  const scanErrorText = document.getElementById("scan-error-text");
+  const scanRetry = document.getElementById("scan-retry");
+  const confirmRemove = document.getElementById("confirm-remove");
+  const confirmDeleteFile = document.getElementById("confirm-delete-file");
   const viewLibrary = document.getElementById("view-library");
   const viewGlobe = document.getElementById("view-globe");
   const workspace = document.querySelector(".workspace");
@@ -78,7 +90,7 @@
   const DEFAULT_SIZE = { years: 0, months: 1, days: 3, all: 6 };
   const HEART_MIN = 144;
   const EMPTY = "No pictures yet";
-  const EMPTY_SEARCH = "No matching pictures";
+  const EMPTY_SEARCH = "No matches";
   const PLAY_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.1v7.8L10.2 6z"/></svg>';
   const HEART_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13.4S2.6 10 1.5 7.1C.6 5.1 1.6 3 3.8 3c1.2 0 2 .7 2.3 1.2C6.4 3.7 7.2 3 8.4 3c2.2 0 3.2 2.1 2.3 4.1C9.6 10 8 13.4 8 13.4z"/></svg>';
   const SLIDESHOW_EMPTY = "Add photos first";
@@ -99,9 +111,12 @@
   let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
-  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "" };
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
   let savedSearch = "";
-  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "" };
+  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
+  let selectedId = null;
+  let pendingRemoveId = null;
+  let lastSources = [];
   let gridSize = 0;
   let groupDates = true;
   let favoritesOpen = true;
@@ -162,6 +177,9 @@
     if (filter.kind) {
       merged.kind = filter.kind;
     }
+    if (filter.favorite) {
+      merged.favorite = filter.favorite;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
         merged[key] = extra[key];
@@ -188,7 +206,15 @@
   }
 
   function hasActiveFilter() {
-    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind);
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite);
+  }
+
+  function emptySearchText() {
+    const q = (filter.q || "").trim();
+    if (q) {
+      return "No matches for " + q;
+    }
+    return EMPTY_SEARCH;
   }
 
   function copyFilter(src) {
@@ -199,11 +225,12 @@
       place: src.place || "",
       thing: src.thing || "",
       kind: src.kind || "",
+      favorite: src.favorite || "",
     };
   }
 
   function filtersEqual(a, b) {
-    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind;
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite;
   }
 
   function syncFilterDataset() {
@@ -213,8 +240,68 @@
     main.dataset.place = filter.place;
     main.dataset.thing = filter.thing;
     main.dataset.kind = filter.kind;
+    main.dataset.favorite = filter.favorite;
+    const allOn = !filter.kind && !filter.favorite;
+    if (filterAll) {
+      filterAll.setAttribute("aria-pressed", allOn ? "true" : "false");
+    }
+    if (filterPhotos) {
+      filterPhotos.setAttribute("aria-pressed", filter.kind === "photo,live" ? "true" : "false");
+    }
     if (filterVideos) {
       filterVideos.setAttribute("aria-pressed", filter.kind === "video" ? "true" : "false");
+    }
+    if (filterFavorites) {
+      filterFavorites.setAttribute("aria-pressed", filter.favorite === "1" ? "true" : "false");
+    }
+  }
+
+  function presentableSortValue() {
+    if (settings.sort === "name") {
+      return "name";
+    }
+    if (settings.sort === "location") {
+      return "location";
+    }
+    return settings.dir === "asc" ? "oldest" : "newest";
+  }
+
+  function syncPresentableSort() {
+    if (sortPresentable) {
+      sortPresentable.value = presentableSortValue();
+    }
+    if (sortSelect) {
+      sortSelect.value = settings.sort;
+    }
+    if (dirSelect) {
+      dirSelect.value = settings.dir;
+    }
+  }
+
+  function applyPresentableSort(value) {
+    if (value === "oldest") {
+      settings.sort = "date";
+      settings.dir = "asc";
+    } else if (value === "name") {
+      settings.sort = "name";
+      settings.dir = "asc";
+    } else if (value === "location") {
+      settings.sort = "location";
+    } else {
+      settings.sort = "date";
+      settings.dir = "desc";
+    }
+    syncPresentableSort();
+  }
+
+  function syncSelectionChrome() {
+    const id = viewerItemId || selectedId;
+    const enabled = !!id;
+    if (removeItemBtn) {
+      removeItemBtn.disabled = !enabled;
+    }
+    if (deleteFileBtn) {
+      deleteFileBtn.disabled = !enabled;
     }
   }
 
@@ -402,6 +489,7 @@
     settings.addFolderDefault = data.addFolderDefault || settings.addFolderDefault;
     settings.playProxies = data.playProxies || settings.playProxies;
     main.dataset.playProxies = settings.playProxies;
+    syncPresentableSort();
   }
 
   function selectedMode() {
@@ -452,7 +540,11 @@
       return;
     }
     scanStatus.hidden = false;
-    scanStatus.textContent = text;
+    if (scanStatusText) {
+      scanStatusText.textContent = text;
+    } else {
+      scanStatus.textContent = text;
+    }
   }
 
   function showDisconnected(on) {
@@ -460,6 +552,63 @@
       return;
     }
     disconnectedBanner.hidden = !on;
+    if (reconnectRetry) {
+      reconnectRetry.hidden = !on;
+    }
+    const wrap = document.getElementById("disconnected-wrap");
+    if (wrap) {
+      wrap.classList.toggle("is-on", !!on);
+    }
+  }
+
+  function firstScanFailure(sources) {
+    let found = null;
+    (sources || []).forEach(function (source) {
+      if (found) {
+        return;
+      }
+      const scan = source.scan || {};
+      const errs = scan.errors || [];
+      if (scan.state === "error" || errs.length) {
+        const first = errs[0] || {};
+        const origin = source.origin || {};
+        found = {
+          path: origin.lastKnownPath || first.path || "",
+          error: first.error || "scan failed",
+          mode: source.mode || "serve-from-there",
+        };
+      }
+    });
+    return found;
+  }
+
+  function syncScanRetry(sources) {
+    const fail = firstScanFailure(sources);
+    if (!scanRetry || !scanErrorText) {
+      return;
+    }
+    if (!fail || (sources || []).some(function (source) {
+      return (source.scan || {}).state === "running";
+    })) {
+      scanRetry.hidden = true;
+      scanErrorText.hidden = true;
+      scanErrorText.textContent = "";
+      delete scanRetry.dataset.path;
+      delete scanRetry.dataset.mode;
+      return;
+    }
+    const bits = [];
+    if (fail.path) {
+      bits.push(fail.path);
+    }
+    if (fail.error) {
+      bits.push(fail.error);
+    }
+    scanErrorText.textContent = bits.join(" — ");
+    scanErrorText.hidden = !bits.length;
+    scanRetry.hidden = false;
+    scanRetry.dataset.path = fail.path || "";
+    scanRetry.dataset.mode = fail.mode || "serve-from-there";
   }
 
   function sourcesStatus(sources) {
@@ -1622,6 +1771,8 @@
     savedLevel = settings.zoomLevel;
     savedFilter = copyFilter(filter);
     savedSearch = searchInput ? searchInput.value : filter.q;
+    selectedId = id;
+    syncSelectionChrome();
     openViewerAt(index);
     if (!skipHistory) {
       stayOnLiveOrigin({ library: true, view: "viewer", id: id }, "#item/" + encodeURIComponent(id), false);
@@ -1759,7 +1910,12 @@
       }
       stopHover();
     });
+    cell.addEventListener("focus", function () {
+      selectedId = item.id;
+      syncSelectionChrome();
+    });
     cell.addEventListener("click", function () {
+      selectedId = item.id;
       openViewer(item.id);
     });
     requestStill(cell, item.id);
@@ -1876,14 +2032,23 @@
   function render() {
     const level = settings.zoomLevel;
     applyGridMetrics();
-    sortSelect.value = settings.sort;
-    dirSelect.value = settings.dir;
+    syncPresentableSort();
     syncFilterDataset();
+    syncSelectionChrome();
     if (!items.length) {
       stopHover();
-      main.innerHTML = "<p>" + (hasActiveFilter() ? EMPTY_SEARCH : EMPTY) + "</p>";
+      if (hasActiveFilter()) {
+        main.innerHTML = "<p>" + emptySearchText() + "</p>";
+        renderKey = "empty-search:" + emptySearchText();
+      } else {
+        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + EMPTY + '</p><button type="button" id="empty-add-folder">Add folder</button></div>';
+        const emptyAdd = document.getElementById("empty-add-folder");
+        if (emptyAdd) {
+          emptyAdd.addEventListener("click", openAddDialog);
+        }
+        renderKey = "empty";
+      }
       applyGridMetrics();
-      renderKey = hasActiveFilter() ? "empty-search" : "empty";
       return;
     }
     const favKey = items.filter(function (item) {
@@ -1964,13 +2129,16 @@
       const nextItems = Array.isArray(parts[0]) ? parts[0] : [];
       const nextGroups = Array.isArray(parts[1]) ? parts[1] : [];
       const sources = Array.isArray(parts[2]) ? parts[2] : [];
+      lastSources = sources;
       applySettings(parts[3]);
       const status = sourcesStatus(sources);
       scanning = status.running;
       if (sources.length) {
         showStatus(status.text, true);
+        syncScanRetry(sources);
       } else {
         showStatus("", false);
+        syncScanRetry([]);
       }
       showDisconnected(false);
       items = nextItems;
@@ -2067,6 +2235,7 @@
     filter.place = "";
     filter.thing = "";
     filter.kind = "";
+    filter.favorite = "";
     if (kind === "person") {
       filter.person = id;
     } else if (kind === "place") {
@@ -2201,6 +2370,152 @@
     }).catch(function () {});
   }
 
+  function askRemove(id) {
+    pendingRemoveId = id;
+    if (confirmRemove && confirmRemove.showModal) {
+      confirmRemove.showModal();
+      return;
+    }
+    if (window.confirm("Remove from Library? The file stays on disk.")) {
+      performRemove(id);
+    }
+  }
+
+  function askDeleteFile(id) {
+    pendingRemoveId = id;
+    if (confirmDeleteFile && confirmDeleteFile.showModal) {
+      confirmDeleteFile.showModal();
+      return;
+    }
+    if (window.confirm("Delete this file from disk?")) {
+      performDeleteFile(id);
+    }
+  }
+
+  function afterItemGone(id) {
+    if (viewerItemId === id) {
+      hideViewerChrome();
+      stayOnLiveOrigin({ library: true, view: "grid" }, "", true);
+    }
+    if (selectedId === id) {
+      selectedId = null;
+    }
+    pendingRemoveId = null;
+    syncSelectionChrome();
+    renderKey = "";
+    return loadCatalog();
+  }
+
+  function performRemove(id) {
+    return fetch("/api/items/" + encodeURIComponent(id) + "/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).then(function () {
+      return afterItemGone(id);
+    }).catch(function () {});
+  }
+
+  function performDeleteFile(id) {
+    return fetch("/api/items/" + encodeURIComponent(id) + "/delete-file", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).then(function () {
+      return afterItemGone(id);
+    }).catch(function () {});
+  }
+
+  if (removeItemBtn) {
+    removeItemBtn.addEventListener("click", function () {
+      const id = viewerItemId || selectedId;
+      if (id) {
+        askRemove(id);
+      }
+    });
+  }
+  if (deleteFileBtn) {
+    deleteFileBtn.addEventListener("click", function () {
+      const id = viewerItemId || selectedId;
+      if (id) {
+        askDeleteFile(id);
+      }
+    });
+  }
+  if (confirmRemove) {
+    const cancel = document.getElementById("confirm-remove-cancel");
+    const ok = document.getElementById("confirm-remove-ok");
+    if (cancel) {
+      cancel.addEventListener("click", function () {
+        confirmRemove.close();
+      });
+    }
+    if (ok) {
+      ok.addEventListener("click", function () {
+        const id = pendingRemoveId;
+        confirmRemove.close();
+        if (id) {
+          performRemove(id);
+        }
+      });
+    }
+  }
+  if (confirmDeleteFile) {
+    const cancel = document.getElementById("confirm-delete-cancel");
+    const ok = document.getElementById("confirm-delete-ok");
+    if (cancel) {
+      cancel.addEventListener("click", function () {
+        confirmDeleteFile.close();
+      });
+    }
+    if (ok) {
+      ok.addEventListener("click", function () {
+        const id = pendingRemoveId;
+        confirmDeleteFile.close();
+        if (id) {
+          performDeleteFile(id);
+        }
+      });
+    }
+  }
+  if (scanRetry) {
+    scanRetry.addEventListener("click", function () {
+      const path = scanRetry.dataset.path || "";
+      const mode = scanRetry.dataset.mode || "serve-from-there";
+      if (!path) {
+        return;
+      }
+      scanRetry.disabled = true;
+      fetch("/api/sources", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: path, mode: mode }),
+      }).then(readJson).then(function () {
+        scanRetry.disabled = false;
+        showStatus("Retrying scan", true);
+        renderKey = "";
+        return loadCatalog();
+      }).catch(function () {
+        scanRetry.disabled = false;
+        return loadCatalog();
+      });
+    });
+  }
+  if (reconnectRetry) {
+    reconnectRetry.addEventListener("click", function () {
+      fetch("/api/health").then(function (res) {
+        if (!res.ok) {
+          showDisconnected(true);
+          return;
+        }
+        showDisconnected(false);
+        return loadCatalog();
+      }).catch(function () {
+        showDisconnected(true);
+      });
+    });
+  }
+
   hideSlideshowEmpty();
   syncFullscreenChrome();
   syncSlideshowChrome();
@@ -2221,20 +2536,46 @@
     addError.hidden = true;
   });
 
-  sortSelect.addEventListener("change", function () {
-    settings.sort = sortSelect.value;
-    persist({ sort: settings.sort }).then(function () {
+  function persistSort() {
+    persist({ sort: settings.sort, dir: settings.dir }).then(function () {
       renderKey = "";
       return loadCatalog();
     });
+  }
+  if (sortPresentable) {
+    sortPresentable.addEventListener("change", function () {
+      applyPresentableSort(sortPresentable.value);
+      persistSort();
+    });
+  }
+  sortSelect.addEventListener("change", function () {
+    settings.sort = sortSelect.value;
+    syncPresentableSort();
+    persistSort();
   });
   dirSelect.addEventListener("change", function () {
     settings.dir = dirSelect.value;
-    persist({ dir: settings.dir }).then(function () {
-      renderKey = "";
-      return loadCatalog();
-    });
+    syncPresentableSort();
+    persistSort();
   });
+
+  function setKindFilter(kind, favorite) {
+    filter.kind = kind || "";
+    filter.favorite = favorite || "";
+    syncFilterDataset();
+    renderKey = "";
+    loadCatalog();
+  }
+  if (filterAll) {
+    filterAll.addEventListener("click", function () {
+      setKindFilter("", "");
+    });
+  }
+  if (filterPhotos) {
+    filterPhotos.addEventListener("click", function () {
+      setKindFilter("photo,live", "");
+    });
+  }
   zoomSlider.addEventListener("input", function () {
     const level = LEVELS[Number(zoomSlider.value)] || "years";
     setLevel(level, true);
@@ -2246,10 +2587,12 @@
   }
   if (filterVideos) {
     filterVideos.addEventListener("click", function () {
-      filter.kind = filter.kind === "video" ? "" : "video";
-      syncFilterDataset();
-      renderKey = "";
-      loadCatalog();
+      setKindFilter(filter.kind === "video" ? "" : "video", "");
+    });
+  }
+  if (filterFavorites) {
+    filterFavorites.addEventListener("click", function () {
+      setKindFilter("", filter.favorite === "1" ? "" : "1");
     });
   }
   if (groupDatesBtn) {
@@ -2290,6 +2633,16 @@
       return;
     }
     if (event.key === "Escape") {
+      if (confirmRemove && confirmRemove.open) {
+        event.preventDefault();
+        confirmRemove.close();
+        return;
+      }
+      if (confirmDeleteFile && confirmDeleteFile.open) {
+        event.preventDefault();
+        confirmDeleteFile.close();
+        return;
+      }
       if (addDialog.open) {
         return;
       }
@@ -2318,6 +2671,18 @@
       if (!viewer.hidden) {
         closeViewer();
       }
+      return;
+    }
+    if (event.key === "Delete" && !textFocused()) {
+      if ((confirmRemove && confirmRemove.open) || (confirmDeleteFile && confirmDeleteFile.open)) {
+        return;
+      }
+      const target = viewerItemId || selectedId;
+      if (!target) {
+        return;
+      }
+      event.preventDefault();
+      askRemove(target);
       return;
     }
     if (textFocused()) {
@@ -2614,6 +2979,7 @@
       if (updateStatus) {
         updateStatus.hidden = false;
         updateStatus.textContent = "Updating…";
+        updateStatus.removeAttribute("data-ok");
       }
       fetch("/api/update", {
         method: "POST",
@@ -2624,12 +2990,14 @@
         if (updateStatus) {
           updateStatus.hidden = false;
           updateStatus.textContent = (body && body.message) || (body && body.updated ? "Updated" : "Already up to date");
+          updateStatus.setAttribute("data-ok", body && body.ok ? "true" : "false");
         }
       }).catch(function (err) {
         updateLibraryBtn.disabled = false;
         if (updateStatus) {
           updateStatus.hidden = false;
           updateStatus.textContent = (err && err.body && err.body.error) || "update-unavailable";
+          updateStatus.setAttribute("data-ok", "false");
         }
       });
     });
@@ -2761,40 +3129,9 @@
     }
   });
 
-  if (updateLibraryBtn) {
-    updateLibraryBtn.addEventListener("click", function () {
-      updateLibraryBtn.disabled = true;
-      if (updateStatus) {
-        updateStatus.hidden = false;
-        updateStatus.textContent = "Checking for an update…";
-        updateStatus.removeAttribute("data-ok");
-      }
-      fetch("/api/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-      }).then(readJson).then(function (result) {
-        updateLibraryBtn.disabled = false;
-        if (updateStatus) {
-          updateStatus.hidden = false;
-          updateStatus.textContent = (result && result.message) || (result && result.ok ? "Updated." : "Update failed.");
-          updateStatus.setAttribute("data-ok", result && result.ok ? "true" : "false");
-        }
-      }).catch(function () {
-        updateLibraryBtn.disabled = false;
-        if (updateStatus) {
-          updateStatus.hidden = false;
-          updateStatus.textContent = "Update failed. Library did not answer.";
-          updateStatus.setAttribute("data-ok", "false");
-        }
-      });
-    });
-  }
-
   fetch("/api/settings").then(readJson).then(function (data) {
     applySettings(data);
-    sortSelect.value = settings.sort;
-    dirSelect.value = settings.dir;
+    syncPresentableSort();
     zoomSlider.value = String(levelIndex(settings.zoomLevel));
     gridSize = DEFAULT_SIZE[settings.zoomLevel] != null ? DEFAULT_SIZE[settings.zoomLevel] : 0;
     applyGridMetrics();

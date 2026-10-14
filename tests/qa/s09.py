@@ -36,7 +36,7 @@ MEDIA_RELS = (
     "a/clip.mp4",
     "formats/clip.avi",
 )
-EMPTY_SEARCH = "No matching pictures"
+EMPTY_SEARCH = "No matches"
 
 
 def prepare_media(artifacts: Path) -> Path:
@@ -665,12 +665,12 @@ def prove_browser(
 
                 page.fill("#search", "zzzz-no-such")
                 page.wait_for_function(
-                    "() => document.getElementById('grid') && (document.getElementById('grid').innerText || '').indexOf('No matching pictures') !== -1",
+                    "() => document.getElementById('grid') && (document.getElementById('grid').innerText || '').indexOf('No matches for zzzz-no-such') !== -1",
                     timeout=8000,
                 )
                 empty_text = page.evaluate("() => (document.querySelector('#grid > p') || {}).textContent || ''")
                 record["emptySearch"] = empty_text
-                checks.check("empty-search-copy", empty_text == EMPTY_SEARCH, empty_text)
+                checks.check("empty-search-copy", empty_text == "No matches for zzzz-no-such", empty_text)
                 page.fill("#search", "")
                 page.wait_for_function(
                     "() => document.querySelectorAll('#grid .cell').length >= 4",
@@ -695,12 +695,12 @@ def prove_browser(
                     timeout=8000,
                 )
                 page.wait_for_function(
-                    "() => (document.querySelector('#grid > p') || {}).textContent === 'No matching pictures'",
+                    "() => (document.querySelector('#grid > p') || {}).textContent === 'No matches for Ada'",
                     timeout=8000,
                 )
                 checks.check(
                     "chip-things-ada-empty",
-                    page.evaluate("() => (document.querySelector('#grid > p') || {}).textContent || ''") == EMPTY_SEARCH,
+                    page.evaluate("() => (document.querySelector('#grid > p') || {}).textContent || ''") == "No matches for Ada",
                 )
                 page.locator("#chip-things").click()
                 page.fill("#search", "")

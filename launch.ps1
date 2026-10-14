@@ -1,5 +1,6 @@
 param(
-    [switch]$NoBrowser
+    [switch]$NoBrowser,
+    [switch]$Update
 )
 
 $ErrorActionPreference = "Stop"
@@ -48,6 +49,13 @@ if (-not $python -or -not $ffmpegOk) {
         Write-Error "Python 3.12+ and ffmpeg are required on PATH."
         exit 1
     }
+}
+
+if ($Update) {
+    Write-Host "Updating..."
+    $updateArgs = @($python[1..($python.Length - 1)] | Where-Object { $_ }) + @("-m", "library", "update")
+    & $python[0] @updateArgs
+    exit $LASTEXITCODE
 }
 
 $proc = Start-Process -FilePath $python[0] -ArgumentList (@($python[1..($python.Length - 1)] | Where-Object { $_ }) + @("-m", "library", "serve")) -WorkingDirectory $AppFolder -PassThru -NoNewWindow

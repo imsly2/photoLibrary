@@ -230,6 +230,12 @@ def build_parser() -> argparse.ArgumentParser:
     open_item = sub.add_parser("open")
     open_item.add_argument("id")
 
+    remove_cmd = sub.add_parser("remove")
+    remove_cmd.add_argument("id")
+
+    delete_file_cmd = sub.add_parser("delete-file")
+    delete_file_cmd.add_argument("id")
+
     sub.add_parser("update")
 
     people = sub.add_parser("people")
@@ -420,6 +426,26 @@ def main(argv: list[str] | None = None) -> int:
                 lambda: Library(root).open(args.id),
                 "POST",
                 f"/api/items/{args.id}/open",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "remove":
+            result = _mutation(
+                root,
+                lambda: Library(root).remove(args.id),
+                "POST",
+                f"/api/items/{args.id}/remove",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "delete-file":
+            result = _mutation(
+                root,
+                lambda: Library(root).delete_file(args.id),
+                "POST",
+                f"/api/items/{args.id}/delete-file",
                 {},
             )
             _print_json(result)

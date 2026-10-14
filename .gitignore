@@ -64,6 +64,8 @@ docs/features/**/taste-viewer-media/
 docs/features/**/s10-media/
 docs/features/**/s11-media/
 docs/features/**/s12-media/
+docs/features/**/api-media/
+docs/features/**/ui-media/
 
 # Python
 __pycache__/

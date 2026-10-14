@@ -15,7 +15,17 @@ from library.settings import ordered
 
 HISTORY_CAP = 500
 OPERATIONS = frozenset(
-    {"scan", "copy-here", "annotate", "favorite", "people-merge", "settings", "relocate"}
+    {
+        "scan",
+        "copy-here",
+        "annotate",
+        "favorite",
+        "people-merge",
+        "settings",
+        "relocate",
+        "remove",
+        "delete-file",
+    }
 )
 
 

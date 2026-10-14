@@ -450,6 +450,22 @@ class Library:
             "opened": opened,
         }
 
+    def remove(self, item_id: str) -> dict[str, Any]:
+        from library.remove import remove_item
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return remove_item(self.root, item_id)
+
+    def delete_file(self, item_id: str) -> dict[str, Any]:
+        from library.remove import delete_file
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return delete_file(self.root, item_id)
+
     def update(self) -> dict[str, Any]:
         from library.update import pull_latest
 
@@ -681,9 +697,12 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
             return False
     kind = query.get("kind")
     if kind is not None:
-        if type(kind) is not str or kind not in ITEM_KINDS:
+        if type(kind) is not str or kind == "":
             raise fail("invalid-argument")
-        if item.get("kind") != kind:
+        kinds = {part.strip() for part in kind.split(",") if part.strip()}
+        if not kinds or not kinds.issubset(ITEM_KINDS):
+            raise fail("invalid-argument")
+        if item.get("kind") not in kinds:
             return False
     raw_favorite = query.get("favorite")
     if raw_favorite is not None:
@@ -724,9 +743,26 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
             filename = item.get("filename") or ""
             if needle in _norm_query(filename):
                 matched = True
+            if _date_query_match(captured, needle):
+                matched = True
         if not matched:
             return False
     return True
+
+
+def _date_query_match(captured: str, needle: str) -> bool:
+    if type(captured) is not str or not captured or not needle:
+        return False
+    calendar = _norm_query(captured[:10])
+    if len(needle) not in {4, 7, 10}:
+        return False
+    if len(needle) == 4 and needle.isdigit():
+        return calendar.startswith(needle)
+    if len(needle) == 7 and needle[4] == "-":
+        return calendar.startswith(needle)
+    if len(needle) == 10 and needle[4] == "-" and needle[7] == "-":
+        return calendar == needle or calendar.startswith(needle)
+    return False
 
 
 def _item_place(item: dict[str, Any]) -> dict[str, Any] | None:

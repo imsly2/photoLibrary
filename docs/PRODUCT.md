@@ -99,7 +99,7 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 7. Remove from library (Delete key + confirm, originals stay) vs Delete
    file (extra confirm, Recycle Bin)
 8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
-9. Search filename + date + existing tags; empty “No matches”
+9. Search filename + date + existing tags; empty “No matches for …”
 10. Update UX finish (launcher + in-app; Updating…; already current / failed)
 
 Also locked: `Library.bat`, native Add folder, live-origin Back, grid
@@ -603,7 +603,7 @@ Artifact: the people file, the thing file, and the search JSON.
 
 The search box matches a person, place, or thing name, a filename, or a
 capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Chips limit the match
-to People, Places, or Things. Empty results say “No matches”. Reference:
+to People, Places, or Things. Empty results say “No matches for …”. Reference:
 [search](reference/library-search.jpg).
 
 The inspector for a thing shows its name, how many pictures point at it, and
