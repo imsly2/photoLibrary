@@ -163,7 +163,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Plan: [taste-version](features/taste-version/Rev1.0/PLAN.md).
   Evidence:
   [TASTE-VERSION](features/taste-version/Rev1.0/assets/verify-1/result.json)
-  23/23, [version-header.png](features/taste-version/Rev1.0/assets/verify-1/version-header.png).
+  23/23 on PR #11,
+  [verify-2](features/taste-version/Rev1.0/assets/verify-2/result.json)
+  23/23 after chrome+autoplay merge (SHA still beside Update Library),
+  [version-header.png](features/taste-version/Rev1.0/assets/verify-2/version-header.png).
 
 ## Completion
 
@@ -429,5 +432,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-14 — Grid/viewer chrome taste after PR #10. One Size slider;
   Dates Years/Months/Days/Off; vertical side viewer zoom; scrub in
   `#viewer-bottom`. Clicking a video tile autoplays at the tile
-  `currentTime`. TASTE-VIDEO 61/61. `GET /api/update` 200. No new
-  Check. 16/22 unchanged.
+  `currentTime`. TASTE-VIDEO 61/61. `#library-version` kept (PR #11
+  merge); TASTE-VERSION 23/23 on this tip. `GET /api/update` 200. No
+  new Check. 16/22 unchanged.
