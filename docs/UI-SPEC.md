@@ -278,7 +278,10 @@ percentage), and **Pause** / **Start** (Resume when paused).
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
 **objects**. When jobs are not paused, the serve drain runs real work:
 previews, then unnamed GPS city names (geo pack), then face infer
-(models ready), then YOLO Things (model file). Pause sets `paused` and
+(models ready), then YOLO Things (model file). After **Re-run Faces**
+(`forceRescan`), the drain finishes the remaining face items first so
+the Faces pending count runs to zero; a failed item is marked scanned
+and the queue continues. Pause sets `paused` and
 the drain skips work; Start/Resume clears it. Missing pack or models:
 `available` false, queue idle, browse stays up. Start never opens a
 modal and never freezes the grid.

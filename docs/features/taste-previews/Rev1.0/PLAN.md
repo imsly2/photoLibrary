@@ -22,6 +22,9 @@ new Check. Keep Setup.bat / Library.bat / ASCII `.ps1`.
    without re-encoding.
 6. The person face-crop picker is single-select: exactly one
    `aria-pressed="true"`, visible selected chrome, click is immediate.
+7. After Re-run Faces, Faces pending must drop one item per drain
+   step through the full remaining queue (not 37→36 then stop). A
+   failed item is marked scanned so the counter stays honest.
 
 ## Gate
 

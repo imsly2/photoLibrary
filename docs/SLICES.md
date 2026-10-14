@@ -73,6 +73,8 @@ not hold the HTTP lock across ffmpeg/faces; tile stills remember
 painted URLs so filter/clear/refresh does not trickle; People and
 Tags are session-collapsible (Tags start closed) with a horizontal
 splitter and clipped flex panes. Face-crop picker is single-select.
+Re-run Faces must drain the full remaining face queue (pending drops
+each step; a failed item does not freeze the counter).
 Gates: `slice TASTE-PREVIEWS`,
 `slice TASTE-SIDEBAR`, keep TASTE-EMPTY-GRID / TASTE-FILTERS /
 TASTE-PEOPLE / TASTE-SHELL. No 23rd Check.

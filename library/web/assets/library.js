@@ -3588,40 +3588,61 @@
       const areaB = b.box && b.box.length === 4 ? b.box[2] * b.box[3] : 0;
       return (scoreB - scoreA) || (areaB - areaA);
     });
+    const nextKeys = thumbs.map(faceChoiceKey).join("|");
+    if (personFaces.dataset.personId === id && personFaces.dataset.keys === nextKeys && personFaces.childNodes.length === thumbs.length) {
+      syncFaceChoicePressed(id);
+      return;
+    }
+    personFaces.dataset.personId = id;
+    personFaces.dataset.keys = nextKeys;
     personFaces.innerHTML = "";
-    let marked = false;
     thumbs.forEach(function (thumb) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "person-face-choice";
       btn.dataset.itemId = thumb.itemId || "";
       btn.dataset.box = JSON.stringify(thumb.box || null);
-      const pressed = !marked && faceIsChosen(person, thumb);
-      if (pressed) {
-        marked = true;
-      }
-      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+      btn.setAttribute("aria-pressed", "false");
       btn.title = "Use this face as the thumbnail";
+      btn.draggable = false;
       const crop = document.createElement("span");
       crop.className = "person-face";
       crop.style.width = "100%";
       crop.style.height = "100%";
       paintFace(crop, thumb);
       btn.appendChild(crop);
-      btn.addEventListener("click", function (event) {
+      function pick(event) {
+        if (event.button != null && event.button !== 0) {
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
         if (event.stopImmediatePropagation) {
           event.stopImmediatePropagation();
         }
         choosePersonThumb(id, thumb);
-      });
+      }
+      btn.addEventListener("pointerdown", pick);
+      btn.addEventListener("click", pick);
       personFaces.appendChild(btn);
     });
+    syncFaceChoicePressed(id);
+  }
+
+  function faceChoiceKey(thumb) {
+    return String((thumb && thumb.itemId) || "") + ":" + JSON.stringify((thumb && thumb.box) || null);
   }
 
   function boxesEqual(a, b) {
-    return JSON.stringify(a || null) === JSON.stringify(b || null);
+    if (!a || !b || a.length !== 4 || b.length !== 4) {
+      return JSON.stringify(a || null) === JSON.stringify(b || null);
+    }
+    for (let i = 0; i < 4; i += 1) {
+      if (Math.abs(Number(a[i]) - Number(b[i])) > 0.0001) {
+        return false;
+      }
+    }
+    return true;
   }
 
   function faceIsChosen(person, thumb) {
@@ -3635,7 +3656,7 @@
       if (pendingThumb.box && thumb.box) {
         return boxesEqual(pendingThumb.box, thumb.box);
       }
-      return true;
+      return !pendingThumb.box;
     }
     const chosenId = (person.thumbnail && person.thumbnail.itemId) || person.thumbnailItemId || "";
     if (!chosenId || thumb.itemId !== chosenId) {
@@ -3645,7 +3666,7 @@
     if (chosenBox && thumb.box) {
       return boxesEqual(chosenBox, thumb.box);
     }
-    return true;
+    return !chosenBox;
   }
 
   function renderPeople() {
@@ -3697,6 +3718,14 @@
       peopleCatalog = (body && body.people) || [];
       if (body && body.personOfInterestMin != null) {
         personOfInterestMin = Number(body.personOfInterestMin) || 3;
+      }
+      if (pendingThumb) {
+        peopleCatalog.forEach(function (row) {
+          if (row.id === pendingThumb.personId) {
+            row.thumbnailItemId = pendingThumb.itemId;
+            row.thumbnail = { itemId: pendingThumb.itemId, box: pendingThumb.box || null };
+          }
+        });
       }
       renderPeople();
       renderActiveFilters();
@@ -3877,7 +3906,10 @@
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-    }).then(readJson).then(function () {
+    }).then(readJson).then(function (row) {
+      if (payload && Object.prototype.hasOwnProperty.call(payload, "thumbnailItemId") && !Object.prototype.hasOwnProperty.call(payload, "name")) {
+        return row;
+      }
       return loadPeople();
     });
   }
@@ -3908,6 +3940,10 @@
     if (!personId || !itemId) {
       return;
     }
+    if (pendingThumb && pendingThumb.personId === personId && pendingThumb.itemId === itemId && boxesEqual(pendingThumb.box, thumb.box || null)) {
+      syncFaceChoicePressed(personId);
+      return;
+    }
     pendingThumb = { personId: personId, itemId: itemId, box: thumb.box || null };
     peopleCatalog.forEach(function (row) {
       if (row.id === personId) {
@@ -3920,11 +3956,7 @@
     if (face) {
       paintFace(face, { itemId: itemId, box: thumb.box || null });
     }
-    savePerson(personId, { thumbnailItemId: itemId }).then(function () {
-      if (pendingThumb && pendingThumb.personId === personId && pendingThumb.itemId === itemId) {
-        pendingThumb = null;
-      }
-    }).catch(function () {
+    savePerson(personId, { thumbnailItemId: itemId }).catch(function () {
       pendingThumb = null;
       loadPeople();
     });
