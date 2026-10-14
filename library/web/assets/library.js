@@ -1113,10 +1113,11 @@
     rearmHover();
   }
 
-  const STILL_MAX = 6;
-  const STILL_STALL_MS = 4000;
+  const STILL_MAX = 4;
+  const STILL_STALL_MS = 3500;
   let stillActive = 0;
   const stillQueue = [];
+  let stillJobs = [];
 
   function stillLooksGood(img, url) {
     if (!img || img.hidden || !img.complete || !(img.naturalWidth > 0)) {
@@ -1128,6 +1129,46 @@
 
   function stillUrlFor(id) {
     return "/api/media/" + encodeURIComponent(id) + "?which=" + stillWhich(itemById(id));
+  }
+
+  function stillSlotStatus(id) {
+    const item = itemById(id);
+    return ((item.renditions || {}).status || {})[stillWhich(item)];
+  }
+
+  function stillAge(cell) {
+    const started = Number(cell && cell.dataset.stillStarted || 0);
+    return started ? Date.now() - started : 0;
+  }
+
+  function liveStillJob(cell) {
+    let i;
+    for (i = 0; i < stillJobs.length; i += 1) {
+      if (!stillJobs[i].settled && stillJobs[i].cell === cell) {
+        return stillJobs[i];
+      }
+    }
+    return null;
+  }
+
+  function releaseStill(job, pump) {
+    if (!job || job.settled) {
+      return;
+    }
+    job.settled = true;
+    stillActive = Math.max(0, stillActive - 1);
+    if (pump !== false) {
+      pumpStillQueue();
+    }
+  }
+
+  function trimStillJobs() {
+    if (stillJobs.length < 64) {
+      return;
+    }
+    stillJobs = stillJobs.filter(function (job) {
+      return !job.settled;
+    });
   }
 
   function paintGridStills() {
@@ -1165,10 +1206,10 @@
     }
   }
 
-  function startStillJob(job) {
-    const cell = job && job.cell;
-    const id = job && job.id;
-    const url = job && job.url;
+  function startStillJob(queued) {
+    const cell = queued && queued.cell;
+    const id = queued && queued.id;
+    const url = queued && queued.url;
     if (!cell || !id || !url || !cell.isConnected || cell.dataset.id !== id) {
       pumpStillQueue();
       return;
@@ -1185,9 +1226,18 @@
       pumpStillQueue();
       return;
     }
-    if (!job.force && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
+    const existing = liveStillJob(cell);
+    const stalled = stillAge(cell) >= STILL_STALL_MS;
+    if (existing && !queued.force && !stalled) {
       pumpStillQueue();
       return;
+    }
+    if (!queued.force && !stalled && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
+      pumpStillQueue();
+      return;
+    }
+    if (existing) {
+      releaseStill(existing, false);
     }
     const item = itemById(id);
     const slotStatus = ((item.renditions || {}).status || {})[stillWhich(item)];
@@ -1199,38 +1249,35 @@
     const gen = (Number(cell.dataset.stillGen) || 0) + 1;
     cell.dataset.stillGen = String(gen);
     cell.dataset.stillStarted = String(Date.now());
-    let settled = false;
-    function finish() {
-      if (settled) {
-        return;
-      }
-      settled = true;
-      stillActive = Math.max(0, stillActive - 1);
-      pumpStillQueue();
-    }
+    const job = { cell: cell, id: id, url: url, gen: gen, settled: false };
+    stillJobs.push(job);
+    trimStillJobs();
     stillActive += 1;
     next.onload = function () {
-      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
-        finish();
+      if (job.settled) {
         return;
       }
-      delete cell.dataset.stillErrorTried;
-      placeholder.hidden = true;
-      next.hidden = false;
-      finish();
+      if (cell.dataset.stillGen === String(gen) && cell.dataset.id === id) {
+        delete cell.dataset.stillErrorTried;
+        placeholder.hidden = true;
+        next.hidden = false;
+      }
+      releaseStill(job);
     };
     next.onerror = function () {
-      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
-        finish();
+      if (job.settled) {
         return;
       }
-      next.hidden = true;
-      placeholder.hidden = false;
-      finish();
-      if (slotStatus === "error") {
-        cell.dataset.stillErrorTried = url;
-        return;
+      if (cell.dataset.stillGen === String(gen) && cell.dataset.id === id) {
+        next.hidden = true;
+        placeholder.hidden = false;
+        if (slotStatus === "error") {
+          cell.dataset.stillErrorTried = url;
+          releaseStill(job);
+          return;
+        }
       }
+      releaseStill(job);
       window.setTimeout(function () {
         if (cell.isConnected && cell.dataset.id === id) {
           requestStill(cell, id, true);
@@ -1239,14 +1286,18 @@
     };
     next.src = url;
     window.setTimeout(function () {
-      if (settled || !cell.isConnected || cell.dataset.stillGen !== String(gen)) {
+      if (job.settled) {
+        return;
+      }
+      releaseStill(job);
+      if (!cell.isConnected || cell.dataset.id !== id) {
         return;
       }
       if (stillLooksGood(next, url)) {
-        finish();
+        placeholder.hidden = true;
+        next.hidden = false;
         return;
       }
-      finish();
       requestStill(cell, id, true);
     }, STILL_STALL_MS);
   }
@@ -1269,9 +1320,13 @@
       img.hidden = false;
       return;
     }
-    const item = itemById(id);
-    const slotStatus = ((item.renditions || {}).status || {})[stillWhich(item)];
+    const slotStatus = stillSlotStatus(id);
     if (slotStatus === "not-applicable") {
+      placeholder.hidden = false;
+      img.hidden = true;
+      return;
+    }
+    if (slotStatus && slotStatus !== "ready" && slotStatus !== "error") {
       placeholder.hidden = false;
       img.hidden = true;
       return;
@@ -1281,13 +1336,56 @@
       img.hidden = true;
       return;
     }
-    if (!forceReload && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
-      const started = Number(cell.dataset.stillStarted || 0);
-      if (!started || Date.now() - started < STILL_STALL_MS) {
-        return;
-      }
+    const live = liveStillJob(cell);
+    const stalled = stillAge(cell) >= STILL_STALL_MS;
+    if (!forceReload && live && !stalled) {
+      return;
+    }
+    if (!forceReload && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete && !stalled) {
+      return;
     }
     enqueueStill(cell, id, url, forceReload);
+  }
+
+  function recoverStills() {
+    let i = 0;
+    while (i < stillQueue.length) {
+      const queued = stillQueue[i];
+      if (!queued.cell || !queued.cell.isConnected || queued.cell.dataset.id !== queued.id) {
+        stillQueue.splice(i, 1);
+      } else {
+        i += 1;
+      }
+    }
+    stillJobs.forEach(function (job) {
+      if (job.settled) {
+        return;
+      }
+      if (!job.cell || !job.cell.isConnected || job.cell.dataset.id !== job.id) {
+        releaseStill(job, false);
+      }
+    });
+    let live = 0;
+    stillJobs.forEach(function (job) {
+      if (!job.settled) {
+        live += 1;
+      }
+    });
+    if (stillActive !== live) {
+      stillActive = live;
+    }
+    pumpStillQueue();
+    paintGridStills();
+  }
+
+  function stillStats() {
+    let live = 0;
+    stillJobs.forEach(function (job) {
+      if (!job.settled) {
+        live += 1;
+      }
+    });
+    return { active: stillActive, live: live, queued: stillQueue.length };
   }
 
   function mediaTransform() {
@@ -3344,6 +3442,15 @@
       if (!crop.src) {
         return;
       }
+      const faceItem = itemById(thumb.itemId);
+      const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
+      if (faceStatus && faceStatus !== "ready" && faceStatus !== "error") {
+        attempt += 1;
+        if (attempt < delays.length) {
+          window.setTimeout(retry, delays[attempt]);
+        }
+        return;
+      }
       const img = document.createElement("img");
       applyFaceCrop(img, crop);
       img.onload = function () {
@@ -3358,7 +3465,7 @@
           window.setTimeout(retry, delays[attempt]);
         }
       };
-      img.src = crop.src + (crop.src.indexOf("?") >= 0 ? "&" : "?") + "t=" + Date.now();
+      img.src = crop.src;
     }
     window.setTimeout(retry, delays[0]);
   }
@@ -3370,6 +3477,13 @@
     const crop = faceCrop(thumb);
     if (!crop.src) {
       node.classList.add("person-face-empty");
+      return;
+    }
+    const faceItem = itemById(thumb.itemId);
+    const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
+    if (faceStatus !== "ready" && faceStatus !== "error") {
+      node.classList.add("person-face-pending");
+      scheduleFaceRefresh(node, thumb);
       return;
     }
     const img = document.createElement("img");
@@ -5308,6 +5422,9 @@
       return language;
     },
     gridThumbs: gridThumbStats,
+    paintGridStills: paintGridStills,
+    recoverStills: recoverStills,
+    stillStats: stillStats,
     peopleOpen: function () {
       return peopleOpen;
     },
@@ -5317,6 +5434,7 @@
   };
 
   pollTimer = window.setInterval(function () {
+    recoverStills();
     fetch("/api/health").then(function (res) {
       if (!res.ok) {
         showDisconnected(true);

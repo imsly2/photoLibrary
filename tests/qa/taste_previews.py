@@ -73,6 +73,23 @@ def thumb_state(page: Any) -> dict[str, Any]:
     )
 
 
+def hammer_stills(page: Any, times: int = 8) -> None:
+    page.evaluate(
+        """(n) => {
+          const api = window.libraryTest || {};
+          for (let i = 0; i < n; i += 1) {
+            if (api.paintGridStills) {
+              api.paintGridStills();
+            }
+            if (api.loadCatalog) {
+              api.loadCatalog();
+            }
+          }
+        }""",
+        times,
+    )
+
+
 def wait_painted(page: Any, names: tuple[str, ...] | list[str], timeout: int = 20000) -> dict[str, Any]:
     wanted = list(names)
     page.wait_for_function(
@@ -189,14 +206,44 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps(video_after),
     )
 
+    hammer_stills(page)
+    after_hammer = wait_painted(page, ALL_NAMES)
+    record["afterHammer"] = after_hammer
+    checks.check(
+        "repaint-does-not-stall",
+        after_hammer.get("missing") == 0 and after_hammer.get("painted") >= 5,
+        json.dumps(after_hammer),
+    )
+
     page.reload(wait_until="domcontentloaded")
     page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=30000)
+    hammer_stills(page)
     reloaded = wait_painted(page, ALL_NAMES, timeout=30000)
     record["reloaded"] = reloaded
     checks.check(
         "reload-keeps-thumbs",
         reloaded.get("missing") == 0 and reloaded.get("painted") >= 5,
         json.dumps(reloaded),
+    )
+    page.wait_for_timeout(2500)
+    hammer_stills(page, 4)
+    stayed = wait_painted(page, ALL_NAMES, timeout=15000)
+    record["reloadStayed"] = stayed
+    checks.check(
+        "reload-stays-painted",
+        stayed.get("missing") == 0 and stayed.get("painted") >= 5,
+        json.dumps(stayed),
+    )
+
+    page.reload(wait_until="domcontentloaded")
+    page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=30000)
+    hammer_stills(page)
+    second = wait_painted(page, ALL_NAMES, timeout=30000)
+    record["secondReload"] = second
+    checks.check(
+        "second-reload-keeps-thumbs",
+        second.get("missing") == 0 and second.get("painted") >= 5,
+        json.dumps(second),
     )
 
     page.screenshot(path=str(artifacts / "grid-thumbs.png"))

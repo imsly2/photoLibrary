@@ -67,10 +67,12 @@ Grid thumbs + People/Tags layout (2026-10-14): after the empty-grid
 poll coalescing, catalog status can stay `queued` while files are
 already on disk, and reused tile `<img>` error state is sticky across
 person-filter / Clear. Tags in `#library-side` can paint over People.
-Fix: serve a rendition file when it exists; tile stills retry without
-fetch-then-same-src; poll refreshes while stills are pending; People
-and Tags are session-collapsible (Tags start closed) with a horizontal
-splitter and clipped flex panes. Gates: `slice TASTE-PREVIEWS`,
+Fix: serve a rendition file when it exists; tile stills queue with one
+in-flight load per cell and a 1s recover pass so a mid-batch stall
+cannot freeze the rest of the grid; poll refreshes while stills are
+pending; People and Tags are session-collapsible (Tags start closed)
+with a horizontal splitter and clipped flex panes. Gates:
+`slice TASTE-PREVIEWS`,
 `slice TASTE-SIDEBAR`, keep TASTE-EMPTY-GRID / TASTE-FILTERS /
 TASTE-PEOPLE / TASTE-SHELL. No 23rd Check.
 
