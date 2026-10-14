@@ -336,6 +336,12 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/places/analyze" and method == "POST":
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.analyze_places())
+                return
             if route == "/api/places" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
                 with self.lock:

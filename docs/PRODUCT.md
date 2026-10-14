@@ -53,7 +53,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
+| Naming | External agent/person writes entity JSON through annotate; no image-model inference. Unnamed GPS places may take a city/region name from a **local** offline geo pack; a human or agent name is never overwritten. No cloud geocoder. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
@@ -76,8 +76,9 @@ CONTRACTS. Changing them requires a doc edit before implementation.
    Spin a globe of every picture that has a location. Click a cluster to
    filter to those pictures and open one. Play a tour that orbits the globe,
    zooms into a place, shows pictures from there, and zooms back out.
-6. An agent writes people, places, and things onto records. Search returns
-   every picture tied to that name.
+6. Pictures with GPS show a city or region in Info when the local geo pack
+   is installed. An agent still writes people, places, and things onto
+   records. Search returns every picture tied to that name.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
@@ -138,6 +139,9 @@ library-data/
     things/<id>.json
     favorites.json       # item ids marked with a heart
     catalog.sqlite       # rebuilt from the JSON
+  geo/                   # optional offline cities pack (setup-geo); not in git
+    cities.csv
+    ATTRIBUTION.txt
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
     preview.webp
@@ -220,6 +224,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
+| `setup-geo` [--from \<dir\>] [--force] | (CLI setup; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
+| `analyze-places` | `POST /api/places/analyze` `{}` | Fills null GPS `place.name` from that pack. Never overwrites a set name. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
 
@@ -338,21 +344,39 @@ ISO6709 location string, not EXIF. The scan reads both.
 The place name you see in the iPhone Photos app is not in the file. Photos
 looks the coordinates up and keeps the name in its own database. A copied
 camera roll brings the coordinates across and leaves the name behind. This
-library stores the coordinates and leaves `name` null until a person or an
-agent sets it. A screenshot, a download, or a photo shared with location
-removed has no coordinates and does not appear on the globe.
+library stores the coordinates. `name` stays null until either a person or
+an agent sets it, or a **local** offline geo pack fills it.
+
+The geo pack lives in `library-data/geo/` (not in git). Steve fetches it
+once with `python -m library setup-geo` or `Setup-geo.bat`. Later
+`Setup.bat` should call that same one-liner; full Setup.bat + ML is a
+later PR. The pack is a GeoNames-class cities table, reverse-geocoder
+style — nearest city/region, no network at scan time, no cloud API.
+Without the pack, behavior is unchanged: `name` stays null.
+
+When a place has coordinates and `name` is null, scan / `resolve_place`
+(and `analyze-places` for a library scanned before the pack) set
+`name` to that city/region, like `Chicago, Illinois`. A nonempty name
+written by a person or an agent is never overwritten. A screenshot, a
+download, or a photo shared with location removed has no coordinates and
+does not appear on the globe.
 
 GPS attaches a place. A new fix within `placeMatchMeters` (default 100) of an
-existing place reuses that place id. The place `name` stays null until set.
-Sort by location uses the name when it exists, otherwise a label made from the
-rounded coordinates, otherwise the group "No location".
+existing place reuses that place id. Sort by location uses the name when it
+exists, otherwise a label made from the rounded coordinates, otherwise the
+group "No location". Info and search show the name the same way they show
+an annotated place.
 
 **Check:** `python -m tests.qa check F6` (planned runner; common root/artifact
 arguments and full assertions in SLICES). fixture JPEG with EXIF date `2024-06-12T15:04:00` and GPS near
-41.88, -87.63. After scan, the item's `capturedAtSource` is `exif` and
-`placeId` points at a place JSON whose `name` is null and whose coordinates
-match. A second JPEG 50 meters away gets the same `placeId`. A third, 5 km
-away, gets a different place. Artifact: the three item files and two place files.
+41.88, -87.63. After scan **without** a geo pack, the item's
+`capturedAtSource` is `exif` and `placeId` points at a place JSON whose
+`name` is null and whose coordinates match. A second JPEG 50 meters away
+gets the same `placeId`. A third, 5 km away, gets a different place.
+With the local geo pack present, that same GPS JPEG’s place `name` is a
+city/region (Chicago area) and `GET /api/items?q=Chicago` returns it.
+Artifact: the three item files and two place files; named-place proof
+under `docs/features/places-geo/`.
 
 ## F7 — Previews
 
@@ -586,8 +610,10 @@ These are the serialized index. Each one is a JSON file. Pictures point at
 them by id. Search does not look at pixels. It reads the ids.
 
 An agent, or a person typing in the viewer, writes them with `annotate`.
-The server does not download or run an image model. Analysis is whoever calls
-`annotate` after looking at `preview.webp`.
+The server does not download or run an image model. Analysis is whoever
+calls `annotate` after looking at `preview.webp`. Local GPS city names
+(F6) are not annotate and do not replace it: they only fill a null
+`place.name` from the offline pack.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be
@@ -612,7 +638,8 @@ Artifact: the people file, the thing file, and the search JSON.
 ## F15 — Search
 
 The search box matches a person, place, or thing name, a filename, or a
-capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Chips limit the match
+capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). A local city/region
+written on a GPS place is a place name. Chips limit the match
 to People, Places, or Things. Empty results say “No matches for …”. Reference:
 [search](reference/library-search.jpg).
 

@@ -245,6 +245,10 @@ def build_parser() -> argparse.ArgumentParser:
     merge.add_argument("drop")
 
     sub.add_parser("rebuild-index")
+    setup_geo = sub.add_parser("setup-geo")
+    setup_geo.add_argument("--from", dest="from_path")
+    setup_geo.add_argument("--force", action="store_true")
+    sub.add_parser("analyze-places")
     renditions = sub.add_parser("renditions")
     renditions.add_argument("action", nargs="?")
     return parser
@@ -494,6 +498,22 @@ def main(argv: list[str] | None = None) -> int:
                 lambda: Library(root).rebuild_index(),
                 "POST",
                 "/api/rebuild-index",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-geo":
+            from library.geo import setup_geo
+
+            result = setup_geo(root, source=args.from_path, force=bool(args.force))
+            _print_json(result)
+            return 0
+        if args.command == "analyze-places":
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze_places(),
+                "POST",
+                "/api/places/analyze",
                 {},
             )
             _print_json(result)

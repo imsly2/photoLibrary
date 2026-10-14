@@ -1,4 +1,5 @@
-# Runtime catalog, originals, renditions, locks, and logs. Never track these.
+# Runtime catalog, originals, renditions, locks, logs, and the optional
+# offline cities pack (library-data/geo/). Never track these.
 library-data/
 
 # Optional private samples. Deterministic fixtures elsewhere may be tracked.
