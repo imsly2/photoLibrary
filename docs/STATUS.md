@@ -266,6 +266,25 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [dry-run](features/taste-setup/Rev1.0/assets/verify-2/dry-run.txt),
   earlier missing-module path
   [verify-1](features/taste-setup/Rev1.0/assets/verify-1/result.json).
+- 2026-10-14 — Filter bar, chips, arrange, and user tags on
+  `cursor/filter-bar-tags-5ac4`. Search stays in the header. All
+  filters live on `#filter-bar` (All/Photos/Videos/Favorites,
+  Person/Place/Tag chips, Clear all, Group Dates/People/Places/Tags).
+  One `filter` object; click a selected person deselects. Group
+  People/Places/Tags with Unknown / No place / Untagged; collapse any
+  header for the session. User tags (Things) create/apply/remove on
+  one or many selected items, persist, and survive re-annotate.
+  Multi-person AND proven with Ada/Bob/Cam. Does not close a Check.
+  16/22 unchanged. Setup.bat / Library.bat / `.ps1` untouched.
+  Plan: [taste-filters](features/taste-filters/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-FILTERS](features/taste-filters/Rev1.0/assets/verify-1/result.json)
+  41/41,
+  [filter-bar](features/taste-filters/Rev1.0/assets/verify-1/filter-bar.png),
+  [group-people](features/taste-filters/Rev1.0/assets/verify-1/group-people.png).
+  Stayed green: TASTE-PEOPLE 52/52, TASTE-SHELL 50/50, F9 46/46,
+  F11 26/26, F14 84/84. F15 HTTP search stayed green; browser-proof
+  is the same Info-first Esc as F10 28/29.
 
 ## Completion
 
