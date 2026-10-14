@@ -1,0 +1,25 @@
+{
+  "written": [
+    "old.txt",
+    "README.txt"
+  ],
+  "catalog": "catalog-secret\n",
+  "venv": "venv-secret\n",
+  "readme": "from-zip\n",
+  "old": "new-old\n",
+  "pull": {
+    "ok": true,
+    "updated": true,
+    "alreadyCurrent": false,
+    "reason": null,
+    "code": "updated",
+    "branch": "main",
+    "revision": "abc1234dead",
+    "message": "Updated to abc1234dead on main.",
+    "source": "zip",
+    "git_sha": "abc1234dead",
+    "git_branch": "main",
+    "git_date": null,
+    "git_subject": "zip main"
+  }
+}

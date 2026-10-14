@@ -1,7 +1,7 @@
 # Taste-Install -- family Setup / shortcut / Update main / restart
 
-Sits on main after PR #28 (`92d6170`). Does not close a Check. No MSI.
-Does not start S13/S14.
+Sits on main after PR #30 (`8ede708`), which includes PR #28 (`92d6170`).
+Does not close a Check. No MSI. Does not start S13/S14.
 
 ## In scope
 
