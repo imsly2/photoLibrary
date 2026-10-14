@@ -74,8 +74,8 @@
       <ul id="inspector-filenames"></ul>
     </aside>
     <aside class="levels" aria-label="Zoom level">
-      <label class="level-slider-label" for="zoom-slider">Zoom</label>
-      <input type="range" id="zoom-slider" min="0" max="3" step="1" value="0" aria-label="Zoom level">
+      <label class="level-slider-label" for="zoom-slider">Level</label>
+      <input type="range" id="zoom-slider" min="0" max="3" step="1" value="0" aria-label="Grid level Years through All">
       <div class="level-labels" aria-hidden="true">
         <span>Years</span>
         <span>Months</span>
@@ -83,7 +83,7 @@
         <span>All</span>
       </div>
       <label class="level-slider-label" for="size-slider">Size</label>
-      <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Thumbnail size">
+      <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size">
     </aside>
   </div>
   <div id="globe-view" hidden>
@@ -169,12 +169,16 @@
       <p id="viewer-placeholder" hidden>Preview is not available</p>
     </div>
     <div id="viewer-bottom">
+      <div id="viewer-scrub-wrap" hidden>
+        <input type="range" id="viewer-scrub" min="0" max="1000" value="0" step="1" aria-label="Video position">
+        <span id="viewer-scrub-time">0:00</span>
+      </div>
       <div id="viewer-nav">
         <button type="button" id="viewer-prev" title="Previous ←">Previous</button>
         <button type="button" id="viewer-rotate" title="Rotate Ctrl+R">Rotate</button>
         <button type="button" id="viewer-next" title="Next →">Next</button>
       </div>
-      <label class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · Ctrl+0 fit · Ctrl+1 100%">Zoom
+      <label class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · Ctrl+1 100%">Zoom
         <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom">
       </label>
       <div id="viewer-actions">

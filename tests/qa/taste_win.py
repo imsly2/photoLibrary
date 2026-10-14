@@ -348,6 +348,7 @@ def prove_launcher(checks: Checks, artifacts: Path) -> None:
         text = bat.read_text(encoding="utf-8")
         checks.check("library-bat-invokes-launch-ps1", "launch.ps1" in text, text)
         checks.check("library-bat-visible-console", "WindowStyle Hidden" not in text and "-WindowStyle" not in text, text)
+        checks.check("library-bat-pauses-on-error", "if errorlevel 1 pause" in text.lower(), text)
     diff = subprocess.run(
         ["git", "diff", "HEAD", "--", "launch.sh"],
         cwd=str(PRODUCT_ROOT),
@@ -373,6 +374,14 @@ def run_slice(root: Path, artifacts: Path) -> int:
         prove_disconnect(checks, artifacts, media, commands)
         prove_live_origin(checks, artifacts, media, commands)
         prove_launcher(checks, artifacts)
+        from tests.qa.launch_ps1_args import run_assertions
+        arglist = run_assertions()
+        (artifacts / "launch-arglist.json").write_text(
+            json.dumps(arglist, indent=2) + "\n", encoding="utf-8"
+        )
+        for item in arglist["assertions"]:
+            checks.check(str(item["name"]), bool(item["pass"]), str(item.get("detail") or ""))
+        extra["launch-arglist.json"] = str(artifacts / "launch-arglist.json")
         assert_no_pillow_in_server(checks)
         checks.check("original-fixture-bytes", hash_tree(media) == before)
     except Exception as exc:

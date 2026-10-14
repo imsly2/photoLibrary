@@ -778,7 +778,8 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
           const video = document.getElementById('viewer-video');
           if (!video) return false;
           const src = video.currentSrc || video.getAttribute('src') || '';
-          return src.indexOf('which=proxy') !== -1 && video.paused === false;
+          return (src.indexOf('which=proxy') !== -1 || src.indexOf('which=original') !== -1)
+            && video.paused === false;
         }""",
         timeout=15000,
     )

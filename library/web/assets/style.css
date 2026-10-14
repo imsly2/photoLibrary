@@ -822,6 +822,8 @@ dialog h2 {
   max-height: none;
   background: transparent;
   user-select: none;
+  object-fit: contain;
+  object-position: center;
 }
 
 #viewer-bar {
@@ -1140,6 +1142,44 @@ dialog h2 {
 }
 
 #viewer-bottom > * {
+  pointer-events: auto;
+}
+
+#viewer-scrub-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: min(36rem, 86vw);
+}
+
+#viewer-scrub-wrap[hidden] {
+  display: none;
+}
+
+#viewer-scrub {
+  flex: 1;
+  min-width: 8rem;
+  accent-color: #4a7ac8;
+}
+
+#viewer-scrub-time {
+  color: #c8c8d0;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+.tile-scrub {
+  position: absolute;
+  left: 0.2rem;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  z-index: 4;
+  height: 0.55rem;
+  margin: 0;
+  padding: 0;
+  accent-color: #4a7ac8;
   pointer-events: auto;
 }
 

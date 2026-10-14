@@ -52,7 +52,7 @@ fill. They must read as clickable toggles, not heading text.
 | Ready | Years/Months/Days/All, search, sort Newest/Oldest/Name, filters All/Photos/Videos/Favorites, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed / update-unavailable. No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
-| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then original/proxy, live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom-slider` (range 25–1600, 0.25×–16× fit) plus Ctrl+wheel and Ctrl++/−; Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. |
+| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom-slider` (range 25–1600, 0.25×–16× fit) plus **plain wheel** or Ctrl+wheel and Ctrl++/−; Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` seeks the playing video at any zoom. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matches for …” including the query (or “No matches” when only a chip/filter is empty). Clearing query/chip returns matching broader grid, no catalog mutation. |
@@ -123,22 +123,28 @@ tiles use `data-slot="fav"` so the same id can also sit in its date/wall
 row. Collapse is session-only.
 
 Click a cell opens it. ArrowLeft/ArrowRight navigate. Viewer zoom is a
-slider (`#viewer-zoom-slider`) and Ctrl+wheel around the cursor's image
-coordinate; middle drag moves it 1:1. Click-hold pans while the picture is
-zoomed past fit (stills and video). A still also pans with a left drag.
-No reflow or automatic fit during a gesture. Slider/wheel span 0.25× fit
-to 16× fit. Images and video initially fit; each newly opened item resets
-fit and rotation. A still click does nothing. Video/live click or Space
-toggles playback unless that pointer was a pan. Normal scrolling does not
-seek. Unsupported original codec falls back to proxy, not a silent freeze.
+slider (`#viewer-zoom-slider`) plus **plain wheel** or Ctrl+wheel around
+the cursor's image coordinate; middle drag moves it 1:1. Click-hold pans
+while the picture is zoomed past fit (stills and video). A still also pans
+with a left drag. No reflow or automatic fit during a gesture.
+Slider/wheel span 0.25× fit to 16× fit. Images and video initially fit;
+each newly opened item resets fit and rotation. A still click does
+nothing. Video/live click or Space toggles playback unless that pointer
+was a pan. The viewer scrub bar seeks; wheel does not seek. Unsupported
+original codec stays on the proxy after a progressive start, not a silent
+freeze.
 
 Proxy policy: `off` never autoplays; `days-and-all` plays only the hovered cell at
 those levels; `always` also permits hover playback within Years/Months mosaics.
 No policy autoplays all cells. Hover leave stops and restores still/poster; muted,
 looped proxy never starts audio. Explicit viewer play is independent of hover setting.
 The hover proxy is position-absolute over the still and `object-fit: cover`s the
-entire cell. The still is not hidden by a `display` rule that would leave it
-flex-sharing the tile. No split still+video.
+entire cell **at every Size stop** (72–520), not only on large tiles. The still
+is not hidden by a `display` rule that would leave it flex-sharing the tile. No
+split still+video. A Dates-off wall plays the hovered proxy at every level so
+zooming the wall out does not freeze video tiles. Dated Years/Months stay stills
+under `days-and-all` unless `playProxies=always`. A `.tile-scrub` on the hovered
+video tile seeks that preview without opening the viewer.
 
 ## Search and annotation
 
@@ -244,13 +250,14 @@ the interval. Empty library: “Add photos first”. Not the globe tour.
 **Implemented on this PR.**
 
 **3. Viewer keyboard parity.** Arrows prev/next and stop at the ends.
-Ctrl++ / Ctrl+- or wheel zooms (Ctrl+wheel stays; wheel without Ctrl may
-zoom in the viewer). Ctrl+0 fits. Ctrl+1 is 100% (one image pixel per
+Ctrl++ / Ctrl+- or **plain wheel** zooms the open still or video
+(Ctrl+wheel stays). Ctrl+0 fits. Ctrl+1 is 100% (one image pixel per
 CSS pixel at rotation 0). Ctrl+R rotates the display 90°, same as the
 Rotate button — does not rewrite the file. Space plays or pauses video
 when a slideshow is not running. Tooltips on chrome name the shortcut
 (Previous ←, Next →, Rotate Ctrl+R, Slideshow F5, Fullscreen F11).
-Focused text fields keep their keys.
+Focused text fields keep their keys. Wheel over a range input (zoom
+slider, scrub) keeps the native slider behavior.
 **Implemented on this PR.**
 
 **4. Info = file facts, then names.** `#viewer-info` is a top-right
@@ -306,11 +313,54 @@ real git copy.
 
 Also still locked from the earlier Windows notes (already on the DoD
 path): `Library.bat`; native Add folder; 202-before-finish; live-origin
-Back; non-fatal abort; full-tile video hover; VIDEO badge; eight Size
-stops; thumbs stay painted; Dates-off wall; Library/Globe buttons;
-viewer heart + tile hearts + Favorites strip; bottom Prev/Next; zoom
-slider; click-drag pan; no overlay pills; inverted globe yaw; local
-Earth. macOS/Linux launch stays pinned later.
+Back; non-fatal abort; full-tile video hover **at every Size**; VIDEO
+badge; eight Size stops; thumbs stay painted; Dates-off wall; Library/
+Globe buttons; viewer heart + tile hearts + Favorites strip; bottom
+Prev/Next; **one** viewer zoom slider; click-drag pan; no overlay pills;
+inverted globe yaw; local Earth. macOS/Linux launch stays pinned later.
+
+### Video playback and zoom (locked shell requirements)
+
+Not Soon. Not one-off patches. These are presentable-shell rules for
+video and the two zoom surfaces.
+
+**Fit stays put.** Opening a video shows the poster fitted and centered
+in the stage. Play, a proxy→original swap, or a higher-resolution source
+must not jump the picture to a corner or change its fitted scale. Layout
+uses the item’s catalog width/height (not the proxy’s 480 px) as the
+stable box. `object-fit: contain` inside that box. After the first fit,
+a source swap only reapplies the same transform.
+
+**Progressive start.** Viewer play always begins with the silent proxy
+as soon as it can, then swaps to the original (or stays on the proxy if
+the browser cannot decode the original or the file is unavailable). The
+swap keeps `currentTime`, play/pause, and the current scale/pan. No
+“Showing original”. Slideshow still plays the proxy for the 5 s interval.
+
+**Hover at every tile size.** Grid preview playback is not reserved for
+large cells. When the proxy policy allows the cell, the hovered video
+fills that tile at Size 72 through 520. A Dates-off wall also plays the
+hovered proxy at Years/Months so zooming the wall out does not freeze
+tiles. Dated Years/Months stay stills under `days-and-all` unless
+`playProxies=always`. Leave restores the poster.
+
+**One grid Level, one grid Size, one viewer Zoom.** The rail
+`#zoom-slider` is **Level** (Years → Months → Days → All). The rail
+`#size-slider` is **Size** (tile density, eight stops). Changing Level
+sets Size to that level’s default. Changing Size does **not** change
+Level — they are not two copies of one control. Viewer zoom lives only
+on `#viewer-zoom-slider` inside the Win7 chrome. Do not put a second
+picture-zoom slider on the grid.
+
+**Wheel parity.** In the viewer, plain wheel zooms the still or video
+around the cursor (same as Ctrl+wheel / Ctrl++/−). Grid Ctrl+wheel still
+steps Level. Plain wheel on the grid scrolls the wall. Wheel does not
+seek; `#viewer-scrub` and `.tile-scrub` do.
+
+**Scrub anywhere the video is playing.** `#viewer-scrub` (with a
+mm:ss time label) seeks the open viewer video at any zoom or source.
+A compact `.tile-scrub` on the hovered grid tile seeks that preview
+without opening the viewer. Originals stay on disk; no cloud.
 
 ### Spec target vs current implementation
 
@@ -336,6 +386,10 @@ Check to hide it.
 | Library / Globe | Button affordances | abc Track C | — |
 | Hearts / Favorites strip | Viewer + tile ≥144 + strip | abc B+C | — |
 | Prev / Next / slider / pan / rotate | Bottom bar; slider; no zoom buttons | **This merge** (PR #2 72/72) + **this PR** keys | Ctrl+0 / Ctrl+1 / Ctrl+R / tooltips shipped |
+| Grid Level vs Size | Level `#zoom-slider`; Size `#size-slider`; labels distinct | This video/zoom tip | Size does not drive Level; viewer Zoom is viewer-only |
+| Viewer wheel | Plain wheel zooms still/video | This video/zoom tip | Ctrl+wheel stays; wheel does not seek |
+| Progressive video | Proxy first, then original; same fit/time | This video/zoom tip | Catalog width/height is the layout box |
+| Scrub | `#viewer-scrub` + `.tile-scrub` | This video/zoom tip | Tile scrub does not open the viewer |
 | Overlay pills / “Showing original” | **Forbidden** | **This merge** removed them | Do not restore |
 | Reveal + Open | Side by side | **This merge** Open + Reveal | Keep beside each other |
 | Info | File facts first, then names | **This PR** facts + names | Empty camera: “No camera info for this file.” |
@@ -392,8 +446,8 @@ taste gate.
 | 7 | Search | Filename, date, or a tag; empty “No matches for …” |
 | 8 | Open | Preview then original; no “Showing original”; no overlay pills; missing-file placeholder |
 | 9 | Next / Prev / arrows | Bottom Previous and Next; arrows; stop at ends; Back stays on this origin |
-| 10 | Keyboard parity | Ctrl++/− or wheel zoom; Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause video; tooltips show shortcuts |
-| 11 | Zoom slider / pan / rotate | Slider; click-drag pan; Rotate beside Prev/Next |
+| 10 | Keyboard parity | Ctrl++/− or **plain wheel** zoom; Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause video; tooltips show shortcuts |
+| 11 | Zoom slider / pan / rotate | Viewer zoom slider only in the viewer; click-drag pan; Rotate beside Prev/Next. Grid Level ≠ Size |
 | 12 | Fullscreen | F11 or F; Esc exits fullscreen, then the viewer |
 | 13 | Slideshow | F5 starts; Space pauses; Esc stops; empty “Add photos first” |
 | 14 | Favorite | Viewer heart; tile heart at large Size; Favorites strip can collapse |

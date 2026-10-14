@@ -56,7 +56,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. |
+| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -89,7 +89,7 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 
 1. Fullscreen (F11 or F); Esc exits fullscreen then the viewer
 2. Slideshow (F5; Space pause; Esc stop; empty “Add photos first”)
-3. Viewer keys: arrows; Ctrl++/− or wheel zoom; Ctrl+0 fit; Ctrl+1 100%;
+3. Viewer keys: arrows; Ctrl++/− or **plain wheel** zoom; Ctrl+0 fit; Ctrl+1 100%;
    Ctrl+R rotate; Space play/pause video; tooltips show shortcuts
 4. Info = EXIF/file facts first (date, camera, dimensions, size, path,
    GPS; empty “No camera info”), then people/places/things
@@ -104,8 +104,9 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 
 Also locked: `Library.bat`, native Add folder, live-origin Back, grid
 wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
-“Showing original”, globe yaw + local Earth. macOS/Linux launch is pinned
-later.
+“Showing original”, globe yaw + local Earth, progressive video start,
+hover at every Size, one grid Level + one grid Size + viewer Zoom only,
+viewer/tile scrub. macOS/Linux launch is pinned later.
 
 **Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
 that path is green, do not call the shell presentable, and do not
@@ -360,7 +361,8 @@ Every video gets:
 - `poster.webp`, one frame near the start, at thumb size.
 - `proxy.mp4`, width `proxyWidth` (default 480), H.264, no audio, long enough
   to cover the whole clip. The grid and the carousel play this file. Opening
-  the item plays the original when it is available.
+  the item starts the proxy immediately, then swaps to the original when it
+  is available, keeping time and fit.
 
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
@@ -368,9 +370,10 @@ The grid shows a placeholder until the thumb exists, then the thumb.
 Years and months show stills under the default setting. Days and All play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
 `days-and-all` (default), `always`, or `off`. Hover playback fills the whole
-tile; the still stays underneath as a poster. The tile never splits still on
+tile at every Size stop; the still stays underneath as a poster. A Dates-off
+wall also plays the hovered proxy at Years/Months. The tile never splits still on
 one side and video on the other. Every video cell shows a VIDEO badge; live
-cells keep LIVE.
+cells keep LIVE. A small scrub on the hovered tile seeks that preview.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
@@ -472,8 +475,9 @@ folder on this computer whenever the file is here (`explorer /select` on
 Windows). Open launches that file in the computer's default app. Delete
 removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
-plays the original or proxy; a browser that cannot decode the original
-falls back to the proxy. Play preview still toggles pause/play on click.
+starts the proxy and swaps to the original when loaded (a browser that
+cannot decode the original stays on the proxy). Play preview still
+toggles pause/play on click. `#viewer-scrub` seeks at any zoom.
 Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags
 it; a still also pans with a left drag, and any zoomed item pans with a
 left drag. Click a video, or press Space (when no slideshow), to play or
@@ -731,7 +735,7 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Key | Action |
 |-----|--------|
 | Ctrl+wheel on the grid | Change year / month / day / all, cursor stays put |
-| Ctrl+wheel or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
+| Ctrl+wheel, plain wheel, or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
 | Ctrl+0 / Ctrl+1 | Fit / 100% in the viewer |
 | Ctrl+R | Rotate the displayed still 90° |
 | Middle-click drag | Pan the open picture |
