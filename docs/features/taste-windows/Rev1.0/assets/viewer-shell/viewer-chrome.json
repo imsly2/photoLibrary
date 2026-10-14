@@ -1,0 +1,313 @@
+{
+  "update": {
+    "present": true,
+    "text": "Update Library",
+    "hidden": false,
+    "width": 113.015625,
+    "height": 27.78125
+  },
+  "updateHttp": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "updated": false,
+      "revision": "08a027584300cb951820fadc9c8f6d308a6dd39b",
+      "message": "Already up to date.\n\nFrom https://github.com/imsly2/photoLibrary\n * [new branch]      cursor/windows-presentable-shell-must-806a -> origin/cursor/windows-presentable-shell-must-806a"
+    }
+  },
+  "chrome": {
+    "back": {
+      "present": true,
+      "text": "Back",
+      "disabled": false,
+      "hidden": false,
+      "width": 56.828125,
+      "height": 26.1875,
+      "top": 18.09375,
+      "left": 20,
+      "bottom": 44.28125
+    },
+    "prev": {
+      "present": true,
+      "text": "Previous",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 475.203125,
+      "bottom": 637.03125
+    },
+    "next": {
+      "present": true,
+      "text": "Next",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 700.796875,
+      "bottom": 637.03125
+    },
+    "zoomOut": {
+      "present": false
+    },
+    "zoomIn": {
+      "present": false
+    },
+    "zoomSlider": {
+      "present": true,
+      "type": "range",
+      "min": "25",
+      "max": "1600",
+      "hidden": false,
+      "width": 352,
+      "top": 647.828125
+    },
+    "rotate": {
+      "present": true,
+      "text": "Rotate",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 588,
+      "bottom": 637.03125
+    },
+    "favorite": {
+      "present": true,
+      "text": "\u2661",
+      "disabled": false,
+      "hidden": false,
+      "width": 41.59375,
+      "height": 38.390625,
+      "top": 12,
+      "left": 977.96875,
+      "bottom": 50.390625
+    },
+    "reveal": {
+      "present": true,
+      "text": "Reveal in Explorer",
+      "disabled": false,
+      "hidden": false,
+      "width": 144,
+      "height": 27.78125,
+      "top": 674.625,
+      "left": 410.40625,
+      "bottom": 702.40625
+    },
+    "info": {
+      "present": true,
+      "text": "Info",
+      "disabled": false,
+      "hidden": false,
+      "width": 47.828125,
+      "height": 27.78125,
+      "top": 17.296875,
+      "left": 1212.171875,
+      "bottom": 45.078125
+    },
+    "open": {
+      "present": true,
+      "text": "Open",
+      "disabled": false,
+      "hidden": false,
+      "width": 144,
+      "height": 27.78125,
+      "top": 674.625,
+      "left": 568,
+      "bottom": 702.40625
+    },
+    "slideshow": {
+      "present": true,
+      "text": "Slideshow",
+      "disabled": false,
+      "hidden": false,
+      "width": 86.359375,
+      "height": 27.78125,
+      "top": 17.296875,
+      "left": 1025.953125,
+      "bottom": 45.078125
+    },
+    "fullscreen": {
+      "present": true,
+      "text": "Fullscreen",
+      "disabled": false,
+      "hidden": false,
+      "width": 87.078125,
+      "height": 27.78125,
+      "top": 17.296875,
+      "left": 1118.703125,
+      "bottom": 45.078125
+    },
+    "titles": {
+      "prev": "Previous \u2190",
+      "next": "Next \u2192",
+      "rotate": "Rotate Ctrl+R",
+      "slideshow": "Slideshow F5",
+      "fullscreen": "Fullscreen F11"
+    },
+    "crumb": "IMG_1042.jpg",
+    "fields": [
+      "Person",
+      "Place",
+      "Thing"
+    ],
+    "personPlaceholder": "Person",
+    "placePlaceholder": "Place",
+    "thingPlaceholder": "Thing",
+    "overlayLabels": false,
+    "stagePills": 0,
+    "showingOriginalText": false,
+    "href": "http://127.0.0.1:18766/"
+  },
+  "infoOpen": {
+    "headings": [
+      "File",
+      "People",
+      "Places",
+      "Things"
+    ],
+    "facts": [
+      {
+        "label": "Date taken",
+        "value": "2024-06-12 15:04:00"
+      },
+      {
+        "label": "Camera",
+        "value": "No camera info for this file."
+      },
+      {
+        "label": "Dimensions",
+        "value": "640 \u00d7 480"
+      },
+      {
+        "label": "Size",
+        "value": "14.9 KB"
+      },
+      {
+        "label": "Path",
+        "value": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg"
+      },
+      {
+        "label": "GPS",
+        "value": "41.88000\u00b0N, 87.63000\u00b0W"
+      }
+    ],
+    "fields": [
+      "Person",
+      "Place",
+      "Thing"
+    ],
+    "personPlaceholder": "Person",
+    "placePlaceholder": "Place",
+    "thingPlaceholder": "Thing",
+    "personInPanel": true
+  },
+  "infoFacts": {
+    "Date taken": "2024-06-12 15:04:00",
+    "Camera": "No camera info for this file.",
+    "Dimensions": "640 \u00d7 480",
+    "Size": "14.9 KB",
+    "Path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
+    "GPS": "41.88000\u00b0N, 87.63000\u00b0W"
+  },
+  "originalAuto": {
+    "text": "Open",
+    "pressed": null,
+    "showing": "1",
+    "originalSrc": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original",
+    "originalHidden": false
+  },
+  "open": {
+    "path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
+    "opened": true
+  },
+  "reveal": {
+    "path": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a/IMG_1042.jpg",
+    "folder": "/tmp/qa-viewer-shell2/taste-viewer/taste-viewer-media/a",
+    "opened": true
+  },
+  "stillPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -320,
+      "top": -360,
+      "width": 1920,
+      "height": 1440,
+      "complete": true,
+      "naturalWidth": 640
+    },
+    "after": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440,
+      "complete": true,
+      "naturalWidth": 640
+    }
+  },
+  "ctrl0": {
+    "left": 160,
+    "top": 0,
+    "width": 960,
+    "height": 720,
+    "complete": true,
+    "naturalWidth": 640
+  },
+  "ctrl1": {
+    "left": 320,
+    "top": 120,
+    "width": 640,
+    "height": 480,
+    "complete": true,
+    "naturalWidth": 640
+  },
+  "backUrl": {
+    "before": "http://127.0.0.1:18766/",
+    "after": "http://127.0.0.1:18766/"
+  },
+  "slideshowStart": {
+    "hidden": false,
+    "slideshow": "1",
+    "paused": "0",
+    "intervalMs": 5000,
+    "active": true
+  },
+  "videoPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -320,
+      "top": -360,
+      "width": 1920,
+      "height": 1440
+    },
+    "after": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440
+    }
+  },
+  "videoHoldPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440
+    },
+    "after": {
+      "left": -250,
+      "top": -315,
+      "width": 1920,
+      "height": 1440
+    }
+  },
+  "emptySlideshow": {
+    "text": "Add photos first",
+    "hidden": false,
+    "viewerHidden": true
+  }
+}

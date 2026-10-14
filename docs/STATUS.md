@@ -108,6 +108,12 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   file facts first then names (“No camera info for this file.”). Open +
   Reveal stay. Remove / sort / search / empty-library CTA stay with the
   parallel agent. Does not close a new Check.
+  TASTE-VIEWER **103/103**, exit 0; F10 **29/29** stayed green (re-run on
+  this merge tip).
+  Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-shell/result.json),
+  [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png),
+  [F10](features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json).
+  Pointer: [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
 
 ## Completion
 
@@ -366,5 +372,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-13 — Viewer Presentable Shell Must (fullscreen, slideshow,
   keyboard parity, EXIF-first Info) rebased onto
   `cursor/merge-viewer-chrome-7726`. Open + Reveal + Win7 chrome stay.
-  Remove/sort/search/empty go to a parallel agent. No new Check. 16/22
-  unchanged.
+  Remove/sort/search/empty go to a parallel agent. TASTE-VIEWER 103
+  assertions exit 0; F10 29 stayed green (re-run on merge tip). No new
+  Check. 16/22 unchanged.
