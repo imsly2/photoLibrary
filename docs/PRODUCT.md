@@ -107,8 +107,9 @@ Also locked: `Library.bat`, native Add folder, live-origin Back, grid
 wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
 “Showing original”, globe yaw + local Earth, progressive video start,
 hover at every Size, one grid Size slider + Dates Years/Months/Days/Off
-+ vertical side viewer Zoom, viewer/tile scrub in bottom chrome.
-macOS/Linux launch is pinned later.
+in the bottom-left cluster, a right People splitter, processing
+Pause/Start, vertical side viewer Zoom, viewer/tile scrub in bottom
+chrome. macOS/Linux launch is pinned later.
 
 **Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
 that path is green, do not call the shell presentable, and do not
@@ -217,7 +218,11 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
 | `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
+| `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |
+| `people update <id> --name … --thumbnail <item-id>` | `PUT /api/people/<id>` | Renames a person or chooses the thumbnail face item. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects. |
+| `jobs pause` / `jobs resume` | `POST /api/jobs` `{"action":"pause"\|"resume"}` | Pauses or resumes the serve-process drain. Does not block browse. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
@@ -229,7 +234,8 @@ The header shows the checkout SHA from `GET /api/version` and refreshes
 it from a successful update payload.
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
-`person=`, `place=`, `thing=`, `kind=photo|video|live` or a comma list,
+`person=` (one id/name, or comma-separated ids meaning **all** faces),
+`place=`, `thing=`, `kind=photo|video|live` or a comma list,
 `from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
 Names match case-insensitively. `scope=people|places|things` restricts
 the query for the existing search chips. `kind` keeps only those media
@@ -425,7 +431,8 @@ source tree. Artifact: both directory listings, before and after.
 One Size slider steps cell pixels (eight useful stops: 72, 104, 144,
 192, 256, 336, 420, 520). Ctrl+wheel on the grid drives that slider
 only. Size does not change date grouping. Size is a session view option,
-not a settings.json key.
+not a settings.json key. Size and Dates sit together at the **bottom
+of the library grid** (bottom-left cluster).
 
 Date grouping is a separate `#date-group` control: Years, Months, Days,
 or Off. It is not a second zoom slider. Years is one card per year.
@@ -609,6 +616,13 @@ It may be omitted. A face is a box that points at a person. A person with
 `people merge <keep-id> <drop-id>` rewrites every face and deletes the dropped
 person file.
 
+The Library page lists people in a right side panel. Named people always
+appear. An unnamed cluster appears only when that face is on at least
+`personOfInterestMin` photos (constant 3). Click filters to that face;
+selecting several people keeps photos that contain all of them. The
+panel is where unknowns are named and a thumbnail face is chosen. Info
+still names a person on the open item.
+
 Naming a thing reuses an existing thing id when the name matches,
 case-insensitively, including aliases. Otherwise annotate creates the thing file.
 
@@ -782,7 +796,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates Years/Months/Days/Off, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

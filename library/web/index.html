@@ -47,14 +47,6 @@
         <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
         <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false">Favorites</button>
       </div>
-      <label class="toolbar-field">Dates
-        <select id="date-group" aria-label="Date grouping Years Months Days or Off">
-          <option value="years">Years</option>
-          <option value="months">Months</option>
-          <option value="days">Days</option>
-          <option value="off">Off</option>
-        </select>
-      </label>
       <button type="button" id="remove-item" class="toolbar-action" disabled>Remove</button>
       <button type="button" id="delete-file" class="toolbar-action" disabled>Delete file</button>
     </div>
@@ -75,17 +67,55 @@
     <button type="button" id="scan-retry" hidden>Retry</button>
   </div>
   <div class="workspace">
-    <main id="grid">
-      <p>No pictures yet</p>
-    </main>
-    <aside id="inspector" hidden>
-      <p id="inspector-name"></p>
-      <p id="inspector-count"></p>
-      <ul id="inspector-filenames"></ul>
-    </aside>
-    <aside class="levels" aria-label="Grid size">
-      <label class="level-slider-label" for="size-slider">Size</label>
-      <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size">
+    <div id="library-stage">
+      <main id="grid">
+        <p>No pictures yet</p>
+      </main>
+      <div id="library-chrome">
+        <label class="chrome-field" for="size-slider">Size
+          <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size">
+        </label>
+        <label class="chrome-field">Dates
+          <select id="date-group" aria-label="Date grouping Years Months Days or Off">
+            <option value="years">Years</option>
+            <option value="months">Months</option>
+            <option value="days">Days</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <button type="button" id="library-splitter" aria-label="Resize People panel" aria-controls="library-side"></button>
+    <aside id="library-side" aria-label="Library panel">
+      <div id="side-head">
+        <h2 id="people-heading">People</h2>
+        <button type="button" id="side-collapse" aria-expanded="true" aria-controls="library-side" title="Hide panel">Hide</button>
+      </div>
+      <section id="people-panel" aria-labelledby="people-heading">
+        <p id="people-empty" hidden>No people yet</p>
+        <ul id="people-list"></ul>
+        <div id="person-profile" hidden>
+          <label class="chrome-field" for="person-name">Name
+            <input type="text" id="person-name" placeholder="Unnamed" aria-label="Person name" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="side-label">Thumbnail</p>
+          <div id="person-faces"></div>
+        </div>
+      </section>
+      <aside id="inspector" hidden>
+        <p id="inspector-name"></p>
+        <p id="inspector-count"></p>
+        <ul id="inspector-filenames"></ul>
+      </aside>
+      <section id="jobs-panel" aria-labelledby="jobs-heading">
+        <h2 id="jobs-heading">Processing</h2>
+        <p id="jobs-status">Idle</p>
+        <ul id="jobs-queues"></ul>
+        <div id="jobs-actions">
+          <button type="button" id="jobs-pause" disabled>Pause</button>
+          <button type="button" id="jobs-resume">Start</button>
+        </div>
+      </section>
     </aside>
   </div>
   <div id="globe-view" hidden>

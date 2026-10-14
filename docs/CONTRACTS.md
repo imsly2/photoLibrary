@@ -213,7 +213,10 @@ is unavailable, and Ctrl+C can still copy its historical primary path.
 Copy-here conversion adds copied primary locations, retains old
 volume locations as alternates, and preserves ids and annotations.
 
-Person `{schemaVersion,id,name}`; name nonempty string or null.
+Person `{schemaVersion,id,name}` plus optional `thumbnailItemId` (item
+id whose face crop is the sidebar thumbnail). Name is a nonempty string
+or null. Absent `thumbnailItemId` means the first boxed face, else the
+first still that references the person. Unknown extra keys stay rejected.
 Place `{schemaVersion,id,name,latitude,longitude}`; coordinates both numbers or
 both null. A named place without GPS can be searched but has no globe pin.
 Thing `{schemaVersion,id,name,aliases}`; name nonempty, aliases distinct strings.
@@ -240,7 +243,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -294,7 +297,11 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable`; default-app launch |
 | remove id / POST `/api/items/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops item JSON, favorite entry, and index row; original bytes stay; undoable `remove`. Unknown id is `not-found`. |
 | delete-file id / POST `/api/items/<id>/delete-file` | `{}`; 200 `{ok:true,id,trashed}`; Windows Recycle Bin the current original when possible (`trashed` true/false), then the same catalog drop as remove; undoable `delete-file` restores catalog only. 404 `unavailable` if no current file. UI extra-confirms; CLI is explicit. |
+| people / people list / GET `/api/people` | 200 `{personOfInterestMin,people}` where each person is `{id,name,itemCount,visible,named,thumbnail}`. `personOfInterestMin` is the constant **3** (not a settings key). `visible` is true for any named person and for unnamed clusters with `itemCount >= personOfInterestMin`. `thumbnail` is `{itemId,box?}` or null. |
+| people update id / PUT `/api/people/<id>` | `{name?,thumbnailItemId?}`; 200 updated person read (same shape as a people-list row). Name null unnames. `thumbnailItemId` must be an item that already has that person. Undoable `person-update`. Unknown id is `not-found`. |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
+| jobs / GET `/api/jobs` | 200 `{ok,paused,processing,queues}` where `queues` is renditions, analyze, infer-faces, objects, each `{id,label,pending,done,error,state,available}`. Renditions counts come from item rendition status. Analyze / infer-faces / objects count catalog work that those workers would drain (photos without faces / things) and set `available` when the matching module exists. `state` is `running\|paused\|idle`. Browse stays up. |
+| jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"}`; 200 same body as GET. Pause stops the serve-process rendition drain (and any hooked analyze / infer-faces / objects workers). Resume starts them again. Does not block `GET /api/items`. |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
 | rebuild-index / POST `/api/rebuild-index` | `{}`; 200 `{"ok":true}`; atomic replacement index, unchanged canonical JSON |
@@ -314,7 +321,9 @@ coordinates. Empty payload is invalid. CLI shorthand `--person Ada --thing mug`
 maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
-normalized exact name; place also comma-separated ids. `kind` is one of
+normalized exact name; place also comma-separated ids (OR). `person` with
+comma-separated **ids** keeps items that contain **all** those people
+(AND). A single person token still matches id or exact name. `kind` is one of
 `photo|video|live` or a comma-separated list of those (Photos filter is
 `photo,live`). Unknown kind is `invalid-argument`. `favorite=1` keeps hearted
 items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring

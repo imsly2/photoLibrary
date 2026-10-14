@@ -239,10 +239,18 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("update")
 
     people = sub.add_parser("people")
-    people_sub = people.add_subparsers(dest="people_cmd")
+    people_sub = people.add_subparsers(dest="people_cmd", required=False)
+    people_sub.add_parser("list")
     merge = people_sub.add_parser("merge")
     merge.add_argument("keep")
     merge.add_argument("drop")
+    update_person = people_sub.add_parser("update")
+    update_person.add_argument("id")
+    update_person.add_argument("--name")
+    update_person.add_argument("--thumbnail")
+
+    jobs = sub.add_parser("jobs")
+    jobs.add_argument("action", nargs="?", choices=("pause", "resume"))
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -461,6 +469,34 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "people":
+            if args.people_cmd in {None, "list"}:
+                url = _running_server_url(root)
+                if url is not None:
+                    status, payload = _forward(url, "GET", "/api/people", None)
+                    if status != 200:
+                        if isinstance(payload, dict) and "error" in payload:
+                            raise AppError(payload["error"], status)
+                        raise fail_from_status(status)
+                    _print_json(payload)
+                    return 0
+                payload = _with_lock(root, lambda: Library(root).people_list())
+                _print_json(payload)
+                return 0
+            if args.people_cmd == "update":
+                body: dict[str, Any] = {}
+                if args.name is not None:
+                    body["name"] = args.name
+                if args.thumbnail is not None:
+                    body["thumbnailItemId"] = args.thumbnail
+                result = _mutation(
+                    root,
+                    lambda: Library(root).person_update(args.id, body),
+                    "PUT",
+                    f"/api/people/{args.id}",
+                    body,
+                )
+                _print_json(result)
+                return 0
             if args.people_cmd != "merge":
                 _print_error("invalid-argument")
                 return 2
@@ -473,6 +509,31 @@ def main(argv: list[str] | None = None) -> int:
                 body,
             )
             _print_json(result)
+            return 0
+        if args.command == "jobs":
+            action = getattr(args, "action", None)
+            if action in {"pause", "resume"}:
+                body = {"action": action}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).jobs_set(body),
+                    "POST",
+                    "/api/jobs",
+                    body,
+                )
+                _print_json(result)
+                return 0
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "GET", "/api/jobs", None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).jobs_get())
+            _print_json(payload)
             return 0
         if args.command == "renditions":
             if getattr(args, "action", None) != "relocate":

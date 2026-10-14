@@ -51,6 +51,7 @@ class Library:
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self._scanning = False
+        self._jobs_paused = False
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
@@ -481,7 +482,37 @@ class Library:
         self._assert_idle()
         return apply_people_merge(self.root, keep_id, drop_id)
 
+    def people_list(self) -> dict[str, Any]:
+        from library.people_panel import people_index
+
+        self.recover()
+        self.ensure_settings()
+        return people_index(self.root)
+
+    def person_update(self, person_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.people_panel import apply_person_update
+
+        self.recover()
+        self.ensure_settings()
+        return apply_person_update(self.root, person_id, payload)
+
+    def jobs_get(self) -> dict[str, Any]:
+        from library.jobs import jobs_status
+
+        self.recover()
+        self.ensure_settings()
+        return jobs_status(self.root, getattr(self, "_jobs_paused", False))
+
+    def jobs_set(self, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.jobs import jobs_status, read_jobs_action
+
+        action = read_jobs_action(payload)
+        self._jobs_paused = action == "pause"
+        return jobs_status(self.root, self._jobs_paused)
+
     def drain_step(self) -> bool:
+        if getattr(self, "_jobs_paused", False):
+            return False
         self.ensure_settings()
         return drain_queued_jpegs(self.root)
 
@@ -670,7 +701,13 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
         if type(token) is not str or token == "":
             raise fail("invalid-argument")
         ids = {rec.get("id") for rec in people}
-        if token not in ids and not any(_entity_name_match(rec, token) for rec in people):
+        if "," in token:
+            tokens = [part for part in token.split(",") if part]
+            if not tokens:
+                raise fail("invalid-argument")
+            if not all(part in ids for part in tokens):
+                return False
+        elif token not in ids and not any(_entity_name_match(rec, token) for rec in people):
             return False
     if "place" in query:
         raw = query["place"]
