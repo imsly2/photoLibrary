@@ -34,7 +34,9 @@ and this file.
 ## Out of scope
 
 S13/S14, filmstrip, multi-select, Print, `?`, recently added, macOS/Linux
-F2. Do not change `playProxies` default stills for dated Years/Months.
+F2. Hover play + `.tile-scrub` work in dated Years/Months (default
+`days-and-all`), not only Days and Dates=Off. `playProxies=off` still
+leaves tiles still.
 Do not fight a separate version-label PR.
 
 ## Gate

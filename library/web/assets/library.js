@@ -673,14 +673,7 @@
     if (policy === "off") {
       return false;
     }
-    const level = settings.zoomLevel;
-    if (policy === "always") {
-      return true;
-    }
-    if (!groupDates) {
-      return true;
-    }
-    return level === "days" || level === "all";
+    return true;
   }
 
   let hoverVideo = null;

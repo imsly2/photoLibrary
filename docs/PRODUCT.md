@@ -56,7 +56,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original or `playback.mp4` without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
+| Playback clarification | Full-length silent video proxies. Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original or `playback.mp4` without a fit/time jump. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -380,11 +380,11 @@ and fit. `#viewer-source` says Preview, Loading full…, Original, Full
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
 
-Years and months show stills under the default setting. Days and All play the proxy, muted and
+Years, Months, Days, and a Dates-off wall play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
-`days-and-all` (default), `always`, or `off`. Hover playback fills the whole
-tile at every Size stop; the still stays underneath as a poster. A Dates-off
-wall also plays the hovered proxy at Years/Months. The tile never splits still on
+`days-and-all` (default) and `always` both hover-play at every Dates
+grouping; `off` never does. Hover playback fills the whole
+tile at every Size stop; the still stays underneath as a poster. The tile never splits still on
 one side and video on the other. Every video cell shows a VIDEO badge; live
 cells keep LIVE. A small scrub on the hovered tile seeks that preview.
 

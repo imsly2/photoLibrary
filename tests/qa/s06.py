@@ -446,12 +446,17 @@ def prove_hover(
     checks.check("hover-video-cells", years_cells.count() >= 1, str(years_cells.count()))
     if years_cells.count() >= 1:
         years_cells.nth(0).hover()
-        time.sleep(0.6)
+        page.wait_for_function(
+            """() => Array.from(document.querySelectorAll('.cell video')).some(function (v) {
+              return !v.paused && !v.ended;
+            })""",
+            timeout=8000,
+        )
         years_hover = playing_cell_videos(page)
         record["policies"]["days-and-all"] = {"yearsHover": years_hover}
         checks.check(
-            "days-and-all-years-silent",
-            years_hover["playingCount"] == 0,
+            "days-and-all-years-plays",
+            years_hover["playingCount"] == 1,
             json.dumps(years_hover),
         )
 

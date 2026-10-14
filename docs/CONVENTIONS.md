@@ -52,8 +52,9 @@ The setting `previewStore` chooses. Default is next to the server, because the l
 ## Refinement 2026-10-12
 
 PRODUCT and UI-SPEC clarify the existing defaults: reference artwork does not add
-Albums, storage meters, or native window chrome. `playProxies=always`
-permits hovered playback at every level; only the default keeps Years/Months still.
+Albums, storage meters, or native window chrome. `playProxies=off`
+disables hover play; the default and `always` hover-play at every
+Dates grouping, including Years/Months.
 The product keeps its 16 settings and fixed shortcuts; the generic baseline does
 not authorize a new keybinding editor in this build.
 

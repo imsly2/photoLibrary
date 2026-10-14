@@ -27,9 +27,8 @@ Read PRODUCT F3 / F7 / F10 / F16, CONTRACTS reveal, UI-SPEC checklist
 6. Viewer video chrome: `#viewer-mute` and `#viewer-volume` sit beside
    `#viewer-scrub`. Hover proxies stay silent. Not a setting.
 7. Grid hover plays again at every Size when policy allows (Days /
-   All, Dates=Off wall, or `playProxies=always`). Dated Years/Months
-   stay stills under `days-and-all`. Catalog rebuild must not leave a
-   hovered tile paused.
+   All, dated Years/Months, Dates=Off wall, or `playProxies=always`).
+   Catalog rebuild must not leave a hovered tile paused.
 8. `#viewer-source` beside the filename: Preview / Loading full… /
    Original / Full / Preview — full unavailable. Progressive
    proxy→original or `playback.mp4` stays; the label must not
@@ -40,7 +39,8 @@ Read PRODUCT F3 / F7 / F10 / F16, CONTRACTS reveal, UI-SPEC checklist
 
 S13/S14, filmstrip, multi-select, Print, `?`, macOS/Linux F2.
 Do not change `launch.ps1` or `/api/update`.
-Do not weaken F7 for dated Years/Months unless Dates=Off.
+Hover play in dated Years/Months is the family default (Steve).
+`playProxies=off` still leaves tiles still.
 
 ## Gate
 

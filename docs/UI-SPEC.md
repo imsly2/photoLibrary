@@ -143,16 +143,15 @@ viewer scrub bar sits in `#viewer-bottom` (not over the picture) and
 seeks; wheel does not seek. Unsupported original codec stays on the
 proxy after a progressive start, not a silent freeze.
 
-Proxy policy: `off` never autoplays; `days-and-all` plays only the hovered cell at
-those levels; `always` also permits hover playback within Years/Months mosaics.
-No policy autoplays all cells. Hover leave stops and restores still/poster; muted,
+Proxy policy: `off` never autoplays; `days-and-all` (default) and `always`
+play only the hovered cell at every Dates grouping, including Years/Months
+mosaics. No policy autoplays all cells. Hover leave stops and restores still/poster; muted,
 looped proxy never starts audio. Explicit viewer play is independent of hover setting.
 The hover proxy is position-absolute over the still and `object-fit: cover`s the
 entire cell **at every Size stop** (72–520), not only on large tiles. The still
 is not hidden by a `display` rule that would leave it flex-sharing the tile. No
-split still+video. A Dates-off wall plays the hovered proxy at every level so
-zooming the wall out does not freeze video tiles. Dated Years/Months stay stills
-under `days-and-all` unless `playProxies=always`. A catalog poll that
+split still+video. Dated Years/Months and a Dates-off wall all play the
+hovered proxy. A catalog poll that
 rebuilds the grid must resume the hovered proxy if the pointer is still
 on that tile. A `.tile-scrub` on the hovered
 video tile seeks that preview without opening the viewer.
@@ -364,10 +363,10 @@ Clicking a video tile opens the viewer at that tile’s `currentTime`
 
 **Hover at every tile size.** Grid preview playback is not reserved for
 large cells. When the proxy policy allows the cell, the hovered video
-fills that tile at Size 72 through 520. A Dates-off wall also plays the
-hovered proxy at Years/Months so zooming the wall out does not freeze
-tiles. Dated Years/Months stay stills under `days-and-all` unless
-`playProxies=always`. Leave restores the poster. A catalog rebuild
+fills that tile at Size 72 through 520. Dated Years/Months mosaics and a
+Dates-off wall all play the hovered proxy; `.tile-scrub` seeks that
+preview. `playProxies=off` is the only setting that leaves tiles still.
+Leave restores the poster. A catalog rebuild
 must resume the hovered proxy while the pointer stays on that tile.
 
 **One grid Size, separate Dates, one viewer Zoom.** The rail

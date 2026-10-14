@@ -392,11 +392,12 @@ def prove_static_source(checks: Checks) -> None:
         "viewer source + hover resume",
     )
     checks.check(
-        "source-hover-keeps-years-policy",
-        'return level === "days" || level === "all"' in page
-        and "if (!groupDates)" in page
+        "source-hover-allows-years-months",
+        "function hoverAllowed" in page
+        and 'policy === "off"' in page
+        and 'return level === "days" || level === "all"' not in page
         and "playProxies" in page,
-        "dated Years/Months stay stills unless wall or always",
+        "dated Years/Months hover-play under the default",
     )
     checks.check(
         "uispec-viewer-source",

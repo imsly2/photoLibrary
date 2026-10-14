@@ -134,6 +134,33 @@ def video_state(page: Any) -> dict[str, Any]:
     )
 
 
+def wait_tile_hover_playing(page: Any, timeout: float = 8000) -> dict[str, Any]:
+    page.locator('.cell[data-slot="grid"][data-kind="video"]').first.hover()
+    page.wait_for_function(
+        """() => Array.from(document.querySelectorAll('.cell video')).some(function (v) {
+          return !v.paused && !v.ended;
+        })""",
+        timeout=timeout,
+    )
+    return playing_cell_videos(page)
+
+
+def seek_tile_scrub(page: Any) -> dict[str, Any]:
+    before = page.evaluate(
+        "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
+    )
+    page.locator(".tile-scrub").evaluate(
+        """(el) => {
+          el.value = '600';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    after = page.evaluate(
+        "() => { const v = document.querySelector('.cell video'); return v ? v.currentTime : 0; }"
+    )
+    return {"before": before, "after": after}
+
+
 def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[str, Any]:
     record: dict[str, Any] = {}
     page.goto(url, wait_until="domcontentloaded")
@@ -144,14 +171,38 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'years'",
         timeout=5000,
     )
-    page.locator('.cell[data-slot="grid"][data-kind="video"]').first.hover()
-    page.wait_for_timeout(600)
-    years_dated = playing_cell_videos(page)
+    years_dated = wait_tile_hover_playing(page)
     record["datedYearsHover"] = years_dated
     checks.check(
-        "dated-years-stay-still",
-        years_dated.get("playingCount") == 0 and years_dated.get("videoCount") == 0,
+        "dated-years-hover-plays",
+        years_dated.get("playingCount") == 1,
         json.dumps(years_dated),
+    )
+    years_scrub = seek_tile_scrub(page)
+    record["datedYearsScrub"] = years_scrub
+    checks.check(
+        "dated-years-tile-scrub",
+        (years_scrub.get("after") or 0) > (years_scrub.get("before") or 0) + 0.05,
+        json.dumps(years_scrub),
+    )
+    page.locator("#date-group").select_option("months")
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'months'",
+        timeout=5000,
+    )
+    months_dated = wait_tile_hover_playing(page)
+    record["datedMonthsHover"] = months_dated
+    checks.check(
+        "dated-months-hover-plays",
+        months_dated.get("playingCount") == 1,
+        json.dumps(months_dated),
+    )
+    months_scrub = seek_tile_scrub(page)
+    record["datedMonthsScrub"] = months_scrub
+    checks.check(
+        "dated-months-tile-scrub",
+        (months_scrub.get("after") or 0) > (months_scrub.get("before") or 0) + 0.05,
+        json.dumps(months_scrub),
     )
     set_settings(url, {"zoomLevel": "all", "playProxies": "days-and-all"})
     wait_level(page, "all")
