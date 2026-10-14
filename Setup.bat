@@ -12,9 +12,9 @@ if /I "%~1"=="-h" goto :help
 echo.
 echo  Library portable setup
 echo  ----------------------
-echo  Setup once   — this file  (Python, ffmpeg, local faces / objects / places)
-echo  Library      — Library.bat every day
-echo  Update       — Update.bat or Update Library for new code  (git pull)
+echo  Setup once   -- this file  (Python, ffmpeg, local faces / objects / places)
+echo  Library      -- Library.bat every day
+echo  Update       -- Update.bat or Update Library for new code  (git pull)
 echo  No MSI. Models stay in library-data. First run needs the internet.
 echo.
 
@@ -27,17 +27,17 @@ if not "%ERR%"=="0" (
     exit /b %ERR%
 )
 echo.
-echo  Ready — run Library.bat
+echo  Ready -- run Library.bat
 pause
 exit /b 0
 
 :help
 echo.
-echo  Setup.bat  — one-time portable install on this Windows PC
+echo  Setup.bat  -- one-time portable install on this Windows PC
 echo.
-echo  Setup once   — this file  (Python 3.12+, ffmpeg, .venv, local AI models)
-echo  Library      — Library.bat every day
-echo  Update       — Update.bat or Update Library for new code  (git pull)
+echo  Setup once   -- this file  (Python 3.12+, ffmpeg, .venv, local AI models)
+echo  Library      -- Library.bat every day
+echo  Update       -- Update.bat or Update Library for new code  (git pull)
 echo.
 echo  First real run needs the internet for Python/ffmpeg (if missing)
 echo  and the cities / objects / faces packs. After that, re-runs are local.
