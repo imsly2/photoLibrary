@@ -113,9 +113,11 @@
       </div>
     </div>
     <button type="button" id="library-splitter" aria-label="Resize People panel" aria-controls="library-side" data-i18n-aria="resizePeople"></button>
-    <aside id="library-side" aria-label="Library panel" data-i18n-aria="libraryPanel">
+    <aside id="library-side" class="tags-collapsed" aria-label="Library panel" data-i18n-aria="libraryPanel">
       <div id="side-head">
-        <h2 id="people-heading" data-i18n="people">People</h2>
+        <button type="button" id="people-toggle" class="side-section-toggle" aria-expanded="true" aria-controls="people-panel">
+          <h2 id="people-heading" data-i18n="people">People</h2>
+        </button>
         <button type="button" id="side-collapse" aria-expanded="true" aria-controls="library-side" title="Hide panel" data-i18n="hide" data-i18n-title="hidePanel">Hide</button>
       </div>
       <section id="people-panel" aria-labelledby="people-heading">
@@ -130,10 +132,15 @@
           <div id="person-faces"></div>
         </div>
       </section>
-      <section id="tags-panel" aria-labelledby="tags-heading">
-        <h2 id="tags-heading" data-i18n="tags">Tags</h2>
-        <p id="tags-empty" hidden data-i18n="noTags">No tags yet</p>
-        <ul id="tags-list"></ul>
+      <button type="button" id="side-vsplit" hidden aria-label="Resize People and Tags" data-i18n-aria="resizePeopleTags"></button>
+      <section id="tags-section" aria-labelledby="tags-heading">
+        <button type="button" id="tags-toggle" class="side-section-toggle" aria-expanded="false" aria-controls="tags-panel">
+          <h2 id="tags-heading" data-i18n="tags">Tags</h2>
+        </button>
+        <div id="tags-panel">
+          <p id="tags-empty" hidden data-i18n="noTags">No tags yet</p>
+          <ul id="tags-list"></ul>
+        </div>
       </section>
       <aside id="inspector" hidden>
         <p id="inspector-name"></p>

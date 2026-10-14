@@ -1,0 +1,57 @@
+PASS scan-ok
+PASS has-four-stills
+PASS annotate-ada
+PASS ada-id: person_78dcf4f66b8f
+PASS annotate-ada-bob
+PASS bob-id: person_d0de6115e843
+PASS unnamed-one
+PASS cluster-create
+PASS cluster-id: person_26a2ae66e5a9
+PASS people-list-cli
+PASS poi-min-3: {"personOfInterestMin": 3, "people": [{"id": "person_78dcf4f66b8f", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}, {"id": "person_d0de6115e843", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, {"id": "person_26a2ae66e5a9", "name": null, "itemCount": 3, "visible": true, "named": false, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}, {"id": "person_9ae75bea74b7", "name": null, "itemCount": 1, "visible": false, "named": false, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}]}
+PASS ada-visible: {"id": "person_78dcf4f66b8f", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}
+PASS ada-named: {"id": "person_78dcf4f66b8f", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}
+PASS singleton-hidden: {"id": "person_9ae75bea74b7", "name": null, "itemCount": 1, "visible": false, "named": false, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}
+PASS cluster-visible: {"id": "person_26a2ae66e5a9", "name": null, "itemCount": 3, "visible": true, "named": false, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}
+PASS and-cli
+PASS and-only-near: ["near.jpg"]
+PASS rename-cli
+PASS rename-pat: {"id": "person_26a2ae66e5a9", "name": "Pat", "itemCount": 3, "visible": true, "named": true, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}
+PASS thumb-cli
+PASS thumb-item: {"id": "person_78dcf4f66b8f", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}
+PASS jobs-cli
+PASS jobs-queues: ["renditions", "analyze", "infer-faces", "objects"]
+PASS jobs-ok: {"ok": true, "paused": false, "processing": true, "queues": [{"id": "renditions", "label": "Previews", "pending": 8, "done": 0, "error": 0, "state": "running", "available": true}, {"id": "analyze", "label": "Analyze", "pending": 2, "done": 0, "error": 0, "state": "idle", "available": false}, {"id": "infer-faces", "label": "Faces", "pending": 0, "done": 4, "error": 0, "state": "idle", "available": false}, {"id": "objects", "label": "Objects", "pending": 4, "done": 0, "error": 0, "state": "idle", "available": false}]}
+PASS jobs-pause
+PASS jobs-resume
+PASS people-http: 200
+PASS and-http: ["near.jpg"]
+PASS jobs-http
+PASS jobs-pause-http
+PASS browser-scan
+PASS playwright-import
+PASS chrome-present: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}, "side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "splitter": {"top": 131.75, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 588.25}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS size-in-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}, "side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "splitter": {"top": 131.75, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 588.25}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS date-in-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}, "side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "splitter": {"top": 131.75, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 588.25}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS date-not-in-toolbar: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}, "side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "splitter": {"top": 131.75, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 588.25}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS chrome-below-grid: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}}
+PASS side-right-of-grid: {"side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}}
+PASS date-modes: ["years", "months", "days", "off"]
+PASS people-has-ada: ["Ada", "Bob", "Pat"]
+PASS people-has-bob: ["Ada", "Bob", "Pat"]
+PASS people-has-pat: ["Ada", "Bob", "Pat"]
+PASS people-no-singleton-unnamed: ["Ada", "Bob", "Pat"]
+PASS jobs-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 131.75, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 545.875}, "side": {"top": 131.75, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 588.25}, "splitter": {"top": 131.75, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 588.25}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS click-ada-filters: ["near.jpg", "IMG_1042.jpg"]
+PASS multiselect-and: ["near.jpg"]
+PASS rename-in-panel: ["Ada", "Bob", "Patricia"]
+PASS people-face-has-height: {"width": 34.390625, "height": 34.390625, "overflow": "hidden", "cssWidth": "34.3906px", "cssHeight": "34.3906px"}
+PASS people-face-img-has-height: {"width": 34.390625, "height": 34.390625, "overflow": "clip", "cssWidth": "34.3906px", "cssHeight": "34.3906px"}
+PASS people-face-overflow-hidden: {"width": 34.390625, "height": 34.390625, "overflow": "hidden", "cssWidth": "34.3906px", "cssHeight": "34.3906px"}
+PASS people-choice-no-overlap: {"face": {"width": 34.390625, "height": 34.390625, "overflow": "hidden", "cssWidth": "34.3906px", "cssHeight": "34.3906px"}, "img": {"width": 34.390625, "height": 34.390625, "overflow": "clip", "cssWidth": "34.3906px", "cssHeight": "34.3906px"}, "choiceCount": 3, "choiceOverlap": false}
+PASS choice-does-not-toggle-row: {"before": "person_10a896b1dd48", "after": "person_10a896b1dd48"}
+PASS side-toggle
+PASS no-console-errors: []
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

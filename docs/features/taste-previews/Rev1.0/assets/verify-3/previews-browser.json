@@ -1,0 +1,317 @@
+{
+  "first": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "filtered": {
+    "count": 2,
+    "painted": 2,
+    "missing": 0,
+    "files": [
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "chipX": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "cycled": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "afterHammer": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "reloaded": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "reloadStayed": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  },
+  "secondReload": {
+    "count": 5,
+    "painted": 5,
+    "missing": 0,
+    "files": [
+      {
+        "file": "clip.mp4",
+        "kind": "video",
+        "painted": true,
+        "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+        "placeholder": false
+      },
+      {
+        "file": "near.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "IMG_1042.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "far.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+        "placeholder": false
+      },
+      {
+        "file": "no-exif.jpg",
+        "kind": "photo",
+        "painted": true,
+        "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+        "placeholder": false
+      }
+    ]
+  }
+}

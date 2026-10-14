@@ -1,0 +1,153 @@
+{
+  "slice": "TASTE-SIDEBAR",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "people-have-ada",
+      "pass": true,
+      "detail": "[{\"id\": \"person_f4cd2e84d497\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}]"
+    },
+    {
+      "name": "tags-seeded",
+      "pass": true,
+      "detail": "[\"Birthday\", \"Dinner\", \"Family\", \"Garden\", \"Hiking\", \"Holiday\", \"Kitchen\", \"Painting\", \"Park\", \"School\", \"Singing\", \"Travel\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "people-start-open",
+      "pass": true,
+      "detail": "{\"sideClass\": \"tags-collapsed\", \"peopleOpen\": true, \"tagsOpen\": false, \"peopleToggle\": \"true\", \"tagsToggle\": \"false\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Expand Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 170.3125, \"bottom\": 500.484375, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 500.484375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 32.390625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "tags-start-collapsed",
+      "pass": true,
+      "detail": "{\"sideClass\": \"tags-collapsed\", \"peopleOpen\": true, \"tagsOpen\": false, \"peopleToggle\": \"true\", \"tagsToggle\": \"false\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Expand Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 170.3125, \"bottom\": 500.484375, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 500.484375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 32.390625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "side-tags-collapsed-class",
+      "pass": true,
+      "detail": "\"tags-collapsed\""
+    },
+    {
+      "name": "person-row-visible",
+      "pass": true,
+      "detail": "{\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}"
+    },
+    {
+      "name": "tags-body-hidden",
+      "pass": true,
+      "detail": "{\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}"
+    },
+    {
+      "name": "default-no-overlap",
+      "pass": true,
+      "detail": "{\"sideClass\": \"tags-collapsed\", \"peopleOpen\": true, \"tagsOpen\": false, \"peopleToggle\": \"true\", \"tagsToggle\": \"false\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Expand Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 170.3125, \"bottom\": 500.484375, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 500.484375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 32.390625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "vsplit-hidden-when-tags-closed",
+      "pass": true,
+      "detail": "{\"sideClass\": \"tags-collapsed\", \"peopleOpen\": true, \"tagsOpen\": false, \"peopleToggle\": \"true\", \"tagsToggle\": \"false\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Expand Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 170.3125, \"bottom\": 500.484375, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 500.484375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 32.390625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "tags-expand",
+      "pass": true,
+      "detail": "{\"sideClass\": \"\", \"peopleOpen\": true, \"tagsOpen\": true, \"peopleToggle\": \"true\", \"tagsToggle\": \"true\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Collapse Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": false, \"people\": {\"top\": 170.3125, \"bottom\": 396.84375, \"left\": 1016, \"right\": 1280, \"height\": 226.53125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 435.234375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 97.640625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 402.84375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 130.03125, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "vsplit-visible-when-both-open",
+      "pass": true,
+      "detail": "{\"sideClass\": \"\", \"peopleOpen\": true, \"tagsOpen\": true, \"peopleToggle\": \"true\", \"tagsToggle\": \"true\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Collapse Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": false, \"people\": {\"top\": 170.3125, \"bottom\": 396.84375, \"left\": 1016, \"right\": 1280, \"height\": 226.53125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 435.234375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 97.640625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 402.84375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 130.03125, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "people-clips",
+      "pass": true,
+      "detail": "{\"top\": 170.3125, \"bottom\": 396.84375, \"left\": 1016, \"right\": 1280, \"height\": 226.53125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}"
+    },
+    {
+      "name": "tags-clips",
+      "pass": true,
+      "detail": "{\"top\": 435.234375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 97.640625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}"
+    },
+    {
+      "name": "expanded-no-overlap",
+      "pass": true,
+      "detail": "{\"sideClass\": \"\", \"peopleOpen\": true, \"tagsOpen\": true, \"peopleToggle\": \"true\", \"tagsToggle\": \"true\", \"peopleLabel\": \"Collapse People\", \"tagsLabel\": \"Collapse Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": false, \"people\": {\"top\": 170.3125, \"bottom\": 396.84375, \"left\": 1016, \"right\": 1280, \"height\": 226.53125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 435.234375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 97.640625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 402.84375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 130.03125, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "tags-below-person",
+      "pass": true,
+      "detail": "{\"person\": {\"top\": 174.3125, \"bottom\": 220.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"tags\": {\"top\": 435.234375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 97.640625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}}"
+    },
+    {
+      "name": "people-collapse",
+      "pass": true,
+      "detail": "{\"sideClass\": \"people-collapsed\", \"peopleOpen\": false, \"tagsOpen\": true, \"peopleToggle\": \"false\", \"tagsToggle\": \"true\", \"peopleLabel\": \"Expand People\", \"tagsLabel\": \"Collapse Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 202.703125, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 170.3125, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 362.5625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "people-body-hidden",
+      "pass": true,
+      "detail": "{\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}"
+    },
+    {
+      "name": "collapsed-people-no-overlap",
+      "pass": true,
+      "detail": "{\"sideClass\": \"people-collapsed\", \"peopleOpen\": false, \"tagsOpen\": true, \"peopleToggle\": \"false\", \"tagsToggle\": \"true\", \"peopleLabel\": \"Expand People\", \"tagsLabel\": \"Collapse Tags\", \"peopleHeading\": \"People\", \"tagsHeading\": \"Tags\", \"vsplitHidden\": true, \"people\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"none\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 202.703125, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 330.171875, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 170.3125, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 362.5625, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 0, \"bottom\": 0, \"left\": 0, \"right\": 0, \"height\": 0, \"width\": 0, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "people-heading-zh",
+      "pass": true,
+      "detail": "{\"sideClass\": \"\", \"peopleOpen\": true, \"tagsOpen\": true, \"peopleToggle\": \"true\", \"tagsToggle\": \"true\", \"peopleLabel\": \"\\u6536\\u8d77\\u4eba\\u7269\", \"tagsLabel\": \"\\u6536\\u8d77\\u6807\\u7b7e\", \"peopleHeading\": \"\\u4eba\\u7269\", \"tagsHeading\": \"\\u6807\\u7b7e\", \"vsplitHidden\": false, \"people\": {\"top\": 172.3125, \"bottom\": 397.59375, \"left\": 1016, \"right\": 1280, \"height\": 225.28125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 436.984375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 95.890625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 403.59375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 129.28125, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 176.3125, \"bottom\": 222.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "tags-heading-zh",
+      "pass": true,
+      "detail": "{\"sideClass\": \"\", \"peopleOpen\": true, \"tagsOpen\": true, \"peopleToggle\": \"true\", \"tagsToggle\": \"true\", \"peopleLabel\": \"\\u6536\\u8d77\\u4eba\\u7269\", \"tagsLabel\": \"\\u6536\\u8d77\\u6807\\u7b7e\", \"peopleHeading\": \"\\u4eba\\u7269\", \"tagsHeading\": \"\\u6807\\u7b7e\", \"vsplitHidden\": false, \"people\": {\"top\": 172.3125, \"bottom\": 397.59375, \"left\": 1016, \"right\": 1280, \"height\": 225.28125, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tags\": {\"top\": 436.984375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 95.890625, \"width\": 264, \"display\": \"block\", \"overflow\": \"auto\", \"overflowY\": \"auto\"}, \"tagsSection\": {\"top\": 403.59375, \"bottom\": 532.875, \"left\": 1016, \"right\": 1280, \"height\": 129.28125, \"width\": 264, \"display\": \"flex\", \"overflow\": \"hidden\", \"overflowY\": \"hidden\"}, \"person\": {\"top\": 176.3125, \"bottom\": 222.296875, \"left\": 1027.1875, \"right\": 1268.8125, \"height\": 45.984375, \"width\": 241.625, \"display\": \"flex\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"jobs\": {\"top\": 532.875, \"bottom\": 720, \"left\": 1016, \"right\": 1280, \"height\": 187.125, \"width\": 264, \"display\": \"block\", \"overflow\": \"visible\", \"overflowY\": \"visible\"}, \"overlap\": false}"
+    },
+    {
+      "name": "toggle-labels-zh",
+      "pass": true,
+      "detail": "{\"people\": \"\\u6536\\u8d77\\u4eba\\u7269\", \"tags\": \"\\u6536\\u8d77\\u6807\\u7b7e\"}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "f93de8a53204bf387949ed9652c1438ac96e56d1",
+  "commands": [
+    "python -m tests.qa slice TASTE-SIDEBAR"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-sidebar/Rev1.0/assets/verify-3/result.json",
+    "stdout.log": "/workspace/docs/features/taste-sidebar/Rev1.0/assets/verify-3/stdout.log",
+    "sidebar-api.json": "/workspace/docs/features/taste-sidebar/Rev1.0/assets/verify-3/sidebar-api.json",
+    "sidebar-browser.json": "/workspace/docs/features/taste-sidebar/Rev1.0/assets/verify-3/sidebar-browser.json",
+    "sidebar-people-tags.png": "/workspace/docs/features/taste-sidebar/Rev1.0/assets/verify-3/sidebar-people-tags.png"
+  }
+}

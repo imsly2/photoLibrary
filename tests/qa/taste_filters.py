@@ -347,6 +347,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         })""",
         timeout=8000,
     )
+    if page.evaluate("() => document.getElementById('library-side').classList.contains('tags-collapsed')"):
+        page.locator("#tags-toggle").click()
+        page.wait_for_function(
+            "() => !document.getElementById('library-side').classList.contains('tags-collapsed')",
+            timeout=3000,
+        )
     page.locator(".tag-row", has_text="Hiking").click()
     page.wait_for_function(
         """() => {

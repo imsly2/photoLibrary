@@ -893,7 +893,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel (each section collapsible; Tags start collapsed) and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

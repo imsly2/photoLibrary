@@ -682,11 +682,6 @@ class Library:
         return {"path": path, "content_type": original_content_type(path)}
 
     def _resolve_rendition(self, item: dict[str, Any], which: str) -> dict[str, Any]:
-        rend = item.get("renditions") or {}
-        status = (rend.get("status") or {}).get(which)
-        relative = rend.get(which)
-        if relative is None or status != "ready":
-            raise fail("preview-unavailable")
         try:
             path = rendition_abs(item, which, self.root)
         except Exception as exc:

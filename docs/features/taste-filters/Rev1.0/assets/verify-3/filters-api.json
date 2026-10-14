@@ -1,0 +1,29 @@
+{
+  "people": {
+    "Ada": "person_1261cefaa6f1",
+    "Bob": "person_5b743dba9106",
+    "Cam": "person_7c0f1ff466e6"
+  },
+  "groups": {
+    "people": [
+      "Ada",
+      "Bob"
+    ],
+    "places": [
+      "41.88, -87.63",
+      "41.92, -87.63",
+      "No place"
+    ],
+    "tags": [
+      "Hiking",
+      "Painting",
+      "Untagged"
+    ]
+  },
+  "groupedIds": [
+    "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+    "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+    "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+  ]
+}
