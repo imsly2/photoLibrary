@@ -348,12 +348,21 @@ def prove_launcher(checks: Checks, artifacts: Path) -> None:
         text = bat.read_text(encoding="utf-8")
         checks.check("library-bat-invokes-launch-ps1", "launch.ps1" in text, text)
         checks.check("library-bat-visible-console", "WindowStyle Hidden" not in text and "-WindowStyle" not in text, text)
+        checks.check("library-bat-pauses-on-error", "if errorlevel 1 pause" in text.lower(), text)
     diff = subprocess.run(
         ["git", "diff", "HEAD", "--", "launch.sh"],
         cwd=str(PRODUCT_ROOT),
         capture_output=True,
     )
     checks.check("launch-sh-unchanged", diff.returncode == 0 and diff.stdout == b"", diff.stdout.decode("utf-8", "replace"))
+    from tests.qa.launch_ps1_args import run_assertions
+
+    arglist = run_assertions()
+    (artifacts / "launch-arglist.json").write_text(
+        json.dumps(arglist, indent=2) + "\n", encoding="utf-8"
+    )
+    for item in arglist["assertions"]:
+        checks.check(str(item["name"]), bool(item["pass"]), json.dumps(item.get("detail", ""), default=str))
 
 
 def run_slice(root: Path, artifacts: Path) -> int:
@@ -365,6 +374,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
         "disconnect.json": str(artifacts / "disconnect.json"),
         "live-origin.json": str(artifacts / "live-origin.json"),
         "scan-console.log": str(artifacts / "scan-console.log"),
+        "launch-arglist.json": str(artifacts / "launch-arglist.json"),
     }
     try:
         media = prepare_media(artifacts)
