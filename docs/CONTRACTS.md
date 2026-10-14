@@ -37,6 +37,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
+| Presentable shell | Family-PC chrome is specified in UI-SPEC **Windows Presentable Shell**. No 17th setting, no Electron, no accounts. Must remove / delete-file routes are below. Slideshow, fullscreen, viewer keys, Info facts, and Update progress are page chrome on existing APIs (item reads already carry capturedAt, camera, dimensions, size, path, GPS). Soon rows that need a new route (copy-file-to-folder) still wait for an edit here. |
 
 ## Files and atomic writes
 
@@ -136,7 +137,11 @@ media `which=original` does. 200 `{path,folder,opened}` with absolute local
 paths; Windows opens Explorer with the file selected, macOS `open -R`, Linux
 the folder via `xdg-open` when present. `opened` is false when the OS helper
 cannot run. Missing original is 404 `unavailable`. Reveal never accepts a raw
-path from the client.
+path from the client. `POST /api/items/<id>/open` uses the same resolution and
+opens the file itself (`os.startfile` / `open` / `xdg-open`).
+
+`POST /api/update` runs `git pull` in the app folder when `.git` exists.
+It is not a setting. A copied folder without git returns 404 `update-unavailable`.
 
 Availability, motion, favorite, and entity expansion are computed, not persisted:
 HTTP/CLI item reads extend disk records with `available`, `motionAvailable`,
@@ -228,7 +233,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|settings|relocate|remove|delete-file`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -268,7 +273,7 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. HTTP 202 source record is sent before the scan finishes (`scan.state` running). Rescan same origin reuses source. CLI still waits and prints the final summary. |
 | POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
 | GET `/api/update` | 200 `{ok,branch,revision,dirty,message}` for the app-folder git copy |
-| POST `/api/update` | `{}`; 200 `{ok,branch,revision,alreadyCurrent,message}` after fetch+ff-only pull of the current branch |
+| POST `/api/update` | `{}`; 200 `{ok,updated,revision,message}` after `git pull --ff-only`; 404 `update-unavailable` when the app folder is not a git checkout |
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
@@ -278,7 +283,9 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
 | favorite id --on/--off / PUT or POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; writes `catalog/favorites.json`; no-op success when unchanged |
 | reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
-| open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable` |
+| open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable`; default-app launch |
+| remove id / POST `/api/items/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops item JSON, favorite entry, and index row; original bytes stay; undoable `remove`. Unknown id is `not-found`. |
+| delete-file id / POST `/api/items/<id>/delete-file` | `{}`; 200 `{ok:true,id,trashed}`; Windows Recycle Bin the current original when possible (`trashed` true/false), then the same catalog drop as remove; undoable `delete-file` restores catalog only. 404 `unavailable` if no current file. UI extra-confirms; CLI is explicit. |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
@@ -299,10 +306,12 @@ coordinates. Empty payload is invalid. CLI shorthand `--person Ada --thing mug`
 maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
-normalized exact name; place also comma-separated ids. `kind` is exactly one of
-`photo|video|live` and keeps only that item kind. `favorite=1` keeps hearted
+normalized exact name; place also comma-separated ids. `kind` is one of
+`photo|video|live` or a comma-separated list of those (Photos filter is
+`photo,live`). Unknown kind is `invalid-argument`. `favorite=1` keeps hearted
 items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring
-against names, thing aliases and filename. Scope chips restrict q to that entity
+against names, thing aliases, filename, and capturedAt calendar text
+(`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Scope chips restrict q to that entity
 type. `from` inclusive and `to` exclusive ISO date/timestamp filter capturedAt.
 unavailable omitted follows settings; 0 means available only, 1 means include both.
 Sort ties: date then id; name then date then id; location puts named, unnamed GPS,
@@ -323,7 +332,7 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |

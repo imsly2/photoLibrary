@@ -311,10 +311,8 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._send_json(200, update_status())
                 return
             if route == "/api/update" and method == "POST":
-                from library.app_update import pull_latest
-
                 self._read_json()
-                self._send_json(200, pull_latest())
+                self._send_json(200, self.library.update())
                 return
             if (
                 route.startswith("/api/sources/")
@@ -433,7 +431,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     raise fail("not-found")
                 self._read_json()
                 with self.lock:
-                    self._send_json(200, self.library.open_default(item_id))
+                    self._send_json(200, self.library.open(item_id))
                 return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)

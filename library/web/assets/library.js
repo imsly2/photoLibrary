@@ -8,7 +8,7 @@
   const viewerCrumb = document.getElementById("viewer-crumb");
   const viewerPrev = document.getElementById("viewer-prev");
   const viewerNext = document.getElementById("viewer-next");
-  const viewerZoom = document.getElementById("viewer-zoom");
+  const viewerZoomSlider = document.getElementById("viewer-zoom-slider");
   const viewerRotate = document.getElementById("viewer-rotate");
   const viewerFavorite = document.getElementById("viewer-favorite");
   const viewerInfo = document.getElementById("viewer-info");
@@ -18,7 +18,7 @@
   const addBrowse = document.getElementById("add-browse");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const revealOriginalBtn = document.getElementById("reveal-original");
-  const openDefaultBtn = document.getElementById("open-default");
+  const openOriginalBtn = document.getElementById("open-original");
   const playPreviewBtn = document.getElementById("play-preview");
   const updateLibraryBtn = document.getElementById("update-library");
   const updateStatus = document.getElementById("update-status");
@@ -58,10 +58,10 @@
   if (!unavailableBanner || !viewerPlaceholder || !playPreviewBtn || !viewerBack) {
     return;
   }
-  if (!viewerPrev || !viewerNext || !viewerZoom || !viewerRotate) {
+  if (!viewerPrev || !viewerNext || !viewerZoomSlider || !viewerRotate) {
     return;
   }
-  if (!viewerFavorite || !revealOriginalBtn || !viewerInfo || !viewerInfoPanel) {
+  if (!viewerFavorite || !revealOriginalBtn || !openOriginalBtn || !viewerInfo || !viewerInfoPanel) {
     return;
   }
 
@@ -101,6 +101,7 @@
   let scanning = false;
   let levelWheelLock = false;
   let panning = false;
+  let panMoved = false;
   let panLastX = 0;
   let panLastY = 0;
   let scale = 1;
@@ -664,6 +665,7 @@
     naturalH = 0;
     showingOriginal = false;
     panning = false;
+    panMoved = false;
     if (viewer) {
       viewer.dataset.rotation = "0";
     }
@@ -717,34 +719,39 @@
     syncFavoriteChrome(item);
   }
 
-  function scaleToSlider(nextScale) {
-    const range = zoomRange();
-    const span = range.max - range.min;
-    if (!span || !isFinite(span)) {
-      return "0";
-    }
-    const t = (nextScale - range.min) / span;
-    return String(Math.round(1000 * Math.min(1, Math.max(0, t))));
-  }
-
-  function sliderToScale(value) {
-    const range = zoomRange();
-    const t = Number(value) / 1000;
-    if (!isFinite(t)) {
-      return range.min;
-    }
-    return range.min + (range.max - range.min) * Math.min(1, Math.max(0, t));
-  }
-
   function syncZoomChrome() {
-    if (!viewerZoom) {
+    if (!viewerZoomSlider || !fitScale) {
       return;
     }
-    const sized = naturalW > 0 && naturalH > 0;
-    viewerZoom.disabled = !sized;
-    if (sized) {
-      viewerZoom.value = scaleToSlider(scale);
+    const pct = Math.round((scale / fitScale) * 100);
+    const clamped = Math.max(25, Math.min(1600, pct));
+    if (Number(viewerZoomSlider.value) !== clamped) {
+      viewerZoomSlider.value = String(clamped);
     }
+    viewerZoomSlider.disabled = !(naturalW > 0 && naturalH > 0);
+  }
+
+  function setZoomPercent(percent, cx, cy) {
+    if (!naturalW || viewer.hidden || !fitScale) {
+      return;
+    }
+    const range = zoomRange();
+    const next = Math.min(range.max, Math.max(range.min, fitScale * (percent / 100)));
+    if (next === scale) {
+      syncZoomChrome();
+      return;
+    }
+    const ix = (cx - tx) / scale;
+    const iy = (cy - ty) / scale;
+    scale = next;
+    tx = cx - ix * scale;
+    ty = cy - iy * scale;
+    applyTransform();
+    syncZoomChrome();
+  }
+
+  function isZoomed() {
+    return fitScale > 0 && scale > fitScale + 0.001;
   }
 
   function syncFavoriteChrome(item) {
@@ -767,9 +774,9 @@
   }
 
   function syncOriginalChrome() {
-    if (viewer) {
-      delete viewer.dataset.showingOriginal;
-    }
+    openOriginalBtn.textContent = "Open";
+    openOriginalBtn.removeAttribute("aria-pressed");
+    viewer.dataset.showingOriginal = showingOriginal ? "1" : "0";
   }
 
   function stepViewer(delta) {
@@ -855,9 +862,7 @@
     const available = !!(item && item.available);
     unavailableBanner.hidden = available;
     revealOriginalBtn.disabled = !available;
-    if (openDefaultBtn) {
-      openDefaultBtn.disabled = !available;
-    }
+    openOriginalBtn.disabled = !available;
     playPreviewBtn.disabled = true;
     syncNavChrome();
     syncOriginalChrome();
@@ -915,15 +920,15 @@
     unavailableBanner.hidden = true;
     viewerPlaceholder.hidden = true;
     revealOriginalBtn.disabled = true;
-    if (openDefaultBtn) {
-      openDefaultBtn.disabled = true;
-    }
+    openOriginalBtn.disabled = true;
     setInfoOpen(false);
     playPreviewBtn.disabled = true;
     syncFavoriteChrome(null);
     viewerIndex = -1;
     viewerItemId = null;
     panning = false;
+    panMoved = false;
+    setInfoOpen(false);
     if (viewerCrumb) {
       viewerCrumb.textContent = "";
     }
@@ -2007,6 +2012,7 @@
     }
     fitOnLoad = false;
     panning = true;
+    panMoved = false;
     panLastX = event.clientX;
     panLastY = event.clientY;
   }
@@ -2027,8 +2033,8 @@
       return;
     }
     const item = syncViewerIndex();
-    const zoomed = scale > fitScale * 1.01;
-    if (item && (item.kind === "video" || item.kind === "live") && !zoomed) {
+    const still = !!(item && item.kind !== "video" && item.kind !== "live");
+    if (!isZoomed() && !still) {
       return;
     }
     event.preventDefault();
@@ -2039,8 +2045,13 @@
       return;
     }
     event.preventDefault();
-    tx += event.clientX - panLastX;
-    ty += event.clientY - panLastY;
+    const dx = event.clientX - panLastX;
+    const dy = event.clientY - panLastY;
+    if (dx || dy) {
+      panMoved = true;
+    }
+    tx += dx;
+    ty += dy;
     panLastX = event.clientX;
     panLastY = event.clientY;
     applyTransform();
@@ -2055,12 +2066,20 @@
   });
   viewerVideo.addEventListener("click", function (event) {
     event.preventDefault();
+    if (panMoved) {
+      panMoved = false;
+      return;
+    }
     toggleViewerPlay();
   });
   const viewerStage = document.getElementById("viewer-stage");
   if (viewerStage) {
     viewerStage.addEventListener("click", function (event) {
       if (event.target === viewerVideo) {
+        return;
+      }
+      if (panMoved) {
+        panMoved = false;
         return;
       }
       const item = syncViewerIndex();
@@ -2098,22 +2117,10 @@
   viewerNext.addEventListener("click", function () {
     stepViewer(1);
   });
-  viewerZoom.addEventListener("input", function () {
-    if (!naturalW || viewer.hidden) {
-      return;
-    }
-    fitOnLoad = false;
-    const next = sliderToScale(viewerZoom.value);
+  viewerZoomSlider.addEventListener("input", function () {
     const stage = document.getElementById("viewer-stage") || viewer;
     const rect = stage.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const ix = (cx - tx) / scale;
-    const iy = (cy - ty) / scale;
-    scale = next;
-    tx = cx - ix * scale;
-    ty = cy - iy * scale;
-    applyTransform();
+    setZoomPercent(Number(viewerZoomSlider.value), rect.left + rect.width / 2, rect.top + rect.height / 2);
   });
   viewerRotate.addEventListener("click", function () {
     rotateDisplay();
@@ -2169,20 +2176,44 @@
       body: "{}",
     }).then(readJson).catch(function () {});
   });
-  if (openDefaultBtn) {
-    openDefaultBtn.addEventListener("click", function () {
-      if (openDefaultBtn.disabled) {
-        return;
+  openOriginalBtn.addEventListener("click", function () {
+    if (openOriginalBtn.disabled) {
+      return;
+    }
+    const item = syncViewerIndex();
+    if (!item || item.available === false) {
+      return;
+    }
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/open", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).catch(function () {});
+  });
+  if (updateLibraryBtn) {
+    updateLibraryBtn.addEventListener("click", function () {
+      updateLibraryBtn.disabled = true;
+      if (updateStatus) {
+        updateStatus.hidden = false;
+        updateStatus.textContent = "Updating…";
       }
-      const item = syncViewerIndex();
-      if (!item || item.available === false) {
-        return;
-      }
-      fetch("/api/items/" + encodeURIComponent(item.id) + "/open", {
+      fetch("/api/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
-      }).then(readJson).catch(function () {});
+      }).then(readJson).then(function (body) {
+        updateLibraryBtn.disabled = false;
+        if (updateStatus) {
+          updateStatus.hidden = false;
+          updateStatus.textContent = (body && body.message) || (body && body.updated ? "Updated" : "Already up to date");
+        }
+      }).catch(function (err) {
+        updateLibraryBtn.disabled = false;
+        if (updateStatus) {
+          updateStatus.hidden = false;
+          updateStatus.textContent = (err && err.body && err.body.error) || "update-unavailable";
+        }
+      });
     });
   }
   playPreviewBtn.addEventListener("click", function () {

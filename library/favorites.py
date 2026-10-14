@@ -1,4 +1,4 @@
-"""Hearted item ids and Reveal in Explorer. One catalog file; not item JSON."""
+"""Hearted item ids, Reveal in Explorer, and default-app open. One catalog file."""
 
 from __future__ import annotations
 
@@ -155,6 +155,10 @@ def open_containing_folder(path: Path) -> bool:
     except OSError:
         return False
     return False
+
+
+def open_file(path: Path) -> bool:
+    return open_path_with_default(path)
 
 
 def _which(name: str) -> str | None:

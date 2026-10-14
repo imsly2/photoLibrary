@@ -75,12 +75,12 @@
     {
       "name": "video-original-or-proxy",
       "pass": true,
-      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\", \"paused\": false, \"usingProxy\": false}"
+      "detail": "{\"src\": \"http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\", \"paused\": false, \"usingProxy\": false}"
     },
     {
       "name": "video-fallback-proxy",
       "pass": true,
-      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"usingProxy\": true}"
+      "detail": "{\"src\": \"http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"usingProxy\": true}"
     },
     {
       "name": "viewer-ada-label",
@@ -120,12 +120,12 @@
     {
       "name": "ada-on-jpeg",
       "pass": true,
-      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_f314d4b73b5d\", \"name\": \"Ada\"}]"
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_c067cbed8f57\", \"name\": \"Ada\"}]"
     },
     {
       "name": "mug-on-jpeg",
       "pass": true,
-      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_49d758cf227b\", \"name\": \"mug\", \"aliases\": []}]"
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_5e763d7e7869\", \"name\": \"mug\", \"aliases\": []}]"
     },
     {
       "name": "original-fixture-bytes",
@@ -154,7 +154,7 @@
     "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
   "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
-  "revision": "b5daf6fad63b0085602f8bd57113df5abee2c795",
+  "revision": "1d39237fe89f90460cc7dc0be4099e26f82d3bae",
   "commands": [
     "python -m library scan <folder> --serve-from-there",
     "GET /api/media/<photo-id>?which=preview",
@@ -164,9 +164,9 @@
     "GET /api/media/<video-id>?which=proxy"
   ],
   "artifactPaths": {
-    "result.json": "/tmp/f10-artifacts/result.json",
-    "stdout.log": "/tmp/f10-artifacts/stdout.log",
-    "playback.json": "/tmp/f10-artifacts/playback.json",
-    "viewer-annotations.png": "/tmp/f10-artifacts/viewer-annotations.png"
+    "result.json": "/tmp/taste-f10-win7/result.json",
+    "stdout.log": "/tmp/taste-f10-win7/stdout.log",
+    "playback.json": "/tmp/taste-f10-win7/playback.json",
+    "viewer-annotations.png": "/tmp/taste-f10-win7/viewer-annotations.png"
   }
 }

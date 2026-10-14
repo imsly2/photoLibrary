@@ -37,12 +37,10 @@
       <button type="button" id="group-dates" class="toolbar-toggle" aria-pressed="true">Dates</button>
     </div>
     <button type="button" id="add-folder-btn">Add folder</button>
-    <div class="update-box">
-      <button type="button" id="update-library">Update</button>
-      <p id="update-status" hidden></p>
-    </div>
+    <button type="button" id="update-library">Update Library</button>
   </header>
   <p id="disconnected-banner" hidden>Library is not responding</p>
+  <p id="update-status" class="status" hidden></p>
   <p id="scan-status" class="status" hidden></p>
   <div class="workspace">
     <main id="grid">
@@ -146,17 +144,19 @@
       <p id="viewer-placeholder" hidden>Preview is not available</p>
     </div>
     <div id="viewer-bottom">
-      <button type="button" id="viewer-prev">Previous</button>
-      <button type="button" id="viewer-rotate">Rotate</button>
-      <label class="viewer-zoom-field" for="viewer-zoom">Zoom
-        <input type="range" id="viewer-zoom" min="0" max="1000" step="1" value="0" aria-label="Zoom">
+      <div id="viewer-nav">
+        <button type="button" id="viewer-prev">Previous</button>
+        <button type="button" id="viewer-rotate">Rotate</button>
+        <button type="button" id="viewer-next">Next</button>
+      </div>
+      <label class="viewer-zoom-field">Zoom
+        <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom">
       </label>
-      <button type="button" id="viewer-next">Next</button>
-    </div>
-    <div id="viewer-actions">
-      <button type="button" id="reveal-original">Reveal in Explorer</button>
-      <button type="button" id="open-default">Open with default program</button>
-      <button type="button" id="play-preview" disabled>Play preview</button>
+      <div id="viewer-actions">
+        <button type="button" id="reveal-original">Reveal in Explorer</button>
+        <button type="button" id="open-original">Open</button>
+        <button type="button" id="play-preview" disabled>Play preview</button>
+      </div>
     </div>
   </div>
   <script src="/assets/library.js"></script>

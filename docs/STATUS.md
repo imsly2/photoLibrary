@@ -61,9 +61,24 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Check; do not reopen S13/S14.
 - Windows taste merge `taste/windows-abc` stacks Track A + globe, Track B
   viewer, and Track C grid. Shared `catalog/favorites.json`. Family
-  Update (header, no CMD) and Win7-style viewer (Info, no Showing
-  original, Prev/Next/Rotate bottom, zoom slider, click-drag pan) are
-  on this branch for tonight's pull. Does not start S13/S14.
+  Update Library (header, `POST /api/update`) and Win7-style viewer
+  (Info, no Showing original, Prev/Rotate/Next bottom, zoom slider,
+  click-hold pan, Reveal + Open) take the proven PR #2 chrome
+  (`cursor/viewer-chrome-2bd1` at `192ca72`, TASTE-VIEWER 72/72,
+  F10 29/29) while keeping Track A launcher/picker and Track C grid.
+  Windows Presentable Shell Must/Soon/Later from PR #5
+  (`cursor/windows-presentable-shell-bd24`) is the North Star. Does not
+  start S13/S14.
+- 2026-10-13 — **Windows Presentable Shell** locked in North Star docs
+  (UI-SPEC primary). Must-for-presentable includes fullscreen,
+  slideshow, viewer keyboard parity, EXIF-first Info, Open with, empty/
+  error states, remove vs delete-file, Newest/Oldest/Name +
+  All/Photos/Videos/Favorites, search, and Update UX finish — plus the
+  earlier launch/grid/Win7/globe locks. Soon (filmstrip, multi-select,
+  Print, `?`, …) does not block the 19-step family-PC checklist.
+  This combined merge now includes PR #2 TASTE-VIEWER 72/72 chrome and
+  PR #5 docs. No new Check; 16/22 unchanged. Pointer:
+  [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
 - Help file refined around Steve setting up a portable picture library for his
   mother-in-law to browse. No new product features added.
 - [PRODUCT](PRODUCT.md) has F1–F22 and one Check each.
@@ -71,16 +86,20 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [SLICES](SLICES.md), and [AGENT-BUILD-MODE](AGENT-BUILD-MODE.md) specify the build.
 - Six reference images exist; they are layout targets, not runtime evidence.
 - 2026-10-13 — Windows taste Track B (viewer) is implemented on
-  `cursor/viewer-chrome-2bd1`. Visible Back / Previous / Next, zoom out
-  below fit on stills and video, pan, display-only rotate, labeled
-  Person/Place/Thing fields, Open original swaps in-page to original
-  bytes with a “Showing original” state, Reveal in Explorer opens the
-  folder, and a viewer heart writes `catalog/favorites.json`. Back stays
-  on the live listen URL. Does not close a new Check. F10 stayed green.
+  `cursor/viewer-chrome-2bd1`. Win7 Photo Viewer chrome: Back top-left,
+  Previous/Next + Rotate at the bottom, zoom slider (no +/−), click-hold
+  pan while zoomed, top-right Info dropdown (no overlay pills), Reveal
+  in Explorer, Open in the default app (no “Showing original” button),
+  viewer heart, and header Update Library (`POST /api/update`). Back
+  stays on the live listen URL. Does not close a new Check. F10 stayed
+  green. TASTE-VIEWER 72 assertions; F10 29.
   Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-chrome/result.json),
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-chrome/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-chrome/f10/result.json).
   No grid hearts, launcher, or Add-folder picker.
+  **Superseded on `taste/windows-abc`:** “Showing original” and overlay-style
+  Person/Place/Thing pills are retired. Spec target is the Win7-style
+  viewer in UI-SPEC (Info dropdown, zoom slider, no highlight).
 
 ## Completion
 
@@ -326,6 +345,13 @@ environments must be supplied by the build or F2 remains pending; do not claim
   S06. Preview store, relocate both ways, unavailable originals, and the
   missing-preview screen. F10 stays open until S09.
 - 2026-10-13 — Windows taste Track B viewer chrome. Specs first
-  (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal). Browser
-  proof TASTE-VIEWER 47 assertions exit 0; F10 stayed green. Heart and
-  Reveal are viewer-only. No new Check closed (16/22).
+  (PRODUCT F10/F3, UI-SPEC Viewer, CONTRACTS favorite/reveal/open/update).
+  Win7 chrome: Info dropdown, zoom slider, bottom Prev/Next/Rotate,
+  click-hold pan, Reveal, default-app Open, Update Library hook.
+  Browser proof TASTE-VIEWER 72 assertions exit 0; F10 29 assertions
+  stayed green. No new Check closed (16/22).
+- 2026-10-13 — Windows Presentable Shell North Star lock, then Must
+  backlog folded in (PR #5). PRODUCT Must list + F3 remove/delete-file;
+  UI-SPEC 19-step DoD; CONTRACTS `remove` / `delete-file` and
+  `kind=photo,live`; SLICES: S13/S14 secondary. Combined with PR #2
+  72/72 chrome on this merge. No new Check. 16/22 unchanged.

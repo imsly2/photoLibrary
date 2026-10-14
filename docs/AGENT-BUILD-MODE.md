@@ -6,7 +6,7 @@ dependencies, or scan real pictures during this spec task.
 
 ## Read order
 
-README/AGENTS → PRODUCT → CONTRACTS → UI-SPEC → FIXTURES → SLICES → STATUS.
+README/AGENTS → PRODUCT → CONTRACTS → UI-SPEC (Windows Presentable Shell) → FIXTURES → SLICES → STATUS.
 Then read the shared [ORCHESTRATION](../../slyAI/shared/ORCHESTRATION.md),
 [WORKING-ORDER](../../slyAI/shared/WORKING-ORDER.md),
 [VERIFY-TOOLBOX](../../slyAI/shared/VERIFY-TOOLBOX.md), and
