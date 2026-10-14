@@ -427,6 +427,20 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   63/63 (empty `$PSScriptRoot` uses bat hint / MyCommand.Path /
   cwd marker; all-empty is null; Ready only after errorlevel 0),
   [app-folder-probe](features/taste-setup/Rev1.0/assets/verify-5/app-folder-probe.json).
+- 2026-10-14 — Video rendition size on `cursor/rendition-disk-13ad`.
+  Proxies stay scrub-small (≤`proxyWidth`, CRF 28, no audio). Stored
+  `playback.mp4` is only for originals that are not browser-safe MP4,
+  and then only at ≤1280 / CRF 23 (remux only when already small).
+  Orphan `*.tmp` is removed on the next drain. `#viewer-source` names
+  the file that is playing. Existing huge playback files are not
+  rewritten; delete them and restart Library.bat to rebuild. Does not
+  close a Check. 16/22 unchanged.
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-size-5/result.json)
+  114/114,
+  [rendition-size](features/taste-video/Rev1.0/assets/verify-size-5/rendition-size.json)
+  (2s 4K MOV: old CRF 18 full-frame 225 KB → policy 58 KB at 1280;
+  browser-safe MP4 writes no playback file; fixture proxy 3.4 KB).
 
 ## Completion
 
@@ -704,3 +718,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
   53/53, TASTE-VIDEO 65/65. No new Check. 16/22 unchanged.
 - 2026-10-14 — MOV `playback.mp4` + honest Full badge. TASTE-VIDEO
   89/89, TASTE-REVEAL 52/52. No new Check. 16/22 unchanged.
+- 2026-10-14 — Rendition size policy (proxy CRF 28; playback ≤1280 /
+  CRF 23; no playback for browser-safe MP4; tmp sweep). TASTE-VIDEO
+  114/114. No new Check. 16/22 unchanged.

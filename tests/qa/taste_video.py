@@ -217,8 +217,9 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps(months_scrub),
     )
     set_settings(url, {"zoomLevel": "all", "playProxies": "days-and-all"})
-    wait_level(page, "all")
+    page.reload(wait_until="domcontentloaded")
     page.wait_for_selector('[data-filename="clip.mp4"]', timeout=15000)
+    wait_level(page, "all")
 
     sliders = page.evaluate(
         """() => {
@@ -395,7 +396,6 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         page.locator("#grid").get_attribute("data-group-dates") or "",
     )
     set_settings(url, {"zoomLevel": "years"})
-    wait_level(page, "years")
     page.wait_for_function(
         "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'off'",
         timeout=5000,
@@ -411,7 +411,6 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["wallYearsHover"] = wall
     checks.check("wall-years-hover-plays", wall.get("playingCount") == 1, json.dumps(wall))
     page.locator("#date-group").select_option("days")
-    set_settings(url, {"zoomLevel": "all"})
     wait_level(page, "all")
 
     page.locator('#grid .cell[data-slot="grid"][data-filename="clip.mp4"]').click()
@@ -709,7 +708,11 @@ def prove_playback_http(checks: Checks, url: str, items: list[dict[str, Any]]) -
     checks.check("mov-original-still-there", orig_code == 200 and len(orig_body) > 0, str(orig_code))
     record["mp4PlaybackBytes"] = len(mp4_body)
     record["movPlaybackBytes"] = len(mov_body)
-    checks.check("mp4-playback-no-body", len(mp4_body) == 0, str(len(mp4_body)))
+    checks.check(
+        "mp4-playback-error-json",
+        mp4_code == 404 and len(mp4_body) < 200 and b"playback" not in mp4_body[:32],
+        str(len(mp4_body)),
+    )
     checks.check(
         "mov-playback-width-capped",
         type(probe.get("width")) is int and probe["width"] <= PLAYBACK_MAX_WIDTH,
