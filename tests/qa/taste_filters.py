@@ -232,9 +232,11 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.wait_for_function(
         """() => {
           const person = (document.getElementById('grid').dataset.person || '');
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
           const chips = Array.from(document.querySelectorAll('#active-filters .filter-chip')).map(function (n) { return n.textContent.trim(); });
           return person.indexOf('person_') === 0 && person.indexOf(',') < 0
-            && chips.some(function (t) { return t.indexOf('Person: Ada') === 0; });
+            && chips.some(function (t) { return t.indexOf('Person: Ada') === 0; })
+            && names.indexOf('IMG_1042.jpg') >= 0 && names.indexOf('far.jpg') < 0;
         }""",
         timeout=8000,
     )
@@ -267,10 +269,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.wait_for_function(
         """() => {
           const person = (document.getElementById('grid').dataset.person || '');
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
           const chips = Array.from(document.querySelectorAll('#active-filters .filter-chip')).map(function (n) { return n.textContent.trim(); });
           return person.indexOf(',') < 0 && person.indexOf('person_') === 0
             && !chips.some(function (t) { return t.indexOf('Person: Ada') === 0; })
-            && chips.some(function (t) { return t.indexOf('Person: Bob') === 0; });
+            && chips.some(function (t) { return t.indexOf('Person: Bob') === 0; })
+            && names.indexOf('far.jpg') >= 0 && names.indexOf('IMG_1042.jpg') < 0;
         }""",
         timeout=8000,
     )
@@ -291,7 +295,11 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
 
     page.locator(".filter-chip", has_text="Person: Bob").click()
     page.wait_for_function(
-        "() => !(document.getElementById('grid').dataset.person)",
+        """() => {
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
+          return !document.getElementById('grid').dataset.person
+            && names.indexOf('IMG_1042.jpg') >= 0 && names.indexOf('far.jpg') >= 0;
+        }""",
         timeout=8000,
     )
     checks.check("chip-remove-clears-person", True)
@@ -333,7 +341,9 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.wait_for_function(
         """() => {
           const chips = Array.from(document.querySelectorAll('#active-filters .filter-chip')).map(n => n.textContent.trim());
-          return chips.some(function (t) { return t.indexOf('Tag: Hiking') === 0; });
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
+          return chips.some(function (t) { return t.indexOf('Tag: Hiking') === 0; })
+            && names.indexOf('IMG_1042.jpg') >= 0 && names.indexOf('far.jpg') < 0;
         }""",
         timeout=8000,
     )

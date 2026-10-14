@@ -2958,6 +2958,7 @@
         main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + EMPTY + '</p><button type="button" id="empty-add-folder">Add folder</button></div>';
         const emptyAdd = document.getElementById("empty-add-folder");
         if (emptyAdd) {
+          emptyAdd.setAttribute("aria-label", "Add photos");
           emptyAdd.addEventListener("click", openAddDialog);
         }
         renderKey = "empty";
