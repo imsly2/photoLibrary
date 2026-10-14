@@ -1,0 +1,359 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS isolated-starts-on-feature: tip/feature
+PASS update-ok: {"ok": true, "updated": false, "alreadyCurrent": true, "reason": null, "code": "already-current", "branch": "main", "revision": "bf58293", "message": "Already up to date (bf58293 on main).", "source": "git", "git_sha": "bf58293", "git_branch": "main", "git_date": "2026-10-14", "git_subject": "first"}
+PASS update-on-main: main
+PASS update-branch-field: {"ok": true, "updated": false, "alreadyCurrent": true, "reason": null, "code": "already-current", "branch": "main", "revision": "bf58293", "message": "Already up to date (bf58293 on main).", "source": "git", "git_sha": "bf58293", "git_branch": "main", "git_date": "2026-10-14", "git_subject": "first"}
+PASS update-has-sha: {"ok": true, "updated": false, "alreadyCurrent": true, "reason": null, "code": "already-current", "branch": "main", "revision": "bf58293", "message": "Already up to date (bf58293 on main).", "source": "git", "git_sha": "bf58293", "git_branch": "main", "git_date": "2026-10-14", "git_subject": "first"}
+PASS update-message-names-main: Already up to date (bf58293 on main).
+PASS diverged-not-ok: {"ok": false, "updated": false, "alreadyCurrent": false, "reason": "diverged", "code": "diverged", "branch": "main", "revision": "cd2db55", "message": "Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:\nhint: \nhint: \tgit merge --no-ff\nhint: \nhint: or:\nhint: \nhint: \tgit rebase\nhint: \nhint: Disable this message with \"git config advice.diverging false\"\nfatal: Not possible to fast-forward, aborting.", "source": null, "git_sha": "cd2db55", "git_branch": "main", "git_date": "2026-10-14", "git_subject": "local-only"}
+PASS diverged-reason: {"ok": false, "updated": false, "alreadyCurrent": false, "reason": "diverged", "code": "diverged", "branch": "main", "revision": "cd2db55", "message": "Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:\nhint: \nhint: \tgit merge --no-ff\nhint: \nhint: or:\nhint: \nhint: \tgit rebase\nhint: \nhint: Disable this message with \"git config advice.diverging false\"\nfatal: Not possible to fast-forward, aborting.", "source": null, "git_sha": "cd2db55", "git_branch": "main", "git_date": "2026-10-14", "git_subject": "local-only"}
+PASS diverged-mentions-main: Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:
+hint: 
+hint: 	git merge --no-ff
+hint: 
+hint: or:
+hint: 
+hint: 	git rebase
+hint: 
+hint: Disable this message with "git config advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+PASS diverged-stays-main: main
+PASS matcher-this-serve: /workspace/.venv/Scripts/python.exe -m library serve
+PASS matcher-rejects-http-server: C:\Python312\python.exe -m http.server 8765
+PASS matcher-rejects-update: /workspace/.venv/Scripts/python.exe -m library update
+PASS matcher-rejects-setup: /workspace\python.exe -m library setup-geo
+PASS matcher-rejects-other-app: D:\otherApp\.venv\Scripts\python.exe -m library serve
+PASS listen-host-loopback: 127.0.0.1
+PASS listen-port-int: 8765
+PASS zip-preserves-library-data: catalog-secret
+
+PASS zip-preserves-venv: venv-secret
+
+PASS zip-writes-app-files: from-zip
+
+PASS zip-overlays-non-data: new-old
+
+PASS zip-pull-ok: {"ok": true, "updated": true, "alreadyCurrent": false, "reason": null, "code": "updated", "branch": "main", "revision": "abc1234dead", "message": "Updated to abc1234dead on main.", "source": "zip", "git_sha": "abc1234dead", "git_branch": "main", "git_date": null, "git_subject": "zip main"}
+PASS zip-pull-source: {"ok": true, "updated": true, "alreadyCurrent": false, "reason": null, "code": "updated", "branch": "main", "revision": "abc1234dead", "message": "Updated to abc1234dead on main.", "source": "zip", "git_sha": "abc1234dead", "git_branch": "main", "git_date": null, "git_subject": "zip main"}
+PASS zip-pull-sha: {"ok": true, "updated": true, "alreadyCurrent": false, "reason": null, "code": "updated", "branch": "main", "revision": "abc1234dead", "message": "Updated to abc1234dead on main.", "source": "zip", "git_sha": "abc1234dead", "git_branch": "main", "git_date": null, "git_subject": "zip main"}
+PASS zip-pull-keeps-data
+PASS no-gh-exe
+PASS public-https: https://github.com/imsly2/photoLibrary.git
+PASS public-archive: https://github.com/imsly2/photoLibrary/archive/refs/heads/main.zip
+PASS rewrite-ssh-to-https: https://github.com/imsly2/photoLibrary.git
+PASS rewrite-strips-token
+PASS git-disables-credential-helper
+PASS setup-optional-git
+PASS setup-says-no-github-account
+PASS i18n-update-keys: []
+PASS i18n-zh-restart
+PASS js-uses-i18n-update
+PASS js-family-hint
+PASS CreateShortcut.bat-ascii: CreateShortcut.bat
+PASS create-shortcut.ps1-ascii: create-shortcut.ps1
+PASS Update.bat-ascii: Update.bat
+PASS Launch.bat-ascii: Launch.bat
+PASS launch.ps1-ascii: launch.ps1
+PASS setup.ps1-ascii: setup.ps1
+PASS create-shortcut-ps51: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS launch-ps51: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS setup-ps51: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS shortcut-icon
+PASS update-bat-calls-launch
+PASS launch-update-relaunch
+{
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "isolated-starts-on-feature",
+      "pass": true,
+      "detail": "tip/feature"
+    },
+    {
+      "name": "update-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"reason\": null, \"code\": \"already-current\", \"branch\": \"main\", \"revision\": \"bf58293\", \"message\": \"Already up to date (bf58293 on main).\", \"source\": \"git\", \"git_sha\": \"bf58293\", \"git_branch\": \"main\", \"git_date\": \"2026-10-14\", \"git_subject\": \"first\"}"
+    },
+    {
+      "name": "update-on-main",
+      "pass": true,
+      "detail": "main"
+    },
+    {
+      "name": "update-branch-field",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"reason\": null, \"code\": \"already-current\", \"branch\": \"main\", \"revision\": \"bf58293\", \"message\": \"Already up to date (bf58293 on main).\", \"source\": \"git\", \"git_sha\": \"bf58293\", \"git_branch\": \"main\", \"git_date\": \"2026-10-14\", \"git_subject\": \"first\"}"
+    },
+    {
+      "name": "update-has-sha",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"reason\": null, \"code\": \"already-current\", \"branch\": \"main\", \"revision\": \"bf58293\", \"message\": \"Already up to date (bf58293 on main).\", \"source\": \"git\", \"git_sha\": \"bf58293\", \"git_branch\": \"main\", \"git_date\": \"2026-10-14\", \"git_subject\": \"first\"}"
+    },
+    {
+      "name": "update-message-names-main",
+      "pass": true,
+      "detail": "Already up to date (bf58293 on main)."
+    },
+    {
+      "name": "diverged-not-ok",
+      "pass": true,
+      "detail": "{\"ok\": false, \"updated\": false, \"alreadyCurrent\": false, \"reason\": \"diverged\", \"code\": \"diverged\", \"branch\": \"main\", \"revision\": \"cd2db55\", \"message\": \"Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:\\nhint: \\nhint: \\tgit merge --no-ff\\nhint: \\nhint: or:\\nhint: \\nhint: \\tgit rebase\\nhint: \\nhint: Disable this message with \\\"git config advice.diverging false\\\"\\nfatal: Not possible to fast-forward, aborting.\", \"source\": null, \"git_sha\": \"cd2db55\", \"git_branch\": \"main\", \"git_date\": \"2026-10-14\", \"git_subject\": \"local-only\"}"
+    },
+    {
+      "name": "diverged-reason",
+      "pass": true,
+      "detail": "{\"ok\": false, \"updated\": false, \"alreadyCurrent\": false, \"reason\": \"diverged\", \"code\": \"diverged\", \"branch\": \"main\", \"revision\": \"cd2db55\", \"message\": \"Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:\\nhint: \\nhint: \\tgit merge --no-ff\\nhint: \\nhint: or:\\nhint: \\nhint: \\tgit rebase\\nhint: \\nhint: Disable this message with \\\"git config advice.diverging false\\\"\\nfatal: Not possible to fast-forward, aborting.\", \"source\": null, \"git_sha\": \"cd2db55\", \"git_branch\": \"main\", \"git_date\": \"2026-10-14\", \"git_subject\": \"local-only\"}"
+    },
+    {
+      "name": "diverged-mentions-main",
+      "pass": true,
+      "detail": "Could not fast-forward main. Local commits would be rewritten. Steve: keep this folder on main only. hint: Diverging branches can't be fast-forwarded, you need to either:\nhint: \nhint: \tgit merge --no-ff\nhint: \nhint: or:\nhint: \nhint: \tgit rebase\nhint: \nhint: Disable this message with \"git config advice.diverging false\"\nfatal: Not possible to fast-forward, aborting."
+    },
+    {
+      "name": "diverged-stays-main",
+      "pass": true,
+      "detail": "main"
+    },
+    {
+      "name": "matcher-this-serve",
+      "pass": true,
+      "detail": "/workspace/.venv/Scripts/python.exe -m library serve"
+    },
+    {
+      "name": "matcher-rejects-http-server",
+      "pass": true,
+      "detail": "C:\\Python312\\python.exe -m http.server 8765"
+    },
+    {
+      "name": "matcher-rejects-update",
+      "pass": true,
+      "detail": "/workspace/.venv/Scripts/python.exe -m library update"
+    },
+    {
+      "name": "matcher-rejects-setup",
+      "pass": true,
+      "detail": "/workspace\\python.exe -m library setup-geo"
+    },
+    {
+      "name": "matcher-rejects-other-app",
+      "pass": true,
+      "detail": "D:\\otherApp\\.venv\\Scripts\\python.exe -m library serve"
+    },
+    {
+      "name": "listen-host-loopback",
+      "pass": true,
+      "detail": "127.0.0.1"
+    },
+    {
+      "name": "listen-port-int",
+      "pass": true,
+      "detail": "8765"
+    },
+    {
+      "name": "zip-preserves-library-data",
+      "pass": true,
+      "detail": "catalog-secret\n"
+    },
+    {
+      "name": "zip-preserves-venv",
+      "pass": true,
+      "detail": "venv-secret\n"
+    },
+    {
+      "name": "zip-writes-app-files",
+      "pass": true,
+      "detail": "from-zip\n"
+    },
+    {
+      "name": "zip-overlays-non-data",
+      "pass": true,
+      "detail": "new-old\n"
+    },
+    {
+      "name": "zip-pull-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": true, \"alreadyCurrent\": false, \"reason\": null, \"code\": \"updated\", \"branch\": \"main\", \"revision\": \"abc1234dead\", \"message\": \"Updated to abc1234dead on main.\", \"source\": \"zip\", \"git_sha\": \"abc1234dead\", \"git_branch\": \"main\", \"git_date\": null, \"git_subject\": \"zip main\"}"
+    },
+    {
+      "name": "zip-pull-source",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": true, \"alreadyCurrent\": false, \"reason\": null, \"code\": \"updated\", \"branch\": \"main\", \"revision\": \"abc1234dead\", \"message\": \"Updated to abc1234dead on main.\", \"source\": \"zip\", \"git_sha\": \"abc1234dead\", \"git_branch\": \"main\", \"git_date\": null, \"git_subject\": \"zip main\"}"
+    },
+    {
+      "name": "zip-pull-sha",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": true, \"alreadyCurrent\": false, \"reason\": null, \"code\": \"updated\", \"branch\": \"main\", \"revision\": \"abc1234dead\", \"message\": \"Updated to abc1234dead on main.\", \"source\": \"zip\", \"git_sha\": \"abc1234dead\", \"git_branch\": \"main\", \"git_date\": null, \"git_subject\": \"zip main\"}"
+    },
+    {
+      "name": "zip-pull-keeps-data",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-gh-exe",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "public-https",
+      "pass": true,
+      "detail": "https://github.com/imsly2/photoLibrary.git"
+    },
+    {
+      "name": "public-archive",
+      "pass": true,
+      "detail": "https://github.com/imsly2/photoLibrary/archive/refs/heads/main.zip"
+    },
+    {
+      "name": "rewrite-ssh-to-https",
+      "pass": true,
+      "detail": "https://github.com/imsly2/photoLibrary.git"
+    },
+    {
+      "name": "rewrite-strips-token",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "git-disables-credential-helper",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-optional-git",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-says-no-github-account",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-update-keys",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "i18n-zh-restart",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-uses-i18n-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-family-hint",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "CreateShortcut.bat-ascii",
+      "pass": true,
+      "detail": "CreateShortcut.bat"
+    },
+    {
+      "name": "create-shortcut.ps1-ascii",
+      "pass": true,
+      "detail": "create-shortcut.ps1"
+    },
+    {
+      "name": "Update.bat-ascii",
+      "pass": true,
+      "detail": "Update.bat"
+    },
+    {
+      "name": "Launch.bat-ascii",
+      "pass": true,
+      "detail": "Launch.bat"
+    },
+    {
+      "name": "launch.ps1-ascii",
+      "pass": true,
+      "detail": "launch.ps1"
+    },
+    {
+      "name": "setup.ps1-ascii",
+      "pass": true,
+      "detail": "setup.ps1"
+    },
+    {
+      "name": "create-shortcut-ps51",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "launch-ps51",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps51",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "shortcut-icon",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-bat-calls-launch",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-update-relaunch",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "i18n": {
+    "missing": []
+  },
+  "scripts": {
+    "ps51": {
+      "shortcut": {
+        "asciiOnly": true,
+        "cp1252EqualsUtf8": true,
+        "stringsClosed": true,
+        "braceDepth": 0,
+        "bareUsingLines": [],
+        "ok": true
+      },
+      "launch": {
+        "asciiOnly": true,
+        "cp1252EqualsUtf8": true,
+        "stringsClosed": true,
+        "braceDepth": 0,
+        "bareUsingLines": [],
+        "ok": true
+      },
+      "setup": {
+        "asciiOnly": true,
+        "cp1252EqualsUtf8": true,
+        "stringsClosed": true,
+        "braceDepth": 0,
+        "bareUsingLines": [],
+        "ok": true
+      }
+    }
+  },
+  "noLogin": {
+    "https": "https://github.com/imsly2/photoLibrary.git",
+    "archive": "https://github.com/imsly2/photoLibrary/archive/refs/heads/main.zip"
+  }
+}

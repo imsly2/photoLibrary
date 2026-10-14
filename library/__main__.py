@@ -236,7 +236,12 @@ def build_parser() -> argparse.ArgumentParser:
     delete_file_cmd = sub.add_parser("delete-file")
     delete_file_cmd.add_argument("id")
 
-    sub.add_parser("update")
+    update_cmd = sub.add_parser("update")
+    update_cmd.add_argument(
+        "--relaunch",
+        action="store_true",
+        help="After a successful pull, restart Library if it is already running.",
+    )
 
     people = sub.add_parser("people")
     people_sub = people.add_subparsers(dest="people_cmd", required=False)
@@ -493,6 +498,10 @@ def main(argv: list[str] | None = None) -> int:
                 "/api/update",
                 {},
             )
+            if getattr(args, "relaunch", False):
+                from library.restart import relaunch_if_updated
+
+                result = relaunch_if_updated(root, result)
             _print_json(result)
             return 0
         if args.command == "people":

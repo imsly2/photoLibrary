@@ -268,6 +268,30 @@ def static_source_checks(
             "name": "launch-ps1-no-setup-hijack",
             "pass": "[switch]$Setup]" not in launch.replace("[switch]$SetupMl", ""),
         },
+        {
+            "name": "launch-ps1-update-relaunches",
+            "pass": "--relaunch" in launch and "tracking main" in launch,
+        },
+        {
+            "name": "setup-ps1-progress-steps",
+            "pass": "Write-Step" in setup and "Total 7" in setup,
+        },
+        {
+            "name": "setup-ps1-fail-next",
+            "pass": "Write-FailNext" in setup and "What to try next" in setup,
+        },
+        {
+            "name": "setup-ps1-creates-shortcut",
+            "pass": "create-shortcut.ps1" in setup and "Install-Shortcuts" in setup,
+        },
+        {
+            "name": "setup-ps1-internet-up-front",
+            "pass": "needs the internet" in setup.lower() or "needs the internet" in setup,
+        },
+        {
+            "name": "setup-ps1-optional-git-or-zip",
+            "pass": "Git.Git" in setup and "zip of main" in setup and "gh.exe" not in setup,
+        },
     ]
 
 
@@ -285,6 +309,30 @@ def prove_static(checks: Checks) -> dict[str, Any]:
     for item in static_source_checks(bat, setup, launch, library_bat, ps51):
         detail = json.dumps(ps51) if "ps51" in item["name"] or "bare-using" in item["name"] else ""
         checks.check(item["name"], bool(item["pass"]), detail)
+    shortcut_bat = _read("CreateShortcut.bat")
+    shortcut_ps1 = _read("create-shortcut.ps1")
+    shortcut_ps51 = ps51_encoding_safe((PRODUCT_ROOT / "create-shortcut.ps1").read_bytes())
+    record["shortcutPs51"] = shortcut_ps51
+    checks.check("create-shortcut-bat-exists", "create-shortcut.ps1" in shortcut_bat, "")
+    checks.check("create-shortcut-bat-ascii", all(ord(ch) < 128 for ch in shortcut_bat), "")
+    checks.check("create-shortcut-ps1-ascii", all(ord(ch) < 128 for ch in shortcut_ps1), "")
+    checks.check("create-shortcut-ps1-ps51-safe", bool(shortcut_ps51.get("ok")), json.dumps(shortcut_ps51))
+    checks.check(
+        "create-shortcut-writes-lnk",
+        "WScript.Shell" in shortcut_ps1 and "Library.lnk" in shortcut_ps1 and "library.ico" in shortcut_ps1,
+        "",
+    )
+    checks.check("library-ico-exists", (PRODUCT_ROOT / "library.ico").is_file(), "")
+    update_py = _read("library/update.py")
+    checks.check(
+        "update-tracks-main",
+        'DEFAULT_TRACK = "main"' in update_py
+        and "fetch" in update_py
+        and "pull" in update_py
+        and "--ff-only" in update_py
+        and "checkout" in update_py,
+        "",
+    )
     return record
 
 

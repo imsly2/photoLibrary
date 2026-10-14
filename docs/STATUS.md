@@ -342,6 +342,21 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   57/57,
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-3/result.json)
   50/50.
+- 2026-10-14 — Family install polish on `cursor/mil-install-update-a762`
+  (rebased on `8ede708` / PR #30, includes PR #28). Desktop + Start Menu Library
+  shortcut (`CreateShortcut.bat`, `library.ico`). Update always
+  tracks `main` over anonymous HTTPS git (no `gh`, no GitHub login;
+  credential helper off). If git is missing, overlays a public zip of
+  `main` and never replaces `library-data/`. Setup progress + failure
+  next-steps; optional `Git.Git`. Auto-restart only this app's serve
+  after a real update. In-app Update strings through i18n. Does not
+  close a Check. 16/22 unchanged.
+  Plan: [taste-install](features/taste-install/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-4/result.json)
+  40/40 (shortcut script, Update tracks main, optional git/zip),
+  [TASTE-INSTALL](features/taste-install/Rev1.0/assets/verify-2/result.json)
+  51/51 (isolated checkout of main, zip preserves library-data, no gh).
 
 ## Completion
 

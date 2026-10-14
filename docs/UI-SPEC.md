@@ -51,7 +51,7 @@ fill. They must read as clickable toggles, not heading text.
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
 | Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
-| Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local` when not a git checkout). Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed / update-unavailable. A successful Update refreshes `#library-version` from the new tip in the response (the serve process does not restart). No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
+| Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local`). Click runs `POST /api/update`, which always tracks `main` over anonymous HTTPS git, or a zip of `main` if git is missing. No `gh`, no GitHub login. `library-data/` is never replaced. While the pull runs, `#update-status` says Updating… Then one i18n sentence: updated / already current / pull failed / diverged / need-public / update-unavailable. A successful Update refreshes `#library-version`. When the pull writes a newer `main` and this Library serve is running, stop only that process on the settings port and relaunch; the page says Restarting… then reloads. If Library was not running, Update finishes without launching. No command prompt. Launcher `Update.bat` uses the same pull and relaunch. |
 | Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
@@ -454,22 +454,27 @@ Clearing query/chip returns the broader grid.
 **10. Update UX finish.** Launcher and in-app (`#update-library`, label
 Update or Update Library). The shell shows build identity in
 `#library-version` (short checkout SHA, or `local`). No command prompt.
-While the pull runs: Updating… Then one sentence: updated / already
-current / git missing / not a git copy / pull failed. A successful
-Update refreshes that SHA from the new tip; the running server does not
-restart. Does not switch branches. **Implemented on this merge** (PR #2
-72/72 plus the abc Update commit). `Update.bat` / `launch.ps1 -Update`
-is the launcher. Prove the progress sentence on a real git copy.
+Pull always tracks `main`. While it runs: Updating… Then one i18n
+sentence: updated / already current / git missing / not a git copy /
+pull failed / diverged. A successful Update refreshes that SHA from the
+new tip. If the pull wrote new code and Library is open, stop only this
+app's serve on its settings port and relaunch (page reloads). If Library
+was not running, do not launch it. `Update.bat` / `launch.ps1 -Update`
+`--relaunch` is the launcher. Prove the progress sentence on a real git
+copy.
 
-**Portable install (Setup once → Library daily → Update for code).**
+**Portable install (Setup once → shortcut → Library; later Update).**
 On a new Windows PC, Steve double-clicks `Setup.bat` once. It installs
 Python 3.12+ and ffmpeg (same winget ids as `launch.ps1`), creates
-`.venv`, installs the app, and fetches the local cities / objects /
-faces packs into `library-data/` when those CLIs exist. First run needs
-the internet. No MSI. Daily use is `Library.bat`. New code is header
-**Update Library** or `Update.bat` (`git pull`). If Setup says a module
-is missing, Update first, then Setup again. `Setup.bat` does not start
-the server.
+`.venv`, installs the app, fetches the local cities / objects / faces
+packs into `library-data/` when those CLIs exist, and writes a Desktop
+/ Start Menu **Library** shortcut (`CreateShortcut.bat` can recreate
+it). First run needs the internet. Progress and failure text name the
+step and what to try next. Re-run is safe. No MSI. Daily use is that
+icon or `Library.bat`. New code is header **Update Library** or
+`Update.bat` (always `main`, then auto-restart if Library is open). If
+Setup says a module is missing, Update first, then Setup again.
+`Setup.bat` does not start the server.
 
 Also still locked from the earlier Windows notes (already on the DoD
 path): `Library.bat`; native Add folder; 202-before-finish; live-origin

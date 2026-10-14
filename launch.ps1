@@ -96,10 +96,16 @@ try {
 
     $exe = [string]$python[0]
     if ($Update) {
-        Write-Host "Updating..."
-        $updateArgs = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "update")
+        Write-Host "Updating... tracking main over anonymous HTTPS (no GitHub login, no gh)."
+        Write-Host "If git is missing, downloads a zip of main. library-data is not replaced."
+        $updateArgs = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "update", "--relaunch")
         & $exe @updateArgs
-        exit $LASTEXITCODE
+        $code = $LASTEXITCODE
+        if ($code -ne 0) {
+            Write-Host "Update did not finish. Check the internet, then run Update.bat again."
+            Write-Host "If this copy left main, Update will try to move it back. Ask Steve if it says diverged."
+        }
+        exit $code
     }
     if ($SetupMl) {
         Write-Host "Downloading local object model..."

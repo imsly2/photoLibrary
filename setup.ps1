@@ -19,10 +19,13 @@ function Show-Help {
     Write-Host "Setup.bat  -- one-time portable install on this Windows PC"
     Write-Host ""
     Write-Host "  Setup once   -- this file (Python 3.12+, ffmpeg, .venv, local AI models)"
+    Write-Host "  Shortcut     -- Desktop / Start Menu icon (CreateShortcut.bat)"
     Write-Host "  Library      -- Library.bat every day"
     Write-Host "  Update       -- Update.bat or Update Library for new code (git pull)"
     Write-Host ""
     Write-Host "  1. Python 3.12+ and ffmpeg (winget if missing: Python.Python.3.12, Gyan.FFmpeg)"
+    Write-Host "     Optional git (winget Git.Git). If git is missing, Update downloads a zip of main."
+    Write-Host "     No GitHub account. No gh tool."
     Write-Host "  2. .venv + pip install the app"
     Write-Host "  3. python -m library setup-geo"
     Write-Host "  4. python -m library setup-ml objects"
@@ -39,6 +42,32 @@ function Show-Help {
 if ($Help) {
     Show-Help
     exit 0
+}
+
+function Write-Step {
+    param(
+        [Parameter(Mandatory = $true)][int]$Number,
+        [Parameter(Mandatory = $true)][int]$Total,
+        [Parameter(Mandatory = $true)][string]$Text
+    )
+    Write-Host ""
+    Write-Host ("[" + $Number + "/" + $Total + "] " + $Text)
+}
+
+function Write-FailNext {
+    param(
+        [Parameter(Mandatory = $true)][string]$Step,
+        [string]$Detail
+    )
+    Write-Host ""
+    Write-Host ("Setup could not finish at: " + $Step) -ForegroundColor Red
+    if ($Detail) {
+        Write-Host $Detail -ForegroundColor Red
+    }
+    Write-Host "What to try next:"
+    Write-Host "  1. Check this PC is on the internet, then run Setup.bat again (safe to re-run)."
+    Write-Host "  2. If it asked you to Update Library, run Update.bat, then Setup.bat again."
+    Write-Host "  3. If Python or ffmpeg failed, run Setup.bat as the same Windows user after winget finishes."
 }
 
 function Test-PythonVersion {
@@ -90,6 +119,35 @@ function Test-Ffmpeg {
     return [bool](Get-Command ffmpeg -ErrorAction SilentlyContinue)
 }
 
+function Test-Git {
+    return [bool](Get-Command git -ErrorAction SilentlyContinue)
+}
+
+function Ensure-Git {
+    if (Test-Git) {
+        Write-Host "git: found (Update uses anonymous HTTPS; no GitHub login, no gh)"
+        return
+    }
+    if ($DryRun) {
+        Write-Host "Dry-run: git is not on PATH (would winget install Git.Git, or Update uses a zip of main)."
+        return
+    }
+    if ($env:OS -ne "Windows_NT") {
+        Write-Host "git is optional. Update can download a zip of main. No GitHub account."
+        return
+    }
+    Write-Host "Git is optional. Trying winget Git.Git (no GitHub account, no gh)..."
+    winget install --id Git.Git -e --accept-package-agreements --accept-source-agreements
+    Refresh-Path
+    if (Test-Git) {
+        Write-Host "git: installed"
+        return
+    }
+    Write-Host "Git is not installed. That is OK."
+    Write-Host "Update Library will download a zip of main over HTTPS."
+    Write-Host "No GitHub account and no gh tool are needed. library-data stays put."
+}
+
 function Refresh-Path {
     if ($env:OS -eq "Windows_NT") {
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
@@ -113,6 +171,7 @@ function Ensure-PythonAndFfmpeg {
         return ,$python
     }
     if ($env:OS -ne "Windows_NT") {
+        Write-FailNext -Step "Python / ffmpeg" -Detail "Python 3.12+ and ffmpeg must be on PATH. Install them, then re-run setup."
         Write-Error "Python 3.12+ and ffmpeg must be on PATH. Install them, then re-run setup."
         exit 1
     }
@@ -131,6 +190,7 @@ function Ensure-PythonAndFfmpeg {
     $python = @(Get-BootstrapPython)
     $ffmpegOk = Test-Ffmpeg
     if ($python.Count -lt 1 -or -not $python[0] -or -not $ffmpegOk) {
+        Write-FailNext -Step "Python / ffmpeg" -Detail "winget could not put Python 3.12+ and ffmpeg on PATH."
         Write-Error "Python 3.12+ and ffmpeg are required on PATH."
         exit 1
     }
@@ -159,6 +219,7 @@ function Ensure-Venv {
         return $null
     }
     if ($Bootstrap.Count -lt 1 -or -not $Bootstrap[0]) {
+        Write-FailNext -Step ".venv" -Detail "Python 3.12+ is required to create .venv."
         Write-Error "Python 3.12+ is required to create .venv."
         exit 1
     }
@@ -166,6 +227,7 @@ function Ensure-Venv {
     $createArgs = Get-PythonArgumentList -Python $Bootstrap -ModuleArgs @("-m", "venv", ".venv")
     & ([string]$Bootstrap[0]) @createArgs
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $venvPython)) {
+        Write-FailNext -Step ".venv" -Detail "Could not create .venv."
         Write-Error "Could not create .venv."
         exit 1
     }
@@ -181,11 +243,13 @@ function Install-App {
     Write-Host "Installing app into .venv..."
     & $VenvPython -m pip install --upgrade pip
     if ($LASTEXITCODE -ne 0) {
+        Write-FailNext -Step "pip" -Detail "pip upgrade failed."
         Write-Error "pip upgrade failed."
         exit 1
     }
     & $VenvPython -m pip install -e .
     if ($LASTEXITCODE -ne 0) {
+        Write-FailNext -Step "pip" -Detail "pip install of the Library app failed."
         Write-Error "pip install of the Library app failed."
         exit 1
     }
@@ -235,15 +299,37 @@ function Write-MissingUpdate {
     Write-Host "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)"
 }
 
+function Install-Shortcuts {
+    $script = Join-Path $AppFolder "create-shortcut.ps1"
+    if (-not (Test-Path -LiteralPath $script)) {
+        Write-Host "Shortcut script missing -- run CreateShortcut.bat later if you want an icon."
+        return
+    }
+    if ($DryRun) {
+        Write-Host "Dry-run: would create Desktop and Start Menu shortcuts."
+        return
+    }
+    & $script
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Shortcut was not created. Run CreateShortcut.bat after Setup finishes."
+    }
+}
+
 try {
     if ($DryRun) {
         Write-Host "Dry-run -- no winget, pip, or model download."
         Write-Host "A real Setup.bat needs the internet the first time (models stay in library-data/)."
         Write-Host ""
+    } else {
+        Write-Host "This first Setup needs the internet (Python/ffmpeg if missing, then model packs)."
+        Write-Host "Re-run is safe. Models stay in library-data/. No MSI."
+        Write-Host ""
     }
 
+    Write-Step -Number 1 -Total 7 -Text "Checking Python 3.12+, ffmpeg, and optional git (internet if they are missing)..."
     $bootstrap = @(Ensure-PythonAndFfmpeg)
     if (-not $DryRun -and ($bootstrap.Count -lt 1 -or -not $bootstrap[0])) {
+        Write-FailNext -Step "Python / ffmpeg" -Detail "Python 3.12+ is required."
         Write-Error "Python 3.12+ is required."
         exit 1
     }
@@ -253,7 +339,9 @@ try {
     if (Test-Ffmpeg) {
         Write-Host "ffmpeg: found"
     }
+    Ensure-Git
 
+    Write-Step -Number 2 -Total 7 -Text "Creating .venv (skipped if it already works)..."
     $venvPython = Ensure-Venv -Bootstrap $bootstrap
     if (-not $venvPython) {
         if ($DryRun) {
@@ -261,9 +349,11 @@ try {
             Write-MissingUpdate -Missing @("setup-geo", "setup-ml objects", "setup-ml faces")
             exit 1
         }
+        Write-FailNext -Step ".venv" -Detail "No Python interpreter for setup."
         Write-Error "No Python interpreter for setup."
         exit 1
     }
+    Write-Step -Number 3 -Total 7 -Text "Installing Library into .venv (pip)..."
     if (-not $DryRun) {
         Install-App -VenvPython $venvPython
     } elseif (Test-Path -LiteralPath (Get-VenvPythonPath)) {
@@ -292,6 +382,8 @@ try {
             $missing += $item.Name
             continue
         }
+        $stepNumber = 4 + $ran.Count
+        Write-Step -Number $stepNumber -Total 7 -Text ("Downloading " + $item.Pull + " ...")
         if ($DryRun) {
             Write-Host ("Dry-run: would run  python -m library " + $item.Name)
             $ran += $item.Name
@@ -301,6 +393,7 @@ try {
         $cmdArgs = @("-m", "library") + $item.Tokens
         & $venvPython @cmdArgs
         if ($LASTEXITCODE -ne 0) {
+            Write-FailNext -Step $item.Name -Detail ("python -m library " + $item.Name + " failed.")
             Write-Error ("python -m library " + $item.Name + " failed.")
             exit 1
         }
@@ -312,17 +405,22 @@ try {
         exit 1
     }
 
+    Write-Step -Number 7 -Total 7 -Text "Creating Desktop and Start Menu shortcuts..."
+    Install-Shortcuts
+
     Write-Host ""
     if ($DryRun) {
         Write-Host "Dry-run ready -- all three setup commands are in this copy."
         Write-Host "Run Setup.bat (without -DryRun) to download packs. Then run Library.bat."
     } else {
         Write-Host "Ready -- run Library.bat"
+        Write-Host "Or double-click the Library icon on the Desktop."
     }
     exit 0
 } catch {
     Write-Host ""
     Write-Host "Library setup could not finish." -ForegroundColor Red
     Write-Host $_ -ForegroundColor Red
+    Write-FailNext -Step "setup" -Detail ""
     exit 1
 }

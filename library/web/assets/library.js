@@ -3296,7 +3296,7 @@
         main.innerHTML = '<p id="grid-loading">' + t("loadingPictures") + "</p>";
         renderKey = "loading";
       } else {
-        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + t("emptyLibrary") + '</p><button type="button" id="empty-add-folder">' + t("addFolder") + "</button></div>";
+        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + t("emptyLibrary") + '</p><button type="button" id="empty-add-folder">' + t("addFolder") + '</button><p class="empty-hint">' + t("familyHint") + "</p></div>";
         const emptyAdd = document.getElementById("empty-add-folder");
         if (emptyAdd) {
           emptyAdd.setAttribute("aria-label", t("addPhotos"));
@@ -5216,6 +5216,66 @@
     fetch("/api/version").then(readJson).then(applyVersion).catch(function () {});
   }
 
+  function updateStatusText(body) {
+    if (!body) {
+      return t("updateUnavailable");
+    }
+    const sha = body.git_sha || body.revision || "";
+    const branch = body.git_branch || body.branch || "main";
+    const code = body.code || body.reason || "";
+    if (body.restarting || code === "restarting") {
+      return t("updateRestarting", { sha: sha, branch: branch });
+    }
+    if (body.ok && body.alreadyCurrent) {
+      return t("updateAlready", { sha: sha, branch: branch });
+    }
+    if (body.ok && body.updated) {
+      return t("updateDone", { sha: sha, branch: branch });
+    }
+    if (code === "git-missing") {
+      return t("updateGitMissing");
+    }
+    if (code === "not-a-git-copy") {
+      return t("updateNotGit");
+    }
+    if (code === "diverged") {
+      return t("updateDiverged");
+    }
+    if (code === "need-public") {
+      return t("updateNeedPublic");
+    }
+    if (code === "fetch-failed" || code === "pull-failed" || code === "timeout") {
+      return t("updateFailed");
+    }
+    if (body.error === "update-unavailable" || code === "update-unavailable") {
+      return t("updateUnavailable");
+    }
+    return body.message || t("updateUnavailable");
+  }
+
+  function waitForLibraryRestart() {
+    let sawDown = false;
+    let tries = 0;
+    const timer = window.setInterval(function () {
+      tries += 1;
+      fetch("/api/health").then(function (res) {
+        if (!res.ok) {
+          sawDown = true;
+          return;
+        }
+        if (sawDown || tries > 8) {
+          window.clearInterval(timer);
+          window.location.reload();
+        }
+      }).catch(function () {
+        sawDown = true;
+      });
+      if (tries > 50) {
+        window.clearInterval(timer);
+      }
+    }, 400);
+  }
+
   if (updateLibraryBtn) {
     updateLibraryBtn.addEventListener("click", function () {
       updateLibraryBtn.disabled = true;
@@ -5232,7 +5292,7 @@
         updateLibraryBtn.disabled = false;
         if (updateStatus) {
           updateStatus.hidden = false;
-          updateStatus.textContent = (body && body.message) || (body && body.updated ? "Updated" : "Already up to date");
+          updateStatus.textContent = updateStatusText(body);
           updateStatus.setAttribute("data-ok", body && body.ok ? "true" : "false");
         }
         if (body && body.ok) {
@@ -5240,11 +5300,14 @@
         } else {
           loadVersion();
         }
+        if (body && body.restarting) {
+          waitForLibraryRestart();
+        }
       }).catch(function (err) {
         updateLibraryBtn.disabled = false;
         if (updateStatus) {
           updateStatus.hidden = false;
-          updateStatus.textContent = (err && err.body && err.body.error) || "update-unavailable";
+          updateStatus.textContent = updateStatusText(err && err.body) || t("updateUnavailable");
           updateStatus.setAttribute("data-ok", "false");
         }
       });
