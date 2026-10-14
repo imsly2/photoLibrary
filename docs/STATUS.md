@@ -133,8 +133,10 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   `#date-group` Years/Months/Days/Off (Off = one wall); Ctrl+wheel
   drives Size only; vertical side `#viewer-zoom-slider` with
   `#viewer-zoom-pct`; `#viewer-scrub` in `#viewer-bottom`, not over
-  the picture. `launch.ps1` and `/api/update` unchanged. Does not
-  close a Check. 16/22 unchanged.
+  the picture. Clicking a video tile autoplays at the tile
+  `currentTime`. `#library-version` SHA beside Update Library (PR #11).
+  `launch.ps1` and `/api/update` unchanged. Does not close a Check.
+  16/22 unchanged.
   Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
   Evidence:
   [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-2/result.json)
@@ -152,6 +154,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-1/result.json)
   45/45, [video-viewer.png](features/taste-video/Rev1.0/assets/verify-1/video-viewer.png),
   [launch-arglist](features/taste-windows/Rev1.0/assets/launch-arglist/result.json).
+- 2026-10-14 — Visible checkout SHA next to **Update Library**
+  (`#library-version`, `GET /api/version`, `git_sha` on
+  `POST /api/update`). Short SHA only; no SemVer. Successful Update
+  refreshes the label from the new tip; the serve process does not
+  restart. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-version](features/taste-version/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-VERSION](features/taste-version/Rev1.0/assets/verify-1/result.json)
+  23/23, [version-header.png](features/taste-version/Rev1.0/assets/verify-1/version-header.png).
 
 ## Completion
 

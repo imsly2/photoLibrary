@@ -741,6 +741,21 @@ dialog h2 {
   border: 1px solid #2a2a32;
 }
 
+.update-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-left: auto;
+}
+
+#library-version {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.78rem;
+  color: #8a8a96;
+  letter-spacing: 0.02em;
+  user-select: all;
+}
+
 #update-library {
   background: #2a2a32;
   border: 1px solid #3a3a46;
@@ -748,7 +763,6 @@ dialog h2 {
   border-radius: 6px;
   padding: 0.35rem 0.85rem;
   cursor: pointer;
-  margin-left: auto;
 }
 
 #update-status {
