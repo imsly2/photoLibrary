@@ -4,6 +4,26 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-14 — **Docs audit** on tip `cursor/reveal-explorer-8d56`
+  (PR #14 `1cac4c9`). PRODUCT / UI-SPEC / CONTRACTS / this file now
+  carry every Steve taste lock, including sibling tips **#12 chrome**,
+  **#13 places**, **#14 reveal/volume**, **#15 objects**, **#16 faces**,
+  and pending **#17** Reveal-spaces / MOV / Years-Months hover / Preview
+  badge notes. Honesty table: [UI-SPEC — Spec target vs current
+  implementation](UI-SPEC.md#spec-target-vs-current-implementation).
+  One-shot rebuild prompt: [ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
+  **On this tip (shipped):** one Size slider; Dates Years/Months/Days/Off;
+  side zoom %; bottom scrub; tile scrub; tile→viewer autoplay at time;
+  mute/volume; header SHA + Update; Reveal string `/select,"path"` +
+  missing-original 404; progressive proxy→original; hover at Days/Off
+  and every Size; preserve originals; no cloud default. **Specified,
+  not on this tip:** Reveal argv that survives spaces (PR #17);
+  `#viewer-source` Preview/Original/Full + `playback.mp4` MOV sound
+  (PR #17); hover in dated Years **and** Months (Steve lock; still a
+  gap on #17); `setup-geo` / GEO 44/44 (PR #13); `setup-ml objects` /
+  TASTE-OBJECTS 39/39 (PR #15); `setup-ml faces` / FACES 40/40 (PR #16);
+  `Setup.bat` (intent only). No 23rd Check. **16/22 unchanged.**
+
 - S00 is green on its Windows verifier: an empty fixture-owned library launches,
   persists the 16 default settings, reuses a matching-root server, refuses a
   foreign port without killing it, recovers a settings transaction, and undoes
@@ -452,3 +472,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (`explorer.exe /select,"fullpath"`). Missing original is 404
   `unavailable` and the viewer banner, not Documents. TASTE-REVEAL
   37/37, then 40/40 with mute + volume. No new Check. 16/22 unchanged.
+- 2026-10-14 — Docs-only North Star refresh (this file + PRODUCT /
+  UI-SPEC / CONTRACTS / ONE_SHOT_PROMPT). Sibling code tips not
+  merged here: #13 places, #15 objects, #16 faces, #17 spaces/MOV/badge.
+  Hover-in-Years-and-Months remains a Steve lock and a code gap.
+  16/22 unchanged.

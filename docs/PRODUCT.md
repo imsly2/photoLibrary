@@ -7,9 +7,12 @@ those pictures, browse small pictures quickly, and open one. An agent can then
 write who, where, and what is in them so they can be found again.
 
 It is a local library server that travels with its app and data folder. It is not
-the phone copier, a cloud host, a bundled image model, a desktop browser shell, or
-a tool that rearranges originals on its own. Copying originals is an explicit
-choice; linking leaves them where they are. No accounts or separate family mode.
+the phone copier, a cloud host, a required bundled image model, a desktop browser
+shell, an MSI installer, or a tool that rearranges originals on its own. Optional
+local packs (offline city names, YOLO objects, InsightFace clusters) download
+into `library-data/` after `Setup.bat` / `setup-ml` / `setup-geo` and never call
+a cloud API. Copying originals is an explicit choice; linking leaves them where
+they are. No accounts or separate family mode.
 
 The pictures you already have stay files on disk. The library adds a catalog
 beside the server: one JSON record per picture, one per person, one per place,
@@ -53,10 +56,10 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
+| Naming | External agent/person writes entity JSON through annotate. Optional **local** packs may fill gaps: GPS city/region from `setup-geo`, Things from `setup-ml objects` (YOLO), unnamed people from `setup-ml faces` (InsightFace). A human or agent name is never overwritten. No cloud geocoder, no cloud AI, no guessed real names. Browse works with no models installed. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
+| Playback clarification | Full-length silent video proxies for the grid. Viewer play starts on that proxy (**Preview**), then swaps to the original when the browser can decode it (**Original**), else to full-size H.264+AAC `playback.mp4` (**Full**) so iPhone `.MOV` / HEVC is not silent forever. `#viewer-source` stays honest (Preview / Loading full… / Original / Full / Preview — full unavailable). Hover plays the muted proxy at every Size **and** in Years, Months, Days, and Off — not only Days/Off. `#viewer-scrub` (bottom chrome) + mute/volume; `.tile-scrub` seeks; tile click autoplays at that time. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -76,8 +79,10 @@ CONTRACTS. Changing them requires a doc edit before implementation.
    Spin a globe of every picture that has a location. Click a cluster to
    filter to those pictures and open one. Play a tour that orbits the globe,
    zooms into a place, shows pictures from there, and zooms back out.
-6. An agent writes people, places, and things onto records. Search returns
-   every picture tied to that name.
+6. An agent writes people, places, and things onto records. Optional local
+   setup (`Setup.bat` / `setup-geo` / `setup-ml`) can fill city names, object
+   Things, and unnamed face clusters on this computer; a person confirms
+   every name. Search returns every picture tied to that name.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
@@ -103,11 +108,18 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 9. Search filename + date + existing tags; empty “No matches for …”
 10. Update UX finish (launcher + in-app; Updating…; already current / failed; header shows checkout SHA)
 
-Also locked: `Library.bat`, native Add folder, live-origin Back, grid
-wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
-“Showing original”, globe yaw + local Earth, progressive video start,
-hover at every Size, one grid Size slider + Dates Years/Months/Days/Off
-+ vertical side viewer Zoom, viewer/tile scrub in bottom chrome.
+Also locked: `Library.bat` (and later `Setup.bat` for optional local
+packs); native Add folder; live-origin Back; grid wall/hearts/VIDEO;
+Win7 prev/next/slider/pan; no overlay pills; no “Showing original”
+**control**; globe yaw + local Earth; progressive proxy→full with
+honest `#viewer-source` (Preview / Loading full… / Original / Full);
+MOV gets a playable full+sound path (`playback.mp4`), not a silent
+proxy forever; hover at every Size **and** in Years **and** Months
+(not only Days/Off); one grid Size slider + Dates Years/Months/Days/Off
++ vertical side viewer Zoom with %; `#viewer-scrub` + mute/volume in
+bottom chrome; `.tile-scrub`; tile click autoplays at that time;
+header SHA + Update Library; Reveal selects the real file even when
+the path has spaces. Preserve originals. No cloud default.
 macOS/Linux launch is pinned later.
 
 **Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
@@ -138,11 +150,20 @@ library-data/
     things/<id>.json
     favorites.json       # item ids marked with a heart
     catalog.sqlite       # rebuilt from the JSON
+  geo/                   # optional offline cities pack (setup-geo); not in git
+    cities.csv
+    ATTRIBUTION.txt
+  models/                # optional; created by setup-ml; not in git
+    yolov8n.onnx         # objects
+    objects.json
+    objects-state.json
+    faces/               # InsightFace buffalo_s ONNX + embeddings index
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
     preview.webp
     poster.webp          # video
-    proxy.mp4            # video
+    proxy.mp4            # silent grid/viewer start
+    playback.mp4         # full-size H.264+AAC when original is not browser-safe
   originals/<source>/    # used when a folder was copied onto this drive
 ```
 
@@ -188,6 +209,11 @@ anyone to type git, open GitHub Desktop, or switch branches. The header
 shows this copy's short git SHA (or `local` when not a git checkout) so
 a successful Update is visible.
 
+`Setup.bat` is the portable one-click for optional local packs (geo +
+objects + faces) after the first launch. It calls the same
+`python -m library setup-geo` / `setup-ml objects` / `setup-ml faces`
+one-liners. Browse works without it. There is no MSI.
+
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
 URL `http://127.0.0.1:8765/` and `GET /api/health` returns
@@ -217,7 +243,14 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
 | `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
-| `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person (and stored embeddings when present). |
+| `setup-geo` [--from \<dir\>] [--force] | (CLI / Setup.bat; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
+| `analyze-places` | `POST /api/places/analyze` `{}` | Fills null GPS `place.name` from that pack. Never overwrites a set name. |
+| `setup-ml objects` | (CLI / Setup.bat; no HTTP) | Downloads a small local YOLO into `models/`. CPU. No cloud inference. |
+| `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Local object detection; writes Things through annotate. |
+| `setup-ml faces` | `POST /api/faces/setup` | Installs InsightFace buffalo_s ONNX under `models/faces/`. Not required to browse. |
+| `infer-faces` | `POST /api/faces/infer` | Detects faces locally, embeds, clusters unnamed people. |
+| — | `GET /api/faces` | Reports whether local face models are ready. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
@@ -240,10 +273,11 @@ Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
 `favorite` (not stored on the item JSON). `q` also matches a capturedAt
 date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
 
-`GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
-file. `original` on a missing disk returns HTTP 404 and
-`{"error":"unavailable"}`. The thumb still returns if that preview file is
-on this computer.
+`GET /api/media/<id>?which=thumb|preview|poster|proxy|playback|original` returns the
+file. `playback` is the full-size H.264+AAC derivative for originals the
+browser cannot decode (typical iPhone `.MOV`). `original` on a missing disk
+returns HTTP 404 and `{"error":"unavailable"}`. The thumb still returns if
+that preview file is on this computer.
 
 Exit codes: `0` success, `1` failed, `2` bad arguments. An empty search is
 success.
@@ -338,9 +372,19 @@ ISO6709 location string, not EXIF. The scan reads both.
 The place name you see in the iPhone Photos app is not in the file. Photos
 looks the coordinates up and keeps the name in its own database. A copied
 camera roll brings the coordinates across and leaves the name behind. This
-library stores the coordinates and leaves `name` null until a person or an
-agent sets it. A screenshot, a download, or a photo shared with location
-removed has no coordinates and does not appear on the globe.
+library stores the coordinates. `name` stays null until a person or an
+agent sets it, or a **local** offline geo pack fills it.
+
+The geo pack lives in `library-data/geo/` (not in git). Steve fetches it
+once with `python -m library setup-geo` or `Setup.bat` (same one-liner).
+The pack is a GeoNames-class cities table — nearest city/region, no
+network at scan time, no cloud API. Without the pack, behavior is
+unchanged: `name` stays null. When a place has coordinates and `name` is
+null, scan / `resolve_place` (and `analyze-places` for a library scanned
+before the pack) set `name` to that city/region, like `Chicago, Illinois`.
+A nonempty name written by a person or an agent is never overwritten. A
+screenshot, a download, or a photo shared with location removed has no
+coordinates and does not appear on the globe.
 
 GPS attaches a place. A new fix within `placeMatchMeters` (default 100) of an
 existing place reuses that place id. The place `name` stays null until set.
@@ -349,10 +393,14 @@ rounded coordinates, otherwise the group "No location".
 
 **Check:** `python -m tests.qa check F6` (planned runner; common root/artifact
 arguments and full assertions in SLICES). fixture JPEG with EXIF date `2024-06-12T15:04:00` and GPS near
-41.88, -87.63. After scan, the item's `capturedAtSource` is `exif` and
-`placeId` points at a place JSON whose `name` is null and whose coordinates
-match. A second JPEG 50 meters away gets the same `placeId`. A third, 5 km
-away, gets a different place. Artifact: the three item files and two place files.
+41.88, -87.63. After scan **without** a geo pack, the item's
+`capturedAtSource` is `exif` and `placeId` points at a place JSON whose
+`name` is null and whose coordinates match. A second JPEG 50 meters away
+gets the same `placeId`. A third, 5 km away, gets a different place.
+With the local geo pack present, that same GPS JPEG’s place `name` is a
+city/region (Chicago area) and `GET /api/items?q=Chicago` returns it.
+Artifact: the three item files and two place files; named-place proof
+under `docs/features/places-geo/` when that tip is merged.
 
 ## F7 — Previews
 
@@ -366,20 +414,32 @@ Every video gets:
 
 - `poster.webp`, one frame near the start, at thumb size.
 - `proxy.mp4`, width `proxyWidth` (default 480), H.264, no audio, long enough
-  to cover the whole clip. The grid and the carousel play this file. Opening
-  the item starts the proxy immediately, then swaps to the original when it
-  is available, keeping time and fit.
+  to cover the whole clip. The grid and the carousel play this file.
+- `playback.mp4` when the original is not a browser-safe MP4 (typical
+  iPhone `.MOV` / HEVC / `.AVI` / `.MKV`). Full length, original pixel
+  size, H.264 + AAC (remux when the bitstream already allows). The
+  original file stays on disk. A browser-safe MP4 does not get this file.
+
+Opening the item starts the proxy immediately (**Preview**), then swaps
+to the original when the browser can decode it (**Original**), otherwise
+to `playback.mp4` (**Full**), keeping time and fit. `#viewer-source`
+beside the filename stays honest: Preview, Loading full…, Original, Full,
+or Preview — full unavailable. A silent proxy is never labeled Original.
+iPhone `.MOV` must not stay on the silent 480 px proxy forever.
 
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
 
-Years and months show stills under the default setting. Days and All play the proxy, muted and
-looped, on the cell under the pointer. `playProxies` changes that:
-`days-and-all` (default), `always`, or `off`. Hover playback fills the whole
-tile at every Size stop; the still stays underneath as a poster. A Dates-off
-wall also plays the hovered proxy at Years/Months. The tile never splits still on
-one side and video on the other. Every video cell shows a VIDEO badge; live
-cells keep LIVE. A small scrub on the hovered tile seeks that preview.
+**Presentable hover lock:** the muted looped proxy plays on the cell
+under the pointer in **Years, Months, Days, and Off** — not only
+Days/Off — and at every Size stop (72–520). The still stays underneath
+as a poster. The tile never splits still on one side and video on the
+other. `playProxies` is `always` (matches this lock), `days-and-all`
+(legacy: Days + Off + a Dates-off wall only; dated Years/Months stay
+stills), or `off`. Every video cell shows a VIDEO badge; live cells keep
+LIVE. A small `.tile-scrub` on the hovered tile seeks that preview.
+Clicking a video tile opens the viewer at that tile `currentTime` and
+autoplays.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
@@ -474,21 +534,26 @@ A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
 
 For a photo the viewer shows `preview.webp` first, then the original if
-available, with no “Showing original” button or notification. Reveal in
+available, with no “Showing original” **control**. Reveal in
 Explorer and Open sit side by side. Reveal opens the original's containing
-folder on this computer whenever the file is here (`explorer /select` on
-Windows). Open launches that file in the computer's default app. Delete
+folder on this computer whenever the file is here (`explorer.exe` argv
+`/select,fullpath` — comma glued, no extra quotes — so paths with spaces
+such as `J:\Iphone Backup\Another Rope Swing.MOV` still select the file).
+Missing originals return 404 `unavailable` and never open Documents.
+Open launches that file in the computer's default app. Delete
 removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
-starts the proxy and swaps to the original when loaded (a browser that
-cannot decode the original stays on the proxy). Play preview still
+starts the proxy and swaps to the original when the browser can decode
+it, otherwise to `playback.mp4` (full quality + sound). `#viewer-source`
+beside the filename says Preview, Loading full…, Original, Full, or
+Preview — full unavailable. Play preview still
 toggles pause/play on click. `#viewer-scrub` sits in `#viewer-bottom`
-and seeks at any zoom or source. It does not overlay the picture.
+with Mute and volume, and seeks at any zoom or source. It does not overlay the picture.
 Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags
 it; a still also pans with a left drag, and any zoomed item pans with a
 left drag. Click a video, or press Space (when no slideshow), to play or
-pause. Playback of a video uses the original when available, otherwise
-the proxy.
+pause. Playback of a video uses the original when the browser can decode
+it, otherwise `playback.mp4`, otherwise the proxy.
 
 Person, Place, and Thing are **not** pills painted over the preview. A
 top-right **Info** control shows file facts first (date taken, camera,
@@ -586,8 +651,21 @@ These are the serialized index. Each one is a JSON file. Pictures point at
 them by id. Search does not look at pixels. It reads the ids.
 
 An agent, or a person typing in the viewer, writes them with `annotate`.
-The server does not download or run an image model. Analysis is whoever calls
-`annotate` after looking at `preview.webp`.
+The server does not ship a model and does not guess names. Analysis is
+whoever calls `annotate` after looking at `preview.webp`. That caller may
+be a person, an agent, or an optional **local** analyzer after Setup:
+
+- `setup-geo` / `analyze-places` — city/region on unnamed GPS places.
+- `setup-ml objects` / `analyze` — YOLO Things (CPU ONNX). Human tags
+  stay; analyze never deletes or renames. The COCO `person` class is
+  ignored (faces are a separate command).
+- `setup-ml faces` / `infer-faces` — InsightFace buffalo_s detects
+  boxes, embeds, and clusters **unnamed** people (`name: null`). Info
+  lists them as **Unnamed**; a person types the name. Faces never leave
+  the machine. Gender/age models are not loaded.
+
+Browse, scan, search, and the globe work with no models installed.
+Missing models: `models-missing` / `model-unavailable`, not a crash.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be
@@ -597,7 +675,8 @@ empty until somebody supplies them. The records stay readable JSON.
 It may be omitted. A face is a box that points at a person. A person with
 `"name": null` is an unnamed face. Setting the name updates that person file.
 `people merge <keep-id> <drop-id>` rewrites every face and deletes the dropped
-person file.
+person file (and merges stored embeddings when `models/faces/index.json`
+exists).
 
 Naming a thing reuses an existing thing id when the name matches,
 case-insensitively, including aliases. Otherwise annotate creates the thing file.
@@ -774,7 +853,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 |------|----------------|
 | Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates Years/Months/Days/Off, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
+| Viewer | One item, preview then original or `playback`; `#viewer-source` badge; bottom Prev/Next/Rotate; vertical side zoom slider with %; bottom video scrub + mute/volume; fullscreen; slideshow; Info (file facts then names, including Unnamed face clusters); viewer heart; Reveal and Open side by side; Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 
@@ -794,6 +873,9 @@ Build in [SLICES.md](SLICES.md) dependency order. First taste is small fixture
 pictures on screen and one photo opened; names and globe come later. The
 family-PC gate after A+B+C is the UI-SPEC **Presentable for family PC**
 checklist — close gaps on that path before treating S13 settings as the
-next taste job. Then continue to 100% (22/22) fresh-verifier-backed
-Checks. [STATUS.md](STATUS.md) records what actually passed, not what the
-help file promises.
+next taste job. Optional local packs (geo / objects / faces) and
+`Setup.bat` are specified here and in CONTRACTS; they are **not** a 23rd
+Check and do not block that checklist. Then continue to 100% (22/22)
+fresh-verifier-backed Checks. [STATUS.md](STATUS.md) records what actually
+passed, not what the help file promises. To regenerate this product
+one-shot, use [ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
