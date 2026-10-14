@@ -509,8 +509,9 @@ a source swap only reapplies the same transform.
 as soon as it can, then swaps to the **original** when the browser can
 decode it (MP4 H.264). iPhone `.MOV` / HEVC typically cannot play in
 Chrome — do not wait forever on `canPlayType("maybe")`. Swap instead
-to `which=playback` (`playback.mp4`: full-size H.264 + AAC, remux when
-possible). The swap keeps `currentTime`, play/pause, and the current
+to `which=playback` (`playback.mp4`: library H.264 + AAC at most 1280
+wide, remux only when the source is already small and those codecs).
+The swap keeps `currentTime`, play/pause, and the current
 scale/pan. No “Showing original” **control**. `#viewer-source` sits
 beside the filename and must stay honest: **Preview** on the silent
 proxy, **Loading full…** while original or playback is fetching,
@@ -582,7 +583,7 @@ Check to hide it.
 | People panel | Right splitter `#library-side`; named always; unnamed if count ≥ 3; click / Ctrl-click AND; rename + thumbnail | This people-panel tip | All-faces dump is Later |
 | Processing | `#jobs-panel` Pause / Start; renditions / analyze / infer-faces / objects | This people-panel tip | Does not block browse |
 | Viewer wheel | Plain wheel zooms still/video | This video/zoom tip | Ctrl+wheel stays; wheel does not seek |
-| Progressive video | Proxy first, then original or full-sound `playback`; same fit/time | This video/zoom tip | Catalog width/height is the layout box. `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable |
+| Progressive video | Proxy first, then original or size-capped full-sound `playback`; same fit/time | This video/zoom tip | Catalog width/height is the layout box. `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable from the file that is playing |
 | Scrub | `#viewer-scrub` in `#viewer-bottom` + `.tile-scrub` | This chrome tip | Scrub is not over the picture; tile scrub does not open the viewer |
 | Overlay pills / “Showing original” | **Forbidden** | **This merge** removed them | Do not restore |
 | Reveal + Open | Side by side | **This merge** Open + Reveal | Keep beside each other |

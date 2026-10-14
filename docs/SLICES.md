@@ -79,6 +79,13 @@ Gates: `slice TASTE-PREVIEWS`,
 `slice TASTE-SIDEBAR`, keep TASTE-EMPTY-GRID / TASTE-FILTERS /
 TASTE-PEOPLE / TASTE-SHELL. No 23rd Check.
 
+Video rendition size (2026-10-14): proxies stay scrub-small (width ≤
+`proxyWidth`, CRF 28, no audio). A stored `playback.mp4` is only for
+originals that are not browser-safe MP4, and then only at ≤1280 / CRF
+23 (remux only when already small). Orphan `*.tmp` is removed. Gate:
+`slice TASTE-VIDEO` (size notes in `rendition-size.json`). No 23rd
+Check. No new setting.
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.

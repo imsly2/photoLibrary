@@ -29,6 +29,18 @@ VIDEO_SLOTS = ("poster", "proxy", "playback")
 SAFE_VIDEO_CODECS = frozenset({"h264"})
 SAFE_AUDIO_CODECS = frozenset({"aac", "mp3"})
 SAFE_MP4_SUFFIXES = frozenset({".mp4", ".m4v"})
+PROXY_CRF = 28
+PROXY_PRESET = "veryfast"
+PROXY_MAXRATE = "800k"
+PROXY_BUFSIZE = "1600k"
+PLAYBACK_MAX_WIDTH = 1280
+PLAYBACK_CRF = 23
+PLAYBACK_PRESET = "veryfast"
+PLAYBACK_AUDIO_BITRATE = "128k"
+PLAYBACK_MAXRATE = "2M"
+PLAYBACK_BUFSIZE = "4M"
+PLAYBACK_REMUX_MAX_BYTES = 80 * 1024 * 1024
+_swept_tmp_roots: set[str] = set()
 
 
 def _settings_caps(root: Path) -> tuple[int, int, int]:
@@ -141,6 +153,64 @@ def _stream_codecs(source: Path) -> tuple[str | None, str | None]:
     return vcodec, acodec
 
 
+def _video_width(source: Path) -> int | None:
+    payload = ffprobe_json(source)
+    if not payload:
+        return None
+    streams = payload.get("streams") or []
+    video = next((s for s in streams if s.get("codec_type") == "video"), None)
+    if not isinstance(video, dict):
+        return None
+    width = video.get("width")
+    return width if type(width) is int and width > 0 else None
+
+
+def _file_size(path: Path) -> int:
+    try:
+        return path.stat().st_size
+    except OSError:
+        return 0
+
+
+def cleanup_tmp_siblings(dest: Path) -> int:
+    """Remove leftover `<name>.*.tmp` next to dest (killed ffmpeg leftovers)."""
+    parent = dest.parent
+    if not parent.is_dir():
+        return 0
+    removed = 0
+    for path in parent.glob(f"{dest.name}.*.tmp"):
+        try:
+            path.unlink()
+            removed += 1
+        except OSError:
+            pass
+    return removed
+
+
+def sweep_orphan_tmps(root: Path) -> int:
+    """Delete leftover encode temps under library-data/renditions."""
+    folder = root / "renditions"
+    if not folder.is_dir():
+        return 0
+    removed = 0
+    for path in folder.rglob("*.tmp"):
+        try:
+            if path.is_file():
+                path.unlink()
+                removed += 1
+        except OSError:
+            pass
+    return removed
+
+
+def sweep_library_rendition_tmps(root: Path) -> int:
+    key = str(root.resolve())
+    if key in _swept_tmp_roots:
+        return 0
+    _swept_tmp_roots.add(key)
+    return sweep_orphan_tmps(root)
+
+
 def browser_safe_mp4(source: Path) -> bool:
     if file_suffix(source) not in SAFE_MP4_SUFFIXES:
         return False
@@ -159,26 +229,50 @@ def can_remux_to_mp4(source: Path) -> bool:
 
 def _run_ffmpeg(args: list[str], dest: Path) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
+    cleanup_tmp_siblings(dest)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
         proc = subprocess.run(args + [str(tmp)], capture_output=True, check=False)
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
             if tmp.exists():
                 tmp.unlink()
+            cleanup_tmp_siblings(dest)
             return False
         tmp.replace(dest)
+        cleanup_tmp_siblings(dest)
         return dest.is_file() and dest.stat().st_size > 0
     except OSError:
         if tmp.exists():
-            tmp.unlink()
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+        cleanup_tmp_siblings(dest)
         return False
 
 
+def should_remux_playback(source: Path) -> bool:
+    """Remux only when it cannot silently duplicate a large phone clip."""
+    if not can_remux_to_mp4(source):
+        return False
+    width = _video_width(source)
+    if width is None or width > PLAYBACK_MAX_WIDTH:
+        return False
+    return _file_size(source) <= PLAYBACK_REMUX_MAX_BYTES
+
+
 def write_playback(source: Path, dest: Path) -> str:
-    """Write full-quality H.264+AAC MP4. Returns ready|not-applicable|error."""
+    """Write size-capped H.264+AAC MP4. Returns ready|not-applicable|error."""
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    cleanup_tmp_siblings(dest)
     if browser_safe_mp4(source):
+        if dest.exists():
+            try:
+                dest.unlink()
+            except OSError:
+                pass
         return "not-applicable"
-    if can_remux_to_mp4(source):
+    if should_remux_playback(source):
         remux = [
             "ffmpeg",
             "-y",
@@ -205,15 +299,21 @@ def write_playback(source: Path, dest: Path) -> str:
         "-c:v",
         "libx264",
         "-preset",
-        "veryfast",
+        PLAYBACK_PRESET,
         "-crf",
-        "18",
+        str(PLAYBACK_CRF),
+        "-maxrate",
+        PLAYBACK_MAXRATE,
+        "-bufsize",
+        PLAYBACK_BUFSIZE,
+        "-vf",
+        f"scale='trunc(min(iw,{PLAYBACK_MAX_WIDTH})/2)*2':-2",
         "-pix_fmt",
         "yuv420p",
         "-c:a",
         "aac",
         "-b:a",
-        "192k",
+        PLAYBACK_AUDIO_BITRATE,
         "-movflags",
         "+faststart",
         "-f",
@@ -225,39 +325,32 @@ def write_playback(source: Path, dest: Path) -> str:
 
 
 def write_proxy(source: Path, dest: Path, cap: int) -> bool:
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
-    try:
-        proc = subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-i",
-                str(source),
-                "-an",
-                "-c:v",
-                "libx264",
-                "-vf",
-                f"scale='trunc(min(iw,{cap})/2)*2':-2",
-                "-pix_fmt",
-                "yuv420p",
-                "-f",
-                "mp4",
-                str(tmp),
-            ],
-            capture_output=True,
-            check=False,
-        )
-        if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
-            if tmp.exists():
-                tmp.unlink()
-            return False
-        tmp.replace(dest)
-        return dest.is_file() and dest.stat().st_size > 0
-    except OSError:
-        if tmp.exists():
-            tmp.unlink()
-        return False
+    args = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(source),
+        "-an",
+        "-c:v",
+        "libx264",
+        "-preset",
+        PROXY_PRESET,
+        "-crf",
+        str(PROXY_CRF),
+        "-maxrate",
+        PROXY_MAXRATE,
+        "-bufsize",
+        PROXY_BUFSIZE,
+        "-vf",
+        f"scale='trunc(min(iw,{cap})/2)*2':-2",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "-f",
+        "mp4",
+    ]
+    return _run_ffmpeg(args, dest)
 
 
 def slot_filename(slot: str) -> str:
@@ -528,6 +621,7 @@ def _clear_empty(path: Path) -> None:
 
 
 def drain_step(root: Path) -> bool:
+    sweep_library_rendition_tmps(root)
     job = next_rendition_job(root)
     if job is None:
         return False
@@ -547,7 +641,15 @@ def drain_step(root: Path) -> bool:
         publish_error(root, item_id, slot)
         return True
     dest = dest_dir / slot_filename(slot)
+    cleanup_tmp_siblings(dest)
     if dest.is_file() and dest.stat().st_size > 0:
+        if slot == "playback" and browser_safe_mp4(source):
+            try:
+                dest.unlink()
+            except OSError:
+                pass
+            publish_not_applicable(root, item_id, slot)
+            return True
         publish_ready(root, item_id, slot, relative, store)
         return True
     if slot == "playback":

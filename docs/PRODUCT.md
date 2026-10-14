@@ -58,7 +58,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name). No cloud geocoder or cloud AI. Browse works with models missing. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original or `playback.mp4` without a fit/time jump. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
+| Playback clarification | Full-length silent video proxies (width ≤ `proxyWidth`, CRF 28, no audio). Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original when it is already browser-safe, otherwise to a size-capped `playback.mp4` (≤1280, CRF 23) without a fit/time jump. `#viewer-source` names the file that is playing. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -439,12 +439,20 @@ Every picture gets:
 Every video gets:
 
 - `poster.webp`, one frame near the start, at thumb size.
-- `proxy.mp4`, width `proxyWidth` (default 480), H.264, no audio, long enough
-  to cover the whole clip. The grid and the carousel play this file.
-- `playback.mp4` when the original is not a browser-safe MP4 (typical
-  iPhone `.MOV` / HEVC). Full length, original pixel size, H.264 + AAC
-  (remux when the bitstream already allows). The original file stays on
-  disk. A browser-safe MP4 does not get this file.
+- `proxy.mp4`, width at most `proxyWidth` (default 480), H.264, no audio,
+  CRF 28, long enough to cover the whole clip. This is the small
+  scrub/preview the grid and the carousel play — not a second copy of
+  the original.
+- `playback.mp4` only when the original is not a browser-safe MP4
+  (typical iPhone `.MOV` / HEVC). A browser-safe MP4 (H.264 + AAC/mp3
+  in `.mp4` / `.m4v`) is `not-applicable`: the viewer plays the original
+  and no playback file is stored. When a stored playback is still
+  needed it is full-length H.264 + AAC with a size policy: longest
+  side at most 1280, CRF 23, AAC 128k. Remux (bitstream copy) only
+  when the source is already those codecs, already ≤1280 wide, and
+  under 80 MiB — never a silent multi-GB duplicate of a 4K phone
+  clip. Encode leftovers (`*.tmp`) are removed on success, failure,
+  and the next drain. The original file stays on disk.
 
 Opening the item starts the proxy immediately, then swaps to the original
 when the browser can decode it, otherwise to `playback.mp4`, keeping time
@@ -465,8 +473,10 @@ cells keep LIVE. A small scrub on the hovered tile seeks that preview.
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
 are non-empty: `thumb.webp`, `preview.webp` for the JPEG; `poster.webp` and
-`proxy.mp4` for the video. The proxy's width is at most `proxyWidth`.
-Artifact: ffprobe JSON for the proxy plus the file sizes.
+`proxy.mp4` for the video. The proxy's width is at most `proxyWidth`, it
+has no audio, and the file stays under a small size bound. The MP4 does
+not get a `playback.mp4`. Artifact: ffprobe JSON for the proxy plus the
+file sizes.
 
 ## F8 — Where preview files are stored
 

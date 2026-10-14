@@ -28,8 +28,12 @@ and this file.
 9. Clicking a video tile autoplays the viewer at the tile’s `currentTime`.
 10. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
 11. `clip.mov` serves a full-sound `playback.mp4`; badge says Full.
-    Browser-safe `clip.mp4` stays Original. Preserve Originals keeps
-    the MOV on disk.
+    Browser-safe `clip.mp4` stays Original and does not store a
+    playback file. Preserve Originals keeps the MOV on disk.
+12. Proxies stay small (width ≤ `proxyWidth`, CRF 28, no audio). A
+    stored playback, when needed, stays under the 1280 / CRF 23
+    policy so a 4K phone clip cannot write a multi-GB sibling.
+    Browser-safe MP4 is `not-applicable`. Orphan `*.tmp` is removed.
 
 ## Out of scope
 
