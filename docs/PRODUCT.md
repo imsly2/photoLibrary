@@ -430,16 +430,15 @@ iPhone `.MOV` must not stay on the silent 480 px proxy forever.
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
 
-**Presentable hover lock:** the muted looped proxy plays on the cell
-under the pointer in **Years, Months, Days, and Off** — not only
-Days/Off — and at every Size stop (72–520). The still stays underneath
-as a poster. The tile never splits still on one side and video on the
-other. `playProxies` is `always` (matches this lock), `days-and-all`
-(legacy: Days + Off + a Dates-off wall only; dated Years/Months stay
-stills), or `off`. Every video cell shows a VIDEO badge; live cells keep
-LIVE. A small `.tile-scrub` on the hovered tile seeks that preview.
-Clicking a video tile opens the viewer at that tile `currentTime` and
-autoplays.
+**Presentable hover lock (shipped, PR #17):** the muted looped proxy
+plays on the cell under the pointer in **Years, Months, Days, and Off**
+and at every Size stop (72–520). The still stays underneath as a poster.
+The tile never splits still on one side and video on the other.
+`playProxies`: `days-and-all` (default) and `always` both hover-play at
+every Dates grouping; `off` never does. Every video cell shows a VIDEO
+badge; live cells keep LIVE. A small `.tile-scrub` on the hovered tile
+seeks that preview. Clicking a video tile opens the viewer at that tile
+`currentTime` and autoplays.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and

@@ -143,11 +143,11 @@ viewer scrub bar sits in `#viewer-bottom` (not over the picture) and
 seeks; wheel does not seek. Unsupported original codec stays on the
 proxy after a progressive start, not a silent freeze.
 
-**Presentable hover lock:** the muted looped proxy plays on the hovered
-cell in **Years, Months, Days, and Off** — not only Days/Off — at every
-Size stop (72–520). `playProxies=off` never autoplays. `always` matches
-this lock. `days-and-all` is the legacy value (Days + Off + a Dates-off
-wall; dated Years/Months stay stills). No policy autoplays all cells.
+**Presentable hover lock (shipped, PR #17):** the muted looped proxy
+plays on the hovered cell in **Years, Months, Days, and Off** at every
+Size stop (72–520). `playProxies=off` never autoplays. `days-and-all`
+(default) and `always` both hover-play at every Dates grouping. No
+policy autoplays all cells.
 Hover leave stops and restores still/poster; muted, looped proxy never
 starts audio. Explicit viewer play is independent of hover setting.
 The hover proxy is position-absolute over the still and `object-fit: cover`s the
@@ -375,10 +375,10 @@ Clicking a video tile opens the viewer at that tile’s `currentTime`
 **Hover at every tile size and every Dates mode.** Grid preview
 playback is not reserved for large cells or for Days/Off. When
 `playProxies` is not `off`, the hovered video fills that tile at Size
-72 through 520 in **Years, Months, Days, and Off**. Leave restores the
-poster. A catalog rebuild must resume the hovered proxy while the
-pointer stays on that tile. `days-and-all` is the older setting that
-stills dated Years/Months — not the presentable lock.
+72 through 520 in **Years, Months, Days, and Off**. `.tile-scrub`
+seeks that preview. Leave restores the poster. A catalog rebuild must
+resume the hovered proxy while the pointer stays on that tile.
+**Shipped on PR #17** (TASTE-VIDEO 92/92).
 
 **One grid Size, separate Dates, one viewer Zoom.** The rail
 `#size-slider` is the only grid density control (eight Size stops).
@@ -405,29 +405,28 @@ preview without opening the viewer. Originals stay on disk; no cloud.
 
 ### Spec target vs current implementation
 
-Honesty rule: grade the **docs base tip** `cursor/reveal-explorer-8d56`
-(PR #14, `1cac4c9`) first. Fold newer sibling tips as **specified** and
-mark whether their code is on this tip. Do not revive retired chrome.
-F10’s one-Esc-from-Info close-viewer proof still times out on this stack
-(same as `d00addb`); do not weaken that Check to hide it. Optional local
-packs (PR #13/#15/#16) are specified product, not a 23rd Check, and do
-not block the 19-step family-PC path. 16/22 Checks stay until STATUS
-artifacts exist.
+Honesty rule: the landed presentable surface for Reveal, hover, and
+video source is **PR #17** (`cursor/reveal-spaces-hover-proxy-c876`,
+`a353dfc`). Those four Steve locks are **shipped**, not gaps. Optional
+local packs (PR #13/#15/#16) stay specified and unmerged. Do not revive
+retired chrome. F10’s one-Esc-from-Info close-viewer proof still times
+out on this stack (same as `d00addb`); do not weaken that Check to hide
+it. 16/22 Checks stay until STATUS artifacts exist.
 
-| Surface | Spec target | On this tip (`reveal-explorer-8d56`) | Gap / newer tip |
+| Surface | Spec target | Where shipped | Remaining gap |
 |---|---|---|---|
 | Launch | Double-click `Library.bat`; portable folder; no MSI | `Library.bat` + `launch.ps1` | F2 Check pending. `Setup.bat` **not shipped** (intent: geo + objects + faces one-liners) |
-| Update | In-app + launcher; Updating… then a sentence; header `#library-version` SHA | **Shipped** (PR #11 on this tip) + `Update.bat` | Progress sentence on a real family git copy |
+| Update | In-app + launcher; Updating… then a sentence; header `#library-version` SHA | **Shipped** (PR #11) + `Update.bat` | Progress sentence on a real family git copy |
 | Add folder | Native Browse; close on 202; copy-or-link; originals stay | **Shipped** Track A | Linux QA `picker-unavailable` (expected) |
 | Back / origin | Stay on live origin/port | **Shipped** | Do not reintroduce `settings.port` URLs |
 | Disconnect / reconnect | Banner + Retry | **Shipped** | `#reconnect-retry` beside exact banner text |
-| Size / Dates | One `#size-slider` (8 stops); `#date-group` Years/Months/Days/Off (Off = one wall); Ctrl+wheel = Size only | **Shipped** (PR #12 chrome on this tip) | Do not restore a Level slider |
+| Size / Dates | One `#size-slider` (8 stops); `#date-group` Years/Months/Days/Off (Off = one wall); Ctrl+wheel = Size only | **Shipped** (PR #12) | Do not restore a Level slider |
 | Viewer zoom | Vertical side `#viewer-zoom-slider` + `#viewer-zoom-pct`; plain wheel primary | **Shipped** (PR #12) | Slider not in `#viewer-bottom` |
-| Scrub / volume | `#viewer-scrub` in `#viewer-bottom`; `.tile-scrub`; `#viewer-mute` + `#viewer-volume` | **Shipped** (PR #12 + this PR #14) | Hover proxies stay silent |
+| Scrub / volume | `#viewer-scrub` in `#viewer-bottom`; `.tile-scrub`; `#viewer-mute` + `#viewer-volume` | **Shipped** (PR #12 + #14) | Hover proxies stay silent |
 | Tile → viewer | Click video tile autoplays at tile `currentTime` | **Shipped** (PR #12) | Stills unchanged |
-| Hover play | Years **and** Months **and** Days **and** Off; every Size 72–520 | Hover at Days + Off + Dates-off wall; Size 72–520 | **Gap:** dated Years/Months stills under default `days-and-all`. Steve lock is hover there too. PR #17 resumes hover after catalog rebuild; still same Years/Months gap |
-| Progressive video + badge | Proxy first, then Original or Full `playback.mp4`; `#viewer-source` Preview / Loading full… / Original / Full / Preview — full unavailable | Proxy→original swap; fit/time kept; **no** `#viewer-source`; **no** `playback.mp4` | **Gap on this tip.** PR #17 (`reveal-spaces-hover-proxy-c876`) ships badge + `playback` + MOV sound (TASTE-VIDEO 89/89). Until merged, iPhone `.MOV` can stay on the silent proxy |
-| Reveal + spaces | argv `explorer.exe` `/select,fullpath` (comma glued, no extra quotes); missing = 404, never Documents | String `explorer.exe /select,"fullpath"`; missing 404 | **Gap:** paths with spaces (e.g. `Iphone Backup`) can still open Documents. PR #17 fixes argv list form (TASTE-REVEAL 52/52) |
+| Hover play | Years **and** Months **and** Days **and** Off; every Size 72–520; resume after catalog rebuild | **Shipped (PR #17)** TASTE-VIDEO 92/92. `days-and-all` and `always` both hover every Dates mode | `playProxies=off` stills tiles |
+| Progressive video + badge | Proxy first, then Original or Full `playback.mp4`; `#viewer-source` Preview / Loading full… / Original / Full / Preview — full unavailable | **Shipped (PR #17)** TASTE-VIDEO 89/89 then 92/92. MOV → Full + sound; MP4 → Original | Do not label a silent proxy Original |
+| Reveal + spaces | argv `explorer.exe` `/select,fullpath` (comma glued, no extra quotes); missing = 404, never Documents | **Shipped (PR #17)** TASTE-REVEAL 52/52 (`Iphone Backup`) | Older quoted-string form is retired |
 | Overlay pills / “Showing original” control | **Forbidden** | Removed | Do not restore. Badge is not that control |
 | Open + Reveal | Side by side | **Shipped** | Keep beside each other |
 | Info | File facts first, then names (Unnamed clusters) | Facts + names **shipped** | Unnamed label **gap** until PR #16 |

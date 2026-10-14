@@ -170,15 +170,15 @@ sections. Years/Months/Days persist as `zoomLevel` (`all` displays as
 Days). Off and Size are session-only. Changing Dates or Size keeps
 already-loaded thumbs painted; the item under the cursor stays in view.
 
-**Hover lock:** muted looped `proxy.mp4` plays on the cell under the
-pointer in **Years, Months, Days, and Off** — not only Days/Off — at
-every Size 72–520. Still stays underneath as a poster. No split
-still+video. `playProxies=off` disables. `always` matches this lock.
-`days-and-all` is the older value (Days + Off only). Leave restores
-the poster. A catalog rebuild must resume the hovered proxy. Every
-video cell shows a VIDEO badge; live cells show LIVE. `.tile-scrub`
-seeks the hover preview without opening the viewer. Clicking a video
-tile opens the viewer at that tile `currentTime` and autoplays.
+**Hover lock (shipped, PR #17):** muted looped `proxy.mp4` plays on the
+cell under the pointer in **Years, Months, Days, and Off** at every
+Size 72–520. Still stays underneath as a poster. No split still+video.
+`playProxies=off` disables. `days-and-all` (default) and `always` both
+hover-play at every Dates grouping. Leave restores the poster. A
+catalog rebuild must resume the hovered proxy. Every video cell shows
+a VIDEO badge; live cells show LIVE. `.tile-scrub` seeks the hover
+preview without opening the viewer. Clicking a video tile opens the
+viewer at that tile `currentTime` and autoplays.
 
 Hearts: tile heart at Size ≥144; hidden at 72/104. Viewer heart.
 `catalog/favorites.json`. Collapsible Favorites strip at the top of
@@ -224,9 +224,10 @@ Layout uses catalog width/height, not the proxy’s 480 px.
 Reveal in Explorer and Open sit side by side. Reveal launches
 `explorer.exe` as argv `["explorer.exe", "/select," + absolutePath]`
 — comma glued to the path, **no extra quotes** — so
-`J:\Iphone Backup\Another Rope Swing.MOV` selects that file. The older
-string `explorer.exe /select,"fullpath"` opens Documents on spaces;
-do not ship that. Missing original → 404 `unavailable`, banner
+`J:\Iphone Backup\Another Rope Swing.MOV` selects that file. **Shipped
+on PR #17** (TASTE-REVEAL 52/52). The older string
+`explorer.exe /select,"fullpath"` opens Documents on spaces; do not
+restore it. Missing original → 404 `unavailable`, banner
 “Original is not on this computer”, never Documents. Open is
 `os.startfile` on Windows.
 
@@ -275,8 +276,8 @@ Exactly 16 settings (plus `schemaVersion`): `previewStore`,
 `tourOrbitSec`, `tourPictures`, `tourPictureSec`, `sort`, `dir`,
 `zoomLevel`. Defaults: with-server, show, ask, days-and-all,
 127.0.0.1, 8765, 320, 1600, 480, 100, 8, 5, 3, date, desc, years.
-Presentable hover still requires Years/Months play even if the stored
-default is the older `days-and-all`.
+`days-and-all` and `always` both hover-play in Years/Months/Days/Off
+(PR #17). Only `off` leaves tiles still.
 
 Ctrl+Z / Ctrl+Shift+Z undo/redo catalog and settings (~500 file
 steps). Esc cancels the innermost: confirm, Info, slideshow,
@@ -356,10 +357,14 @@ fixture-owned temp libraries, never a real photo disk, for Checks.
 
 When this prompt and a live tree disagree, the honesty table in
 UI-SPEC (“Spec target vs current implementation”) wins for *what is
-already shipped on a given tip*. This prompt wins for *what to
-build*. On tip `cursor/reveal-explorer-8d56` the known gaps are:
-Reveal argv + spaces, MOV `playback.mp4` + `#viewer-source` badge,
-hover in dated Years/Months, `Setup.bat`, and the three optional
-local packs (places / objects / faces live on sibling PRs #13 #15
-#16; spaces/MOV/badge on #17). Fold those in. Do not call a gap
-shipped.
+already shipped*. This prompt wins for *what to build*.
+
+**Shipped on PR #17** (`cursor/reveal-spaces-hover-proxy-c876`,
+TASTE-VIDEO 92/92, TASTE-REVEAL 52/52): Reveal argv that survives
+spaces; hover play + tile scrub in dated Years **and** Months;
+`#viewer-source` Preview / Loading full… / Original / Full; MOV
+`playback.mp4` with sound. Do not reopen those.
+
+**Still specified, not required to browse:** `Setup.bat` and the
+optional local packs (places / objects / faces on sibling PRs #13
+#15 #16). Do not call an unmerged pack shipped.

@@ -53,10 +53,10 @@ The setting `previewStore` chooses. Default is next to the server, because the l
 
 PRODUCT and UI-SPEC clarify the existing defaults: reference artwork does not add
 Albums, storage meters, or native window chrome. Presentable hover plays the
-proxy in Years, Months, Days, and Off; `playProxies=off` disables;
-`days-and-all` is the older stills-at-Years/Months value. The product keeps
-its 16 settings and fixed shortcuts; the generic baseline does not authorize
-a new keybinding editor in this build.
+proxy in Years, Months, Days, and Off (`days-and-all` and `always` both do);
+`playProxies=off` disables. The product keeps its 16 settings and fixed
+shortcuts; the generic baseline does not authorize a new keybinding editor
+in this build.
 
 ## Refinement 2026-10-13
 
@@ -74,8 +74,8 @@ are specified; they do not add a Check. No MSI. No cloud default.
 
 ## Refinement 2026-10-14
 
-Docs audit on `cursor/reveal-explorer-8d56` folds sibling tips #12–#16
-and pending Reveal-spaces / MOV / Years-Months hover / Preview badge
-notes into PRODUCT, UI-SPEC, and CONTRACTS. Shipped vs gap is the
-honesty table in UI-SPEC. One-shot rebuild prompt:
-[ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
+Docs audit on `cursor/reveal-explorer-8d56` folds sibling tips #12–#16.
+PR #17 (`cursor/reveal-spaces-hover-proxy-c876`) landed Reveal-spaces,
+Years/Months hover play, Preview/Original/Full badge, and MOV
+`playback.mp4` — those are **shipped**, not gaps. One-shot rebuild
+prompt: [ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
