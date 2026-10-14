@@ -1,0 +1,246 @@
+{
+  "slice": "TASTE-FILTERS",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-four-stills",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "three-people",
+      "pass": true,
+      "detail": "{\"Ada\": \"person_acbfdba276c2\", \"Bob\": \"person_f6056e63b516\", \"Cam\": \"person_4b94cd24927e\"}"
+    },
+    {
+      "name": "items-and-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "and-ada-bob",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "and-three",
+      "pass": true,
+      "detail": "[\"no-exif.jpg\"]"
+    },
+    {
+      "name": "ada-only",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "tag-create",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "hiking-id",
+      "pass": true,
+      "detail": "{\"id\": \"thing_a4a179fc8dfd\", \"name\": \"Hiking\", \"aliases\": [], \"itemCount\": 0}"
+    },
+    {
+      "name": "tag-apply-two",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "filter-hiking",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "and-tags",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "tag-remove",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "singing-gone",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "re-infer-mug",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tag-survives-reannotate",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "rebuild-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tag-survives-rebuild",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "group-people-ada",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "group-people-bob",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "group-people-once",
+      "pass": true,
+      "detail": "[\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]"
+    },
+    {
+      "name": "group-people-no-dupes",
+      "pass": true,
+      "detail": "[\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]"
+    },
+    {
+      "name": "group-places-has-no-place-or-named",
+      "pass": true,
+      "detail": "[\"41.88, -87.63\", \"41.92, -87.63\", \"No place\"]"
+    },
+    {
+      "name": "group-tags-hiking",
+      "pass": true,
+      "detail": "[\"Hiking\", \"Painting\", \"Untagged\"]"
+    },
+    {
+      "name": "group-tags-untagged",
+      "pass": true,
+      "detail": "[\"Hiking\", \"Painting\", \"Untagged\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "search-in-filter-bar",
+      "pass": true,
+      "detail": "{\"searchInHeader\": false, \"searchInBar\": true, \"filtersInBar\": true, \"filtersInHeader\": false, \"searchChips\": false, \"arrange\": \"dates\", \"arrangeOptions\": [\"dates\", \"people\", \"places\", \"tags\"], \"arrangeLabels\": [\"Date\", \"People\", \"Places\", \"Tags\"], \"clearHidden\": true}"
+    },
+    {
+      "name": "search-not-in-header",
+      "pass": true,
+      "detail": "{\"searchInHeader\": false, \"searchInBar\": true, \"filtersInBar\": true, \"filtersInHeader\": false, \"searchChips\": false, \"arrange\": \"dates\", \"arrangeOptions\": [\"dates\", \"people\", \"places\", \"tags\"], \"arrangeLabels\": [\"Date\", \"People\", \"Places\", \"Tags\"], \"clearHidden\": true}"
+    },
+    {
+      "name": "no-search-scope-chips",
+      "pass": true,
+      "detail": "{\"searchInHeader\": false, \"searchInBar\": true, \"filtersInBar\": true, \"filtersInHeader\": false, \"searchChips\": false, \"arrange\": \"dates\", \"arrangeOptions\": [\"dates\", \"people\", \"places\", \"tags\"], \"arrangeLabels\": [\"Date\", \"People\", \"Places\", \"Tags\"], \"clearHidden\": true}"
+    },
+    {
+      "name": "filters-in-bar",
+      "pass": true,
+      "detail": "{\"searchInHeader\": false, \"searchInBar\": true, \"filtersInBar\": true, \"filtersInHeader\": false, \"searchChips\": false, \"arrange\": \"dates\", \"arrangeOptions\": [\"dates\", \"people\", \"places\", \"tags\"], \"arrangeLabels\": [\"Date\", \"People\", \"Places\", \"Tags\"], \"clearHidden\": true}"
+    },
+    {
+      "name": "filters-not-in-header",
+      "pass": true,
+      "detail": "{\"searchInHeader\": false, \"searchInBar\": true, \"filtersInBar\": true, \"filtersInHeader\": false, \"searchChips\": false, \"arrange\": \"dates\", \"arrangeOptions\": [\"dates\", \"people\", \"places\", \"tags\"], \"arrangeLabels\": [\"Date\", \"People\", \"Places\", \"Tags\"], \"clearHidden\": true}"
+    },
+    {
+      "name": "arrange-default-date",
+      "pass": true,
+      "detail": "\"dates\""
+    },
+    {
+      "name": "arrange-options",
+      "pass": true,
+      "detail": "[\"dates\", \"people\", \"places\", \"tags\"]"
+    },
+    {
+      "name": "click-ada-filters",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "multiselect-and",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "click-selected-deselects",
+      "pass": true,
+      "detail": "{\"person\": \"person_f8c04a163028\", \"files\": [\"near.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"chips\": [\"Person: Bob x\"]}"
+    },
+    {
+      "name": "chip-remove-clears-person",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "clear-all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tag-chip-filters",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "group-collapse",
+      "pass": true,
+      "detail": "{\"before\": 1, \"after\": 1}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "e319f7890d58da9d3a3319f0dce0fd6c425fe55e",
+  "commands": [
+    "python -m library items --person id1,id2",
+    "python -m library tags create Hiking",
+    "python -m library tags apply --item <id> --add Hiking"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/result.json",
+    "stdout.log": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/stdout.log",
+    "filters-api.json": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/filters-api.json",
+    "filters-browser.json": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/filters-browser.json",
+    "filter-bar.png": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/filter-bar.png",
+    "group-people.png": "/workspace/docs/features/taste-filters/Rev1.0/assets/verify-5/group-people.png"
+  }
+}

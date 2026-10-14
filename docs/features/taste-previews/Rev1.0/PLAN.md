@@ -16,6 +16,15 @@ new Check. Keep Setup.bat / Library.bat / ASCII `.ps1`.
    released, and a 1s recover pass re-queues hung stills. Overlapping
    catalog paints cannot abort the rest of the batch.
 4. Video tiles keep their poster. Hover play is unchanged.
+5. After the first generate, `/api/media?which=thumb` must serve the
+   existing file (Cache-Control + disk short-circuit). A second load
+   or full refresh paints every visible ready thumb in a tight budget
+   without re-encoding.
+6. The person face-crop picker is single-select: exactly one
+   `aria-pressed="true"`, visible selected chrome, click is immediate.
+7. After Re-run Faces, Faces pending must drop one item per drain
+   step through the full remaining queue (not 37→36 then stop). A
+   failed item is marked scanned so the counter stays honest.
 
 ## Gate
 

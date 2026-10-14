@@ -765,7 +765,10 @@ button:disabled {
 #person-faces {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.55rem;
+  padding: 6px 4px 10px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .person-face-choice {
@@ -777,19 +780,42 @@ button:disabled {
   border: 2px solid #3a3a46;
   border-radius: 6px;
   background: #1b1b22;
-  overflow: hidden;
-  isolation: isolate;
+  overflow: visible;
   cursor: pointer;
+  box-sizing: border-box;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .person-face-choice .person-face {
   width: 100%;
   height: 100%;
   border-radius: 4px;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .person-face-choice[aria-pressed="true"] {
-  border-color: #4a7ad4;
+  z-index: 2;
+  border-color: #d7e6ff;
+  outline: 3px solid #8cb4ff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px #121218;
+}
+
+.person-face-choice[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #8cb4ff;
+  box-shadow: 0 0 0 2px #121218;
+  pointer-events: none;
 }
 
 #jobs-panel {

@@ -1333,6 +1333,21 @@ def _clear_force_rescan(root: Path) -> None:
     atomic_write_json(index_path(root), after)
 
 
+def _mark_faces_scanned(root: Path, item_id: str) -> None:
+    current = load_index(root)
+    if current is None:
+        return
+    scanned = dict(current.get("scanned") or {})
+    if scanned.get(item_id) is True:
+        return
+    after = dict(current)
+    scanned[item_id] = True
+    after["scanned"] = scanned
+    from library.atomic import atomic_write_json
+
+    atomic_write_json(index_path(root), after)
+
+
 def infer_faces_step(root: Path) -> bool:
     status = faces_status(root)
     if not status.get("ready"):
@@ -1340,7 +1355,7 @@ def infer_faces_step(root: Path) -> bool:
     force = faces_force_rescan(root)
     already = scanned_item_ids(root)
     for item_id in iter_item_ids(root):
-        if not force and item_id in already:
+        if item_id in already:
             continue
         item = load_item(root, item_id)
         if item.get("kind") not in {"photo", "live"}:
@@ -1348,11 +1363,15 @@ def infer_faces_step(root: Path) -> bool:
         if not force and item.get("faces"):
             continue
         if _still_path(item, root) is None:
+            if force:
+                _mark_faces_scanned(root, item_id)
+                return True
             continue
         try:
             infer_faces(root, {"itemIds": [item_id], "force": force})
         except Exception:
-            return False
+            _mark_faces_scanned(root, item_id)
+            return True
         return True
     if force:
         _clear_force_rescan(root)

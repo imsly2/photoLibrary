@@ -1,0 +1,19 @@
+PASS items-cli
+PASS items-have-photos: ["IMG_1042.jpg", "far.jpg", "near.jpg", "no-exif.jpg"]
+PASS people-have-ada: [{"id": "person_697c4ab2d328", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}]
+PASS playwright-import
+PASS grid-not-empty-copy: {"empty": false, "emptyText": "", "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "people": ["Ada2"], "person": "", "kind": "", "favorite": "", "arrange": "dates"}
+PASS grid-not-no-pictures: {"empty": false, "emptyText": "", "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "people": ["Ada2"], "person": "", "kind": "", "favorite": "", "arrange": "dates"}
+PASS grid-shows-photos: ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"]
+PASS people-panel-has-ada: ["Ada2"]
+PASS default-filter-clear: {"empty": false, "emptyText": "", "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "people": ["Ada2"], "person": "", "kind": "", "favorite": "", "arrange": "dates"}
+PASS default-group-date: {"empty": false, "emptyText": "", "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "people": ["Ada2"], "person": "", "kind": "", "favorite": "", "arrange": "dates"}
+PASS clear-all-restores-photos: ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"]
+PASS group-people-still-shows-photos: {"files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "headers": ["Ada", "Unknown"]}
+PASS all-restores-after-favorites
+PASS groups-fail-still-shows-photos: {"empty": false, "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"]}
+PASS slow-items-still-shows-photos: {"empty": false, "files": ["near.jpg", "IMG_1042.jpg", "far.jpg", "no-exif.jpg"], "count": 4}
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 400 (Bad Request)"]
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

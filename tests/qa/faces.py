@@ -431,6 +431,14 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     js = Path("library/web/assets/library.js").read_text(encoding="utf-8")
     checks.check("js-paint-sets-height", "img.style.height = crop.height" in js, "paintFace height")
     checks.check("js-choice-stop", "stopPropagation" in js and "person-face-choice" in js, "picker isolation")
+    checks.check("js-choice-pointerdown", "pointerdown" in js and "choosePersonThumb" in js, "picker pointerdown")
+    faces_src = Path("library/faces.py").read_text(encoding="utf-8")
+    checks.check(
+        "step-skips-already-when-force",
+        "if item_id in already:" in faces_src and "if not force and item_id in already" not in faces_src,
+        "skip already-scanned during force rescan",
+    )
+    checks.check("step-marks-failed-scanned", "_mark_faces_scanned" in faces_src, "failed item advances")
 
     quality_root = fresh_root(artifacts / "quality-root")
     media = artifacts / "quality-media"

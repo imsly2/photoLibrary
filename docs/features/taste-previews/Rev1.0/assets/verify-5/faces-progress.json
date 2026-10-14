@@ -1,0 +1,30 @@
+{
+  "pending": 6,
+  "steps": 6,
+  "pendingSeen": [
+    5,
+    4,
+    3,
+    2,
+    1,
+    0
+  ],
+  "scannedSeen": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "failSteps": 6,
+  "failPending": [
+    5,
+    4,
+    3,
+    2,
+    1,
+    0
+  ],
+  "drainSteps": 18
+}

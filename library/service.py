@@ -620,6 +620,21 @@ class Library:
         if getattr(self, "_scanning", False) or getattr(self, "_inferring", False):
             return False
         self.ensure_settings()
+        force_faces = False
+        try:
+            from library.faces import faces_force_rescan
+
+            force_faces = faces_force_rescan(self.root)
+        except Exception:
+            force_faces = False
+        if force_faces:
+            try:
+                from library.faces import infer_faces_step
+
+                if infer_faces_step(self.root):
+                    return True
+            except Exception:
+                pass
         if drain_queued_jpegs(self.root):
             return True
         try:
@@ -629,13 +644,14 @@ class Library:
                 return True
         except Exception:
             pass
-        try:
-            from library.faces import infer_faces_step
+        if not force_faces:
+            try:
+                from library.faces import infer_faces_step
 
-            if infer_faces_step(self.root):
-                return True
-        except Exception:
-            pass
+                if infer_faces_step(self.root):
+                    return True
+            except Exception:
+                pass
         try:
             from library.objects import analyze_step as run_analyze_step
 

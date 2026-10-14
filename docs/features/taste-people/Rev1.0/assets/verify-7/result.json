@@ -1,0 +1,310 @@
+{
+  "slice": "TASTE-PEOPLE",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-four-stills",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "annotate-ada",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ada-id",
+      "pass": true,
+      "detail": "person_ce60db006b0b"
+    },
+    {
+      "name": "annotate-ada-bob",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bob-id",
+      "pass": true,
+      "detail": "person_e0e57830152d"
+    },
+    {
+      "name": "unnamed-one",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cluster-create",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cluster-id",
+      "pass": true,
+      "detail": "person_6b4caa3891fc"
+    },
+    {
+      "name": "people-list-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "poi-min-3",
+      "pass": true,
+      "detail": "{\"personOfInterestMin\": 3, \"people\": [{\"id\": \"person_ce60db006b0b\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}, {\"id\": \"person_e0e57830152d\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, {\"id\": \"person_6b4caa3891fc\", \"name\": null, \"itemCount\": 3, \"visible\": true, \"named\": false, \"thumbnail\": {\"itemId\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}, \"thumbnailItemId\": null}, {\"id\": \"person_3a9f7a293674\", \"name\": null, \"itemCount\": 1, \"visible\": false, \"named\": false, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}]}"
+    },
+    {
+      "name": "ada-visible",
+      "pass": true,
+      "detail": "{\"id\": \"person_ce60db006b0b\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}"
+    },
+    {
+      "name": "ada-named",
+      "pass": true,
+      "detail": "{\"id\": \"person_ce60db006b0b\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}"
+    },
+    {
+      "name": "singleton-hidden",
+      "pass": true,
+      "detail": "{\"id\": \"person_3a9f7a293674\", \"name\": null, \"itemCount\": 1, \"visible\": false, \"named\": false, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}"
+    },
+    {
+      "name": "cluster-visible",
+      "pass": true,
+      "detail": "{\"id\": \"person_6b4caa3891fc\", \"name\": null, \"itemCount\": 3, \"visible\": true, \"named\": false, \"thumbnail\": {\"itemId\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}, \"thumbnailItemId\": null}"
+    },
+    {
+      "name": "and-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "and-only-near",
+      "pass": true,
+      "detail": "[\"near.jpg\"]"
+    },
+    {
+      "name": "rename-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rename-pat",
+      "pass": true,
+      "detail": "{\"id\": \"person_6b4caa3891fc\", \"name\": \"Pat\", \"itemCount\": 3, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}, \"thumbnailItemId\": null}"
+    },
+    {
+      "name": "thumb-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-item",
+      "pass": true,
+      "detail": "{\"id\": \"person_ce60db006b0b\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}"
+    },
+    {
+      "name": "jobs-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jobs-queues",
+      "pass": true,
+      "detail": "[\"renditions\", \"analyze\", \"infer-faces\", \"objects\"]"
+    },
+    {
+      "name": "jobs-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"paused\": false, \"processing\": true, \"queues\": [{\"id\": \"renditions\", \"label\": \"Previews\", \"pending\": 8, \"done\": 0, \"error\": 0, \"state\": \"running\", \"available\": true}, {\"id\": \"analyze\", \"label\": \"Analyze\", \"pending\": 2, \"done\": 0, \"error\": 0, \"state\": \"idle\", \"available\": false}, {\"id\": \"infer-faces\", \"label\": \"Faces\", \"pending\": 0, \"done\": 4, \"error\": 0, \"state\": \"idle\", \"available\": false}, {\"id\": \"objects\", \"label\": \"Objects\", \"pending\": 4, \"done\": 0, \"error\": 0, \"state\": \"idle\", \"available\": false}]}"
+    },
+    {
+      "name": "jobs-pause",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jobs-resume",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "people-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "and-http",
+      "pass": true,
+      "detail": "[\"near.jpg\"]"
+    },
+    {
+      "name": "jobs-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jobs-pause-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "browser-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "chrome-present",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}, \"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"splitter\": {\"top\": 131.75, \"left\": 1010, \"bottom\": 720, \"right\": 1016, \"width\": 6, \"height\": 588.25}, \"dateInToolbar\": false, \"sizeInChrome\": true, \"dateInChrome\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"people\": [\"Ada\", \"Bob\", \"Pat\"], \"jobs\": \"Processing \\u2014 Previews 3\", \"pause\": true, \"resume\": \"Start\", \"sideCollapsed\": false}"
+    },
+    {
+      "name": "size-in-chrome",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}, \"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"splitter\": {\"top\": 131.75, \"left\": 1010, \"bottom\": 720, \"right\": 1016, \"width\": 6, \"height\": 588.25}, \"dateInToolbar\": false, \"sizeInChrome\": true, \"dateInChrome\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"people\": [\"Ada\", \"Bob\", \"Pat\"], \"jobs\": \"Processing \\u2014 Previews 3\", \"pause\": true, \"resume\": \"Start\", \"sideCollapsed\": false}"
+    },
+    {
+      "name": "date-in-chrome",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}, \"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"splitter\": {\"top\": 131.75, \"left\": 1010, \"bottom\": 720, \"right\": 1016, \"width\": 6, \"height\": 588.25}, \"dateInToolbar\": false, \"sizeInChrome\": true, \"dateInChrome\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"people\": [\"Ada\", \"Bob\", \"Pat\"], \"jobs\": \"Processing \\u2014 Previews 3\", \"pause\": true, \"resume\": \"Start\", \"sideCollapsed\": false}"
+    },
+    {
+      "name": "date-not-in-toolbar",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}, \"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"splitter\": {\"top\": 131.75, \"left\": 1010, \"bottom\": 720, \"right\": 1016, \"width\": 6, \"height\": 588.25}, \"dateInToolbar\": false, \"sizeInChrome\": true, \"dateInChrome\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"people\": [\"Ada\", \"Bob\", \"Pat\"], \"jobs\": \"Processing \\u2014 Previews 3\", \"pause\": true, \"resume\": \"Start\", \"sideCollapsed\": false}"
+    },
+    {
+      "name": "chrome-below-grid",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}}"
+    },
+    {
+      "name": "side-right-of-grid",
+      "pass": true,
+      "detail": "{\"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}}"
+    },
+    {
+      "name": "date-modes",
+      "pass": true,
+      "detail": "[\"years\", \"months\", \"days\", \"off\"]"
+    },
+    {
+      "name": "people-has-ada",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\", \"Pat\"]"
+    },
+    {
+      "name": "people-has-bob",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\", \"Pat\"]"
+    },
+    {
+      "name": "people-has-pat",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\", \"Pat\"]"
+    },
+    {
+      "name": "people-no-singleton-unnamed",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\", \"Pat\"]"
+    },
+    {
+      "name": "jobs-chrome",
+      "pass": true,
+      "detail": "{\"chrome\": {\"top\": 677.625, \"left\": 0, \"bottom\": 720, \"right\": 1010, \"width\": 1010, \"height\": 42.375}, \"grid\": {\"top\": 131.75, \"left\": 0, \"bottom\": 677.625, \"right\": 1010, \"width\": 1010, \"height\": 545.875}, \"side\": {\"top\": 131.75, \"left\": 1016, \"bottom\": 720, \"right\": 1280, \"width\": 264, \"height\": 588.25}, \"splitter\": {\"top\": 131.75, \"left\": 1010, \"bottom\": 720, \"right\": 1016, \"width\": 6, \"height\": 588.25}, \"dateInToolbar\": false, \"sizeInChrome\": true, \"dateInChrome\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"people\": [\"Ada\", \"Bob\", \"Pat\"], \"jobs\": \"Processing \\u2014 Previews 3\", \"pause\": true, \"resume\": \"Start\", \"sideCollapsed\": false}"
+    },
+    {
+      "name": "click-ada-filters",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "multiselect-and",
+      "pass": true,
+      "detail": "[\"near.jpg\"]"
+    },
+    {
+      "name": "rename-in-panel",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\", \"Patricia\"]"
+    },
+    {
+      "name": "people-face-has-height",
+      "pass": true,
+      "detail": "{\"width\": 34.390625, \"height\": 34.390625, \"overflow\": \"hidden\", \"cssWidth\": \"34.3906px\", \"cssHeight\": \"34.3906px\"}"
+    },
+    {
+      "name": "people-face-img-has-height",
+      "pass": true,
+      "detail": "{\"width\": 34.390625, \"height\": 34.390625, \"overflow\": \"clip\", \"cssWidth\": \"34.3906px\", \"cssHeight\": \"34.3906px\"}"
+    },
+    {
+      "name": "people-face-overflow-hidden",
+      "pass": true,
+      "detail": "{\"width\": 34.390625, \"height\": 34.390625, \"overflow\": \"hidden\", \"cssWidth\": \"34.3906px\", \"cssHeight\": \"34.3906px\"}"
+    },
+    {
+      "name": "people-choice-no-overlap",
+      "pass": true,
+      "detail": "{\"face\": {\"width\": 34.390625, \"height\": 34.390625, \"overflow\": \"hidden\", \"cssWidth\": \"34.3906px\", \"cssHeight\": \"34.3906px\"}, \"img\": {\"width\": 34.390625, \"height\": 34.390625, \"overflow\": \"clip\", \"cssWidth\": \"34.3906px\", \"cssHeight\": \"34.3906px\"}, \"choiceCount\": 3, \"choiceOverlap\": false}"
+    },
+    {
+      "name": "choice-does-not-toggle-row",
+      "pass": true,
+      "detail": "{\"before\": \"person_a0b134acfda9\", \"after\": \"person_a0b134acfda9\"}"
+    },
+    {
+      "name": "side-toggle",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "e319f7890d58da9d3a3319f0dce0fd6c425fe55e",
+  "commands": [
+    "python -m library people list",
+    "python -m library jobs pause"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/result.json",
+    "stdout.log": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/stdout.log",
+    "people-api.json": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/people-api.json",
+    "people-browser.json": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/people-browser.json",
+    "people-panel.png": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/people-panel.png",
+    "library-chrome.png": "/workspace/docs/features/taste-people/Rev1.0/assets/verify-7/library-chrome.png"
+  }
+}

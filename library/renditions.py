@@ -335,24 +335,66 @@ def store_dir(store: str, source: dict[str, Any] | None, library_root: Path, ite
     return _safe_join(root, f".library/renditions/{item_id}")
 
 
+def _usable_file(path: Path | None) -> Path | None:
+    if path is None:
+        return None
+    try:
+        if path.is_file() and path.stat().st_size > 0:
+            return path
+    except OSError:
+        return None
+    return None
+
+
 def rendition_abs(item: dict[str, Any], slot: str, library_root: Path) -> Path | None:
     rend = item.get("renditions") or {}
     relative = rend.get(slot)
-    if type(relative) is not str or not relative:
+    if type(relative) is str and relative:
+        store = rend.get("store")
+        if store == "with-server":
+            try:
+                found = _usable_file(library_path(library_root, relative))
+                if found is not None:
+                    return found
+            except Exception:
+                pass
+        else:
+            source = try_load_source(library_root, rend.get("sourceId") or "")
+            if source is not None:
+                root = source_preview_root(source, library_root)
+                if root is not None:
+                    found = _usable_file(_safe_join(root, relative))
+                    if found is not None:
+                        return found
+    return find_existing_rendition(item, slot, library_root)
+
+
+def find_existing_rendition(item: dict[str, Any], slot: str, library_root: Path) -> Path | None:
+    item_id = item.get("id")
+    if type(item_id) is not str or not item_id:
         return None
-    store = rend.get("store")
-    if store == "with-server":
-        try:
-            return library_path(library_root, relative)
-        except Exception:
-            return None
+    rend = item.get("renditions") or {}
     source = try_load_source(library_root, rend.get("sourceId") or "")
-    if source is None:
-        return None
-    root = source_preview_root(source, library_root)
-    if root is None:
-        return None
-    return _safe_join(root, relative)
+    stores: list[str] = []
+    recorded = rend.get("store")
+    if recorded in PREVIEW_STORES:
+        stores.append(recorded)
+    if "with-server" not in stores:
+        stores.append("with-server")
+    if "with-source" not in stores:
+        stores.append("with-source")
+    seen: set[str] = set()
+    for store in stores:
+        if store in seen:
+            continue
+        seen.add(store)
+        dest_dir = store_dir(store, source, library_root, item_id)
+        if dest_dir is None:
+            continue
+        found = _usable_file(dest_dir / slot_filename(slot))
+        if found is not None:
+            return found
+    return None
 
 
 def ready_slots(item: dict[str, Any]) -> list[str]:
@@ -505,6 +547,9 @@ def drain_step(root: Path) -> bool:
         publish_error(root, item_id, slot)
         return True
     dest = dest_dir / slot_filename(slot)
+    if dest.is_file() and dest.stat().st_size > 0:
+        publish_ready(root, item_id, slot, relative, store)
+        return True
     if slot == "playback":
         outcome = write_playback(source, dest)
         if outcome == "ready":

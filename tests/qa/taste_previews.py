@@ -10,6 +10,7 @@ from typing import Any
 from library.httpjson import request_json
 from tests.qa.s00 import Checks, assert_no_pillow_in_server, stop_owned
 from tests.qa.s01 import hash_tree, load_items
+from tests.qa.s03 import header_get, request_raw
 from tests.qa.s06 import copy_rels, prepare_media, start_owned
 from tests.qa.s08 import fresh_root, run_library, write_result
 from tests.qa.taste_filters import annotate_json, collect_console, filenames, wait_catalog
@@ -111,6 +112,121 @@ def wait_painted(page: Any, names: tuple[str, ...] | list[str], timeout: int = 2
     return thumb_state(page)
 
 
+def _faces_queue(status: dict[str, Any]) -> dict[str, Any]:
+    for queue in status.get("queues") or []:
+        if queue.get("id") == "infer-faces":
+            return queue
+    return {}
+
+
+def prove_faces_rescan_progress(checks: Checks, artifacts: Path) -> dict[str, Any]:
+    from library.faces import (
+        faces_force_rescan,
+        infer_faces_step,
+        request_faces_rescan,
+        scanned_item_ids,
+    )
+    from library.jobs import jobs_status
+    from library.service import Library
+    from tests.qa.faces import make_face_media, test_env
+
+    record: dict[str, Any] = {}
+    root = fresh_root(artifacts / "faces-progress-root")
+    media = make_face_media(artifacts / "faces-progress-media")
+    setup = run_library(root, ["setup-ml", "faces", "--backend", "fixture"], env=test_env())
+    checks.check("faces-progress-setup", setup.returncode == 0, setup.stderr[-200:])
+    scan = run_library(root, ["scan", str(media), "--serve-from-there"], env=test_env(), timeout=120)
+    checks.check("faces-progress-scan", scan.returncode == 0, scan.stderr[-200:])
+    infer = run_library(root, ["infer-faces"], env=test_env(), timeout=120)
+    checks.check("faces-progress-infer", infer.returncode == 0, infer.stderr[-200:])
+    request_faces_rescan(root)
+    queued = _faces_queue(jobs_status(root, False))
+    photo_pending = int(queued.get("pending") or 0)
+    record["pending"] = photo_pending
+    checks.check("faces-rescan-pending", photo_pending >= 5, json.dumps(queued))
+
+    pending_seen: list[int] = []
+    scanned_seen: list[int] = []
+    steps = 0
+    while infer_faces_step(root) and steps < 20:
+        steps += 1
+        scanned_seen.append(len(scanned_item_ids(root)))
+        pending_seen.append(int(_faces_queue(jobs_status(root, False)).get("pending") or 0))
+    record["steps"] = steps
+    record["pendingSeen"] = pending_seen
+    record["scannedSeen"] = scanned_seen
+    checks.check(
+        "faces-rescan-steps",
+        steps == photo_pending,
+        json.dumps({"steps": steps, "pending": photo_pending, "seen": pending_seen}),
+    )
+    checks.check(
+        "faces-rescan-pending-drops",
+        pending_seen == list(range(photo_pending - 1, -1, -1)),
+        json.dumps(pending_seen),
+    )
+    checks.check(
+        "faces-rescan-scanned-grows",
+        scanned_seen == list(range(1, photo_pending + 1)),
+        json.dumps(scanned_seen),
+    )
+    checks.check("faces-rescan-force-cleared", faces_force_rescan(root) is False, "forceRescan")
+    idle = _faces_queue(jobs_status(root, False))
+    checks.check(
+        "faces-rescan-pending-zero",
+        idle.get("pending") == 0 and idle.get("state") == "idle",
+        json.dumps(idle),
+    )
+
+    request_faces_rescan(root)
+    import library.faces as faces_mod
+
+    real_infer = faces_mod.infer_faces
+    calls = {"n": 0}
+
+    def boom(root_arg: Path, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        calls["n"] += 1
+        if calls["n"] == 2:
+            raise RuntimeError("planted-face-fail")
+        return real_infer(root_arg, payload)
+
+    faces_mod.infer_faces = boom
+    try:
+        fail_steps = 0
+        fail_pending: list[int] = []
+        while infer_faces_step(root) and fail_steps < 20:
+            fail_steps += 1
+            fail_pending.append(int(_faces_queue(jobs_status(root, False)).get("pending") or 0))
+    finally:
+        faces_mod.infer_faces = real_infer
+    record["failSteps"] = fail_steps
+    record["failPending"] = fail_pending
+    checks.check(
+        "faces-rescan-survives-error",
+        fail_steps == photo_pending,
+        json.dumps({"steps": fail_steps, "pending": fail_pending, "calls": calls["n"]}),
+    )
+    checks.check(
+        "faces-rescan-error-drains",
+        bool(fail_pending) and fail_pending[-1] == 0,
+        json.dumps(fail_pending),
+    )
+
+    request_faces_rescan(root)
+    library = Library(root)
+    drain_steps = 0
+    while library.drain_step() and drain_steps < 40:
+        drain_steps += 1
+    drained = _faces_queue(jobs_status(root, False))
+    record["drainSteps"] = drain_steps
+    checks.check(
+        "faces-drain-runs-queue",
+        drain_steps >= photo_pending and drained.get("pending") == 0,
+        json.dumps({"drainSteps": drain_steps, "queue": drained}),
+    )
+    return record
+
+
 def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any]:
     record: dict[str, Any] = {}
     root = fresh_root(artifacts / "api-root")
@@ -125,6 +241,39 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
     record["people"] = ids
     record["itemCount"] = len(listed)
     return record
+
+
+def prove_cached_http(base: str, items: list[dict[str, Any]], checks: Checks) -> dict[str, Any]:
+    urls: list[str] = []
+    for item in items:
+        if item.get("filename") not in ALL_NAMES:
+            continue
+        slot = "poster" if item.get("kind") == "video" else "thumb"
+        urls.append(base + "/api/media/" + item["id"] + "?which=" + slot)
+    for url in urls:
+        request_raw(url)
+    t0 = time.perf_counter()
+    headers_ok = True
+    etag_ok = True
+    details: list[dict[str, Any]] = []
+    for url in urls:
+        status, headers, _body = request_raw(url)
+        cache = header_get(headers, "Cache-Control") or ""
+        etag = header_get(headers, "ETag") or ""
+        if status != 200 or "max-age" not in cache.lower() or "no-store" in cache.lower():
+            headers_ok = False
+        if not etag:
+            etag_ok = False
+        else:
+            again, _again_headers, _ = request_raw(url, {"If-None-Match": etag})
+            if again != 304:
+                etag_ok = False
+        details.append({"url": url, "status": status, "cache": cache, "etag": etag})
+    elapsed = time.perf_counter() - t0
+    checks.check("thumb-cache-control", headers_ok, json.dumps(details))
+    checks.check("thumb-etag-304", etag_ok, json.dumps(details))
+    checks.check("cached-thumbs-fast", elapsed < 0.4, json.dumps({"elapsed": elapsed, "n": len(urls)}))
+    return {"elapsed": elapsed, "n": len(urls), "details": details}
 
 
 def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[str, Any]:
@@ -166,6 +315,58 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         )
 
     click_person()
+    page.wait_for_selector(".person-face-choice", timeout=8000)
+    choice_count = page.locator(".person-face-choice").count()
+    checks.check("face-picker-has-choices", choice_count >= 2, str(choice_count))
+    page.locator(".person-face-choice").nth(choice_count - 1).click()
+    immediate_last = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    checks.check(
+        "face-picker-immediate-last",
+        immediate_last.count("true") == 1 and immediate_last[-1] == "true",
+        json.dumps(immediate_last),
+    )
+    page.wait_for_function(
+        """() => {
+          const all = Array.from(document.querySelectorAll('.person-face-choice'));
+          const pressed = all.filter(el => el.getAttribute('aria-pressed') === 'true');
+          return all.length >= 2 && pressed.length === 1 && pressed[0] === all[all.length - 1];
+        }""",
+        timeout=3000,
+    )
+    last_pressed = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    record["pickerLast"] = last_pressed
+    checks.check("face-picker-single-last", last_pressed.count("true") == 1 and last_pressed[-1] == "true", json.dumps(last_pressed))
+    page.locator(".person-face-choice").first.click()
+    page.wait_for_function(
+        """() => {
+          const all = Array.from(document.querySelectorAll('.person-face-choice'));
+          const pressed = all.filter(el => el.getAttribute('aria-pressed') === 'true');
+          return pressed.length === 1 && pressed[0] === all[0];
+        }""",
+        timeout=3000,
+    )
+    first_pressed = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    record["pickerFirst"] = first_pressed
+    checks.check("face-picker-single-first", first_pressed.count("true") == 1 and first_pressed[0] == "true", json.dumps(first_pressed))
+    page.locator(".person-face-choice").nth(choice_count - 1).click()
+    page.locator(".person-face-choice").first.click()
+    page.locator(".person-face-choice").nth(choice_count - 1).click()
+    rapid = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    record["pickerRapid"] = rapid
+    checks.check(
+        "face-picker-rapid-single",
+        rapid.count("true") == 1 and rapid[-1] == "true",
+        json.dumps(rapid),
+    )
+
     filtered = wait_painted(page, ("IMG_1042.jpg", "near.jpg"))
     record["filtered"] = filtered
     checks.check(
@@ -237,13 +438,20 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
 
     page.reload(wait_until="domcontentloaded")
     page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=30000)
-    hammer_stills(page)
-    second = wait_painted(page, ALL_NAMES, timeout=30000)
+    t0 = time.perf_counter()
+    second = wait_painted(page, ALL_NAMES, timeout=2500)
+    cached_elapsed = time.perf_counter() - t0
     record["secondReload"] = second
+    record["cachedReloadSec"] = cached_elapsed
     checks.check(
         "second-reload-keeps-thumbs",
         second.get("missing") == 0 and second.get("painted") >= 5,
         json.dumps(second),
+    )
+    checks.check(
+        "reload-cached-fast",
+        cached_elapsed < 2.0 and second.get("missing") == 0,
+        json.dumps({"elapsed": cached_elapsed, "thumbs": second}),
     )
 
     page.screenshot(path=str(artifacts / "grid-thumbs.png"))
@@ -260,13 +468,19 @@ def run_slice(root: Path, artifacts: Path) -> int:
         api = prove_api(checks, artifacts, media_src)
         (artifacts / "previews-api.json").write_text(json.dumps(api, indent=2) + "\n", encoding="utf-8")
         extra["previews-api.json"] = str(artifacts / "previews-api.json")
+        progress = prove_faces_rescan_progress(checks, artifacts)
+        (artifacts / "faces-progress.json").write_text(json.dumps(progress, indent=2) + "\n", encoding="utf-8")
+        extra["faces-progress.json"] = str(artifacts / "faces-progress.json")
         isolated = artifacts / "browser-root"
         fresh_root(isolated)
         seed(isolated, media_src, artifacts / "browser")
         server, url, pids = start_owned(isolated)
         try:
             wait_catalog(url.rstrip("/"), ALL_NAMES)
-            wait_stills(url.rstrip("/"), ALL_NAMES)
+            stills = wait_stills(url.rstrip("/"), ALL_NAMES)
+            cache = prove_cached_http(url.rstrip("/"), stills, checks)
+            (artifacts / "previews-cache.json").write_text(json.dumps(cache, indent=2) + "\n", encoding="utf-8")
+            extra["previews-cache.json"] = str(artifacts / "previews-cache.json")
             from playwright.sync_api import sync_playwright
 
             checks.check("playwright-import", True)

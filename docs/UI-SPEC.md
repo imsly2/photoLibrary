@@ -207,8 +207,10 @@ An “all faces” dump of every singleton unnamed cluster is Later.
 Selecting one person opens `#person-profile`: rename (same commit as
 Info’s Person field — `PUT /api/people/<id>` `{name}`) and choose which
 face crop is the thumbnail (`thumbnailItemId`). A profile face choice is
-its own hit target: one click selects exactly one crop and does not
-toggle the person row. The crop image always has width and height; a
+its own hit target: one click selects exactly one crop (a bright ring
+plus a corner dot; never two pressed) and does not toggle the person
+row. The click updates the pressed crop immediately. The crop image
+always has width and height; a
 pending or 404 thumb shows a placeholder and refreshes when the
 rendition is ready. Naming stays available in Info. Person merge stays
 CLI/HTTP; no merge wizard.
@@ -276,7 +278,10 @@ percentage), and **Pause** / **Start** (Resume when paused).
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
 **objects**. When jobs are not paused, the serve drain runs real work:
 previews, then unnamed GPS city names (geo pack), then face infer
-(models ready), then YOLO Things (model file). Pause sets `paused` and
+(models ready), then YOLO Things (model file). After **Re-run Faces**
+(`forceRescan`), the drain finishes the remaining face items first so
+the Faces pending count runs to zero; a failed item is marked scanned
+and the queue continues. Pause sets `paused` and
 the drain skips work; Start/Resume clears it. Missing pack or models:
 `available` false, queue idle, browse stays up. Start never opens a
 modal and never freezes the grid.
