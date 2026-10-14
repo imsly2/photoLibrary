@@ -1,6 +1,8 @@
 param(
     [switch]$Help,
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$ProbeAppFolder,
+    [string]$AppFolder
 )
 
 # Portable one-time setup. Does not start serve.
@@ -11,8 +13,87 @@ param(
 # inside a Write-Host string as a using-directive.
 
 $ErrorActionPreference = "Stop"
-$AppFolder = $PSScriptRoot
-Set-Location $AppFolder
+
+function Get-TrimmedFolder {
+    param([string]$Path)
+    if ([string]::IsNullOrEmpty($Path)) {
+        return ""
+    }
+    $item = $Path.Trim()
+    while ($item.Length -gt 3 -and ($item.EndsWith("\") -or $item.EndsWith("/"))) {
+        $item = $item.Substring(0, $item.Length - 1)
+    }
+    return $item
+}
+
+function Resolve-LibraryAppFolder {
+    param(
+        [string]$Hint,
+        [string]$ScriptRoot,
+        [string]$ScriptPath,
+        [string]$ScriptDefinition
+    )
+    $candidates = @()
+    if (-not [string]::IsNullOrEmpty($Hint)) {
+        $candidates += Get-TrimmedFolder $Hint
+    }
+    if (-not [string]::IsNullOrEmpty($ScriptRoot)) {
+        $candidates += Get-TrimmedFolder $ScriptRoot
+    }
+    if (-not [string]::IsNullOrEmpty($ScriptPath)) {
+        $parent = Split-Path -Parent $ScriptPath
+        if (-not [string]::IsNullOrEmpty($parent)) {
+            $candidates += Get-TrimmedFolder $parent
+        }
+    }
+    if (-not [string]::IsNullOrEmpty($ScriptDefinition)) {
+        if (Test-Path -LiteralPath $ScriptDefinition) {
+            $parent = Split-Path -Parent $ScriptDefinition
+            if (-not [string]::IsNullOrEmpty($parent)) {
+                $candidates += Get-TrimmedFolder $parent
+            }
+        }
+    }
+    $here = ""
+    try {
+        $here = Get-TrimmedFolder ([string](Get-Location).Path)
+    } catch {
+        $here = ""
+    }
+
+    foreach ($item in $candidates) {
+        if ([string]::IsNullOrEmpty($item)) { continue }
+        if (Test-Path -LiteralPath $item -PathType Container) {
+            try {
+                return [System.IO.Path]::GetFullPath($item)
+            } catch {
+                return $item
+            }
+        }
+    }
+    if (-not [string]::IsNullOrEmpty($here) -and (Test-Path -LiteralPath $here -PathType Container)) {
+        $markers = @("Setup.bat", "Library.bat", "Launch.bat", "setup.ps1", "launch.ps1", "CreateShortcut.bat")
+        foreach ($name in $markers) {
+            if (Test-Path -LiteralPath (Join-Path $here $name)) {
+                try {
+                    return [System.IO.Path]::GetFullPath($here)
+                } catch {
+                    return $here
+                }
+            }
+        }
+    }
+    return $null
+}
+# end Resolve-LibraryAppFolder
+
+function Write-AppFolderFail {
+    param([string]$BatName)
+    Write-Host ""
+    Write-Host ("Could not find the Library folder (the folder with " + $BatName + ").")
+    Write-Host "Open that folder and run the .bat again."
+    Write-Host "Did not finish."
+}
 
 function Show-Help {
     Write-Host ""
@@ -42,6 +123,33 @@ function Show-Help {
 if ($Help) {
     Show-Help
     exit 0
+}
+
+$scriptPath = ""
+$scriptDefinition = ""
+if ($MyInvocation -and $MyInvocation.MyCommand) {
+    $scriptPath = [string]$MyInvocation.MyCommand.Path
+    $scriptDefinition = [string]$MyInvocation.MyCommand.Definition
+}
+$scriptRoot = [string]$PSScriptRoot
+$resolved = Resolve-LibraryAppFolder -Hint $AppFolder -ScriptRoot $scriptRoot -ScriptPath $scriptPath -ScriptDefinition $scriptDefinition
+if ([string]::IsNullOrEmpty($resolved)) {
+    Write-AppFolderFail -BatName "Setup.bat"
+    exit 1
+}
+$AppFolder = $resolved
+if ($ProbeAppFolder) {
+    Write-Host ("APPFOLDER=" + $AppFolder)
+    exit 0
+}
+try {
+    Set-Location -LiteralPath $AppFolder
+} catch {
+    Write-Host ""
+    Write-Host "Could not open the Library folder."
+    Write-Host $AppFolder
+    Write-Host "Setup did not finish."
+    exit 1
 }
 
 function Write-Step {
@@ -309,7 +417,7 @@ function Install-Shortcuts {
         Write-Host "Dry-run: would create Desktop and Start Menu shortcuts."
         return
     }
-    & $script
+    & $script -AppFolder $AppFolder
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Shortcut was not created. Run CreateShortcut.bat after Setup finishes."
     }

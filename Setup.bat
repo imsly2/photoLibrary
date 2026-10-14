@@ -20,11 +20,15 @@ echo  Update       -- Update.bat or Update Library for new code  (git pull)
 echo  No MSI. No GitHub account. Models stay in library-data. Safe to run again.
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup.ps1" %*
+set "APPDIR=%~dp0"
+if "%APPDIR:~-1%"=="\" set "APPDIR=%APPDIR:~0,-1%"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup.ps1" -AppFolder "%APPDIR%" %*
 set "ERR=%ERRORLEVEL%"
 if not "%ERR%"=="0" (
     echo.
-    echo  Setup did not finish. If it asked you to Update Library, do that, then run Setup.bat again.
+    echo  Setup did not finish. Do not run Library.bat yet.
+    echo  If it asked you to Update Library, do that, then run Setup.bat again.
+    echo  If it could not find the Library folder, open the folder with Setup.bat and run it from there.
     pause
     exit /b %ERR%
 )
