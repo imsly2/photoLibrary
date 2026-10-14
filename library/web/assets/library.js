@@ -1113,6 +1113,11 @@
     rearmHover();
   }
 
+  const STILL_MAX = 6;
+  const STILL_STALL_MS = 4000;
+  let stillActive = 0;
+  const stillQueue = [];
+
   function stillLooksGood(img, url) {
     if (!img || img.hidden || !img.complete || !(img.naturalWidth > 0)) {
       return false;
@@ -1121,10 +1126,129 @@
     return !url || shown === url;
   }
 
+  function stillUrlFor(id) {
+    return "/api/media/" + encodeURIComponent(id) + "?which=" + stillWhich(itemById(id));
+  }
+
   function paintGridStills() {
-    main.querySelectorAll(".cell").forEach(function (cell) {
+    const bounds = main.getBoundingClientRect();
+    const cells = Array.prototype.slice.call(main.querySelectorAll(".cell"));
+    cells.sort(function (a, b) {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      const av = ar.bottom > bounds.top && ar.top < bounds.bottom ? 0 : 1;
+      const bv = br.bottom > bounds.top && br.top < bounds.bottom ? 0 : 1;
+      return av - bv;
+    });
+    cells.forEach(function (cell) {
       requestStill(cell, cell.dataset.id);
     });
+  }
+
+  function enqueueStill(cell, id, url, forceReload) {
+    cell.dataset.stillWanted = url;
+    let i;
+    for (i = 0; i < stillQueue.length; i += 1) {
+      if (stillQueue[i].cell === cell) {
+        stillQueue[i] = { cell: cell, id: id, url: url, force: !!forceReload };
+        pumpStillQueue();
+        return;
+      }
+    }
+    stillQueue.push({ cell: cell, id: id, url: url, force: !!forceReload });
+    pumpStillQueue();
+  }
+
+  function pumpStillQueue() {
+    while (stillActive < STILL_MAX && stillQueue.length) {
+      startStillJob(stillQueue.shift());
+    }
+  }
+
+  function startStillJob(job) {
+    const cell = job && job.cell;
+    const id = job && job.id;
+    const url = job && job.url;
+    if (!cell || !id || !url || !cell.isConnected || cell.dataset.id !== id) {
+      pumpStillQueue();
+      return;
+    }
+    const placeholder = cell.querySelector(".placeholder");
+    let img = cell.querySelector("img");
+    if (!placeholder || !img || !img.parentNode) {
+      pumpStillQueue();
+      return;
+    }
+    if (stillLooksGood(img, url)) {
+      placeholder.hidden = true;
+      img.hidden = false;
+      pumpStillQueue();
+      return;
+    }
+    if (!job.force && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
+      pumpStillQueue();
+      return;
+    }
+    const item = itemById(id);
+    const slotStatus = ((item.renditions || {}).status || {})[stillWhich(item)];
+    const next = document.createElement("img");
+    next.alt = "";
+    next.hidden = true;
+    next.setAttribute("data-still", url);
+    img.parentNode.replaceChild(next, img);
+    const gen = (Number(cell.dataset.stillGen) || 0) + 1;
+    cell.dataset.stillGen = String(gen);
+    cell.dataset.stillStarted = String(Date.now());
+    let settled = false;
+    function finish() {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      stillActive = Math.max(0, stillActive - 1);
+      pumpStillQueue();
+    }
+    stillActive += 1;
+    next.onload = function () {
+      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
+        finish();
+        return;
+      }
+      delete cell.dataset.stillErrorTried;
+      placeholder.hidden = true;
+      next.hidden = false;
+      finish();
+    };
+    next.onerror = function () {
+      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
+        finish();
+        return;
+      }
+      next.hidden = true;
+      placeholder.hidden = false;
+      finish();
+      if (slotStatus === "error") {
+        cell.dataset.stillErrorTried = url;
+        return;
+      }
+      window.setTimeout(function () {
+        if (cell.isConnected && cell.dataset.id === id) {
+          requestStill(cell, id, true);
+        }
+      }, 800);
+    };
+    next.src = url;
+    window.setTimeout(function () {
+      if (settled || !cell.isConnected || cell.dataset.stillGen !== String(gen)) {
+        return;
+      }
+      if (stillLooksGood(next, url)) {
+        finish();
+        return;
+      }
+      finish();
+      requestStill(cell, id, true);
+    }, STILL_STALL_MS);
   }
 
   function requestStill(cell, id, forceReload) {
@@ -1133,12 +1257,10 @@
     }
     const img = cell.querySelector("img");
     const placeholder = cell.querySelector(".placeholder");
-    if (!img || !placeholder || !img.parentNode) {
+    if (!img || !placeholder) {
       return;
     }
-    const item = itemById(id);
-    const which = stillWhich(item);
-    const url = "/api/media/" + encodeURIComponent(id) + "?which=" + which;
+    const url = stillUrlFor(id);
     if (hoverCell === cell && hoverVideo && hoverCell.contains(hoverVideo)) {
       return;
     }
@@ -1147,10 +1269,8 @@
       img.hidden = false;
       return;
     }
-    if (!forceReload && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
-      return;
-    }
-    const slotStatus = ((item.renditions || {}).status || {})[which];
+    const item = itemById(id);
+    const slotStatus = ((item.renditions || {}).status || {})[stillWhich(item)];
     if (slotStatus === "not-applicable") {
       placeholder.hidden = false;
       img.hidden = true;
@@ -1161,39 +1281,13 @@
       img.hidden = true;
       return;
     }
-    const next = document.createElement("img");
-    next.alt = "";
-    next.hidden = true;
-    next.setAttribute("data-still", url);
-    const gen = (Number(cell.dataset.stillGen) || 0) + 1;
-    cell.dataset.stillGen = String(gen);
-    next.onload = function () {
-      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
+    if (!forceReload && img.getAttribute("data-still") === url && img.getAttribute("src") && !img.complete) {
+      const started = Number(cell.dataset.stillStarted || 0);
+      if (!started || Date.now() - started < STILL_STALL_MS) {
         return;
       }
-      delete cell.dataset.stillErrorTried;
-      placeholder.hidden = true;
-      next.hidden = false;
-    };
-    next.onerror = function () {
-      if (cell.dataset.stillGen !== String(gen) || cell.dataset.id !== id) {
-        return;
-      }
-      next.hidden = true;
-      placeholder.hidden = false;
-      if (slotStatus === "error") {
-        cell.dataset.stillErrorTried = url;
-        return;
-      }
-      window.setTimeout(function () {
-        if (cell.dataset.stillGen !== String(gen) || !cell.isConnected) {
-          return;
-        }
-        requestStill(cell, id, true);
-      }, 1000);
-    };
-    img.parentNode.replaceChild(next, img);
-    next.src = url;
+    }
+    enqueueStill(cell, id, url, forceReload);
   }
 
   function mediaTransform() {
@@ -3813,6 +3907,8 @@
         syncScanRetry([]);
       }
       showDisconnected(false);
+      const prevIds = items.map(function (it) { return it.id; }).join("\n");
+      const prevQs = queryString();
       items = nextItems;
       catalogReady = true;
       groups = nextGroups.length ? nextGroups : (arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy));
@@ -3827,7 +3923,12 @@
       } else if (!viewer.hidden) {
         syncNavChrome();
       }
-      render();
+      const nextIds = items.map(function (it) { return it.id; }).join("\n");
+      if (prevIds && prevIds === nextIds && renderKey && renderKey.indexOf(prevQs) !== -1) {
+        paintGridStills();
+      } else {
+        render();
+      }
       if (filter.person || filter.place || filter.thing) {
         refreshInspectorFromItems();
       }

@@ -189,6 +189,16 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps(video_after),
     )
 
+    page.reload(wait_until="domcontentloaded")
+    page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=30000)
+    reloaded = wait_painted(page, ALL_NAMES, timeout=30000)
+    record["reloaded"] = reloaded
+    checks.check(
+        "reload-keeps-thumbs",
+        reloaded.get("missing") == 0 and reloaded.get("painted") >= 5,
+        json.dumps(reloaded),
+    )
+
     page.screenshot(path=str(artifacts / "grid-thumbs.png"))
     return record
 
