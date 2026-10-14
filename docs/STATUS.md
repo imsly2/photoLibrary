@@ -14,7 +14,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Does not close a Check. 16/22 unchanged.
   Plan: [taste-pack](features/taste-pack/Rev1.0/PLAN.md).
   Evidence:
-  [TASTE-PACK](features/taste-pack/Rev1.0/assets/verify-1/result.json).
+  [TASTE-PACK](features/taste-pack/Rev1.0/assets/verify-1/result.json)
+  57/57 (sandbox excludes planted fat trees; real zip has Setup.bat +
+  library/, about 275 KB),
+  [dry-run](features/taste-pack/Rev1.0/assets/verify-1/dry-run.txt),
+  [repo names](features/taste-pack/Rev1.0/assets/verify-1/repo-names.json).
 - S00 is green on its Windows verifier: an empty fixture-owned library launches,
   persists the 16 default settings, reuses a matching-root server, refuses a
   foreign port without killing it, recovers a settings transaction, and undoes

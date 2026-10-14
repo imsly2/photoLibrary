@@ -1,0 +1,19 @@
+[
+  "photoLibrary/create-shortcut.ps1",
+  "photoLibrary/CreateShortcut.bat",
+  "photoLibrary/Launch.bat",
+  "photoLibrary/launch.ps1",
+  "photoLibrary/launch.sh",
+  "photoLibrary/Library.bat",
+  "photoLibrary/library.ico",
+  "photoLibrary/pack-deploy.ps1",
+  "photoLibrary/pack-deploy.py",
+  "photoLibrary/PackDeploy.bat",
+  "photoLibrary/pyproject.toml",
+  "photoLibrary/README.md",
+  "photoLibrary/Setup.bat",
+  "photoLibrary/setup.ps1",
+  "photoLibrary/Update.bat",
+  "photoLibrary/library/__init__.py",
+  "photoLibrary/library/web/index.html"
+]

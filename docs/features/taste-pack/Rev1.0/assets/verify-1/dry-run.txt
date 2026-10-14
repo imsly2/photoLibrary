@@ -1,0 +1,40 @@
+
+Library deploy zip
+------------------
+Folder: /workspace
+
+Skipped (present, not packed):
+  .git/
+  __pycache__/
+  AGENTS.md
+  docs/
+  tests/
+
+Packed:
+  create-shortcut.ps1
+  CreateShortcut.bat
+  Launch.bat
+  launch.ps1
+  launch.sh
+  Library.bat
+  library.ico
+  pack-deploy.ps1
+  pack-deploy.py
+  PackDeploy.bat
+  pyproject.toml
+  README.md
+  Setup-geo.bat
+  Setup.bat
+  setup.ps1
+  Update.bat
+  library/  (45 files)
+  61 files total
+
+Uncompressed about 836.4 KB
+Dry-run -- not writing a zip.
+Would write (overwrite if present):
+  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/photoLibrary-deploy.zip
+
+Next step after a real run: copy the zip, extract it, Setup.bat.
+
+

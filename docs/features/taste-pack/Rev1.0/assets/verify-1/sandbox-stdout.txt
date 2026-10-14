@@ -1,0 +1,47 @@
+
+Library deploy zip
+------------------
+Folder: /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-app
+
+Skipped (present, not packed):
+  .git/
+  .qa/
+  .venv/
+  AGENTS.md
+  CaptureRegion/
+  docs/
+  library-data/
+  library.egg-info/
+  tests/
+
+Packed:
+  create-shortcut.ps1
+  CreateShortcut.bat
+  Launch.bat
+  launch.ps1
+  launch.sh
+  Library.bat
+  library.ico
+  pack-deploy.ps1
+  pack-deploy.py
+  PackDeploy.bat
+  pyproject.toml
+  README.md
+  Setup.bat
+  setup.ps1
+  Update.bat
+  library/  (2 files)
+  17 files total
+
+Uncompressed about 162 bytes
+Writing:
+  /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip
+
+Zip ready: /workspace/docs/features/taste-pack/Rev1.0/assets/verify-1/sandbox-deploy.zip
+Size: about 2.3 KB
+Safe to run again -- it overwrites this same file.
+
+Next step: copy the zip to a USB or family PC, extract it,
+then double-click Setup.bat.
+
+
