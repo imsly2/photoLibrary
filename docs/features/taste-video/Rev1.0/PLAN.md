@@ -22,7 +22,8 @@ and this file.
 7. `#viewer-scrub` lives in `#viewer-bottom` (not over the picture).
    `.tile-scrub` stays on hovered tiles.
 8. Progressive start: proxy first, then original; `currentTime` kept.
-9. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
+9. Clicking a video tile autoplays the viewer at the tile’s `currentTime`.
+10. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
 
 ## Out of scope
 

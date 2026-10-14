@@ -347,6 +347,7 @@ as soon as it can, then swaps to the original (or stays on the proxy if
 the browser cannot decode the original or the file is unavailable). The
 swap keeps `currentTime`, play/pause, and the current scale/pan. No
 “Showing original”. Slideshow still plays the proxy for the 5 s interval.
+Clicking a video tile opens the viewer at that tile’s `currentTime` (hover play or `.tile-scrub`) and autoplays; stills are unchanged.
 
 **Hover at every tile size.** Grid preview playback is not reserved for
 large cells. When the proxy policy allows the cell, the hovered video

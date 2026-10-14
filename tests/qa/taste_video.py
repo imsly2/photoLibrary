@@ -269,6 +269,32 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         )
         record["tileScrub"] = {"before": before_t, "after": after_t}
         checks.check("tile-scrub-seeks", after_t > before_t + 0.05, json.dumps(record["tileScrub"]))
+        tile_time = after_t
+        page.locator('.cell[data-slot="grid"][data-kind="video"]').first.click()
+        page.wait_for_function(
+            """() => {
+              const viewer = document.getElementById('viewer');
+              const video = document.getElementById('viewer-video');
+              if (!viewer || viewer.hidden || !video || video.hidden) return false;
+              const src = video.currentSrc || video.getAttribute('src') || '';
+              return src.indexOf('which=proxy') !== -1 && video.paused === false;
+            }""",
+            timeout=15000,
+        )
+        opened = video_state(page)
+        record["openFromTile"] = {"tileTime": tile_time, "viewer": opened}
+        checks.check(
+            "open-from-tile-autoplay",
+            opened.get("paused") is False and "which=proxy" in (opened.get("src") or ""),
+            json.dumps(record["openFromTile"]),
+        )
+        checks.check(
+            "open-from-tile-keeps-time",
+            abs((opened.get("currentTime") or 0) - tile_time) <= 0.35,
+            json.dumps(record["openFromTile"]),
+        )
+        page.locator("#viewer-back").click()
+        wait_viewer_closed(page)
 
     size_before_dates = page.evaluate("() => document.getElementById('grid').dataset.size")
     page.locator("#date-group").select_option("off")
@@ -324,7 +350,6 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     before_play = media_box(page, "#viewer-video")
     record["beforePlay"] = before_play
-    page.keyboard.press("Space")
     page.wait_for_function(
         """() => {
           const video = document.getElementById('viewer-video');

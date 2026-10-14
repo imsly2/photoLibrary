@@ -416,5 +416,6 @@ environments must be supplied by the build or F2 remains pending; do not claim
   assertions not weakened. No new Check. 16/22 unchanged.
 - 2026-10-14 — Grid/viewer chrome taste after PR #10. One Size slider;
   Dates Years/Months/Days/Off; vertical side viewer zoom; scrub in
-  `#viewer-bottom`. TASTE-VIDEO 59/59. `GET /api/update` 200. No new
+  `#viewer-bottom`. Clicking a video tile autoplays at the tile
+  `currentTime`. TASTE-VIDEO 59/59. `GET /api/update` 200. No new
   Check. 16/22 unchanged.
