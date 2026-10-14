@@ -1,0 +1,12 @@
+{
+  "probe": "empty $PSScriptRoot (script_root='') with bat -AppFolder hint, MyCommand.Path, cwd marker, and all-empty fail",
+  "cases": {
+    "empty-psscriptroot-uses-appfolder-hint": "/tmp/tmp90elyil1/photoLibrary",
+    "empty-psscriptroot-uses-myinvocation-path": "/tmp/tmp90elyil1/photoLibrary",
+    "empty-psscriptroot-uses-cwd-with-setup-bat": "/tmp/tmp90elyil1/photoLibrary",
+    "empty-everything-without-marker-is-null": null,
+    "missing-hint-without-fallback-is-null": null,
+    "hint-trailing-slash": "/tmp/tmp90elyil1/photoLibrary"
+  },
+  "setupBatFailBranch": "if not \"%ERR%\"==\"0\" (\n    echo.\n    echo  Setup did not finish. Do not run Library.bat yet.\n    echo  If it asked you to Update Library, do that, then run Setup.bat again.\n    echo  If it could not find the Library folder, open the folder with Setup.bat and run it from there.\n    pause\n    "
+}

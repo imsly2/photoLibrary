@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -169,6 +171,204 @@ def extract_bat_help(bat: str) -> str:
     return bat[index:]
 
 
+def extract_resolve_function(text: str) -> str:
+    start = text.find("function Resolve-LibraryAppFolder")
+    end = text.find("# end Resolve-LibraryAppFolder")
+    if start < 0 or end < 0 or end <= start:
+        return ""
+    return text[start:end].strip()
+
+
+def _ready_only_after_errorlevel(bat: str) -> bool:
+    fail_at = bat.find('if not "%ERR%"=="0"')
+    ready_at = bat.find("Ready -- run Library.bat")
+    if fail_at < 0 or ready_at < 0 or ready_at < fail_at:
+        return False
+    fail_exit = bat.find("exit /b %ERR%", fail_at)
+    if fail_exit < 0 or ready_at < fail_exit:
+        return False
+    return "Ready -- run Library.bat" not in bat[fail_at:fail_exit]
+
+
+def trim_folder(path: str) -> str:
+    item = path.strip()
+    while len(item) > 3 and item.endswith(("/", "\\")):
+        item = item[:-1]
+    return item
+
+
+def resolve_library_app_folder(
+    hint: str = "",
+    script_root: str = "",
+    script_path: str = "",
+    script_definition: str = "",
+    cwd: str = "",
+) -> str | None:
+    """Python port of Resolve-LibraryAppFolder. Empty script_root = empty $PSScriptRoot."""
+    candidates: list[str] = []
+    if hint:
+        candidates.append(trim_folder(hint))
+    if script_root:
+        candidates.append(trim_folder(script_root))
+    if script_path:
+        parent = str(Path(script_path).parent)
+        if parent:
+            candidates.append(trim_folder(parent))
+    if script_definition:
+        definition = Path(script_definition)
+        if definition.is_file():
+            candidates.append(trim_folder(str(definition.parent)))
+    for item in candidates:
+        if item and Path(item).is_dir():
+            return str(Path(item).resolve())
+    if cwd:
+        here = trim_folder(cwd)
+        here_path = Path(here)
+        if here and here_path.is_dir():
+            markers = (
+                "Setup.bat",
+                "Library.bat",
+                "Launch.bat",
+                "setup.ps1",
+                "launch.ps1",
+                "CreateShortcut.bat",
+            )
+            if any((here_path / name).exists() for name in markers):
+                return str(here_path.resolve())
+    return None
+
+
+def prove_app_folder_null(checks: Checks) -> dict[str, Any]:
+    """Simulate empty $PSScriptRoot so a null Set-Location path cannot regress."""
+    setup = _read("setup.ps1")
+    launch = _read("launch.ps1")
+    shortcut = _read("create-shortcut.ps1")
+    bat = _read("Setup.bat")
+    library_bat = _read("Library.bat")
+    update_bat = _read("Update.bat")
+    shortcut_bat = _read("CreateShortcut.bat")
+    extracted = {
+        "setup.ps1": extract_resolve_function(setup),
+        "launch.ps1": extract_resolve_function(launch),
+        "create-shortcut.ps1": extract_resolve_function(shortcut),
+    }
+    checks.check(
+        "resolve-function-present-in-setup",
+        "param(" in extracted["setup.ps1"] and "$Hint" in extracted["setup.ps1"],
+        "",
+    )
+    checks.check(
+        "resolve-function-identical-in-siblings",
+        extracted["setup.ps1"] == extracted["launch.ps1"] == extracted["create-shortcut.ps1"]
+        and bool(extracted["setup.ps1"]),
+        "",
+    )
+    checks.check("library-bat-passes-appfolder", '-AppFolder "%APPDIR%"' in library_bat, "")
+    checks.check("update-bat-passes-appfolder", '-AppFolder "%APPDIR%"' in update_bat, "")
+    checks.check("create-shortcut-bat-passes-appfolder", '-AppFolder "%APPDIR%"' in shortcut_bat, "")
+    checks.check(
+        "launch-ps1-no-bare-psscriptroot-setlocation",
+        not re.search(
+            r"\$AppFolder\s*=\s*\$PSScriptRoot\s*\n\s*Set-Location\s+\$AppFolder",
+            launch,
+        ),
+        "",
+    )
+    checks.check(
+        "create-shortcut-ps1-no-bare-psscriptroot-setlocation",
+        not re.search(
+            r"\$AppFolder\s*=\s*\$PSScriptRoot\s*\n\s*Set-Location\s+\$AppFolder",
+            shortcut,
+        ),
+        "",
+    )
+    checks.check("setup-ps1-probe-appfolder", "[switch]$ProbeAppFolder" in setup, "")
+    checks.check("setup-ps1-explicit-exit-1-on-null", "Write-AppFolderFail" in setup and "exit 1" in setup, "")
+
+    record: dict[str, Any] = {
+        "probe": "empty $PSScriptRoot (script_root='') with bat -AppFolder hint, MyCommand.Path, cwd marker, and all-empty fail",
+        "cases": {},
+    }
+
+    with tempfile.TemporaryDirectory() as tmp:
+        usb = Path(tmp) / "photoLibrary"
+        usb.mkdir()
+        (usb / "Setup.bat").write_text("@echo off\n", encoding="ascii")
+        (usb / "setup.ps1").write_text("# probe\n", encoding="ascii")
+        empty = Path(tmp) / "empty-cwd"
+        empty.mkdir()
+
+        hint_hit = resolve_library_app_folder(hint=str(usb), script_root="")
+        record["cases"]["empty-psscriptroot-uses-appfolder-hint"] = hint_hit
+        checks.check(
+            "empty-psscriptroot-uses-appfolder-hint",
+            hint_hit is not None and Path(hint_hit).resolve() == usb.resolve(),
+            str(hint_hit),
+        )
+
+        path_hit = resolve_library_app_folder(
+            hint="",
+            script_root="",
+            script_path=str(usb / "setup.ps1"),
+        )
+        record["cases"]["empty-psscriptroot-uses-myinvocation-path"] = path_hit
+        checks.check(
+            "empty-psscriptroot-uses-myinvocation-path",
+            path_hit is not None and Path(path_hit).resolve() == usb.resolve(),
+            str(path_hit),
+        )
+
+        cwd_hit = resolve_library_app_folder(hint="", script_root="", cwd=str(usb))
+        record["cases"]["empty-psscriptroot-uses-cwd-with-setup-bat"] = cwd_hit
+        checks.check(
+            "empty-psscriptroot-uses-cwd-with-setup-bat",
+            cwd_hit is not None and Path(cwd_hit).resolve() == usb.resolve(),
+            str(cwd_hit),
+        )
+
+        miss = resolve_library_app_folder(hint="", script_root="", cwd=str(empty))
+        record["cases"]["empty-everything-without-marker-is-null"] = miss
+        checks.check(
+            "empty-everything-without-marker-is-null",
+            miss is None,
+            str(miss),
+        )
+
+        missing_hint = resolve_library_app_folder(hint=str(Path(tmp) / "no-such-folder"), script_root="")
+        record["cases"]["missing-hint-without-fallback-is-null"] = missing_hint
+        checks.check(
+            "missing-hint-without-fallback-is-null",
+            missing_hint is None,
+            str(missing_hint),
+        )
+
+        trailing = resolve_library_app_folder(hint=str(usb) + "/", script_root="")
+        record["cases"]["hint-trailing-slash"] = trailing
+        checks.check(
+            "hint-trailing-slash-still-resolves",
+            trailing is not None and Path(trailing).resolve() == usb.resolve(),
+            str(trailing),
+        )
+
+    fail_block = ""
+    fail_at = bat.find('if not "%ERR%"=="0"')
+    fail_exit = bat.find("exit /b %ERR%", fail_at) if fail_at >= 0 else -1
+    if fail_at >= 0 and fail_exit >= 0:
+        fail_block = bat[fail_at:fail_exit]
+    record["setupBatFailBranch"] = fail_block
+    checks.check(
+        "setup-bat-fail-branch-no-ready",
+        "Ready -- run Library.bat" not in fail_block and "exit /b %ERR%" in bat,
+        fail_block,
+    )
+    checks.check(
+        "setup-ps1-ready-after-success-only",
+        setup.rfind("Ready -- run Library.bat") > setup.find("Write-MissingUpdate"),
+        "",
+    )
+    return record
+
+
 def static_source_checks(
     bat: str,
     setup: str,
@@ -292,6 +492,37 @@ def static_source_checks(
             "name": "setup-ps1-optional-git-or-zip",
             "pass": "Git.Git" in setup and "zip of main" in setup and "gh.exe" not in setup,
         },
+        {
+            "name": "setup-ps1-appfolder-param",
+            "pass": "[string]$AppFolder" in setup and "Resolve-LibraryAppFolder" in setup,
+        },
+        {
+            "name": "setup-ps1-resolves-myinvocation-path",
+            "pass": "MyCommand.Path" in setup and "MyCommand.Definition" in setup,
+        },
+        {
+            "name": "setup-ps1-fail-loud-if-folder-null",
+            "pass": (
+                "Could not find the Library folder" in setup
+                and "Did not finish." in setup
+                and "Write-AppFolderFail" in setup
+            ),
+        },
+        {
+            "name": "setup-ps1-no-bare-psscriptroot-setlocation",
+            "pass": not re.search(
+                r"\$AppFolder\s*=\s*\$PSScriptRoot\s*\n\s*Set-Location\s+\$AppFolder",
+                setup,
+            ),
+        },
+        {
+            "name": "setup-bat-passes-appfolder",
+            "pass": '-AppFolder "%APPDIR%"' in bat and "set \"APPDIR=%~dp0\"" in bat,
+        },
+        {
+            "name": "setup-bat-ready-only-after-errorlevel",
+            "pass": _ready_only_after_errorlevel(bat),
+        },
     ]
 
 
@@ -323,6 +554,7 @@ def prove_static(checks: Checks) -> dict[str, Any]:
         "",
     )
     checks.check("library-ico-exists", (PRODUCT_ROOT / "library.ico").is_file(), "")
+    record["appFolder"] = prove_app_folder_null(checks)
     update_py = _read("library/update.py")
     checks.check(
         "update-tracks-main",
@@ -410,10 +642,15 @@ def run_slice(root: Path, artifacts: Path) -> int:
         probe["missingMessage"] + "\n" + probe["networkNote"] + "\n",
         encoding="utf-8",
     )
+    (artifacts / "app-folder-probe.json").write_text(
+        json.dumps(static.get("appFolder") or {}, indent=2) + "\n",
+        encoding="utf-8",
+    )
     extra = {
         "Setup.bat.txt": str(artifacts / "Setup.bat.txt"),
         "help.txt": str(artifacts / "help.txt"),
         "dry-run.txt": str(artifacts / "dry-run.txt"),
+        "app-folder-probe.json": str(artifacts / "app-folder-probe.json"),
     }
     code = write_result(
         "TASTE-SETUP",

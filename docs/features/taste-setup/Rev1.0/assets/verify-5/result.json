@@ -1,0 +1,343 @@
+{
+  "slice": "TASTE-SETUP",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-calls-setup-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-echoes-once-daily-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-or-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-no-em-dash-or-smart-quotes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ps51-cp1252-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-no-bare-using",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-strings-and-braces-closed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-has-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-no-msi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-does-not-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-composes-clis",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-venv-and-pip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-winget-same-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-dryrun-and-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-missing-says-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-still-launch-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-still-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-setup-hijack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-update-relaunches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-progress-steps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-fail-next",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-creates-shortcut",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-internet-up-front",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-optional-git-or-zip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-appfolder-param",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-resolves-myinvocation-path",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-fail-loud-if-folder-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-only-after-errorlevel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ps51-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "create-shortcut-writes-lnk",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-ico-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "resolve-function-present-in-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "resolve-function-identical-in-siblings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-probe-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-explicit-exit-1-on-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-psscriptroot-uses-appfolder-hint",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-psscriptroot-uses-myinvocation-path",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-psscriptroot-uses-cwd-with-setup-bat",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-everything-without-marker-is-null",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "missing-hint-without-fallback-is-null",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "hint-trailing-slash-still-resolves",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "setup-bat-fail-branch-no-ready",
+      "pass": true,
+      "detail": "if not \"%ERR%\"==\"0\" (\n    echo.\n    echo  Setup did not finish. Do not run Library.bat yet.\n    echo  If it asked you to Update Library, do that, then run Setup.bat again.\n    echo  If it could not find the Library folder, open the folder with Setup.bat and run it from there.\n    pause\n    "
+    },
+    {
+      "name": "setup-ps1-ready-after-success-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-tracks-main",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "probe-setup-geo-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml objects-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml faces-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "all-three-clis-present",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "probe-does-not-serve",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "0a96bc6d547f108f2137a9e06cc20b7cdda53568",
+  "commands": [
+    "python -m tests.qa slice TASTE-SETUP",
+    "/usr/bin/python3 -m library --help",
+    "/usr/bin/python3 -m library setup-geo --help",
+    "/usr/bin/python3 -m library setup-ml objects --help",
+    "/usr/bin/python3 -m library setup-ml faces --help"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/result.json",
+    "stdout.log": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/stdout.log",
+    "Setup.bat.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/Setup.bat.txt",
+    "help.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/help.txt",
+    "dry-run.txt": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/dry-run.txt",
+    "app-folder-probe.json": "/workspace/docs/features/taste-setup/Rev1.0/assets/verify-5/app-folder-probe.json"
+  }
+}

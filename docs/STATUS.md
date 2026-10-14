@@ -411,6 +411,22 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   44/44,
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-5/result.json)
   50/50.
+- 2026-10-14 — Setup.bat on a flash-drive copy printed Ready after
+  `Set-Location` failed because the app-folder path was null
+  (`setup.ps1:15`). `$AppFolder` now resolves from `-AppFolder`
+  (Setup.bat / Library.bat / Update.bat / CreateShortcut.bat pass
+  `%~dp0`), then `$PSScriptRoot`, then `$MyInvocation.MyCommand.Path`,
+  then a cwd that contains those launch files. If the folder still
+  cannot be resolved, the script exits 1 and the batch failure
+  branch runs (no Ready). Same resolver in `launch.ps1` and
+  `create-shortcut.ps1`. ASCII `.bat` / `.ps1`. Does not close a
+  Check. 16/22 unchanged. Restart not required; re-copy or Update
+  then run Setup.bat again.
+  Evidence:
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-5/result.json)
+  63/63 (empty `$PSScriptRoot` uses bat hint / MyCommand.Path /
+  cwd marker; all-empty is null; Ready only after errorlevel 0),
+  [app-folder-probe](features/taste-setup/Rev1.0/assets/verify-5/app-folder-probe.json).
 
 ## Completion
 

@@ -13,7 +13,9 @@ echo.
 echo  Create Library shortcuts on the Desktop and Start Menu.
 echo  Safe to run again. Does not start Library.
 echo.
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0create-shortcut.ps1" %*
+set "APPDIR=%~dp0"
+if "%APPDIR:~-1%"=="\" set "APPDIR=%APPDIR:~0,-1%"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0create-shortcut.ps1" -AppFolder "%APPDIR%" %*
 set "ERR=%ERRORLEVEL%"
 if not "%ERR%"=="0" (
     echo.
