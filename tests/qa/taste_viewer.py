@@ -577,7 +577,8 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["backUrl"] = {"before": start_url, "after": after_back}
     checks.check("back-same-url", after_back == start_url, f"{start_url} -> {after_back}")
     checks.check("back-same-port", page.evaluate("() => location.port") == start_url.split(":")[-1].rstrip("/"), page.url)
-    checks.check("back-shows-grid", page.locator('[data-filename="IMG_1042.jpg"]').count() == 1)
+    grid_photo = page.locator('#grid .cell[data-slot="grid"][data-filename="IMG_1042.jpg"]')
+    checks.check("back-shows-grid", grid_photo.count() == 1, f"grid={grid_photo.count()}")
 
     page.keyboard.press("F5")
     page.wait_for_function(
@@ -682,12 +683,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         after_esc_full.get("hidden") is False and after_esc_full.get("fullscreen") == "0",
         json.dumps(after_esc_full),
     )
+    page.wait_for_function("() => !document.fullscreenElement", timeout=5000)
     page.keyboard.press("Escape")
     wait_viewer_closed(page)
-    page.wait_for_function("() => !document.fullscreenElement", timeout=5000)
     checks.check("esc-then-closes-viewer", True)
 
-    page.locator('[data-filename="clip.mp4"]').click()
+    page.locator('#grid .cell[data-slot="grid"][data-filename="clip.mp4"]').click()
     page.wait_for_function(
         """() => {
           const viewer = document.getElementById('viewer');

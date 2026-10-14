@@ -132,6 +132,7 @@
   let slideshowActive = false;
   let slideshowPaused = false;
   let slideshowTimer = 0;
+  let fullscreenExitRequested = false;
 
   function levelIndex(level) {
     const idx = LEVELS.indexOf(level);
@@ -803,16 +804,26 @@
   }
 
   function exitFullscreen() {
-    const was = appFullscreen || !!document.fullscreenElement;
+    const nativeOn = !!document.fullscreenElement;
+    const was = appFullscreen || nativeOn;
+    if (!was) {
+      return false;
+    }
+    if (fullscreenExitRequested && !appFullscreen) {
+      return false;
+    }
     appFullscreen = false;
-    if (document.fullscreenElement && document.exitFullscreen) {
+    if (nativeOn && document.exitFullscreen) {
+      fullscreenExitRequested = true;
       const done = document.exitFullscreen();
       if (done && done.catch) {
-        done.catch(function () {});
+        done.catch(function () {
+          fullscreenExitRequested = false;
+        });
       }
     }
     syncFullscreenChrome();
-    return was;
+    return true;
   }
 
   function toggleFullscreen() {
@@ -1240,7 +1251,6 @@
     viewerItemId = null;
     panning = false;
     panMoved = false;
-    setInfoOpen(false);
     if (viewerCrumb) {
       viewerCrumb.textContent = "";
     }
@@ -2540,8 +2550,10 @@
   document.addEventListener("fullscreenchange", function () {
     if (!document.fullscreenElement) {
       appFullscreen = false;
+      fullscreenExitRequested = false;
     } else {
       appFullscreen = true;
+      fullscreenExitRequested = false;
     }
     syncFullscreenChrome();
   });
