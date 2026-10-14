@@ -180,6 +180,14 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   37/37 reveal,
   [verify-2](features/taste-reveal/Rev1.0/assets/verify-2/result.json)
   40/40 after mute + volume beside scrub.
+- 2026-10-14 — Follow-up on PR #14 tip `1cac4c9`: Explorer argv is
+  now `["explorer.exe", "/select," + path]` so spaces
+  (`Iphone Backup`, `Another Rope Swing.MOV`) select the file.
+  Missing originals still 404, never Documents. Grid hover resumes
+  after a catalog rebuild; dated Years/Months stay stills unless
+  Dates=Off or `playProxies=always`. `#viewer-source` names Preview /
+  Loading full… / Original / Preview — full unavailable. Does not
+  close a Check. 16/22 unchanged.
 
 ## Completion
 

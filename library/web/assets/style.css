@@ -872,6 +872,34 @@ dialog h2 {
   white-space: nowrap;
 }
 
+#viewer-source {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1b1b22;
+  background: #c8c8d0;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+#viewer-source[data-state="loading"] {
+  background: #f0c36d;
+}
+
+#viewer-source[data-state="original"] {
+  background: #7dcea0;
+}
+
+#viewer-source[data-state="unavailable"] {
+  background: #e6a07a;
+}
+
+#viewer-source[hidden] {
+  display: none;
+}
+
 #viewer-tools {
   display: flex;
   align-items: center;

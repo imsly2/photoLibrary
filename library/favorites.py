@@ -141,12 +141,17 @@ def _windows() -> bool:
     return os.name == "nt"
 
 
-def windows_reveal_command(path: Path) -> str:
-    """explorer.exe /select,"fullpath" — selects the file, not a folder-only open."""
+def windows_reveal_select_arg(path: Path) -> str:
+    """Single Explorer switch: /select, glued to the path, no extra quotes."""
     text = str(path)
     if _windows():
         text = os.path.normpath(text)
-    return f'explorer.exe /select,"{text}"'
+    return f"/select,{text}"
+
+
+def windows_reveal_command(path: Path) -> list[str]:
+    """Argv Explorer accepts: explorer.exe + /select,path (spaces stay inside the arg)."""
+    return ["explorer.exe", windows_reveal_select_arg(path)]
 
 
 def open_path_with_default(path: Path) -> bool:
@@ -176,8 +181,8 @@ def open_containing_folder(path: Path) -> bool:
     folder = target.parent
     try:
         if _windows():
-            # String form so CreateProcess does not wrap /select,path as one
-            # quoted argv (that parse fails on spaces and opens Documents).
+            # List form: /select, glued to the path, no extra quotes in the
+            # arg. A quoted string command still opens Documents on spaces.
             subprocess.Popen(windows_reveal_command(target))
             return True
         if sys.platform == "darwin":

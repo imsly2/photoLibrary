@@ -476,12 +476,15 @@ stored in `catalog/favorites.json` and is visible on the heart.
 For a photo the viewer shows `preview.webp` first, then the original if
 available, with no “Showing original” button or notification. Reveal in
 Explorer and Open sit side by side. Reveal opens the original's containing
-folder on this computer whenever the file is here (`explorer /select` on
-Windows). Open launches that file in the computer's default app. Delete
+folder on this computer whenever the file is here (`explorer.exe` argv
+`/select,fullpath` on Windows — comma glued, no extra quotes, so paths
+with spaces still select the file). Open launches that file in the computer's default app. Delete
 removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
 starts the proxy and swaps to the original when loaded (a browser that
-cannot decode the original stays on the proxy). Play preview still
+cannot decode the original stays on the proxy). `#viewer-source` beside
+the filename says Preview, Loading full…, Original, or Preview — full
+unavailable. Play preview still
 toggles pause/play on click. `#viewer-scrub` sits in `#viewer-bottom`
 and seeks at any zoom or source. It does not overlay the picture.
 Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags

@@ -13,6 +13,7 @@ from library.favorites import (
     existing_original,
     open_containing_folder,
     windows_reveal_command,
+    windows_reveal_select_arg,
 )
 from library.service import Library
 from tests.qa.s00 import (
@@ -25,54 +26,88 @@ from tests.qa.s03 import find_item
 from tests.qa.s05 import pin_media_from_manifest
 from tests.qa.s08 import fresh_root, write_result
 
-SELECT_PREFIX = 'explorer.exe /select,"'
+SELECT_PREFIX = "/select,"
+IPHONE_BACKUP = Path(r"J:\Iphone Backup\Another Rope Swing.MOV")
 
 
-def parse_select_path(command: str) -> str:
-    if not command.startswith(SELECT_PREFIX) or not command.endswith('"'):
+def parse_select_path(command: object) -> str:
+    if isinstance(command, (list, tuple)) and len(command) >= 2:
+        arg = str(command[1])
+        if arg.startswith(SELECT_PREFIX):
+            return arg[len(SELECT_PREFIX) :]
         return ""
-    return command[len(SELECT_PREFIX) : -1]
+    text = str(command)
+    if text.startswith(SELECT_PREFIX):
+        return text[len(SELECT_PREFIX) :]
+    return ""
 
 
 def prove_command_form(checks: Checks) -> None:
     windows = Path(r"C:\Family Photos\Vacation 2024\IMG_1042.jpg")
     command = windows_reveal_command(windows)
     checks.check(
-        "command-windows-spaces",
-        command == r'explorer.exe /select,"C:\Family Photos\Vacation 2024\IMG_1042.jpg"',
-        command,
+        "command-is-argv-list",
+        isinstance(command, list) and command[0] == "explorer.exe" and len(command) == 2,
+        json.dumps(command) if isinstance(command, list) else str(command),
     )
-    posix = Path("/tmp/Family Photos/Vacation 2024/clip.mp4")
+    checks.check(
+        "command-windows-spaces",
+        command == ["explorer.exe", r"/select,C:\Family Photos\Vacation 2024\IMG_1042.jpg"],
+        json.dumps(command) if isinstance(command, list) else str(command),
+    )
+    iphone = windows_reveal_command(IPHONE_BACKUP)
+    iphone_arg = iphone[1] if isinstance(iphone, list) and len(iphone) > 1 else ""
+    checks.check(
+        "command-iphone-backup-spaces",
+        iphone == ["explorer.exe", r"/select,J:\Iphone Backup\Another Rope Swing.MOV"],
+        json.dumps(iphone) if isinstance(iphone, list) else str(iphone),
+    )
+    checks.check(
+        "command-select-arg-has-no-quotes",
+        '"' not in iphone_arg and "'" not in iphone_arg and " " in iphone_arg,
+        iphone_arg,
+    )
+    checks.check(
+        "command-comma-glued",
+        iphone_arg.startswith("/select,J:") and "Iphone Backup" in iphone_arg,
+        iphone_arg,
+    )
+    posix = Path("/tmp/Iphone Backup/Another Rope Swing.MOV")
     posix_cmd = windows_reveal_command(posix)
     checks.check(
-        "command-quoted-fullpath",
-        posix_cmd.startswith(SELECT_PREFIX) and posix_cmd.endswith('"'),
-        posix_cmd,
+        "command-posix-argv",
+        isinstance(posix_cmd, list) and posix_cmd[0] == "explorer.exe" and posix_cmd[1].startswith(SELECT_PREFIX),
+        json.dumps(posix_cmd) if isinstance(posix_cmd, list) else str(posix_cmd),
     )
     selected = parse_select_path(posix_cmd)
     checks.check(
         "command-selects-file-not-folder",
-        selected.endswith("clip.mp4") and "Vacation 2024" in selected,
+        selected.endswith("Another Rope Swing.MOV") and "Iphone Backup" in selected,
         selected,
     )
     checks.check(
         "command-not-documents",
-        "Documents" not in selected,
+        "Documents" not in selected and "Documents" not in json.dumps(posix_cmd),
         selected,
+    )
+    checks.check(
+        "select-arg-helper",
+        windows_reveal_select_arg(IPHONE_BACKUP) == r"/select,J:\Iphone Backup\Another Rope Swing.MOV",
+        windows_reveal_select_arg(IPHONE_BACKUP),
     )
 
 
 def prove_existing_original(checks: Checks, workspace: Path) -> Path:
     if workspace.exists():
         shutil.rmtree(workspace)
-    folder = workspace / "Family Photos" / "Vacation 2024"
+    folder = workspace / "Iphone Backup"
     folder.mkdir(parents=True)
-    photo = folder / "IMG_1042.jpg"
-    photo.write_bytes(b"jpeg-bytes")
+    photo = folder / "Another Rope Swing.MOV"
+    photo.write_bytes(b"mov-bytes")
     found = existing_original(photo)
     checks.check(
         "existing-absolute",
-        found is not None and found.is_absolute() and found.is_file() and found.name == "IMG_1042.jpg",
+        found is not None and found.is_absolute() and found.is_file() and found.name == "Another Rope Swing.MOV",
         str(found),
     )
     checks.check(
@@ -103,21 +138,29 @@ def prove_open_containing(checks: Checks, photo: Path) -> None:
     checks.check("open-windows-returns-true", opened is True)
     checks.check("open-windows-one-launch", len(calls) == 1, str(calls))
     command = calls[0][0][0] if calls and calls[0][0] else ""
-    selected = parse_select_path(str(command))
+    selected = parse_select_path(command)
     checks.check(
         "open-windows-select-command",
-        str(command).startswith(SELECT_PREFIX) and str(command).endswith('"'),
-        str(command),
+        isinstance(command, list)
+        and command[0] == "explorer.exe"
+        and str(command[1]).startswith(SELECT_PREFIX)
+        and '"' not in str(command[1]),
+        json.dumps(command) if isinstance(command, list) else str(command),
     )
     checks.check(
         "open-windows-selects-real-file",
         Path(selected) == photo.resolve() if selected else False,
-        json.dumps({"command": str(command), "photo": str(photo.resolve())}),
+        json.dumps({"command": command, "photo": str(photo.resolve())}, default=str),
+    )
+    checks.check(
+        "open-windows-spaces-in-arg",
+        "Iphone Backup" in selected and "Another Rope Swing.MOV" in selected,
+        selected,
     )
     checks.check(
         "open-windows-not-documents",
-        "Documents" not in str(command) or "Documents" in str(photo),
-        str(command),
+        "Documents" not in selected and "Documents" not in json.dumps(command, default=str),
+        json.dumps(command, default=str),
     )
 
     calls.clear()
@@ -155,19 +198,19 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     media_src = sandbox / "media"
     pin_media_from_manifest(media_src)
 
-    spaced = artifacts / "Family Photos" / "Vacation 2024"
+    spaced = artifacts / "Iphone Backup"
     if spaced.exists():
         shutil.rmtree(spaced)
     spaced.mkdir(parents=True)
-    photo = spaced / "IMG_1042.jpg"
-    shutil.copy2(media_src / "a" / "IMG_1042.jpg", photo)
+    photo = spaced / "Another Rope Swing.MOV"
+    shutil.copy2(media_src / "a" / "clip.mp4", photo)
     pin_media_from_manifest(spaced)
 
     linked_root = fresh_root(root)
     _scan_folder(linked_root, spaced, commands, copy_here=False)
     linked = Library(linked_root)
     items = linked.items_list({})
-    item = find_item(items, "IMG_1042.jpg")
+    item = find_item(items, "Another Rope Swing.MOV")
     checks.check("linked-item", item is not None, json.dumps(items)[:400])
     if item is None:
         return
@@ -195,16 +238,26 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
         json.dumps(body),
     )
     command = calls[0][0][0] if calls and calls[0][0] else ""
-    selected = parse_select_path(str(command))
+    selected = parse_select_path(command)
     checks.check(
         "linked-reveal-explorer-select",
         selected != "" and Path(selected).resolve() == photo.resolve(),
-        str(command),
+        json.dumps(command, default=str),
+    )
+    checks.check(
+        "linked-reveal-argv-no-quotes",
+        isinstance(command, list) and command[0] == "explorer.exe" and '"' not in str(command[1]),
+        json.dumps(command, default=str),
+    )
+    checks.check(
+        "linked-reveal-iphone-backup-spaces",
+        "Iphone Backup" in selected and "Another Rope Swing.MOV" in selected,
+        selected,
     )
     checks.check(
         "linked-reveal-not-documents",
-        "Documents" not in str(reveal_folder) and "Documents" not in str(command),
-        json.dumps({"folder": str(reveal_folder), "command": str(command)}),
+        "Documents" not in str(reveal_folder) and "Documents" not in json.dumps(command, default=str),
+        json.dumps({"folder": str(reveal_folder), "command": command}, default=str),
     )
 
     photo.unlink()
@@ -266,11 +319,16 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
         json.dumps({"path": str(copy_path), "catalog": rel}),
     )
     copy_command = calls[0][0][0] if calls and calls[0][0] else ""
-    copy_selected = parse_select_path(str(copy_command))
+    copy_selected = parse_select_path(copy_command)
     checks.check(
         "copy-reveal-explorer-selects-copy",
         copy_selected != "" and Path(copy_selected).resolve() == copy_path.resolve(),
-        str(copy_command),
+        json.dumps(copy_command, default=str),
+    )
+    checks.check(
+        "copy-reveal-argv-list",
+        isinstance(copy_command, list) and copy_command[0] == "explorer.exe" and '"' not in str(copy_command[1]),
+        json.dumps(copy_command, default=str),
     )
 
 
@@ -280,14 +338,16 @@ def prove_static_source(checks: Checks) -> None:
     html = (PRODUCT_ROOT / "library" / "web" / "index.html").read_text(encoding="utf-8")
     spec = (PRODUCT_ROOT / "docs" / "UI-SPEC.md").read_text(encoding="utf-8")
     checks.check(
-        "source-uses-explorer-select-quoted",
-        'explorer.exe /select,"' in favorites and 'f"/select,{path}"' not in favorites,
+        "source-uses-explorer-select-argv",
+        '["explorer.exe"' in favorites
+        and "/select," in favorites
+        and 'explorer.exe /select,"' not in favorites,
         "favorites.py command form",
     )
     checks.check(
-        "source-no-list-form-explorer",
-        '["explorer"' not in favorites and '["explorer.exe"' not in favorites,
-        "favorites.py argv",
+        "source-list-form-glued-select",
+        'f"/select,{text}"' in favorites or 'f"/select,{path}"' in favorites or 'windows_reveal_select_arg' in favorites,
+        "favorites.py glued select arg",
     )
     checks.check(
         "source-ui-shows-missing-error",
@@ -301,7 +361,9 @@ def prove_static_source(checks: Checks) -> None:
     )
     checks.check(
         "uispec-reveal-selects-file",
-        'explorer.exe /select,"fullpath"' in spec and "never Documents" in spec,
+        ("/select,fullpath" in spec or "/select,fullpath" in spec.replace(" ", ""))
+        and "never Documents" in spec
+        and "argv" in spec,
         "UI-SPEC checklist 15",
     )
     checks.check(
@@ -318,6 +380,27 @@ def prove_static_source(checks: Checks) -> None:
         "uispec-volume-beside-scrub",
         "#viewer-mute" in spec and "#viewer-volume" in spec and "hover proxies stay" in spec,
         "UI-SPEC scrub volume",
+    )
+    checks.check(
+        "source-viewer-source-chrome",
+        'id="viewer-source"' in html
+        and "setVideoSourceState" in page
+        and "Loading full…" in page
+        and "Preview — full unavailable" in page
+        and "resumeHoverIfNeeded" in page,
+        "viewer source + hover resume",
+    )
+    checks.check(
+        "source-hover-keeps-years-policy",
+        'return level === "days" || level === "all"' in page
+        and "if (!groupDates)" in page
+        and "playProxies" in page,
+        "dated Years/Months stay stills unless wall or always",
+    )
+    checks.check(
+        "uispec-viewer-source",
+        "#viewer-source" in spec and "Loading full" in spec and "Preview — full unavailable" in spec,
+        "UI-SPEC source chrome",
     )
 
 

@@ -126,6 +126,21 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record: dict[str, Any] = {}
     page.goto(url, wait_until="domcontentloaded")
     page.wait_for_selector('[data-filename="clip.mp4"]', timeout=30000)
+    set_settings(url, {"zoomLevel": "years", "playProxies": "days-and-all"})
+    wait_level(page, "years")
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'years'",
+        timeout=5000,
+    )
+    page.locator('.cell[data-slot="grid"][data-kind="video"]').first.hover()
+    page.wait_for_timeout(600)
+    years_dated = playing_cell_videos(page)
+    record["datedYearsHover"] = years_dated
+    checks.check(
+        "dated-years-stay-still",
+        years_dated.get("playingCount") == 0 and years_dated.get("videoCount") == 0,
+        json.dumps(years_dated),
+    )
     set_settings(url, {"zoomLevel": "all", "playProxies": "days-and-all"})
     wait_level(page, "all")
     page.wait_for_selector('[data-filename="clip.mp4"]', timeout=15000)
@@ -371,6 +386,38 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     play_jump = box_delta(before_play, after_play)
     record["playJumpPx"] = play_jump
     play_src = proxy_state.get("src") or ""
+    source_chrome = page.evaluate(
+        """() => {
+          const el = document.getElementById('viewer-source');
+          const video = document.getElementById('viewer-video');
+          return {
+            text: el ? (el.textContent || '').trim() : '',
+            hidden: !el || el.hidden,
+            state: el ? (el.dataset.state || '') : '',
+            usingProxy: video ? video.getAttribute('data-using-proxy') === '1' : null,
+            src: video ? (video.currentSrc || video.getAttribute('src') || '') : '',
+          };
+        }"""
+    )
+    record["sourceChrome"] = source_chrome
+    source_text = source_chrome.get("text") or ""
+    checks.check(
+        "viewer-source-visible",
+        source_chrome.get("hidden") is False and source_text != "",
+        json.dumps(source_chrome),
+    )
+    if source_chrome.get("usingProxy") is True or "which=proxy" in (source_chrome.get("src") or ""):
+        checks.check(
+            "viewer-source-preview-or-loading",
+            source_text in ("Preview", "Loading full…", "Preview — full unavailable"),
+            json.dumps(source_chrome),
+        )
+    else:
+        checks.check(
+            "viewer-source-original",
+            source_text == "Original",
+            json.dumps(source_chrome),
+        )
     checks.check(
         "play-starts-proxy",
         "which=proxy" in play_src or proxy_state.get("usingProxy") is True or "which=original" in play_src,
@@ -384,10 +431,28 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     swap_box = {"left": later.get("left"), "top": later.get("top"), "width": later.get("width"), "height": later.get("height")}
     swap_jump = box_delta(before_play, swap_box)
     checks.check("swap-keeps-fit", swap_jump <= 2, json.dumps({"before": before_play, "after": swap_box, "delta": swap_jump}))
-    if "which=original" in (later.get("src") or ""):
+    later_source = page.evaluate(
+        """() => {
+          const el = document.getElementById('viewer-source');
+          return el ? { text: (el.textContent || '').trim(), hidden: el.hidden, state: el.dataset.state || '' } : {};
+        }"""
+    )
+    record["sourceAfterSwap"] = later_source
+    later_src = later.get("src") or ""
+    if "which=original" in later_src:
         checks.check("swap-keeps-time", (later.get("currentTime") or 0) > 0.05, json.dumps(later))
+        checks.check(
+            "viewer-source-says-original",
+            later_source.get("text") == "Original" and later_source.get("hidden") is False,
+            json.dumps(later_source),
+        )
     else:
-        checks.check("stayed-on-proxy-or-original", "which=proxy" in (later.get("src") or ""), json.dumps(later))
+        checks.check("stayed-on-proxy-or-original", "which=proxy" in later_src, json.dumps(later))
+        checks.check(
+            "viewer-source-honest-proxy",
+            later_source.get("text") in ("Preview", "Loading full…", "Preview — full unavailable"),
+            json.dumps(later_source),
+        )
 
     scrub = page.evaluate(
         """() => {
