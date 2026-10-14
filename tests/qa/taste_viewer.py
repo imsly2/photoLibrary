@@ -684,6 +684,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     page.keyboard.press("Escape")
     wait_viewer_closed(page)
+    page.wait_for_function("() => !document.fullscreenElement", timeout=5000)
     checks.check("esc-then-closes-viewer", True)
 
     page.locator('[data-filename="clip.mp4"]').click()
