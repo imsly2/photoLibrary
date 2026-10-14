@@ -319,7 +319,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/update" and method == "POST":
                 self._read_json()
-                self._send_json(200, self.library.update())
+                from library.restart import attach_restart_plan
+
+                payload = self.library.update()
+                payload = attach_restart_plan(self.library.root, payload)
+                self._send_json(200, payload)
                 return
             if (
                 route.startswith("/api/sources/")

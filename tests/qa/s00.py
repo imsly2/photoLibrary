@@ -92,6 +92,19 @@ class Checks:
         return all(item["pass"] for item in self.assertions)
 
 
+def _current_branch() -> str:
+    proc = subprocess.run(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+        cwd=str(PRODUCT_ROOT),
+        capture_output=True,
+        text=True,
+    )
+    branch = (proc.stdout or "").strip()
+    if branch and branch != "HEAD":
+        return branch
+    return "main"
+
+
 def _env() -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
@@ -99,6 +112,8 @@ def _env() -> dict[str, str]:
     env["PYTHONPATH"] = str(PRODUCT_ROOT) + (
         os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""
     )
+    env.setdefault("LIBRARY_UPDATE_BRANCH", _current_branch())
+    env.setdefault("LIBRARY_SKIP_RESTART", "1")
     return env
 
 

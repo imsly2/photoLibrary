@@ -23,21 +23,26 @@ not rearrange your originals unless you ask it to copy a folder here.
 
 ## Quick start
 
-1. **Get the folder.** Clone this repo, or download the ZIP and unzip it
-   somewhere on the PC.
+1. **Get the folder.** Clone this repo over HTTPS, or download the ZIP
+   and unzip it somewhere on the PC. No GitHub account.
 2. **Setup once.** Double-click `Setup.bat`. That needs the internet
-   (Python, ffmpeg, and optional face / object / place models). Models
-   stay in `library-data/`.
-3. **Library daily.** Double-click `Library.bat`. A browser window
-   opens on this computer.
+   (Python, ffmpeg, optional git, and optional face / object / place
+   models). Models stay in `library-data/`. Setup also writes a Desktop
+   / Start Menu **Library** icon (`CreateShortcut.bat` can recreate it).
+   If a step fails, the window says what to try next. Safe to run again.
+3. **Library daily.** Double-click the **Library** icon (or `Library.bat`).
+   A browser window opens on this computer.
 4. **Chinese UI.** In the header, set **Language** to **中文**. The
    choice is remembered.
 5. **Add photos.** Click **Add folder** and point it at pictures already
    on the PC. You can copy them into the library, or leave them where
    they are.
-6. **Updates.** **Update Library** in the header pulls the latest
-   `main` when this folder is a git checkout. After an update, run
-   `Setup.bat` again only if new local models were added.
+6. **Updates.** **Update Library** in the header, or `Update.bat`. That
+   always tracks `main`: plain `git` over public HTTPS if git is
+   present, otherwise a zip of `main`. `library-data/` is not replaced.
+   If Library was open, it restarts. No GitHub login. Do not install
+   GitHub CLI (`gh`). After an update, run `Setup.bat` again only if
+   new local models were added.
 
 `Setup.bat -Help` prints that story. `Setup.bat -DryRun` probes without
 downloading.
@@ -49,11 +54,12 @@ downloading.
 - **Internet** for Setup and the first model download. After that,
   browsing and the local models run offline.
 - **No GitHub account** once the repo is public. Clone over HTTPS, or
-  download the ZIP. A GitHub account is only needed if you want to open
-  issues or send a pull request.
+  download the ZIP. Do not install GitHub CLI (`gh`). A GitHub account
+  is only needed if you want to open issues or send a pull request.
 
-A ZIP copy cannot pull updates by itself. Clone the repo if you want
-**Update Library** to work.
+This repo must stay **public** so a family PC can fetch `main` without
+logging in. A ZIP copy can still **Update Library** (it downloads the
+latest `main` zip and overlays files; `library-data/` stays).
 
 ## Privacy
 

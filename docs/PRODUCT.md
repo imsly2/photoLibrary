@@ -70,9 +70,11 @@ CONTRACTS. Changing them requires a doc edit before implementation.
 ## The finished run
 
 1. Copy this folder onto a drive. On a new Windows PC, run `Setup.bat`
-   once (Python, ffmpeg, local faces/objects/places packs). Then run
-   `Library.bat` every day. New code is `Update.bat` / Update Library
-   (`git pull`), then `Setup.bat` again only if models were added.
+   once (Python, ffmpeg, local faces/objects/places packs, Desktop /
+   Start Menu shortcut). Then use the Library icon or `Library.bat`
+   every day. New code is `Update.bat` / Update Library (always
+   `main`, then auto-restart if Library is open). Run `Setup.bat`
+   again only if models were added.
 2. The browser opens on this computer and shows an empty library.
 3. Add a folder. Choose copy onto this drive, or serve that folder where it is.
 4. The server reads each picture and video, writes a JSON record, and builds a
@@ -191,8 +193,13 @@ and runs `setup-geo` plus `setup-ml objects` and `setup-ml faces` when
 those commands exist. If a command is missing, it prints that Update
 Library must pull it and exits non-zero. Models stay under
 `library-data/`. No MSI. First run needs the internet. Daily use is
-`Library.bat`. New code is Update Library / `Update.bat` (`git pull`).
-`Setup.bat` does not start the server.
+`Library.bat` or the Desktop / Start Menu shortcut Setup writes
+(`CreateShortcut.bat` can recreate it). New code is Update Library /
+`Update.bat` (anonymous HTTPS `git` of `main`, or a zip of `main` if
+git is missing). No GitHub login. When that writes a newer `main` and
+Library is already open, stop only this app's server on its settings
+port and relaunch. `Setup.bat` does not start the server. Setup may
+winget `Git.Git`; if git is still missing, Update uses the zip.
 
 The launcher checks for Python 3.12+ and ffmpeg on PATH. If either is missing
 on Windows it installs them with winget (`Python.Python.3.12`, `Gyan.FFmpeg`)
@@ -208,14 +215,19 @@ must not jump to another host or port — including a leftover QA listen such as
 root-relative paths. Never embed `settings.port` or a stored runtime URL from
 a previous listen.
 
-Family installs update without a command prompt. A header **Update Library**
-control, and the same action from the launcher, pulls the current git
-branch (`git fetch` then `git pull --ff-only`, or the equivalent). While
-it runs the page says Updating… Then one sentence: updated / already
-current / git missing / not a git copy / pull failed. It does not ask
-anyone to type git, open GitHub Desktop, or switch branches. The header
-shows this copy's short git SHA (or `local` when not a git checkout) so
-a successful Update is visible.
+Family installs update without a command prompt and without a GitHub
+account. Never call `gh`. Prefer plain `git` over anonymous HTTPS
+(`https://github.com/imsly2/photoLibrary.git`): fetch `main`, checkout
+`main`, fast-forward only. Credential helpers stay off so Windows does
+not pop a login. If `git` or `.git` is missing, download
+`…/archive/refs/heads/main.zip` and overlay files, never replacing
+`library-data/` or `.venv`. The repo must be public for that anonymous
+path. While it runs the page says Updating… Then one i18n sentence:
+updated / already current / pull failed / diverged / need-public. The
+header shows this copy's short SHA (or `local`). When Update writes a
+newer `main` and Library is running, stop only this app's python serve
+on the settings port and relaunch. If Library was not running, Update
+just finishes.
 
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a

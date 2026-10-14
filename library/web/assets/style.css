@@ -404,6 +404,14 @@ h1 {
   font-size: 1.05rem;
 }
 
+.empty-hint {
+  margin: 0;
+  color: #9a9aa6;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-width: 24rem;
+}
+
 #empty-add-folder {
   background: #2d4a7a;
   border: 1px solid #4a7ad4;

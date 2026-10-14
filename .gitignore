@@ -71,6 +71,9 @@ docs/features/**/objects-media/
 docs/features/faces/**/library-data/
 docs/features/faces/**/faces-media/
 
+# Zip-update stamp when this folder is not a git checkout.
+.library-revision.json
+
 # Python
 __pycache__/
 *.py[cod]
