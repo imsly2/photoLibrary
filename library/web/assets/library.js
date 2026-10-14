@@ -30,6 +30,7 @@
   const viewerScrubTime = document.getElementById("viewer-scrub-time");
   const updateLibraryBtn = document.getElementById("update-library");
   const updateStatus = document.getElementById("update-status");
+  const libraryVersion = document.getElementById("library-version");
   const searchInput = document.getElementById("search");
   const searchChips = document.getElementById("search-chips");
   const inspector = document.getElementById("inspector");
@@ -3209,6 +3210,40 @@
       body: "{}",
     }).then(readJson).catch(function () {});
   });
+  function applyVersion(body) {
+    if (!libraryVersion) {
+      return;
+    }
+    const sha = (body && (body.git_sha || body.revision || body.label)) || "";
+    if (!sha) {
+      libraryVersion.hidden = true;
+      libraryVersion.textContent = "";
+      libraryVersion.removeAttribute("title");
+      return;
+    }
+    libraryVersion.hidden = false;
+    libraryVersion.textContent = sha;
+    const bits = [];
+    if (body && body.git_branch) {
+      bits.push(body.git_branch);
+    }
+    if (body && body.git_date) {
+      bits.push(body.git_date);
+    }
+    if (body && body.git_subject) {
+      bits.push(body.git_subject);
+    }
+    if (bits.length) {
+      libraryVersion.title = bits.join(" · ");
+    } else {
+      libraryVersion.removeAttribute("title");
+    }
+  }
+
+  function loadVersion() {
+    fetch("/api/version").then(readJson).then(applyVersion).catch(function () {});
+  }
+
   if (updateLibraryBtn) {
     updateLibraryBtn.addEventListener("click", function () {
       updateLibraryBtn.disabled = true;
@@ -3227,6 +3262,11 @@
           updateStatus.hidden = false;
           updateStatus.textContent = (body && body.message) || (body && body.updated ? "Updated" : "Already up to date");
           updateStatus.setAttribute("data-ok", body && body.ok ? "true" : "false");
+        }
+        if (body && body.ok) {
+          applyVersion(body);
+        } else {
+          loadVersion();
         }
       }).catch(function (err) {
         updateLibraryBtn.disabled = false;
@@ -3364,9 +3404,11 @@
     gridSize = DEFAULT_SIZE[settings.zoomLevel] != null ? DEFAULT_SIZE[settings.zoomLevel] : 0;
     applyGridMetrics();
     showDisconnected(false);
+    loadVersion();
     return loadCatalog();
   }).catch(function () {
     showDisconnected(true);
+    loadVersion();
     return loadCatalog();
   });
 
