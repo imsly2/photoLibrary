@@ -4,6 +4,24 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-14 — **Docs audit** then **PR #17 fold**. PRODUCT / UI-SPEC /
+  CONTRACTS / this file carry every Steve taste lock. Honesty table:
+  [UI-SPEC — Spec target vs current
+  implementation](UI-SPEC.md#spec-target-vs-current-implementation).
+  One-shot rebuild prompt: [ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
+  **Shipped (PR #12–#14 + #17 `a353dfc`):** one Size slider; Dates
+  Years/Months/Days/Off; side zoom %; bottom scrub; tile scrub;
+  tile→viewer autoplay; mute/volume; header SHA + Update; Reveal argv
+  `/select,path` (spaces / `Iphone Backup`, TASTE-REVEAL 52/52);
+  `#viewer-source` Preview / Loading full… / Original / Full; MOV
+  `playback.mp4` full+sound (TASTE-VIDEO 89/89); hover play + tile
+  scrub in dated Years **and** Months (TASTE-VIDEO 92/92);
+  `days-and-all` and `always` both hover every Dates mode; preserve
+  originals; no cloud default. **Specified, not merged:** `setup-geo`
+  (PR #13 GEO 44/44); `setup-ml objects` (PR #15 TASTE-OBJECTS 39/39);
+  `setup-ml faces` (PR #16 FACES 40/40); `Setup.bat` (intent only).
+  No 23rd Check. **16/22 unchanged.**
+
 - S00 is green on its Windows verifier: an empty fixture-owned library launches,
   persists the 16 default settings, reuses a matching-root server, refuses a
   foreign port without killing it, recovers a settings transaction, and undoes
@@ -452,3 +470,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   (`explorer.exe /select,"fullpath"`). Missing original is 404
   `unavailable` and the viewer banner, not Documents. TASTE-REVEAL
   37/37, then 40/40 with mute + volume. No new Check. 16/22 unchanged.
+- 2026-10-14 — Docs-only North Star refresh (this file + PRODUCT /
+  UI-SPEC / CONTRACTS / ONE_SHOT_PROMPT). PR #17 locks (Reveal-spaces,
+  Years/Months hover, Preview/Original/Full, MOV `playback.mp4`) are
+  folded as **shipped**. Sibling code tips still unmerged into this
+  docs checkout: #13 places, #15 objects, #16 faces. 16/22 unchanged.

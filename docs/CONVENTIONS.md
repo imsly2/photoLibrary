@@ -21,7 +21,7 @@ this file does not authorize accounts, editing, or albums.
 | Small pictures for browsing | Immich, digiKam, Smriti, and Apple Photos all keep generated thumbnails apart from masters. | A thumb and a medium still for every photo. A poster and a full-length silent low-resolution movie for every video. Where those files sit is a setting. |
 | Date comes from the camera | Every tool above prefers EXIF over the file's modified time. | `capturedAtSource` is `exif`, then a date in the filename, then file modified time. The fallback is marked. |
 | Place comes from GPS | The iPhone writes coordinates into the file (EXIF GPS on JPEG and HEIC, QuickTime ISO6709 on MOV). The city name lives in the Photos database, not in the file. Apple Photos, Immich, and digiKam then show a map. | Read the coordinates from the file. The place name stays empty until someone sets it. A WebGL globe ships its own earth texture. No map tiles, no network. Click a cluster to filter and open. Play orbits, zooms in, shows pictures from that place, and zooms out. |
-| People and object search | Immich and Apple Photos run their own models. digiKam can store face tags. | This server stores the names. It does not ship a model. An agent writes people, places, and things into JSON. Search reads that JSON. |
+| People and object search | Immich and Apple Photos run their own models. digiKam can store face tags. | This server stores the names. It does not ship a model. An agent writes people, places, and things into JSON. Optional `setup-ml` / `setup-geo` can fill unnamed GPS cities, YOLO Things, and unnamed face clusters **locally**. Search reads that JSON. No cloud. |
 | Missing volume | Lightroom shows offline files with a badge and still shows the preview if the preview was generated. | If the original is not on this computer, the item can stay in the grid with its small preview. Showing or hiding those items is a setting. |
 | Viewer chrome | Windows Photo Viewer: bottom prev/next, F11 slideshow/fullscreen, rotate, open-with, print. Windows Photos: F5 slideshow, Esc, Alt+Enter info, Ctrl+0/+/−/R, All/Photos/Videos. Apple Photos: heart, Info, fit. Google Photos: favorites strip, videos, search. IrfanView / XnView: fullscreen, EXIF, filmstrip, portable. | Must-for-presentable is locked in UI-SPEC: fullscreen, slideshow, viewer keys, EXIF-first Info, Open beside Reveal, empty/error, remove vs delete-file, sort/filters, search, Update UX. Filmstrip / Print / `?` are Soon. No cloud, AI, burn, or email. |
 | Remove vs delete | Apple Photos: Delete removes from an album; Command-Delete removes from the library. Photos/IrfanView can trash bytes with confirm. | Delete key removes from the library (confirm; originals stay). Delete file is extra confirm + Recycle Bin. Undo restores catalog only. |
@@ -52,17 +52,30 @@ The setting `previewStore` chooses. Default is next to the server, because the l
 ## Refinement 2026-10-12
 
 PRODUCT and UI-SPEC clarify the existing defaults: reference artwork does not add
-Albums, storage meters, or native window chrome. `playProxies=always`
-permits hovered playback at every level; only the default keeps Years/Months still.
-The product keeps its 16 settings and fixed shortcuts; the generic baseline does
-not authorize a new keybinding editor in this build.
+Albums, storage meters, or native window chrome. Presentable hover plays the
+proxy in Years, Months, Days, and Off (`days-and-all` and `always` both do);
+`playProxies=off` disables. The product keeps its 16 settings and fixed
+shortcuts; the generic baseline does not authorize a new keybinding editor
+in this build.
 
 ## Refinement 2026-10-13
 
 Favorite (viewer heart, tile hearts, Favorites strip) and Reveal in Explorer
 are authorized named actions — not albums and not a 17th setting. The
 Windows Presentable Shell in UI-SPEC is the family-PC North Star.
-Fullscreen, slideshow, EXIF Info, remove vs delete-file, and the rest of
+Fullscreen, slideshow, EXIF Info, remove vs delete-file, one Size slider,
+Dates Years/Months/Days/Off, side zoom %, bottom scrub + mute/volume,
+hover in Years and Months, Preview/Original/Full badge, MOV `playback.mp4`,
+Reveal argv that survives spaces, header SHA + Update, and the rest of
 the Must list are locked requirements, not backlog. Filmstrip, multi-select,
 Print, and `?` stay Soon. Reference art still does not add Albums or a
-storage meter.
+storage meter. Optional local packs (`Setup.bat` / `setup-ml` / `setup-geo`)
+are specified; they do not add a Check. No MSI. No cloud default.
+
+## Refinement 2026-10-14
+
+Docs audit on `cursor/reveal-explorer-8d56` folds sibling tips #12–#16.
+PR #17 (`cursor/reveal-spaces-hover-proxy-c876`) landed Reveal-spaces,
+Years/Months hover play, Preview/Original/Full badge, and MOV
+`playback.mp4` — those are **shipped**, not gaps. One-shot rebuild
+prompt: [ONE_SHOT_PROMPT.md](ONE_SHOT_PROMPT.md).
