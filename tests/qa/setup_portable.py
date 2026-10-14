@@ -43,6 +43,124 @@ def probe_command(tokens: list[str]) -> dict[str, Any]:
     }
 
 
+# Windows PowerShell 5.1 reads a no-BOM file as the system ANSI page
+# (cp1252 on US English). UTF-8 em-dash E2 80 94 becomes â€" and 0x94
+# is a closing smart quote, which then leaves `using` as a directive.
+_PS_DOUBLE_QUOTES = frozenset('"\u201c\u201d')
+_PS_SINGLE_QUOTES = frozenset("'\u2018\u2019")
+
+
+def _scan_ps51_source(text: str) -> dict[str, Any]:
+    """Walk PowerShell-ish source the way a broken encoding would."""
+    i = 0
+    n = len(text)
+    in_dq = False
+    in_sq = False
+    in_block = False
+    line_comment = False
+    stmt_start = True
+    depth = 0
+    bare_using: list[int] = []
+    while i < n:
+        ch = text[i]
+        nxt = text[i + 1] if i + 1 < n else ""
+        if line_comment:
+            if ch == "\n":
+                line_comment = False
+                stmt_start = True
+            i += 1
+            continue
+        if in_block:
+            if ch == "#" and nxt == ">":
+                in_block = False
+                i += 2
+                continue
+            i += 1
+            continue
+        if in_dq:
+            if ch == "`":
+                i += 2
+                continue
+            if ch in _PS_DOUBLE_QUOTES:
+                in_dq = False
+            i += 1
+            continue
+        if in_sq:
+            if ch in _PS_SINGLE_QUOTES:
+                if nxt in _PS_SINGLE_QUOTES:
+                    i += 2
+                    continue
+                in_sq = False
+            i += 1
+            continue
+        if ch in " \t":
+            i += 1
+            continue
+        if ch == "\n":
+            stmt_start = True
+            i += 1
+            continue
+        if ch == ";":
+            stmt_start = True
+            i += 1
+            continue
+        if ch == "<" and nxt == "#":
+            in_block = True
+            i += 2
+            continue
+        if ch == "#":
+            line_comment = True
+            i += 1
+            continue
+        if ch in _PS_DOUBLE_QUOTES:
+            in_dq = True
+            stmt_start = False
+            i += 1
+            continue
+        if ch in _PS_SINGLE_QUOTES:
+            in_sq = True
+            stmt_start = False
+            i += 1
+            continue
+        if ch == "{":
+            depth += 1
+            stmt_start = True
+            i += 1
+            continue
+        if ch == "}":
+            depth -= 1
+            stmt_start = False
+            i += 1
+            continue
+        if stmt_start and text[i : i + 5] == "using" and (
+            i + 5 >= n or not (text[i + 5].isalnum() or text[i + 5] == "_")
+        ):
+            bare_using.append(text.count("\n", 0, i) + 1)
+        stmt_start = False
+        i += 1
+    return {
+        "stringsClosed": not in_dq and not in_sq and not in_block,
+        "braceDepth": depth,
+        "bareUsingLines": bare_using,
+    }
+
+
+def ps51_encoding_safe(raw: bytes) -> dict[str, Any]:
+    as_cp1252 = raw.decode("cp1252")
+    scan = _scan_ps51_source(as_cp1252)
+    return {
+        "asciiOnly": all(b < 128 for b in raw),
+        "cp1252EqualsUtf8": as_cp1252 == raw.decode("utf-8"),
+        **scan,
+        "ok": (
+            all(b < 128 for b in raw)
+            and scan["stringsClosed"]
+            and scan["braceDepth"] == 0
+            and not scan["bareUsingLines"]
+        ),
+    }
+
+
 def extract_bat_help(bat: str) -> str:
     marker = ":help"
     index = bat.lower().rfind(marker)
@@ -51,7 +169,14 @@ def extract_bat_help(bat: str) -> str:
     return bat[index:]
 
 
-def static_source_checks(bat: str, setup: str, launch: str, library_bat: str) -> list[dict[str, Any]]:
+def static_source_checks(
+    bat: str,
+    setup: str,
+    launch: str,
+    library_bat: str,
+    ps51: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    ps51 = ps51 or {}
     return [
         {
             "name": "setup-bat-calls-setup-ps1",
@@ -68,7 +193,31 @@ def static_source_checks(bat: str, setup: str, launch: str, library_bat: str) ->
         },
         {
             "name": "setup-bat-ready-or-update",
-            "pass": "Ready — run Library.bat" in bat and "Update Library" in bat,
+            "pass": "Ready -- run Library.bat" in bat and "Update Library" in bat,
+        },
+        {
+            "name": "setup-ps1-ascii-only",
+            "pass": all(ord(ch) < 128 for ch in setup),
+        },
+        {
+            "name": "setup-ps1-no-em-dash-or-smart-quotes",
+            "pass": not any(ch in setup for ch in "\u2014\u2013\u201c\u201d\u2018\u2019"),
+        },
+        {
+            "name": "setup-bat-ascii-only",
+            "pass": all(ord(ch) < 128 for ch in bat),
+        },
+        {
+            "name": "setup-ps1-ps51-cp1252-safe",
+            "pass": bool(ps51.get("ok")),
+        },
+        {
+            "name": "setup-ps1-no-bare-using",
+            "pass": not ps51.get("bareUsingLines"),
+        },
+        {
+            "name": "setup-ps1-strings-and-braces-closed",
+            "pass": bool(ps51.get("stringsClosed")) and ps51.get("braceDepth") == 0,
         },
         {
             "name": "setup-bat-has-help",
@@ -127,12 +276,15 @@ def prove_static(checks: Checks) -> dict[str, Any]:
     setup = _read("setup.ps1")
     launch = _read("launch.ps1")
     library_bat = _read("Library.bat")
+    ps51 = ps51_encoding_safe((PRODUCT_ROOT / "setup.ps1").read_bytes())
     record: dict[str, Any] = {
         "setupBat": bat,
         "help": extract_bat_help(bat),
+        "ps51": ps51,
     }
-    for item in static_source_checks(bat, setup, launch, library_bat):
-        checks.check(item["name"], bool(item["pass"]), "")
+    for item in static_source_checks(bat, setup, launch, library_bat, ps51):
+        detail = json.dumps(ps51) if "ps51" in item["name"] or "bare-using" in item["name"] else ""
+        checks.check(item["name"], bool(item["pass"]), detail)
     return record
 
 
@@ -171,7 +323,7 @@ def prove_probe(checks: Checks) -> dict[str, Any]:
         message = (
             "Dry-run: this copy has the local AI setup commands.\n"
             + "".join(f"  - python -m library {name}\n" for name, _tokens in WANTED)
-            + "\nA real Setup.bat would run those three, then: Ready — run Library.bat\n"
+            + "\nA real Setup.bat would run those three, then: Ready -- run Library.bat\n"
         )
     record["missingMessage"] = message
     record["networkNote"] = (

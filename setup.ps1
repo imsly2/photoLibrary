@@ -5,6 +5,10 @@ param(
 
 # Portable one-time setup. Does not start serve.
 # Library.bat / launch.ps1 keep the daily listen path.
+# Keep this file ASCII. Windows PowerShell 5.1 reads it as the system ANSI
+# code page unless a UTF-8 BOM is present. A UTF-8 em-dash (bytes E2 80 94)
+# becomes a closing quote (0x94) and the parser then treats a later "using"
+# inside a Write-Host string as a using-directive.
 
 $ErrorActionPreference = "Stop"
 $AppFolder = $PSScriptRoot
@@ -12,11 +16,11 @@ Set-Location $AppFolder
 
 function Show-Help {
     Write-Host ""
-    Write-Host "Setup.bat  — one-time portable install on this Windows PC"
+    Write-Host "Setup.bat  -- one-time portable install on this Windows PC"
     Write-Host ""
-    Write-Host "  Setup once   — this file (Python 3.12+, ffmpeg, .venv, local AI models)"
-    Write-Host "  Library      — Library.bat every day"
-    Write-Host "  Update       — Update.bat or Update Library for new code (git pull)"
+    Write-Host "  Setup once   -- this file (Python 3.12+, ffmpeg, .venv, local AI models)"
+    Write-Host "  Library      -- Library.bat every day"
+    Write-Host "  Update       -- Update.bat or Update Library for new code (git pull)"
     Write-Host ""
     Write-Host "  1. Python 3.12+ and ffmpeg (winget if missing: Python.Python.3.12, Gyan.FFmpeg)"
     Write-Host "  2. .venv + pip install the app"
@@ -233,7 +237,7 @@ function Write-MissingUpdate {
 
 try {
     if ($DryRun) {
-        Write-Host "Dry-run — no winget, pip, or model download."
+        Write-Host "Dry-run -- no winget, pip, or model download."
         Write-Host "A real Setup.bat needs the internet the first time (models stay in library-data/)."
         Write-Host ""
     }
@@ -263,7 +267,7 @@ try {
     if (-not $DryRun) {
         Install-App -VenvPython $venvPython
     } elseif (Test-Path -LiteralPath (Get-VenvPythonPath)) {
-        Write-Host "Dry-run: .venv already exists; using it to probe commands."
+        Write-Host "Dry-run: .venv already exists; probe commands with it."
         $venvPython = Get-VenvPythonPath
         Install-App -VenvPython $venvPython
     } else {
@@ -284,7 +288,7 @@ try {
             $present = Test-LibraryCommand -PythonExe $venvPython -Tokens $item.Tokens
         }
         if (-not $present) {
-            Write-Host ("Skip  python -m library " + $item.Name + "  — not in this copy yet.")
+            Write-Host ("Skip  python -m library " + $item.Name + "  -- not in this copy yet.")
             $missing += $item.Name
             continue
         }
@@ -310,10 +314,10 @@ try {
 
     Write-Host ""
     if ($DryRun) {
-        Write-Host "Dry-run ready — all three setup commands are in this copy."
+        Write-Host "Dry-run ready -- all three setup commands are in this copy."
         Write-Host "Run Setup.bat (without -DryRun) to download packs. Then run Library.bat."
     } else {
-        Write-Host "Ready — run Library.bat"
+        Write-Host "Ready -- run Library.bat"
     }
     exit 0
 } catch {
