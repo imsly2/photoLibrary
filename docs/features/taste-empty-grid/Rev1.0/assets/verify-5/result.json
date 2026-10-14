@@ -1,0 +1,118 @@
+{
+  "slice": "TASTE-EMPTY-GRID",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "items-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "items-have-photos",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"far.jpg\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "people-have-ada",
+      "pass": true,
+      "detail": "[{\"id\": \"person_e3ee8f5924b6\", \"name\": \"Ada\", \"itemCount\": 2, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}, \"thumbnailItemId\": null}]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "grid-not-empty-copy",
+      "pass": true,
+      "detail": "{\"empty\": false, \"emptyText\": \"\", \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"people\": [\"Ada2\"], \"person\": \"\", \"kind\": \"\", \"favorite\": \"\", \"arrange\": \"dates\"}"
+    },
+    {
+      "name": "grid-not-no-pictures",
+      "pass": true,
+      "detail": "{\"empty\": false, \"emptyText\": \"\", \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"people\": [\"Ada2\"], \"person\": \"\", \"kind\": \"\", \"favorite\": \"\", \"arrange\": \"dates\"}"
+    },
+    {
+      "name": "grid-shows-photos",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "people-panel-has-ada",
+      "pass": true,
+      "detail": "[\"Ada2\"]"
+    },
+    {
+      "name": "default-filter-clear",
+      "pass": true,
+      "detail": "{\"empty\": false, \"emptyText\": \"\", \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"people\": [\"Ada2\"], \"person\": \"\", \"kind\": \"\", \"favorite\": \"\", \"arrange\": \"dates\"}"
+    },
+    {
+      "name": "default-group-date",
+      "pass": true,
+      "detail": "{\"empty\": false, \"emptyText\": \"\", \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"people\": [\"Ada2\"], \"person\": \"\", \"kind\": \"\", \"favorite\": \"\", \"arrange\": \"dates\"}"
+    },
+    {
+      "name": "clear-all-restores-photos",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "group-people-still-shows-photos",
+      "pass": true,
+      "detail": "{\"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"headers\": [\"Ada\", \"Unknown\"]}"
+    },
+    {
+      "name": "all-restores-after-favorites",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "groups-fail-still-shows-photos",
+      "pass": true,
+      "detail": "{\"empty\": false, \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"]}"
+    },
+    {
+      "name": "slow-items-still-shows-photos",
+      "pass": true,
+      "detail": "{\"empty\": false, \"files\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\", \"no-exif.jpg\"], \"count\": 4}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 400 (Bad Request)\"]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "5d57c7c7768b5203caaef5082802091b0176cbf3",
+  "commands": [
+    "python -m tests.qa slice TASTE-EMPTY-GRID"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-empty-grid/Rev1.0/assets/verify-5/result.json",
+    "stdout.log": "/workspace/docs/features/taste-empty-grid/Rev1.0/assets/verify-5/stdout.log",
+    "empty-grid-api.json": "/workspace/docs/features/taste-empty-grid/Rev1.0/assets/verify-5/empty-grid-api.json",
+    "empty-grid-browser.json": "/workspace/docs/features/taste-empty-grid/Rev1.0/assets/verify-5/empty-grid-browser.json",
+    "grid-with-people.png": "/workspace/docs/features/taste-empty-grid/Rev1.0/assets/verify-5/grid-with-people.png"
+  }
+}

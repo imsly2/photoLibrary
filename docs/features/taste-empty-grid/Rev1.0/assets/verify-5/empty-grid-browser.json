@@ -1,0 +1,56 @@
+{
+  "first": {
+    "empty": false,
+    "emptyText": "",
+    "files": [
+      "near.jpg",
+      "IMG_1042.jpg",
+      "far.jpg",
+      "no-exif.jpg"
+    ],
+    "people": [
+      "Ada2"
+    ],
+    "person": "",
+    "kind": "",
+    "favorite": "",
+    "arrange": "dates"
+  },
+  "afterClear": [
+    "near.jpg",
+    "IMG_1042.jpg",
+    "far.jpg",
+    "no-exif.jpg"
+  ],
+  "groupPeople": {
+    "files": [
+      "near.jpg",
+      "IMG_1042.jpg",
+      "far.jpg",
+      "no-exif.jpg"
+    ],
+    "headers": [
+      "Ada",
+      "Unknown"
+    ]
+  },
+  "groupsFail": {
+    "empty": false,
+    "files": [
+      "near.jpg",
+      "IMG_1042.jpg",
+      "far.jpg",
+      "no-exif.jpg"
+    ]
+  },
+  "slowItems": {
+    "empty": false,
+    "files": [
+      "near.jpg",
+      "IMG_1042.jpg",
+      "far.jpg",
+      "no-exif.jpg"
+    ],
+    "count": 4
+  }
+}
