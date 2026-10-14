@@ -258,12 +258,14 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   model download needs the internet. Does not close a Check. 16/22
   unchanged.
   Plan: [taste-setup](features/taste-setup/Rev1.0/PLAN.md).
+  After rebase onto the #21 stack tip, the probe finds
+  `setup-geo` / `setup-ml objects` / `setup-ml faces`.
   Evidence:
-  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-1/result.json)
-  23/23,
-  [Setup.bat](features/taste-setup/Rev1.0/assets/verify-1/Setup.bat.txt),
-  [help](features/taste-setup/Rev1.0/assets/verify-1/help.txt),
-  [dry-run](features/taste-setup/Rev1.0/assets/verify-1/dry-run.txt).
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-2/result.json)
+  21/21 (all three CLIs present),
+  [dry-run](features/taste-setup/Rev1.0/assets/verify-2/dry-run.txt),
+  earlier missing-module path
+  [verify-1](features/taste-setup/Rev1.0/assets/verify-1/result.json).
 
 ## Completion
 
