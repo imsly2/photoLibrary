@@ -1,0 +1,148 @@
+{
+  "slice": "TASTE-I18N",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "search-chinese-person",
+      "pass": true,
+      "detail": "[\"near.jpg\"]"
+    },
+    {
+      "name": "search-chinese-place",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "search-chinese-tag",
+      "pass": true,
+      "detail": "[\"near.jpg\"]"
+    },
+    {
+      "name": "language-default-en",
+      "pass": true,
+      "detail": "\"en\""
+    },
+    {
+      "name": "language-set-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "language-persists",
+      "pass": true,
+      "detail": "\"zh-Hans\""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-lang-en",
+      "pass": true,
+      "detail": "{\"lang\": \"en\", \"library\": \"Library\", \"search\": \"Search\", \"all\": \"All\", \"people\": \"People\", \"group\": \"Group\", \"clear\": \"Clear all\", \"processing\": \"Processing\", \"empty\": \"\", \"setting\": \"en\", \"select\": \"en\"}"
+    },
+    {
+      "name": "library-en",
+      "pass": true,
+      "detail": "{\"lang\": \"en\", \"library\": \"Library\", \"search\": \"Search\", \"all\": \"All\", \"people\": \"People\", \"group\": \"Group\", \"clear\": \"Clear all\", \"processing\": \"Processing\", \"empty\": \"\", \"setting\": \"en\", \"select\": \"en\"}"
+    },
+    {
+      "name": "search-en",
+      "pass": true,
+      "detail": "{\"lang\": \"en\", \"library\": \"Library\", \"search\": \"Search\", \"all\": \"All\", \"people\": \"People\", \"group\": \"Group\", \"clear\": \"Clear all\", \"processing\": \"Processing\", \"empty\": \"\", \"setting\": \"en\", \"select\": \"en\"}"
+    },
+    {
+      "name": "people-en",
+      "pass": true,
+      "detail": "{\"lang\": \"en\", \"library\": \"Library\", \"search\": \"Search\", \"all\": \"All\", \"people\": \"People\", \"group\": \"Group\", \"clear\": \"Clear all\", \"processing\": \"Processing\", \"empty\": \"\", \"setting\": \"en\", \"select\": \"en\"}"
+    },
+    {
+      "name": "html-lang-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "library-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "search-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "all-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "people-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "processing-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "language-select-zh",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "empty-search-zh",
+      "pass": true,
+      "detail": "\u6ca1\u6709\u4e0e \u6ca1\u6709\u8fd9\u4e2a\u8bcd \u5339\u914d\u7684\u7ed3\u679c"
+    },
+    {
+      "name": "settings-language-zh",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18767, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"zh-Hans\", \"faceMatchThreshold\": 0.5, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "language-stays-after-reload",
+      "pass": true,
+      "detail": "{\"lang\": \"zh-Hans\", \"library\": \"\\u56fe\\u5e93\", \"search\": \"\\u641c\\u7d22\", \"all\": \"\\u5168\\u90e8\", \"people\": \"\\u4eba\\u7269\", \"group\": \"\\u5206\\u7ec4\", \"clear\": \"\\u6e05\\u9664\\u5168\\u90e8\", \"processing\": \"\\u5904\\u7406\\u4e2d\", \"empty\": \"\", \"setting\": \"zh-Hans\", \"select\": \"zh-Hans\"}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "c6f11daf49c82b82f7e9f4cbe6371fbd9c817641",
+  "commands": [
+    "python -m tests.qa slice TASTE-I18N"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-i18n/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-i18n/Rev1.0/assets/verify-1/stdout.log",
+    "i18n-api.json": "/workspace/docs/features/taste-i18n/Rev1.0/assets/verify-1/i18n-api.json",
+    "i18n-browser.json": "/workspace/docs/features/taste-i18n/Rev1.0/assets/verify-1/i18n-browser.json",
+    "chinese-chrome.png": "/workspace/docs/features/taste-i18n/Rev1.0/assets/verify-1/chinese-chrome.png"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "people": {
+    "personOfInterestMin": 3,
+    "people": [
+      {
+        "id": "person_b39affd8a5c1",
+        "name": "Ada",
+        "itemCount": 2,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+        },
+        "thumbnailItemId": null
+      },
+      {
+        "id": "person_356d8962e3e5",
+        "name": "Bob",
+        "itemCount": 1,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+        },
+        "thumbnailItemId": null
+      },
+      {
+        "id": "person_b2f0ea27c575",
+        "name": null,
+        "itemCount": 3,
+        "visible": true,
+        "named": false,
+        "thumbnail": {
+          "itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+        },
+        "thumbnailItemId": null
+      },
+      {
+        "id": "person_e1eb9d465765",
+        "name": null,
+        "itemCount": 1,
+        "visible": false,
+        "named": false,
+        "thumbnail": {
+          "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+        },
+        "thumbnailItemId": null
+      }
+    ]
+  },
+  "andNames": [
+    "near.jpg"
+  ],
+  "jobs": {
+    "ok": true,
+    "paused": false,
+    "processing": true,
+    "queues": [
+      {
+        "id": "renditions",
+        "label": "Previews",
+        "pending": 8,
+        "done": 0,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze",
+        "pending": 2,
+        "done": 0,
+        "error": 0,
+        "state": "idle",
+        "available": false
+      },
+      {
+        "id": "infer-faces",
+        "label": "Faces",
+        "pending": 0,
+        "done": 4,
+        "error": 0,
+        "state": "idle",
+        "available": false
+      },
+      {
+        "id": "objects",
+        "label": "Objects",
+        "pending": 4,
+        "done": 0,
+        "error": 0,
+        "state": "idle",
+        "available": false
+      }
+    ]
+  },
+  "httpPeople": {
+    "personOfInterestMin": 3,
+    "people": [
+      {
+        "id": "person_b39affd8a5c1",
+        "name": "Ada",
+        "itemCount": 2,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+        },
+        "thumbnailItemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+      },
+      {
+        "id": "person_356d8962e3e5",
+        "name": "Bob",
+        "itemCount": 1,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+        },
+        "thumbnailItemId": null
+      },
+      {
+        "id": "person_b2f0ea27c575",
+        "name": "Pat",
+        "itemCount": 3,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+        },
+        "thumbnailItemId": null
+      },
+      {
+        "id": "person_e1eb9d465765",
+        "name": null,
+        "itemCount": 1,
+        "visible": false,
+        "named": false,
+        "thumbnail": {
+          "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+        },
+        "thumbnailItemId": null
+      }
+    ]
+  }
+}

@@ -151,6 +151,7 @@
   let language = "en";
   let catalogInFlight = null;
   let catalogQueued = false;
+  let catalogReady = false;
   let lastJobs = null;
   let items = [];
   let groups = [];
@@ -3055,7 +3056,7 @@
       if (hasActiveFilter()) {
         main.innerHTML = "<p>" + emptySearchText() + "</p>";
         renderKey = "empty-search:" + emptySearchText();
-      } else if (catalogLooksPopulated() || catalogInFlight) {
+      } else if (!catalogReady && catalogLooksPopulated()) {
         main.innerHTML = '<p id="grid-loading">' + t("loadingPictures") + "</p>";
         renderKey = "loading";
       } else {
@@ -3726,6 +3727,7 @@
       }
       showDisconnected(false);
       items = nextItems;
+      catalogReady = true;
       groups = nextGroups.length ? nextGroups : (arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy));
       renderPeople();
       const open = syncViewerIndex();

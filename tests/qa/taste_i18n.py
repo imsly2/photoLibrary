@@ -120,7 +120,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     page.fill("#search", "没有这个词")
     page.wait_for_function(
-        "() => (document.querySelector('#grid > p') || {}).textContent.indexOf('没有与') === 0",
+        "() => ((document.querySelector('#grid > p') || {}).textContent || '').indexOf('没有与') === 0",
         timeout=8000,
     )
     empty_zh = page.evaluate("() => (document.querySelector('#grid > p') || {}).textContent || ''")
