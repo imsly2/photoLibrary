@@ -205,13 +205,12 @@ a progress-ish line (queue label + pending count, not a fake
 percentage), and **Pause** / **Start** (Resume when paused).
 
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
-**objects**. Renditions are the live drain already running in the serve
-process. Pause sets `paused` and the drain skips work; Start/Resume
-clears it. Analyze / infer-faces / objects report catalog-derived
-pending counts and the same pause flag. When those workers exist on the
-server they honor the same controls; when they do not, the buttons still
-toggle the real jobs pause so a later hook does not start while paused.
-Start never opens a modal and never freezes the grid.
+**objects**. When jobs are not paused, the serve drain runs real work:
+previews, then unnamed GPS city names (geo pack), then face infer
+(models ready), then YOLO Things (model file). Pause sets `paused` and
+the drain skips work; Start/Resume clears it. Missing pack or models:
+`available` false, queue idle, browse stays up. Start never opens a
+modal and never freezes the grid.
 
 ## Search and annotation
 
@@ -221,8 +220,13 @@ id filter and inspector; inspector count and filenames come from matching unique
 item ids, never the number of locations. Search matching multiple entities shows
 the grid until a specific entity is selected, avoiding an invented entity chooser.
 Viewer fields append names/associations on Enter or loss-of-focus commit; failed
-requests retain text and show inline error. Person merge is the existing CLI/HTTP
-operation; no merge wizard is authorized. Labels update after rename/merge.
+requests retain text and show inline error. Unnamed people (local face clusters
+or `{name:null}`) appear as **Unnamed** in Info. Clicking Unnamed selects that
+person for naming and focuses Person; Enter then sends `annotate` `{id,name}`
+and does not close the viewer. Clicking a named person still filters the grid.
+Person merge is the existing CLI/HTTP operation; no merge wizard is authorized.
+Labels update after rename/merge. Local face inference never paints a guessed
+real name.
 
 ## Globe and tour motion (no reference image exists)
 
@@ -330,9 +334,13 @@ slider, scrub) keeps the native slider behavior.
 **4. Info = file facts, then names.** `#viewer-info` is a top-right
 dropdown, not overlay pills. First block: date taken, camera, dimensions,
 size, path, GPS from the item record. Missing camera/EXIF: “No camera
-info for this file.” Then people / places / things already on the record;
-clicking one filters the grid and closes the viewer. Type-in fields stay
-below that and stay labeled Person, Place, and Thing. No “Showing original”.
+info for this file.” Then people / places / things already on the record
+(a GPS place may already show a local city/region name from the offline
+geo pack; unnamed face clusters show **Unnamed**); clicking a named
+entity filters the grid and closes the viewer. Type-in fields stay
+below that and stay labeled Person, Place, and Thing. A typed Place
+name still writes through annotate and is never replaced by the geo
+pack. No “Showing original”.
 **Implemented on this PR.**
 
 **5. Open with default app.** Sits beside Reveal in Explorer. Both always
@@ -367,7 +375,8 @@ appears when All is selected and any current result is hearted.
 
 **9. Search.** The box matches filename, capturedAt date text (YYYY,
 YYYY-MM, YYYY-MM-DD), and existing person/place/thing names (and thing
-aliases). Chips still restrict to People / Places / Things. Empty:
+aliases), including a local city/region written on a GPS place. Chips
+still restrict to People / Places / Things. Empty:
 “No matches for …” (query included). Clearing query/chip returns the broader grid.
 
 **10. Update UX finish.** Launcher and in-app (`#update-library`, label

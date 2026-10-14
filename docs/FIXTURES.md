@@ -31,6 +31,13 @@ Live metadata that the chosen writer cannot produce is a fixture gap, not a reas
 to pair by filename. A supplied tiny pair needs origin/license and independently
 verified content identifiers before S00 passes.
 
+Offline place names use a tiny shipped pack under `tests/fixtures/geo/`
+(`cities.csv` plus attribution). It is not the full GeoNames dump. Copy
+it into a sandbox `library-data/geo/` with `setup-geo --from`, or let
+production `setup-geo` fetch cities5000. Never commit `library-data/geo/`.
+The Chicago-area GPS JPEGs (IMG_1042, near, far, clip) resolve to
+`Chicago, Illinois` against that fixture pack.
+
 The original F6 three-JPEG check uses IMG_1042, near, far only: exactly two places.
 The no-GPS fixture is added for globe omission. Use named subsets, never assert
 the same total against the entire growing test tree. Original F11 uses IMG_1042,
@@ -62,6 +69,8 @@ or change expected counts in a slice to make a test pass.
 | empty/no-GPS | Empty media directory and subset of no-exif only; empty grid/search/globe/tour without failures |
 | settings/history | Port 8765 → 8770 → undo → redo, restart between steps; 501 changes caps 500; new edit clears redo; copy undo leaves every original byte |
 | annotation | Ada on first photo, mug on first+second; alias Cup → mug; second person id merged into Ada; rename place Kitchen; out-of-range boxes rejected |
+| local objects | `tests/fixtures/objects/still.jpg` is a supplied still with a COCO-class object (not part of the S00/S01 media tree). After `setup-ml objects` and `analyze`, the item has at least one Thing, Info/search show it, and a prior human `--thing mug` on the same or another still keeps that name and id. COCO `person` is ignored. |
+| face-cluster | Synthetic stills with two beacon/identity “faces” (person A on two photos, person B on two, both on one, plus a no-face still). After `setup-ml faces` (fixture backend) and `infer-faces`, two unnamed people, boxes in range, same-person reuse, search by person after a human name, merge reassigns faces. Never a guessed name. |
 
 ## QA interface to build, not an existing command
 

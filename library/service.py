@@ -52,6 +52,7 @@ class Library:
         self.root.mkdir(parents=True, exist_ok=True)
         self._scanning = False
         self._jobs_paused = False
+        self._inferring = False
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
@@ -98,7 +99,7 @@ class Library:
         return self.settings_set({key: parse_cli_value(key, raw)})
 
     def _assert_idle(self) -> None:
-        if self._scanning:
+        if self._scanning or getattr(self, "_inferring", False):
             raise fail("busy")
 
     def undo(self) -> dict[str, bool]:
@@ -510,11 +511,98 @@ class Library:
         self._jobs_paused = action == "pause"
         return jobs_status(self.root, self._jobs_paused)
 
+    def analyze_places(self) -> dict[str, Any]:
+        from library.places import analyze_places as fill_place_names
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return fill_place_names(self.root)
+
+    def setup_ml(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        if kind == "objects":
+            from library.objects import setup_objects
+
+            self.root.mkdir(parents=True, exist_ok=True)
+            self.ensure_settings()
+            return setup_objects(self.root)
+        if kind == "faces":
+            return self.setup_faces(payload)
+        raise fail("invalid-argument")
+
+    def setup_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import setup_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return setup_faces(self.root, payload)
+
+    def faces_status(self) -> dict[str, Any]:
+        from library.faces import faces_status
+
+        self.recover()
+        self.ensure_settings()
+        return faces_status(self.root)
+
+    def infer_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.faces import infer_faces
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        self._inferring = True
+        try:
+            return infer_faces(self.root, payload)
+        finally:
+            self._inferring = False
+
+    def analyze(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.objects import analyze_objects, read_analyze_payload
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        parsed = read_analyze_payload(payload)
+        item_id = parsed["itemId"] if parsed else None
+        return analyze_objects(self.root, item_id)
+
+    def analyze_status(self) -> dict[str, Any]:
+        from library.objects import analyze_status
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return analyze_status(self.root)
+
     def drain_step(self) -> bool:
         if getattr(self, "_jobs_paused", False):
             return False
+        if getattr(self, "_scanning", False) or getattr(self, "_inferring", False):
+            return False
         self.ensure_settings()
-        return drain_queued_jpegs(self.root)
+        if drain_queued_jpegs(self.root):
+            return True
+        try:
+            from library.places import analyze_places_step
+
+            if analyze_places_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.faces import infer_faces_step
+
+            if infer_faces_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.objects import analyze_step as run_analyze_step
+
+            if run_analyze_step(self.root):
+                return True
+        except Exception:
+            pass
+        return False
 
     def relocate(self) -> dict[str, bool]:
         self.recover()

@@ -1,0 +1,6 @@
+Fixture cities.csv is a tiny synthetic extract for Library tests.
+
+Production `python -m library setup-geo` fetches GeoNames cities5000
+and admin1CodesASCII (https://www.geonames.org/), licensed under
+Creative Commons Attribution 4.0.
+https://creativecommons.org/licenses/by/4.0/

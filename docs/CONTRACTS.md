@@ -27,13 +27,14 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
-| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
+| Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. Optional local workers (after one-time `setup-geo` / `setup-ml`) may write associations: GPS city names only when `place.name` is null; YOLO Things through name-only annotate (COCO person ignored); InsightFace unnamed face clusters. No name guessing, caption system, gender/age labels, or box-drawing tool. Faces and pixels never leave the machine. |
+| Local place names | Optional offline GeoNames-class cities pack in `library-data/geo/` (fetched by `setup-geo`, never shipped in git). When the pack is present, scan / `resolve_place` / `analyze-places` may set `place.name` to city/region **only when that name is null**. Never overwrite a nonempty name. Never call a cloud geocoder. Missing pack leaves name null. Not a settings key. Not an image model. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
 | Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. When the original is not a browser-safe MP4 (H.264 + AAC/mp3), a full-quality `playback.mp4` is generated (same pixel size, H.264 + AAC; remux when the bitstream already allows). Viewer starts on the proxy, then the original if the browser can decode it, else `playback`. The badge names Preview / Full / Original honestly. Originals stay on disk. |
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. |
+| Settings scope | Keep the 16 existing settings. Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not settings. Optional local geo/objects/faces are not a 17th setting: the pack or model file is the switch. |
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
@@ -113,7 +114,8 @@ hashed. modifiedAt is UTC ISO with filesystem precision retained; sizeBytes inte
 Boxes are `[x,y,width,height]` normalized to the oriented still or oriented video
 frame: x,y >=0, width,height >0, x+width and y+height <=1. Omitted means association
 without a box. Duplicate identical associations collapse; distinct boxes may share
-an entity. No inferred face matching.
+an entity. Optional local inference may attach a box by matching a face embedding
+to a stored person centroid; it never invents a name.
 
 Renditions: `{store,sourceId,thumb,preview,poster,proxy,playback,status}`.
 Store is `with-server|with-source`; sourceId selects the owning source. Paths
@@ -222,7 +224,10 @@ both null. A named place without GPS can be searched but has no globe pin.
 Thing `{schemaVersion,id,name,aliases}`; name nonempty, aliases distinct strings.
 GPS place match uses Haversine distance <= placeMatchMeters, nearest candidate,
 id lexical tie break. Enumerate new files by normalized relative path for stable
-results. A matched place keeps its existing coordinates and name.
+results. A matched place keeps its existing coordinates and name. If that name
+is null and `library-data/geo/cities.csv` is present, the name may be filled
+with the nearest city/region from that pack; coordinates stay. A person or
+agent name is never replaced.
 
 Filename date extraction uses the leftmost valid Gregorian `YYYY-MM-DD` or
 `YYYYMMDD` bounded by non-digits or string boundaries. Invalid candidates are
@@ -243,7 +248,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -299,9 +304,16 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | delete-file id / POST `/api/items/<id>/delete-file` | `{}`; 200 `{ok:true,id,trashed}`; Windows Recycle Bin the current original when possible (`trashed` true/false), then the same catalog drop as remove; undoable `delete-file` restores catalog only. 404 `unavailable` if no current file. UI extra-confirms; CLI is explicit. |
 | people / people list / GET `/api/people` | 200 `{personOfInterestMin,people}` where each person is `{id,name,itemCount,visible,named,thumbnail}`. `personOfInterestMin` is the constant **3** (not a settings key). `visible` is true for any named person and for unnamed clusters with `itemCount >= personOfInterestMin`. `thumbnail` is `{itemId,box?}` or null. |
 | people update id / PUT `/api/people/<id>` | `{name?,thumbnailItemId?}`; 200 updated person read (same shape as a people-list row). Name null unnames. `thumbnailItemId` must be an item that already has that person. Undoable `person-update`. Unknown id is `not-found`. |
-| people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record; self merge invalid |
-| jobs / GET `/api/jobs` | 200 `{ok,paused,processing,queues}` where `queues` is renditions, analyze, infer-faces, objects, each `{id,label,pending,done,error,state,available}`. Renditions counts come from item rendition status. Analyze / infer-faces / objects count catalog work that those workers would drain (photos without faces / things) and set `available` when the matching module exists. `state` is `running\|paused\|idle`. Browse stays up. |
-| jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"}`; 200 same body as GET. Pause stops the serve-process rendition drain (and any hooked analyze / infer-faces / objects workers). Resume starts them again. Does not block `GET /api/items`. |
+| people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record, merge `models/faces/index.json` embeddings when that file exists; self merge invalid |
+| jobs / GET `/api/jobs` | 200 `{ok,paused,processing,queues}` where `queues` is renditions, analyze, infer-faces, objects, each `{id,label,pending,done,error,state,available}`. Renditions counts come from item rendition status. Analyze counts unnamed GPS places; `available` is the local geo pack. Infer-faces counts photo/live stills not yet scanned; `available` is face models ready. Objects counts stills not yet analyzed; `available` is the YOLO file. Missing pack/models: `available` false, queue idle, no crash. `state` is `running\|paused\|idle`. Browse stays up. |
+| jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"}`; 200 same body as GET. Pause stops the serve-process drain for renditions, analyze-places, infer-faces, and objects. Resume starts them again. Does not block `GET /api/items`. |
+| setup-geo [--from dir] [--force] | CLI only. Writes `geo/cities.csv` under the library root. `--from` copies or converts a local pack (fixture or air-gapped). Default fetches GeoNames cities5000 + admin1 (setup-time network only). Already present is success unless `--force`. JSON `{ok,path,cityCount,downloaded,source}`. Download/write failure is `io-error`. Missing `--from` path is `invalid-argument`. Not a catalog/history write. |
+| analyze-places / POST `/api/places/analyze` | `{}`; 200 `{ok,named,skipped,packReady}`; fills null GPS place names from the local pack; no-op success when nothing to fill or pack missing (`packReady` false). Undoable `analyze-places`. Busy while scanning. |
+| setup-ml objects | CLI / `Setup.bat` / `launch.ps1 -SetupMl` only. Downloads YOLOv8n ONNX into `models/yolov8n.onnx` and writes `models/objects.json`. Installs `onnxruntime` when missing. No HTTP route. No cloud inference. Already-present matching file is success. |
+| analyze [--item id] / POST `/api/analyze` | `{}` or `{itemId?}`. 200 `{ok,analyzed,tagged,skipped,items}` after local detection writes Things through annotate. Missing model is 404 `model-unavailable`. An explicit itemId re-runs that still; omitted itemId analyzes pending items only. `GET /api/analyze` is 200 `{ok,installed,model,pending}`. |
+| setup-ml faces / POST `/api/faces/setup` | `{backend?}`; default InsightFace buffalo_s ONNX into `models/faces/`. 200 `{ok,backend,ready,modelsDir}`. Downloads models only; never uploads photos. `backend=fixture` is allowed only when `LIBRARY_TEST=1`. |
+| infer-faces / POST `/api/faces/infer` | `{force?,itemIds?}`; 200 `{ok,backend,items,faces,peopleCreated,peopleReused,skipped}`. Detect → embed → cluster unnamed people; reuse catalog ids on embedding match. Missing models: 404 `models-missing`. Videos skipped. Items that already have faces skipped unless `force`. One undoable `faces-infer` history entry. |
+| GET `/api/faces` | 200 `{ok,ready,backend,modelsDir}` ; `ready` false when setup has not run |
 | settings get / GET `/api/settings` | 200 complete settings |
 | settings set key value / PUT `/api/settings` | partial settings object; 200 complete settings |
 | rebuild-index / POST `/api/rebuild-index` | `{}`; 200 `{"ok":true}`; atomic replacement index, unchanged canonical JSON |
@@ -349,12 +361,13 @@ failed media reads; never ship an invented error as a one-off exception.
 | Status | Error codes / condition |
 |---|---|
 | 400 | `invalid-argument` (type, field, range, unknown query), `choice-required` |
-| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout) |
+| 404 | `not-found` (unknown id/route), `unavailable` (known original missing), `preview-unavailable` (known rendition not readable), `picker-unavailable` (no Windows folder dialog), `update-unavailable` (app folder is not a git checkout), `model-unavailable` (objects model not installed), `models-missing` (face models not installed) |
 | 409 | `busy`, `port-in-use`, `volume-identity-unavailable` |
 | 416 | `invalid-range` |
 | 500 | `io-error`, `invalid-catalog`, `decode-error`, `internal-error` |
 
-CLI-only missing tools use `dependency-missing` and exit 1. Scan per-file errors
+CLI-only missing tools use `dependency-missing` and exit 1, including a
+missing `onnxruntime` during `setup-ml` / `analyze`. Scan per-file errors
 use `io-error|decode-error|invalid-argument`; continue other files but final CLI
 exit is 1 if errors exist. Failed HEIC decode preserves metadata/item and records
 rendition error; it is not proof that every HEIC is decodable. Launcher installs
@@ -411,4 +424,33 @@ GET `/` serves that page; unknown asset paths return not-found. Mutation
 requests accept application/json from the same origin/CLI; reject unrelated
 browser origins as 400 invalid-argument. No remote account, login, or cloud setup.
 The shipped globe assets and ordinary browsing must work with external network
-blocked. Dependency installation is the one described setup-time network use.
+blocked. Dependency installation and optional one-time `setup-geo` /
+`setup-ml objects` / `setup-ml faces` are the described setup-time
+network uses. Scan, Info, search, globe, infer, and analyze do not call
+a geocoder or a cloud model.
+
+When `LIBRARY_TEST=1`, `setup-ml faces --backend fixture` (or
+`POST /api/faces/setup` `{"backend":"fixture"}`) installs a deterministic
+local detector that reads synthetic beacon/identity colors from fixture
+stills. Production `setup-ml faces` always installs InsightFace buffalo_s
+and ignores `backend=fixture`. The fixture backend never uploads and never
+emits a display name. It is not a setting.
+
+Optional local face models live under `models/faces/` inside the library
+root: `manifest.json`, InsightFace ONNX files, and `index.json`
+`{schemaVersion,backend,matchThreshold,people,scanned?}` where `people`
+maps person id → `{centroid,faces:[{itemId,box}]}` and `scanned` maps
+already-inferred item ids. `index.json` is ML state, not catalog truth;
+person JSON stays `{schemaVersion,id,name}`. Infer never writes a nonempty
+name. Gender/age ONNX files are not loaded and are removed after a
+buffalo_s install.
+
+`library-data/models/` for objects is created by `setup-ml objects`.
+`models/objects.json`: `{schemaVersion,kind,model,input,labels,sha256,bytes}`.
+`models/objects-state.json` maps item id → `{sha256,names}` so background
+analyze skips an unchanged still. The `person` class is dropped; analyze
+never writes people.
+
+When those files exist and jobs are not paused, `serve` drains one
+analyze-places / infer-faces / objects step after a rendition miss.
+Missing pack or model is idle, not an error.

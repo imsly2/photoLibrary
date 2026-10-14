@@ -229,6 +229,19 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   52/52,
   [library-chrome](features/taste-people/Rev1.0/assets/verify-1/library-chrome.png),
   [people-panel](features/taste-people/Rev1.0/assets/verify-1/people-panel.png).
+- 2026-10-14 — Optional local AI stacked on the People/Processing tip:
+  offline GPS city names (`setup-geo` / `analyze-places`), YOLO Things
+  (`setup-ml objects` / `analyze`; COCO person ignored), InsightFace
+  unnamed clusters (`setup-ml faces` / `infer-faces`). Serve-time
+  `drain_step` runs those workers when jobs are not paused and the
+  pack/models are installed. Missing models stay idle (`available`
+  false) and browse does not crash. People panel reads real face
+  clusters. Tip chrome (bottom Size/Dates, right People+Processing)
+  stays. Combined portable Setup.bat is a follow-up. Does not close
+  a Check. 16/22 unchanged. Evidence from source PRs and this stack:
+  [GEO](features/places-geo/Rev1.0/assets/verify-1/result.json),
+  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-1/result.json),
+  [FACES](features/faces/Rev1.0/assets/verify-1/result.json).
 
 ## Completion
 
