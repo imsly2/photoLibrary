@@ -26,8 +26,32 @@ from tests.qa.s00 import (
     write_isolated_port,
 )
 from tests.qa.s01 import load_items, load_sources, parse_summary
-from tests.qa.s02 import copy_rels, item_for_rel, load_places, items_by_id
 from tests.qa.s05 import start_isolated
+
+
+def copy_rels(src_media: Path, dest: Path, rels: tuple[str, ...] | list[str]) -> None:
+    for rel in rels:
+        target = dest / Path(rel)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src_media / Path(rel), target)
+
+
+def load_places(root: Path) -> list[dict[str, Any]]:
+    folder = root / "catalog" / "places"
+    if not folder.exists():
+        return []
+    return [json.loads(path.read_text(encoding="utf-8")) for path in sorted(folder.glob("*.json"))]
+
+
+def items_by_id(items: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    return {item["id"]: item for item in items}
+
+
+def item_for_rel(source: dict[str, Any], by_id: dict[str, dict[str, Any]], rel: str) -> dict[str, Any] | None:
+    entry = (source.get("files") or {}).get(rel)
+    if not entry:
+        return None
+    return by_id.get(entry.get("itemId"))
 
 GEO_FIXTURE = COMMITTED_FIXTURES / "geo"
 THREE_JPEG = ("a/IMG_1042.jpg", "a/near.jpg", "b/far.jpg")
