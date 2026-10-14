@@ -10,6 +10,7 @@ from typing import Any
 from library.httpjson import request_json
 from tests.qa.s00 import Checks, assert_no_pillow_in_server, stop_owned
 from tests.qa.s01 import hash_tree, load_items
+from tests.qa.s03 import header_get, request_raw
 from tests.qa.s06 import copy_rels, prepare_media, start_owned
 from tests.qa.s08 import fresh_root, run_library, write_result
 from tests.qa.taste_filters import annotate_json, collect_console, filenames, wait_catalog
@@ -127,6 +128,39 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
     return record
 
 
+def prove_cached_http(base: str, items: list[dict[str, Any]], checks: Checks) -> dict[str, Any]:
+    urls: list[str] = []
+    for item in items:
+        if item.get("filename") not in ALL_NAMES:
+            continue
+        slot = "poster" if item.get("kind") == "video" else "thumb"
+        urls.append(base + "/api/media/" + item["id"] + "?which=" + slot)
+    for url in urls:
+        request_raw(url)
+    t0 = time.perf_counter()
+    headers_ok = True
+    etag_ok = True
+    details: list[dict[str, Any]] = []
+    for url in urls:
+        status, headers, _body = request_raw(url)
+        cache = header_get(headers, "Cache-Control") or ""
+        etag = header_get(headers, "ETag") or ""
+        if status != 200 or "max-age" not in cache.lower() or "no-store" in cache.lower():
+            headers_ok = False
+        if not etag:
+            etag_ok = False
+        else:
+            again, _again_headers, _ = request_raw(url, {"If-None-Match": etag})
+            if again != 304:
+                etag_ok = False
+        details.append({"url": url, "status": status, "cache": cache, "etag": etag})
+    elapsed = time.perf_counter() - t0
+    checks.check("thumb-cache-control", headers_ok, json.dumps(details))
+    checks.check("thumb-etag-304", etag_ok, json.dumps(details))
+    checks.check("cached-thumbs-fast", elapsed < 0.4, json.dumps({"elapsed": elapsed, "n": len(urls)}))
+    return {"elapsed": elapsed, "n": len(urls), "details": details}
+
+
 def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[str, Any]:
     record: dict[str, Any] = {}
     page.goto(url, wait_until="domcontentloaded")
@@ -166,6 +200,38 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         )
 
     click_person()
+    page.wait_for_selector(".person-face-choice", timeout=8000)
+    choice_count = page.locator(".person-face-choice").count()
+    checks.check("face-picker-has-choices", choice_count >= 2, str(choice_count))
+    page.locator(".person-face-choice").nth(choice_count - 1).click()
+    page.wait_for_function(
+        """() => {
+          const all = Array.from(document.querySelectorAll('.person-face-choice'));
+          const pressed = all.filter(el => el.getAttribute('aria-pressed') === 'true');
+          return all.length >= 2 && pressed.length === 1 && pressed[0] === all[all.length - 1];
+        }""",
+        timeout=3000,
+    )
+    last_pressed = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    record["pickerLast"] = last_pressed
+    checks.check("face-picker-single-last", last_pressed.count("true") == 1 and last_pressed[-1] == "true", json.dumps(last_pressed))
+    page.locator(".person-face-choice").first.click()
+    page.wait_for_function(
+        """() => {
+          const all = Array.from(document.querySelectorAll('.person-face-choice'));
+          const pressed = all.filter(el => el.getAttribute('aria-pressed') === 'true');
+          return pressed.length === 1 && pressed[0] === all[0];
+        }""",
+        timeout=3000,
+    )
+    first_pressed = page.evaluate(
+        """() => Array.from(document.querySelectorAll('.person-face-choice')).map(el => el.getAttribute('aria-pressed'))"""
+    )
+    record["pickerFirst"] = first_pressed
+    checks.check("face-picker-single-first", first_pressed.count("true") == 1 and first_pressed[0] == "true", json.dumps(first_pressed))
+
     filtered = wait_painted(page, ("IMG_1042.jpg", "near.jpg"))
     record["filtered"] = filtered
     checks.check(
@@ -237,13 +303,20 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
 
     page.reload(wait_until="domcontentloaded")
     page.wait_for_selector('[data-filename="IMG_1042.jpg"]', timeout=30000)
-    hammer_stills(page)
-    second = wait_painted(page, ALL_NAMES, timeout=30000)
+    t0 = time.perf_counter()
+    second = wait_painted(page, ALL_NAMES, timeout=2500)
+    cached_elapsed = time.perf_counter() - t0
     record["secondReload"] = second
+    record["cachedReloadSec"] = cached_elapsed
     checks.check(
         "second-reload-keeps-thumbs",
         second.get("missing") == 0 and second.get("painted") >= 5,
         json.dumps(second),
+    )
+    checks.check(
+        "reload-cached-fast",
+        cached_elapsed < 2.0 and second.get("missing") == 0,
+        json.dumps({"elapsed": cached_elapsed, "thumbs": second}),
     )
 
     page.screenshot(path=str(artifacts / "grid-thumbs.png"))
@@ -266,7 +339,10 @@ def run_slice(root: Path, artifacts: Path) -> int:
         server, url, pids = start_owned(isolated)
         try:
             wait_catalog(url.rstrip("/"), ALL_NAMES)
-            wait_stills(url.rstrip("/"), ALL_NAMES)
+            stills = wait_stills(url.rstrip("/"), ALL_NAMES)
+            cache = prove_cached_http(url.rstrip("/"), stills, checks)
+            (artifacts / "previews-cache.json").write_text(json.dumps(cache, indent=2) + "\n", encoding="utf-8")
+            extra["previews-cache.json"] = str(artifacts / "previews-cache.json")
             from playwright.sync_api import sync_playwright
 
             checks.check("playwright-import", True)

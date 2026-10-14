@@ -173,6 +173,7 @@
   let groupDates = true;
   let favoritesOpen = true;
   let peopleCatalog = [];
+  let pendingThumb = null;
   let personOfInterestMin = 3;
   let tagsCatalog = [];
   let arrangeBy = "dates";
@@ -1113,11 +1114,12 @@
     rearmHover();
   }
 
-  const STILL_MAX = 4;
+  const STILL_MAX = 12;
   const STILL_STALL_MS = 3500;
   let stillActive = 0;
   const stillQueue = [];
   let stillJobs = [];
+  const stillOk = Object.create(null);
 
   function stillLooksGood(img, url) {
     if (!img || img.hidden || !img.complete || !(img.naturalWidth > 0)) {
@@ -1169,6 +1171,30 @@
     stillJobs = stillJobs.filter(function (job) {
       return !job.settled;
     });
+  }
+
+  function showStill(cell, img, placeholder, url) {
+    if (!img || !placeholder) {
+      return;
+    }
+    img.setAttribute("data-still", url);
+    if (img.getAttribute("src") !== url) {
+      img.src = url;
+    }
+    if (img.complete && img.naturalWidth > 0) {
+      placeholder.hidden = true;
+      img.hidden = false;
+    }
+  }
+
+  function paintCachedStill(cell, id, url) {
+    if (!stillOk[id] || stillOk[id] !== url) {
+      return false;
+    }
+    const img = cell.querySelector("img");
+    const placeholder = cell.querySelector(".placeholder");
+    showStill(cell, img, placeholder, url);
+    return stillLooksGood(cell.querySelector("img"), url) || !!img;
   }
 
   function paintGridStills() {
@@ -1259,6 +1285,7 @@
       }
       if (cell.dataset.stillGen === String(gen) && cell.dataset.id === id) {
         delete cell.dataset.stillErrorTried;
+        stillOk[id] = url;
         placeholder.hidden = true;
         next.hidden = false;
       }
@@ -1316,17 +1343,16 @@
       return;
     }
     if (!forceReload && stillLooksGood(img, url)) {
+      stillOk[id] = url;
       placeholder.hidden = true;
       img.hidden = false;
       return;
     }
-    const slotStatus = stillSlotStatus(id);
-    if (slotStatus === "not-applicable") {
-      placeholder.hidden = false;
-      img.hidden = true;
+    if (!forceReload && paintCachedStill(cell, id, url) && stillLooksGood(cell.querySelector("img"), url)) {
       return;
     }
-    if (slotStatus && slotStatus !== "ready" && slotStatus !== "error") {
+    const slotStatus = stillSlotStatus(id);
+    if (slotStatus === "not-applicable") {
       placeholder.hidden = false;
       img.hidden = true;
       return;
@@ -3562,13 +3588,19 @@
       const areaB = b.box && b.box.length === 4 ? b.box[2] * b.box[3] : 0;
       return (scoreB - scoreA) || (areaB - areaA);
     });
-    const chosen = (person.thumbnail && person.thumbnail.itemId) || (person.thumbnailItemId) || "";
     personFaces.innerHTML = "";
+    let marked = false;
     thumbs.forEach(function (thumb) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "person-face-choice";
-      btn.setAttribute("aria-pressed", thumb.itemId === chosen ? "true" : "false");
+      btn.dataset.itemId = thumb.itemId || "";
+      btn.dataset.box = JSON.stringify(thumb.box || null);
+      const pressed = !marked && faceIsChosen(person, thumb);
+      if (pressed) {
+        marked = true;
+      }
+      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
       btn.title = "Use this face as the thumbnail";
       const crop = document.createElement("span");
       crop.className = "person-face";
@@ -3579,10 +3611,41 @@
       btn.addEventListener("click", function (event) {
         event.preventDefault();
         event.stopPropagation();
-        choosePersonThumb(id, thumb.itemId);
+        if (event.stopImmediatePropagation) {
+          event.stopImmediatePropagation();
+        }
+        choosePersonThumb(id, thumb);
       });
       personFaces.appendChild(btn);
     });
+  }
+
+  function boxesEqual(a, b) {
+    return JSON.stringify(a || null) === JSON.stringify(b || null);
+  }
+
+  function faceIsChosen(person, thumb) {
+    if (!person || !thumb || !thumb.itemId) {
+      return false;
+    }
+    if (pendingThumb && pendingThumb.personId === person.id) {
+      if (pendingThumb.itemId !== thumb.itemId) {
+        return false;
+      }
+      if (pendingThumb.box && thumb.box) {
+        return boxesEqual(pendingThumb.box, thumb.box);
+      }
+      return true;
+    }
+    const chosenId = (person.thumbnail && person.thumbnail.itemId) || person.thumbnailItemId || "";
+    if (!chosenId || thumb.itemId !== chosenId) {
+      return false;
+    }
+    const chosenBox = person.thumbnail && person.thumbnail.box;
+    if (chosenBox && thumb.box) {
+      return boxesEqual(chosenBox, thumb.box);
+    }
+    return true;
   }
 
   function renderPeople() {
@@ -3819,8 +3882,52 @@
     });
   }
 
-  function choosePersonThumb(personId, itemId) {
-    savePerson(personId, { thumbnailItemId: itemId });
+  function syncFaceChoicePressed(personId) {
+    if (!personFaces) {
+      return;
+    }
+    const person = peopleCatalog.filter(function (row) { return row.id === personId; })[0] || { id: personId };
+    let marked = false;
+    Array.prototype.forEach.call(personFaces.querySelectorAll(".person-face-choice"), function (btn) {
+      let box = null;
+      try {
+        box = JSON.parse(btn.dataset.box || "null");
+      } catch (err) {
+        box = null;
+      }
+      const on = !marked && faceIsChosen(person, { itemId: btn.dataset.itemId, box: box });
+      if (on) {
+        marked = true;
+      }
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function choosePersonThumb(personId, thumb) {
+    const itemId = thumb && thumb.itemId;
+    if (!personId || !itemId) {
+      return;
+    }
+    pendingThumb = { personId: personId, itemId: itemId, box: thumb.box || null };
+    peopleCatalog.forEach(function (row) {
+      if (row.id === personId) {
+        row.thumbnailItemId = itemId;
+        row.thumbnail = { itemId: itemId, box: thumb.box || null };
+      }
+    });
+    syncFaceChoicePressed(personId);
+    const face = peopleList && peopleList.querySelector('.person-row[data-person-id="' + personId + '"] .person-face');
+    if (face) {
+      paintFace(face, { itemId: itemId, box: thumb.box || null });
+    }
+    savePerson(personId, { thumbnailItemId: itemId }).then(function () {
+      if (pendingThumb && pendingThumb.personId === personId && pendingThumb.itemId === itemId) {
+        pendingThumb = null;
+      }
+    }).catch(function () {
+      pendingThumb = null;
+      loadPeople();
+    });
   }
 
   function commitPersonName() {

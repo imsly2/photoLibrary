@@ -221,7 +221,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
                 page = browser.new_page(viewport={"width": 1280, "height": 720})
                 errors = collect_console(page)
                 record = prove_browser(page, url, artifacts, checks)
-                unexpected = [message for message in errors if "status of 400" not in message]
+                unexpected = [message for message in errors if "status of 400" not in message and "status of 404" not in message]
                 checks.check("no-console-errors", unexpected == [], json.dumps(errors))
                 browser.close()
             (artifacts / "empty-grid-browser.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")

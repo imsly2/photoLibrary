@@ -772,6 +772,7 @@ button:disabled {
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .person-face-choice .person-face {
@@ -781,7 +782,21 @@ button:disabled {
 }
 
 .person-face-choice[aria-pressed="true"] {
-  border-color: #4a7ad4;
+  border-color: #8cb4ff;
+  box-shadow: 0 0 0 2px #1b1b22, 0 0 0 4px #8cb4ff;
+}
+
+.person-face-choice[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #8cb4ff;
+  box-shadow: 0 0 0 1px #121218;
+  pointer-events: none;
 }
 
 #jobs-panel {
