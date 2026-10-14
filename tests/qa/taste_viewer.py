@@ -172,6 +172,15 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
             reveal: info('reveal-original'),
             info: info('viewer-info'),
             open: info('open-original'),
+            slideshow: info('viewer-slideshow'),
+            fullscreen: info('viewer-fullscreen'),
+            titles: {
+              prev: (document.getElementById('viewer-prev') || {}).title || '',
+              next: (document.getElementById('viewer-next') || {}).title || '',
+              rotate: (document.getElementById('viewer-rotate') || {}).title || '',
+              slideshow: (document.getElementById('viewer-slideshow') || {}).title || '',
+              fullscreen: (document.getElementById('viewer-fullscreen') || {}).title || '',
+            },
             crumb: (document.getElementById('viewer-crumb') || {}).textContent || '',
             fields: fields,
             personPlaceholder: (document.getElementById('person-field') || {}).placeholder || '',
@@ -187,7 +196,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         }"""
     )
     record["chrome"] = chrome
-    for name in ("back", "prev", "next", "rotate", "favorite", "reveal", "info", "open"):
+    for name in ("back", "prev", "next", "rotate", "favorite", "reveal", "info", "open", "slideshow", "fullscreen"):
         node = chrome.get(name) or {}
         min_w = 24 if name == "favorite" else 8
         checks.check(
@@ -219,6 +228,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps({"prev": chrome.get("prev"), "next": chrome.get("next")}),
     )
     checks.check("reveal-label", chrome.get("reveal", {}).get("text") == "Reveal in Explorer", json.dumps(chrome.get("reveal")))
+    titles = chrome.get("titles") or {}
+    checks.check("tooltip-prev", titles.get("prev") == "Previous ←", json.dumps(titles))
+    checks.check("tooltip-next", titles.get("next") == "Next →", json.dumps(titles))
+    checks.check("tooltip-rotate", titles.get("rotate") == "Rotate Ctrl+R", json.dumps(titles))
+    checks.check("tooltip-slideshow", titles.get("slideshow") == "Slideshow F5", json.dumps(titles))
+    checks.check("tooltip-fullscreen", titles.get("fullscreen") == "Fullscreen F11", json.dumps(titles))
     checks.check("heart-unfilled", chrome.get("favorite", {}).get("text") == "♡", json.dumps(chrome.get("favorite")))
     checks.check("crumb-filename", "IMG_1042.jpg" in (chrome.get("crumb") or ""), chrome.get("crumb"))
     checks.check(
@@ -252,10 +267,21 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
           const fields = Array.from(document.querySelectorAll('#viewer-fields .annotate-field')).map(function (label) {
             return (label.textContent || '').replace(/\\s+/g, ' ').trim();
           });
+          function facts() {
+            return Array.from(document.querySelectorAll('#viewer-fact-list .info-fact')).map(function (row) {
+              const dt = row.querySelector('dt');
+              const dd = row.querySelector('dd');
+              return {
+                label: dt ? (dt.textContent || '').trim() : '',
+                value: dd ? (dd.textContent || '').trim() : '',
+              };
+            });
+          }
           return {
             headings: Array.from(panel.querySelectorAll('.info-heading')).map(function (el) {
               return (el.textContent || '').trim();
             }),
+            facts: facts(),
             fields: fields,
             personPlaceholder: (document.getElementById('person-field') || {}).placeholder || '',
             placePlaceholder: (document.getElementById('place-field') || {}).placeholder || '',
@@ -266,7 +292,25 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     record["infoOpen"] = info_open
     field_blob = " ".join(info_open.get("fields") or [])
-    checks.check("info-lists-kinds", info_open.get("headings") == ["People", "Places", "Things"], json.dumps(info_open.get("headings")))
+    headings = info_open.get("headings") or []
+    checks.check(
+        "info-lists-kinds",
+        headings == ["File", "People", "Places", "Things"],
+        json.dumps(headings),
+    )
+    facts = {row.get("label"): row.get("value") for row in (info_open.get("facts") or []) if isinstance(row, dict)}
+    record["infoFacts"] = facts
+    checks.check("info-facts-first", headings[:1] == ["File"] and headings[1:4] == ["People", "Places", "Things"], json.dumps(headings))
+    checks.check("info-date-taken", "2024-06-12" in (facts.get("Date taken") or ""), json.dumps(facts.get("Date taken")))
+    checks.check(
+        "info-no-camera",
+        facts.get("Camera") == "No camera info for this file.",
+        json.dumps(facts.get("Camera")),
+    )
+    checks.check("info-dimensions", facts.get("Dimensions") == "640 × 480", json.dumps(facts.get("Dimensions")))
+    checks.check("info-size", bool(facts.get("Size")), json.dumps(facts.get("Size")))
+    checks.check("info-path", "IMG_1042.jpg" in (facts.get("Path") or ""), json.dumps(facts.get("Path")))
+    checks.check("info-gps", "41.88000" in (facts.get("GPS") or "") and "87.63000" in (facts.get("GPS") or ""), json.dumps(facts.get("GPS")))
     checks.check("person-field-labeled", "Person" in field_blob and info_open.get("personPlaceholder") == "Person", field_blob)
     checks.check("place-field-labeled", "Place" in field_blob and info_open.get("placePlaceholder") == "Place", field_blob)
     checks.check("thing-field-labeled", "Thing" in field_blob and info_open.get("thingPlaceholder") == "Thing", field_blob)
@@ -453,9 +497,79 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps({"fit": before, "out": after_out}),
     )
 
+    page.keyboard.press("Control+0")
+    page.wait_for_function(
+        """(fit) => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return Math.abs(r.width - fit.width) < 3 && Math.abs(r.height - fit.height) < 3;
+        }""",
+        arg=before,
+        timeout=5000,
+    )
+    after_fit = image_rect(page)
+    record["ctrl0"] = after_fit
+    checks.check(
+        "ctrl-0-fit",
+        abs(after_fit["width"] - before["width"]) < 3 and abs(after_fit["height"] - before["height"]) < 3,
+        json.dumps({"fit": before, "after": after_fit}),
+    )
+    page.keyboard.press("Control+1")
+    page.wait_for_function(
+        """() => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return img && img.naturalWidth > 0 && Math.abs(r.width - img.naturalWidth) < 3;
+        }""",
+        timeout=5000,
+    )
+    after_100 = image_rect(page)
+    record["ctrl1"] = after_100
+    checks.check(
+        "ctrl-1-100",
+        abs(after_100["width"] - after_100["naturalWidth"]) < 3,
+        json.dumps(after_100),
+    )
+    page.keyboard.press("Control+Equal")
+    page.wait_for_function(
+        """(prev) => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return r.width > prev.width + 1;
+        }""",
+        arg=after_100,
+        timeout=5000,
+    )
+    after_plus = image_rect(page)
+    checks.check(
+        "ctrl-plus-zoom-in",
+        after_plus["width"] > after_100["width"] + 1,
+        json.dumps({"before": after_100, "after": after_plus}),
+    )
+    page.keyboard.press("Control+Minus")
+    page.wait_for_function(
+        """(prev) => {
+          const img = document.getElementById('viewer-image');
+          const r = img.getBoundingClientRect();
+          return r.width < prev.width - 1;
+        }""",
+        arg=after_plus,
+        timeout=5000,
+    )
+    after_minus = image_rect(page)
+    checks.check(
+        "ctrl-minus-zoom-out",
+        after_minus["width"] < after_plus["width"] - 1,
+        json.dumps({"before": after_plus, "after": after_minus}),
+    )
+    page.keyboard.press("Control+0")
+
     page.locator("#viewer-rotate").click()
     rotation = page.evaluate("() => document.getElementById('viewer').dataset.rotation || ''")
     checks.check("rotate-90", rotation == "90", rotation)
+    page.keyboard.press("Control+r")
+    rotation_key = page.evaluate("() => document.getElementById('viewer').dataset.rotation || ''")
+    checks.check("ctrl-r-rotate", rotation_key == "180", rotation_key)
 
     page.locator("#viewer-back").click()
     wait_viewer_closed(page)
@@ -463,9 +577,118 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["backUrl"] = {"before": start_url, "after": after_back}
     checks.check("back-same-url", after_back == start_url, f"{start_url} -> {after_back}")
     checks.check("back-same-port", page.evaluate("() => location.port") == start_url.split(":")[-1].rstrip("/"), page.url)
-    checks.check("back-shows-grid", page.locator('[data-filename="IMG_1042.jpg"]').count() == 1)
+    grid_photo = page.locator('#grid .cell[data-slot="grid"][data-filename="IMG_1042.jpg"]')
+    checks.check("back-shows-grid", grid_photo.count() == 1, f"grid={grid_photo.count()}")
 
-    page.locator('[data-filename="clip.mp4"]').click()
+    page.keyboard.press("F5")
+    page.wait_for_function(
+        """() => {
+          const viewer = document.getElementById('viewer');
+          return viewer && !viewer.hidden && (viewer.dataset.slideshow || '') === '1';
+        }""",
+        timeout=10000,
+    )
+    show_state = page.evaluate(
+        """() => {
+          const viewer = document.getElementById('viewer');
+          const app = window.libraryApp && window.libraryApp.slideshowState ? window.libraryApp.slideshowState() : {};
+          return {
+            hidden: viewer ? viewer.hidden : true,
+            slideshow: viewer ? viewer.dataset.slideshow || '' : '',
+            paused: viewer ? viewer.dataset.slideshowPaused || '' : '',
+            intervalMs: app.intervalMs || 0,
+            active: !!app.active,
+          };
+        }"""
+    )
+    record["slideshowStart"] = show_state
+    checks.check(
+        "f5-starts-slideshow",
+        show_state.get("hidden") is False
+        and show_state.get("slideshow") == "1"
+        and show_state.get("active") is True
+        and show_state.get("intervalMs") == 5000,
+        json.dumps(show_state),
+    )
+    def media_key() -> str:
+        return page.evaluate(
+            """() => {
+              const crumb = (document.getElementById('viewer-crumb') || {}).textContent || '';
+              const img = document.getElementById('viewer-image');
+              const video = document.getElementById('viewer-video');
+              const imgSrc = img ? (img.getAttribute('src') || '') : '';
+              const poster = video ? (video.getAttribute('poster') || '') : '';
+              const videoSrc = video ? (video.getAttribute('src') || '') : '';
+              return crumb + '|' + imgSrc + '|' + poster + '|' + videoSrc;
+            }"""
+        )
+
+    start_slide = media_key()
+    page.keyboard.press("Space")
+    paused = page.evaluate("() => document.getElementById('viewer').dataset.slideshowPaused || ''")
+    checks.check("space-pauses-slideshow", paused == "1", paused)
+    page.evaluate("() => window.libraryApp && window.libraryApp.advanceSlideshow && window.libraryApp.advanceSlideshow()")
+    paused_src = media_key()
+    checks.check("paused-slideshow-holds", paused_src == start_slide, paused_src)
+    page.keyboard.press("Space")
+    resumed = page.evaluate("() => document.getElementById('viewer').dataset.slideshowPaused || ''")
+    checks.check("space-resumes-slideshow", resumed == "0", resumed)
+    page.evaluate("() => window.libraryApp && window.libraryApp.advanceSlideshow && window.libraryApp.advanceSlideshow()")
+    page.wait_for_function(
+        """(prev) => {
+          const crumb = (document.getElementById('viewer-crumb') || {}).textContent || '';
+          const img = document.getElementById('viewer-image');
+          const video = document.getElementById('viewer-video');
+          const imgSrc = img ? (img.getAttribute('src') || '') : '';
+          const poster = video ? (video.getAttribute('poster') || '') : '';
+          const videoSrc = video ? (video.getAttribute('src') || '') : '';
+          return (crumb + '|' + imgSrc + '|' + poster + '|' + videoSrc) !== prev;
+        }""",
+        arg=start_slide,
+        timeout=8000,
+    )
+    advanced = media_key()
+    checks.check("slideshow-advances", advanced != start_slide, advanced)
+    page.keyboard.press("Escape")
+    after_esc_show = page.evaluate(
+        """() => {
+          const viewer = document.getElementById('viewer');
+          return {
+            hidden: viewer ? viewer.hidden : true,
+            slideshow: viewer ? viewer.dataset.slideshow || '' : '',
+          };
+        }"""
+    )
+    checks.check(
+        "esc-stops-slideshow",
+        after_esc_show.get("hidden") is False and after_esc_show.get("slideshow") == "0",
+        json.dumps(after_esc_show),
+    )
+
+    page.keyboard.press("f")
+    full_on = page.evaluate("() => document.getElementById('viewer').dataset.fullscreen || ''")
+    checks.check("f-enters-fullscreen", full_on == "1", full_on)
+    page.keyboard.press("Escape")
+    after_esc_full = page.evaluate(
+        """() => {
+          const viewer = document.getElementById('viewer');
+          return {
+            hidden: viewer ? viewer.hidden : true,
+            fullscreen: viewer ? viewer.dataset.fullscreen || '' : '',
+          };
+        }"""
+    )
+    checks.check(
+        "esc-exits-fullscreen",
+        after_esc_full.get("hidden") is False and after_esc_full.get("fullscreen") == "0",
+        json.dumps(after_esc_full),
+    )
+    page.wait_for_function("() => !document.fullscreenElement", timeout=5000)
+    page.keyboard.press("Escape")
+    wait_viewer_closed(page)
+    checks.check("esc-then-closes-viewer", True)
+
+    page.locator('#grid .cell[data-slot="grid"][data-filename="clip.mp4"]').click()
     page.wait_for_function(
         """() => {
           const viewer = document.getElementById('viewer');
@@ -578,6 +801,39 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     return record
 
 
+def prove_empty_slideshow(page: Any, url: str, checks: Checks) -> dict[str, Any]:
+    page.goto(url, wait_until="domcontentloaded")
+    page.wait_for_selector("#add-folder-btn", timeout=15000)
+    page.keyboard.press("F5")
+    page.wait_for_function(
+        """() => {
+          const el = document.getElementById('slideshow-empty');
+          return el && !el.hidden && (el.textContent || '').trim() === 'Add photos first';
+        }""",
+        timeout=8000,
+    )
+    state = page.evaluate(
+        """() => {
+          const el = document.getElementById('slideshow-empty');
+          const viewer = document.getElementById('viewer');
+          return {
+            text: el ? (el.textContent || '').trim() : '',
+            hidden: el ? el.hidden : true,
+            viewerHidden: viewer ? viewer.hidden : true,
+          };
+        }"""
+    )
+    checks.check("empty-slideshow-copy", state.get("text") == "Add photos first", json.dumps(state))
+    checks.check("empty-slideshow-no-viewer", state.get("viewerHidden") is True, json.dumps(state))
+    page.keyboard.press("Escape")
+    page.wait_for_function(
+        "() => { const el = document.getElementById('slideshow-empty'); return el && el.hidden; }",
+        timeout=5000,
+    )
+    checks.check("empty-slideshow-esc", True)
+    return state
+
+
 def run_slice(root: Path, artifacts: Path) -> int:
     checks = Checks()
     artifacts.mkdir(parents=True, exist_ok=True)
@@ -605,6 +861,14 @@ def run_slice(root: Path, artifacts: Path) -> int:
                 record = prove_browser(page, url, artifacts, checks)
                 unexpected = [message for message in errors if "status of 400" not in message]
                 checks.check("no-console-errors", unexpected == [], json.dumps(errors))
+                empty_root = fresh_root(artifacts / "empty-slideshow-root")
+                empty_server, empty_url, empty_pids = start_owned(empty_root)
+                try:
+                    empty_page = browser.new_page(viewport={"width": 1280, "height": 720})
+                    record["emptySlideshow"] = prove_empty_slideshow(empty_page, empty_url, checks)
+                    empty_page.close()
+                finally:
+                    stop_owned(empty_server, extra_pids=empty_pids)
                 browser.close()
             extra["viewer-chrome.json"] = str(artifacts / "viewer-chrome.json")
             (artifacts / "viewer-chrome.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")

@@ -100,6 +100,22 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   **Superseded on `taste/windows-abc`:** “Showing original” and overlay-style
   Person/Place/Thing pills are retired. Spec target is the Win7-style
   viewer in UI-SPEC (Info dropdown, zoom slider, no highlight).
+- 2026-10-13 — Windows Presentable Shell **viewer Must** rebased onto
+  `cursor/merge-viewer-chrome-7726` (`d00addb`): fullscreen (F11 or F;
+  Esc exits fullscreen then viewer), slideshow (F5 / Space / Esc; empty
+  “Add photos first”), keyboard parity (Ctrl++/−, wheel, Ctrl+0 fit,
+  Ctrl+1 100%, Ctrl+R, Space video when no slideshow, tooltips), Info
+  file facts first then names (“No camera info for this file.”). Open +
+  Reveal stay. Remove / sort / search / empty-library CTA stay with the
+  parallel agent. Does not close a new Check.
+  TASTE-VIEWER **103/103**, exit 0 on this merge tip.
+  F10 **28/29**: same `browser-proof` timeout as `d00addb` (Info-first Esc
+  after annotate; F10 still expects one Esc to close the viewer).
+  Assertions not weakened.
+  Evidence: [TASTE-VIEWER](features/taste-windows/Rev1.0/assets/viewer-shell/result.json),
+  [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png),
+  [F10](features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json).
+  Pointer: [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
 
 ## Completion
 
@@ -355,3 +371,10 @@ environments must be supplied by the build or F2 remains pending; do not claim
   UI-SPEC 19-step DoD; CONTRACTS `remove` / `delete-file` and
   `kind=photo,live`; SLICES: S13/S14 secondary. Combined with PR #2
   72/72 chrome on this merge. No new Check. 16/22 unchanged.
+- 2026-10-13 — Viewer Presentable Shell Must (fullscreen, slideshow,
+  keyboard parity, EXIF-first Info) rebased onto
+  `cursor/merge-viewer-chrome-7726`. Open + Reveal + Win7 chrome stay.
+  Remove/sort/search/empty go to a parallel agent. TASTE-VIEWER 103
+  assertions exit 0 on the merge tip. F10 28/29: `browser-proof` times
+  out on Info-first Esc, same as `d00addb`; assertions not weakened.
+  No new Check. 16/22 unchanged.

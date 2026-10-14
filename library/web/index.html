@@ -111,9 +111,12 @@
       <p id="viewer-crumb"></p>
       <div id="viewer-tools">
         <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite">♡</button>
+        <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5">Slideshow</button>
+        <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11">Fullscreen</button>
         <div id="viewer-info-wrap">
           <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel">Info</button>
           <div id="viewer-info-panel" hidden>
+            <div id="viewer-facts"></div>
             <p class="info-heading">People</p>
             <div id="viewer-people" class="label-row"></div>
             <p class="info-heading">Places</p>
@@ -145,11 +148,11 @@
     </div>
     <div id="viewer-bottom">
       <div id="viewer-nav">
-        <button type="button" id="viewer-prev">Previous</button>
-        <button type="button" id="viewer-rotate">Rotate</button>
-        <button type="button" id="viewer-next">Next</button>
+        <button type="button" id="viewer-prev" title="Previous ←">Previous</button>
+        <button type="button" id="viewer-rotate" title="Rotate Ctrl+R">Rotate</button>
+        <button type="button" id="viewer-next" title="Next →">Next</button>
       </div>
-      <label class="viewer-zoom-field">Zoom
+      <label class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · Ctrl+0 fit · Ctrl+1 100%">Zoom
         <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom">
       </label>
       <div id="viewer-actions">
@@ -159,6 +162,7 @@
       </div>
     </div>
   </div>
+  <p id="slideshow-empty" hidden>Add photos first</p>
   <script src="/assets/library.js"></script>
   <script src="/assets/globe.js"></script>
 </body>
