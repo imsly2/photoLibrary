@@ -41,12 +41,6 @@
           <option value="asc">Oldest first</option>
         </select>
       </label>
-      <div id="filter-chips" role="group" aria-label="Filter">
-        <button type="button" id="filter-all" class="toolbar-toggle" aria-pressed="true">All</button>
-        <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false">Photos</button>
-        <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
-        <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false">Favorites</button>
-      </div>
       <button type="button" id="remove-item" class="toolbar-action" disabled>Remove</button>
       <button type="button" id="delete-file" class="toolbar-action" disabled>Delete file</button>
     </div>
@@ -56,6 +50,31 @@
       <button type="button" id="update-library">Update Library</button>
     </div>
   </header>
+  <div id="filter-bar" role="region" aria-label="Filters">
+    <div id="filter-chips" role="group" aria-label="Filter">
+      <button type="button" id="filter-all" class="toolbar-toggle" aria-pressed="true">All</button>
+      <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false">Photos</button>
+      <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
+      <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false">Favorites</button>
+    </div>
+    <div id="active-filters" aria-label="Active filters"></div>
+    <button type="button" id="clear-filters" hidden>Clear all</button>
+    <label class="toolbar-field">Group
+      <select id="arrange" aria-label="Group by Dates People Places or Tags">
+        <option value="dates">Dates</option>
+        <option value="people">People</option>
+        <option value="places">Places</option>
+        <option value="tags">Tags</option>
+      </select>
+    </label>
+    <div id="tag-actions">
+      <input type="text" id="tag-new" placeholder="New tag" aria-label="New tag" autocomplete="off" spellcheck="false">
+      <button type="button" id="tag-create">Create</button>
+      <select id="tag-pick" aria-label="Choose tag"></select>
+      <button type="button" id="tag-apply">Apply</button>
+      <button type="button" id="tag-remove">Remove</button>
+    </div>
+  </div>
   <div id="disconnected-wrap">
     <p id="disconnected-banner" hidden>Library is not responding</p>
     <button type="button" id="reconnect-retry" hidden>Retry</button>
@@ -101,6 +120,11 @@
           <p class="side-label">Thumbnail</p>
           <div id="person-faces"></div>
         </div>
+      </section>
+      <section id="tags-panel" aria-labelledby="tags-heading">
+        <h2 id="tags-heading">Tags</h2>
+        <p id="tags-empty" hidden>No tags yet</p>
+        <ul id="tags-list"></ul>
       </section>
       <aside id="inspector" hidden>
         <p id="inspector-name"></p>
@@ -179,6 +203,8 @@
             <div id="viewer-place" class="label-row"></div>
             <p class="info-heading">Things</p>
             <div id="viewer-things" class="label-row"></div>
+            <p class="info-heading">Tags</p>
+            <div id="viewer-tags" class="label-row"></div>
             <div id="viewer-fields">
               <label class="annotate-field">Person
                 <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false">

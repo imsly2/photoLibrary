@@ -16,7 +16,7 @@ from library.catalog_io import (
     load_source,
     source_read,
 )
-from library.groups import LEVELS, groups_from_items
+from library.groups import ARRANGE, LEVELS, groups_from_entities, groups_from_items
 from library.errors import AppError, fail
 from library.media import file_suffix
 from library.renditions import drain_step as drain_queued_jpegs
@@ -388,14 +388,41 @@ class Library:
 
     def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         query = dict(query or {})
-        extra = set(query) - ITEM_QUERY_KEYS - {"level"}
+        extra = set(query) - ITEM_QUERY_KEYS - {"level", "by"}
         if extra:
             raise fail("invalid-argument")
+        by = query.pop("by", "date") or "date"
+        if by not in ARRANGE:
+            raise fail("invalid-argument")
+        if by != "date":
+            query.pop("level", None)
+            return groups_from_entities(self.items_list(query), by)
         level = query.pop("level", None)
         if level not in LEVELS:
             raise fail("invalid-argument")
         items = self.items_list(query)
         return groups_from_items(items, level)
+
+    def tags_list(self) -> dict[str, Any]:
+        from library.tags import tags_index
+
+        self.recover()
+        self.ensure_settings()
+        return tags_index(self.root)
+
+    def tags_create(self, payload: Any) -> dict[str, Any]:
+        from library.tags import create_tag
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return create_tag(self.root, payload)
+
+    def tags_apply(self, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.tags import apply_tags
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return apply_tags(self.root, payload)
 
     def rebuild_index(self) -> dict[str, bool]:
         self.recover()
@@ -779,7 +806,28 @@ def _entity_name_match(record: dict[str, Any], token: str) -> bool:
     name = record.get("name")
     if type(name) is str and name and _norm_query(name) == _norm_query(token):
         return True
+    for alias in record.get("aliases") or []:
+        if type(alias) is str and alias and _norm_query(alias) == _norm_query(token):
+            return True
     return False
+
+
+def _entity_token_match(records: list[dict[str, Any]], token: str) -> bool:
+    ids = {rec.get("id") for rec in records}
+    if token in ids:
+        return True
+    return any(_entity_name_match(rec, token) for rec in records)
+
+
+def _all_tokens_match(records: list[dict[str, Any]], token: str) -> bool:
+    if type(token) is not str or token == "":
+        raise fail("invalid-argument")
+    if "," in token:
+        tokens = [part for part in token.split(",") if part]
+        if not tokens:
+            raise fail("invalid-argument")
+        return all(_entity_token_match(records, part) for part in tokens)
+    return _entity_token_match(records, token)
 
 
 def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
@@ -799,17 +847,7 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
     places = entities.get("places") or []
     things = entities.get("things") or []
     if "person" in query:
-        token = query["person"]
-        if type(token) is not str or token == "":
-            raise fail("invalid-argument")
-        ids = {rec.get("id") for rec in people}
-        if "," in token:
-            tokens = [part for part in token.split(",") if part]
-            if not tokens:
-                raise fail("invalid-argument")
-            if not all(part in ids for part in tokens):
-                return False
-        elif token not in ids and not any(_entity_name_match(rec, token) for rec in people):
+        if not _all_tokens_match(people, query["person"]):
             return False
     if "place" in query:
         raw = query["place"]
@@ -830,11 +868,7 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
         if not matched:
             return False
     if "thing" in query:
-        token = query["thing"]
-        if type(token) is not str or token == "":
-            raise fail("invalid-argument")
-        ids = {rec.get("id") for rec in things}
-        if token not in ids and not any(_entity_name_match(rec, token) for rec in things):
+        if not _all_tokens_match(things, query["thing"]):
             return False
     kind = query.get("kind")
     if kind is not None:

@@ -49,6 +49,12 @@ faces` when those CLIs exist. Missing modules tell Steve to Update
 Library first. Gate: `python -m tests.qa slice TASTE-SETUP`. Does not
 change serve. No 23rd Check.
 
+Filter bar / tags / arrange (2026-10-14) stacks on the People tip:
+`#filter-bar` chips and Clear all, Group People/Places/Tags, collapse
+any group, multi-person AND with fixture proof, user tags that survive
+re-infer. Gate: `python -m tests.qa slice TASTE-FILTERS`. Keep
+`Setup.bat` / `Library.bat` / ASCII `.ps1`. No 23rd Check.
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.

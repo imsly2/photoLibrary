@@ -338,6 +338,20 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/items/tags" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.tags_apply(body))
+                return
+            if route == "/api/tags" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.tags_list())
+                return
+            if route == "/api/tags" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.tags_create(body))
+                return
             if route == "/api/places/analyze" and method == "POST":
                 self._read_json()
                 self._require_idle()

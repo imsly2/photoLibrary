@@ -9,9 +9,12 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    and **Video playback and zoom**. Must-for-presentable items are locked
    shell requirements. The **Presentable for family PC** checklist
    (19 steps) is the taste gate.
-2. Chrome taste: Size + Dates live in `#library-chrome` at the
-   **bottom-left** of the grid. Right **People** splitter
-   (`#library-side`) filters by face (AND when several are selected).
+2. Chrome taste: Search stays in the header. **All filters** live on
+   `#filter-bar` under it (All/Photos/Videos/Favorites, Person/Place/Tag
+   chips, Clear all, Group Dates/People/Places/Tags). Size + Dates live
+   in `#library-chrome` at the **bottom-left** of the grid. Right
+   **People** splitter (`#library-side`) filters by face (AND when
+   several are selected; click a selected person again to remove).
    `#jobs-panel` Pause / Start talks to `/api/jobs`. Keep one Size
    slider, Dates Years/Months/Days/Off, Ctrl+wheel on Size only,
    `#viewer-nav` / `#viewer-zoom-slider` / `#viewer-scrub`. Do **not**

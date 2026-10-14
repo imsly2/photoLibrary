@@ -249,6 +249,17 @@ def build_parser() -> argparse.ArgumentParser:
     update_person.add_argument("--name")
     update_person.add_argument("--thumbnail")
 
+    tags = sub.add_parser("tags")
+    tags_sub = tags.add_subparsers(dest="tags_cmd", required=False)
+    tags_sub.add_parser("list")
+    create_tag = tags_sub.add_parser("create")
+    create_tag.add_argument("name")
+    apply_tag = tags_sub.add_parser("apply")
+    apply_tag.add_argument("--item", action="append", dest="item")
+    apply_tag.add_argument("--items")
+    apply_tag.add_argument("--add", action="append")
+    apply_tag.add_argument("--remove", action="append")
+
     jobs = sub.add_parser("jobs")
     jobs.add_argument("action", nargs="?", choices=("pause", "resume", "rerun-faces"))
 
@@ -522,6 +533,53 @@ def main(argv: list[str] | None = None) -> int:
                 lambda: Library(root).people_merge(args.keep, args.drop),
                 "POST",
                 "/api/people/merge",
+                body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "tags":
+            if args.tags_cmd in {None, "list"}:
+                url = _running_server_url(root)
+                if url is not None:
+                    status, payload = _forward(url, "GET", "/api/tags", None)
+                    if status != 200:
+                        if isinstance(payload, dict) and "error" in payload:
+                            raise AppError(payload["error"], status)
+                        raise fail_from_status(status)
+                    _print_json(payload)
+                    return 0
+                payload = _with_lock(root, lambda: Library(root).tags_list())
+                _print_json(payload)
+                return 0
+            if args.tags_cmd == "create":
+                body = {"name": args.name}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).tags_create(body),
+                    "POST",
+                    "/api/tags",
+                    body,
+                )
+                _print_json(result)
+                return 0
+            if args.tags_cmd != "apply":
+                _print_error("invalid-argument")
+                return 2
+            item_ids: list[str] = []
+            for item_id in args.item or []:
+                item_ids.append(item_id)
+            if args.items:
+                item_ids.extend(part for part in args.items.split(",") if part)
+            body = {
+                "itemIds": item_ids,
+                "add": list(args.add or []),
+                "remove": list(args.remove or []),
+            }
+            result = _mutation(
+                root,
+                lambda: Library(root).tags_apply(body),
+                "POST",
+                "/api/items/tags",
                 body,
             )
             _print_json(result)

@@ -249,6 +249,9 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |
 | `people update <id> --name … --thumbnail <item-id>` | `PUT /api/people/<id>` | Renames a person or chooses the thumbnail face item. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `tags` / `tags list` | `GET /api/tags` | Lists user tags (Things) with counts. Hiking / Singing / Painting are names. |
+| `tags create <name>` | `POST /api/tags` `{"name":"Hiking"}` | Creates a tag Thing without attaching it. Reuses a matching name. |
+| `tags apply --item <id> --add Hiking --remove Painting` | `POST /api/items/tags` `{"itemIds":["…"],"add":["Hiking"],"remove":["Painting"]}` | Applies or removes tags on one or many items. Human tags survive re-infer. |
 | `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects. |
 | `jobs pause` / `jobs resume` | `POST /api/jobs` `{"action":"pause"\|"resume"}` | Pauses or resumes the serve-process drain. Does not block browse. |
 | `setup-geo` [--from \<dir\>] [--force] | (CLI setup; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
@@ -269,16 +272,22 @@ it from a successful update payload.
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
 `person=` (one id/name, or comma-separated ids meaning **all** faces),
-`place=`, `thing=`, `kind=photo|video|live` or a comma list,
+`place=`, `thing=` (one id/name, or comma-separated ids/names meaning
+**all** those tags), `kind=photo|video|live` or a comma list,
 `from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
 Names match case-insensitively. `scope=people|places|things` restricts
 the query for the existing search chips. `kind` keeps only those media
-kinds (`photo,live` for Photos). The toolbar All / Photos / Videos /
+kinds (`photo,live` for Photos). The filter bar All / Photos / Videos /
 Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
 `favorite=1`. Kind and favorite are transient filters, not settings.
 `favorite=1` keeps only hearted items. Item reads include computed
 `favorite` (not stored on the item JSON). `q` also matches a capturedAt
 date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
+
+`GET /api/groups` accepts the same item filters plus `level=years|months|days|all`
+for date groups, or `by=people|places|tags` for entity groups (Unknown /
+No place / Untagged buckets). Date `level` stays required when `by` is
+omitted or `date`.
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
 file. `original` on a missing disk returns HTTP 404 and
@@ -489,6 +498,11 @@ wall — no date-section gaps. Years/Months/Days persist in `zoomLevel`
 (`all` remains a valid API/settings value and displays as Days). Off is
 session-only.
 
+`#arrange` Group People / Places / Tags (session-only) draws one header
+per person, place, or tag on the current set, plus Unknown / No place /
+Untagged. An item lands in one group. Click any group header to
+collapse or expand it; remembered for the session.
+
 Changing Dates or Size must keep already-loaded thumbnails on screen;
 the grid does not blank during the interaction. The item under the
 cursor stays in view when Dates changes.
@@ -682,9 +696,15 @@ dropped person file.
 The Library page lists people in a right side panel. Named people always
 appear. An unnamed cluster appears only when that face is on at least
 `personOfInterestMin` photos (constant 3). Click filters to that face;
-selecting several people keeps photos that contain all of them. The
-panel is where unknowns are named and a thumbnail face is chosen. Info
-still names a person on the open item.
+clicking a selected person again removes that filter. Selecting several
+people keeps photos that contain all of them. Active people, places, and
+tags show as chips on `#filter-bar` with one-click remove and Clear all.
+The panel is where unknowns are named and a thumbnail face is chosen.
+Info still names a person on the open item.
+
+User tags (Hiking, Singing, Painting) are Things: create, apply or remove
+on one item or a multi-selection, filter by chip, group by tag. They
+persist in the catalog and survive objects/faces re-infer.
 
 Naming a thing reuses an existing thing id when the name matches,
 case-insensitively, including aliases. Otherwise annotate creates the thing file.
@@ -864,7 +884,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search in the header, sort Newest/Oldest/Name, `#filter-bar` (All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Dates/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

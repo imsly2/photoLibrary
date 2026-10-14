@@ -49,7 +49,7 @@ fill. They must read as clickable toggles, not heading text.
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
 | Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts, readable error text, and **Retry**; never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
-| Ready | Years/Months/Days/Off date grouping, search, sort Newest/Oldest/Name, filters All/Photos/Videos/Favorites, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel, hearts and open work on the same current item set. Date grouping (Years/Months/Days) and sort persist to settings; Off, selection, current filter, Size, side-panel width/collapse, and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
+| Ready | Search stays in the header. **All filters live on `#filter-bar`**, one row under the header: All / Photos / Videos / Favorites, removable active-filter chips, Clear all, and Group (Dates / People / Places / Tags). Years/Months/Days/Off date grouping, sort Newest/Oldest/Name, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus **Tags**, hearts and open work on the same current item set. Date grouping (Years/Months/Days) and sort persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local` when not a git checkout). Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed / update-unavailable. A successful Update refreshes `#library-version` from the new tip in the response (the serve process does not restart). No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
 | Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
@@ -90,9 +90,10 @@ wall. There is no Level slider and no second zoom rail.
 the **bottom of the library grid**, clustered bottom-left. They are not
 in the header toolbar and not a vertical rail on the right (that slot
 is the People panel). Size is a horizontal range in that cluster.
+`#arrange` (Group: Dates / People / Places / Tags) lives on `#filter-bar`.
 
 Date grouping is `#date-group` (Years / Months / Days / Off). It is not
-a second slider and not encoded as zoom.
+a second slider and not encoded as zoom. It applies when Group is Dates.
 Years is one mosaic card per year. Months is one mosaic card per month.
 Days is a header per day and every photo from that day. Off (“one wall”
 / blob) cascades every matching thumb onto one continuous wall — one
@@ -117,11 +118,12 @@ the word VIDEO, and duration when `metadata.durationSec` exists). Live
 cells keep the existing LIVE badge (`.live-badge` text `LIVE`). Badges sit
 on the tile and do not crop the media.
 
-The toolbar All / Photos / Videos / Favorites controls are mutually
-exclusive. All clears kind and favorite. Photos sends `kind=photo,live`.
-Videos sends `kind=video`. Favorites sends `favorite=1`. Combined with
-the presentable sort (Newest / Oldest / Name), this is how the library
-is filtered. Location sort remains available.
+The All / Photos / Videos / Favorites controls live on `#filter-bar`
+(not in the header) and are mutually exclusive. All clears kind and
+favorite. Photos sends `kind=photo,live`. Videos sends `kind=video`.
+Favorites sends `favorite=1`. Combined with the presentable sort
+(Newest / Oldest / Name) and the active-filter chips, this is how the
+library is filtered. Location sort remains available.
 
 Hearts: `#grid` `data-hearts=on` when `--cell` is 144 or larger, `off` at
 72 and 104. The heart is a button `.heart` in the badge corner (top-left
@@ -178,10 +180,14 @@ Globe hides the whole workspace, including the panel.
 thumbnail (chosen `thumbnailItemId`, else the largest / highest-score boxed
 face, else the first still), a display name, and a count. `name:null` or empty shows
 **Unnamed** (Unknown until named). Click a person to filter the grid to
-photos that include that face (`person=<id>`). Ctrl/Cmd-click (or the
-row checkbox) adds or removes that person; several selected people
-filter to photos that contain **all** of them (`person=id1,id2` is AND).
-Clicking the sole selected person again clears the people filter.
+photos that include that face (`person=<id>`). Filter state has **one**
+source of truth (`filter.person` and the matching chip). Clicking a
+**selected** person again removes that person (sole selected → clear;
+one of several → drop that id). Ctrl/Cmd-click adds or removes that
+person without replacing the others. Several selected people filter to
+photos that contain **all** of them (`person=id1,id2` is AND). The
+matching `#active-filters` chip (`Person: Ada ×`) removes that person
+in one click.
 
 Show in the sidebar:
 
@@ -200,6 +206,51 @@ toggle the person row. The crop image always has width and height; a
 pending or 404 thumb shows a placeholder and refreshes when the
 rendition is ready. Naming stays available in Info. Person merge stays
 CLI/HTTP; no merge wizard.
+
+## Filter bar, chips, arrange, and tags
+
+Search stays in the header (`#search` plus People / Places / Things
+scope chips). **Every filter** sits on `#filter-bar` under that header:
+All / Photos / Videos / Favorites, then `#active-filters` chips, then
+**Clear all** (`#clear-filters`), then **Group** (`#arrange`).
+
+Active filters are obvious chips with one-click remove:
+
+- `Person: Steve ×` — one chip per selected person
+- `Place: Chicago ×` — one chip per selected place
+- `Tag: Hiking ×` — one chip per selected tag (a Thing)
+
+Clicking `×` or the chip removes only that token. **Clear all** drops
+person, place, tag, search query, scope, and kind/favorite (back to
+All). The People panel `aria-pressed` state, `#grid` dataset, chips,
+and the `GET /api/items` query all read the same `filter` object.
+
+`#arrange` is session-only (not a settings.json key):
+
+| Group | Headers |
+|---|---|
+| Dates | Existing Years / Months / Days; Off is still one wall |
+| People | One header per person on the current set; items with no face go in **Unknown** |
+| Places | One header per place; items with no place go in **No place** |
+| Tags | One header per tag (Thing name); items with no tag go in **Untagged** |
+
+An item with several people or tags appears in **one** group (first
+name A–Z, then id) so ids stay unique across groups. Click any group
+header (date, person, place, tag, or Favorites) to collapse or expand
+it. Collapsed keys are remembered for the session (`arrange:key`).
+
+User tags are Things: create `Hiking` / `Singing` / `Painting`, apply
+or remove on the current item or a multi-selection, filter by the tag
+chip, group by Tags. `GET`/`POST /api/tags` and
+`POST /api/items/tags` persist them in `catalog/things/` and the item
+`things` array. Re-infer (objects or faces) unions detections and
+never strips a human tag.
+
+Ctrl/Cmd-click a grid tile toggles selection without opening the
+viewer; Shift+click extends a range. A regular click still opens the
+viewer and makes that item the selection. `#tag-apply` / `#tag-remove`
+and the viewer Info tag row write the same catalog. This is tag
+apply/remove, not batch Delete file and not albums.
 
 ### Processing
 
@@ -372,10 +423,12 @@ default. Commands: CONTRACTS `remove` and `delete-file`.
 
 **8. Sort + filters.** Presentable sort labels: Newest, Oldest, Name
 (`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
-stays available so F11 is not weakened. Filters are a mutually exclusive
-toolbar: All (no kind, no favorite), Photos (`kind=photo,live`), Videos
-(`kind=video`), Favorites (`favorite=1`). The Favorites strip still
-appears when All is selected and any current result is hearted.
+stays available so F11 is not weakened. Search stays in the header.
+Filters live on `#filter-bar`: mutually exclusive All (no kind, no
+favorite), Photos (`kind=photo,live`), Videos (`kind=video`), Favorites
+(`favorite=1`), plus removable Person / Place / Tag chips and Clear all.
+The Favorites strip still appears when All is selected and any current
+result is hearted. Group Dates / People / Places / Tags is session-only.
 
 **9. Search.** The box matches filename, capturedAt date text (YYYY,
 YYYY-MM, YYYY-MM-DD), and existing person/place/thing names (and thing
@@ -559,7 +612,7 @@ taste gate.
 | 3 | Update | Launcher or header Update; Updating… then updated / already current / failed / git missing. Header shows the checkout SHA. No CMD. No branch switch |
 | 4 | Add folder | Native picker; copy-or-link; dialog closes on 202 |
 | 5 | Progress / scan error | Status + console; items as ready; failure shows Retry, never a blank page |
-| 6 | Wall + sort + filters | Dates Off = one wall; Years/Months/Days separate from Size; Size + Dates bottom-left; ≥8 sizes; thumbs stay; Newest/Oldest/Name; All / Photos / Videos / Favorites; People panel on the right |
+| 6 | Wall + sort + filters | Dates Off = one wall; Years/Months/Days separate from Size; Size + Dates bottom-left; ≥8 sizes; thumbs stay; Newest/Oldest/Name; Search in the header; All / Photos / Videos / Favorites plus Person/Place/Tag chips on `#filter-bar`; People panel on the right |
 | 7 | Search | Filename, date, or a tag; empty “No matches for …” |
 | 8 | Open | Preview then original or `playback`; no “Showing original” control; `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable; no overlay pills; missing-file placeholder |
 | 9 | Next / Prev / arrows | Bottom Previous and Next; arrows; stop at ends; Back stays on this origin |

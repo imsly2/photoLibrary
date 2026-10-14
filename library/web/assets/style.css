@@ -128,10 +128,149 @@ h1 {
   box-shadow: inset 0 0 0 1px #4a7ad4;
 }
 
+#filter-bar[hidden] {
+  display: none;
+}
+
+#filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  padding: 0.45rem 1.25rem;
+  border-bottom: 1px solid #2a2a32;
+  background: #14141a;
+  flex-shrink: 0;
+}
+
 #filter-chips {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+}
+
+#active-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #2d4a7a;
+  color: #f2f2f4;
+  border: 1px solid #4a7ad4;
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem 0.22rem 0.7rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.filter-chip:hover {
+  background: #355892;
+}
+
+.filter-chip .chip-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background: #1b1b22;
+  color: #f2f2f4;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+#clear-filters {
+  background: transparent;
+  color: #c8c8d0;
+  border: 1px solid #3a3a46;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+}
+
+#clear-filters:hover {
+  color: #f2f2f4;
+  border-color: #6a6a7a;
+}
+
+#tag-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+
+#tag-new,
+#tag-pick,
+#arrange {
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.25rem 0.45rem;
+}
+
+#tag-new {
+  width: 7.5rem;
+}
+
+#tag-create,
+#tag-apply,
+#tag-remove {
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+}
+
+#tags-panel {
+  padding: 0.75rem 0.85rem 0;
+  border-top: 1px solid #2a2a32;
+}
+
+#tags-heading {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+}
+
+#tags-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#tags-list button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: transparent;
+  color: #f2f2f4;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+#tags-list button[aria-pressed="true"] {
+  background: #2d4a7a;
+}
+
+#tags-empty {
+  margin: 0;
+  color: #9a9aa6;
+  font-size: 0.85rem;
 }
 
 .legacy-sort {
@@ -785,6 +924,27 @@ main > p {
   font-size: 1rem;
   font-weight: 600;
   color: #e6e6ec;
+  cursor: pointer;
+}
+
+.group-key::before {
+  content: "v ";
+  color: #8a8a96;
+  font-weight: 500;
+}
+
+.group.collapsed .group-key::before {
+  content: "> ";
+}
+
+.group.collapsed .item-list,
+.group.collapsed .mosaic {
+  display: none;
+}
+
+.cell.selected {
+  outline: 2px solid #4a7ad4;
+  outline-offset: -2px;
 }
 
 #favorites-toggle {

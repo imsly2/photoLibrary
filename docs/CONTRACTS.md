@@ -27,7 +27,8 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
 | Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
-| Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
+| Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. `person` and `thing` comma-separated **ids or names** are AND (every token must match). |
+| User tags | Tags are Things (`catalog/things/`, item `things[]`). `GET`/`POST /api/tags` lists or creates a name. `POST /api/items/tags` adds or removes those Thing refs on one or many items. Re-infer unions detections and never drops a human tag. Not albums. |
 | Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. Optional local workers (after one-time `setup-geo` / `setup-ml`) may write associations: GPS city names only when `place.name` is null; YOLO Things through name-only annotate (COCO person ignored); InsightFace unnamed face clusters. No name guessing, caption system, gender/age labels, or box-drawing tool. Faces and pixels never leave the machine. |
 | Local place names | Optional offline GeoNames-class cities pack in `library-data/geo/` (fetched by `setup-geo`, never shipped in git). When the pack is present, scan / `resolve_place` / `analyze-places` may set `place.name` to city/region **only when that name is null**. Never overwrite a nonempty name. Never call a cloud geocoder. Missing pack leaves name null. Not a settings key. Not an image model. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
@@ -252,7 +253,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer|faces-cleanup`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer|faces-cleanup|tags`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -297,7 +298,10 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
-| GET `/api/groups` | `level=years|months|days|all` plus item filters/sort; array `{key,itemIds}`; year YYYY, month YYYY-MM, day YYYY-MM-DD; same ids exactly once as item results; groups ordered by first occurrence in sorted items, contents retain item order. Flattening can differ from item sort when dates interleave; viewer arrows use item sort. No invented “best” photos. |
+| GET `/api/groups` | Date: `level=years|months|days|all` plus item filters/sort; array `{key,itemIds}`; year YYYY, month YYYY-MM, day YYYY-MM-DD. Entity: `by=people\|places\|tags` (level ignored); `{key,id?,itemIds}` with Unknown / No place / Untagged last. Same ids exactly once as item results; an item with several people/tags uses the first name A–Z then id. Groups ordered by first occurrence in sorted items for dates, by label then id for entities; contents retain item order. Flattening can differ from item sort when dates interleave; viewer arrows use item sort. No invented “best” photos. |
+| tags / tags list / GET `/api/tags` | 200 `{tags}` each `{id,name,aliases,itemCount}`. Same Thing records as annotate. |
+| tags create name / POST `/api/tags` | `{name}`; 200 tag row. Reuses smallest matching Thing name/alias. Undoable `tags` when a file is created. |
+| tags apply / POST `/api/items/tags` | `{itemIds:[…],add?:[name\|id],remove?:[name\|id]}`; 200 `{ok,items}`. Add unions Thing refs (no box). Remove drops that `thingId` from those items. Empty add+remove or empty itemIds is `invalid-argument`. Unknown item id is `not-found`. Undoable `tags`. Human tags survive analyze / infer-faces. |
 | GET `/api/places` | array `{id,latitude,longitude,name,itemCount,newestItemId}` for places with coordinates and visible items; same unavailable policy as items |
 | GET `/api/globe/tour` | array `{placeId,itemIds}` ordered newest item date descending then place id; items newest first capped by tourPictures, only readable ready preview (still/live) or proxy (video). Skip empty places. |
 | annotate id / POST `/api/items/<id>/annotations` | payload below; 200 updated item |
@@ -338,8 +342,9 @@ maps to these arrays; `--place Kitchen` and `--json` cover existing operations.
 
 Queries: sort=date|location|name, dir=asc|desc, person/place/thing exact id or
 normalized exact name; place also comma-separated ids (OR). `person` with
-comma-separated **ids** keeps items that contain **all** those people
-(AND). A single person token still matches id or exact name. `kind` is one of
+comma-separated **ids or names** keeps items that contain **all** those people
+(AND). `thing` with comma-separated **ids or names** keeps items that contain
+**all** those tags (AND). A single person or thing token still matches id or exact name. `kind` is one of
 `photo|video|live` or a comma-separated list of those (Photos filter is
 `photo,live`). Unknown kind is `invalid-argument`. `favorite=1` keeps hearted
 items only; any other `favorite` value is `invalid-argument`. `q` is normalized substring

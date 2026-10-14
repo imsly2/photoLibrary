@@ -64,6 +64,18 @@
   const filterPhotos = document.getElementById("filter-photos");
   const filterVideos = document.getElementById("filter-videos");
   const filterFavorites = document.getElementById("filter-favorites");
+  const filterBar = document.getElementById("filter-bar");
+  const activeFilters = document.getElementById("active-filters");
+  const clearFiltersBtn = document.getElementById("clear-filters");
+  const arrangeSelect = document.getElementById("arrange");
+  const tagNewInput = document.getElementById("tag-new");
+  const tagCreateBtn = document.getElementById("tag-create");
+  const tagPick = document.getElementById("tag-pick");
+  const tagApplyBtn = document.getElementById("tag-apply");
+  const tagRemoveBtn = document.getElementById("tag-remove");
+  const tagsList = document.getElementById("tags-list");
+  const tagsEmpty = document.getElementById("tags-empty");
+  const viewerTags = document.getElementById("viewer-tags");
   const removeItemBtn = document.getElementById("remove-item");
   const deleteFileBtn = document.getElementById("delete-file");
   const scanStatus = document.getElementById("scan-status");
@@ -144,7 +156,11 @@
   let favoritesOpen = true;
   let peopleCatalog = [];
   let personOfInterestMin = 3;
-  let selectedPeople = [];
+  let tagsCatalog = [];
+  let arrangeBy = "dates";
+  let collapsedGroups = {};
+  let selectedIds = [];
+  let lastClickedId = null;
   let sideOpen = true;
   let sideWidth = 264;
   let splitDragging = false;
@@ -286,9 +302,142 @@
     return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite;
   }
 
-  function syncPeopleSelectionFromFilter() {
-    selectedPeople = (filter.person || "").split(",").filter(Boolean);
-    renderPeople();
+  function selectedPeople() {
+    return (filter.person || "").split(",").filter(Boolean);
+  }
+
+  function selectedThings() {
+    return (filter.thing || "").split(",").filter(Boolean);
+  }
+
+  function selectedPlaces() {
+    return (filter.place || "").split(",").filter(Boolean);
+  }
+
+  function csvWithout(csv, token) {
+    return (csv || "").split(",").filter(function (part) {
+      return part && part !== token;
+    }).join(",");
+  }
+
+  function csvToggle(csv, token, additive) {
+    const parts = (csv || "").split(",").filter(Boolean);
+    const idx = parts.indexOf(token);
+    if (additive) {
+      if (idx >= 0) {
+        parts.splice(idx, 1);
+      } else {
+        parts.push(token);
+      }
+      return parts.join(",");
+    }
+    if (idx >= 0) {
+      parts.splice(idx, 1);
+      return parts.join(",");
+    }
+    return token;
+  }
+
+  function entityName(kind, id) {
+    if (!id) {
+      return "";
+    }
+    if (kind === "person") {
+      for (let i = 0; i < peopleCatalog.length; i += 1) {
+        if (peopleCatalog[i].id === id) {
+          return personDisplayName(peopleCatalog[i]);
+        }
+      }
+    }
+    if (kind === "thing") {
+      for (let i = 0; i < tagsCatalog.length; i += 1) {
+        if (tagsCatalog[i].id === id) {
+          return tagsCatalog[i].name || id;
+        }
+      }
+    }
+    for (let i = 0; i < items.length; i += 1) {
+      const entities = (items[i] && items[i].entities) || {};
+      const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
+      for (let j = 0; j < (list || []).length; j += 1) {
+        if (list[j] && list[j].id === id) {
+          return list[j].name || (kind === "person" ? "Unnamed" : id);
+        }
+      }
+    }
+    return id;
+  }
+
+  function renderActiveFilters() {
+    if (!activeFilters) {
+      return;
+    }
+    activeFilters.innerHTML = "";
+    function addChip(kind, id, label) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "filter-chip";
+      btn.dataset.kind = kind;
+      btn.dataset.id = id;
+      btn.setAttribute("aria-label", "Remove " + label);
+      btn.textContent = label + " ";
+      const x = document.createElement("span");
+      x.className = "chip-x";
+      x.setAttribute("aria-hidden", "true");
+      x.textContent = "x";
+      btn.appendChild(x);
+      btn.addEventListener("click", function () {
+        removeFilterToken(kind, id);
+      });
+      activeFilters.appendChild(btn);
+    }
+    selectedPeople().forEach(function (id) {
+      addChip("person", id, "Person: " + entityName("person", id));
+    });
+    selectedPlaces().forEach(function (id) {
+      addChip("place", id, "Place: " + entityName("place", id));
+    });
+    selectedThings().forEach(function (id) {
+      addChip("thing", id, "Tag: " + entityName("thing", id));
+    });
+    if (filter.q) {
+      addChip("q", filter.q, "Search: " + filter.q);
+    }
+    if (filter.scope) {
+      const scopeLabel = filter.scope.charAt(0).toUpperCase() + filter.scope.slice(1);
+      addChip("scope", filter.scope, "Scope: " + scopeLabel);
+    }
+    const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite);
+    if (clearFiltersBtn) {
+      clearFiltersBtn.hidden = !hasEntity;
+    }
+    if (filterBar) {
+      filterBar.dataset.active = hasEntity ? "1" : "0";
+    }
+  }
+
+  function removeFilterToken(kind, token) {
+    const next = copyFilter(filter);
+    if (kind === "person") {
+      next.person = csvWithout(next.person, token);
+    } else if (kind === "place") {
+      next.place = csvWithout(next.place, token);
+    } else if (kind === "thing") {
+      next.thing = csvWithout(next.thing, token);
+    } else if (kind === "q") {
+      next.q = "";
+    } else if (kind === "scope") {
+      next.scope = "";
+    }
+    applyFilterState(next, next.q);
+    renderKey = "";
+    loadCatalog();
+  }
+
+  function clearAllFilters() {
+    applyFilterState({ q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" }, "");
+    renderKey = "";
+    return loadCatalog();
   }
 
   function syncFilterDataset() {
@@ -312,6 +461,7 @@
     if (filterFavorites) {
       filterFavorites.setAttribute("aria-pressed", filter.favorite === "1" ? "true" : "false");
     }
+    renderActiveFilters();
   }
 
   function presentableSortValue() {
@@ -463,6 +613,9 @@
     if (workspace) {
       workspace.hidden = name !== "library";
     }
+    if (filterBar) {
+      filterBar.hidden = name !== "library";
+    }
     if (globeView) {
       globeView.hidden = name !== "globe";
     }
@@ -499,7 +652,6 @@
 
   function applyFilterState(next, searchValue) {
     filter = copyFilter(next);
-    selectedPeople = (filter.person || "").split(",").filter(Boolean);
     if (searchInput) {
       searchInput.value = searchValue != null ? searchValue : filter.q;
     }
@@ -508,9 +660,8 @@
     if (!(filter.person || filter.place || filter.thing)) {
       hideInspector();
     }
-    if (filterVideos) {
-      filterVideos.setAttribute("aria-pressed", filter.kind === "video" ? "true" : "false");
-    }
+    renderPeople();
+    renderTags();
   }
 
   function readJson(res) {
@@ -2234,6 +2385,9 @@
     if (thingsLabels) {
       thingsLabels.innerHTML = "";
     }
+    if (viewerTags) {
+      viewerTags.innerHTML = "";
+    }
     if (!item) {
       return;
     }
@@ -2278,6 +2432,37 @@
     addLabels(peopleLabels, "person", entities.people);
     addLabels(placeLabels, "place", entities.places);
     addLabels(thingsLabels, "thing", entities.things);
+    if (viewerTags) {
+      (entities.things || []).forEach(function (rec) {
+        if (!rec || !rec.id || !rec.name) {
+          return;
+        }
+        const wrap = document.createElement("span");
+        wrap.className = "entity-label";
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "entity-label";
+        btn.dataset.entityKind = "thing";
+        btn.dataset.entityId = rec.id;
+        btn.textContent = rec.name;
+        btn.addEventListener("click", function () {
+          filterByEntity("thing", rec.id);
+        });
+        const drop = document.createElement("button");
+        drop.type = "button";
+        drop.className = "chip-x";
+        drop.setAttribute("aria-label", "Remove tag " + rec.name);
+        drop.textContent = "x";
+        drop.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          applyTagsToItems([item.id], [], [rec.id]);
+        });
+        wrap.appendChild(btn);
+        wrap.appendChild(drop);
+        viewerTags.appendChild(wrap);
+      });
+    }
     function fillEmpty(node) {
       if (!node || node.childNodes.length) {
         return;
@@ -2290,6 +2475,7 @@
     fillEmpty(peopleLabels);
     fillEmpty(placeLabels);
     fillEmpty(thingsLabels);
+    fillEmpty(viewerTags);
   }
 
   function openStillViewer(item, index) {
@@ -2511,6 +2697,9 @@
     cell.dataset.filename = item.filename || "";
     cell.dataset.kind = item.kind || "";
     cell.dataset.slot = slot || "grid";
+    if (selectedIds.indexOf(item.id) >= 0) {
+      cell.classList.add("selected");
+    }
     const placeholder = document.createElement("span");
     placeholder.className = "placeholder";
     placeholder.textContent = PLACEHOLDER;
@@ -2563,8 +2752,22 @@
       selectedId = item.id;
       syncSelectionChrome();
     });
-    cell.addEventListener("click", function () {
+    cell.addEventListener("click", function (event) {
+      if (event.metaKey || event.ctrlKey) {
+        event.preventDefault();
+        toggleSelectedId(item.id);
+        return;
+      }
+      if (event.shiftKey && lastClickedId) {
+        event.preventDefault();
+        selectRange(lastClickedId, item.id);
+        return;
+      }
       selectedId = item.id;
+      lastClickedId = item.id;
+      selectedIds = [item.id];
+      paintSelection();
+      syncSelectionChrome();
       if (hoverVideo && hoverCell === cell) {
         rememberHoverTime(item.id, hoverVideo);
       }
@@ -2595,7 +2798,11 @@
     main.dataset.size = String(size);
     main.dataset.groupDates = groupDates ? "on" : "off";
     main.dataset.dateGroup = dateMode;
+    main.dataset.arrange = arrangeBy;
     main.dataset.hearts = size >= HEART_MIN ? "on" : "off";
+    if (arrangeSelect && arrangeSelect.value !== arrangeBy) {
+      arrangeSelect.value = arrangeBy;
+    }
     main.className = "level-" + level + (groupDates ? "" : " wall");
     main.style.setProperty("--cell", size + "px");
     if (sizeSlider) {
@@ -2624,6 +2831,60 @@
         out[seen[key]].itemIds.push(item.id);
       }
     });
+    return out;
+  }
+
+  function firstEntity(item, kind) {
+    const list = ((item && item.entities) || {})[kind] || [];
+    if (!list.length) {
+      return null;
+    }
+    const ranked = list.slice().sort(function (a, b) {
+      const an = a && a.name ? 0 : 1;
+      const bn = b && b.name ? 0 : 1;
+      if (an !== bn) {
+        return an - bn;
+      }
+      return String((a && a.name) || "").localeCompare(String((b && b.name) || "")) || String((a && a.id) || "").localeCompare(String((b && b.id) || ""));
+    });
+    return ranked[0];
+  }
+
+  function groupsFromArrange(list, by) {
+    if (by === "dates") {
+      return groupsFromItems(list, settings.zoomLevel);
+    }
+    const leftoverKey = by === "people" ? "Unknown" : by === "places" ? "No place" : "Untagged";
+    const buckets = {};
+    const leftover = [];
+    (list || []).forEach(function (item) {
+      let chosen = null;
+      if (by === "people") {
+        chosen = firstEntity(item, "people");
+      } else if (by === "places") {
+        chosen = firstEntity(item, "places");
+      } else {
+        chosen = firstEntity(item, "things");
+      }
+      if (!chosen) {
+        leftover.push(item.id);
+        return;
+      }
+      const id = chosen.id;
+      if (!buckets[id]) {
+        buckets[id] = { key: chosen.name || (by === "people" ? "Unnamed" : id), id: id, itemIds: [item.id] };
+      } else {
+        buckets[id].itemIds.push(item.id);
+      }
+    });
+    const out = Object.keys(buckets).map(function (id) {
+      return buckets[id];
+    }).sort(function (a, b) {
+      return String(a.key).localeCompare(String(b.key)) || String(a.id).localeCompare(String(b.id));
+    });
+    if (leftover.length) {
+      out.push({ key: leftoverKey, id: null, itemIds: leftover });
+    }
     return out;
   }
 
@@ -2709,7 +2970,7 @@
     }).map(function (item) {
       return item.id;
     }).join(",");
-    const key = level + "|" + (groupDates ? "dates" : "wall") + "|" + favKey + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
+    const key = level + "|" + arrangeBy + "|" + (groupDates ? "dates" : "wall") + "|" + favKey + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
       return group.key + ":" + (group.itemIds || []).join(",");
     }).join(";");
     if (key === renderKey) {
@@ -2727,7 +2988,7 @@
     if (fav) {
       fragment.appendChild(fav);
     }
-    if (!groupDates) {
+    if (!groupDates && arrangeBy === "dates") {
       const list = document.createElement("div");
       list.className = "item-list wall-list";
       items.forEach(function (item) {
@@ -2735,16 +2996,36 @@
       });
       fragment.appendChild(list);
     } else {
-      groups.forEach(function (group) {
+      const shown = (arrangeBy === "dates") ? groups : (groups.length ? groups : groupsFromArrange(items, arrangeBy));
+      shown.forEach(function (group) {
         const section = document.createElement("section");
-        section.className = "group";
+        const collapseKey = arrangeBy + ":" + (group.id || group.key);
+        const collapsed = !!collapsedGroups[collapseKey];
+        section.className = "group" + (collapsed ? " collapsed" : "");
         section.dataset.key = group.key;
+        if (group.id) {
+          section.dataset.id = group.id;
+        }
         const heading = document.createElement("h2");
         heading.className = "group-key";
+        heading.setAttribute("role", "button");
+        heading.tabIndex = 0;
+        heading.setAttribute("aria-expanded", collapsed ? "false" : "true");
         heading.textContent = group.key;
+        heading.addEventListener("click", function () {
+          collapsedGroups[collapseKey] = !collapsedGroups[collapseKey];
+          section.classList.toggle("collapsed", !!collapsedGroups[collapseKey]);
+          heading.setAttribute("aria-expanded", collapsedGroups[collapseKey] ? "false" : "true");
+        });
+        heading.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            heading.click();
+          }
+        });
         section.appendChild(heading);
         const list = document.createElement("div");
-        list.className = mosaic ? "mosaic" : "item-list";
+        list.className = mosaic && arrangeBy === "dates" ? "mosaic" : "item-list";
         (group.itemIds || []).forEach(function (id) {
           list.appendChild(takeCell(existing, id, "grid"));
         });
@@ -2761,6 +3042,7 @@
     main.innerHTML = "";
     main.appendChild(fragment);
     applyGridMetrics();
+    paintSelection();
     renderKey = key;
     if (anchor) {
       scrollIdIntoView(anchor);
@@ -2900,11 +3182,12 @@
     if (!personProfile || !personNameInput || !personFaces) {
       return;
     }
-    if (selectedPeople.length !== 1) {
+    const peopleSel = selectedPeople();
+    if (peopleSel.length !== 1) {
       personProfile.hidden = true;
       return;
     }
-    const id = selectedPeople[0];
+    const id = peopleSel[0];
     const person = peopleCatalog.filter(function (row) { return row.id === id; })[0] || { id: id, name: null };
     personProfile.hidden = false;
     if (document.activeElement !== personNameInput) {
@@ -2956,7 +3239,7 @@
       btn.type = "button";
       btn.className = "person-row";
       btn.dataset.personId = person.id;
-      btn.setAttribute("aria-pressed", selectedPeople.indexOf(person.id) >= 0 ? "true" : "false");
+      btn.setAttribute("aria-pressed", selectedPeople().indexOf(person.id) >= 0 ? "true" : "false");
       const face = document.createElement("span");
       face.className = "person-face";
       paintFace(face, person.thumbnail);
@@ -2992,42 +3275,175 @@
         personOfInterestMin = Number(body.personOfInterestMin) || 3;
       }
       renderPeople();
+      renderActiveFilters();
       return body;
     }).catch(function () {
       return null;
     });
   }
 
+  function renderTags() {
+    if (!tagsList) {
+      return;
+    }
+    const rows = tagsCatalog.slice();
+    if (tagsEmpty) {
+      tagsEmpty.hidden = rows.length > 0;
+    }
+    tagsList.innerHTML = "";
+    rows.forEach(function (tag) {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-row";
+      btn.dataset.tagId = tag.id;
+      btn.setAttribute("aria-pressed", selectedThings().indexOf(tag.id) >= 0 ? "true" : "false");
+      const name = document.createElement("span");
+      name.textContent = tag.name || tag.id;
+      const count = document.createElement("span");
+      count.textContent = String(tag.itemCount || 0);
+      btn.appendChild(name);
+      btn.appendChild(count);
+      btn.addEventListener("click", function (event) {
+        selectTag(tag.id, event.metaKey || event.ctrlKey);
+      });
+      li.appendChild(btn);
+      tagsList.appendChild(li);
+    });
+    if (tagPick) {
+      const current = tagPick.value;
+      tagPick.innerHTML = "";
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "Tag";
+      tagPick.appendChild(blank);
+      rows.forEach(function (tag) {
+        const opt = document.createElement("option");
+        opt.value = tag.id;
+        opt.textContent = tag.name || tag.id;
+        tagPick.appendChild(opt);
+      });
+      if (current) {
+        tagPick.value = current;
+      }
+    }
+  }
+
+  function loadTags() {
+    return fetch("/api/tags").then(readJson).then(function (body) {
+      tagsCatalog = (body && body.tags) || [];
+      renderTags();
+      renderActiveFilters();
+      return body;
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  function selectTag(id, additive) {
+    if (!id) {
+      return;
+    }
+    const current = selectedThings();
+    const already = current.indexOf(id) >= 0;
+    const next = copyFilter(filter);
+    if (additive) {
+      next.thing = csvToggle(filter.thing, id, true);
+    } else if (already) {
+      next.thing = csvWithout(filter.thing, id);
+    } else {
+      next.q = "";
+      next.scope = "";
+      next.person = "";
+      next.place = "";
+      next.thing = id;
+    }
+    applyFilterState(next, next.q);
+    renderKey = "";
+    return loadCatalog();
+  }
+
+  function selectedItemIds() {
+    if (selectedIds.length) {
+      return selectedIds.slice();
+    }
+    if (viewerItemId) {
+      return [viewerItemId];
+    }
+    if (selectedId) {
+      return [selectedId];
+    }
+    return [];
+  }
+
+  function createTagFromBox() {
+    if (!tagNewInput) {
+      return Promise.resolve();
+    }
+    const name = tagNewInput.value.trim();
+    if (!name) {
+      return Promise.resolve();
+    }
+    return fetch("/api/tags", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name }),
+    }).then(readJson).then(function (row) {
+      tagNewInput.value = "";
+      return loadTags().then(function () {
+        if (row && row.id && tagPick) {
+          tagPick.value = row.id;
+        }
+        const ids = selectedItemIds();
+        if (row && row.id && ids.length) {
+          return applyTagsToItems(ids, [row.id], []);
+        }
+      });
+    });
+  }
+
+  function applyTagsToItems(itemIds, add, remove) {
+    if (!itemIds.length || (!add.length && !remove.length)) {
+      return Promise.resolve();
+    }
+    return fetch("/api/items/tags", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemIds: itemIds, add: add, remove: remove }),
+    }).then(readJson).then(function () {
+      return Promise.all([loadTags(), loadCatalog()]);
+    });
+  }
+
+  function pickTagId() {
+    if (tagPick && tagPick.value) {
+      return tagPick.value;
+    }
+    if (tagNewInput && tagNewInput.value.trim()) {
+      return tagNewInput.value.trim();
+    }
+    return "";
+  }
+
   function selectPerson(id, additive) {
     if (!id) {
       return;
     }
+    const current = selectedPeople();
+    const already = current.indexOf(id) >= 0;
+    const next = copyFilter(filter);
     if (additive) {
-      const idx = selectedPeople.indexOf(id);
-      if (idx >= 0) {
-        selectedPeople.splice(idx, 1);
-      } else {
-        selectedPeople.push(id);
-      }
-    } else if (selectedPeople.length === 1 && selectedPeople[0] === id) {
-      selectedPeople = [];
+      next.person = csvToggle(filter.person, id, true);
+    } else if (already) {
+      next.person = csvWithout(filter.person, id);
     } else {
-      selectedPeople = [id];
+      next.q = "";
+      next.scope = "";
+      next.place = "";
+      next.thing = "";
+      next.person = id;
     }
-    filter.q = "";
-    filter.scope = "";
-    filter.place = "";
-    filter.thing = "";
-    filter.person = selectedPeople.join(",");
-    if (searchInput) {
-      searchInput.value = "";
-    }
-    if (!filter.person) {
-      hideInspector();
-    }
-    syncChips();
-    syncFilterDataset();
-    renderPeople();
+    applyFilterState(next, next.q);
     renderKey = "";
     return loadCatalog();
   }
@@ -3153,15 +3569,23 @@
     });
   }
 
+  function groupsQuery() {
+    if (arrangeBy !== "dates") {
+      return queryString({ by: arrangeBy });
+    }
+    return queryString({ level: settings.zoomLevel });
+  }
+
   function loadCatalog() {
     const gen = loadGen + 1;
     loadGen = gen;
     const qs = queryString();
     loadJobs();
     loadPeople();
+    loadTags();
     return Promise.all([
       fetch("/api/items?" + qs).then(readJson),
-      fetch("/api/groups?" + queryString({ level: settings.zoomLevel })).then(readJson),
+      fetch("/api/groups?" + groupsQuery()).then(readJson),
       fetch("/api/sources").then(readJson),
       fetch("/api/settings").then(readJson),
     ]).then(function (parts) {
@@ -3308,28 +3732,15 @@
     if (!id) {
       return;
     }
-    filter.q = "";
-    filter.scope = "";
-    filter.person = "";
-    filter.place = "";
-    filter.thing = "";
-    filter.kind = "";
-    filter.favorite = "";
+    const next = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
     if (kind === "person") {
-      filter.person = id;
-      selectedPeople = [id];
+      next.person = id;
     } else if (kind === "place") {
-      filter.place = id;
-      selectedPeople = [];
+      next.place = id;
     } else if (kind === "thing") {
-      filter.thing = id;
-      selectedPeople = [];
+      next.thing = id;
     }
-    if (searchInput) {
-      searchInput.value = "";
-    }
-    syncChips();
-    syncFilterDataset();
+    applyFilterState(next, "");
     renderKey = "";
     if (!viewer.hidden) {
       hideViewerChrome();
@@ -3343,14 +3754,15 @@
   }
 
   function applySearchFromBox() {
-    filter.q = searchInput ? searchInput.value : "";
-    filter.person = "";
-    filter.place = "";
-    filter.thing = "";
-    selectedPeople = [];
-    hideInspector();
-    syncChips();
-    syncFilterDataset();
+    applyFilterState({
+      q: searchInput ? searchInput.value : "",
+      scope: filter.scope,
+      person: "",
+      place: "",
+      thing: "",
+      kind: filter.kind,
+      favorite: filter.favorite,
+    }, searchInput ? searchInput.value : "");
     renderKey = "";
     return loadCatalog();
   }
@@ -3667,11 +4079,66 @@
   });
 
   function setKindFilter(kind, favorite) {
-    filter.kind = kind || "";
-    filter.favorite = favorite || "";
-    syncFilterDataset();
+    const next = copyFilter(filter);
+    next.kind = kind || "";
+    next.favorite = favorite || "";
+    applyFilterState(next, next.q);
     renderKey = "";
     loadCatalog();
+  }
+
+  function paintSelection() {
+    main.querySelectorAll(".cell").forEach(function (cell) {
+      cell.classList.toggle("selected", selectedIds.indexOf(cell.dataset.id) >= 0);
+    });
+    if (main) {
+      main.dataset.selected = selectedIds.join(",");
+    }
+  }
+
+  function toggleSelectedId(id) {
+    const idx = selectedIds.indexOf(id);
+    if (idx >= 0) {
+      selectedIds.splice(idx, 1);
+    } else {
+      selectedIds.push(id);
+    }
+    selectedId = id;
+    lastClickedId = id;
+    paintSelection();
+    syncSelectionChrome();
+  }
+
+  function selectRange(fromId, toId) {
+    const order = items.map(function (item) { return item.id; });
+    const a = order.indexOf(fromId);
+    const b = order.indexOf(toId);
+    if (a < 0 || b < 0) {
+      toggleSelectedId(toId);
+      return;
+    }
+    const lo = Math.min(a, b);
+    const hi = Math.max(a, b);
+    selectedIds = order.slice(lo, hi + 1);
+    selectedId = toId;
+    lastClickedId = toId;
+    paintSelection();
+    syncSelectionChrome();
+  }
+
+  function setArrange(value) {
+    const next = value === "people" || value === "places" || value === "tags" ? value : "dates";
+    if (next === arrangeBy) {
+      return;
+    }
+    arrangeBy = next;
+    renderKey = "";
+    if (arrangeBy === "dates") {
+      groups = groupsFromItems(items, settings.zoomLevel);
+      render();
+      return;
+    }
+    return loadCatalog();
   }
   if (filterAll) {
     filterAll.addEventListener("click", function () {
@@ -3696,6 +4163,45 @@
   if (filterFavorites) {
     filterFavorites.addEventListener("click", function () {
       setKindFilter("", filter.favorite === "1" ? "" : "1");
+    });
+  }
+  if (clearFiltersBtn) {
+    clearFiltersBtn.addEventListener("click", function () {
+      clearAllFilters();
+    });
+  }
+  if (arrangeSelect) {
+    arrangeSelect.addEventListener("change", function () {
+      setArrange(arrangeSelect.value);
+    });
+  }
+  if (tagCreateBtn) {
+    tagCreateBtn.addEventListener("click", function () {
+      createTagFromBox();
+    });
+  }
+  if (tagNewInput) {
+    tagNewInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        createTagFromBox();
+      }
+    });
+  }
+  if (tagApplyBtn) {
+    tagApplyBtn.addEventListener("click", function () {
+      const token = pickTagId();
+      if (token) {
+        applyTagsToItems(selectedItemIds(), [token], []);
+      }
+    });
+  }
+  if (tagRemoveBtn) {
+    tagRemoveBtn.addEventListener("click", function () {
+      const token = pickTagId();
+      if (token) {
+        applyTagsToItems(selectedItemIds(), [], [token]);
+      }
     });
   }
   if (dateGroupSelect) {
@@ -4310,14 +4816,15 @@
     searchChips.querySelectorAll("button[data-scope]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         const scope = btn.getAttribute("data-scope") || "";
-        filter.scope = filter.scope === scope ? "" : scope;
-        filter.person = "";
-        filter.place = "";
-        filter.thing = "";
-        selectedPeople = [];
-        hideInspector();
-        syncChips();
-        syncFilterDataset();
+        applyFilterState({
+          q: filter.q,
+          scope: filter.scope === scope ? "" : scope,
+          person: "",
+          place: "",
+          thing: "",
+          kind: filter.kind,
+          favorite: filter.favorite,
+        }, filter.q);
         renderKey = "";
         loadCatalog();
       });

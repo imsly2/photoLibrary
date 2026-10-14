@@ -29,6 +29,7 @@ OPERATIONS = frozenset(
         "analyze-places",
         "faces-infer",
         "faces-cleanup",
+        "tags",
     }
 )
 
