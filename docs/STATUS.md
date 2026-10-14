@@ -285,6 +285,35 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Stayed green: TASTE-PEOPLE 52/52, TASTE-SHELL 50/50, F9 46/46,
   F11 26/26, F14 84/84. F15 HTTP search stayed green; browser-proof
   is the same Info-first Esc as F10 28/29.
+- 2026-10-14 — Empty-grid regression after PR #26, Simplified Chinese,
+  and Group/Search chrome on `cursor/empty-grid-chinese-chrome-0c42`.
+  Root cause: 1s poll overlapped `loadCatalog`; `/api/items` +
+  `/api/groups` full-scans raced; newer `loadGen` discarded items so
+  the grid painted first-run empty while People/Tags still filled.
+  Fix: coalesce catalog loads; poll jobs/health only unless scanning
+  or the first items have not landed; groups 400 falls back to client
+  grouping; `catalogReady` after items land so a truly empty library
+  still shows “No pictures yet” (not stuck Loading). Header Language
+  English / 中文 writes `settings.language` (`en` | `zh-Hans`);
+  fill_missing_defaults accepts pre-language files. Search is on
+  `#filter-bar`; Group defaults to Date; People/Places/Things search
+  chips dropped. Zero new deps. Setup.bat / Library.bat / `.ps1`
+  untouched. Does not close a Check. 16/22 unchanged.
+  Plans: [taste-empty-grid](features/taste-empty-grid/Rev1.0/PLAN.md),
+  [taste-i18n](features/taste-i18n/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-EMPTY-GRID](features/taste-empty-grid/Rev1.0/assets/verify-1/result.json)
+  19/19,
+  [grid-with-people](features/taste-empty-grid/Rev1.0/assets/verify-1/grid-with-people.png),
+  [TASTE-I18N](features/taste-i18n/Rev1.0/assets/verify-1/result.json)
+  25/25,
+  [chinese-chrome](features/taste-i18n/Rev1.0/assets/verify-1/chinese-chrome.png),
+  [TASTE-FILTERS](features/taste-filters/Rev1.0/assets/verify-2/result.json)
+  44/44,
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-3/result.json)
+  57/57,
+  [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-2/result.json)
+  50/50.
 
 ## Completion
 

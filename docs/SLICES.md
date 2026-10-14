@@ -55,6 +55,14 @@ any group, multi-person AND with fixture proof, user tags that survive
 re-infer. Gate: `python -m tests.qa slice TASTE-FILTERS`. Keep
 `Setup.bat` / `Library.bat` / ASCII `.ps1`. No 23rd Check.
 
+Empty-grid / language / chrome (2026-10-14): catalog with photos and
+people must paint the grid (never first-run “No pictures yet”); header
+language English/中文 persists as `settings.language`; Search moves onto
+`#filter-bar`; Group defaults to Date and no longer shares the header
+with People/Places/Things search chips. Gates:
+`slice TASTE-EMPTY-GRID`, `slice TASTE-I18N`, keep TASTE-FILTERS /
+TASTE-PEOPLE / TASTE-SHELL. No 23rd Check.
+
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
 late copy/undo layers would otherwise force rewrites of the early catalog.

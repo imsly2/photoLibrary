@@ -107,7 +107,7 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 7. Remove from library (Delete key + confirm, originals stay) vs Delete
    file (extra confirm, Recycle Bin)
 8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
-9. Search filename + date + existing tags; empty “No matches for …”
+9. Search filename + date + existing tags (Chinese text too); empty “No matches for …”
 10. Update UX finish (launcher + in-app; Updating…; already current / failed; header shows checkout SHA)
 
 Also locked: `Library.bat`, native Add folder, live-origin Back, grid
@@ -275,8 +275,8 @@ it from a successful update payload.
 `place=`, `thing=` (one id/name, or comma-separated ids/names meaning
 **all** those tags), `kind=photo|video|live` or a comma list,
 `from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
-Names match case-insensitively. `scope=people|places|things` restricts
-the query for the existing search chips. `kind` keeps only those media
+Names match case-insensitively, including Chinese. `scope=people|places|things`
+still restricts a query on the API. `kind` keeps only those media
 kinds (`photo,live` for Photos). The filter bar All / Photos / Videos /
 Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
 `favorite=1`. Kind and favorite are transient filters, not settings.
@@ -498,10 +498,13 @@ wall — no date-section gaps. Years/Months/Days persist in `zoomLevel`
 (`all` remains a valid API/settings value and displays as Days). Off is
 session-only.
 
-`#arrange` Group People / Places / Tags (session-only) draws one header
-per person, place, or tag on the current set, plus Unknown / No place /
-Untagged. An item lands in one group. Click any group header to
-collapse or expand it; remembered for the session.
+`#arrange` Group Date / People / Places / Tags (session-only, default
+Date) draws one header per date, person, place, or tag on the current
+set, plus Unknown / No place / Untagged. An item lands in one group.
+Click any group header to collapse or expand it; remembered for the
+session. This is the only arrangement control. Sort stays Newest /
+Oldest / Name / Location. Search lives on `#filter-bar` and does not
+duplicate Group.
 
 Changing Dates or Size must keep already-loaded thumbnails on screen;
 the grid does not blank during the interaction. The item under the
@@ -718,10 +721,13 @@ Artifact: the people file, the thing file, and the search JSON.
 
 ## F15 — Search
 
-The search box matches a person, place, or thing name, a filename, or a
-capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). A local city/region
-written on a GPS place is a place name. Chips limit the match
-to People, Places, or Things. Empty results say “No matches for …”. Reference:
+The search box lives on `#filter-bar` and matches a person, place, or
+thing name, a filename, or a capturedAt date (`YYYY`, `YYYY-MM`,
+`YYYY-MM-DD`). Chinese query text matches those same fields. A local
+city/region written on a GPS place is a place name. Built-in labels
+(Unnamed / 未命名, Unknown / 未知, No place / 无地点, Untagged /
+无标签) also match. `scope=people|places|things` remains on the API.
+Empty results say “No matches for …”. Reference:
 [search](reference/library-search.jpg).
 
 The inspector for a thing shows its name, how many pictures point at it, and
@@ -759,12 +765,14 @@ returns 404 `unavailable`. Set `hide` and the item disappears from
 
 ## F17 — Settings
 
-`library-data/settings.json` holds the 16 settings shown on the settings page
-plus the internal `schemaVersion: 1` field (not a control) and two face-quality
-keys used by optional local InsightFace. The defaults below list those values.
-The page edits the 16 browse keys. The command line edits this file, including
+`library-data/settings.json` holds the 17 browse settings (the earlier 16
+plus `language`) plus the internal `schemaVersion: 1` field (not a
+control) and two face-quality keys used by optional local InsightFace.
+The defaults below list those values. The header language switch writes
+`language`. The command line edits this file, including
 `faceMatchThreshold` and `faceMinSidePx`, so matching can be tuned without a
-rebuild. The browser does not keep a second copy.
+rebuild. The browser does not keep a second copy. A pre-language file is
+filled with `en` on load.
 
 ```json
 {
@@ -784,6 +792,7 @@ rebuild. The browser does not keep a second copy.
   "sort": "date",
   "dir": "desc",
   "zoomLevel": "years",
+  "language": "en",
   "faceMatchThreshold": 0.5,
   "faceMinSidePx": 80
 }
@@ -884,7 +893,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search in the header, sort Newest/Oldest/Name, `#filter-bar` (All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Dates/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

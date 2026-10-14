@@ -75,33 +75,26 @@ h1 {
 }
 
 #search {
-  flex: 1 1 12rem;
+  flex: 0 1 14rem;
   min-width: 8rem;
-  max-width: 18rem;
+  max-width: 16rem;
   background: #1b1b22;
   color: #f2f2f4;
-  border: 1px solid #2a2a32;
+  border: 1px solid #3a3a46;
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: 0.32rem 0.85rem;
 }
 
-#search-chips {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-#search-chips button {
-  background: transparent;
+.language-field select {
+  background: #1b1b22;
   color: #f2f2f4;
-  border: 1px solid #2a2a32;
-  border-radius: 999px;
-  padding: 0.3rem 0.75rem;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.25rem 0.45rem;
 }
 
-#search-chips button[aria-pressed="true"] {
-  background: #2d4a7a;
-  border-color: #2d4a7a;
+.language-field {
+  margin-left: auto;
 }
 
 .toolbar-toggle {

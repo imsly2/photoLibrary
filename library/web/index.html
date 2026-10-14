@@ -9,121 +9,130 @@
 </head>
 <body>
   <header>
-    <nav class="views" aria-label="Views">
-      <button type="button" id="view-library" class="view-heading" aria-pressed="true">Library</button>
-      <button type="button" id="view-globe" aria-pressed="false">Globe</button>
+    <nav class="views" aria-label="Views" data-i18n-aria="views">
+      <button type="button" id="view-library" class="view-heading" aria-pressed="true" data-i18n="library">Library</button>
+      <button type="button" id="view-globe" aria-pressed="false" data-i18n="globe">Globe</button>
     </nav>
-    <input type="search" id="search" placeholder="Search" aria-label="Search" autocomplete="off">
-    <div id="search-chips" role="group" aria-label="Search">
-      <button type="button" id="chip-people" data-scope="people" aria-pressed="false">People</button>
-      <button type="button" id="chip-places" data-scope="places" aria-pressed="false">Places</button>
-      <button type="button" id="chip-things" data-scope="things" aria-pressed="false">Things</button>
-    </div>
     <div class="toolbar">
-      <label class="toolbar-field">Sort
-        <select id="sort-presentable" aria-label="Sort">
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="name">Name</option>
-          <option value="location">Location</option>
+      <label class="toolbar-field">
+        <span data-i18n="sort">Sort</span>
+        <select id="sort-presentable" aria-label="Sort" data-i18n-aria="sort">
+          <option value="newest" data-i18n="newest">Newest</option>
+          <option value="oldest" data-i18n="oldest">Oldest</option>
+          <option value="name" data-i18n="name">Name</option>
+          <option value="location" data-i18n="location">Location</option>
         </select>
       </label>
-      <label class="toolbar-field legacy-sort">Sort
-        <select id="sort" aria-label="Sort field">
-          <option value="date">Date</option>
-          <option value="location">Location</option>
-          <option value="name">Name</option>
+      <label class="toolbar-field legacy-sort">
+        <span data-i18n="sort">Sort</span>
+        <select id="sort" aria-label="Sort field" data-i18n-aria="sortField">
+          <option value="date" data-i18n="date">Date</option>
+          <option value="location" data-i18n="location">Location</option>
+          <option value="name" data-i18n="name">Name</option>
         </select>
       </label>
-      <label class="toolbar-field legacy-sort">Direction
-        <select id="dir" aria-label="Direction">
-          <option value="desc">Newest first</option>
-          <option value="asc">Oldest first</option>
+      <label class="toolbar-field legacy-sort">
+        <span data-i18n="direction">Direction</span>
+        <select id="dir" aria-label="Direction" data-i18n-aria="direction">
+          <option value="desc" data-i18n="newestFirst">Newest first</option>
+          <option value="asc" data-i18n="oldestFirst">Oldest first</option>
         </select>
       </label>
-      <button type="button" id="remove-item" class="toolbar-action" disabled>Remove</button>
-      <button type="button" id="delete-file" class="toolbar-action" disabled>Delete file</button>
+      <button type="button" id="remove-item" class="toolbar-action" disabled data-i18n="remove">Remove</button>
+      <button type="button" id="delete-file" class="toolbar-action" disabled data-i18n="deleteFile">Delete file</button>
     </div>
-    <button type="button" id="add-folder-btn">Add folder</button>
+    <button type="button" id="add-folder-btn" data-i18n="addFolder">Add folder</button>
+    <label class="toolbar-field language-field">
+      <span data-i18n="language">Language</span>
+      <select id="language" aria-label="Language" data-i18n-aria="language">
+        <option value="en">English</option>
+        <option value="zh-Hans">中文</option>
+      </select>
+    </label>
     <div class="update-cluster">
-      <span id="library-version" hidden aria-label="Library version"></span>
-      <button type="button" id="update-library">Update Library</button>
+      <span id="library-version" hidden aria-label="Library version" data-i18n-aria="version"></span>
+      <button type="button" id="update-library" data-i18n="updateLibrary">Update Library</button>
     </div>
   </header>
-  <div id="filter-bar" role="region" aria-label="Filters">
-    <div id="filter-chips" role="group" aria-label="Filter">
-      <button type="button" id="filter-all" class="toolbar-toggle" aria-pressed="true">All</button>
-      <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false">Photos</button>
-      <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
-      <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false">Favorites</button>
+  <div id="filter-bar" role="region" aria-label="Filters" data-i18n-aria="filters">
+    <input type="search" id="search" placeholder="Search" aria-label="Search" autocomplete="off" data-i18n-placeholder="search" data-i18n-aria="search">
+    <div id="filter-chips" role="group" aria-label="Filter" data-i18n-aria="filter">
+      <button type="button" id="filter-all" class="toolbar-toggle" aria-pressed="true" data-i18n="all">All</button>
+      <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false" data-i18n="photos">Photos</button>
+      <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false" data-i18n="videos">Videos</button>
+      <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false" data-i18n="favorites">Favorites</button>
     </div>
-    <div id="active-filters" aria-label="Active filters"></div>
-    <button type="button" id="clear-filters" hidden>Clear all</button>
-    <label class="toolbar-field">Group
-      <select id="arrange" aria-label="Group by Dates People Places or Tags">
-        <option value="dates">Dates</option>
-        <option value="people">People</option>
-        <option value="places">Places</option>
-        <option value="tags">Tags</option>
+    <div id="active-filters" aria-label="Active filters" data-i18n-aria="activeFilters"></div>
+    <button type="button" id="clear-filters" hidden data-i18n="clearAll">Clear all</button>
+    <label class="toolbar-field">
+      <span data-i18n="group">Group</span>
+      <select id="arrange" aria-label="Group by Date People Places or Tags" data-i18n-aria="groupBy">
+        <option value="dates" data-i18n="dates">Date</option>
+        <option value="people" data-i18n="people">People</option>
+        <option value="places" data-i18n="places">Places</option>
+        <option value="tags" data-i18n="tags">Tags</option>
       </select>
     </label>
     <div id="tag-actions">
-      <input type="text" id="tag-new" placeholder="New tag" aria-label="New tag" autocomplete="off" spellcheck="false">
-      <button type="button" id="tag-create">Create</button>
-      <select id="tag-pick" aria-label="Choose tag"></select>
-      <button type="button" id="tag-apply">Apply</button>
-      <button type="button" id="tag-remove">Remove</button>
+      <input type="text" id="tag-new" placeholder="New tag" aria-label="New tag" autocomplete="off" spellcheck="false" data-i18n-placeholder="newTag" data-i18n-aria="newTag">
+      <button type="button" id="tag-create" data-i18n="create">Create</button>
+      <select id="tag-pick" aria-label="Choose tag" data-i18n-aria="chooseTag"></select>
+      <button type="button" id="tag-apply" data-i18n="apply">Apply</button>
+      <button type="button" id="tag-remove" data-i18n="remove">Remove</button>
     </div>
   </div>
   <div id="disconnected-wrap">
-    <p id="disconnected-banner" hidden>Library is not responding</p>
-    <button type="button" id="reconnect-retry" hidden>Retry</button>
+    <p id="disconnected-banner" hidden data-i18n="disconnected">Library is not responding</p>
+    <button type="button" id="reconnect-retry" hidden data-i18n="retry">Retry</button>
   </div>
   <p id="update-status" class="status" hidden></p>
   <div id="scan-status" class="status" hidden>
     <p id="scan-status-text"></p>
     <p id="scan-error-text" hidden></p>
-    <button type="button" id="scan-retry" hidden>Retry</button>
+    <button type="button" id="scan-retry" hidden data-i18n="retry">Retry</button>
   </div>
   <div class="workspace">
     <div id="library-stage">
       <main id="grid">
-        <p>No pictures yet</p>
+        <p data-i18n="emptyLibrary">No pictures yet</p>
       </main>
       <div id="library-chrome">
-        <label class="chrome-field" for="size-slider">Size
-          <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size">
+        <label class="chrome-field" for="size-slider">
+          <span data-i18n="size">Size</span>
+          <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size" data-i18n-aria="sizeSlider">
         </label>
-        <label class="chrome-field">Dates
-          <select id="date-group" aria-label="Date grouping Years Months Days or Off">
-            <option value="years">Years</option>
-            <option value="months">Months</option>
-            <option value="days">Days</option>
-            <option value="off">Off</option>
+        <label class="chrome-field">
+          <span data-i18n="datesGroup">Dates</span>
+          <select id="date-group" aria-label="Date grouping Years Months Days or Off" data-i18n-aria="dateGrouping">
+            <option value="years" data-i18n="years">Years</option>
+            <option value="months" data-i18n="months">Months</option>
+            <option value="days" data-i18n="days">Days</option>
+            <option value="off" data-i18n="off">Off</option>
           </select>
         </label>
       </div>
     </div>
-    <button type="button" id="library-splitter" aria-label="Resize People panel" aria-controls="library-side"></button>
-    <aside id="library-side" aria-label="Library panel">
+    <button type="button" id="library-splitter" aria-label="Resize People panel" aria-controls="library-side" data-i18n-aria="resizePeople"></button>
+    <aside id="library-side" aria-label="Library panel" data-i18n-aria="libraryPanel">
       <div id="side-head">
-        <h2 id="people-heading">People</h2>
-        <button type="button" id="side-collapse" aria-expanded="true" aria-controls="library-side" title="Hide panel">Hide</button>
+        <h2 id="people-heading" data-i18n="people">People</h2>
+        <button type="button" id="side-collapse" aria-expanded="true" aria-controls="library-side" title="Hide panel" data-i18n="hide" data-i18n-title="hidePanel">Hide</button>
       </div>
       <section id="people-panel" aria-labelledby="people-heading">
-        <p id="people-empty" hidden>No people yet</p>
+        <p id="people-empty" hidden data-i18n="noPeople">No people yet</p>
         <ul id="people-list"></ul>
         <div id="person-profile" hidden>
-          <label class="chrome-field" for="person-name">Name
-            <input type="text" id="person-name" placeholder="Unnamed" aria-label="Person name" autocomplete="off" spellcheck="false">
+          <label class="chrome-field" for="person-name">
+            <span data-i18n="name">Name</span>
+            <input type="text" id="person-name" placeholder="Unnamed" aria-label="Person name" autocomplete="off" spellcheck="false" data-i18n-placeholder="unnamed" data-i18n-aria="personName">
           </label>
-          <p class="side-label">Thumbnail</p>
+          <p class="side-label" data-i18n="thumbnail">Thumbnail</p>
           <div id="person-faces"></div>
         </div>
       </section>
       <section id="tags-panel" aria-labelledby="tags-heading">
-        <h2 id="tags-heading">Tags</h2>
-        <p id="tags-empty" hidden>No tags yet</p>
+        <h2 id="tags-heading" data-i18n="tags">Tags</h2>
+        <p id="tags-empty" hidden data-i18n="noTags">No tags yet</p>
         <ul id="tags-list"></ul>
       </section>
       <aside id="inspector" hidden>
@@ -132,13 +141,13 @@
         <ul id="inspector-filenames"></ul>
       </aside>
       <section id="jobs-panel" aria-labelledby="jobs-heading">
-        <h2 id="jobs-heading">Processing</h2>
-        <p id="jobs-status">Idle</p>
+        <h2 id="jobs-heading" data-i18n="processing">Processing</h2>
+        <p id="jobs-status" data-i18n="idle">Idle</p>
         <ul id="jobs-queues"></ul>
         <div id="jobs-actions">
-          <button type="button" id="jobs-pause" disabled>Pause</button>
-          <button type="button" id="jobs-resume">Start</button>
-          <button type="button" id="jobs-rerun-faces" title="Re-run face detect with current quality gates">Re-run Faces</button>
+          <button type="button" id="jobs-pause" disabled data-i18n="pause">Pause</button>
+          <button type="button" id="jobs-resume" data-i18n="start">Start</button>
+          <button type="button" id="jobs-rerun-faces" title="Re-run face detect with current quality gates" data-i18n="rerunFaces" data-i18n-title="rerunFacesTitle">Re-run Faces</button>
         </div>
       </section>
     </aside>
@@ -146,74 +155,78 @@
   <div id="globe-view" hidden>
     <canvas id="globe-canvas"></canvas>
     <div id="globe-pins"></div>
-    <button type="button" id="globe-play">Play</button>
+    <button type="button" id="globe-play" data-i18n="play">Play</button>
     <div id="globe-tour-media" hidden>
       <img id="globe-tour-image" alt="" hidden>
       <video id="globe-tour-video" hidden muted playsinline></video>
     </div>
-    <p id="globe-empty" hidden>No locations to show</p>
+    <p id="globe-empty" hidden data-i18n="noLocations">No locations to show</p>
     <p id="globe-error" hidden></p>
   </div>
   <dialog id="add-folder" aria-labelledby="add-folder-title">
-    <h2 id="add-folder-title">Add a folder</h2>
-    <label class="path-field">Path
+    <h2 id="add-folder-title" data-i18n="addAFolder">Add a folder</h2>
+    <label class="path-field">
+      <span data-i18n="path">Path</span>
       <span class="path-row">
         <input type="text" id="add-path" autocomplete="off" spellcheck="false">
-        <button type="button" id="add-browse">Browse</button>
+        <button type="button" id="add-browse" data-i18n="browse">Browse</button>
       </span>
     </label>
     <div class="choices">
       <label class="choice">
         <input type="radio" name="add-mode" value="copy-here">
         <span>
-          <strong>Copy onto this drive</strong>
-          <em>Originals travel with this drive.</em>
+          <strong data-i18n="copyHere">Copy onto this drive</strong>
+          <em data-i18n="copyHereHelp">Originals travel with this drive.</em>
         </span>
       </label>
       <label class="choice">
         <input type="radio" name="add-mode" value="serve-from-there">
         <span>
-          <strong>Serve from that folder</strong>
-          <em>Originals stay where they are.</em>
+          <strong data-i18n="serveThere">Serve from that folder</strong>
+          <em data-i18n="serveThereHelp">Originals stay where they are.</em>
         </span>
       </label>
     </div>
     <p id="add-error" class="dialog-error" hidden></p>
     <div class="dialog-actions">
-      <button type="button" id="add-cancel">Cancel</button>
-      <button type="button" id="add-submit" disabled>Add</button>
+      <button type="button" id="add-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="add-submit" disabled data-i18n="add">Add</button>
     </div>
   </dialog>
   <div id="viewer" hidden>
     <div id="viewer-bar">
-      <button type="button" id="viewer-back">Back</button>
+      <button type="button" id="viewer-back" data-i18n="back">Back</button>
       <p id="viewer-crumb"></p>
       <span id="viewer-source" hidden></span>
       <div id="viewer-tools">
-        <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite">♡</button>
-        <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5">Slideshow</button>
-        <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11">Fullscreen</button>
+        <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite" data-i18n-aria="favorite">♡</button>
+        <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5" data-i18n="slideshow" data-i18n-title="slideshowTitle">Slideshow</button>
+        <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11" data-i18n="fullscreen" data-i18n-title="fullscreenTitle">Fullscreen</button>
         <div id="viewer-info-wrap">
-          <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel">Info</button>
+          <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel" data-i18n="info">Info</button>
           <div id="viewer-info-panel" hidden>
             <div id="viewer-facts"></div>
-            <p class="info-heading">People</p>
+            <p class="info-heading" data-i18n="people">People</p>
             <div id="viewer-people" class="label-row"></div>
-            <p class="info-heading">Places</p>
+            <p class="info-heading" data-i18n="places">Places</p>
             <div id="viewer-place" class="label-row"></div>
-            <p class="info-heading">Things</p>
+            <p class="info-heading" data-i18n="things">Things</p>
             <div id="viewer-things" class="label-row"></div>
-            <p class="info-heading">Tags</p>
+            <p class="info-heading" data-i18n="tags">Tags</p>
             <div id="viewer-tags" class="label-row"></div>
             <div id="viewer-fields">
-              <label class="annotate-field">Person
-                <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false">
+              <label class="annotate-field">
+                <span data-i18n="person">Person</span>
+                <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false" data-i18n-placeholder="person" data-i18n-aria="person">
               </label>
-              <label class="annotate-field">Place
-                <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false">
+              <label class="annotate-field">
+                <span data-i18n="place">Place</span>
+                <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false" data-i18n-placeholder="place" data-i18n-aria="place">
               </label>
-              <label class="annotate-field">Thing
-                <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false">
+              <label class="annotate-field">
+                <span data-i18n="thing">Thing</span>
+                <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false" data-i18n-placeholder="thing" data-i18n-aria="thing">
               </label>
             </div>
             <p id="annotate-error" hidden></p>
@@ -221,56 +234,57 @@
         </div>
       </div>
     </div>
-    <p id="unavailable-banner" hidden aria-live="polite">Original is not on this computer</p>
+    <p id="unavailable-banner" hidden aria-live="polite" data-i18n="originalMissing">Original is not on this computer</p>
     <div id="viewer-body">
       <div id="viewer-stage">
         <img id="viewer-image" alt="">
         <img id="viewer-original" alt="" hidden>
         <video id="viewer-video" hidden playsinline></video>
-        <p id="viewer-placeholder" hidden>Preview is not available</p>
+        <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
       </div>
-      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · Ctrl+1 100%">
+      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · Ctrl+1 100%" data-i18n-title="zoom">
         <span id="viewer-zoom-pct">100%</span>
-        <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom">
+        <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom" data-i18n-aria="viewerZoom">
       </aside>
     </div>
     <div id="viewer-bottom">
       <div id="viewer-nav">
-        <button type="button" id="viewer-prev" title="Previous ←">Previous</button>
-        <button type="button" id="viewer-rotate" title="Rotate Ctrl+R">Rotate</button>
-        <button type="button" id="viewer-next" title="Next →">Next</button>
+        <button type="button" id="viewer-prev" title="Previous ←" data-i18n="previous" data-i18n-title="previousTitle">Previous</button>
+        <button type="button" id="viewer-rotate" title="Rotate Ctrl+R" data-i18n="rotate" data-i18n-title="rotateTitle">Rotate</button>
+        <button type="button" id="viewer-next" title="Next →" data-i18n="next" data-i18n-title="nextTitle">Next</button>
       </div>
       <div id="viewer-scrub-wrap" hidden>
-        <input type="range" id="viewer-scrub" min="0" max="1000" value="0" step="1" aria-label="Video position">
+        <input type="range" id="viewer-scrub" min="0" max="1000" value="0" step="1" aria-label="Video position" data-i18n-aria="videoPosition">
         <span id="viewer-scrub-time">0:00</span>
-        <button type="button" id="viewer-mute" title="Mute" aria-pressed="false">Mute</button>
-        <input type="range" id="viewer-volume" min="0" max="100" value="100" step="1" aria-label="Volume">
+        <button type="button" id="viewer-mute" title="Mute" aria-pressed="false" data-i18n="mute" data-i18n-title="mute">Mute</button>
+        <input type="range" id="viewer-volume" min="0" max="100" value="100" step="1" aria-label="Volume" data-i18n-aria="volume">
       </div>
       <div id="viewer-actions">
-        <button type="button" id="reveal-original">Reveal in Explorer</button>
-        <button type="button" id="open-original">Open</button>
-        <button type="button" id="play-preview" disabled>Play preview</button>
-        <p id="reveal-error" hidden>Original is not on this computer</p>
+        <button type="button" id="reveal-original" data-i18n="reveal">Reveal in Explorer</button>
+        <button type="button" id="open-original" data-i18n="open">Open</button>
+        <button type="button" id="play-preview" disabled data-i18n="playPreview">Play preview</button>
+        <p id="reveal-error" hidden data-i18n="originalMissing">Original is not on this computer</p>
       </div>
     </div>
   </div>
-  <p id="slideshow-empty" hidden>Add photos first</p>
+  <p id="slideshow-empty" hidden data-i18n="addPhotosFirst">Add photos first</p>
   <dialog id="confirm-remove" aria-labelledby="confirm-remove-title">
-    <h2 id="confirm-remove-title">Remove from Library?</h2>
-    <p>The file stays on disk.</p>
+    <h2 id="confirm-remove-title" data-i18n="removeTitle">Remove from Library?</h2>
+    <p data-i18n="removeHelp">The file stays on disk.</p>
     <div class="dialog-actions">
-      <button type="button" id="confirm-remove-cancel">Cancel</button>
-      <button type="button" id="confirm-remove-ok">Remove</button>
+      <button type="button" id="confirm-remove-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="confirm-remove-ok" data-i18n="remove">Remove</button>
     </div>
   </dialog>
   <dialog id="confirm-delete-file" aria-labelledby="confirm-delete-title">
-    <h2 id="confirm-delete-title">Delete this file from disk?</h2>
-    <p>This sends the original to the Recycle Bin. The catalog record is then removed.</p>
+    <h2 id="confirm-delete-title" data-i18n="deleteTitle">Delete this file from disk?</h2>
+    <p data-i18n="deleteHelp">This sends the original to the Recycle Bin. The catalog record is then removed.</p>
     <div class="dialog-actions">
-      <button type="button" id="confirm-delete-cancel">Cancel</button>
-      <button type="button" id="confirm-delete-ok">Delete file</button>
+      <button type="button" id="confirm-delete-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="confirm-delete-ok" data-i18n="deleteFile">Delete file</button>
     </div>
   </dialog>
+  <script src="/assets/i18n.js"></script>
   <script src="/assets/library.js"></script>
   <script src="/assets/globe.js"></script>
 </body>

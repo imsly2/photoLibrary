@@ -172,6 +172,10 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.setup_portable import run_slice as runner
         elif args.slice_id == "TASTE-FILTERS":
             from tests.qa.taste_filters import run_slice as runner
+        elif args.slice_id == "TASTE-EMPTY-GRID":
+            from tests.qa.taste_empty_grid import run_slice as runner
+        elif args.slice_id == "TASTE-I18N":
+            from tests.qa.taste_i18n import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))

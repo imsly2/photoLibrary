@@ -37,6 +37,19 @@
   const libraryVersion = document.getElementById("library-version");
   const searchInput = document.getElementById("search");
   const searchChips = document.getElementById("search-chips");
+  const languageSelect = document.getElementById("language");
+  const I18N = window.LibraryI18n || {
+    t: function (key) { return key; },
+    setLanguage: function () { return "en"; },
+    getLanguage: function () { return "en"; },
+    applyStatic: function () {},
+    queueLabel: function (id, fallback) { return fallback || id; },
+    formatDateGroup: function (key) { return key; },
+    normalize: function (code) { return code === "zh-Hans" ? "zh-Hans" : "en"; },
+  };
+  function t(key, vars) {
+    return I18N.t(key, vars);
+  }
   const inspector = document.getElementById("inspector");
   const inspectorName = document.getElementById("inspector-name");
   const inspectorCount = document.getElementById("inspector-count");
@@ -123,12 +136,8 @@
   const SIZE_STEPS = [72, 104, 144, 192, 256, 336, 420, 520];
   const DEFAULT_SIZE = { years: 0, months: 1, days: 3, all: 6 };
   const HEART_MIN = 144;
-  const EMPTY = "No pictures yet";
-  const EMPTY_SEARCH = "No matches";
   const PLAY_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.1v7.8L10.2 6z"/></svg>';
   const HEART_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13.4S2.6 10 1.5 7.1C.6 5.1 1.6 3 3.8 3c1.2 0 2 .7 2.3 1.2C6.4 3.7 7.2 3 8.4 3c2.2 0 3.2 2.1 2.3 4.1C9.6 10 8 13.4 8 13.4z"/></svg>';
-  const SLIDESHOW_EMPTY = "Add photos first";
-  const NO_CAMERA_INFO = "No camera info for this file.";
   const SLIDESHOW_MS = 5000;
 
   let settings = {
@@ -137,7 +146,13 @@
     zoomLevel: "years",
     addFolderDefault: "ask",
     playProxies: "days-and-all",
+    language: "en",
   };
+  let language = "en";
+  let catalogInFlight = null;
+  let catalogQueued = false;
+  let catalogReady = false;
+  let lastJobs = null;
   let items = [];
   let groups = [];
   let hoveredId = null;
@@ -190,13 +205,21 @@
   const ORIGINAL_SWAP_MS = 20000;
   const PLAYBACK_WAIT_MS = 90000;
   const PLAYBACK_POLL_MS = 750;
-  const SOURCE_LABELS = {
-    preview: "Preview",
-    loading: "Loading full…",
-    original: "Original",
-    full: "Full",
-    unavailable: "Preview — full unavailable",
-  };
+  function sourceLabel(state) {
+    if (state === "loading") {
+      return t("loadingFull");
+    }
+    if (state === "original") {
+      return t("original");
+    }
+    if (state === "full") {
+      return t("full");
+    }
+    if (state === "unavailable") {
+      return t("previewFullUnavailable");
+    }
+    return t("preview");
+  }
   let scrubbingViewer = false;
   let showingOriginal = false;
   let fitOnLoad = false;
@@ -281,9 +304,19 @@
   function emptySearchText() {
     const q = (filter.q || "").trim();
     if (q) {
-      return "No matches for " + q;
+      return t("noMatchesFor", { q: q });
     }
-    return EMPTY_SEARCH;
+    return t("noMatches");
+  }
+
+  function catalogLooksPopulated() {
+    if (lastSources.length) {
+      return true;
+    }
+    if (peopleCatalog.some(function (person) { return person && person.visible !== false; })) {
+      return true;
+    }
+    return tagsCatalog.length > 0;
   }
 
   function copyFilter(src) {
@@ -361,7 +394,7 @@
       const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
       for (let j = 0; j < (list || []).length; j += 1) {
         if (list[j] && list[j].id === id) {
-          return list[j].name || (kind === "person" ? "Unnamed" : id);
+          return list[j].name || (kind === "person" ? t("unnamed") : id);
         }
       }
     }
@@ -379,7 +412,7 @@
       btn.className = "filter-chip";
       btn.dataset.kind = kind;
       btn.dataset.id = id;
-      btn.setAttribute("aria-label", "Remove " + label);
+      btn.setAttribute("aria-label", t("removeLabel", { name: label }));
       btn.textContent = label + " ";
       const x = document.createElement("span");
       x.className = "chip-x";
@@ -392,20 +425,19 @@
       activeFilters.appendChild(btn);
     }
     selectedPeople().forEach(function (id) {
-      addChip("person", id, "Person: " + entityName("person", id));
+      addChip("person", id, t("personChip", { name: entityName("person", id) }));
     });
     selectedPlaces().forEach(function (id) {
-      addChip("place", id, "Place: " + entityName("place", id));
+      addChip("place", id, t("placeChip", { name: entityName("place", id) }));
     });
     selectedThings().forEach(function (id) {
-      addChip("thing", id, "Tag: " + entityName("thing", id));
+      addChip("thing", id, t("tagChip", { name: entityName("thing", id) }));
     });
     if (filter.q) {
-      addChip("q", filter.q, "Search: " + filter.q);
+      addChip("q", filter.q, t("searchChip", { q: filter.q }));
     }
     if (filter.scope) {
-      const scopeLabel = filter.scope.charAt(0).toUpperCase() + filter.scope.slice(1);
-      addChip("scope", filter.scope, "Scope: " + scopeLabel);
+      addChip("scope", filter.scope, t("scopeChip", { name: t(filter.scope) }));
     }
     const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite);
     if (clearFiltersBtn) {
@@ -561,7 +593,7 @@
     inspector.dataset.entityId = id;
     inspector.dataset.kind = kind;
     inspector.dataset.count = String(count);
-    inspectorName.textContent = name || (kind === "person" ? "Unnamed" : "");
+    inspectorName.textContent = name || (kind === "person" ? t("unnamed") : "");
     inspectorCount.textContent = String(count);
     inspectorFiles.innerHTML = "";
     filenames.forEach(function (filename) {
@@ -594,7 +626,7 @@
       const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
       (list || []).forEach(function (rec) {
         if (rec && rec.id === id) {
-          name = rec.name || (kind === "person" ? "Unnamed" : "");
+          name = rec.name || (kind === "person" ? t("unnamed") : "");
         }
       });
     });
@@ -689,6 +721,48 @@
     });
   }
 
+  function applyLanguage(next, persistChange) {
+    const lang = I18N.normalize(next);
+    const changed = lang !== language;
+    language = lang;
+    settings.language = lang;
+    I18N.setLanguage(lang);
+    if (languageSelect && languageSelect.value !== lang) {
+      languageSelect.value = lang;
+    }
+    document.title = t("library");
+    if (slideshowEmpty) {
+      slideshowEmpty.textContent = t("addPhotosFirst");
+    }
+    if (viewerPlaceholder) {
+      viewerPlaceholder.textContent = t("previewUnavailable");
+    }
+    if (unavailableBanner) {
+      unavailableBanner.textContent = t("originalMissing");
+    }
+    if (revealError) {
+      revealError.textContent = t("originalMissing");
+    }
+    if (disconnectedBanner) {
+      disconnectedBanner.textContent = t("disconnected");
+    }
+    const globeEmpty = document.getElementById("globe-empty");
+    if (globeEmpty) {
+      globeEmpty.textContent = t("noLocations");
+    }
+    renderKey = "";
+    renderPeople();
+    renderTags();
+    if (lastJobs) {
+      renderJobs(lastJobs);
+    }
+    render();
+    if (persistChange && changed) {
+      return persist({ language: lang });
+    }
+    return Promise.resolve();
+  }
+
   function applySettings(data) {
     if (!data) {
       return;
@@ -698,8 +772,16 @@
     settings.zoomLevel = data.zoomLevel || settings.zoomLevel;
     settings.addFolderDefault = data.addFolderDefault || settings.addFolderDefault;
     settings.playProxies = data.playProxies || settings.playProxies;
+    if (data.language) {
+      settings.language = I18N.normalize(data.language);
+    }
     main.dataset.playProxies = settings.playProxies;
     syncPresentableSort();
+    if (settings.language && settings.language !== language) {
+      applyLanguage(settings.language, false);
+    } else if (languageSelect && languageSelect.value !== language) {
+      languageSelect.value = language;
+    }
   }
 
   function selectedMode() {
@@ -1305,12 +1387,12 @@
 
   function hideSlideshowEmpty() {
     slideshowEmpty.hidden = true;
-    slideshowEmpty.textContent = SLIDESHOW_EMPTY;
+    slideshowEmpty.textContent = t("addPhotosFirst");
   }
 
   function showSlideshowEmpty() {
     slideshowEmpty.hidden = false;
-    slideshowEmpty.textContent = SLIDESHOW_EMPTY;
+    slideshowEmpty.textContent = t("addPhotosFirst");
   }
 
   function syncFullscreenChrome() {
@@ -1555,25 +1637,25 @@
     viewerFacts.innerHTML = "";
     const heading = document.createElement("p");
     heading.className = "info-heading";
-    heading.textContent = "File";
+    heading.textContent = t("file");
     viewerFacts.appendChild(heading);
     const list = document.createElement("dl");
     list.className = "info-fact-list";
     list.id = "viewer-fact-list";
     const meta = (item && item.metadata) || {};
     const loc = primaryLocation(item);
-    appendFact(list, "Date taken", formatDateTaken(item && item.capturedAt));
-    appendFact(list, "Camera", (meta.camera && String(meta.camera).trim()) || NO_CAMERA_INFO);
+    appendFact(list, t("dateTaken"), formatDateTaken(item && item.capturedAt));
+    appendFact(list, t("camera"), (meta.camera && String(meta.camera).trim()) || t("noCamera"));
     const width = Number(meta.width) || 0;
     const height = Number(meta.height) || 0;
     if (width > 0 && height > 0) {
-      appendFact(list, "Dimensions", width + " × " + height);
+      appendFact(list, t("dimensions"), width + " × " + height);
     }
     if (loc) {
-      appendFact(list, "Size", formatFileSize(loc.sizeBytes));
-      appendFact(list, "Path", loc.lastKnownPath || loc.libraryRelativePath || "");
+      appendFact(list, t("fileSize"), formatFileSize(loc.sizeBytes));
+      appendFact(list, t("filePath"), loc.lastKnownPath || loc.libraryRelativePath || "");
     }
-    appendFact(list, "GPS", formatGps(meta.latitude, meta.longitude));
+    appendFact(list, t("gps"), formatGps(meta.latitude, meta.longitude));
     viewerFacts.appendChild(list);
   }
 
@@ -1606,7 +1688,7 @@
     const on = !!(item && item.favorite);
     viewerFavorite.textContent = on ? "♥" : "♡";
     viewerFavorite.setAttribute("aria-pressed", on ? "true" : "false");
-    viewerFavorite.setAttribute("aria-label", on ? "Unfavorite" : "Favorite");
+    viewerFavorite.setAttribute("aria-label", on ? t("unfavorite") : t("favorite"));
   }
 
   function infoOpen() {
@@ -1622,7 +1704,7 @@
   }
 
   function syncOriginalChrome() {
-    openOriginalBtn.textContent = "Open";
+    openOriginalBtn.textContent = t("open");
     openOriginalBtn.removeAttribute("aria-pressed");
     viewer.dataset.showingOriginal = showingOriginal ? "1" : "0";
     syncViewerSourceChrome();
@@ -1648,7 +1730,7 @@
     }
     const state = videoSourceState || "preview";
     viewerSource.hidden = false;
-    viewerSource.textContent = SOURCE_LABELS[state] || SOURCE_LABELS.preview;
+    viewerSource.textContent = sourceLabel(state);
     viewerSource.dataset.state = state;
   }
 
@@ -1709,7 +1791,7 @@
     if (viewerMute) {
       const muted = !!(viewerVideo && viewerVideo.muted);
       viewerMute.setAttribute("aria-pressed", muted ? "true" : "false");
-      viewerMute.textContent = muted ? "Unmute" : "Mute";
+      viewerMute.textContent = muted ? t("unmute") : t("mute");
       viewerMute.title = muted ? "Unmute" : "Mute";
     }
     if (viewerVolumeSlider) {
@@ -1810,7 +1892,7 @@
     unavailableBanner.hidden = false;
     if (revealError) {
       revealError.hidden = false;
-      revealError.textContent = "Original is not on this computer";
+      revealError.textContent = t("originalMissing");
     }
     revealOriginalBtn.disabled = true;
     openOriginalBtn.disabled = true;
@@ -1878,7 +1960,7 @@
     });
     namingPersonId = "";
     if (personField) {
-      personField.placeholder = "Person";
+      personField.placeholder = t("person");
     }
   }
 
@@ -2409,7 +2491,7 @@
         btn.className = unnamed ? "entity-label unnamed" : "entity-label";
         btn.dataset.entityKind = kind;
         btn.dataset.entityId = rec.id;
-        btn.textContent = rec.name || "Unnamed";
+        btn.textContent = rec.name || t("unnamed");
         if (unnamed && rec.id === namingPersonId) {
           btn.setAttribute("aria-pressed", "true");
         }
@@ -2418,7 +2500,7 @@
             namingPersonId = rec.id;
             if (personField) {
               personField.dataset.renameId = rec.id;
-              personField.placeholder = "Name this person";
+              personField.placeholder = t("unnamed");
               personField.focus();
             }
             renderViewerLabels(item);
@@ -2469,7 +2551,7 @@
       }
       const empty = document.createElement("p");
       empty.className = "info-empty";
-      empty.textContent = "None yet";
+      empty.textContent = t("noneYet");
       node.appendChild(empty);
     }
     fillEmpty(peopleLabels);
@@ -2483,7 +2565,7 @@
       namingPersonId = "";
       if (personField) {
         delete personField.dataset.renameId;
-        personField.placeholder = "Person";
+        personField.placeholder = t("person");
       }
     }
     resetViewerVideo();
@@ -2702,7 +2784,7 @@
     }
     const placeholder = document.createElement("span");
     placeholder.className = "placeholder";
-    placeholder.textContent = PLACEHOLDER;
+    placeholder.textContent = t("previewUnavailable");
     const img = document.createElement("img");
     img.alt = "";
     img.hidden = true;
@@ -2850,6 +2932,26 @@
     return ranked[0];
   }
 
+  function displayGroupKey(group) {
+    const key = (group && group.key) || "";
+    if (arrangeBy === "dates") {
+      return I18N.formatDateGroup(key);
+    }
+    if (key === "Unknown") {
+      return t("unknown");
+    }
+    if (key === "No place") {
+      return t("noPlace");
+    }
+    if (key === "Untagged") {
+      return t("untagged");
+    }
+    if (key === "Unnamed") {
+      return t("unnamed");
+    }
+    return key;
+  }
+
   function groupsFromArrange(list, by) {
     if (by === "dates") {
       return groupsFromItems(list, settings.zoomLevel);
@@ -2923,7 +3025,7 @@
     const toggle = document.createElement("button");
     toggle.type = "button";
     toggle.id = "favorites-toggle";
-    toggle.textContent = "Favorites";
+    toggle.textContent = t("favorites");
     toggle.setAttribute("aria-expanded", favoritesOpen ? "true" : "false");
     toggle.addEventListener("click", function (event) {
       event.preventDefault();
@@ -2954,11 +3056,14 @@
       if (hasActiveFilter()) {
         main.innerHTML = "<p>" + emptySearchText() + "</p>";
         renderKey = "empty-search:" + emptySearchText();
+      } else if (!catalogReady && catalogLooksPopulated()) {
+        main.innerHTML = '<p id="grid-loading">' + t("loadingPictures") + "</p>";
+        renderKey = "loading";
       } else {
-        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + EMPTY + '</p><button type="button" id="empty-add-folder">Add folder</button></div>';
+        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + t("emptyLibrary") + '</p><button type="button" id="empty-add-folder">' + t("addFolder") + "</button></div>";
         const emptyAdd = document.getElementById("empty-add-folder");
         if (emptyAdd) {
-          emptyAdd.setAttribute("aria-label", "Add photos");
+          emptyAdd.setAttribute("aria-label", t("addPhotos"));
           emptyAdd.addEventListener("click", openAddDialog);
         }
         renderKey = "empty";
@@ -3012,7 +3117,7 @@
         heading.setAttribute("role", "button");
         heading.tabIndex = 0;
         heading.setAttribute("aria-expanded", collapsed ? "false" : "true");
-        heading.textContent = group.key;
+        heading.textContent = displayGroupKey(group);
         heading.addEventListener("click", function () {
           collapsedGroups[collapseKey] = !collapsedGroups[collapseKey];
           section.classList.toggle("collapsed", !!collapsedGroups[collapseKey]);
@@ -3055,7 +3160,7 @@
     if (person && person.name) {
       return person.name;
     }
-    return "Unnamed";
+    return t("unnamed");
   }
 
   function faceCrop(thumb) {
@@ -3316,7 +3421,7 @@
       tagPick.innerHTML = "";
       const blank = document.createElement("option");
       blank.value = "";
-      blank.textContent = "Tag";
+      blank.textContent = t("tag");
       tagPick.appendChild(blank);
       rows.forEach(function (tag) {
         const opt = document.createElement("option");
@@ -3493,7 +3598,7 @@
     }
     if (sideCollapse) {
       sideCollapse.setAttribute("aria-expanded", sideOpen ? "true" : "false");
-      sideCollapse.textContent = "Hide";
+      sideCollapse.textContent = t("hide");
     }
     if (librarySplitter) {
       librarySplitter.title = sideOpen ? "Resize People panel" : "Show People panel";
@@ -3510,19 +3615,20 @@
       const pending = ((body && body.queues) || []).reduce(function (sum, q) {
         return sum + (q.pending || 0);
       }, 0);
-      return pending ? ("Paused — " + pending + " waiting") : "Paused";
+      return pending ? t("pausedWaiting", { n: pending }) : t("paused");
     }
     if (body.processing) {
       const active = (body.queues || []).filter(function (q) { return q.state === "running"; });
       const bits = active.map(function (q) {
-        return q.label + " " + q.pending;
+        return I18N.queueLabel(q.id, q.label) + " " + q.pending;
       });
-      return bits.length ? ("Processing — " + bits.join(" · ")) : "Processing";
+      return bits.length ? t("processingLine", { bits: bits.join(" · ") }) : t("processing");
     }
-    return "Idle";
+    return t("idle");
   }
 
   function renderJobs(body) {
+    lastJobs = body;
     if (!jobsStatus || !jobsQueues) {
       return;
     }
@@ -3533,8 +3639,8 @@
       const li = document.createElement("li");
       li.dataset.id = queue.id;
       li.dataset.state = queue.state || "idle";
-      const extra = queue.available ? "" : " (queued)";
-      li.textContent = queue.label + " · " + (queue.pending || 0) + " left" + extra;
+      const extra = queue.available ? "" : " (" + t("queued") + ")";
+      li.textContent = I18N.queueLabel(queue.id, queue.label) + " · " + (queue.pending || 0) + " " + t("left") + extra;
       jobsQueues.appendChild(li);
     });
     const pending = ((body && body.queues) || []).some(function (q) { return (q.pending || 0) > 0; });
@@ -3543,9 +3649,9 @@
     }
     if (jobsResume) {
       jobsResume.disabled = !!(body && body.processing);
-      jobsResume.textContent = body && body.paused ? "Resume" : "Start";
+      jobsResume.textContent = body && body.paused ? t("resume") : t("start");
       if (!pending && !(body && body.paused)) {
-        jobsResume.textContent = "Start";
+        jobsResume.textContent = t("start");
       }
     }
   }
@@ -3578,26 +3684,38 @@
   }
 
   function loadCatalog() {
+    if (catalogInFlight) {
+      catalogQueued = true;
+      return catalogInFlight;
+    }
     const gen = loadGen + 1;
     loadGen = gen;
     const qs = queryString();
     loadJobs();
     loadPeople();
     loadTags();
-    return Promise.all([
+    catalogInFlight = Promise.all([
       fetch("/api/items?" + qs).then(readJson),
-      fetch("/api/groups?" + groupsQuery()).then(readJson),
-      fetch("/api/sources").then(readJson),
-      fetch("/api/settings").then(readJson),
+      fetch("/api/groups?" + groupsQuery()).then(readJson).catch(function () {
+        return null;
+      }),
+      fetch("/api/sources").then(readJson).catch(function () {
+        return [];
+      }),
+      fetch("/api/settings").then(readJson).catch(function () {
+        return null;
+      }),
     ]).then(function (parts) {
-      if (gen !== loadGen) {
-        return;
+      const nextItems = Array.isArray(parts[0]) ? parts[0] : null;
+      if (!nextItems) {
+        throw new Error("items");
       }
-      const nextItems = Array.isArray(parts[0]) ? parts[0] : [];
       const nextGroups = Array.isArray(parts[1]) ? parts[1] : [];
       const sources = Array.isArray(parts[2]) ? parts[2] : [];
       lastSources = sources;
-      applySettings(parts[3]);
+      if (parts[3]) {
+        applySettings(parts[3]);
+      }
       const status = sourcesStatus(sources);
       scanning = status.running;
       if (sources.length) {
@@ -3609,7 +3727,8 @@
       }
       showDisconnected(false);
       items = nextItems;
-      groups = nextGroups;
+      catalogReady = true;
+      groups = nextGroups.length ? nextGroups : (arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy));
       renderPeople();
       const open = syncViewerIndex();
       if (open) {
@@ -3627,7 +3746,18 @@
       }
     }).catch(function () {
       showDisconnected(true);
+      if (!items.length) {
+        render();
+      }
+    }).then(function () {
+      catalogInFlight = null;
+      if (catalogQueued) {
+        catalogQueued = false;
+        return loadCatalog();
+      }
+      return undefined;
     });
+    return catalogInFlight;
   }
 
   function setLevel(level, persistChange, keepSize) {
@@ -4747,7 +4877,7 @@
       updateLibraryBtn.disabled = true;
       if (updateStatus) {
         updateStatus.hidden = false;
-        updateStatus.textContent = "Updating…";
+        updateStatus.textContent = t("updating");
         updateStatus.removeAttribute("data-ok");
       }
       fetch("/api/update", {
@@ -4911,6 +5041,22 @@
     return loadCatalog();
   });
 
+  if (languageSelect) {
+    languageSelect.addEventListener("change", function () {
+      applyLanguage(languageSelect.value, true);
+    });
+  }
+
+  window.libraryTest = {
+    loadCatalog: loadCatalog,
+    itemCount: function () {
+      return items.length;
+    },
+    language: function () {
+      return language;
+    },
+  };
+
   pollTimer = window.setInterval(function () {
     fetch("/api/health").then(function (res) {
       if (!res.ok) {
@@ -4918,7 +5064,10 @@
         return;
       }
       showDisconnected(false);
-      return loadCatalog();
+      loadJobs();
+      if (scanning || !items.length) {
+        return loadCatalog();
+      }
     }).catch(function () {
       showDisconnected(true);
     });

@@ -1,0 +1,42 @@
+{
+  "english": {
+    "lang": "en",
+    "library": "Library",
+    "search": "Search",
+    "all": "All",
+    "people": "People",
+    "group": "Group",
+    "clear": "Clear all",
+    "processing": "Processing",
+    "empty": "",
+    "setting": "en",
+    "select": "en"
+  },
+  "chinese": {
+    "lang": "zh-Hans",
+    "library": "\u56fe\u5e93",
+    "search": "\u641c\u7d22",
+    "all": "\u5168\u90e8",
+    "people": "\u4eba\u7269",
+    "group": "\u5206\u7ec4",
+    "clear": "\u6e05\u9664\u5168\u90e8",
+    "processing": "\u5904\u7406\u4e2d",
+    "empty": "",
+    "setting": "zh-Hans",
+    "select": "zh-Hans"
+  },
+  "emptyZh": "\u6ca1\u6709\u4e0e \u6ca1\u6709\u8fd9\u4e2a\u8bcd \u5339\u914d\u7684\u7ed3\u679c",
+  "persisted": {
+    "lang": "zh-Hans",
+    "library": "\u56fe\u5e93",
+    "search": "\u641c\u7d22",
+    "all": "\u5168\u90e8",
+    "people": "\u4eba\u7269",
+    "group": "\u5206\u7ec4",
+    "clear": "\u6e05\u9664\u5168\u90e8",
+    "processing": "\u5904\u7406\u4e2d",
+    "empty": "",
+    "setting": "zh-Hans",
+    "select": "zh-Hans"
+  }
+}

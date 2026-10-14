@@ -964,7 +964,7 @@
   function showTourEmpty() {
     emptyFromTour = true;
     if (emptyEl) {
-      emptyEl.textContent = "No locations to show";
+      emptyEl.textContent = (window.LibraryI18n && window.LibraryI18n.t("noLocations")) || "No locations to show";
       emptyEl.hidden = false;
     }
   }

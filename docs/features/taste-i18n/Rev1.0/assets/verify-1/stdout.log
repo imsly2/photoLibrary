@@ -1,0 +1,25 @@
+PASS search-chinese-person: ["near.jpg"]
+PASS search-chinese-place: ["near.jpg", "IMG_1042.jpg"]
+PASS search-chinese-tag: ["near.jpg"]
+PASS language-default-en: "en"
+PASS language-set-ok
+PASS language-persists: "zh-Hans"
+PASS playwright-import
+PASS html-lang-en: {"lang": "en", "library": "Library", "search": "Search", "all": "All", "people": "People", "group": "Group", "clear": "Clear all", "processing": "Processing", "empty": "", "setting": "en", "select": "en"}
+PASS library-en: {"lang": "en", "library": "Library", "search": "Search", "all": "All", "people": "People", "group": "Group", "clear": "Clear all", "processing": "Processing", "empty": "", "setting": "en", "select": "en"}
+PASS search-en: {"lang": "en", "library": "Library", "search": "Search", "all": "All", "people": "People", "group": "Group", "clear": "Clear all", "processing": "Processing", "empty": "", "setting": "en", "select": "en"}
+PASS people-en: {"lang": "en", "library": "Library", "search": "Search", "all": "All", "people": "People", "group": "Group", "clear": "Clear all", "processing": "Processing", "empty": "", "setting": "en", "select": "en"}
+PASS html-lang-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS library-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS search-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS all-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS people-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS processing-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS language-select-zh: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS empty-search-zh: 没有与 没有这个词 匹配的结果
+PASS settings-language-zh: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18767, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "zh-Hans", "faceMatchThreshold": 0.5, "faceMinSidePx": 80}
+PASS language-stays-after-reload: {"lang": "zh-Hans", "library": "\u56fe\u5e93", "search": "\u641c\u7d22", "all": "\u5168\u90e8", "people": "\u4eba\u7269", "group": "\u5206\u7ec4", "clear": "\u6e05\u9664\u5168\u90e8", "processing": "\u5904\u7406\u4e2d", "empty": "", "setting": "zh-Hans", "select": "zh-Hans"}
+PASS no-console-errors: []
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
