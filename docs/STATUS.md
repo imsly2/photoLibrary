@@ -125,6 +125,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   fullscreen/slideshow/keys/EXIF Info stay from PR #7. Does not close a
   Check. 16/22 unchanged.
   Plan: [taste-shell](features/taste-shell/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-1/result.json)
+  50/50, [shell.png](features/taste-shell/Rev1.0/assets/verify-1/shell.png).
 
 ## Completion
 
