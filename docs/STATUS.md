@@ -238,10 +238,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   false) and browse does not crash. People panel reads real face
   clusters. Tip chrome (bottom Size/Dates, right People+Processing)
   stays. Combined portable Setup.bat is a follow-up. Does not close
-  a Check. 16/22 unchanged. Evidence from source PRs and this stack:
-  [GEO](features/places-geo/Rev1.0/assets/verify-1/result.json),
-  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-1/result.json),
-  [FACES](features/faces/Rev1.0/assets/verify-1/result.json).
+  a Check. 16/22 unchanged. Fresh on this stack:
+  [GEO](features/places-geo/Rev1.0/assets/verify-2/result.json) 44/44,
+  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-2/result.json) 39/39,
+  [FACES](features/faces/Rev1.0/assets/verify-2/result.json) 40/40,
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-2/result.json) 52/52.
+  Processing `available=true` + People after infer:
+  [jobs](features/stack-local-ai/Rev1.0/assets/verify-1/jobs-available.png),
+  [people](features/stack-local-ai/Rev1.0/assets/verify-1/people-after-infer.png),
+  [library](features/stack-local-ai/Rev1.0/assets/verify-1/library-stack.png).
 
 ## Completion
 

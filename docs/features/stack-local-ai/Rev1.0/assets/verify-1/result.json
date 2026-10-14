@@ -1,0 +1,17 @@
+{
+  "slice": "STACK-LOCAL-AI",
+  "pass": true,
+  "notes": "Jobs available=true for analyze/infer-faces/objects after one-time setup. People shows two Unnamed clusters (count 3) after infer-faces. Objects drain was running.",
+  "jobs": {
+    "analyze": {"available": true, "state": "idle"},
+    "infer-faces": {"available": true, "state": "idle"},
+    "objects": {"available": true, "state": "running"},
+    "renditions": {"available": true, "state": "running"}
+  },
+  "people": ["Unnamed", "Unnamed"],
+  "screenshots": {
+    "jobs-available.png": "docs/features/stack-local-ai/Rev1.0/assets/verify-1/jobs-available.png",
+    "people-after-infer.png": "docs/features/stack-local-ai/Rev1.0/assets/verify-1/people-after-infer.png",
+    "library-stack.png": "docs/features/stack-local-ai/Rev1.0/assets/verify-1/library-stack.png"
+  }
+}
