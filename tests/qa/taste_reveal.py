@@ -24,7 +24,6 @@ from tests.qa.s00 import (
 from tests.qa.s03 import find_item
 from tests.qa.s05 import pin_media_from_manifest
 from tests.qa.s08 import fresh_root, write_result
-from tests.qa.s09 import copy_s09_media
 
 SELECT_PREFIX = 'explorer.exe /select,"'
 
@@ -64,6 +63,8 @@ def prove_command_form(checks: Checks) -> None:
 
 
 def prove_existing_original(checks: Checks, workspace: Path) -> Path:
+    if workspace.exists():
+        shutil.rmtree(workspace)
     folder = workspace / "Family Photos" / "Vacation 2024"
     folder.mkdir(parents=True)
     photo = folder / "IMG_1042.jpg"
@@ -97,7 +98,7 @@ def prove_open_containing(checks: Checks, photo: Path) -> None:
         return object()
 
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             opened = open_containing_folder(photo)
     checks.check("open-windows-returns-true", opened is True)
     checks.check("open-windows-one-launch", len(calls) == 1, str(calls))
@@ -122,14 +123,14 @@ def prove_open_containing(checks: Checks, photo: Path) -> None:
     calls.clear()
     missing = photo.parent / "missing-original.jpg"
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             opened_missing = open_containing_folder(missing)
     checks.check("open-missing-false", opened_missing is False)
     checks.check("open-missing-no-explorer", calls == [], str(calls))
 
     calls.clear()
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             opened_rel = open_containing_folder(Path("originals/src/photo.jpg"))
     checks.check("open-relative-false", opened_rel is False)
     checks.check("open-relative-no-explorer", calls == [], str(calls))
@@ -178,7 +179,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
         return object()
 
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             body = linked.reveal(item["id"])
     checks.check("linked-reveal-opened", body.get("opened") is True, json.dumps(body))
     reveal_path = Path(body.get("path") or "")
@@ -210,7 +211,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     calls.clear()
     missing_error = None
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             try:
                 linked.reveal(item["id"])
             except AppError as exc:
@@ -222,10 +223,14 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     )
     checks.check("missing-no-explorer", calls == [], str(calls))
 
-    copy_media = artifacts / "copy-media"
-    copy_s09_media(media_src, copy_media)
+    copy_media = artifacts / "copy-media" / "a"
+    if copy_media.exists():
+        shutil.rmtree(copy_media)
+    copy_media.mkdir(parents=True)
+    shutil.copy2(media_src / "a" / "IMG_1042.jpg", copy_media / "IMG_1042.jpg")
+    pin_media_from_manifest(copy_media.parent)
     copy_root = fresh_root(artifacts / "copy-root")
-    _scan_folder(copy_root, copy_media / "a", commands, copy_here=True)
+    _scan_folder(copy_root, copy_media, commands, copy_here=True)
     copied = Library(copy_root)
     copy_items = copied.items_list({})
     copy_item = find_item(copy_items, "IMG_1042.jpg")
@@ -234,7 +239,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
         return
     calls.clear()
     with patch("library.favorites.subprocess.Popen", fake_popen):
-        with patch("library.favorites.os.name", "nt"):
+        with patch("library.favorites._windows", return_value=True):
             copy_body = copied.reveal(copy_item["id"])
     copy_path = Path(copy_body.get("path") or "")
     checks.check(

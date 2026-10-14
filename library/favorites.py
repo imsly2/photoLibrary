@@ -137,10 +137,14 @@ def existing_original(path: Path) -> Path | None:
     return candidate
 
 
+def _windows() -> bool:
+    return os.name == "nt"
+
+
 def windows_reveal_command(path: Path) -> str:
     """explorer.exe /select,"fullpath" — selects the file, not a folder-only open."""
     text = str(path)
-    if os.name == "nt":
+    if _windows():
         text = os.path.normpath(text)
     return f'explorer.exe /select,"{text}"'
 
@@ -150,7 +154,7 @@ def open_path_with_default(path: Path) -> bool:
     if target is None:
         return False
     try:
-        if os.name == "nt":
+        if _windows():
             os.startfile(target)  # type: ignore[attr-defined]
             return True
         if sys.platform == "darwin":
@@ -171,7 +175,7 @@ def open_containing_folder(path: Path) -> bool:
         return False
     folder = target.parent
     try:
-        if os.name == "nt":
+        if _windows():
             # String form so CreateProcess does not wrap /select,path as one
             # quoted argv (that parse fails on spaces and opens Documents).
             subprocess.Popen(windows_reveal_command(target))

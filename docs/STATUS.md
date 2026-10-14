@@ -167,6 +167,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [verify-2](features/taste-version/Rev1.0/assets/verify-2/result.json)
   23/23 after chrome+autoplay merge (SHA still beside Update Library),
   [version-header.png](features/taste-version/Rev1.0/assets/verify-2/version-header.png).
+- 2026-10-14 — Reveal in Explorer selects the real on-disk file
+  (`explorer.exe /select,"fullpath"`). Catalog-relative copy-here
+  paths resolve to an absolute original; missing originals return
+  404 `unavailable` and show “Original is not on this computer”
+  instead of opening Documents. Does not close a Check. 16/22
+  unchanged. Plan: [taste-reveal](features/taste-reveal/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-1/result.json)
+  37/37.
 
 ## Completion
 
@@ -435,3 +444,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
   `currentTime`. TASTE-VIDEO 61/61. `#library-version` kept (PR #11
   merge); TASTE-VERSION 23/23 on this tip. `GET /api/update` 200. No
   new Check. 16/22 unchanged.
+- 2026-10-14 — Reveal in Explorer selects the real on-disk file
+  (`explorer.exe /select,"fullpath"`). Missing original is 404
+  `unavailable` and the viewer banner, not Documents. TASTE-REVEAL
+  37/37. No new Check. 16/22 unchanged.
