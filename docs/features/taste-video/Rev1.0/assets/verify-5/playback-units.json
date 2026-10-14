@@ -1,0 +1,15 @@
+{
+  "writePlayback": "ready",
+  "unitProbe": {
+    "codec": "h264",
+    "width": 640,
+    "height": 480,
+    "duration": 2.0,
+    "audioStreamCount": 1,
+    "bytes": 23358,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "writeMp4": "not-applicable",
+  "legacyPlayback": "queued"
+}

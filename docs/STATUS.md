@@ -194,6 +194,18 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   65/65 hover at Size 72, dated Years still, Dates-off wall play,
   `#viewer-source` Original,
   [video-viewer](features/taste-video/Rev1.0/assets/verify-4/video-viewer.png).
+- 2026-10-14 — iPhone `.MOV` no longer stays on the silent 480px
+  proxy. Viewer starts Preview, then swaps to `playback.mp4`
+  (full-size H.264 + AAC; remux when the bitstream allows) and
+  labels **Full**. Browser-safe MP4 still becomes **Original**.
+  Both failing is **Preview — full unavailable**. Preserve
+  Originals keeps the MOV. Reveal argv + grid hover stay.
+  Does not close a Check. 16/22 unchanged. Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-5/result.json)
+  89/89 clip.mov Full + audio, clip.mp4 Original,
+  [video-mov](features/taste-video/Rev1.0/assets/verify-5/video-mov.png),
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-4/result.json)
+  52/52 Iphone Backup argv + Full in UI-SPEC.
 
 ## Completion
 
@@ -469,3 +481,5 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-14 — Follow-up: argv `/select,path` for spaced
   `Iphone Backup` paths; hover resume; `#viewer-source`. TASTE-REVEAL
   53/53, TASTE-VIDEO 65/65. No new Check. 16/22 unchanged.
+- 2026-10-14 — MOV `playback.mp4` + honest Full badge. TASTE-VIDEO
+  89/89, TASTE-REVEAL 52/52. No new Check. 16/22 unchanged.
