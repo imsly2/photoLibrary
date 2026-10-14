@@ -30,8 +30,8 @@ objects` / `analyze`; COCO person ignored), and InsightFace unnamed
 clusters (`setup-ml faces` / `infer-faces`). Serve-time drains honor
 `/api/jobs` Pause/Start. Models optional; browse does not crash when
 they are missing. Gates: `slice GEO`, `slice TASTE-OBJECTS`,
-`slice FACES`, plus `slice TASTE-PEOPLE`. No 23rd Check. Combined
-Setup.bat is a follow-up.
+`slice FACES`, plus `slice TASTE-PEOPLE`. No 23rd Check. `Setup.bat`
+composes `setup-geo` / `setup-ml objects` / `setup-ml faces`.
 
 **Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
 is the North Star shell. Must items (fullscreen, slideshow, viewer keys,
@@ -42,6 +42,12 @@ not treat Soon rows (filmstrip, multi-select, Print, `?`) as the next
 build. This combined merge includes PR #2 TASTE-VIEWER 72/72 (Win7 chrome
 + Update + Open) and PR #5 Presentable Shell docs. Pin macOS/Linux F2.
 No 23rd Check.
+
+Portable `Setup.bat` (2026-10-14) is a sibling of `Library.bat`: one-time
+Python/ffmpeg/`.venv` plus `setup-geo` / `setup-ml objects` / `setup-ml
+faces` when those CLIs exist. Missing modules tell Steve to Update
+Library first. Gate: `python -m tests.qa slice TASTE-SETUP`. Does not
+change serve. No 23rd Check.
 
 Copy/link identity, unavailable model, logging and history start before the first
 scan. Their full UI/edge-case checks close later. This is deliberate: the suggested
