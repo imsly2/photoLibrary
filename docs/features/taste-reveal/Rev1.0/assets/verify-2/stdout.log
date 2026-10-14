@@ -1,0 +1,40 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS command-windows-spaces: explorer.exe /select,"C:\Family Photos\Vacation 2024\IMG_1042.jpg"
+PASS command-quoted-fullpath: explorer.exe /select,"/tmp/Family Photos/Vacation 2024/clip.mp4"
+PASS command-selects-file-not-folder: /tmp/Family Photos/Vacation 2024/clip.mp4
+PASS command-not-documents: /tmp/Family Photos/Vacation 2024/clip.mp4
+PASS existing-absolute: /workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg
+PASS existing-rejects-missing
+PASS existing-rejects-directory
+PASS existing-rejects-catalog-relative
+PASS open-windows-returns-true
+PASS open-windows-one-launch: [(('explorer.exe /select,"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg"',), {})]
+PASS open-windows-select-command: explorer.exe /select,"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg"
+PASS open-windows-selects-real-file: {"command": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\"", "photo": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg"}
+PASS open-windows-not-documents: explorer.exe /select,"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg"
+PASS open-missing-false
+PASS open-missing-no-explorer: []
+PASS open-relative-false
+PASS open-relative-no-explorer: []
+PASS linked-item: [{"schemaVersion": 1, "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "kind": "photo", "filename": "IMG_1042.jpg", "capturedAt": "2024-06-12T15:04:00", "capturedAtSource": "exif", "placeId": "place_3054f307a05e", "metadata": {"width": 640, "height": 480, "orientation": 1, "camera": null, "lens": null, "durationSec": null, "latitude": 41.88, "longitude": -87.63}, "contentI
+PASS linked-reveal-opened: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024", "opened": true}
+PASS linked-reveal-absolute-file: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024", "opened": true}
+PASS linked-reveal-folder-is-parent: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024", "opened": true}
+PASS linked-reveal-explorer-select: explorer.exe /select,"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024/IMG_1042.jpg"
+PASS linked-reveal-not-documents: {"folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024", "command": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/Family Photos/Vacation 2024/IMG_1042.jpg\""}
+PASS missing-raises-unavailable: unavailable
+PASS missing-no-explorer: []
+PASS copy-item: [{"schemaVersion": 1, "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "kind": "photo", "filename": "IMG_1042.jpg", "capturedAt": "2024-06-12T15:04:00", "capturedAtSource": "exif", "placeId": "place_6fe5f045ef3c", "metadata": {"width": 640, "height": 480, "orientation": 1, "camera": null, "lens": null, "durationSec": null, "latitude": 41.88, "longitude": -87.63}, "contentI
+PASS copy-reveal-absolute-under-originals: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/copy-root/originals/a-src_79d9106fc22e/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/copy-root/originals/a-src_79d9106fc22e", "opened": true}
+PASS copy-catalog-path-is-relative: originals/a-src_79d9106fc22e/IMG_1042.jpg
+PASS copy-reveal-not-catalog-relative: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/copy-root/originals/a-src_79d9106fc22e/IMG_1042.jpg", "catalog": "originals/a-src_79d9106fc22e/IMG_1042.jpg"}
+PASS copy-reveal-explorer-selects-copy: explorer.exe /select,"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-2/copy-root/originals/a-src_79d9106fc22e/IMG_1042.jpg"
+PASS source-uses-explorer-select-quoted: favorites.py command form
+PASS source-no-list-form-explorer: favorites.py argv
+PASS source-ui-shows-missing-error: library.js reveal error
+PASS source-ui-does-not-swallow-reveal: library.js reveal handler
+PASS uispec-reveal-selects-file: UI-SPEC checklist 15
+PASS source-volume-chrome: mute + volume beside scrub
+PASS source-hover-stays-muted: grid hover proxy stays silent
+PASS uispec-volume-beside-scrub: UI-SPEC scrub volume

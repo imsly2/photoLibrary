@@ -376,9 +376,10 @@ do.
 **Scrub anywhere the video is playing.** `#viewer-scrub` (with a
 mm:ss time label) sits in `#viewer-bottom` — the slot the zoom slider
 used to occupy — and seeks the open viewer video at any zoom or source.
-It must not overlay the picture. A compact `.tile-scrub` on the hovered
-grid tile seeks that preview without opening the viewer. Originals stay
-on disk; no cloud.
+It must not overlay the picture. Mute (`#viewer-mute`) and a volume
+slider (`#viewer-volume`) sit beside the scrub; hover proxies stay
+silent. A compact `.tile-scrub` on the hovered grid tile seeks that
+preview without opening the viewer. Originals stay on disk; no cloud.
 
 ### Spec target vs current implementation
 

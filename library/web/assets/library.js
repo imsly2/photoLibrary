@@ -29,6 +29,8 @@
   const viewerScrubWrap = document.getElementById("viewer-scrub-wrap");
   const viewerScrub = document.getElementById("viewer-scrub");
   const viewerScrubTime = document.getElementById("viewer-scrub-time");
+  const viewerMute = document.getElementById("viewer-mute");
+  const viewerVolumeSlider = document.getElementById("viewer-volume");
   const updateLibraryBtn = document.getElementById("update-library");
   const updateStatus = document.getElementById("update-status");
   const libraryVersion = document.getElementById("library-version");
@@ -1434,6 +1436,25 @@
     hideViewerScrub();
   }
 
+  let viewerMuted = false;
+  let viewerVolume = 1;
+
+  function applyViewerVolume() {
+    if (viewerVideo) {
+      viewerVideo.muted = viewerMuted || viewerVolume <= 0;
+      viewerVideo.volume = viewerMuted ? 0 : viewerVolume;
+    }
+    if (viewerMute) {
+      const muted = !!(viewerVideo && viewerVideo.muted);
+      viewerMute.setAttribute("aria-pressed", muted ? "true" : "false");
+      viewerMute.textContent = muted ? "Unmute" : "Mute";
+      viewerMute.title = muted ? "Unmute" : "Mute";
+    }
+    if (viewerVolumeSlider) {
+      viewerVolumeSlider.value = String(Math.round(viewerVolume * 100));
+    }
+  }
+
   function hideViewerScrub() {
     if (viewerScrubWrap) {
       viewerScrubWrap.hidden = true;
@@ -1450,6 +1471,7 @@
     if (viewerScrubWrap) {
       viewerScrubWrap.hidden = false;
     }
+    applyViewerVolume();
     syncViewerScrub();
   }
 
@@ -1721,6 +1743,7 @@
         } catch (err) {}
         viewerVideo.playbackRate = rate;
         layoutVideo(item);
+        applyViewerVolume();
         if (!paused) {
           const play = viewerVideo.play();
           if (play && play.catch) {
@@ -3175,6 +3198,22 @@
         return;
       }
       viewerVideo.currentTime = (Number(viewerScrub.value) / 1000) * viewerVideo.duration;
+    });
+  }
+  if (viewerMute) {
+    viewerMute.addEventListener("click", function () {
+      viewerMuted = !viewerMuted;
+      if (!viewerMuted && viewerVolume <= 0) {
+        viewerVolume = 1;
+      }
+      applyViewerVolume();
+    });
+  }
+  if (viewerVolumeSlider) {
+    viewerVolumeSlider.addEventListener("input", function () {
+      viewerVolume = Math.max(0, Math.min(1, Number(viewerVolumeSlider.value) / 100));
+      viewerMuted = viewerVolume <= 0;
+      applyViewerVolume();
     });
   }
   const viewerStage = document.getElementById("viewer-stage");

@@ -277,6 +277,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
 def prove_static_source(checks: Checks) -> None:
     favorites = (PRODUCT_ROOT / "library" / "favorites.py").read_text(encoding="utf-8")
     page = (PRODUCT_ROOT / "library" / "web" / "assets" / "library.js").read_text(encoding="utf-8")
+    html = (PRODUCT_ROOT / "library" / "web" / "index.html").read_text(encoding="utf-8")
     spec = (PRODUCT_ROOT / "docs" / "UI-SPEC.md").read_text(encoding="utf-8")
     checks.check(
         "source-uses-explorer-select-quoted",
@@ -302,6 +303,21 @@ def prove_static_source(checks: Checks) -> None:
         "uispec-reveal-selects-file",
         'explorer.exe /select,"fullpath"' in spec and "never Documents" in spec,
         "UI-SPEC checklist 15",
+    )
+    checks.check(
+        "source-volume-chrome",
+        'id="viewer-mute"' in html and 'id="viewer-volume"' in html and "applyViewerVolume" in page,
+        "mute + volume beside scrub",
+    )
+    checks.check(
+        "source-hover-stays-muted",
+        "video.muted = true" in page and "video.volume = 0" in page,
+        "grid hover proxy stays silent",
+    )
+    checks.check(
+        "uispec-volume-beside-scrub",
+        "#viewer-mute" in spec and "#viewer-volume" in spec and "hover proxies stay" in spec,
+        "UI-SPEC scrub volume",
     )
 
 

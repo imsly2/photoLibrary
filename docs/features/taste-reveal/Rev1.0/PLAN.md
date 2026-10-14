@@ -20,6 +20,8 @@ and this file.
 4. The viewer shows “Original is not on this computer” when Reveal
    fails. `#reveal-error` sits with the actions.
 5. Open uses the same resolved file; it does not launch a missing path.
+6. Viewer video chrome: `#viewer-mute` and `#viewer-volume` sit beside
+   `#viewer-scrub`. Hover proxies stay silent. Not a setting.
 
 ## Out of scope
 
