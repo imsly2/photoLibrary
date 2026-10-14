@@ -235,6 +235,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
             if route == "/api/health" and method in {"GET", "HEAD"}:
                 self._send_json(200, {"ok": True})
                 return
+            if route == "/api/version" and method in {"GET", "HEAD"}:
+                from library.version import version_payload
+
+                self._send_json(200, version_payload())
+                return
             if route == "/api/runtime" and method in {"GET", "HEAD"}:
                 self._send_json(
                     200,

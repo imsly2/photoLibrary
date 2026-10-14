@@ -100,7 +100,7 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
    file (extra confirm, Recycle Bin)
 8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
 9. Search filename + date + existing tags; empty “No matches for …”
-10. Update UX finish (launcher + in-app; Updating…; already current / failed)
+10. Update UX finish (launcher + in-app; Updating…; already current / failed; header shows checkout SHA)
 
 Also locked: `Library.bat`, native Add folder, live-origin Back, grid
 wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
@@ -182,7 +182,9 @@ control, and the same action from the launcher, pulls the current git
 branch (`git fetch` then `git pull --ff-only`, or the equivalent). While
 it runs the page says Updating… Then one sentence: updated / already
 current / git missing / not a git copy / pull failed. It does not ask
-anyone to type git, open GitHub Desktop, or switch branches.
+anyone to type git, open GitHub Desktop, or switch branches. The header
+shows this copy's short git SHA (or `local` when not a git checkout) so
+a successful Update is visible.
 
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
@@ -212,7 +214,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
 | `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
-| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. `GET /api/update` reports branch and revision. |
+| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -221,6 +223,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 
 The header **Update Library** button calls `POST /api/update` so a family
 install can pull a newer app folder without opening a command prompt.
+The header shows the checkout SHA from `GET /api/version` and refreshes
+it from a successful update payload.
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
 `person=`, `place=`, `thing=`, `kind=photo|video|live` or a comma list,
@@ -766,7 +770,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates, Favorites section, Update Library. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

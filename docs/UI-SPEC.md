@@ -51,7 +51,7 @@ fill. They must read as clickable toggles, not heading text.
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
 | Ready | Years/Months/Days/All, search, sort Newest/Oldest/Name, filters All/Photos/Videos/Favorites, Size, Dates, hearts and open work on the same current item set. Level and sort persist to settings; selection, current filter, Size, Dates and Favorites collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
-| Update | Header `#update-library` is labeled Update Library. Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed / update-unavailable. No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
+| Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local` when not a git checkout). Click runs `POST /api/update`. While the pull runs, `#update-status` says Updating… Then one sentence: updated / already current / git missing / not a git copy / pull failed / update-unavailable. A successful Update refreshes `#library-version` from the new tip in the response (the serve process does not restart). No command prompt. Does not switch branches. Launcher Update uses the same sentences. |
 | Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is `#viewer-zoom-slider` (range 25–1600, 0.25×–16× fit) plus **plain wheel** or Ctrl+wheel and Ctrl++/−; Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` seeks the playing video at any zoom. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
@@ -304,12 +304,14 @@ aliases). Chips still restrict to People / Places / Things. Empty:
 “No matches for …” (query included). Clearing query/chip returns the broader grid.
 
 **10. Update UX finish.** Launcher and in-app (`#update-library`, label
-Update or Update Library). No command prompt. While the pull runs:
-Updating… Then one sentence: updated / already current / git missing /
-not a git copy / pull failed. Does not switch branches. **Implemented
-on this merge** (PR #2 72/72 plus the abc Update commit). `Update.bat` /
-`launch.ps1 -Update` is the launcher. Prove the progress sentence on a
-real git copy.
+Update or Update Library). The shell shows build identity in
+`#library-version` (short checkout SHA, or `local`). No command prompt.
+While the pull runs: Updating… Then one sentence: updated / already
+current / git missing / not a git copy / pull failed. A successful
+Update refreshes that SHA from the new tip; the running server does not
+restart. Does not switch branches. **Implemented on this merge** (PR #2
+72/72 plus the abc Update commit). `Update.bat` / `launch.ps1 -Update`
+is the launcher. Prove the progress sentence on a real git copy.
 
 Also still locked from the earlier Windows notes (already on the DoD
 path): `Library.bat`; native Add folder; 202-before-finish; live-origin
@@ -377,7 +379,7 @@ Check to hide it.
 | Surface | Spec target | Where it lives | Gap |
 |---|---|---|---|
 | Launch | Double-click `Library.bat` | abc Track A | F2 Check pending |
-| Update | In-app + launcher; Updating… then a sentence | **This merge** (PR #2 72/72 + abc) + `Update.bat` | Progress sentence on a real git copy |
+| Update | In-app + launcher; Updating… then a sentence; header shows checkout SHA | **This merge** (PR #2 72/72 + abc) + `Update.bat` + `#library-version` | Progress sentence on a real git copy |
 | Add folder | Native Browse; close on 202; items as ready | abc Track A | Linux QA `picker-unavailable` (expected) |
 | Back / origin | Stay on live origin/port | abc Track A | Do not reintroduce `settings.port` URLs |
 | Disconnect / reconnect | Banner + Retry | abc Track A + this shell | `#reconnect-retry` beside exact banner text |
@@ -439,7 +441,7 @@ taste gate.
 |---|---|---|
 | 1 | Double-click `Library.bat` | Visible console; browser opens on the live listen URL; title reads Library |
 | 2 | Empty / first-run | “No pictures yet”; Add folder is the CTA; no fake samples |
-| 3 | Update | Launcher or header Update; Updating… then updated / already current / failed / git missing. No CMD. No branch switch |
+| 3 | Update | Launcher or header Update; Updating… then updated / already current / failed / git missing. Header shows the checkout SHA. No CMD. No branch switch |
 | 4 | Add folder | Native picker; copy-or-link; dialog closes on 202 |
 | 5 | Progress / scan error | Status + console; items as ready; failure shows Retry, never a blank page |
 | 6 | Wall + sort + filters | Dates-off wall; ≥8 sizes; thumbs stay; Newest/Oldest/Name; All / Photos / Videos / Favorites |
