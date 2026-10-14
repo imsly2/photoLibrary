@@ -24,10 +24,13 @@
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const revealOriginalBtn = document.getElementById("reveal-original");
   const openOriginalBtn = document.getElementById("open-original");
+  const revealError = document.getElementById("reveal-error");
   const playPreviewBtn = document.getElementById("play-preview");
   const viewerScrubWrap = document.getElementById("viewer-scrub-wrap");
   const viewerScrub = document.getElementById("viewer-scrub");
   const viewerScrubTime = document.getElementById("viewer-scrub-time");
+  const viewerMute = document.getElementById("viewer-mute");
+  const viewerVolumeSlider = document.getElementById("viewer-volume");
   const updateLibraryBtn = document.getElementById("update-library");
   const updateStatus = document.getElementById("update-status");
   const libraryVersion = document.getElementById("library-version");
@@ -1433,6 +1436,25 @@
     hideViewerScrub();
   }
 
+  let viewerMuted = false;
+  let viewerVolume = 1;
+
+  function applyViewerVolume() {
+    if (viewerVideo) {
+      viewerVideo.muted = viewerMuted || viewerVolume <= 0;
+      viewerVideo.volume = viewerMuted ? 0 : viewerVolume;
+    }
+    if (viewerMute) {
+      const muted = !!(viewerVideo && viewerVideo.muted);
+      viewerMute.setAttribute("aria-pressed", muted ? "true" : "false");
+      viewerMute.textContent = muted ? "Unmute" : "Mute";
+      viewerMute.title = muted ? "Unmute" : "Mute";
+    }
+    if (viewerVolumeSlider) {
+      viewerVolumeSlider.value = String(Math.round(viewerVolume * 100));
+    }
+  }
+
   function hideViewerScrub() {
     if (viewerScrubWrap) {
       viewerScrubWrap.hidden = true;
@@ -1449,6 +1471,7 @@
     if (viewerScrubWrap) {
       viewerScrubWrap.hidden = false;
     }
+    applyViewerVolume();
     syncViewerScrub();
   }
 
@@ -1521,11 +1544,30 @@
     return status.preview === "ready";
   }
 
+  function showRevealFailed() {
+    unavailableBanner.hidden = false;
+    if (revealError) {
+      revealError.hidden = false;
+      revealError.textContent = "Original is not on this computer";
+    }
+    revealOriginalBtn.disabled = true;
+    openOriginalBtn.disabled = true;
+  }
+
+  function clearRevealFailed() {
+    if (revealError) {
+      revealError.hidden = true;
+    }
+  }
+
   function syncViewerChrome(item) {
     const available = !!(item && item.available);
     unavailableBanner.hidden = available;
     revealOriginalBtn.disabled = !available;
     openOriginalBtn.disabled = !available;
+    if (available) {
+      clearRevealFailed();
+    }
     playPreviewBtn.disabled = true;
     syncNavChrome();
     syncOriginalChrome();
@@ -1584,6 +1626,7 @@
     resetViewTransform();
     unavailableBanner.hidden = true;
     viewerPlaceholder.hidden = true;
+    clearRevealFailed();
     revealOriginalBtn.disabled = true;
     openOriginalBtn.disabled = true;
     setInfoOpen(false);
@@ -1700,6 +1743,7 @@
         } catch (err) {}
         viewerVideo.playbackRate = rate;
         layoutVideo(item);
+        applyViewerVolume();
         if (!paused) {
           const play = viewerVideo.play();
           if (play && play.catch) {
@@ -3156,6 +3200,22 @@
       viewerVideo.currentTime = (Number(viewerScrub.value) / 1000) * viewerVideo.duration;
     });
   }
+  if (viewerMute) {
+    viewerMute.addEventListener("click", function () {
+      viewerMuted = !viewerMuted;
+      if (!viewerMuted && viewerVolume <= 0) {
+        viewerVolume = 1;
+      }
+      applyViewerVolume();
+    });
+  }
+  if (viewerVolumeSlider) {
+    viewerVolumeSlider.addEventListener("input", function () {
+      viewerVolume = Math.max(0, Math.min(1, Number(viewerVolumeSlider.value) / 100));
+      viewerMuted = viewerVolume <= 0;
+      applyViewerVolume();
+    });
+  }
   const viewerStage = document.getElementById("viewer-stage");
   if (viewerStage) {
     viewerStage.addEventListener("click", function (event) {
@@ -3284,13 +3344,18 @@
     }
     const item = syncViewerIndex();
     if (!item || item.available === false) {
+      showRevealFailed();
       return;
     }
     fetch("/api/items/" + encodeURIComponent(item.id) + "/reveal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
-    }).then(readJson).catch(function () {});
+    }).then(readJson).then(function () {
+      clearRevealFailed();
+    }).catch(function () {
+      showRevealFailed();
+    });
   });
   openOriginalBtn.addEventListener("click", function () {
     if (openOriginalBtn.disabled) {
@@ -3298,13 +3363,18 @@
     }
     const item = syncViewerIndex();
     if (!item || item.available === false) {
+      showRevealFailed();
       return;
     }
     fetch("/api/items/" + encodeURIComponent(item.id) + "/open", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
-    }).then(readJson).catch(function () {});
+    }).then(readJson).then(function () {
+      clearRevealFailed();
+    }).catch(function () {
+      showRevealFailed();
+    });
   });
   function applyVersion(body) {
     if (!libraryVersion) {

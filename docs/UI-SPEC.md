@@ -376,9 +376,10 @@ do.
 **Scrub anywhere the video is playing.** `#viewer-scrub` (with a
 mm:ss time label) sits in `#viewer-bottom` — the slot the zoom slider
 used to occupy — and seeks the open viewer video at any zoom or source.
-It must not overlay the picture. A compact `.tile-scrub` on the hovered
-grid tile seeks that preview without opening the viewer. Originals stay
-on disk; no cloud.
+It must not overlay the picture. Mute (`#viewer-mute`) and a volume
+slider (`#viewer-volume`) sit beside the scrub; hover proxies stay
+silent. A compact `.tile-scrub` on the hovered grid tile seeks that
+preview without opening the viewer. Originals stay on disk; no cloud.
 
 ### Spec target vs current implementation
 
@@ -469,7 +470,7 @@ taste gate.
 | 12 | Fullscreen | F11 or F; Esc exits fullscreen, then the viewer |
 | 13 | Slideshow | F5 starts; Space pauses; Esc stops; empty “Add photos first” |
 | 14 | Favorite | Viewer heart; tile heart at large Size; Favorites strip can collapse |
-| 15 | Reveal + Open | Side by side; Reveal selects in Explorer; Open launches the default app |
+| 15 | Reveal + Open | Side by side; Reveal selects the on-disk file (`explorer.exe /select,"fullpath"`); missing original shows the banner, never Documents |
 | 16 | Info | File facts first (or “No camera info”), then people/places/things; click filters the grid |
 | 17 | Remove / Delete file | Delete key removes from library (confirm, bytes stay). Delete file extra-confirms and Recycle-Bins |
 | 18 | Reconnect | Kill the server: “Library is not responding”; restore health clears it |

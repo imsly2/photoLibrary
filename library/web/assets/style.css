@@ -1162,6 +1162,18 @@ dialog h2 {
   text-align: right;
 }
 
+#viewer-mute {
+  background: #2a2a32;
+  min-width: 5.2rem;
+  padding: 0.2rem 0.55rem;
+}
+
+#viewer-volume {
+  width: 6.5rem;
+  flex: 0 0 6.5rem;
+  accent-color: #4a7ac8;
+}
+
 .tile-scrub {
   position: absolute;
   left: 0.2rem;
@@ -1218,7 +1230,19 @@ dialog h2 {
 #viewer-actions {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 0.85rem;
+}
+
+#reveal-error {
+  margin: 0;
+  color: #e0a0a0;
+  font-size: 0.85rem;
+}
+
+#reveal-error[hidden] {
+  display: none;
 }
 
 #reveal-original,

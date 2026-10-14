@@ -408,7 +408,7 @@ class Library:
         return self.set_favorite(item_id, parse_favorite_body(payload))
 
     def reveal(self, item_id: str) -> dict[str, Any]:
-        from library.favorites import open_containing_folder
+        from library.favorites import existing_original, open_containing_folder
 
         self.recover()
         self.ensure_settings()
@@ -419,7 +419,8 @@ class Library:
             component = "motion"
         else:
             component = "still"
-        path = _readable_component_file(item, component, self.root)
+        raw = _readable_component_file(item, component, self.root)
+        path = existing_original(raw) if raw is not None else None
         if path is None:
             raise fail("unavailable")
         opened = open_containing_folder(path)
@@ -430,7 +431,7 @@ class Library:
         }
 
     def open(self, item_id: str) -> dict[str, Any]:
-        from library.favorites import open_file
+        from library.favorites import existing_original, open_file
 
         self.recover()
         self.ensure_settings()
@@ -441,7 +442,8 @@ class Library:
             component = "motion"
         else:
             component = "still"
-        path = _readable_component_file(item, component, self.root)
+        raw = _readable_component_file(item, component, self.root)
+        path = existing_original(raw) if raw is not None else None
         if path is None:
             raise fail("unavailable")
         opened = open_file(path)
