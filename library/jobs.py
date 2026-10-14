@@ -49,6 +49,13 @@ def _photo_like(item: dict[str, Any]) -> bool:
 
 
 def _faces_counts(root: Path) -> tuple[int, int, int]:
+    scanned: set[str] = set()
+    try:
+        from library.faces import scanned_item_ids
+
+        scanned = scanned_item_ids(root)
+    except Exception:
+        scanned = set()
     pending = 0
     done = 0
     for item_id in iter_item_ids(root):
@@ -56,7 +63,7 @@ def _faces_counts(root: Path) -> tuple[int, int, int]:
         if not _photo_like(item):
             continue
         faces = item.get("faces") or []
-        if faces:
+        if faces or item_id in scanned:
             done += 1
         else:
             pending += 1
@@ -64,6 +71,21 @@ def _faces_counts(root: Path) -> tuple[int, int, int]:
 
 
 def _objects_counts(root: Path) -> tuple[int, int, int]:
+    try:
+        from library.objects import analyze_status, model_installed
+
+        if model_installed(root):
+            status = analyze_status(root)
+            pending = int(status.get("pending") or 0)
+            photo_like = 0
+            for item_id in iter_item_ids(root):
+                item = load_item(root, item_id)
+                if _photo_like(item):
+                    photo_like += 1
+            done = max(0, photo_like - pending)
+            return pending, done, 0
+    except Exception:
+        pass
     pending = 0
     done = 0
     for item_id in iter_item_ids(root):
@@ -79,25 +101,44 @@ def _objects_counts(root: Path) -> tuple[int, int, int]:
 
 
 def _analyze_counts(root: Path) -> tuple[int, int, int]:
-    faces_pending, faces_done, _ = _faces_counts(root)
-    objects_pending, objects_done, _ = _objects_counts(root)
-    return faces_pending + objects_pending, faces_done + objects_done, 0
+    try:
+        from library.places import unnamed_gps_counts
+
+        return unnamed_gps_counts(root)
+    except Exception:
+        return 0, 0, 0
 
 
-def _queue_available(queue_id: str) -> bool:
+def _queue_available(root: Path, queue_id: str) -> bool:
     if queue_id == "renditions":
         return True
     if queue_id == "infer-faces":
-        return _module_available("library.faces")
+        if not _module_available("library.faces"):
+            return False
+        try:
+            from library.faces import faces_status
+
+            return bool(faces_status(root).get("ready"))
+        except Exception:
+            return False
     if queue_id == "objects":
-        return _module_available("library.objects")
+        if not _module_available("library.objects"):
+            return False
+        try:
+            from library.objects import model_installed
+
+            return bool(model_installed(root))
+        except Exception:
+            return False
     if queue_id == "analyze":
-        return (
-            _module_available("library.analyze")
-            or _module_available("library.geo")
-            or _module_available("library.faces")
-            or _module_available("library.objects")
-        )
+        if not _module_available("library.geo"):
+            return False
+        try:
+            from library.geo import pack_ready
+
+            return bool(pack_ready(root))
+        except Exception:
+            return False
     return False
 
 
@@ -126,7 +167,7 @@ def jobs_status(root: Path, paused: bool) -> dict[str, Any]:
     processing = False
     for queue_id in QUEUE_ORDER:
         pending, done, error = _queue_counts(root, queue_id)
-        available = _queue_available(queue_id)
+        available = _queue_available(root, queue_id)
         live = available and not paused
         state = _queue_state(pending, paused, live=live)
         if state == "running":

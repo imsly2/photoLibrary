@@ -149,6 +149,7 @@
   let splitDragging = false;
   let searchTimer = 0;
   let annotateBusy = false;
+  let namingPersonId = "";
   let pollTimer = 0;
   let scanning = false;
   let levelWheelLock = false;
@@ -409,7 +410,7 @@
     inspector.dataset.entityId = id;
     inspector.dataset.kind = kind;
     inspector.dataset.count = String(count);
-    inspectorName.textContent = name || "";
+    inspectorName.textContent = name || (kind === "person" ? "Unnamed" : "");
     inspectorCount.textContent = String(count);
     inspectorFiles.innerHTML = "";
     filenames.forEach(function (filename) {
@@ -441,8 +442,8 @@
       const entities = (item && item.entities) || {};
       const list = kind === "person" ? entities.people : kind === "place" ? entities.places : entities.things;
       (list || []).forEach(function (rec) {
-        if (rec && rec.id === id && rec.name) {
-          name = rec.name;
+        if (rec && rec.id === id) {
+          name = rec.name || (kind === "person" ? "Unnamed" : "");
         }
       });
     });
@@ -1721,7 +1722,12 @@
       }
       field.value = "";
       delete field.dataset.committed;
+      delete field.dataset.renameId;
     });
+    namingPersonId = "";
+    if (personField) {
+      personField.placeholder = "Person";
+    }
   }
 
   function hideViewerChrome() {
@@ -2236,16 +2242,33 @@
         return;
       }
       (records || []).forEach(function (rec) {
-        if (!rec || !rec.id || !rec.name) {
+        if (!rec || !rec.id) {
           return;
         }
+        if (kind !== "person" && !rec.name) {
+          return;
+        }
+        const unnamed = kind === "person" && !rec.name;
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "entity-label";
+        btn.className = unnamed ? "entity-label unnamed" : "entity-label";
         btn.dataset.entityKind = kind;
         btn.dataset.entityId = rec.id;
-        btn.textContent = rec.name;
+        btn.textContent = rec.name || "Unnamed";
+        if (unnamed && rec.id === namingPersonId) {
+          btn.setAttribute("aria-pressed", "true");
+        }
         btn.addEventListener("click", function () {
+          if (unnamed) {
+            namingPersonId = rec.id;
+            if (personField) {
+              personField.dataset.renameId = rec.id;
+              personField.placeholder = "Name this person";
+              personField.focus();
+            }
+            renderViewerLabels(item);
+            return;
+          }
           filterByEntity(kind, rec.id);
         });
         node.appendChild(btn);
@@ -2269,6 +2292,13 @@
   }
 
   function openStillViewer(item, index) {
+    if (viewerItemId !== item.id) {
+      namingPersonId = "";
+      if (personField) {
+        delete personField.dataset.renameId;
+        personField.placeholder = "Person";
+      }
+    }
     resetViewerVideo();
     resetViewerOriginal();
     resetViewTransform();
@@ -3272,7 +3302,11 @@
     }
     const payload = {};
     if (kind === "person") {
-      payload.people = [{ name: value }];
+      if (namingPersonId) {
+        payload.people = [{ id: namingPersonId, name: value }];
+      } else {
+        payload.people = [{ name: value }];
+      }
     } else if (kind === "place") {
       payload.places = [{ name: value }];
     } else if (kind === "thing") {
@@ -3291,6 +3325,26 @@
       field.dataset.committed = value;
       field.value = "";
       delete field.dataset.committed;
+      if (kind === "person") {
+        namingPersonId = "";
+        delete field.dataset.renameId;
+        field.placeholder = "Person";
+        const renamed = updated && updated.entities && updated.entities.people
+          ? updated.entities.people
+          : [];
+        items.forEach(function (cached, idx) {
+          if (!cached || !cached.entities || !cached.entities.people) {
+            return;
+          }
+          cached.entities.people = cached.entities.people.map(function (rec) {
+            const fresh = renamed.find(function (row) {
+              return row && rec && row.id === rec.id;
+            });
+            return fresh || rec;
+          });
+          items[idx] = cached;
+        });
+      }
       if (viewerIndex >= 0) {
         items[viewerIndex] = updated;
         renderViewerLabels(updated);

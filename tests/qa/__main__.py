@@ -162,6 +162,12 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_reveal import run_slice as runner
         elif args.slice_id == "TASTE-PEOPLE":
             from tests.qa.taste_people import run_slice as runner
+        elif args.slice_id in {"PLACES-GEO", "GEO"}:
+            from tests.qa.places_geo import run_slice as runner
+        elif args.slice_id == "TASTE-OBJECTS":
+            from tests.qa.taste_objects import run_slice as runner
+        elif args.slice_id == "FACES":
+            from tests.qa.faces import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
@@ -198,6 +204,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.s11 import run_check_f13 as runner
         elif args.feature_id == "F19":
             from tests.qa.s12 import run_check_f19 as runner
+        elif args.feature_id == "GEO":
+            from tests.qa.places_geo import run_check as runner
         else:
             return _fail_unimplemented("check", args.feature_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))

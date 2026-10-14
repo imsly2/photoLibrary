@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "path": "still.jpg",
+  "source": "https://github.com/ultralytics/ultralytics/raw/main/ultralytics/assets/bus.jpg",
+  "role": "supplied object-detection still (COCO bus; people in frame must not become faces)",
+  "notInS00MediaTree": true
+}

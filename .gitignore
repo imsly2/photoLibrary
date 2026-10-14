@@ -1,4 +1,5 @@
-# Runtime catalog, originals, renditions, locks, and logs. Never track these.
+# Runtime catalog, originals, renditions, locks, logs, and the optional
+# offline cities pack (library-data/geo/) plus local ML models. Never track these.
 library-data/
 
 # Optional private samples. Deterministic fixtures elsewhere may be tracked.
@@ -66,6 +67,9 @@ docs/features/**/s11-media/
 docs/features/**/s12-media/
 docs/features/**/api-media/
 docs/features/**/ui-media/
+docs/features/**/objects-media/
+docs/features/faces/**/library-data/
+docs/features/faces/**/faces-media/
 
 # Python
 __pycache__/

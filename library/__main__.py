@@ -252,6 +252,21 @@ def build_parser() -> argparse.ArgumentParser:
     jobs = sub.add_parser("jobs")
     jobs.add_argument("action", nargs="?", choices=("pause", "resume"))
 
+    setup_geo = sub.add_parser("setup-geo")
+    setup_geo.add_argument("--from", dest="from_path")
+    setup_geo.add_argument("--force", action="store_true")
+    sub.add_parser("analyze-places")
+
+    setup_ml = sub.add_parser("setup-ml")
+    setup_ml.add_argument("target", choices=("objects", "faces"))
+    setup_ml.add_argument("--backend")
+
+    analyze = sub.add_parser("analyze")
+    analyze.add_argument("--item")
+
+    infer_faces = sub.add_parser("infer-faces")
+    infer_faces.add_argument("--force", action="store_true")
+
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
     renditions.add_argument("action", nargs="?")
@@ -534,6 +549,69 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).jobs_get())
             _print_json(payload)
+            return 0
+        if args.command == "setup-geo":
+            from library.geo import setup_geo
+
+            result = setup_geo(root, source=args.from_path, force=bool(args.force))
+            _print_json(result)
+            return 0
+        if args.command == "analyze-places":
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze_places(),
+                "POST",
+                "/api/places/analyze",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-ml":
+            if args.target == "objects":
+                result = Library(root).setup_ml("objects")
+                _print_json(result)
+                return 0
+            if args.target != "faces":
+                _print_error("invalid-argument")
+                return 2
+            body: dict[str, Any] = {}
+            if getattr(args, "backend", None):
+                body["backend"] = args.backend
+            result = _mutation(
+                root,
+                lambda: Library(root).setup_faces(body or None),
+                "POST",
+                "/api/faces/setup",
+                body,
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "analyze":
+            body = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze(body or None),
+                "POST",
+                "/api/analyze",
+                body,
+                timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "infer-faces":
+            body = {"force": bool(args.force)}
+            result = _mutation(
+                root,
+                lambda: Library(root).infer_faces(body),
+                "POST",
+                "/api/faces/infer",
+                body,
+                timeout=300.0,
+            )
+            _print_json(result)
             return 0
         if args.command == "renditions":
             if getattr(args, "action", None) != "relocate":
