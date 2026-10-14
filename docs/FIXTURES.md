@@ -62,6 +62,7 @@ or change expected counts in a slice to make a test pass.
 | empty/no-GPS | Empty media directory and subset of no-exif only; empty grid/search/globe/tour without failures |
 | settings/history | Port 8765 → 8770 → undo → redo, restart between steps; 501 changes caps 500; new edit clears redo; copy undo leaves every original byte |
 | annotation | Ada on first photo, mug on first+second; alias Cup → mug; second person id merged into Ada; rename place Kitchen; out-of-range boxes rejected |
+| face-cluster | Synthetic stills with two beacon/identity “faces” (person A on two photos, person B on two, both on one, plus a no-face still). After `setup-ml faces` (fixture backend) and `infer-faces`, two unnamed people, boxes in range, same-person reuse, search by person after a human name, merge reassigns faces. Never a guessed name. |
 
 ## QA interface to build, not an existing command
 

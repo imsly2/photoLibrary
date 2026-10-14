@@ -244,6 +244,13 @@ def build_parser() -> argparse.ArgumentParser:
     merge.add_argument("keep")
     merge.add_argument("drop")
 
+    setup_ml = sub.add_parser("setup-ml")
+    setup_ml.add_argument("target")
+    setup_ml.add_argument("--backend")
+
+    infer_faces = sub.add_parser("infer-faces")
+    infer_faces.add_argument("--force", action="store_true")
+
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
     renditions.add_argument("action", nargs="?")
@@ -471,6 +478,35 @@ def main(argv: list[str] | None = None) -> int:
                 "POST",
                 "/api/people/merge",
                 body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-ml":
+            if args.target != "faces":
+                _print_error("invalid-argument")
+                return 2
+            body = {}
+            if args.backend:
+                body["backend"] = args.backend
+            result = _mutation(
+                root,
+                lambda: Library(root).setup_faces(body or None),
+                "POST",
+                "/api/faces/setup",
+                body or {},
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "infer-faces":
+            body = {"force": bool(args.force)}
+            result = _mutation(
+                root,
+                lambda: Library(root).infer_faces(body),
+                "POST",
+                "/api/faces/infer",
+                body,
+                timeout=300.0,
             )
             _print_json(result)
             return 0
