@@ -1,0 +1,8 @@
+Start-Process : This command cannot be run due to the error: The system cannot find the file specified.
+At J:\slyOS\projects\photoLibrary\launch.ps1:53 char:9
++ $proc = Start-Process -FilePath $python[0] -ArgumentList (@($python[1 ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
+    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
+ 
+EXITCODE=0 
