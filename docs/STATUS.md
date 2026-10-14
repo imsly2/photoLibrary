@@ -173,6 +173,13 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   through annotate. Human tags stay. No faces. No cloud APIs. No 17th
   setting. No new Check; 16/22 unchanged.
   Plan: [taste-objects](features/taste-objects/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-1/result.json)
+  39/39,
+  [info-things.png](features/taste-objects/Rev1.0/assets/verify-1/info-things.png),
+  [search-thing.png](features/taste-objects/Rev1.0/assets/verify-1/search-thing.png),
+  [analyze.json](features/taste-objects/Rev1.0/assets/verify-1/analyze.json).
+  Fixture still tagged `bus`; prior human `mug` kept; People empty.
 
 ## Completion
 

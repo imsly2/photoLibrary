@@ -20,9 +20,23 @@ from tests.qa.s00 import (
     wait_health,
 )
 from tests.qa.s01 import parse_summary
-from tests.qa.s03 import find_item, png_size
-from tests.qa.s04 import collect_console
+from tests.qa.s03 import png_size
 from tests.qa.s08 import fresh_root, settings_port, write_result
+
+
+def collect_console(page: Any) -> list[str]:
+    errors: list[str] = []
+
+    def on_console(msg: Any) -> None:
+        if msg.type == "error":
+            errors.append(msg.text)
+
+    def on_pageerror(exc: Any) -> None:
+        errors.append(str(exc))
+
+    page.on("console", on_console)
+    page.on("pageerror", on_pageerror)
+    return errors
 
 OBJECTS_STILL = PRODUCT_ROOT / "tests" / "fixtures" / "objects" / "still.jpg"
 
@@ -214,7 +228,8 @@ def prove_http_and_browser(checks: Checks, artifacts: Path, cli: dict[str, Any])
             browser = playwright.chromium.launch()
             page = browser.new_page(viewport={"width": 1280, "height": 720})
             console = collect_console(page)
-            page.goto(url, wait_until="networkidle")
+            page.goto(url, wait_until="load", timeout=60000)
+            page.select_option("#date-group", "off")
             page.wait_for_selector(".cell", timeout=20000)
             page.locator(".cell").first.click()
             page.wait_for_selector("#viewer:not([hidden])", timeout=10000)

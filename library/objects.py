@@ -27,8 +27,9 @@ MAX_DETS = 20
 SKIP_LABELS = frozenset({"person"})
 
 MODEL_URLS = (
+    "https://huggingface.co/Kalray/yolov8/resolve/main/yolov8n.onnx",
+    "https://huggingface.co/unileon-robotics/YOLO8-ONNX/resolve/main/yolov8n.onnx",
     "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.onnx",
-    "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.onnx",
 )
 
 RUNTIME_PACKAGES = ("onnxruntime",)
