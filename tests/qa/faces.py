@@ -12,18 +12,15 @@ from typing import Any
 
 from library.httpjson import request_json
 from library.media import sha256_file
-from tests.qa.roots import prepare_root
 from tests.qa.s00 import (
     Checks,
     _env,
-    find_free_port,
     parse_json,
     run_library,
     stop_owned,
-    write_isolated_port,
 )
 from tests.qa.s01 import load_items
-from tests.qa.s08 import load_people, start_owned, write_result
+from tests.qa.s08 import fresh_root, load_people, start_owned, write_result
 
 FACE_A = (16, 200, 48)
 FACE_B = (32, 48, 220)
@@ -152,8 +149,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
         "infer-faces without models",
     ]
     artifacts.mkdir(parents=True, exist_ok=True)
-    prepare_root(root)
-    write_isolated_port(root, find_free_port())
+    fresh_root(root)
     media = make_face_media(artifacts / "faces-media")
     originals = {path.name: sha256_file(path) for path in sorted(media.glob("*.png"))}
 
@@ -240,8 +236,9 @@ def run_slice(root: Path, artifacts: Path) -> int:
     checks.check("a-cluster", person_a is not None and person_of(a2) == person_a, json.dumps([a1.get("faces"), a2.get("faces")]))
     checks.check("b-cluster", person_b is not None and person_of(b2) == person_b, json.dumps([b1.get("faces"), b2.get("faces")]))
     checks.check("a-ne-b", person_a != person_b, f"{person_a} {person_b}")
-    both_ids = sorted({face.get("personId") for face in both.get("faces") or []})
-    checks.check("both-has-a-and-b", both_ids == sorted([person_a, person_b]), json.dumps(both_ids))
+    both_ids = sorted(pid for pid in {face.get("personId") for face in both.get("faces") or []} if pid)
+    expected = sorted(pid for pid in (person_a, person_b) if pid)
+    checks.check("both-has-a-and-b", both_ids == expected and len(expected) == 2, json.dumps(both_ids))
     all_boxes = [
         face.get("box")
         for item in items

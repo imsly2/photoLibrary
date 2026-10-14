@@ -167,6 +167,20 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [verify-2](features/taste-version/Rev1.0/assets/verify-2/result.json)
   23/23 after chrome+autoplay merge (SHA still beside Update Library),
   [version-header.png](features/taste-version/Rev1.0/assets/verify-2/version-header.png).
+- 2026-10-14 — **Optional local face inference** (Phase C) on
+  `cursor/local-faces-3e03`. `setup-ml faces` installs InsightFace
+  buffalo_s ONNX under `library-data/models/faces/` (Windows CPU).
+  `infer-faces` detects → embeds → clusters unnamed people; reuses the
+  people catalog and `people merge`. Info lists Unnamed and names via
+  existing annotate `{id,name}`. Search is `person=` / `q=`. Faces never
+  upload; no real-name guess; no YOLO. Extends F14; no 23rd Check.
+  16/22 unchanged.
+  Plan: [faces](features/faces/Rev1.0/PLAN.md).
+  Evidence:
+  [FACES](features/faces/Rev1.0/assets/verify-1/result.json)
+  40/40, [infer](features/faces/Rev1.0/assets/verify-1/infer.json),
+  [search](features/faces/Rev1.0/assets/verify-1/search.json),
+  [merge](features/faces/Rev1.0/assets/verify-1/merge.json).
 
 ## Completion
 
@@ -435,3 +449,8 @@ environments must be supplied by the build or F2 remains pending; do not claim
   `currentTime`. TASTE-VIDEO 61/61. `#library-version` kept (PR #11
   merge); TASTE-VERSION 23/23 on this tip. `GET /api/update` 200. No
   new Check. 16/22 unchanged.
+- 2026-10-14 — Optional local face inference (Phase C). `setup-ml faces`
+  + `infer-faces` cluster unnamed people locally; Info names via
+  annotate; search/merge reuse F14. FACES 40/40. No YOLO. No new Check.
+  16/22 unchanged.
+  [FACES](features/faces/Rev1.0/assets/verify-1/result.json).

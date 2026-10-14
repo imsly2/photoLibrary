@@ -904,7 +904,6 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
         if person_id in seen_new:
             continue
         seen_new.add(person_id)
-        created_ids.add(person_id)
         changes.append(
             {
                 "path": person_rel(person_id),
