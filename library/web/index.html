@@ -21,27 +21,49 @@
     </div>
     <div class="toolbar">
       <label class="toolbar-field">Sort
-        <select id="sort" aria-label="Sort">
+        <select id="sort-presentable" aria-label="Sort">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="name">Name</option>
+          <option value="location">Location</option>
+        </select>
+      </label>
+      <label class="toolbar-field legacy-sort">Sort
+        <select id="sort" aria-label="Sort field">
           <option value="date">Date</option>
           <option value="location">Location</option>
           <option value="name">Name</option>
         </select>
       </label>
-      <label class="toolbar-field">Direction
+      <label class="toolbar-field legacy-sort">Direction
         <select id="dir" aria-label="Direction">
           <option value="desc">Newest first</option>
           <option value="asc">Oldest first</option>
         </select>
       </label>
-      <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
+      <div id="filter-chips" role="group" aria-label="Filter">
+        <button type="button" id="filter-all" class="toolbar-toggle" aria-pressed="true">All</button>
+        <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false">Photos</button>
+        <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false">Videos</button>
+        <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false">Favorites</button>
+      </div>
       <button type="button" id="group-dates" class="toolbar-toggle" aria-pressed="true">Dates</button>
+      <button type="button" id="remove-item" class="toolbar-action" disabled>Remove</button>
+      <button type="button" id="delete-file" class="toolbar-action" disabled>Delete file</button>
     </div>
     <button type="button" id="add-folder-btn">Add folder</button>
     <button type="button" id="update-library">Update Library</button>
   </header>
-  <p id="disconnected-banner" hidden>Library is not responding</p>
+  <div id="disconnected-wrap">
+    <p id="disconnected-banner" hidden>Library is not responding</p>
+    <button type="button" id="reconnect-retry" hidden>Retry</button>
+  </div>
   <p id="update-status" class="status" hidden></p>
-  <p id="scan-status" class="status" hidden></p>
+  <div id="scan-status" class="status" hidden>
+    <p id="scan-status-text"></p>
+    <p id="scan-error-text" hidden></p>
+    <button type="button" id="scan-retry" hidden>Retry</button>
+  </div>
   <div class="workspace">
     <main id="grid">
       <p>No pictures yet</p>
@@ -163,6 +185,22 @@
     </div>
   </div>
   <p id="slideshow-empty" hidden>Add photos first</p>
+  <dialog id="confirm-remove" aria-labelledby="confirm-remove-title">
+    <h2 id="confirm-remove-title">Remove from Library?</h2>
+    <p>The file stays on disk.</p>
+    <div class="dialog-actions">
+      <button type="button" id="confirm-remove-cancel">Cancel</button>
+      <button type="button" id="confirm-remove-ok">Remove</button>
+    </div>
+  </dialog>
+  <dialog id="confirm-delete-file" aria-labelledby="confirm-delete-title">
+    <h2 id="confirm-delete-title">Delete this file from disk?</h2>
+    <p>This sends the original to the Recycle Bin. The catalog record is then removed.</p>
+    <div class="dialog-actions">
+      <button type="button" id="confirm-delete-cancel">Cancel</button>
+      <button type="button" id="confirm-delete-ok">Delete file</button>
+    </div>
+  </dialog>
   <script src="/assets/library.js"></script>
   <script src="/assets/globe.js"></script>
 </body>

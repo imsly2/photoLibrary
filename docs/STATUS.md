@@ -116,6 +116,18 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json).
   Pointer: [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
+- 2026-10-13 — Windows Presentable Shell Must 6–10 (library grid/shell)
+  on `cursor/windows-presentable-shell-must-806a` rebased onto PR #7
+  (`cursor/viewer-shell-must-2e74`, `bd9746d`). Empty CTA + Add; scan
+  Retry + path; reconnect Retry beside the exact banner; `remove` /
+  `delete-file`; Newest/Oldest/Name + All/Photos/Videos/Favorites;
+  search date + “No matches for …”; Update.bat / Updating…. Viewer
+  fullscreen/slideshow/keys/EXIF Info stay from PR #7. Does not close a
+  Check. 16/22 unchanged.
+  Plan: [taste-shell](features/taste-shell/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-1/result.json)
+  50/50, [shell.png](features/taste-shell/Rev1.0/assets/verify-1/shell.png).
 
 ## Completion
 
@@ -374,7 +386,7 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-13 — Viewer Presentable Shell Must (fullscreen, slideshow,
   keyboard parity, EXIF-first Info) rebased onto
   `cursor/merge-viewer-chrome-7726`. Open + Reveal + Win7 chrome stay.
-  Remove/sort/search/empty go to a parallel agent. TASTE-VIEWER 103
-  assertions exit 0 on the merge tip. F10 28/29: `browser-proof` times
-  out on Info-first Esc, same as `d00addb`; assertions not weakened.
-  No new Check. 16/22 unchanged.
+  Remove/sort/search/empty shipped on this shell PR against that tip.
+  TASTE-VIEWER 103 assertions exit 0 on the merge tip. F10 28/29:
+  `browser-proof` times out on Info-first Esc, same as `d00addb`;
+  assertions not weakened. No new Check. 16/22 unchanged.

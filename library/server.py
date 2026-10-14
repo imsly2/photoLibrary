@@ -433,6 +433,32 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.open(item_id))
                 return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/remove")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/remove")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.remove(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/delete-file")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/delete-file")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.delete_file(item_id))
+                return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)
                 return
