@@ -1,0 +1,23 @@
+PASS identity-ok: {"ok": true, "reason": null, "git_sha": "8ea0b99", "git_branch": "cursor/library-version-7c68", "git_date": "2026-10-14", "git_subject": "feat(windows): show checkout SHA next to Update Library", "revision": "8ea0b99", "branch": "cursor/library-version-7c68", "dirty": true, "label": "8ea0b99", "message": "This copy is 8ea0b99 on cursor/library-version-7c68."}
+PASS identity-sha: 8ea0b99
+PASS identity-label: 8ea0b99
+PASS payload-sha: 8ea0b99
+PASS payload-label: 8ea0b99
+PASS fallback-not-git: not-a-git-copy
+PASS fallback-label-local: local
+PASS fallback-sha-null: None
+PASS health-liveness: {'ok': True}
+PASS version-http: {'ok': True, 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'label': '8ea0b99', 'reason': None}
+PASS version-sha: {"ok": true, "git_sha": "8ea0b99", "git_branch": "cursor/library-version-7c68", "git_date": "2026-10-14", "git_subject": "feat(windows): show checkout SHA next to Update Library", "label": "8ea0b99", "reason": null}
+PASS update-get: {'ok': True, 'reason': None, 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'revision': '8ea0b99', 'branch': 'cursor/library-version-7c68', 'dirty': True, 'label': '8ea0b99', 'message': 'This copy is 8ea0b99 on cursor/library-version-7c68.'}
+PASS update-get-sha: {"ok": true, "reason": null, "git_sha": "8ea0b99", "git_branch": "cursor/library-version-7c68", "git_date": "2026-10-14", "git_subject": "feat(windows): show checkout SHA next to Update Library", "revision": "8ea0b99", "branch": "cursor/library-version-7c68", "dirty": true, "label": "8ea0b99", "message": "This copy is 8ea0b99 on cursor/library-version-7c68."}
+PASS update-post: {'ok': True, 'updated': False, 'alreadyCurrent': True, 'revision': '8ea0b99', 'message': 'Already up to date.', 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'branch': 'cursor/library-version-7c68'}
+PASS update-post-sha: {"ok": true, "updated": false, "alreadyCurrent": true, "revision": "8ea0b99", "message": "Already up to date.", "git_sha": "8ea0b99", "git_branch": "cursor/library-version-7c68", "git_date": "2026-10-14", "git_subject": "feat(windows): show checkout SHA next to Update Library", "branch": "cursor/library-version-7c68"}
+PASS update-post-revision: {"revision": "8ea0b99", "git_sha": "8ea0b99"}
+PASS playwright-import
+PASS header-sha: {"text": "8ea0b99", "hidden": false, "button": "Update Library"}
+PASS header-update-label: {"text": "8ea0b99", "hidden": false, "button": "Update Library"}
+PASS update-button-sha: {"status": 200, "body": {"ok": true, "updated": false, "alreadyCurrent": true, "revision": "8ea0b99", "message": "Already up to date.", "git_sha": "8ea0b99", "git_branch": "cursor/library-version-7c68", "git_date": "2026-10-14", "git_subject": "feat(windows): show checkout SHA next to Update Library", "branch": "cursor/library-version-7c68"}}
+PASS header-sha-after-update: {"version": "8ea0b99", "status": "Already up to date."}
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

@@ -116,7 +116,10 @@ def prove_browser(checks: Checks, artifacts: Path, expected: str) -> dict[str, A
     server, url, _port, owned = start_isolated(artifacts / "version-ui-root")
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True)
+            try:
+                browser = playwright.chromium.launch(channel="chrome", headless=True)
+            except Exception:
+                browser = playwright.chromium.launch(headless=True)
             page = browser.new_page(viewport={"width": 1280, "height": 720})
             page.goto(url, wait_until="domcontentloaded")
             page.wait_for_function(

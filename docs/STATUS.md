@@ -146,6 +146,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   refreshes the label from the new tip; the serve process does not
   restart. Does not close a Check. 16/22 unchanged.
   Plan: [taste-version](features/taste-version/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-VERSION](features/taste-version/Rev1.0/assets/verify-1/result.json)
+  23/23, [version-header.png](features/taste-version/Rev1.0/assets/verify-1/version-header.png).
 
 ## Completion
 
