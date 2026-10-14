@@ -237,7 +237,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   pack/models are installed. Missing models stay idle (`available`
   false) and browse does not crash. People panel reads real face
   clusters. Tip chrome (bottom Size/Dates, right People+Processing)
-  stays. Combined portable Setup.bat is a follow-up. Does not close
+  stays. `Setup.bat` now composes those CLIs (sibling below). Does not close
   a Check. 16/22 unchanged. Fresh on this stack:
   [GEO](features/places-geo/Rev1.0/assets/verify-2/result.json) 44/44,
   [TASTE-OBJECTS](features/taste-objects/Rev1.0/assets/verify-2/result.json) 39/39,
@@ -247,6 +247,19 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [jobs](features/stack-local-ai/Rev1.0/assets/verify-1/jobs-available.png),
   [people](features/stack-local-ai/Rev1.0/assets/verify-1/people-after-infer.png),
   [library](features/stack-local-ai/Rev1.0/assets/verify-1/library-stack.png).
+
+- 2026-10-14 — Portable `Setup.bat` on the reveal/hover tip
+  (`cursor/reveal-spaces-hover-proxy-c876`). One-time Windows install:
+  Python 3.12+ / ffmpeg (same winget ids as `launch.ps1`), `.venv`,
+  then `setup-geo` + `setup-ml objects` + `setup-ml faces` when those
+  CLIs exist. Missing modules print that Update Library must pull them
+  and exit non-zero. `Library.bat` / `launch.ps1` serve path unchanged.
+  Story: Setup once → Library daily → Update for code. No MSI. First
+  model download needs the internet. Does not close a Check. 16/22
+  unchanged.
+  Plan: [taste-setup](features/taste-setup/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-1/result.json).
 
 ## Completion
 

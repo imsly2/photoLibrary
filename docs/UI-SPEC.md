@@ -389,6 +389,16 @@ restart. Does not switch branches. **Implemented on this merge** (PR #2
 72/72 plus the abc Update commit). `Update.bat` / `launch.ps1 -Update`
 is the launcher. Prove the progress sentence on a real git copy.
 
+**Portable install (Setup once → Library daily → Update for code).**
+On a new Windows PC, Steve double-clicks `Setup.bat` once. It installs
+Python 3.12+ and ffmpeg (same winget ids as `launch.ps1`), creates
+`.venv`, installs the app, and fetches the local cities / objects /
+faces packs into `library-data/` when those CLIs exist. First run needs
+the internet. No MSI. Daily use is `Library.bat`. New code is header
+**Update Library** or `Update.bat` (`git pull`). If Setup says a module
+is missing, Update first, then Setup again. `Setup.bat` does not start
+the server.
+
 Also still locked from the earlier Windows notes (already on the DoD
 path): `Library.bat`; native Add folder; 202-before-finish; live-origin
 Back; non-fatal abort; full-tile video hover **at every Size**; VIDEO
@@ -475,7 +485,7 @@ Check to hide it.
 
 | Surface | Spec target | Where it lives | Gap |
 |---|---|---|---|
-| Launch | Double-click `Library.bat` | abc Track A | F2 Check pending |
+| Launch | `Setup.bat` once on a new PC; then double-click `Library.bat` daily | abc Track A + this Setup.bat | F2 Check pending. Setup does not start serve. |
 | Update | In-app + launcher; Updating… then a sentence; header shows checkout SHA | **This merge** (PR #2 72/72 + abc) + `Update.bat` + `#library-version` | Progress sentence on a real git copy |
 | Add folder | Native Browse; close on 202; items as ready | abc Track A | Linux QA `picker-unavailable` (expected) |
 | Back / origin | Stay on live origin/port | abc Track A | Do not reintroduce `settings.port` URLs |
@@ -540,7 +550,7 @@ taste gate.
 
 | # | Step | Pass |
 |---|---|---|
-| 1 | Double-click `Library.bat` | Visible console; browser opens on the live listen URL; title reads Library |
+| 1 | Double-click `Library.bat` | Visible console; browser opens on the live listen URL; title reads Library. On a new PC, `Setup.bat` once first (deps + local models); daily path stays `Library.bat`. |
 | 2 | Empty / first-run | “No pictures yet”; Add folder is the CTA; no fake samples |
 | 3 | Update | Launcher or header Update; Updating… then updated / already current / failed / git missing. Header shows the checkout SHA. No CMD. No branch switch |
 | 4 | Add folder | Native picker; copy-or-link; dialog closes on 202 |

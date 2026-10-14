@@ -69,7 +69,10 @@ CONTRACTS. Changing them requires a doc edit before implementation.
 
 ## The finished run
 
-1. Copy this folder onto a drive and run the launcher.
+1. Copy this folder onto a drive. On a new Windows PC, run `Setup.bat`
+   once (Python, ffmpeg, local faces/objects/places packs). Then run
+   `Library.bat` every day. New code is `Update.bat` / Update Library
+   (`git pull`), then `Setup.bat` again only if models were added.
 2. The browser opens on this computer and shows an empty library.
 3. Add a folder. Choose copy onto this drive, or serve that folder where it is.
 4. The server reads each picture and video, writes a JSON record, and builds a
@@ -180,6 +183,16 @@ arguments and full assertions in SLICES). Move a fixture app/data folder to anot
 double-click `Library.bat` in the app folder; it runs `launch.ps1` in a
 visible console so scan progress is readable. Do not require typing a
 command prompt. macOS/Linux launch stays `launch.sh` and is not graded here.
+
+On a new Windows PC, double-click `Setup.bat` once first. It installs
+Python 3.12+ and ffmpeg the same way as the launcher (winget
+`Python.Python.3.12`, `Gyan.FFmpeg`), creates `.venv`, installs the app,
+and runs `setup-geo` plus `setup-ml objects` and `setup-ml faces` when
+those commands exist. If a command is missing, it prints that Update
+Library must pull it and exits non-zero. Models stay under
+`library-data/`. No MSI. First run needs the internet. Daily use is
+`Library.bat`. New code is Update Library / `Update.bat` (`git pull`).
+`Setup.bat` does not start the server.
 
 The launcher checks for Python 3.12+ and ffmpeg on PATH. If either is missing
 on Windows it installs them with winget (`Python.Python.3.12`, `Gyan.FFmpeg`)
@@ -372,7 +385,7 @@ The geo pack lives in `library-data/geo/` (not in git). Steve fetches it
 once with `python -m library setup-geo` or `Setup-geo.bat`. The pack is a
 GeoNames-class cities table — nearest city/region, no network at scan
 time, no cloud API. Without the pack, behavior is unchanged: `name`
-stays null. A portable combined Setup.bat is a follow-up.
+stays null. `Setup.bat` runs that same `setup-geo` (plus `setup-ml`).
 
 When a place has coordinates and `name` is null, scan / `resolve_place`
 (and `analyze-places` for a library scanned before the pack) set

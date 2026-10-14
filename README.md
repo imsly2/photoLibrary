@@ -18,4 +18,12 @@ Point this server at the folder that copier already filled.
 | [docs/AGENT-BUILD-MODE.md](docs/AGENT-BUILD-MODE.md) | Orchestrator handoff for the later build. |
 | [docs/reference/](docs/reference/) | Layout targets for the main screens. |
 
-Nothing here runs yet. The first build follows [docs/SLICES.md](docs/SLICES.md) to make the 22 PRODUCT Checks true with independent evidence. The current task writes specs only.
+## Windows (family PC)
+
+Copy this folder onto a drive.
+
+1. **Setup once** — double-click `Setup.bat` (Python 3.12+, ffmpeg, `.venv`, local faces / objects / places). Needs the internet the first time. Models stay in `library-data/`. No MSI.
+2. **Library daily** — double-click `Library.bat`.
+3. **Update for code** — **Update Library** in the header, or `Update.bat` (`git pull`). Run `Setup.bat` again only if new local models were added.
+
+`Setup.bat -Help` prints that story. `Setup.bat -DryRun` probes without downloading.
