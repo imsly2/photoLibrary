@@ -226,13 +226,110 @@ h1 {
   cursor: pointer;
 }
 
-#tags-panel {
-  padding: 0.75rem 0.85rem 0;
+#tags-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 0 0 auto;
+  overflow: hidden;
   border-top: 1px solid #2a2a32;
 }
 
+#tags-toggle {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 0.55rem 0.85rem 0.35rem;
+}
+
+#tags-panel {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 0.85rem 0.75rem;
+}
+
+#library-side.tags-collapsed #tags-panel {
+  display: none;
+}
+
+#library-side.people-collapsed #people-panel {
+  display: none;
+}
+
+#library-side:not(.people-collapsed).tags-collapsed #people-panel {
+  flex: 1 1 0;
+}
+
+#library-side.people-collapsed:not(.tags-collapsed) #tags-section {
+  flex: 1 1 0;
+}
+
+#library-side:not(.people-collapsed):not(.tags-collapsed) #people-panel {
+  flex: var(--people-share, 0.62) 1 0;
+}
+
+#library-side:not(.people-collapsed):not(.tags-collapsed) #tags-section {
+  flex: calc(1 - var(--people-share, 0.62)) 1 0;
+}
+
+#side-vsplit {
+  height: 6px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #2a2a32;
+  border-bottom: 1px solid #2a2a32;
+  background: #1b1b22;
+  border-radius: 0;
+  cursor: row-resize;
+  flex-shrink: 0;
+}
+
+#side-vsplit:hover,
+#side-vsplit:focus {
+  background: #2d4a7a;
+}
+
+#side-vsplit[hidden] {
+  display: none;
+}
+
+.side-section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  color: #f2f2f4;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.15rem 0.2rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.side-section-toggle:hover {
+  background: #22222c;
+}
+
+.side-section-toggle h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.side-section-toggle::before {
+  content: "▾";
+  color: #9a9aa6;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.side-section-toggle[aria-expanded="false"]::before {
+  content: "▸";
+}
+
 #tags-heading {
-  margin: 0 0 0.45rem;
+  margin: 0;
   font-size: 0.95rem;
 }
 
@@ -527,7 +624,7 @@ button:disabled {
 }
 
 #people-panel {
-  flex: 1;
+  flex: 1 1 0;
   min-height: 0;
   overflow: auto;
   padding: 0.25rem 0.7rem 0.75rem;
@@ -851,6 +948,7 @@ main > p {
   padding: 0.65rem 0.9rem 0.85rem;
   border-top: 1px solid #2a2a32;
   flex-shrink: 0;
+  max-height: 8rem;
 }
 
 #inspector[hidden] {

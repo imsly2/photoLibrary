@@ -17,6 +17,8 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    in `#library-chrome` at the **bottom-left** of the grid. Right
    **People** splitter (`#library-side`) filters by face (AND when
    several are selected; click a selected person again to remove).
+   People and Tags are each collapsible for the session (People open,
+   Tags collapsed by default) so Tags never covers a face.
    `#jobs-panel` Pause / Start talks to `/api/jobs`. Keep one Size
    slider, Dates Years/Months/Days/Off, Ctrl+wheel on Size only,
    `#viewer-nav` / `#viewer-zoom-slider` / `#viewer-scrub`. Do **not**
