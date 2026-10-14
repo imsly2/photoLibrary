@@ -30,6 +30,8 @@ KEY_ORDER = (
     "sort",
     "dir",
     "zoomLevel",
+    "faceMatchThreshold",
+    "faceMinSidePx",
 )
 
 ENUMS: dict[str, frozenset[str]] = {
@@ -43,8 +45,8 @@ ENUMS: dict[str, frozenset[str]] = {
     "zoomLevel": frozenset({"years", "months", "days", "all"}),
 }
 
-INT_KEYS = frozenset({"port", "thumbPx", "previewPx", "proxyWidth", "tourPictures"})
-NUMBER_KEYS = frozenset({"placeMatchMeters", "tourOrbitSec", "tourPictureSec"})
+INT_KEYS = frozenset({"port", "thumbPx", "previewPx", "proxyWidth", "tourPictures", "faceMinSidePx"})
+NUMBER_KEYS = frozenset({"placeMatchMeters", "tourOrbitSec", "tourPictureSec", "faceMatchThreshold"})
 SETTING_KEYS = frozenset(KEY_ORDER[1:])
 
 DEFAULTS: dict[str, Any] = {
@@ -65,6 +67,8 @@ DEFAULTS: dict[str, Any] = {
     "sort": "date",
     "dir": "desc",
     "zoomLevel": "years",
+    "faceMatchThreshold": 0.5,
+    "faceMinSidePx": 80,
 }
 
 
@@ -95,6 +99,13 @@ def validate_value(key: str, value: Any) -> Any:
         if not _is_int(value) or value <= 0:
             raise fail("invalid-argument")
         return value
+    if key == "faceMatchThreshold":
+        if not _is_number(value) or isinstance(value, bool):
+            raise fail("invalid-argument")
+        number = float(value)
+        if not math.isfinite(number) or number <= 0 or number > 1:
+            raise fail("invalid-argument")
+        return number
     if key in NUMBER_KEYS:
         if not _is_number(value) or isinstance(value, bool):
             raise fail("invalid-argument")
@@ -182,6 +193,20 @@ def settings_path(root: Path) -> Path:
     return root / "settings.json"
 
 
+def fill_missing_defaults(data: dict[str, Any]) -> dict[str, Any]:
+    """Accept a pre-face-quality 16-key file by filling new keys from defaults."""
+    if not isinstance(data, dict):
+        raise fail("invalid-catalog")
+    extra = [key for key in data if key not in KEY_ORDER]
+    if extra:
+        raise fail("invalid-catalog")
+    out = dict(data)
+    for key in KEY_ORDER:
+        if key not in out:
+            out[key] = DEFAULTS[key]
+    return out
+
+
 def load_settings_file(root: Path) -> dict[str, Any]:
     path = settings_path(root)
     try:
@@ -191,7 +216,7 @@ def load_settings_file(root: Path) -> dict[str, Any]:
     except OSError as exc:
         raise fail("io-error") from exc
     try:
-        return validate_complete(data)
+        return validate_complete(fill_missing_defaults(data))
     except Exception as exc:
         if getattr(exc, "code", None) == "invalid-argument":
             raise fail("invalid-catalog") from exc

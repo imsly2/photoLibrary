@@ -250,7 +250,7 @@ def build_parser() -> argparse.ArgumentParser:
     update_person.add_argument("--thumbnail")
 
     jobs = sub.add_parser("jobs")
-    jobs.add_argument("action", nargs="?", choices=("pause", "resume"))
+    jobs.add_argument("action", nargs="?", choices=("pause", "resume", "rerun-faces"))
 
     setup_geo = sub.add_parser("setup-geo")
     setup_geo.add_argument("--from", dest="from_path")
@@ -266,6 +266,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     infer_faces = sub.add_parser("infer-faces")
     infer_faces.add_argument("--force", action="store_true")
+    infer_faces.add_argument("--cleanup", action="store_true")
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -527,7 +528,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "jobs":
             action = getattr(args, "action", None)
-            if action in {"pause", "resume"}:
+            if action in {"pause", "resume", "rerun-faces"}:
                 body = {"action": action}
                 result = _mutation(
                     root,
@@ -602,7 +603,7 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "infer-faces":
-            body = {"force": bool(args.force)}
+            body = {"force": bool(args.force), "cleanup": bool(args.cleanup)}
             result = _mutation(
                 root,
                 lambda: Library(root).infer_faces(body),

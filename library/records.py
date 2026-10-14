@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import math
 from pathlib import Path
 from typing import Any
 
@@ -298,9 +299,18 @@ def _read_box(value: Any) -> list[float] | None:
     return nums
 
 
+def _read_score(value: Any) -> float:
+    if type(value) is bool or not isinstance(value, (int, float)):
+        raise fail("invalid-catalog")
+    number = float(value)
+    if not math.isfinite(number) or number < 0 or number > 1:
+        raise fail("invalid-catalog")
+    return number
+
+
 def read_face(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    extra = set(data.keys()) - {"personId", "box"}
+    extra = set(data.keys()) - {"personId", "box", "detScore", "matchScore"}
     if extra or "personId" not in data:
         raise fail("invalid-catalog")
     out: dict[str, Any] = {"personId": _str(data["personId"])}
@@ -308,6 +318,10 @@ def read_face(value: Any) -> dict[str, Any]:
         box = _read_box(data["box"])
         if box is not None:
             out["box"] = box
+    if "detScore" in data:
+        out["detScore"] = _read_score(data["detScore"])
+    if "matchScore" in data:
+        out["matchScore"] = _read_score(data["matchScore"])
     return out
 
 

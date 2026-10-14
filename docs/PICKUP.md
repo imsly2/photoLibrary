@@ -22,7 +22,10 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 4. Optional local AI is stacked on this tip: `setup-geo`,
    `setup-ml objects`, `setup-ml faces`. Processing Pause/Start drives
    those drains when models/pack are installed. People fills from real
-   face clusters. `Setup.bat` composes those CLIs. No 23rd Check.
+   face clusters. `Setup.bat` composes those CLIs. After Update, re-run
+   faces with the stricter gates: `python -m library infer-faces --force`
+   or Processing **Re-run Faces**. Tune `faceMatchThreshold` (default 0.50)
+   and `faceMinSidePx` (default 80) in settings.json. No 23rd Check.
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 

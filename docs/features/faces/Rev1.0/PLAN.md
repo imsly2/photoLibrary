@@ -5,7 +5,8 @@ YOLO / object inference is a parallel track and is out of scope.
 
 Read PRODUCT optional local face inference, F14, CONTRACTS faces routes /
 `faces-infer` history / `models-missing`, UI-SPEC unnamed Info naming,
-FIXTURES `face-cluster`, and this file. Do not add a setting. Do not guess
+FIXTURES `face-cluster`, and this file. Face quality lives in
+`faceMatchThreshold` / `faceMinSidePx` (not F17 page chrome). Do not guess
 real names. Do not upload faces.
 
 ## In scope
@@ -17,8 +18,15 @@ real names. Do not upload faces.
 - `LIBRARY_TEST=1` + `backend=fixture` installs a deterministic local
   detector for synthetic beacon/identity stills. Production ignores fixture.
 - `infer-faces` / `POST /api/faces/infer` detects faces, embeds, clusters
-  unnamed people (`name: null`), reuses the people catalog on embedding
-  match, writes boxes, stores embeddings in `models/faces/index.json`.
+  unnamed people (`name: null`), reuses the people catalog only when
+  cosine is strictly above `faceMatchThreshold` (InsightFace 0.50;
+  fixture 0.85), writes boxes plus optional det/match scores, stores
+  embeddings in `models/faces/index.json`. Tiny faces below
+  `faceMinSidePx` (default 80) are dropped.
+- After Update on an existing catalog: `python -m library infer-faces --force`
+  or Processing **Re-run Faces**. That re-detects with the new gates and
+  rebuilds centroids. Named people are kept. `--cleanup` drops stored
+  faces that fail min-size / stored scores without a model pass.
 - `GET /api/faces` reports ready/backend.
 - Info lists Unnamed; select + Person field names via existing annotate
   `{id,name}`. Search is existing `person=` / `q=`. `people merge` merges
@@ -27,8 +35,9 @@ real names. Do not upload faces.
 
 ## Out of scope
 
-YOLO / things inference, auto real-name guess, cloud upload, a 17th
-setting, a merge wizard, F23.
+YOLO / things inference, auto real-name guess, cloud upload, a merge
+wizard, F23. Face-quality keys are settings.json tunables, not F17 page
+controls.
 
 ## Gate
 

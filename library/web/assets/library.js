@@ -88,6 +88,7 @@
   const jobsQueues = document.getElementById("jobs-queues");
   const jobsPause = document.getElementById("jobs-pause");
   const jobsResume = document.getElementById("jobs-resume");
+  const jobsRerunFaces = document.getElementById("jobs-rerun-faces");
   if (!main || !viewer || !viewerImage || !viewerVideo || !addFolderBtn || !addDialog) {
     return;
   }
@@ -2791,19 +2792,71 @@
     return out;
   }
 
-  function paintFace(node, thumb) {
-    node.innerHTML = "";
-    const crop = faceCrop(thumb);
-    if (!crop.src) {
-      return;
-    }
-    const img = document.createElement("img");
+  function applyFaceCrop(img, crop) {
     img.alt = "";
-    img.src = crop.src;
+    img.draggable = false;
     img.style.left = crop.left;
     img.style.top = crop.top;
     img.style.width = crop.width;
     img.style.height = crop.height;
+  }
+
+  function scheduleFaceRefresh(node, thumb) {
+    if (!thumb || !thumb.itemId || !node) {
+      return;
+    }
+    const delays = [800, 2000, 5000, 10000];
+    let attempt = 0;
+    function retry() {
+      if (!node.isConnected) {
+        return;
+      }
+      const crop = faceCrop(thumb);
+      if (!crop.src) {
+        return;
+      }
+      const img = document.createElement("img");
+      applyFaceCrop(img, crop);
+      img.onload = function () {
+        node.classList.remove("person-face-pending");
+        node.classList.remove("person-face-empty");
+        node.innerHTML = "";
+        node.appendChild(img);
+      };
+      img.onerror = function () {
+        attempt += 1;
+        if (attempt < delays.length) {
+          window.setTimeout(retry, delays[attempt]);
+        }
+      };
+      img.src = crop.src + (crop.src.indexOf("?") >= 0 ? "&" : "?") + "t=" + Date.now();
+    }
+    window.setTimeout(retry, delays[0]);
+  }
+
+  function paintFace(node, thumb) {
+    node.innerHTML = "";
+    node.classList.remove("person-face-empty");
+    node.classList.remove("person-face-pending");
+    const crop = faceCrop(thumb);
+    if (!crop.src) {
+      node.classList.add("person-face-empty");
+      return;
+    }
+    const img = document.createElement("img");
+    applyFaceCrop(img, crop);
+    img.onload = function () {
+      node.classList.remove("person-face-pending");
+      node.classList.remove("person-face-empty");
+    };
+    img.onerror = function () {
+      node.classList.add("person-face-pending");
+      if (img.parentNode === node) {
+        img.remove();
+      }
+      scheduleFaceRefresh(node, thumb);
+    };
+    img.src = crop.src;
     node.appendChild(img);
   }
 
@@ -2832,7 +2885,12 @@
           return;
         }
         seen[key] = true;
-        faces.push({ itemId: item.id, box: face.box || null });
+        faces.push({
+          itemId: item.id,
+          box: face.box || null,
+          detScore: face.detScore,
+          matchScore: face.matchScore,
+        });
       });
     });
     return faces;
@@ -2853,7 +2911,13 @@
       personNameInput.value = person.name || "";
       personNameInput.dataset.personId = id;
     }
-    const thumbs = collectPersonFaces(id);
+    const thumbs = collectPersonFaces(id).sort(function (a, b) {
+      const scoreA = Number(a.detScore || a.matchScore || 0);
+      const scoreB = Number(b.detScore || b.matchScore || 0);
+      const areaA = a.box && a.box.length === 4 ? a.box[2] * a.box[3] : 0;
+      const areaB = b.box && b.box.length === 4 ? b.box[2] * b.box[3] : 0;
+      return (scoreB - scoreA) || (areaB - areaA);
+    });
     const chosen = (person.thumbnail && person.thumbnail.itemId) || (person.thumbnailItemId) || "";
     personFaces.innerHTML = "";
     thumbs.forEach(function (thumb) {
@@ -2868,7 +2932,9 @@
       crop.style.height = "100%";
       paintFace(crop, thumb);
       btn.appendChild(crop);
-      btn.addEventListener("click", function () {
+      btn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
         choosePersonThumb(id, thumb.itemId);
       });
       personFaces.appendChild(btn);
@@ -2907,6 +2973,10 @@
       btn.appendChild(face);
       btn.appendChild(meta);
       btn.addEventListener("click", function (event) {
+        if (event.target && event.target.closest && event.target.closest(".person-face-choice")) {
+          event.stopPropagation();
+          return;
+        }
         selectPerson(person.id, event.metaKey || event.ctrlKey);
       });
       li.appendChild(btn);
@@ -3687,6 +3757,13 @@
   if (jobsResume) {
     jobsResume.addEventListener("click", function () {
       postJobs("resume");
+    });
+  }
+  if (jobsRerunFaces) {
+    jobsRerunFaces.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      postJobs("rerun-faces");
     });
   }
   applySideLayout();

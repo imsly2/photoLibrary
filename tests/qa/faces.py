@@ -329,6 +329,8 @@ def run_slice(root: Path, artifacts: Path) -> int:
     genderage = root / "models" / "faces" / "buffalo_s" / "genderage.onnx"
     checks.check("no-genderage", not genderage.exists(), str(genderage))
 
+    prove_quality_gates(checks, artifacts)
+
     return write_result(
         "FACES",
         "slice",
@@ -344,5 +346,155 @@ def run_slice(root: Path, artifacts: Path) -> int:
     )
 
 
-def run_check(root: Path, artifacts: Path) -> int:
-    return run_slice(root, artifacts)
+def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
+    from library.faces import (
+        DEFAULT_MIN_SIDE_PX,
+        INSIGHT_THRESHOLD,
+        _nearest_person,
+        detect_fixture,
+        face_passes_stored_gates,
+        passes_min_side,
+    )
+    from library.settings import DEFAULTS, KEY_ORDER
+    from tests.qa.s08 import fresh_root
+
+    checks.check("insight-threshold-stricter", INSIGHT_THRESHOLD >= 0.45, str(INSIGHT_THRESHOLD))
+    checks.check("insight-threshold-cap", INSIGHT_THRESHOLD <= 0.55, str(INSIGHT_THRESHOLD))
+    checks.check("min-side-default", DEFAULT_MIN_SIDE_PX >= 64, str(DEFAULT_MIN_SIDE_PX))
+    checks.check(
+        "settings-have-face-keys",
+        "faceMatchThreshold" in KEY_ORDER and "faceMinSidePx" in KEY_ORDER,
+        json.dumps(list(KEY_ORDER)),
+    )
+    checks.check("settings-face-threshold", DEFAULTS.get("faceMatchThreshold") == 0.5, json.dumps(DEFAULTS))
+    checks.check("settings-face-min-side", DEFAULTS.get("faceMinSidePx") == 80, json.dumps(DEFAULTS))
+    from library.settings import fill_missing_defaults, validate_complete
+
+    legacy = {key: DEFAULTS[key] for key in KEY_ORDER if key not in {"faceMatchThreshold", "faceMinSidePx"}}
+    migrated = validate_complete(fill_missing_defaults(legacy))
+    checks.check(
+        "legacy-settings-migrate",
+        migrated.get("faceMatchThreshold") == 0.5 and migrated.get("faceMinSidePx") == 80,
+        json.dumps(migrated),
+    )
+
+    tiny = [0.01, 0.02, 20 / 640, 20 / 480]
+    large = [0.125, 0.167, 140 / 640, 180 / 480]
+    checks.check("reject-tiny-side", passes_min_side(tiny, 640, 480, 80) is False, str(tiny))
+    checks.check("keep-large-side", passes_min_side(large, 640, 480, 80) is True, str(large))
+    checks.check(
+        "cleanup-drops-tiny",
+        face_passes_stored_gates(
+            {"personId": "person_x", "box": tiny},
+            {"metadata": {"width": 640, "height": 480}},
+            min_side_px=80,
+            match_threshold=0.5,
+            min_det=0.65,
+        )
+        is False,
+        str(tiny),
+    )
+    checks.check(
+        "cleanup-keeps-large",
+        face_passes_stored_gates(
+            {"personId": "person_x", "box": large, "detScore": 0.9, "matchScore": 0.72},
+            {"metadata": {"width": 640, "height": 480}},
+            min_side_px=80,
+            match_threshold=0.5,
+            min_det=0.65,
+        )
+        is True,
+        str(large),
+    )
+    near_miss = _nearest_person([1.0, 0.0], {"person_a": [0.4, 0.916515]}, 0.5)
+    checks.check("near-miss-unmatched", near_miss == (None, None), json.dumps(near_miss))
+    solid = _nearest_person([1.0, 0.0], {"person_a": [1.0, 0.0]}, 0.5)
+    checks.check("solid-match-assigned", solid[0] == "person_a" and solid[1] is not None and solid[1] > 0.5, json.dumps(solid))
+
+    width, height = 640, 480
+    buf = bytearray(width * height * 3)
+    _fill(buf, width, 0, 0, width, height, BG)
+    paint_face(buf, width, height, 40, 40, 24, 24, FACE_A)
+    paint_face(buf, width, height, 200, 80, 140, 180, FACE_A)
+    detected = detect_fixture(width, height, bytes(buf), min_side_px=80)
+    checks.check("detect-skips-tiny", len(detected) == 1, json.dumps([face.get("box") for face in detected]))
+    if detected:
+        checks.check(
+            "detect-kept-large",
+            passes_min_side(detected[0]["box"], width, height, 80) is True,
+            json.dumps(detected[0].get("box")),
+        )
+
+    css = Path("library/web/assets/style.css").read_text(encoding="utf-8")
+    img_rule = css.split(".person-face img")[1].split("}")[0] if ".person-face img" in css else ""
+    checks.check("css-face-img-height", "height:" in img_rule and "width:" in img_rule, img_rule)
+    js = Path("library/web/assets/library.js").read_text(encoding="utf-8")
+    checks.check("js-paint-sets-height", "img.style.height = crop.height" in js, "paintFace height")
+    checks.check("js-choice-stop", "stopPropagation" in js and "person-face-choice" in js, "picker isolation")
+
+    quality_root = fresh_root(artifacts / "quality-root")
+    media = artifacts / "quality-media"
+    if media.exists():
+        shutil.rmtree(media)
+    media.mkdir(parents=True)
+    write_png(media / "mixed.png", width, height, bytes(buf))
+    setup = run_library(quality_root, ["setup-ml", "faces", "--backend", "fixture"], env=test_env())
+    checks.check("quality-setup", setup.returncode == 0, setup.stderr)
+    scan = run_library(quality_root, ["scan", str(media), "--serve-from-there"], env=test_env(), timeout=120)
+    checks.check("quality-scan", scan.returncode == 0, scan.stderr)
+    infer = run_library(quality_root, ["infer-faces"], env=test_env(), timeout=120)
+    checks.check("quality-infer", infer.returncode == 0, infer.stderr)
+    infer_body = parse_json(infer.stdout) if infer.returncode == 0 else {}
+    checks.check("quality-one-face", infer_body.get("faces") == 1, infer.stdout)
+    items = load_items(quality_root)
+    mixed = item_by_name(items, "mixed.png") or {}
+    faces = mixed.get("faces") or []
+    checks.check("quality-item-one-face", len(faces) == 1, json.dumps(faces))
+    if faces:
+        checks.check(
+            "quality-item-large-box",
+            passes_min_side(faces[0].get("box") or [], 640, 480, 80) is True,
+            json.dumps(faces[0]),
+        )
+        checks.check("quality-has-scores", "detScore" in faces[0] or "matchScore" in faces[0], json.dumps(faces[0]))
+
+    planted = clone_item_with_tiny_face(quality_root, mixed)
+    checks.check("quality-planted-tiny", planted is True, "plant tiny face")
+    cleanup = run_library(quality_root, ["infer-faces", "--cleanup"], env=test_env(), timeout=60)
+    checks.check("quality-cleanup-exit", cleanup.returncode == 0, cleanup.stderr)
+    cleaned = item_by_name(load_items(quality_root), "mixed.png") or {}
+    cleaned_faces = cleaned.get("faces") or []
+    checks.check("quality-cleanup-dropped-tiny", len(cleaned_faces) == 1, json.dumps(cleaned_faces))
+    named = run_library(
+        quality_root,
+        ["annotate", mixed.get("id") or "", "--person", "Ada"],
+        env=test_env(),
+    )
+    checks.check("quality-name-ada", named.returncode == 0, named.stderr)
+    people_before = load_people(quality_root)
+    named_ids = {rec["id"] for rec in people_before if rec.get("name") == "Ada"}
+    force = run_library(quality_root, ["infer-faces", "--force"], env=test_env(), timeout=120)
+    checks.check("quality-force-exit", force.returncode == 0, force.stderr)
+    people_after = load_people(quality_root)
+    named_after = {rec["id"] for rec in people_after if rec.get("name") == "Ada"}
+    checks.check("quality-force-keeps-ada", named_ids <= named_after and bool(named_ids), json.dumps(people_after))
+
+
+def clone_item_with_tiny_face(root: Path, item: dict[str, Any]) -> bool:
+    if not item or not item.get("id"):
+        return False
+    path = root / "catalog" / "items" / (item["id"] + ".json")
+    if not path.is_file():
+        return False
+    data = json.loads(path.read_text(encoding="utf-8"))
+    faces = list(data.get("faces") or [])
+    if not faces:
+        return False
+    tiny = dict(faces[0])
+    tiny["box"] = [0.01, 0.02, 20 / 640, 20 / 480]
+    tiny.pop("detScore", None)
+    tiny.pop("matchScore", None)
+    faces.append(tiny)
+    data["faces"] = faces
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return True

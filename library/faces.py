@@ -48,7 +48,13 @@ REMOVED_ONNX = (
 )
 BEACON = (255, 0, 170)
 FIXTURE_THRESHOLD = 0.85
-INSIGHT_THRESHOLD = 0.35
+# buffalo_s ArcFace cosine. 0.35 is a demo-loose same-identity floor and was
+# joining tiny/blurry background faces to named people. 0.50 is the middle of
+# the 0.45–0.55 verification band: still matches a clear same-person crop,
+# rejects near-misses. Fixture clustering stays on FIXTURE_THRESHOLD.
+INSIGHT_THRESHOLD = 0.50
+INSIGHT_DET_MIN = 0.65
+DEFAULT_MIN_SIDE_PX = 80
 BACKEND_INSIGHT = "insightface-buffalo_s"
 BACKEND_FIXTURE = "fixture"
 
@@ -110,15 +116,18 @@ def read_infer_payload(value: Any) -> dict[str, Any]:
         value = {}
     if not isinstance(value, dict):
         raise fail("invalid-argument")
-    extra = set(value.keys()) - {"force", "itemIds"}
+    extra = set(value.keys()) - {"force", "itemIds", "cleanup"}
     if extra:
         raise fail("invalid-argument")
     force = value.get("force", False)
     if type(force) is not bool:
         raise fail("invalid-argument")
+    cleanup = value.get("cleanup", False)
+    if type(cleanup) is not bool:
+        raise fail("invalid-argument")
     item_ids = value.get("itemIds")
     if item_ids is None:
-        return {"force": force, "itemIds": None}
+        return {"force": force, "cleanup": cleanup, "itemIds": None}
     if not isinstance(item_ids, list) or not item_ids:
         raise fail("invalid-argument")
     out: list[str] = []
@@ -126,7 +135,7 @@ def read_infer_payload(value: Any) -> dict[str, Any]:
         if type(item_id) is not str or not item_id:
             raise fail("invalid-argument")
         out.append(item_id)
-    return {"force": force, "itemIds": out}
+    return {"force": force, "cleanup": cleanup, "itemIds": out}
 
 
 def _empty_index(backend: str, threshold: float) -> dict[str, Any]:
@@ -452,18 +461,64 @@ def _identity_embedding(
     return l2_normalize([r, g, b, r - g, g - b, b - r, r * r, g * g])
 
 
-def detect_fixture(width: int, height: int, rgb: bytes) -> list[dict[str, Any]]:
+def box_short_side_px(box: list[float], width: int, height: int) -> float:
+    if width <= 0 or height <= 0 or len(box) != 4:
+        return 0.0
+    return min(float(box[2]) * float(width), float(box[3]) * float(height))
+
+
+def passes_min_side(box: list[float], width: int, height: int, min_side_px: int) -> bool:
+    return box_short_side_px(box, width, height) + 1e-9 >= float(min_side_px)
+
+
+def passes_det_score(score: float | None, min_det: float) -> bool:
+    if score is None:
+        return True
+    return float(score) >= float(min_det)
+
+
+def face_quality_settings(root: Path, backend: str) -> dict[str, Any]:
+    threshold = FIXTURE_THRESHOLD if backend == BACKEND_FIXTURE else INSIGHT_THRESHOLD
+    min_side = DEFAULT_MIN_SIDE_PX
+    min_det = INSIGHT_DET_MIN
+    try:
+        from library.settings import defaults, load_settings_file, settings_path
+
+        settings = load_settings_file(root) if settings_path(root).exists() else defaults()
+        if backend != BACKEND_FIXTURE:
+            threshold = float(settings["faceMatchThreshold"])
+        min_side = int(settings["faceMinSidePx"])
+    except Exception:
+        pass
+    return {
+        "matchThreshold": threshold,
+        "minSidePx": min_side,
+        "minDetScore": min_det,
+    }
+
+
+def detect_fixture(
+    width: int,
+    height: int,
+    rgb: bytes,
+    *,
+    min_side_px: int = 0,
+) -> list[dict[str, Any]]:
     faces: list[dict[str, Any]] = []
     for x, y, w, h in _flood_boxes(width, height, rgb):
+        box = [
+            x / width,
+            y / height,
+            w / width,
+            h / height,
+        ]
+        if not passes_min_side(box, width, height, min_side_px):
+            continue
         faces.append(
             {
-                "box": [
-                    x / width,
-                    y / height,
-                    w / width,
-                    h / height,
-                ],
+                "box": box,
                 "embedding": _identity_embedding(width, height, rgb, (x, y, w, h)),
+                "detScore": 1.0,
             }
         )
     faces.sort(key=lambda face: (face["box"][0], face["box"][1]))
@@ -606,7 +661,15 @@ def _distance2kps(points: Any, distance: Any) -> Any:
     return np.stack(preds, axis=-1)
 
 
-def detect_insightface(root: Path, width: int, height: int, rgb: bytes) -> list[dict[str, Any]]:
+def detect_insightface(
+    root: Path,
+    width: int,
+    height: int,
+    rgb: bytes,
+    *,
+    min_side_px: int = DEFAULT_MIN_SIDE_PX,
+    min_det: float = INSIGHT_DET_MIN,
+) -> list[dict[str, Any]]:
     np = _numpy()
     ort = _ort()
     image = np.frombuffer(rgb, dtype=np.uint8).reshape((height, width, 3))
@@ -662,7 +725,7 @@ def detect_insightface(root: Path, width: int, height: int, rgb: bytes) -> list[
             if num_anchors > 1:
                 anchor_centers = np.stack([anchor_centers] * num_anchors, axis=1).reshape((-1, 2))
             center_cache[key] = anchor_centers
-        pos_inds = np.where(scores.ravel() >= 0.5)[0]
+        pos_inds = np.where(scores.ravel() >= min_det)[0]
         bboxes = _distance2bbox(anchor_centers, bbox_preds.reshape((-1, 4)))
         pos_scores = scores.ravel()[pos_inds]
         pos_bboxes = bboxes[pos_inds]
@@ -696,19 +759,29 @@ def detect_insightface(root: Path, width: int, height: int, rgb: bytes) -> list[
     rec_input = rec.get_inputs()[0].name
     faces: list[dict[str, Any]] = []
     for det_row, kps in zip(keep, kept_kps):
-        x1, y1, x2, y2, _score = (float(v) for v in det_row)
+        x1, y1, x2, y2, score = (float(v) for v in det_row)
+        if not passes_det_score(score, min_det):
+            continue
         x1 = max(0.0, min(float(width - 1), x1))
         y1 = max(0.0, min(float(height - 1), y1))
         x2 = max(x1 + 1.0, min(float(width), x2))
         y2 = max(y1 + 1.0, min(float(height), y2))
         box = _clamp_box([x1 / width, y1 / height, (x2 - x1) / width, (y2 - y1) / height])
+        if not passes_min_side(box, width, height, min_side_px):
+            continue
         if kps is not None:
             aligned = _affine_112(image, np.asarray(kps).reshape((5, 2)))
         else:
             aligned = _crop_112(image, box)
         blob = ((aligned.astype(np.float32) - 127.5) / 127.5).transpose(2, 0, 1)[None, ...]
         emb = rec.run(None, {rec_input: blob})[0].reshape(-1)
-        faces.append({"box": box, "embedding": l2_normalize([float(x) for x in emb.tolist()])})
+        faces.append(
+            {
+                "box": box,
+                "embedding": l2_normalize([float(x) for x in emb.tolist()]),
+                "detScore": score,
+            }
+        )
     faces.sort(key=lambda face: (face["box"][0], face["box"][1]))
     return faces
 
@@ -721,12 +794,26 @@ def _resize_rgb(image: Any, new_width: int, new_height: int) -> Any:
     return image[ys][:, xs]
 
 
-def detect_faces_on_still(root: Path, path: Path, backend: str) -> list[dict[str, Any]]:
+def detect_faces_on_still(
+    root: Path,
+    path: Path,
+    backend: str,
+    *,
+    min_side_px: int = DEFAULT_MIN_SIDE_PX,
+    min_det: float = INSIGHT_DET_MIN,
+) -> list[dict[str, Any]]:
     width, height, rgb = decode_rgb(path)
     if backend == BACKEND_FIXTURE:
-        return detect_fixture(width, height, rgb)
+        return detect_fixture(width, height, rgb, min_side_px=min_side_px)
     if backend == BACKEND_INSIGHT:
-        return detect_insightface(root, width, height, rgb)
+        return detect_insightface(
+            root,
+            width,
+            height,
+            rgb,
+            min_side_px=min_side_px,
+            min_det=min_det,
+        )
     raise fail("models-missing")
 
 
@@ -747,7 +834,7 @@ def _nearest_person(
     embedding: list[float],
     centroids: dict[str, list[float]],
     threshold: float,
-) -> str | None:
+) -> tuple[str | None, float | None]:
     best_id = None
     best = threshold
     for person_id, centroid in centroids.items():
@@ -757,13 +844,33 @@ def _nearest_person(
         if score > best:
             best = score
             best_id = person_id
-    return best_id
+    if best_id is None:
+        return None, None
+    return best_id, best
+
+
+def _strip_items_from_index(index: dict[str, Any], item_ids: set[str]) -> dict[str, Any]:
+    people = {}
+    for person_id, rec in (index.get("people") or {}).items():
+        if not isinstance(rec, dict):
+            continue
+        faces = [
+            ref
+            for ref in (rec.get("faces") or [])
+            if not (isinstance(ref, dict) and ref.get("itemId") in item_ids)
+        ]
+        people[person_id] = {"centroid": list(rec.get("centroid") or []), "faces": faces}
+    next_index = dict(index)
+    next_index["people"] = people
+    return next_index
 
 
 def cluster_detections(
     root: Path,
     detections: list[dict[str, Any]],
     index: dict[str, Any],
+    *,
+    replace_centroids: bool = False,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], int, int]:
     threshold = float(index.get("matchThreshold") or FIXTURE_THRESHOLD)
     people = dict(index.get("people") or {})
@@ -777,19 +884,22 @@ def cluster_detections(
     assigned: list[dict[str, Any]] = []
     pending: list[dict[str, Any]] = []
     for det in detections:
-        person_id = _nearest_person(det["embedding"], centroids, threshold)
+        person_id, match_score = _nearest_person(det["embedding"], centroids, threshold)
         if person_id is not None:
             reused += 1
-            assigned.append({**det, "personId": person_id})
+            assigned.append({**det, "personId": person_id, "matchScore": match_score})
         else:
             pending.append(det)
     pending.sort(key=lambda det: (det["itemId"], det["box"][0], det["box"][1]))
     new_clusters: list[dict[str, Any]] = []
     for det in pending:
         matched = None
+        match_score = 1.0
         for cluster in new_clusters:
-            if cosine(det["embedding"], cluster["centroid"]) > threshold:
+            score = cosine(det["embedding"], cluster["centroid"])
+            if score > threshold:
                 matched = cluster
+                match_score = score
                 break
         if matched is None:
             person_id = new_person_id(root)
@@ -802,27 +912,32 @@ def cluster_detections(
             }
             new_clusters.append(matched)
             created += 1
+            match_score = 1.0
         else:
             matched["embeddings"].append(det["embedding"])
             matched["centroid"] = _centroid(matched["embeddings"])
-        assigned.append({**det, "personId": matched["personId"]})
+        assigned.append({**det, "personId": matched["personId"], "matchScore": match_score})
     for cluster in new_clusters:
         people[cluster["personId"]] = {"centroid": cluster["centroid"], "faces": []}
         centroids[cluster["personId"]] = cluster["centroid"]
     by_person: dict[str, list[list[float]]] = {}
-    face_refs: dict[str, list[dict[str, Any]]] = {pid: list((people[pid].get("faces") or [])) for pid in people}
+    if replace_centroids:
+        face_refs: dict[str, list[dict[str, Any]]] = {pid: [] for pid in people}
+    else:
+        face_refs = {pid: list((people[pid].get("faces") or [])) for pid in people}
     for det in assigned:
         pid = det["personId"]
         by_person.setdefault(pid, []).append(det["embedding"])
         ref = {"itemId": det["itemId"], "box": det["box"]}
         if ref not in face_refs[pid]:
             face_refs[pid].append(ref)
-    for pid, embs in by_person.items():
-        existing = [people[pid].get("centroid") or []]
-        if existing[0]:
-            people[pid]["centroid"] = _centroid(existing + embs)
-        else:
+    for pid, rec in people.items():
+        embs = by_person.get(pid) or []
+        if embs and (replace_centroids or not (rec.get("centroid") or [])):
             people[pid]["centroid"] = _centroid(embs)
+        elif embs:
+            existing = [people[pid].get("centroid") or []]
+            people[pid]["centroid"] = _centroid(existing + embs)
         people[pid]["faces"] = face_refs[pid]
     next_index = {
         "schemaVersion": 1,
@@ -871,15 +986,212 @@ def plan_merge_index(root: Path, keep_id: str, drop_id: str) -> dict[str, Any] |
     return {"path": INDEX_REL, "before": before, "after": after}
 
 
+def _face_record(det: dict[str, Any]) -> dict[str, Any]:
+    rec: dict[str, Any] = {"personId": det["personId"], "box": det["box"]}
+    det_score = det.get("detScore")
+    match_score = det.get("matchScore")
+    if isinstance(det_score, (int, float)) and not isinstance(det_score, bool):
+        rec["detScore"] = float(det_score)
+    if isinstance(match_score, (int, float)) and not isinstance(match_score, bool):
+        rec["matchScore"] = float(match_score)
+    return rec
+
+
+def _item_pixel_size(item: dict[str, Any]) -> tuple[int, int]:
+    meta = item.get("metadata") or {}
+    width = meta.get("width") or 0
+    height = meta.get("height") or 0
+    try:
+        return int(width), int(height)
+    except (TypeError, ValueError):
+        return 0, 0
+
+
+def face_passes_stored_gates(
+    face: dict[str, Any],
+    item: dict[str, Any],
+    *,
+    min_side_px: int,
+    match_threshold: float,
+    min_det: float,
+) -> bool:
+    box = face.get("box")
+    width, height = _item_pixel_size(item)
+    if isinstance(box, list) and len(box) == 4 and width > 0 and height > 0:
+        if not passes_min_side([float(v) for v in box], width, height, min_side_px):
+            return False
+    det_score = face.get("detScore")
+    if isinstance(det_score, (int, float)) and not isinstance(det_score, bool):
+        if not passes_det_score(float(det_score), min_det):
+            return False
+    match_score = face.get("matchScore")
+    if isinstance(match_score, (int, float)) and not isinstance(match_score, bool):
+        if float(match_score) <= float(match_threshold):
+            return False
+    return True
+
+
+def _prune_empty_unnamed(
+    root: Path,
+    remaining_ids: set[str],
+    changes: list[dict[str, Any]],
+) -> None:
+    from library.catalog_io import load_people
+
+    for person in load_people(root):
+        person_id = person["id"]
+        if person_id in remaining_ids:
+            continue
+        named = type(person.get("name")) is str and bool(person.get("name"))
+        if named:
+            continue
+        if any(change.get("path") == person_rel(person_id) for change in changes):
+            continue
+        changes.append(
+            {
+                "path": person_rel(person_id),
+                "before": ordered_person(person),
+                "after": None,
+            }
+        )
+
+
+def _rebuild_index_face_lists(
+    root: Path,
+    index: dict[str, Any],
+    item_faces: dict[str, list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
+    people = {}
+    for person_id, rec in (index.get("people") or {}).items():
+        if not isinstance(rec, dict):
+            continue
+        people[person_id] = {
+            "centroid": list(rec.get("centroid") or []),
+            "faces": [],
+        }
+    overrides = item_faces or {}
+    for item_id in iter_item_ids(root):
+        if item_id in overrides:
+            faces = overrides[item_id]
+        else:
+            faces = load_item(root, item_id).get("faces") or []
+        for face in faces:
+            person_id = face.get("personId")
+            if type(person_id) is not str or not person_id:
+                continue
+            if person_id not in people:
+                people[person_id] = {"centroid": [], "faces": []}
+            ref = {"itemId": item_id, "box": face.get("box")}
+            if ref not in people[person_id]["faces"]:
+                people[person_id]["faces"].append(ref)
+    next_index = dict(index)
+    next_index["people"] = people
+    return next_index
+
+
+def cleanup_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    parsed = read_infer_payload(payload)
+    status = faces_status(root)
+    backend = status.get("backend") or BACKEND_INSIGHT
+    quality = face_quality_settings(root, backend)
+    wanted = parsed["itemIds"]
+    item_ids = wanted if wanted is not None else list(iter_item_ids(root))
+    changes: list[dict[str, Any]] = []
+    kept = 0
+    dropped = 0
+    remaining: set[str] = set()
+    touched = set(item_ids)
+    overrides: dict[str, list[dict[str, Any]]] = {}
+    for item_id in item_ids:
+        item = load_item(root, item_id)
+        before = clone(item)
+        faces = list(item.get("faces") or [])
+        next_faces = []
+        for face in faces:
+            if face_passes_stored_gates(
+                face,
+                item,
+                min_side_px=int(quality["minSidePx"]),
+                match_threshold=float(quality["matchThreshold"]),
+                min_det=float(quality["minDetScore"]),
+            ):
+                next_faces.append(face)
+                pid = face.get("personId")
+                if type(pid) is str and pid:
+                    remaining.add(pid)
+            else:
+                dropped += 1
+        kept += len(next_faces)
+        item["faces"] = collapse_faces(next_faces)
+        overrides[item_id] = item["faces"]
+        after = ordered_item(item)
+        if after != before:
+            changes.append({"path": item_rel(item_id), "before": before, "after": after})
+    for item_id in iter_item_ids(root):
+        if item_id in touched:
+            continue
+        item = load_item(root, item_id)
+        for face in item.get("faces") or []:
+            pid = face.get("personId")
+            if type(pid) is str and pid:
+                remaining.add(pid)
+    _prune_empty_unnamed(root, remaining, changes)
+    before_index = load_index(root)
+    if before_index is not None:
+        after_index = _rebuild_index_face_lists(root, before_index, overrides)
+        after_index["matchThreshold"] = quality["matchThreshold"]
+        if after_index != before_index:
+            changes.append({"path": INDEX_REL, "before": before_index, "after": after_index})
+    if changes:
+        entry = make_history_entry(root, "faces-cleanup", changes)
+        transact(root, plan_append(root, entry) + changes)
+    return {
+        "ok": True,
+        "backend": backend,
+        "cleanup": True,
+        "items": len(item_ids),
+        "faces": kept,
+        "dropped": dropped,
+        "peopleCreated": 0,
+        "peopleReused": 0,
+        "skipped": 0,
+    }
+
+
+def request_faces_rescan(root: Path) -> dict[str, Any]:
+    status = _require_models(root)
+    current = load_index(root) or _empty_index(
+        status["backend"],
+        float((load_manifest(root) or {}).get("matchThreshold") or INSIGHT_THRESHOLD),
+    )
+    after = dict(current)
+    after["scanned"] = {}
+    after["forceRescan"] = True
+    from library.atomic import atomic_write_json
+
+    if after != current:
+        atomic_write_json(index_path(root), after)
+    return {"ok": True, "queued": True, "backend": status["backend"]}
+
+
 def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, Any]:
     parsed = read_infer_payload(payload)
+    if parsed["cleanup"] and not parsed["force"]:
+        return cleanup_faces(root, parsed)
     status = _require_models(root)
     backend = status["backend"]
+    quality = face_quality_settings(root, backend)
     manifest = load_manifest(root) or {}
-    index = load_index(root) or _empty_index(backend, float(manifest.get("matchThreshold") or FIXTURE_THRESHOLD))
+    index = load_index(root) or _empty_index(
+        backend, float(manifest.get("matchThreshold") or quality["matchThreshold"])
+    )
     wanted = parsed["itemIds"]
     force = parsed["force"]
-    item_ids = wanted if wanted is not None else iter_item_ids(root)
+    item_ids = wanted if wanted is not None else list(iter_item_ids(root))
+    if force:
+        index = _strip_items_from_index(index, set(item_ids))
+    index = dict(index)
+    index["matchThreshold"] = quality["matchThreshold"]
     detections: list[dict[str, Any]] = []
     skipped = 0
     scanned = 0
@@ -898,20 +1210,35 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
             continue
         scanned += 1
         scanned_ids.append(item_id)
-        for face in detect_faces_on_still(root, path, backend):
-            detections.append(
-                {
-                    "itemId": item_id,
-                    "box": _clamp_box(face["box"]),
-                    "embedding": l2_normalize(face["embedding"]),
-                }
-            )
-    assigned, next_index, created, reused = cluster_detections(root, detections, index)
-    scanned_map = dict(index.get("scanned") or {})
+        for face in detect_faces_on_still(
+            root,
+            path,
+            backend,
+            min_side_px=int(quality["minSidePx"]),
+            min_det=float(quality["minDetScore"]),
+        ):
+            rec = {
+                "itemId": item_id,
+                "box": _clamp_box(face["box"]),
+                "embedding": l2_normalize(face["embedding"]),
+            }
+            if "detScore" in face:
+                rec["detScore"] = face["detScore"]
+            detections.append(rec)
+    assigned, next_index, created, reused = cluster_detections(
+        root,
+        detections,
+        index,
+        replace_centroids=force and wanted is None,
+    )
+    scanned_map = {} if force and wanted is None else dict(index.get("scanned") or {})
     for item_id in scanned_ids:
         scanned_map[item_id] = True
     next_index = dict(next_index)
     next_index["scanned"] = scanned_map
+    next_index["matchThreshold"] = quality["matchThreshold"]
+    if wanted is not None and index.get("forceRescan"):
+        next_index["forceRescan"] = True
     changes: list[dict[str, Any]] = []
     seen_new: set[str] = set()
     for person_id in sorted({det["personId"] for det in assigned}):
@@ -929,9 +1256,11 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
         )
     by_item: dict[str, list[dict[str, Any]]] = {}
     for det in assigned:
-        by_item.setdefault(det["itemId"], []).append(
-            {"personId": det["personId"], "box": det["box"]}
-        )
+        by_item.setdefault(det["itemId"], []).append(_face_record(det))
+    if force:
+        for item_id in scanned_ids:
+            by_item.setdefault(item_id, [])
+    remaining: set[str] = set()
     for item_id, faces in by_item.items():
         item = load_item(root, item_id)
         before = clone(item)
@@ -942,6 +1271,21 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
         after = ordered_item(item)
         if after != before:
             changes.append({"path": item_rel(item_id), "before": before, "after": after})
+    if force:
+        for item_id in iter_item_ids(root):
+            if item_id in by_item:
+                item_faces = by_item[item_id]
+            else:
+                item_faces = load_item(root, item_id).get("faces") or []
+            for face in item_faces:
+                pid = face.get("personId")
+                if type(pid) is str and pid:
+                    remaining.add(pid)
+        if wanted is None:
+            _prune_empty_unnamed(root, remaining, changes)
+            next_index = _rebuild_index_face_lists(root, next_index, by_item)
+            next_index["scanned"] = scanned_map
+            next_index["matchThreshold"] = quality["matchThreshold"]
     before_index = load_index(root)
     if next_index != before_index:
         changes.append({"path": INDEX_REL, "before": before_index, "after": next_index})
@@ -969,24 +1313,43 @@ def scanned_item_ids(root: Path) -> set[str]:
     return {key for key in scanned if type(key) is str}
 
 
+def faces_force_rescan(root: Path) -> bool:
+    index = load_index(root)
+    return bool(index and index.get("forceRescan"))
+
+
+def _clear_force_rescan(root: Path) -> None:
+    current = load_index(root)
+    if current is None or not current.get("forceRescan"):
+        return
+    after = dict(current)
+    after.pop("forceRescan", None)
+    from library.atomic import atomic_write_json
+
+    atomic_write_json(index_path(root), after)
+
+
 def infer_faces_step(root: Path) -> bool:
     status = faces_status(root)
     if not status.get("ready"):
         return False
+    force = faces_force_rescan(root)
     already = scanned_item_ids(root)
     for item_id in iter_item_ids(root):
-        if item_id in already:
+        if not force and item_id in already:
             continue
         item = load_item(root, item_id)
         if item.get("kind") not in {"photo", "live"}:
             continue
-        if item.get("faces"):
+        if not force and item.get("faces"):
             continue
         if _still_path(item, root) is None:
             continue
         try:
-            infer_faces(root, {"itemIds": [item_id]})
+            infer_faces(root, {"itemIds": [item_id], "force": force})
         except Exception:
             return False
         return True
+    if force:
+        _clear_force_rescan(root)
     return False

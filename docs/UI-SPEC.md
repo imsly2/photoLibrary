@@ -175,8 +175,8 @@ Globe hides the whole workspace, including the panel.
 ### People
 
 `GET /api/people` fills `#people-list`. Each row is a person: a face-crop
-thumbnail (chosen `thumbnailItemId`, else the first boxed face, else the
-first still), a display name, and a count. `name:null` or empty shows
+thumbnail (chosen `thumbnailItemId`, else the largest / highest-score boxed
+face, else the first still), a display name, and a count. `name:null` or empty shows
 **Unnamed** (Unknown until named). Click a person to filter the grid to
 photos that include that face (`person=<id>`). Ctrl/Cmd-click (or the
 row checkbox) adds or removes that person; several selected people
@@ -194,8 +194,12 @@ An “all faces” dump of every singleton unnamed cluster is Later.
 
 Selecting one person opens `#person-profile`: rename (same commit as
 Info’s Person field — `PUT /api/people/<id>` `{name}`) and choose which
-face crop is the thumbnail (`thumbnailItemId`). Naming stays available
-in Info. Person merge stays CLI/HTTP; no merge wizard.
+face crop is the thumbnail (`thumbnailItemId`). A profile face choice is
+its own hit target: one click selects exactly one crop and does not
+toggle the person row. The crop image always has width and height; a
+pending or 404 thumb shows a placeholder and refreshes when the
+rendition is ready. Naming stays available in Info. Person merge stays
+CLI/HTTP; no merge wizard.
 
 ### Processing
 

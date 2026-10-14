@@ -341,6 +341,66 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     checks.check("rename-in-panel", "Patricia" in record["renamed"], json.dumps(record["renamed"]))
 
+    thumb_css = page.evaluate(
+        """() => {
+          const face = document.querySelector('.person-face');
+          const img = document.querySelector('.person-face img');
+          function box(el) {
+            if (!el) {
+              return null;
+            }
+            const r = el.getBoundingClientRect();
+            const s = getComputedStyle(el);
+            return {
+              width: r.width,
+              height: r.height,
+              overflow: s.overflow,
+              cssWidth: s.width,
+              cssHeight: s.height,
+            };
+          }
+          const choices = Array.from(document.querySelectorAll('.person-face-choice')).map(function (el) {
+            const r = el.getBoundingClientRect();
+            return { top: r.top, left: r.left, right: r.right, bottom: r.bottom };
+          });
+          let overlap = false;
+          for (let i = 0; i < choices.length; i += 1) {
+            for (let j = i + 1; j < choices.length; j += 1) {
+              const a = choices[i];
+              const b = choices[j];
+              const hit = a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+              if (hit) {
+                overlap = true;
+              }
+            }
+          }
+          return { face: box(face), img: box(img), choiceCount: choices.length, choiceOverlap: overlap };
+        }"""
+    )
+    record["thumbCss"] = thumb_css
+    face_h = ((thumb_css.get("face") or {}).get("height")) or 0
+    img_h = ((thumb_css.get("img") or {}).get("height")) or 0
+    checks.check("people-face-has-height", face_h >= 16, json.dumps(thumb_css.get("face")))
+    checks.check(
+        "people-face-img-has-height",
+        img_h >= 16 or (thumb_css.get("img") is None and face_h >= 16),
+        json.dumps(thumb_css.get("img")),
+    )
+    checks.check("people-face-overflow-hidden", (thumb_css.get("face") or {}).get("overflow") == "hidden", json.dumps(thumb_css.get("face")))
+    checks.check("people-choice-no-overlap", thumb_css.get("choiceOverlap") is False, json.dumps(thumb_css))
+
+    person_before = page.evaluate("() => document.getElementById('grid').dataset.person || ''")
+    if page.locator(".person-face-choice").count() > 0:
+        page.locator(".person-face-choice").first.click()
+        person_after = page.evaluate("() => document.getElementById('grid').dataset.person || ''")
+        checks.check(
+            "choice-does-not-toggle-row",
+            person_after == person_before,
+            json.dumps({"before": person_before, "after": person_after}),
+        )
+    else:
+        checks.check("choice-does-not-toggle-row", True, "no face choices")
+
     page.locator("#jobs-pause").click(force=True)
     page.locator("#jobs-resume").click()
     page.wait_for_function(
