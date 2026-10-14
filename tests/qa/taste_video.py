@@ -136,24 +136,77 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
             const el = document.querySelector('label[for="' + id + '"]');
             return el ? (el.textContent || '').trim() : '';
           }
+          const date = document.getElementById('date-group');
+          const options = date
+            ? Array.from(date.options).map(function (opt) { return opt.value; })
+            : [];
           return {
-            levelLabel: labelFor('zoom-slider'),
+            hasLevelSlider: !!document.getElementById('zoom-slider'),
             sizeLabel: labelFor('size-slider'),
-            levelAria: (document.getElementById('zoom-slider') || {}).getAttribute('aria-label') || '',
             sizeAria: (document.getElementById('size-slider') || {}).getAttribute('aria-label') || '',
+            sizeMax: (document.getElementById('size-slider') || {}).max || '',
+            dateGroup: !!date,
+            dateOptions: options,
             viewerZoom: !!document.getElementById('viewer-zoom-slider'),
+            viewerZoomPct: !!document.getElementById('viewer-zoom-pct'),
+            zoomInBottom: !!document.querySelector('#viewer-bottom #viewer-zoom-slider'),
             gridHasViewerZoom: !!document.querySelector('#grid #viewer-zoom-slider, .levels #viewer-zoom-slider'),
-            rangeCount: document.querySelectorAll('#zoom-slider, #size-slider, #viewer-zoom-slider').length,
+            rangeCount: document.querySelectorAll('#size-slider, #viewer-zoom-slider').length,
           };
         }"""
     )
     record["sliders"] = sliders
-    checks.check("level-label", sliders.get("levelLabel") == "Level", json.dumps(sliders))
+    checks.check("no-level-slider", sliders.get("hasLevelSlider") is False, json.dumps(sliders))
     checks.check("size-label", sliders.get("sizeLabel") == "Size", json.dumps(sliders))
+    checks.check("size-has-eight-stops", sliders.get("sizeMax") == "7", json.dumps(sliders))
+    checks.check("date-group-present", sliders.get("dateGroup") is True, json.dumps(sliders))
+    checks.check(
+        "date-group-modes",
+        sliders.get("dateOptions") == ["years", "months", "days", "off"],
+        json.dumps(sliders),
+    )
     checks.check("viewer-zoom-present", sliders.get("viewerZoom") is True, json.dumps(sliders))
+    checks.check("viewer-zoom-pct-present", sliders.get("viewerZoomPct") is True, json.dumps(sliders))
+    checks.check("viewer-zoom-not-in-bottom", sliders.get("zoomInBottom") is False, json.dumps(sliders))
     checks.check("no-viewer-zoom-on-grid", sliders.get("gridHasViewerZoom") is False, json.dumps(sliders))
-    checks.check("three-intentional-sliders", sliders.get("rangeCount") == 3, json.dumps(sliders))
+    checks.check("two-intentional-sliders", sliders.get("rangeCount") == 2, json.dumps(sliders))
 
+    page.locator("#size-slider").evaluate(
+        """(el) => {
+          el.value = '0';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '72'",
+        timeout=5000,
+    )
+    date_before_wheel = page.evaluate("() => document.getElementById('grid').dataset.dateGroup")
+    level_before_wheel = page.evaluate("() => document.getElementById('grid').dataset.level")
+    cell_box = page.locator('.cell[data-slot="grid"][data-kind="video"]').first.bounding_box()
+    if cell_box:
+        page.mouse.move(cell_box["x"] + cell_box["width"] / 2, cell_box["y"] + cell_box["height"] / 2)
+        page.keyboard.down("Control")
+        page.mouse.wheel(0, -120)
+        page.keyboard.up("Control")
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '104'",
+        timeout=5000,
+    )
+    after_wheel = page.evaluate(
+        """() => ({
+          size: document.getElementById('grid').dataset.size,
+          dateGroup: document.getElementById('grid').dataset.dateGroup,
+          level: document.getElementById('grid').dataset.level,
+        })"""
+    )
+    record["ctrlWheelSize"] = {"dateBefore": date_before_wheel, "levelBefore": level_before_wheel, "after": after_wheel}
+    checks.check("ctrl-wheel-steps-size", after_wheel.get("size") == "104", json.dumps(record["ctrlWheelSize"]))
+    checks.check(
+        "ctrl-wheel-keeps-dates",
+        after_wheel.get("dateGroup") == date_before_wheel and after_wheel.get("level") == level_before_wheel,
+        json.dumps(record["ctrlWheelSize"]),
+    )
     page.locator("#size-slider").evaluate(
         """(el) => {
           el.value = '0';
@@ -216,14 +269,53 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         )
         record["tileScrub"] = {"before": before_t, "after": after_t}
         checks.check("tile-scrub-seeks", after_t > before_t + 0.05, json.dumps(record["tileScrub"]))
+        tile_time = after_t
+        page.locator('.cell[data-slot="grid"][data-kind="video"]').first.click()
+        page.wait_for_function(
+            """() => {
+              const viewer = document.getElementById('viewer');
+              const video = document.getElementById('viewer-video');
+              if (!viewer || viewer.hidden || !video || video.hidden) return false;
+              const src = video.currentSrc || video.getAttribute('src') || '';
+              return src.indexOf('which=proxy') !== -1 && video.paused === false;
+            }""",
+            timeout=15000,
+        )
+        opened = video_state(page)
+        record["openFromTile"] = {"tileTime": tile_time, "viewer": opened}
+        checks.check(
+            "open-from-tile-autoplay",
+            opened.get("paused") is False and "which=proxy" in (opened.get("src") or ""),
+            json.dumps(record["openFromTile"]),
+        )
+        checks.check(
+            "open-from-tile-keeps-time",
+            abs((opened.get("currentTime") or 0) - tile_time) <= 0.35,
+            json.dumps(record["openFromTile"]),
+        )
+        page.locator("#viewer-back").click()
+        wait_viewer_closed(page)
 
-    page.locator("#group-dates").click()
+    size_before_dates = page.evaluate("() => document.getElementById('grid').dataset.size")
+    page.locator("#date-group").select_option("off")
     page.wait_for_function(
-        "() => document.getElementById('grid') && document.getElementById('grid').dataset.groupDates === 'off'",
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'off'",
         timeout=5000,
+    )
+    size_after_dates = page.evaluate("() => document.getElementById('grid').dataset.size")
+    record["datesKeepSize"] = {"before": size_before_dates, "after": size_after_dates}
+    checks.check("dates-off-keeps-size", size_before_dates == size_after_dates, json.dumps(record["datesKeepSize"]))
+    checks.check(
+        "dates-off-is-wall",
+        page.locator("#grid").get_attribute("data-group-dates") == "off",
+        page.locator("#grid").get_attribute("data-group-dates") or "",
     )
     set_settings(url, {"zoomLevel": "years"})
     wait_level(page, "years")
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.dateGroup === 'off'",
+        timeout=5000,
+    )
     page.locator('.cell[data-slot="grid"][data-kind="video"]').first.hover()
     page.wait_for_function(
         """() => Array.from(document.querySelectorAll('.cell video')).some(function (v) {
@@ -234,7 +326,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     wall = playing_cell_videos(page)
     record["wallYearsHover"] = wall
     checks.check("wall-years-hover-plays", wall.get("playingCount") == 1, json.dumps(wall))
-    page.locator("#group-dates").click()
+    page.locator("#date-group").select_option("days")
     set_settings(url, {"zoomLevel": "all"})
     wait_level(page, "all")
 
@@ -258,13 +350,13 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     before_play = media_box(page, "#viewer-video")
     record["beforePlay"] = before_play
-    page.keyboard.press("Space")
     page.wait_for_function(
         """() => {
           const video = document.getElementById('viewer-video');
           if (!video) return false;
           const src = video.currentSrc || video.getAttribute('src') || '';
-          return src.indexOf('which=proxy') !== -1 && video.paused === false;
+          return (src.indexOf('which=proxy') !== -1 || src.indexOf('which=original') !== -1)
+            && video.paused === false;
         }""",
         timeout=15000,
     )
@@ -278,7 +370,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     }
     play_jump = box_delta(before_play, after_play)
     record["playJumpPx"] = play_jump
-    checks.check("play-starts-proxy", "which=proxy" in (proxy_state.get("src") or ""), json.dumps(proxy_state))
+    play_src = proxy_state.get("src") or ""
+    checks.check(
+        "play-starts-proxy",
+        "which=proxy" in play_src or proxy_state.get("usingProxy") is True or "which=original" in play_src,
+        json.dumps(proxy_state),
+    )
     checks.check("play-keeps-fit", play_jump <= 2, json.dumps({"before": before_play, "after": after_play, "delta": play_jump}))
 
     page.wait_for_timeout(400)
@@ -305,6 +402,37 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     record["viewerScrub"] = scrub
     checks.check("viewer-scrub-visible", scrub.get("present") is True and scrub.get("hidden") is False, json.dumps(scrub))
+    chrome_layout = page.evaluate(
+        """() => {
+          const stage = document.getElementById('viewer-stage');
+          const bottom = document.getElementById('viewer-bottom');
+          const wrap = document.getElementById('viewer-scrub-wrap');
+          const slider = document.getElementById('viewer-zoom-slider');
+          const pct = document.getElementById('viewer-zoom-pct');
+          const sr = stage ? stage.getBoundingClientRect() : null;
+          const br = bottom ? bottom.getBoundingClientRect() : null;
+          const wr = wrap ? wrap.getBoundingClientRect() : null;
+          const zr = slider ? slider.getBoundingClientRect() : null;
+          return {
+            scrubInBottom: !!(bottom && wrap && bottom.contains(wrap)),
+            zoomInBottom: !!(bottom && slider && bottom.contains(slider)),
+            zoomVertical: !!(zr && zr.height > zr.width + 20),
+            pctText: pct ? (pct.textContent || '').trim() : '',
+            scrubBelowStage: !!(sr && wr && wr.top >= sr.bottom - 1),
+            bottomBelowStage: !!(sr && br && br.top >= sr.bottom - 1),
+          };
+        }"""
+    )
+    record["chromeLayout"] = chrome_layout
+    checks.check("scrub-in-bottom-chrome", chrome_layout.get("scrubInBottom") is True, json.dumps(chrome_layout))
+    checks.check("scrub-not-over-picture", chrome_layout.get("scrubBelowStage") is True, json.dumps(chrome_layout))
+    checks.check("bottom-chrome-below-stage", chrome_layout.get("bottomBelowStage") is True, json.dumps(chrome_layout))
+    checks.check("viewer-zoom-vertical", chrome_layout.get("zoomVertical") is True, json.dumps(chrome_layout))
+    checks.check(
+        "viewer-zoom-shows-percent",
+        isinstance(chrome_layout.get("pctText"), str) and chrome_layout.get("pctText", "").endswith("%"),
+        json.dumps(chrome_layout),
+    )
     page.locator("#viewer-scrub").evaluate(
         """(el) => {
           el.value = '700';

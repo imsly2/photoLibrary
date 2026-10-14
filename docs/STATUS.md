@@ -128,18 +128,45 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Evidence:
   [TASTE-SHELL](features/taste-shell/Rev1.0/assets/verify-1/result.json)
   50/50, [shell.png](features/taste-shell/Rev1.0/assets/verify-1/shell.png).
+- 2026-10-14 — Grid/viewer chrome taste on the video/zoom tip
+  (`cursor/video-zoom-taste-1d0c`, PR #10). One `#size-slider`; Dates
+  `#date-group` Years/Months/Days/Off (Off = one wall); Ctrl+wheel
+  drives Size only; vertical side `#viewer-zoom-slider` with
+  `#viewer-zoom-pct`; `#viewer-scrub` in `#viewer-bottom`, not over
+  the picture. Clicking a video tile autoplays at the tile
+  `currentTime`. `#library-version` SHA beside Update Library (PR #11).
+  `launch.ps1` and `/api/update` unchanged. Does not close a Check.
+  16/22 unchanged.
+  Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-3/result.json)
+  61/61 (tile autoplay + carry time),
+  [video-viewer.png](features/taste-video/Rev1.0/assets/verify-3/video-viewer.png),
+  [video-grid.png](features/taste-video/Rev1.0/assets/verify-3/video-grid.png).
 - 2026-10-14 — Video + zoom taste on the Presentable Shell Must tip
   (`cursor/windows-presentable-shell-must-806a`). Viewer play stays
   fitted/centered across proxy→original; hover plays at every Size and
-  on a Dates-off wall; grid **Level** vs **Size** vs viewer Zoom;
-  plain-wheel zoom; `#viewer-scrub` + `.tile-scrub`. `launch.ps1`
-  unwrap/reverse-slice fix from PR #9, `-Update` kept. Does not close a
-  Check. 16/22 unchanged.
+  on a Dates-off wall; plain-wheel zoom; `#viewer-scrub` + `.tile-scrub`.
+  `launch.ps1` unwrap/reverse-slice fix from PR #9, `-Update` kept.
+  Dual Level+Size sliders and overlay scrub were superseded by the
+  chrome taste above. Does not close a Check. 16/22 unchanged.
   Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
   Evidence:
   [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-1/result.json)
   45/45, [video-viewer.png](features/taste-video/Rev1.0/assets/verify-1/video-viewer.png),
   [launch-arglist](features/taste-windows/Rev1.0/assets/launch-arglist/result.json).
+- 2026-10-14 — Visible checkout SHA next to **Update Library**
+  (`#library-version`, `GET /api/version`, `git_sha` on
+  `POST /api/update`). Short SHA only; no SemVer. Successful Update
+  refreshes the label from the new tip; the serve process does not
+  restart. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-version](features/taste-version/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-VERSION](features/taste-version/Rev1.0/assets/verify-1/result.json)
+  23/23 on PR #11,
+  [verify-2](features/taste-version/Rev1.0/assets/verify-2/result.json)
+  23/23 after chrome+autoplay merge (SHA still beside Update Library),
+  [version-header.png](features/taste-version/Rev1.0/assets/verify-2/version-header.png).
 
 ## Completion
 
@@ -402,3 +429,9 @@ environments must be supplied by the build or F2 remains pending; do not claim
   TASTE-VIEWER 103 assertions exit 0 on the merge tip. F10 28/29:
   `browser-proof` times out on Info-first Esc, same as `d00addb`;
   assertions not weakened. No new Check. 16/22 unchanged.
+- 2026-10-14 — Grid/viewer chrome taste after PR #10. One Size slider;
+  Dates Years/Months/Days/Off; vertical side viewer zoom; scrub in
+  `#viewer-bottom`. Clicking a video tile autoplays at the tile
+  `currentTime`. TASTE-VIDEO 61/61. `#library-version` kept (PR #11
+  merge); TASTE-VERSION 23/23 on this tip. `GET /api/update` 200. No
+  new Check. 16/22 unchanged.

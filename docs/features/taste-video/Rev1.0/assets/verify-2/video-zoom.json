@@ -1,0 +1,124 @@
+{
+  "sliders": {
+    "hasLevelSlider": false,
+    "sizeLabel": "Size",
+    "sizeAria": "Grid density thumbnail size",
+    "sizeMax": "7",
+    "dateGroup": true,
+    "dateOptions": [
+      "years",
+      "months",
+      "days",
+      "off"
+    ],
+    "viewerZoom": true,
+    "viewerZoomPct": true,
+    "zoomInBottom": false,
+    "gridHasViewerZoom": false,
+    "rangeCount": 2
+  },
+  "ctrlWheelSize": {
+    "dateBefore": "days",
+    "levelBefore": "all",
+    "after": {
+      "size": "104",
+      "dateGroup": "days",
+      "level": "all"
+    }
+  },
+  "smallHover": {
+    "ok": true,
+    "cell": {
+      "width": 72,
+      "height": 72
+    },
+    "video": {
+      "width": 70,
+      "height": 70,
+      "left": 21,
+      "top": 179.140625
+    },
+    "fillDx": 2,
+    "fillDy": 2,
+    "playing": true,
+    "hasScrub": true,
+    "size": "72"
+  },
+  "tileScrub": {
+    "before": 0.035,
+    "after": 1.2
+  },
+  "datesKeepSize": {
+    "before": "72",
+    "after": "72"
+  },
+  "wallYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "beforePlay": {
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "proxyPlay": {
+    "src": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0,
+    "duration": 0,
+    "usingProxy": true,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "playJumpPx": 0.0,
+  "afterSwap": {
+    "src": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.323461,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "viewerScrub": {
+    "present": true,
+    "hidden": false,
+    "value": "117"
+  },
+  "chromeLayout": {
+    "scrubInBottom": true,
+    "zoomInBottom": false,
+    "zoomVertical": true,
+    "pctText": "100%",
+    "scrubBelowStage": true,
+    "bottomBelowStage": true
+  },
+  "viewerScrubSeek": 1.4,
+  "wheelZoom": {
+    "before": {
+      "left": 230.3333282470703,
+      "top": 63.390625,
+      "width": 749.3333740234375,
+      "height": 562
+    },
+    "after": {
+      "left": 192.86666870117188,
+      "top": 28.990623474121094,
+      "width": 824.2666015625,
+      "height": 618.2000122070312
+    }
+  }
+}

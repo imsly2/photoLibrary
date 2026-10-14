@@ -56,7 +56,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` and `.tile-scrub` seek. |
+| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -89,8 +89,9 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
 
 1. Fullscreen (F11 or F); Esc exits fullscreen then the viewer
 2. Slideshow (F5; Space pause; Esc stop; empty “Add photos first”)
-3. Viewer keys: arrows; Ctrl++/− or **plain wheel** zoom; Ctrl+0 fit; Ctrl+1 100%;
-   Ctrl+R rotate; Space play/pause video; tooltips show shortcuts
+3. Viewer keys: arrows; Ctrl++/− or **plain wheel** zoom (side slider
+   secondary); Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause
+   video; tooltips show shortcuts
 4. Info = EXIF/file facts first (date, camera, dimensions, size, path,
    GPS; empty “No camera info”), then people/places/things
 5. Open with default app beside Reveal in Explorer
@@ -100,13 +101,14 @@ in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
    file (extra confirm, Recycle Bin)
 8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
 9. Search filename + date + existing tags; empty “No matches for …”
-10. Update UX finish (launcher + in-app; Updating…; already current / failed)
+10. Update UX finish (launcher + in-app; Updating…; already current / failed; header shows checkout SHA)
 
 Also locked: `Library.bat`, native Add folder, live-origin Back, grid
 wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
 “Showing original”, globe yaw + local Earth, progressive video start,
-hover at every Size, one grid Level + one grid Size + viewer Zoom only,
-viewer/tile scrub. macOS/Linux launch is pinned later.
+hover at every Size, one grid Size slider + Dates Years/Months/Days/Off
++ vertical side viewer Zoom, viewer/tile scrub in bottom chrome.
+macOS/Linux launch is pinned later.
 
 **Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
 that path is green, do not call the shell presentable, and do not
@@ -182,7 +184,9 @@ control, and the same action from the launcher, pulls the current git
 branch (`git fetch` then `git pull --ff-only`, or the equivalent). While
 it runs the page says Updating… Then one sentence: updated / already
 current / git missing / not a git copy / pull failed. It does not ask
-anyone to type git, open GitHub Desktop, or switch branches.
+anyone to type git, open GitHub Desktop, or switch branches. The header
+shows this copy's short git SHA (or `local` when not a git checkout) so
+a successful Update is visible.
 
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
@@ -212,7 +216,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
 | `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
-| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. `GET /api/update` reports branch and revision. |
+| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -221,6 +225,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 
 The header **Update Library** button calls `POST /api/update` so a family
 install can pull a newer app folder without opening a command prompt.
+The header shows the checkout SHA from `GET /api/version` and refreshes
+it from a successful update payload.
 
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
 `person=`, `place=`, `thing=`, `kind=photo|video|live` or a comma list,
@@ -409,24 +415,22 @@ source tree. Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 
-Four levels: Years, Months, Days, All. The level slider and Ctrl+wheel move
-between them. The item under the cursor stays in view. The level is saved in
-`zoomLevel`.
+One Size slider steps cell pixels (eight useful stops: 72, 104, 144,
+192, 256, 336, 420, 520). Ctrl+wheel on the grid drives that slider
+only. Size does not change date grouping. Size is a session view option,
+not a settings.json key.
 
-Years is one card per year, a mosaic of that year's thumbs.
-Months is one card per month. Months cells are visibly larger than Years.
-Days is a header per day and the photos from that day, medium cells.
-All is every item under day headers at the closest default size — large
-enough to read faces. All is not a second-smallest dense copy of Days.
+Date grouping is a separate `#date-group` control: Years, Months, Days,
+or Off. It is not a second zoom slider. Years is one card per year.
+Months is one card per month. Days is a header per day and the photos
+from that day. Off cascades every matching thumb onto one continuous
+wall — no date-section gaps. Years/Months/Days persist in `zoomLevel`
+(`all` remains a valid API/settings value and displays as Days). Off is
+session-only.
 
-A separate Size control steps cell pixels at the current level (eight
-useful stops, including a closer max than the old 160 px All). Changing
-level or size must keep already-loaded thumbnails on screen; the grid does
-not blank during the interaction.
-
-Dates can be turned off. With Dates off, every matching thumb sits on one
-continuous wall — no date-section gaps. Dates on remains the default.
-Size and Dates are session view options, not settings.json keys.
+Changing Dates or Size must keep already-loaded thumbnails on screen;
+the grid does not blank during the interaction. The item under the
+cursor stays in view when Dates changes.
 
 Tiles that are large enough (Size 144 px and up) show a heart control in
 the same corner language as the VIDEO/LIVE badge — under or beside that
@@ -458,12 +462,13 @@ open; it must not load a stale port or call a hop that leaves this listen URL.
 
 The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
 the **bottom**; Left/Right arrows still change photo and stop at the ends.
-Rotate sits next to them (button or Ctrl+R). Zoom is a **slider** plus
-Ctrl+wheel and Ctrl++/− — not discrete zoom-in/out buttons, including
-smaller than fit. Ctrl+0 fits; Ctrl+1 is 100%. Click-hold pans while
-zoomed. Rotate turns the displayed still 90° and does not change the
-file. F11 or F toggles fullscreen; Esc leaves fullscreen, then the
-viewer. F5 starts a slideshow; Space pauses it; Esc stops it.
+Rotate sits next to them (button or Ctrl+R). Zoom is a **vertical side slider** (with percentage) plus
+**plain wheel** (primary), Ctrl+wheel and Ctrl++/− — not discrete
+zoom-in/out buttons, including smaller than fit. The slider does not
+sit on the bottom scrubber. Ctrl+0 fits; Ctrl+1 is 100%. Click-hold
+pans while zoomed. Rotate turns the displayed still 90° and does not
+change the file. F11 or F toggles fullscreen; Esc leaves fullscreen,
+then the viewer. F5 starts a slideshow; Space pauses it; Esc stops it.
 
 A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
@@ -477,7 +482,8 @@ removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
 starts the proxy and swaps to the original when loaded (a browser that
 cannot decode the original stays on the proxy). Play preview still
-toggles pause/play on click. `#viewer-scrub` seeks at any zoom.
+toggles pause/play on click. `#viewer-scrub` sits in `#viewer-bottom`
+and seeks at any zoom or source. It does not overlay the picture.
 Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags
 it; a still also pans with a left drag, and any zoomed item pans with a
 left drag. Click a video, or press Space (when no slideshow), to play or
@@ -734,7 +740,7 @@ search the thing, get the same item id. Artifact: the search JSON.
 
 | Key | Action |
 |-----|--------|
-| Ctrl+wheel on the grid | Change year / month / day / all, cursor stays put |
+| Ctrl+wheel on the grid | Change Size (density), cursor stays put |
 | Ctrl+wheel, plain wheel, or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
 | Ctrl+0 / Ctrl+1 | Fit / 100% in the viewer |
 | Ctrl+R | Rotate the displayed still 90° |
@@ -766,9 +772,9 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates, Favorites section, Update Library. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size, Dates Years/Months/Days/Off, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
-| Viewer | One item, preview then original, bottom Prev/Next/Rotate, zoom slider, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 

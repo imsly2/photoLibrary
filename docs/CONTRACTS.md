@@ -19,13 +19,13 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Scan progress | Persist progress in the source record; HTTP POST starts work and returns 202 before the scan finishes, with `scan.state` running. Poll sources; no additional jobs screen/API. Reads (items, groups, sources, settings, media, health) stay available during scan. CLI waits for completion and prints the final summary. The serve process prints scan progress lines on stdout during normal work, not only on failure. |
 | Client disconnect | A client that aborts a response (`BrokenPipeError`, `ConnectionResetError`, `ConnectionAbortedError`, WinError 10053) is non-fatal. Do not write 500, do not treat it as `internal-error`, and do not stop the server. |
 | Folder picker | `POST /api/pick-folder` `{}` opens the server computer's native folder dialog on Windows and returns 200 `{path}` or `{path:null}` if cancelled. Non-Windows or no UI returns 404 `picker-unavailable`. Typed paths remain valid. No upload. |
-| Family update | `GET /api/update` reports `{ok,branch,revision,dirty,message}` for the app-folder git copy. `POST /api/update` `{}` fetches and fast-forwards the **current** branch only (`git pull --ff-only`). 200 always, with `ok` true/false and a family-readable `message`. Never force, never checkout another branch, never a command prompt. Missing git or a non-git folder is `ok:false`, not a crash. |
+| Family update | `GET /api/update` reports `{ok,branch,revision,dirty,message,git_sha,git_branch,git_date}` for the app-folder git copy (`revision` / `git_sha` are the short checkout SHA). `GET /api/version` is the same tip for the header: `{ok,git_sha,git_branch,git_date,git_subject,label}` (`label` is the SHA, or `local` when this folder is not a git copy). `POST /api/update` `{}` fetches and fast-forwards the **current** branch only (`git pull --ff-only`). 200 always, with `ok` true/false, a family-readable `message`, and the new `git_sha` on success. Never force, never checkout another branch, never a command prompt. Missing git or a non-git folder is `ok:false`, not a crash. Pull does not restart the serve process; the header refreshes the SHA from the response. |
 | Open default | `POST /api/items/<id>/open` `{}` launches the current original with the OS default program (`os.startfile` on Windows). 200 `{path,opened}` or 404 `unavailable`. |
 | Windows double-click | `Library.bat` at the app folder starts `launch.ps1` in a visible console and opens the browser. F2 still grades `powershell -File launch.ps1`. Do not claim macOS/Linux launch from this change. |
 | Live page origin | The page is same-origin with `/api`. Navigation, History API, Back, and links use the current `window.location.origin` or root-relative paths. Never construct `http://<host>:<settings.port>` or a stored runtime URL from another listen. Browser Back while this document is open stays on that origin (close viewer or remain on the grid); it must not load a stale port such as 18765 when the server is on 8765. |
 | History | One user operation is one durable transaction; automatic scan progress/hash/rendition updates are not separate undo steps. Scan/copy undo never removes original bytes. History replay must preserve later scan-derived identity. |
 | Dates | Preserve floating EXIF time without inventing a zone. Normalize explicit offsets to UTC; mtime uses UTC. Date-only filenames mean midnight. Date grouping uses the stored calendar date, independent of browser timezone. |
-| Days vs All | Both include every matching item under day headings when Dates is on. Days is the medium cell size; All is the closest default (largest of the four level defaults). A session Size control refines cell pixels at the current level. Dates off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
+| Days vs All | Both include every matching item under day headings when Dates is Years/Months/Days. The page Dates control is Years / Months / Days / Off; `all` remains a valid `zoomLevel` / groups API value and displays as Days. A session Size slider is the only density control and does not change Dates. Dates Off flattens the current item set onto one continuous wall. No representative-photo selection algorithm. |
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
 | Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
@@ -142,6 +142,8 @@ opens the file itself (`os.startfile` / `open` / `xdg-open`).
 
 `POST /api/update` runs `git pull` in the app folder when `.git` exists.
 It is not a setting. A copied folder without git returns 404 `update-unavailable`.
+A 200 success body includes the new short `git_sha` (and `revision`) so the
+header can refresh without restarting the server.
 
 Availability, motion, favorite, and entity expansion are computed, not persisted:
 HTTP/CLI item reads extend disk records with `available`, `motionAvailable`,
@@ -269,11 +271,12 @@ required. Both interfaces must produce equivalent resulting canonical records.
 
 | Command / request | Body / response |
 |---|---|
-| serve / GET `/api/health` | health 200 `{"ok":true}`; root identity uses GET `/api/runtime` |
+| serve / GET `/api/health` | health 200 `{"ok":true}`; root identity uses GET `/api/runtime`; checkout SHA uses GET `/api/version` |
+| GET `/api/version` | 200 `{ok,git_sha,git_branch,git_date,git_subject,label}` from the live app-folder git tip; non-git / no git is 200 `ok:false` with `git_sha:null` and `label:"local"` |
 | scan path [--copy-here OR --serve-from-there] / POST `/api/sources` | `{path,mode?,previewStore?}`; flags override setting; ask + absent mode = `choice-required`, never an interactive CLI prompt. HTTP 202 source record is sent before the scan finishes (`scan.state` running). Rescan same origin reuses source. CLI still waits and prints the final summary. |
 | POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
-| GET `/api/update` | 200 `{ok,branch,revision,dirty,message}` for the app-folder git copy |
-| POST `/api/update` | `{}`; 200 `{ok,updated,revision,message}` after `git pull --ff-only`; 404 `update-unavailable` when the app folder is not a git checkout |
+| GET `/api/update` | 200 `{ok,branch,revision,dirty,message,git_sha,git_branch,git_date}` for the app-folder git copy; `revision` is the short SHA |
+| POST `/api/update` | `{}`; 200 `{ok,updated,revision,git_sha,message}` after `git pull --ff-only` (`git_sha` is the new tip); 404 `update-unavailable` when the app folder is not a git checkout |
 | sources / GET `/api/sources` | 200 array of sources |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |

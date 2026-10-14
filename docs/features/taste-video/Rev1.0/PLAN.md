@@ -1,8 +1,10 @@
-# Taste-Video — Windows video + zoom on the Presentable Shell Must tip
+# Taste-Video — Windows video + zoom + chrome on the Presentable Shell Must tip
 
-Locked after Steve’s Windows notes on video and zoom. Sits on
-`cursor/windows-presentable-shell-must-806a` (PR #8). Does not close a
-new Check. Does not rewrite Win7 chrome ids. No 17th setting. No cloud.
+Locked after Steve’s Windows notes on video, zoom, and chrome. Sits on
+`cursor/video-zoom-taste-1d0c` (PR #10). Does not close a new Check.
+Does not rewrite Win7 chrome ids (`#viewer-nav`, `#viewer-zoom-slider`,
+`#open-original`). No 17th setting. No cloud. Keep `launch.ps1` and
+`/api/update` healthy.
 
 Read UI-SPEC **Video playback and zoom**, PRODUCT F7 / F9 / F10 / F21,
 and this file.
@@ -11,17 +13,23 @@ and this file.
 
 1. Viewer video stays fitted and centered across Play and proxy→original.
 2. Grid hover plays at every Size, including a zoomed-out Dates-off wall.
-3. Grid **Level** (`#zoom-slider`) and **Size** (`#size-slider`) are two
-   labeled controls; viewer Zoom stays only in the viewer.
-4. Plain wheel zooms the open still or video.
-5. Progressive start: proxy first, then original; `currentTime` kept.
-6. `#viewer-scrub` and `.tile-scrub`.
-7. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
+3. One grid **Size** slider (`#size-slider`, eight stops). No Level slider.
+4. Dates `#date-group`: Years / Months / Days / Off. Off = one continuous
+   wall. Dates is not a second zoom slider and does not move Size.
+5. Grid Ctrl+wheel drives Size only.
+6. Viewer zoom is a vertical side `#viewer-zoom-slider` with
+   `#viewer-zoom-pct`. Plain wheel is primary zoom.
+7. `#viewer-scrub` lives in `#viewer-bottom` (not over the picture).
+   `.tile-scrub` stays on hovered tiles.
+8. Progressive start: proxy first, then original; `currentTime` kept.
+9. Clicking a video tile autoplays the viewer at the tile’s `currentTime`.
+10. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
 
 ## Out of scope
 
 S13/S14, filmstrip, multi-select, Print, `?`, recently added, macOS/Linux
 F2. Do not change `playProxies` default stills for dated Years/Months.
+Do not fight a separate version-label PR.
 
 ## Gate
 

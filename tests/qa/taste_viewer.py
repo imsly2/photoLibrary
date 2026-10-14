@@ -165,7 +165,9 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
               max: slider ? slider.max : '',
               hidden: slider ? slider.hidden : true,
               width: sliderRect ? sliderRect.width : 0,
+              height: sliderRect ? sliderRect.height : 0,
               top: sliderRect ? sliderRect.top : 0,
+              inBottom: !!(slider && document.getElementById('viewer-bottom') && document.getElementById('viewer-bottom').contains(slider)),
             },
             rotate: info('viewer-rotate'),
             favorite: info('viewer-favorite'),
@@ -213,9 +215,10 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         and slider.get("type") == "range"
         and slider.get("min") == "25"
         and slider.get("max") == "1600"
-        and (slider.get("width") or 0) > 80,
+        and ((slider.get("height") or 0) > 80 or (slider.get("width") or 0) > 80),
         json.dumps(slider),
     )
+    checks.check("zoom-slider-not-in-bottom", slider.get("inBottom") is False, json.dumps(slider))
     checks.check("back-label", chrome.get("back", {}).get("text") == "Back", json.dumps(chrome.get("back")))
     checks.check("prev-label", chrome.get("prev", {}).get("text") == "Previous", json.dumps(chrome.get("prev")))
     checks.check("next-label", chrome.get("next", {}).get("text") == "Next", json.dumps(chrome.get("next")))
