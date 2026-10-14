@@ -1,29 +1,87 @@
 # Library
 
-A folder you put on a drive. It serves a photo and video library in the browser,
-and a command line so an agent can scan, search, and write what is in the pictures.
+A local photo and video library for a Windows PC. Copy this folder onto a
+drive, run Setup once, then open Library each day. There is no installer
+and no MSI.
 
-The phone copier is a different tool: [iphonePhotos](../iphonePhotos/README.md).
-Point this server at the folder that copier already filled.
+Browse by **People**, **Places**, and **Tags**. Switch the header
+**Language** menu to **中文**. Optional offline AI can group faces, label
+objects, and name GPS places when those models are installed on this
+computer.
 
-| Read | For |
-|------|-----|
-| [docs/PRODUCT.md](docs/PRODUCT.md) | The help file. Every feature and the check that proves it. |
-| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | What existing photo apps already do, and the defaults taken from that. |
-| [docs/STATUS.md](docs/STATUS.md) | What is actually true on disk; Check evidence. |
-| [docs/CONTRACTS.md](docs/CONTRACTS.md) | Records, paths, identity, operations, errors and recovery. |
-| [docs/UI-SPEC.md](docs/UI-SPEC.md) | Screen states, inputs and reference boundaries. |
-| [docs/FIXTURES.md](docs/FIXTURES.md) | Exact synthetic test data to build. |
-| [docs/SLICES.md](docs/SLICES.md) | Dependency order, 15 slices and milestone stop line. |
-| [docs/AGENT-BUILD-MODE.md](docs/AGENT-BUILD-MODE.md) | Orchestrator handoff for the later build. |
-| [docs/reference/](docs/reference/) | Layout targets for the main screens. |
+Photos stay files on the PC. The app does not upload them, and you do
+not need a cloud account to browse.
 
-## Windows (family PC)
+## Who it is for
 
-Copy this folder onto a drive.
+Family PCs. Someone can set it up; a parent or mother-in-law can browse
+afterward. Daily use is a double-click, then the browser on this
+computer.
 
-1. **Setup once** — double-click `Setup.bat` (Python 3.12+, ffmpeg, `.venv`, local faces / objects / places). Needs the internet the first time. Models stay in `library-data/`. No MSI.
-2. **Library daily** — double-click `Library.bat`.
-3. **Update for code** — **Update Library** in the header, or `Update.bat` (`git pull`). Run `Setup.bat` again only if new local models were added.
+It is not a phone copier, not a cloud host, and not an editor. It does
+not rearrange your originals unless you ask it to copy a folder here.
 
-`Setup.bat -Help` prints that story. `Setup.bat -DryRun` probes without downloading.
+## Quick start
+
+1. **Get the folder.** Clone this repo, or download the ZIP and unzip it
+   somewhere on the PC.
+2. **Setup once.** Double-click `Setup.bat`. That needs the internet
+   (Python, ffmpeg, and optional face / object / place models). Models
+   stay in `library-data/`.
+3. **Library daily.** Double-click `Library.bat`. A browser window
+   opens on this computer.
+4. **Chinese UI.** In the header, set **Language** to **中文**. The
+   choice is remembered.
+5. **Add photos.** Click **Add folder** and point it at pictures already
+   on the PC. You can copy them into the library, or leave them where
+   they are.
+6. **Updates.** **Update Library** in the header pulls the latest
+   `main` when this folder is a git checkout. After an update, run
+   `Setup.bat` again only if new local models were added.
+
+`Setup.bat -Help` prints that story. `Setup.bat -DryRun` probes without
+downloading.
+
+## Requirements
+
+- **Windows.** This is the family-PC path. `Library.bat` / `Setup.bat`
+  are the launchers.
+- **Internet** for Setup and the first model download. After that,
+  browsing and the local models run offline.
+- **No GitHub account** once the repo is public. Clone over HTTPS, or
+  download the ZIP. A GitHub account is only needed if you want to open
+  issues or send a pull request.
+
+A ZIP copy cannot pull updates by itself. Clone the repo if you want
+**Update Library** to work.
+
+## Privacy
+
+Pictures and videos stay on this PC. The catalog, previews, optional
+models, and (if you chose copy) originals live under `library-data/`
+next to the app. The app never uploads your photos.
+
+Face, object, and place workers run on this computer when installed.
+They do not call a cloud API. Browse still works if those models are
+missing.
+
+The server listens on `127.0.0.1` by default, so only this computer can
+open it.
+
+## Status
+
+Early and taste-driven. It is useful on a family PC today, but this is
+not a polished product guarantee. Things still change as the chrome is
+shaped.
+
+## Docs
+
+The files under `docs/` are the build notes: what the library is meant
+to do, what has been checked, and how screens should behave.
+
+| File | What it is |
+|------|------------|
+| [docs/PRODUCT.md](docs/PRODUCT.md) | The product: features and the check for each |
+| [docs/STATUS.md](docs/STATUS.md) | What has actually been verified |
+| [docs/UI-SPEC.md](docs/UI-SPEC.md) | Screen contract for the Windows shell |
+| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Defaults taken from other photo apps |
