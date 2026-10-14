@@ -155,8 +155,8 @@ def start_owned(root: Path) -> tuple[subprocess.Popen[str], str, list[int]]:
 
 
 def slot_file(root: Path, item_id: str, slot: str) -> Path:
-    if slot == "proxy":
-        return root / "renditions" / item_id / "proxy.mp4"
+    if slot in {"proxy", "playback"}:
+        return root / "renditions" / item_id / f"{slot}.mp4"
     return root / "renditions" / item_id / f"{slot}.webp"
 
 
@@ -175,10 +175,12 @@ def photo_queued(item: dict[str, Any]) -> bool:
         and status.get("preview") == "queued"
         and status.get("poster") == "not-applicable"
         and status.get("proxy") == "not-applicable"
+        and status.get("playback") in {None, "not-applicable"}
         and rend.get("thumb") is None
         and rend.get("preview") is None
         and rend.get("poster") is None
         and rend.get("proxy") is None
+        and rend.get("playback") is None
     )
 
 
@@ -190,10 +192,12 @@ def video_queued(item: dict[str, Any]) -> bool:
         and status.get("preview") == "not-applicable"
         and status.get("poster") == "queued"
         and status.get("proxy") == "queued"
+        and status.get("playback") in {None, "queued"}
         and rend.get("thumb") is None
         and rend.get("preview") is None
         and rend.get("poster") is None
         and rend.get("proxy") is None
+        and rend.get("playback") is None
     )
 
 
@@ -341,7 +345,7 @@ def build_format_matrix(root: Path, media: Path, rels: list[str]) -> list[dict[s
         rend = item.get("renditions") or {}
         status = rend.get("status") or {}
         slots: dict[str, Any] = {}
-        for slot in ("thumb", "preview", "poster", "proxy"):
+        for slot in ("thumb", "preview", "poster", "proxy", "playback"):
             dest = slot_file(root, item["id"], slot)
             ready_file = (
                 status.get(slot) == "ready"

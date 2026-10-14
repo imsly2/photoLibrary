@@ -239,7 +239,7 @@ def _retry_error_renditions(root: Path, entry: dict[str, Any] | None, path: Path
     if item is None:
         return
     status = ((item.get("renditions") or {}).get("status") or {})
-    slots = [slot for slot in ("thumb", "preview", "poster", "proxy") if status.get(slot) == "error"]
+    slots = [slot for slot in ("thumb", "preview", "poster", "proxy", "playback") if status.get(slot) == "error"]
     if not slots:
         return
     before = clone(item)

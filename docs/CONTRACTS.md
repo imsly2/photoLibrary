@@ -29,7 +29,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Search chips | Add `scope=people|places|things` to `items` and `groups` for the already-described chips. No scope means names plus filenames. Filters combine with AND, values within a place list with OR. |
 | Annotate semantics | Add associations, reuse named entities deterministically, optionally rename an explicit entity id. No face detection, name guessing, caption system, or box-drawing tool. |
 | Live pairing | Same Apple content identifier within the same source pairs still + movie across scan order/restart. Filenames alone never pair. Locations need a component discriminator. |
-| Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. Unplayable browser original falls back to proxy. |
+| Playback | Full-length silent proxies as PRODUCT says; the convention's word “short” means low-resolution, not truncated. When the original is not a browser-safe MP4 (H.264 + AAC/mp3), a full-quality `playback.mp4` is generated (same pixel size, H.264 + AAC; remux when the bitstream already allows). Viewer starts on the proxy, then the original if the browser can decode it, else `playback`. The badge names Preview / Full / Original honestly. Originals stay on disk. |
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
@@ -115,14 +115,19 @@ frame: x,y >=0, width,height >0, x+width and y+height <=1. Omitted means associa
 without a box. Duplicate identical associations collapse; distinct boxes may share
 an entity. No inferred face matching.
 
-Renditions: `{store,sourceId,thumb,preview,poster,proxy,status}`. Store is
-`with-server|with-source`; sourceId selects the owning source. Paths are relative
-to library-data for with-server, to selected source root for with-source (starting
-`.library/`). Absent paths null. status maps all four names to
-`not-applicable|queued|ready|error`. Photos use thumb/preview, videos poster/proxy,
-live items all four. An error never removes the item. Explicit rescan retries
-failed renditions even if original bytes are unchanged. Missing previews show a
-placeholder; no request automatically mutates the source disk to repair them.
+Renditions: `{store,sourceId,thumb,preview,poster,proxy,playback,status}`.
+Store is `with-server|with-source`; sourceId selects the owning source. Paths
+are relative to library-data for with-server, to selected source root for
+with-source (starting `.library/`). Absent paths null. status maps those
+names to `not-applicable|queued|ready|error`. Photos use thumb/preview
+(`playback` not-applicable). Videos use poster/proxy plus `playback` when
+the original is not a browser-safe MP4; a browser-safe MP4 marks
+`playback` not-applicable. Live items use stills plus video slots. Older
+records without `playback` read as that default (queued for video/live,
+not-applicable for photos). An error never removes the item. Explicit
+rescan retries failed renditions even if original bytes are unchanged.
+Missing previews show a placeholder; no request automatically mutates the
+source disk to repair them.
 
 Favorites are a separate catalog file `catalog/favorites.json`:
 `{schemaVersion:1,itemIds:[…]}` with unique item ids, sorted. Missing file is
@@ -322,7 +327,7 @@ no-location groups in that category order regardless of dir; dir orders names/
 coordinates and dates within category. Compare capturedAt as stored normalized
 ISO components; floating dates remain floating, never guess a timezone.
 
-GET `/api/media/<id>?which=thumb|preview|poster|proxy|original` returns bytes,
+GET `/api/media/<id>?which=thumb|preview|poster|proxy|playback|original` returns bytes,
 correct Content-Type and length. Live original is still by default;
 `component=motion` chooses the movie (ordinary video is already motion). Support
 single byte Range with 206/Content-Range and 416 invalid-range. Preview swaps and

@@ -533,7 +533,7 @@ class Library:
             raise fail("preview-unavailable") from exc
         if path is None or not path.is_file() or path.stat().st_size <= 0:
             raise fail("preview-unavailable")
-        content_type = "video/mp4" if which == "proxy" else "image/webp"
+        content_type = "video/mp4" if which in {"proxy", "playback"} else "image/webp"
         return {"path": path, "content_type": content_type}
 
 
@@ -554,7 +554,7 @@ ITEM_QUERY_KEYS = frozenset(
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
-MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "original"})
+MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "playback", "original"})
 
 
 def original_content_type(path: Path) -> str:

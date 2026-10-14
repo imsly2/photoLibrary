@@ -31,8 +31,10 @@ Read PRODUCT F3 / F7 / F10 / F16, CONTRACTS reveal, UI-SPEC checklist
    stay stills under `days-and-all`. Catalog rebuild must not leave a
    hovered tile paused.
 8. `#viewer-source` beside the filename: Preview / Loading full… /
-   Original / Preview — full unavailable. Progressive proxy→original
-   stays; the label must not pretend a proxy is the full file.
+   Original / Full / Preview — full unavailable. Progressive
+   proxy→original or `playback.mp4` stays; the label must not
+   pretend a silent proxy is the full file. MOV uses Full when the
+   library H.264/AAC derivative is playing.
 
 ## Out of scope
 

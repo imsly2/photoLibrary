@@ -56,7 +56,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
+| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original or `playback.mp4` without a fit/time jump. Hover plays at every Size; a Dates-off wall also hovers at Years/Months. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
 | Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
@@ -366,9 +366,16 @@ Every video gets:
 
 - `poster.webp`, one frame near the start, at thumb size.
 - `proxy.mp4`, width `proxyWidth` (default 480), H.264, no audio, long enough
-  to cover the whole clip. The grid and the carousel play this file. Opening
-  the item starts the proxy immediately, then swaps to the original when it
-  is available, keeping time and fit.
+  to cover the whole clip. The grid and the carousel play this file.
+- `playback.mp4` when the original is not a browser-safe MP4 (typical
+  iPhone `.MOV` / HEVC). Full length, original pixel size, H.264 + AAC
+  (remux when the bitstream already allows). The original file stays on
+  disk. A browser-safe MP4 does not get this file.
+
+Opening the item starts the proxy immediately, then swaps to the original
+when the browser can decode it, otherwise to `playback.mp4`, keeping time
+and fit. `#viewer-source` says Preview, Loading full…, Original, Full
+(library H.264/AAC), or Preview — full unavailable.
 
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
@@ -481,17 +488,17 @@ folder on this computer whenever the file is here (`explorer.exe` argv
 with spaces still select the file). Open launches that file in the computer's default app. Delete
 removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
-starts the proxy and swaps to the original when loaded (a browser that
-cannot decode the original stays on the proxy). `#viewer-source` beside
-the filename says Preview, Loading full…, Original, or Preview — full
-unavailable. Play preview still
+starts the proxy and swaps to the original when the browser can decode
+it, otherwise to `playback.mp4` (full quality + sound). `#viewer-source`
+beside the filename says Preview, Loading full…, Original, Full, or
+Preview — full unavailable. A silent proxy is never labeled Original. Play preview still
 toggles pause/play on click. `#viewer-scrub` sits in `#viewer-bottom`
 and seeks at any zoom or source. It does not overlay the picture.
 Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags
 it; a still also pans with a left drag, and any zoomed item pans with a
 left drag. Click a video, or press Space (when no slideshow), to play or
-pause. Playback of a video uses the original when available, otherwise
-the proxy.
+pause. Playback of a video uses the original when the browser can decode
+it, otherwise `playback.mp4`, otherwise the proxy.
 
 Person, Place, and Thing are **not** pills painted over the preview. A
 top-right **Info** control shows file facts first (date taken, camera,

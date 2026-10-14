@@ -386,6 +386,7 @@ def prove_static_source(checks: Checks) -> None:
         'id="viewer-source"' in html
         and "setVideoSourceState" in page
         and "Loading full…" in page
+        and 'full: "Full"' in page
         and "Preview — full unavailable" in page
         and "resumeHoverIfNeeded" in page,
         "viewer source + hover resume",
@@ -399,7 +400,10 @@ def prove_static_source(checks: Checks) -> None:
     )
     checks.check(
         "uispec-viewer-source",
-        "#viewer-source" in spec and "Loading full" in spec and "Preview — full unavailable" in spec,
+        "#viewer-source" in spec
+        and "Loading full" in spec
+        and "Original / Full" in spec
+        and "Preview — full unavailable" in spec,
         "UI-SPEC source chrome",
     )
 

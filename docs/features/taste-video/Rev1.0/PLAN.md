@@ -21,9 +21,15 @@ and this file.
    `#viewer-zoom-pct`. Plain wheel is primary zoom.
 7. `#viewer-scrub` lives in `#viewer-bottom` (not over the picture).
    `.tile-scrub` stays on hovered tiles.
-8. Progressive start: proxy first, then original; `currentTime` kept.
+8. Progressive start: proxy first, then original (MP4) or
+   `playback.mp4` (MOV/AVI/MKV); `currentTime` kept. `#viewer-source`
+   names Preview / Loading full… / Original / Full / Preview — full
+   unavailable.
 9. Clicking a video tile autoplays the viewer at the tile’s `currentTime`.
 10. `launch.ps1` unwrap / reverse-slice fix from PR #9, keeping `-Update`.
+11. `clip.mov` serves a full-sound `playback.mp4`; badge says Full.
+    Browser-safe `clip.mp4` stays Original. Preserve Originals keeps
+    the MOV on disk.
 
 ## Out of scope
 

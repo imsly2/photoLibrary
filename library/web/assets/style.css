@@ -892,6 +892,10 @@ dialog h2 {
   background: #7dcea0;
 }
 
+#viewer-source[data-state="full"] {
+  background: #6ec4c8;
+}
+
 #viewer-source[data-state="unavailable"] {
   background: #e6a07a;
 }
