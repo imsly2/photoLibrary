@@ -679,30 +679,15 @@ def prove_browser(
                 checks.check("clear-search-restores-grid", grid_cell_count(page) >= 4, str(grid_filenames(page)))
 
                 page.fill("#search", "Ada")
-                page.locator("#chip-people").click()
                 page.wait_for_function(
-                    "() => document.getElementById('grid') && document.getElementById('grid').dataset.scope === 'people' && document.getElementById('grid').dataset.q === 'Ada'",
+                    "() => document.getElementById('grid') && document.getElementById('grid').dataset.q === 'Ada'",
                     timeout=8000,
                 )
                 page.wait_for_function(
                     "() => document.querySelectorAll('#grid .cell').length === 1",
                     timeout=8000,
                 )
-                checks.check("chip-people-ada", grid_filenames(page) == ["IMG_1042.jpg"], str(grid_filenames(page)))
-                page.locator("#chip-things").click()
-                page.wait_for_function(
-                    "() => document.getElementById('grid') && document.getElementById('grid').dataset.scope === 'things'",
-                    timeout=8000,
-                )
-                page.wait_for_function(
-                    "() => (document.querySelector('#grid > p') || {}).textContent === 'No matches for Ada'",
-                    timeout=8000,
-                )
-                checks.check(
-                    "chip-things-ada-empty",
-                    page.evaluate("() => (document.querySelector('#grid > p') || {}).textContent || ''") == "No matches for Ada",
-                )
-                page.locator("#chip-things").click()
+                checks.check("search-ada", grid_filenames(page) == ["IMG_1042.jpg"], str(grid_filenames(page)))
                 page.fill("#search", "")
                 page.wait_for_function(
                     "() => document.querySelectorAll('#grid .cell').length >= 4",

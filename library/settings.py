@@ -30,6 +30,7 @@ KEY_ORDER = (
     "sort",
     "dir",
     "zoomLevel",
+    "language",
     "faceMatchThreshold",
     "faceMinSidePx",
 )
@@ -43,6 +44,7 @@ ENUMS: dict[str, frozenset[str]] = {
     "sort": frozenset({"date", "location", "name"}),
     "dir": frozenset({"asc", "desc"}),
     "zoomLevel": frozenset({"years", "months", "days", "all"}),
+    "language": frozenset({"en", "zh-Hans"}),
 }
 
 INT_KEYS = frozenset({"port", "thumbPx", "previewPx", "proxyWidth", "tourPictures", "faceMinSidePx"})
@@ -67,6 +69,7 @@ DEFAULTS: dict[str, Any] = {
     "sort": "date",
     "dir": "desc",
     "zoomLevel": "years",
+    "language": "en",
     "faceMatchThreshold": 0.5,
     "faceMinSidePx": 80,
 }
@@ -194,7 +197,7 @@ def settings_path(root: Path) -> Path:
 
 
 def fill_missing_defaults(data: dict[str, Any]) -> dict[str, Any]:
-    """Accept a pre-face-quality 16-key file by filling new keys from defaults."""
+    """Accept a pre-language or pre-face-quality file by filling new keys from defaults."""
     if not isinstance(data, dict):
         raise fail("invalid-catalog")
     extra = [key for key in data if key not in KEY_ORDER]

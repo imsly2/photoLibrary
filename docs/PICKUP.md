@@ -9,16 +9,18 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    and **Video playback and zoom**. Must-for-presentable items are locked
    shell requirements. The **Presentable for family PC** checklist
    (19 steps) is the taste gate.
-2. Chrome taste: Search stays in the header. **All filters** live on
-   `#filter-bar` under it (All/Photos/Videos/Favorites, Person/Place/Tag
-   chips, Clear all, Group Dates/People/Places/Tags). Size + Dates live
+2. Chrome taste: **Search lives on `#filter-bar`** with All/Photos/Videos/Favorites,
+   Person/Place/Tag chips, Clear all, and **one** Group Date/People/Places/Tags
+   control (default Date). Sort Newest/Oldest/Name/Location stays in the
+   header and does not duplicate Group. Language English/中文 is in the
+   header and persists as `settings.language`. Size + Dates live
    in `#library-chrome` at the **bottom-left** of the grid. Right
    **People** splitter (`#library-side`) filters by face (AND when
    several are selected; click a selected person again to remove).
    `#jobs-panel` Pause / Start talks to `/api/jobs`. Keep one Size
    slider, Dates Years/Months/Days/Off, Ctrl+wheel on Size only,
    `#viewer-nav` / `#viewer-zoom-slider` / `#viewer-scrub`. Do **not**
-   restore a Level slider or put zoom back on the scrubber.
+   restore a Level slider, header search, or People/Places/Things search chips.
 3. Do **not** start S13/S14 or Soon rows (filmstrip, multi-select, Print,
    `?`, recently added) while a Must checklist row is red. Globe polish
    beyond F12 waits. macOS/Linux launch is pinned.

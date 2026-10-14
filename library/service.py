@@ -901,6 +901,10 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
                 name = rec.get("name")
                 if type(name) is str and name and needle in _norm_query(name):
                     matched = True
+            if needle in _UNNAMED_LABELS and any(
+                isinstance(rec, dict) and not rec.get("name") for rec in people
+            ):
+                matched = True
         if scope in {None, "places"}:
             for rec in places:
                 name = rec.get("name")
@@ -920,9 +924,29 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
                 matched = True
             if _date_query_match(captured, needle):
                 matched = True
+            if _label_query_match(item, needle):
+                matched = True
         if not matched:
             return False
     return True
+
+
+_UNNAMED_LABELS = frozenset({"unnamed", "未命名", "unknown", "未知"})
+_NO_PLACE_LABELS = frozenset({"no place", "无地点", "no location", "无位置"})
+_UNTAGGED_LABELS = frozenset({"untagged", "无标签"})
+
+
+def _label_query_match(item: dict[str, Any], needle: str) -> bool:
+    if needle in _UNNAMED_LABELS:
+        people = (item.get("entities") or {}).get("people") or []
+        return any(not rec.get("name") for rec in people if isinstance(rec, dict))
+    if needle in _NO_PLACE_LABELS:
+        places = (item.get("entities") or {}).get("places") or []
+        return not places
+    if needle in _UNTAGGED_LABELS:
+        things = (item.get("entities") or {}).get("things") or []
+        return not things
+    return False
 
 
 def _date_query_match(captured: str, needle: str) -> bool:

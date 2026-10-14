@@ -210,18 +210,28 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
           const chips = document.getElementById('filter-chips');
           return {
             searchInHeader: !!(header && search && header.contains(search)),
+            searchInBar: !!(bar && search && bar.contains(search)),
             filtersInBar: !!(bar && chips && bar.contains(chips)),
             filtersInHeader: !!(header && chips && header.contains(chips)),
+            searchChips: !!document.getElementById('search-chips'),
             arrange: (document.getElementById('arrange') || {}).value,
             arrangeOptions: Array.from(document.querySelectorAll('#arrange option')).map(function (n) { return n.value; }),
+            arrangeLabels: Array.from(document.querySelectorAll('#arrange option')).map(function (n) { return n.textContent.trim(); }),
             clearHidden: !!(document.getElementById('clear-filters') || {}).hidden
           };
         }"""
     )
     record["layout"] = layout
-    checks.check("search-in-header", layout.get("searchInHeader") is True, json.dumps(layout))
+    checks.check("search-in-filter-bar", layout.get("searchInBar") is True, json.dumps(layout))
+    checks.check("search-not-in-header", layout.get("searchInHeader") is False, json.dumps(layout))
+    checks.check("no-search-scope-chips", layout.get("searchChips") is False, json.dumps(layout))
     checks.check("filters-in-bar", layout.get("filtersInBar") is True, json.dumps(layout))
     checks.check("filters-not-in-header", layout.get("filtersInHeader") is False, json.dumps(layout))
+    checks.check(
+        "arrange-default-date",
+        layout.get("arrange") == "dates",
+        json.dumps(layout.get("arrange")),
+    )
     checks.check(
         "arrange-options",
         layout.get("arrangeOptions") == ["dates", "people", "places", "tags"],
