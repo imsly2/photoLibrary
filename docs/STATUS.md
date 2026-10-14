@@ -116,6 +116,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   [viewer-chrome.png](features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png),
   [F10](features/taste-windows/Rev1.0/assets/viewer-shell/f10/result.json).
   Pointer: [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell).
+- 2026-10-14 — `Library.bat` / `launch.ps1` no longer unwrap a 1-element
+  `@($python.exe)` into a STRING (`$python[0]` was `C`) or reverse-slice
+  it into ArgumentList (`$python[1..0]` passed python.exe as argv[1]).
+  Returns `,@(...)`, re-wraps `@(Get-Python312)`, `$exe = [string]$python[0]`.
+  Extras only when Count/Length -gt 1 (`py -3.12`). Prefers
+  `.venv\Scripts\python.exe` when present. `Library.bat` pauses on
+  failure so a family PC can read the error. Does not close F2.
+  Before/after ArgumentList:
+  [launch-arglist](features/taste-windows/Rev1.0/assets/launch-arglist/result.json).
 
 ## Completion
 
