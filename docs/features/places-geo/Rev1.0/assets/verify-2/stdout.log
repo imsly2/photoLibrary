@@ -1,0 +1,44 @@
+PASS lookup-without-pack
+PASS pack-missing
+PASS setup-geo-from-fixture: exit=0 {'ok': True, 'path': 'geo/cities.csv', 'cityCount': 3, 'downloaded': False, 'source': 'local'} err=
+PASS pack-ready-after-from
+PASS lookup-chicago
+PASS lookup-near
+PASS lookup-nyc
+PASS setup-geo-existing-noop: {'ok': True, 'path': 'geo/cities.csv', 'cityCount': 3, 'downloaded': False, 'source': 'existing'}
+PASS convert-header
+PASS convert-chicago
+PASS named-root-pack
+PASS named-scan-ok: exit=0 {'sourceId': 'src_4f4aad154b02', 'added': 4, 'skipped': 0, 'errors': []}
+PASS named-two-gps-places: 2
+PASS named-img-present
+PASS named-near-same
+PASS named-far-other
+PASS named-no-gps
+PASS named-img-chicago: {'schemaVersion': 1, 'id': 'place_56c243b1d6f7', 'name': 'Chicago, Illinois', 'latitude': 41.88, 'longitude': -87.63}
+PASS named-far-chicago: {'schemaVersion': 1, 'id': 'place_b320c5ef6a3e', 'name': 'Chicago, Illinois', 'latitude': 41.925, 'longitude': -87.63}
+PASS search-chicago-ok
+PASS search-chicago-has-img: ['near.jpg', 'IMG_1042.jpg', 'far.jpg']
+PASS search-chicago-omits-no-exif: ['near.jpg', 'IMG_1042.jpg', 'far.jpg']
+PASS search-scope-places: ['near.jpg', 'IMG_1042.jpg', 'far.jpg']
+PASS info-entities-place-name: [{"schemaVersion": 1, "id": "place_56c243b1d6f7", "name": "Chicago, Illinois", "latitude": 41.88, "longitude": -87.63}]
+PASS keep-scan: {'schemaVersion': 1, 'id': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'kind': 'photo', 'filename': 'IMG_1042.jpg', 'capturedAt': '2024-06-12T15:04:00', 'capturedAtSource': 'exif', 'placeId': 'place_017b80cdc4fe', 'metadata': {'width': 640, 'height': 480, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': 41.88, 'longitude': -87.63}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_fb55aa3da32e', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'tmp/qa-geo/artifacts/keep-name-media/a/IMG_1042.jpg', 'lastKnownPath': '/tmp/qa-geo/artifacts/keep-name-media/a/IMG_1042.jpg', 'sizeBytes': 15274, 'modifiedAt': '2026-10-13T17:38:55.358054Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_fb55aa3da32e', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'playback': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable', 'playback': 'not-applicable'}}, 'faces': [], 'things': []}
+PASS keep-annotate
+PASS keep-kitchen-after-annotate: [{"schemaVersion": 1, "id": "place_017b80cdc4fe", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS keep-analyze-noop: {'ok': True, 'named': 0, 'skipped': 1, 'packReady': True}
+PASS keep-kitchen-after-analyze: [{"schemaVersion": 1, "id": "place_017b80cdc4fe", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS keep-rescan-ok
+PASS keep-kitchen-after-rescan: [{"schemaVersion": 1, "id": "place_017b80cdc4fe", "name": "Kitchen", "latitude": 41.88, "longitude": -87.63}]
+PASS backfill-starts-null: [{"schemaVersion": 1, "id": "place_2f5c3da4dfb0", "name": null, "latitude": 41.88, "longitude": -87.63}]
+PASS analyze-without-pack: {'ok': True, 'named': 0, 'skipped': 1, 'packReady': False}
+PASS backfill-setup
+PASS backfill-named-one: {'ok': True, 'named': 1, 'skipped': 0, 'packReady': True}
+PASS backfill-chicago: [{"schemaVersion": 1, "id": "place_2f5c3da4dfb0", "name": "Chicago, Illinois", "latitude": 41.88, "longitude": -87.63}]
+PASS http-setup
+PASS http-scan
+PASS http-scan-null-name: [{"schemaVersion": 1, "id": "place_8920bfaa7d6a", "name": null, "latitude": 41.88, "longitude": -87.63}]
+PASS http-analyze-status: 200
+PASS http-analyze-named: {"ok": true, "named": 1, "skipped": 0, "packReady": true}
+PASS http-search-status: 200
+PASS http-search-img: ['IMG_1042.jpg']
+PASS http-search-no-exif: ['IMG_1042.jpg']

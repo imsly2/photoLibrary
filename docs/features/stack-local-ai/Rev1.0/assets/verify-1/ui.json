@@ -1,0 +1,28 @@
+{
+  "queues": [
+    {
+      "id": "renditions",
+      "state": "running",
+      "text": "Previews \u00b7 13 left"
+    },
+    {
+      "id": "analyze",
+      "state": "idle",
+      "text": "Analyze \u00b7 0 left"
+    },
+    {
+      "id": "infer-faces",
+      "state": "idle",
+      "text": "Faces \u00b7 0 left"
+    },
+    {
+      "id": "objects",
+      "state": "running",
+      "text": "Objects \u00b7 9 left"
+    }
+  ],
+  "people": [
+    "Unnamed",
+    "Unnamed"
+  ]
+}

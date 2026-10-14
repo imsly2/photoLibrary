@@ -595,8 +595,12 @@ def _ensure_runtime() -> None:
         check=False,
     )
     import importlib
+    import site
 
     importlib.invalidate_caches()
+    user_site = site.getusersitepackages()
+    if user_site and user_site not in sys.path:
+        sys.path.append(user_site)
     try:
         import numpy  # noqa: F401
         import onnxruntime  # noqa: F401

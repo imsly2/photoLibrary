@@ -211,6 +211,13 @@ def _ensure_ml_deps() -> None:
         )
         if proc.returncode != 0:
             raise fail("dependency-missing")
+        import importlib
+        import site
+
+        importlib.invalidate_caches()
+        user_site = site.getusersitepackages()
+        if user_site and user_site not in sys.path:
+            sys.path.append(user_site)
         try:
             import onnxruntime  # noqa: F401
         except ImportError as exc:

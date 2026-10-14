@@ -1,0 +1,39 @@
+{
+  "personOfInterestMin": 3,
+  "people": [
+    {
+      "id": "person_617f6b0d7190",
+      "name": null,
+      "itemCount": 3,
+      "visible": true,
+      "named": false,
+      "thumbnail": {
+        "itemId": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92",
+        "box": [
+          0.625,
+          0.20833333333333334,
+          0.21875,
+          0.375
+        ]
+      },
+      "thumbnailItemId": null
+    },
+    {
+      "id": "person_65ef1a4fe7e9",
+      "name": null,
+      "itemCount": 3,
+      "visible": true,
+      "named": false,
+      "thumbnail": {
+        "itemId": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed",
+        "box": [
+          0.34375,
+          0.22916666666666666,
+          0.21875,
+          0.375
+        ]
+      },
+      "thumbnailItemId": null
+    }
+  ]
+}
