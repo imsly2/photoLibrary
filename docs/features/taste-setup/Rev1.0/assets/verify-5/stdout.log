@@ -1,0 +1,428 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS setup-bat-calls-setup-ps1
+PASS setup-bat-echoes-once-daily-update
+PASS setup-bat-ready-or-update
+PASS setup-ps1-ascii-only
+PASS setup-ps1-no-em-dash-or-smart-quotes
+PASS setup-bat-ascii-only
+PASS setup-ps1-ps51-cp1252-safe: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS setup-ps1-no-bare-using: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS setup-ps1-strings-and-braces-closed
+PASS setup-bat-has-help
+PASS setup-bat-no-msi
+PASS setup-ps1-does-not-serve
+PASS setup-ps1-composes-clis
+PASS setup-ps1-venv-and-pip
+PASS setup-ps1-winget-same-ids
+PASS setup-ps1-dryrun-and-help
+PASS setup-ps1-missing-says-update
+PASS library-bat-still-launch-ps1
+PASS launch-ps1-still-serves
+PASS launch-ps1-no-setup-hijack
+PASS launch-ps1-update-relaunches
+PASS setup-ps1-progress-steps
+PASS setup-ps1-fail-next
+PASS setup-ps1-creates-shortcut
+PASS setup-ps1-internet-up-front
+PASS setup-ps1-optional-git-or-zip
+PASS setup-ps1-appfolder-param
+PASS setup-ps1-resolves-myinvocation-path
+PASS setup-ps1-fail-loud-if-folder-null
+PASS setup-ps1-no-bare-psscriptroot-setlocation
+PASS setup-bat-passes-appfolder
+PASS setup-bat-ready-only-after-errorlevel
+PASS create-shortcut-bat-exists
+PASS create-shortcut-bat-ascii
+PASS create-shortcut-ps1-ascii
+PASS create-shortcut-ps1-ps51-safe: {"asciiOnly": true, "cp1252EqualsUtf8": true, "stringsClosed": true, "braceDepth": 0, "bareUsingLines": [], "ok": true}
+PASS create-shortcut-writes-lnk
+PASS library-ico-exists
+PASS resolve-function-present-in-setup
+PASS resolve-function-identical-in-siblings
+PASS library-bat-passes-appfolder
+PASS update-bat-passes-appfolder
+PASS create-shortcut-bat-passes-appfolder
+PASS launch-ps1-no-bare-psscriptroot-setlocation
+PASS create-shortcut-ps1-no-bare-psscriptroot-setlocation
+PASS setup-ps1-probe-appfolder
+PASS setup-ps1-explicit-exit-1-on-null
+PASS empty-psscriptroot-uses-appfolder-hint: /tmp/tmp90elyil1/photoLibrary
+PASS empty-psscriptroot-uses-myinvocation-path: /tmp/tmp90elyil1/photoLibrary
+PASS empty-psscriptroot-uses-cwd-with-setup-bat: /tmp/tmp90elyil1/photoLibrary
+PASS empty-everything-without-marker-is-null: None
+PASS missing-hint-without-fallback-is-null: None
+PASS hint-trailing-slash-still-resolves: /tmp/tmp90elyil1/photoLibrary
+PASS setup-bat-fail-branch-no-ready: if not "%ERR%"=="0" (
+    echo.
+    echo  Setup did not finish. Do not run Library.bat yet.
+    echo  If it asked you to Update Library, do that, then run Setup.bat again.
+    echo  If it could not find the Library folder, open the folder with Setup.bat and run it from there.
+    pause
+    
+PASS setup-ps1-ready-after-success-only
+PASS update-tracks-main
+PASS probe-setup-geo-present-or-missing-ok: present
+PASS probe-setup-ml objects-present-or-missing-ok: present
+PASS probe-setup-ml faces-present-or-missing-ok: present
+PASS all-three-clis-present: []
+PASS probe-does-not-serve
+{
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-calls-setup-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-echoes-once-daily-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-or-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-no-em-dash-or-smart-quotes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ascii-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-ps51-cp1252-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-no-bare-using",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "setup-ps1-strings-and-braces-closed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-has-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-no-msi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-does-not-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-composes-clis",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-venv-and-pip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-winget-same-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-dryrun-and-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-missing-says-update",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-still-launch-ps1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-still-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-setup-hijack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-update-relaunches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-progress-steps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-fail-next",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-creates-shortcut",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-internet-up-front",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-optional-git-or-zip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-appfolder-param",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-resolves-myinvocation-path",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-fail-loud-if-folder-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-bat-ready-only-after-errorlevel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ascii",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-ps51-safe",
+      "pass": true,
+      "detail": "{\"asciiOnly\": true, \"cp1252EqualsUtf8\": true, \"stringsClosed\": true, \"braceDepth\": 0, \"bareUsingLines\": [], \"ok\": true}"
+    },
+    {
+      "name": "create-shortcut-writes-lnk",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-ico-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "resolve-function-present-in-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "resolve-function-identical-in-siblings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-bat-passes-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "create-shortcut-ps1-no-bare-psscriptroot-setlocation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-probe-appfolder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-explicit-exit-1-on-null",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-psscriptroot-uses-appfolder-hint",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-psscriptroot-uses-myinvocation-path",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-psscriptroot-uses-cwd-with-setup-bat",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "empty-everything-without-marker-is-null",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "missing-hint-without-fallback-is-null",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "hint-trailing-slash-still-resolves",
+      "pass": true,
+      "detail": "/tmp/tmp90elyil1/photoLibrary"
+    },
+    {
+      "name": "setup-bat-fail-branch-no-ready",
+      "pass": true,
+      "detail": "if not \"%ERR%\"==\"0\" (\n    echo.\n    echo  Setup did not finish. Do not run Library.bat yet.\n    echo  If it asked you to Update Library, do that, then run Setup.bat again.\n    echo  If it could not find the Library folder, open the folder with Setup.bat and run it from there.\n    pause\n    "
+    },
+    {
+      "name": "setup-ps1-ready-after-success-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-tracks-main",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "probe-setup-geo-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml objects-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "probe-setup-ml faces-present-or-missing-ok",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "all-three-clis-present",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "probe-does-not-serve",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "static": {
+    "help": ":help\necho.\necho  Setup.bat  -- one-time portable install on this Windows PC\necho.\necho  Setup once   -- this file  (Python 3.12+, ffmpeg, .venv, local AI models)\necho  Library      -- Library.bat every day\necho  Update       -- Update.bat or Update Library for new code  (git pull)\necho.\necho  First real run needs the internet for Python/ffmpeg (if missing)\necho  and the cities / objects / faces packs. After that, re-runs are local.\necho  Models stay under library-data\\. No cloud APIs. No MSI.\necho  No GitHub account. No gh tool. Update can use git or a zip of main.\necho.\necho  Then use the Library Desktop icon, or Library.bat.\necho  Use Update.bat / Update Library for new code (pulls main, restarts if open).\necho.\necho    Setup.bat           run setup\necho    Setup.bat -Help     this text\necho    Setup.bat -DryRun   probe only; do not download, pip install, or winget\necho.\nexit /b 0\n"
+  },
+  "probe": {
+    "libraryHelpReturncode": 0,
+    "libraryHelp": "usage: python -m library [-h] [--root ROOT]\n                         {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,tags,jobs,setup-geo,analyze-places,setup-ml,analyze,infer-faces,rebuild-index,renditions}\n                         ...\n\npositional arguments:\n  {serve,settings,undo,redo,scan,sources,copy-here,items,annotate,favorite,reveal,open,remove,delete-file,update,people,tags,jobs,setup-geo,analyze-places,setup-ml,analyze,infer-faces,rebuild-index,renditions}\n\noptions:\n  -h, --help            show this help message and exit\n  --root ROOT           library-data directory\n",
+    "commands": {
+      "setup-geo": {
+        "tokens": [
+          "setup-geo"
+        ],
+        "returncode": 0,
+        "present": true,
+        "excerpt": "usage: python -m library setup-geo [-h] [--from FROM_PATH] [--force]\n\noptions:\n  -h, --help        show this help message and exit\n  --from FROM_PATH\n  --force\n"
+      },
+      "setup-ml objects": {
+        "tokens": [
+          "setup-ml",
+          "objects"
+        ],
+        "returncode": 0,
+        "present": true,
+        "excerpt": "usage: python -m library setup-ml [-h] [--backend BACKEND] {objects,faces}\n\npositional arguments:\n  {objects,faces}\n\noptions:\n  -h, --help         show this help message and exit\n  --backend BACKEND\n"
+      },
+      "setup-ml faces": {
+        "tokens": [
+          "setup-ml",
+          "faces"
+        ],
+        "returncode": 0,
+        "present": true,
+        "excerpt": "usage: python -m library setup-ml [-h] [--backend BACKEND] {objects,faces}\n\npositional arguments:\n  {objects,faces}\n\noptions:\n  -h, --help         show this help message and exit\n  --backend BACKEND\n"
+      }
+    },
+    "missing": [],
+    "wouldExit": 0,
+    "missingMessage": "Dry-run: this copy has the local AI setup commands.\n  - python -m library setup-geo\n  - python -m library setup-ml objects\n  - python -m library setup-ml faces\n\nA real Setup.bat would run those three, then: Ready -- run Library.bat\n",
+    "networkNote": "First real Setup.bat needs the internet for Python/ffmpeg (if missing) and the cities / YOLO / InsightFace packs. Models stay under library-data/. Dry-run / -Help do not download."
+  }
+}

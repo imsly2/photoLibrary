@@ -423,7 +423,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Check. 16/22 unchanged. Restart not required; re-copy or Update
   then run Setup.bat again.
   Evidence:
-  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-5/result.json),
+  [TASTE-SETUP](features/taste-setup/Rev1.0/assets/verify-5/result.json)
+  63/63 (empty `$PSScriptRoot` uses bat hint / MyCommand.Path /
+  cwd marker; all-empty is null; Ready only after errorlevel 0),
   [app-folder-probe](features/taste-setup/Rev1.0/assets/verify-5/app-folder-probe.json).
 
 ## Completion
