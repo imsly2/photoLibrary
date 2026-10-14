@@ -1,0 +1,221 @@
+{
+  "update": {
+    "present": true,
+    "text": "Update Library",
+    "hidden": false,
+    "width": 113.015625,
+    "height": 27.78125
+  },
+  "updateHttp": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "updated": false,
+      "revision": "1d39237fe89f90460cc7dc0be4099e26f82d3bae",
+      "message": "Already up to date.\n\nFrom https://github.com/imsly2/photoLibrary\n * [new branch]      cursor/grid-video-zoom-10b2 -> origin/cursor/grid-video-zoom-10b2\n * [new branch]      taste/windows-abc -> origin/taste/windows-abc"
+    }
+  },
+  "chrome": {
+    "back": {
+      "present": true,
+      "text": "Back",
+      "disabled": false,
+      "hidden": false,
+      "width": 56.828125,
+      "height": 26.1875,
+      "top": 18.09375,
+      "left": 20,
+      "bottom": 44.28125
+    },
+    "prev": {
+      "present": true,
+      "text": "Previous",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 475.203125,
+      "bottom": 637.03125
+    },
+    "next": {
+      "present": true,
+      "text": "Next",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 700.796875,
+      "bottom": 637.03125
+    },
+    "zoomOut": {
+      "present": false
+    },
+    "zoomIn": {
+      "present": false
+    },
+    "zoomSlider": {
+      "present": true,
+      "type": "range",
+      "min": "25",
+      "max": "1600",
+      "hidden": false,
+      "width": 352,
+      "top": 647.828125
+    },
+    "rotate": {
+      "present": true,
+      "text": "Rotate",
+      "disabled": false,
+      "hidden": false,
+      "width": 104,
+      "height": 27.78125,
+      "top": 609.25,
+      "left": 588,
+      "bottom": 637.03125
+    },
+    "favorite": {
+      "present": true,
+      "text": "\u2661",
+      "disabled": false,
+      "hidden": false,
+      "width": 41.59375,
+      "height": 38.390625,
+      "top": 12,
+      "left": 1164.1875,
+      "bottom": 50.390625
+    },
+    "reveal": {
+      "present": true,
+      "text": "Reveal in Explorer",
+      "disabled": false,
+      "hidden": false,
+      "width": 144,
+      "height": 27.78125,
+      "top": 674.625,
+      "left": 410.40625,
+      "bottom": 702.40625
+    },
+    "info": {
+      "present": true,
+      "text": "Info",
+      "disabled": false,
+      "hidden": false,
+      "width": 47.828125,
+      "height": 27.78125,
+      "top": 17.296875,
+      "left": 1212.171875,
+      "bottom": 45.078125
+    },
+    "open": {
+      "present": true,
+      "text": "Open",
+      "disabled": false,
+      "hidden": false,
+      "width": 144,
+      "height": 27.78125,
+      "top": 674.625,
+      "left": 568,
+      "bottom": 702.40625
+    },
+    "crumb": "IMG_1042.jpg",
+    "fields": [
+      "Person",
+      "Place",
+      "Thing"
+    ],
+    "personPlaceholder": "Person",
+    "placePlaceholder": "Place",
+    "thingPlaceholder": "Thing",
+    "overlayLabels": false,
+    "stagePills": 0,
+    "showingOriginalText": false,
+    "href": "http://127.0.0.1:18765/"
+  },
+  "infoOpen": {
+    "headings": [
+      "People",
+      "Places",
+      "Things"
+    ],
+    "fields": [
+      "Person",
+      "Place",
+      "Thing"
+    ],
+    "personPlaceholder": "Person",
+    "placePlaceholder": "Place",
+    "thingPlaceholder": "Thing",
+    "personInPanel": true
+  },
+  "originalAuto": {
+    "text": "Open",
+    "pressed": null,
+    "showing": "1",
+    "originalSrc": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original",
+    "originalHidden": false
+  },
+  "open": {
+    "path": "/tmp/taste-viewer-win7/taste-viewer-media/a/IMG_1042.jpg",
+    "opened": true
+  },
+  "reveal": {
+    "path": "/tmp/taste-viewer-win7/taste-viewer-media/a/IMG_1042.jpg",
+    "folder": "/tmp/taste-viewer-win7/taste-viewer-media/a",
+    "opened": true
+  },
+  "stillPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -320,
+      "top": -360,
+      "width": 1920,
+      "height": 1440,
+      "complete": true,
+      "naturalWidth": 640
+    },
+    "after": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440,
+      "complete": true,
+      "naturalWidth": 640
+    }
+  },
+  "backUrl": {
+    "before": "http://127.0.0.1:18765/",
+    "after": "http://127.0.0.1:18765/"
+  },
+  "videoPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -320,
+      "top": -360,
+      "width": 1920,
+      "height": 1440
+    },
+    "after": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440
+    }
+  },
+  "videoHoldPan": {
+    "errorPx": 0,
+    "before": {
+      "left": -280,
+      "top": -335,
+      "width": 1920,
+      "height": 1440
+    },
+    "after": {
+      "left": -250,
+      "top": -315,
+      "width": 1920,
+      "height": 1440
+    }
+  }
+}

@@ -1,68 +1,45 @@
-# S04 — Browse and open the fixture pictures
+# S04 — Browse and open the fixture pictures (M1)
 
-Locked 2026-10-13 after recon [S04 browse](d67824d6-a356-4042-b57b-60b82f206a0f).
-Depends on S03 at `08e4e77`. **Closes F9 and F11.** F10, F21, and F22 stay open; this slice proves only their browse subset.
+Locked 2026-10-13 after S03 at `50c3ae6`. **Closes F9 and F11.** F10 stays open until S09. F21 and F22 stay open until S13/S14. This slice proves the browse subset only.
 
-Read PRODUCT F9, F10, and F11, CONTRACTS `/api/groups` and sort rules, UI-SPEC grid and viewer, FIXTURES, and this file. Do not invent fields, errors, settings, or screens.
+Read PRODUCT F9, F11, and the F10 open/arrows/Esc sentences; CONTRACTS groups and item sort; UI-SPEC grid/sort/viewer; FIXTURES date set; and this file. Do not invent fields, errors, settings, or screens.
 
 ## In scope
 
-- `GET /api/groups` and location sort on `GET /api/items`.
-- Add folder dialog that links a fixture folder, then the grid.
-- Four zoom levels, sort toolbar, viewer arrows, zoom, and pan.
-- `python -m tests.qa slice S04`, `check F9`, and `check F11`.
-- S00, S01, S02, and S03 gates still exit 0 when run one at a time.
+- `GET /api/groups?level=years|months|days|all` plus the existing item filters/sort.
+- Toolbar sort by date, location, or name, both directions. Persist `sort`, `dir`, and `zoomLevel` through settings HTTP.
+- A real Add folder dialog for a server-local path. S04 proves **serve-from-there** from that dialog. Copy-here stays unimplemented (`not-found` or disabled until S05).
+- Library grid at four levels: Years, Months, Days, All. Slider and Ctrl+wheel step one level. The hovered item stays in view.
+- Click a cell to open the still preview. ArrowLeft/ArrowRight move in the current sort. Esc restores the grid, level, and scroll.
+- Viewer still zoom: Ctrl+wheel around the cursor; middle-drag pans 1:1. Fit on open. No crop on the opened still.
+- `python -m tests.qa slice S04`, `check F9`, `check F11` on a fixture-owned root.
+- S00, S01, S02, and S03 stay sequential and must not be weakened.
 
 ## Out of scope
 
-copy-here, search, settings page, globe, tour, annotate, video playback, hover, original-over-preview upgrade, and missing-original banners. Do not close F10, F21, or F22.
+Copy-here, video hover/proxy, globe, tour, search chips, annotate, settings page, relocate, Live badge playback. Do not close F10, F7, F21, or F22. Do not add a setting. Do not import Pillow from `library/`.
 
-## Add folder
+## Groups
 
-The empty library shows Add folder enabled. The dialog title is Add folder. The path is a text field. The two choices are labeled "Copy onto this drive" and "Serve from that folder". Cancel and Add are the only buttons. Esc and Cancel close the dialog and write nothing.
+`GET /api/groups` returns `{key,itemIds}[]`. Year `YYYY`, month `YYYY-MM`, day `YYYY-MM-DD`. Same item ids exactly once as `GET /api/items` with the same query. Groups ordered by first occurrence in the sorted items; contents keep that order. Days and All both list every matching item under day headings. No representative-photo algorithm.
 
-`addFolderDefault` is `ask`, so neither choice starts selected and Add stays disabled until both a path and a choice exist. The gate chooses "Serve from that folder" and posts `serve-from-there`. Choosing "Copy onto this drive" posts `copy-here` and shows the existing not-found error. It does not copy files.
-
-The scan still finishes inside that POST, as S01 locked. The status line then shows the returned added, skipped, and error counts. There is no new job API and no percentage. After that, the grid loads real items.
-
-## Groups and zoom
-
-`GET /api/groups?level=years|months|days|all` accepts the same sort, dir, and filters as items. Each element is `{key, itemIds}`. The same ids appear once, in item-sort order inside the group. Groups are ordered by the first item's position in that sort. No cover photo is chosen.
-
-Keys come from `capturedAt`, using the calendar date before `T`:
-
-- years: `YYYY`
-- months: `YYYY-MM`
-- days and all: `YYYY-MM-DD`
-
-`level=days` and `level=all` return the same keys. The page differs. Days uses a day header and a nominal 240 px row. All uses a day header and a nominal 160 px row. Years is one card per year and Months is one card per month. Each card is a mosaic of that group's thumbs. Switching level keeps every item represented.
-
-The slider has four stops, Years, Months, Days, All. Ctrl+wheel on the grid moves one stop. A burst of wheel events is one step. The item under the pointer stays in view. With no pointer item, anchor the central visible item. Changing level writes `zoomLevel` through the settings API. Default remains `years`.
+A two-year fixture set (2024 and 2023 dates from IMG_1042 / far, plus pinned no-EXIF 2022) yields two year groups. Months one group per month that has items. Days and All one group per day.
 
 ## Sort
 
-The toolbar sets date, location, or name, and asc or desc. Default is date descending. A change writes `sort` and `dir` through the settings API.
+Default `sort=date`, `dir=desc`. Date then id. Name then date then id. Location: named places, unnamed GPS, then "No location", regardless of dir; dir orders names/coordinates and dates inside a category. Compare `capturedAt` as stored. The no-EXIF fixture `capturedAtSource` is `mtime` and sorts by that pinned 2022 time.
 
-- Date key: `capturedAt`, then id. `dir=desc` reverses that pair.
-- Name key: filename casefolded, then `capturedAt`, then id. `dir` reverses that triple.
-- Location categories stay in this order for both directions: a place whose name is non-empty, then a place with coordinates and no name, then no `placeId`. `dir` does not swap those categories.
-- Inside the named category, `dir` reverses name casefold, then `capturedAt`, then id.
-- Inside unnamed GPS, `dir` reverses latitude, then longitude, then `capturedAt`, then id. The numbers are the place's stored coordinates.
-- Inside no location, `dir` reverses `capturedAt`, then id.
+`GET /api/items?sort=date&dir=desc` on IMG_1042, far, and no-exif returns 2024, then 2023, then 2022.
 
-The location group label is the place name, or `lat,lon` with two digits after the decimal, or the exact text `No location`. Calendar group keys do not change when the sort changes. Their order follows the first sorted item.
+## Page
 
-F11 uses `a/IMG_1042.jpg`, `b/far.jpg`, and `b/no-exif.jpg`. `no-exif.jpg` keeps `capturedAtSource` `mtime` and `capturedAt` `2022-02-03T04:05:06Z`. Date descending puts the newest `capturedAt` first. Do not edit that fixture's mtime.
+When items exist, do not show “No pictures yet”. Add folder opens the named dialog: editable path, two choices, Cancel/Add. `ask` starts with neither mode selected and Add disabled until path and mode exist. Serve-from-there submits `POST /api/sources`. A small status line shows added/skipped/error from sources while scanning. Poll until idle. Cells use real thumbs. Placeholder text remains “Preview is not available” until the thumb loads.
 
-F9 uses a fixture-owned library that spans exactly two calendar years. `level=years` returns two groups. Do not require the full media tree to have exactly two years.
-
-## Viewer
-
-Clicking a cell opens `GET /api/media/<id>?which=preview`. ArrowLeft and ArrowRight move through `GET /api/items` for the current sort, not through mosaic geometry. They stop at the ends. Esc closes the viewer and restores the grid scroll position and zoom level. A newly opened item starts fitted. Ctrl+wheel on the open still zooms by 1.1 around the cursor, from fit scale to 16 times fit, with no reflow during the gesture. Middle-button drag pans 1:1. Record the pointer anchor and the pan: the image point under the cursor stays within 2 px, and pan displacement matches the drag within 2 px.
+Four-level control Years → Months → Days → All. Days cells ~240 px row height; All ~160 px. Years/Months are mosaics per group. Click opens preview. Esc from viewer returns to the same level and filter. No test-only controls.
 
 ## Gate
 
-Fresh fixture-owned roots. Viewport 1280×720. Artifacts under `docs/features/S04/Rev1.0/assets/<run-id>/`: `result.json`, `stdout.log`, `years.png`, `all.png`, `viewer.png`, `groups-years.json`, `groups-months.json`, `groups-days.json`, `groups-all.json`, `input-trace.json`, `measurements.json`, `console.json`, `network.json`.
+Fresh fixture-owned root. Artifacts under `docs/features/S04/Rev1.0/assets/<run-id>/`: `result.json`, `stdout.log`, `years.png`, `all.png`, `viewer.png`, `input-trace.json`, `groups-years.json`, `groups-months.json`, `groups-days.json`, `groups-all.json`. Browser proofs at 1280×720 from the real page.
 
 ```powershell
 python -m tests.qa slice S04 --root "$qaRoot/library-data" --artifacts $evidence
@@ -70,6 +47,13 @@ python -m tests.qa check F9 --root "$qaRoot/library-data" --artifacts $evidence
 python -m tests.qa check F11 --root "$qaRoot/library-data" --artifacts $evidence
 ```
 
-The browser starts from an empty library, types the fixture path, chooses Serve from that folder, and waits until the oriented JPEG is visible. Screenshots come from that page. A console error fails the gate. Playwright may stay in the gitignored `.venv`. `library/` must not import it.
+The gate must:
 
-The implementer may run these gates and must not call that log the grade. Run S00 through S03 only one at a time.
+1. Drive Add folder on the real page, submit serve-from-there on the fixture tree, and wait until items and thumbs exist.
+2. Record the four `/api/groups` responses. Years has two groups. Months/days/all match the item set. Flattening the groups equals the item ids exactly once.
+3. `check F9`: rendered Years and All screenshots; slider and Ctrl+wheel change level; hovered/anchor item stays in the viewport; `zoomLevel` persists after reload.
+4. `check F11`: date desc puts 2024 first; no-EXIF is `mtime`; location and name sorts both directions; toolbar drives the same HTTP query the CLI uses.
+5. Open the oriented still from the grid. Arrows stop at the ends. Esc restores scroll. Ctrl+wheel zoom and middle-drag pan are measured (anchor drift ≤2 px; pan equals drag ±2 px) in `input-trace.json` / `measurements.json`.
+6. No console errors on valid actions. Exit 0 only when every proof ran.
+
+The implementer may run these and must not call that log the grade.

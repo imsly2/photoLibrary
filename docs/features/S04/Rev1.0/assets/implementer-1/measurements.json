@@ -1,0 +1,70 @@
+{
+  "levelAnchor": {
+    "before": {
+      "x": 86,
+      "y": 139.15625,
+      "width": 64,
+      "height": 64
+    },
+    "after": {
+      "x": 20,
+      "y": 253.15625,
+      "width": 64,
+      "height": 64
+    }
+  },
+  "zoom": {
+    "cursor": {
+      "x": 640.0,
+      "y": 360.0
+    },
+    "before": {
+      "left": 160,
+      "top": 0,
+      "width": 960,
+      "height": 720,
+      "complete": true,
+      "naturalWidth": 480
+    },
+    "after": {
+      "left": 112,
+      "top": -36,
+      "width": 1056,
+      "height": 792,
+      "complete": true,
+      "naturalWidth": 480
+    },
+    "projected": {
+      "x": 640.0,
+      "y": 360.0
+    },
+    "driftPx": 0.0
+  },
+  "pan": {
+    "drag": {
+      "x": 40,
+      "y": 25
+    },
+    "moved": {
+      "x": 40,
+      "y": 25
+    },
+    "errorPx": 0,
+    "before": {
+      "left": 112,
+      "top": -36,
+      "width": 1056,
+      "height": 792,
+      "complete": true,
+      "naturalWidth": 480
+    },
+    "after": {
+      "left": 152,
+      "top": -11,
+      "width": 1056,
+      "height": 792,
+      "complete": true,
+      "naturalWidth": 480
+    }
+  }
+}

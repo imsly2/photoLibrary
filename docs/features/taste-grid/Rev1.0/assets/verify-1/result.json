@@ -1,0 +1,140 @@
+{
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "items-loaded",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "has-video",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "kind-video-filter",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"clip.mp4\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_5191f2eaa817\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentId"
+    },
+    {
+      "name": "kind-invalid",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorite-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorite-filter",
+      "pass": true,
+      "detail": "[{'schemaVersion': 1, 'id': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'kind': 'video', 'filename': 'clip.mp4', 'capturedAt': '2024-06-12T15:07:00Z', 'capturedAtSource': 'exif', 'placeId': 'place_5191f2eaa817', 'metadata': {'width': 640, 'height': 480, 'orientation': None, '"
+    },
+    {
+      "name": "favorite-off",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "all-default-size-420",
+      "pass": true,
+      "detail": "420"
+    },
+    {
+      "name": "video-badge",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-cell-box",
+      "pass": true,
+      "detail": "{\"x\": 20, \"y\": 301.15625, \"width\": 420, \"height\": 420}"
+    },
+    {
+      "name": "thumbs-before-zoom",
+      "pass": true,
+      "detail": "6"
+    },
+    {
+      "name": "hover-fills-tile",
+      "pass": true,
+      "detail": "{\"cellW\": 420, \"cellH\": 420, \"videoW\": 418, \"videoH\": 418, \"dx\": 1, \"dy\": 1, \"objectFit\": \"cover\", \"position\": \"absolute\", \"imgHidden\": false, \"imgDisplay\": \"block\"}"
+    },
+    {
+      "name": "videos-filter-ui",
+      "pass": true,
+      "detail": "['video']"
+    },
+    {
+      "name": "wall-no-date-heads",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "heart-visible-at-all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorites-section",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorites-expanded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "favorites-collapsed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "years-size-72",
+      "pass": true,
+      "detail": "72"
+    },
+    {
+      "name": "hearts-hidden-years",
+      "pass": true,
+      "detail": "off"
+    },
+    {
+      "name": "thumbs-stay-on-level-change",
+      "pass": true,
+      "detail": "7"
+    },
+    {
+      "name": "months-size-104",
+      "pass": true,
+      "detail": "104"
+    },
+    {
+      "name": "years-months-differ",
+      "pass": true,
+      "detail": "72 104"
+    },
+    {
+      "name": "thumbs-stay-on-size",
+      "pass": true,
+      "detail": "7"
+    },
+    {
+      "name": "view-toggle-chrome",
+      "pass": true,
+      "detail": "{\"libraryPressed\": \"true\", \"globeBorder\": \"rgb(58, 58, 70)\", \"globeCursor\": \"pointer\", \"idleBg\": \"rgb(22, 22, 28)\"}"
+    }
+  ],
+  "commands": [
+    "scan --serve-from-there",
+    "GET /api/items?kind=video",
+    "favorite --on"
+  ]
+}

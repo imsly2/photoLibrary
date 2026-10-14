@@ -1,0 +1,52 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS command-is-argv-list: ["explorer.exe", "/select,C:\\Family Photos\\Vacation 2024\\IMG_1042.jpg"]
+PASS command-windows-spaces: ["explorer.exe", "/select,C:\\Family Photos\\Vacation 2024\\IMG_1042.jpg"]
+PASS command-iphone-backup-spaces: ["explorer.exe", "/select,J:\\Iphone Backup\\Another Rope Swing.MOV"]
+PASS command-select-arg-has-no-quotes: /select,J:\Iphone Backup\Another Rope Swing.MOV
+PASS command-comma-glued: /select,J:\Iphone Backup\Another Rope Swing.MOV
+PASS command-posix-argv: ["explorer.exe", "/select,/tmp/Iphone Backup/Another Rope Swing.MOV"]
+PASS command-selects-file-not-folder: /tmp/Iphone Backup/Another Rope Swing.MOV
+PASS command-not-documents: /tmp/Iphone Backup/Another Rope Swing.MOV
+PASS select-arg-helper: /select,J:\Iphone Backup\Another Rope Swing.MOV
+PASS existing-absolute: /workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV
+PASS existing-rejects-missing
+PASS existing-rejects-directory
+PASS existing-rejects-catalog-relative
+PASS open-windows-returns-true
+PASS open-windows-one-launch: [((['explorer.exe', '/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV'],), {})]
+PASS open-windows-select-command: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV"]
+PASS open-windows-selects-real-file: {"command": ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV"], "photo": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV"}
+PASS open-windows-spaces-in-arg: /workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV
+PASS open-windows-not-documents: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/unit-files/Iphone Backup/Another Rope Swing.MOV"]
+PASS open-missing-false
+PASS open-missing-no-explorer: []
+PASS open-relative-false
+PASS open-relative-no-explorer: []
+PASS linked-item: [{"schemaVersion": 1, "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "kind": "video", "filename": "Another Rope Swing.MOV", "capturedAt": "2024-06-12T15:07:00Z", "capturedAtSource": "exif", "placeId": "place_140f60aa71bb", "metadata": {"width": 640, "height": 480, "orientation": null, "camera": null, "lens": null, "durationSec": 2.0, "latitude": 41.88, "longitude": -87.6
+PASS linked-reveal-opened: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup", "opened": true}
+PASS linked-reveal-absolute-file: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup", "opened": true}
+PASS linked-reveal-folder-is-parent: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup", "opened": true}
+PASS linked-reveal-explorer-select: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV"]
+PASS linked-reveal-argv-no-quotes: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV"]
+PASS linked-reveal-iphone-backup-spaces: /workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV
+PASS linked-reveal-not-documents: {"folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup", "command": ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/Iphone Backup/Another Rope Swing.MOV"]}
+PASS missing-raises-unavailable: unavailable
+PASS missing-no-explorer: []
+PASS copy-item: [{"schemaVersion": 1, "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "kind": "photo", "filename": "IMG_1042.jpg", "capturedAt": "2024-06-12T15:04:00", "capturedAtSource": "exif", "placeId": "place_c19424b2c4bb", "metadata": {"width": 640, "height": 480, "orientation": 1, "camera": null, "lens": null, "durationSec": null, "latitude": 41.88, "longitude": -87.63}, "contentI
+PASS copy-reveal-absolute-under-originals: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/copy-root/originals/a-src_434768a6932a/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/copy-root/originals/a-src_434768a6932a", "opened": true}
+PASS copy-catalog-path-is-relative: originals/a-src_434768a6932a/IMG_1042.jpg
+PASS copy-reveal-not-catalog-relative: {"path": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/copy-root/originals/a-src_434768a6932a/IMG_1042.jpg", "catalog": "originals/a-src_434768a6932a/IMG_1042.jpg"}
+PASS copy-reveal-explorer-selects-copy: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/copy-root/originals/a-src_434768a6932a/IMG_1042.jpg"]
+PASS copy-reveal-argv-list: ["explorer.exe", "/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-3/copy-root/originals/a-src_434768a6932a/IMG_1042.jpg"]
+PASS source-uses-explorer-select-argv: favorites.py command form
+PASS source-list-form-glued-select: favorites.py glued select arg
+PASS source-ui-shows-missing-error: library.js reveal error
+PASS source-ui-does-not-swallow-reveal: library.js reveal handler
+PASS uispec-reveal-selects-file: UI-SPEC checklist 15
+PASS source-volume-chrome: mute + volume beside scrub
+PASS source-hover-stays-muted: grid hover proxy stays silent
+PASS uispec-volume-beside-scrub: UI-SPEC scrub volume
+PASS source-viewer-source-chrome: viewer source + hover resume
+PASS source-hover-keeps-years-policy: dated Years/Months stay stills unless wall or always
+PASS uispec-viewer-source: UI-SPEC source chrome

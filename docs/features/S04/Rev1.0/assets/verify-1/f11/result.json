@@ -1,0 +1,153 @@
+{
+  "check": "F11",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-disabled-until-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-ask-neither-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-still-disabled-without-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-cancel-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-cancel-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-enabled-with-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "date-desc-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "date-desc-order",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "no-exif-mtime",
+      "pass": true,
+      "detail": "{\"capturedAt\": \"2022-02-03T04:05:06Z\", \"capturedAtSource\": \"mtime\", \"filename\": \"no-exif.jpg\"}"
+    },
+    {
+      "name": "cli-date-desc-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-http-date-same-ids",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-no-location-last-asc",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-no-location-last-desc",
+      "pass": true,
+      "detail": "['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-gps-before-none",
+      "pass": true,
+      "detail": "{'asc': ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']}"
+    },
+    {
+      "name": "location-dir-reverses-gps",
+      "pass": true,
+      "detail": "{'asc': ['IMG_1042.jpg', 'far.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg']}"
+    },
+    {
+      "name": "name-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "name-asc-order",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "name-desc-order",
+      "pass": true,
+      "detail": "['no-exif.jpg', 'far.jpg', 'IMG_1042.jpg']"
+    },
+    {
+      "name": "toolbar-location-query",
+      "pass": true,
+      "detail": "http://127.0.0.1:18768/api/items?sort=location&dir=desc"
+    },
+    {
+      "name": "toolbar-sort-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18768, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"location\", \"dir\": \"desc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "toolbar-dir-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18768, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"location\", \"dir\": \"asc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "009f6a7ea038ee68a83d62d59d9a2e8d4fb5f61c",
+  "commands": [
+    "serve + Add folder serve-from-there",
+    "python -m library items --sort date --dir desc"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/f11/result.json",
+    "stdout.log": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/f11/stdout.log",
+    "items-date-desc.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/f11/items-date-desc.json",
+    "input-trace.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/f11/input-trace.json"
+  }
+}

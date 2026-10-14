@@ -1,0 +1,51 @@
+PASS scan-exit
+PASS catalog-four: 4
+PASS places-http-200: 200
+PASS places-count-two: [{'id': 'place_1a7fd3280a7c', 'latitude': 41.925, 'longitude': -87.63, 'name': None, 'itemCount': 1, 'newestItemId': 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc'}, {'id': 'place_716230141022', 'latitude': 41.88, 'longitude': -87.63, 'name': None, 'itemCount': 2, 'newestItemId': 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a'}]
+PASS no-exif-item: {'schemaVersion': 1, 'id': '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', 'kind': 'photo', 'filename': 'no-exif.jpg', 'capturedAt': '2022-02-03T04:05:06Z', 'capturedAtSource': 'mtime', 'placeId': None, 'metadata': {'width': 640, 'height': 480, 'orientation': None, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_22e8111ff534', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/s10-media/b/no-exif.jpg', 'lastKnownPath': '/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/s10-media/b/no-exif.jpg', 'sizeBytes': 13170, 'modifiedAt': '2022-02-03T04:05:06Z', 'sha256': '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_22e8111ff534', 'thumb': 'renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp', 'preview': 'renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp', 'poster': None, 'proxy': None, 'status': {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': [], 'available': True, 'motionAvailable': False, 'entities': {'people': [], 'places': [], 'things': []}}
+PASS no-exif-no-place: None
+PASS places-omit-no-exif: {'place_1a7fd3280a7c', 'place_716230141022'}
+PASS chicago-same-place: {'place_716230141022'}
+PASS far-other-place: place_1a7fd3280a7c
+PASS places-fields: [{"id": "place_1a7fd3280a7c", "latitude": 41.925, "longitude": -87.63, "name": null, "itemCount": 1, "newestItemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, {"id": "place_716230141022", "latitude": 41.88, "longitude": -87.63, "name": null, "itemCount": 2, "newestItemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}]
+PASS items-place-http-place_1a7fd3280a7c: 200
+PASS items-place-only-place_1a7fd3280a7c: ["far.jpg"]
+PASS far-items: ["far.jpg"]
+PASS far-count-1: 1
+PASS items-place-http-place_716230141022: 200
+PASS items-place-only-place_716230141022: ["near.jpg", "IMG_1042.jpg"]
+PASS chicago-items: ["near.jpg", "IMG_1042.jpg"]
+PASS chicago-newest-near: b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a
+PASS chicago-count-2: 2
+PASS playwright-import
+PASS library-view-default
+PASS globe-png-size: 1280x720
+PASS globe-texture-local
+PASS cluster-present: [{"placeIds": ["place_1a7fd3280a7c", "place_716230141022"], "itemCounts": [1, 2], "itemCount": 3, "newestCandidates": ["c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc", "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"], "centroid": {"x": 640, "y": 317.828125, "clientX": 640, "clientY": 402.171875}, "positions": [{"id": "place_1a7fd3280a7c", "itemCount": 1, "newestItemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc", "x": 640, "y": 317.665249358513, "clientX": 640, "clientY": 402.008999358513}, {"id": "place_716230141022", "itemCount": 2, "newestItemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "x": 640, "y": 317.991000641487, "clientX": 640, "clientY": 402.334750641487}], "pairwise": [0.3257512829740108]}]
+PASS cluster-two-places: ["place_1a7fd3280a7c", "place_716230141022"]
+PASS cluster-count-3: 3
+PASS cluster-member-counts: [1, 2]
+PASS cluster-within-32: [0.3257512829740108]
+PASS cluster-png-size: 1280x720
+PASS globe-pick-hit: {"x": 640, "y": 381.39375, "lat": 33.02916977847289, "lon": -87.63, "clientX": 640, "clientY": 465.7375}
+PASS drag-0.25-deg-per-px: {"before": {"yawDeg": 87.63, "pitchDeg": 41.9025, "distance": 2.85}, "after": {"yawDeg": 77.63000000000001, "pitchDeg": 41.9025, "distance": 2.85}, "dx": 40, "deltaYawDeg": -9.999999999999986, "degPerPixel": 0.24999999999999964}
+PASS zoom-anchor-le-2px: {"x": 640, "y": 381.51889451224264, "visible": true, "drift": 0.12514451224262757}
+PASS offline-no-external: []
+PASS offline-earth-png: ["http://127.0.0.1:18767/", "http://127.0.0.1:18767/assets/style.css", "http://127.0.0.1:18767/assets/library.js", "http://127.0.0.1:18767/assets/globe.js", "http://127.0.0.1:18767/api/settings", "http://127.0.0.1:18767/api/items?sort=date&dir=desc", "http://127.0.0.1:18767/api/groups?sort=date&dir=desc&level=years", "http://127.0.0.1:18767/api/sources", "http://127.0.0.1:18767/api/settings", "http://127.0.0.1:18767/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb", "http://127.0.0.1:18767/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb", "http://127.0.0.1:18767/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb", "http://127.0.0.1:18767/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb", "http://127.0.0.1:18767/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb", "http://127.0.0.1:18767/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb", "http://127.0.0.1:18767/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb", "http://127.0.0.1:18767/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb", "http://127.0.0.1:18767/api/places", "http://127.0.0.1:18767/assets/earth.png", "http://127.0.0.1:18767/api/items?sort=date&dir=desc", "http://127.0.0.1:18767/api/groups?sort=date&dir=desc&level=years", "http://127.0.0.1:18767/api/sources", "http://127.0.0.1:18767/api/settings"]
+PASS cluster-opens-viewer: {"open": true, "src": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview", "view": "library", "place": "place_1a7fd3280a7c,place_716230141022"}
+PASS cluster-opens-newest-near: {"open": true, "src": "/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview", "view": "library", "place": "place_1a7fd3280a7c,place_716230141022"}
+PASS esc-viewer-closed: {"view": "library", "viewerHidden": true, "place": "place_1a7fd3280a7c,place_716230141022", "filenames": ["near.jpg", "IMG_1042.jpg", "far.jpg"], "ids": ["b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS esc-library-grid: {"view": "library", "viewerHidden": true, "place": "place_1a7fd3280a7c,place_716230141022", "filenames": ["near.jpg", "IMG_1042.jpg", "far.jpg"], "ids": ["b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS esc-place-filter: {"view": "library", "viewerHidden": true, "place": "place_1a7fd3280a7c,place_716230141022", "filenames": ["near.jpg", "IMG_1042.jpg", "far.jpg"], "ids": ["b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"]}
+PASS esc-grid-only-cluster: ["near.jpg", "IMG_1042.jpg", "far.jpg"]
+PASS globe-again-shows-globe: {"view": "globe", "globeHidden": false, "workspaceHidden": true, "viewerHidden": true}
+PASS no-console-errors: []
+PASS page-has-globe
+PASS page-no-settings
+PASS page-no-play
+PASS texture-shipped
+PASS texture-license
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran

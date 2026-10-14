@@ -1,0 +1,34 @@
+{
+  "keepId": "person_103ca895ba0e",
+  "dropId": "person_7dcedcaaa958",
+  "keptPerson": {
+    "schemaVersion": 1,
+    "id": "person_103ca895ba0e",
+    "name": "Ada"
+  },
+  "dropExists": false,
+  "faces": [
+    {
+      "itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+      "personId": "person_103ca895ba0e"
+    },
+    {
+      "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "personId": "person_103ca895ba0e"
+    },
+    {
+      "itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+      "personId": "person_103ca895ba0e",
+      "box": [
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ]
+    },
+    {
+      "itemId": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+      "personId": "person_103ca895ba0e"
+    }
+  ]
+}

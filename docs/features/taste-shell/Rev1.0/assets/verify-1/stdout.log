@@ -1,0 +1,50 @@
+PASS scan-ok
+PASS has-photo-video
+PASS kind-photos-http: 200
+PASS kind-photos-has-jpeg: ['IMG_1042.jpg', 'near.jpg', 'no-exif.jpg']
+PASS kind-photos-no-video: ['IMG_1042.jpg', 'near.jpg', 'no-exif.jpg']
+PASS kind-video-only: ['clip.mp4']
+PASS kind-invalid: {'error': 'invalid-argument'}
+PASS q-year: ['IMG_1042.jpg', 'clip.mp4', 'near.jpg']
+PASS q-month: ['IMG_1042.jpg', 'clip.mp4', 'near.jpg']
+PASS q-day: ['IMG_1042.jpg', 'clip.mp4', 'near.jpg']
+PASS favorite-on
+PASS favorite-filter: ['IMG_1042.jpg']
+PASS remove-cli
+PASS remove-dropped
+PASS remove-bytes-stay: docs/features/taste-shell/Rev1.0/assets/verify-1/api-media/a/near.jpg
+PASS remove-unknown: {'error': 'not-found'}
+PASS undo-remove
+PASS undo-restored-near
+PASS delete-file-cli
+PASS delete-file-ok: {'ok': True, 'id': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'trashed': True}
+PASS delete-file-dropped
+PASS delete-file-trashed: docs/features/taste-shell/Rev1.0/assets/verify-1/api-media/a/clip.mp4
+PASS undo-delete-file
+PASS undo-delete-catalog
+PASS jpeg-untouched: 1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS update-get: {'ok': True, 'reason': None, 'branch': 'cursor/windows-presentable-shell-must-806a', 'revision': 'ffe021a', 'dirty': True, 'message': 'This copy is ffe021a on cursor/windows-presentable-shell-must-806a.'}
+PASS update-cli-json: {'ok': True, 'updated': False, 'revision': 'ffe021aa024dd3dc772db3d83c6c2a7bb20fe464', 'message': 'Already up to date.\n\nFrom https://github.com/imsly2/photoLibrary\n * [new branch]      cursor/fix-launch-arglist-a80a -> origin/cursor/fix-launch-arglist-a80a'}
+PASS playwright-import
+PASS empty-copy: {'text': 'No pictures yet', 'add': True, 'samples': 0}
+PASS empty-add-cta: {'text': 'No pictures yet', 'add': True, 'samples': 0}
+PASS empty-no-samples: {'text': 'No pictures yet', 'add': True, 'samples': 0}
+PASS empty-add-opens
+PASS update-progress: Updating…
+PASS update-sentence: Already up to date.
+PASS sort-labels: ['Newest', 'Oldest', 'Name', 'Location']
+PASS sort-default-newest: newest
+PASS filter-labels: ['All', 'Photos', 'Videos', 'Favorites']
+PASS filter-photos-hides-video
+PASS filter-videos-only: ['video']
+PASS filter-favorites: ['IMG_1042.jpg']
+PASS sort-oldest-maps
+PASS sort-name-maps
+PASS empty-search-for: No matches for zzzz-no-such
+PASS remove-confirm-title: Remove from Library?
+PASS remove-confirm-bytes: The file stays on disk.
+PASS delete-file-extra-confirm: Delete this file from disk?
+PASS remove-from-grid
+PASS remove-left-bytes: docs/features/taste-shell/Rev1.0/assets/verify-1/ui-media/a/IMG_1042.jpg
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import errno
 import json
 import os
 import socket
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -30,6 +32,59 @@ def _query_map(query: str) -> dict[str, str]:
             raise fail("invalid-argument")
         out[key] = values[0]
     return out
+
+
+def parse_byte_range(header: str | None, length: int) -> tuple[int, int] | None:
+    if header is None or header == "":
+        return None
+    if not header.startswith("bytes="):
+        raise fail("invalid-range")
+    spec = header[6:]
+    if "," in spec or spec == "" or "-" not in spec:
+        raise fail("invalid-range")
+    start_s, end_s = spec.split("-", 1)
+    if start_s == "":
+        try:
+            suffix = int(end_s)
+        except ValueError as exc:
+            raise fail("invalid-range") from exc
+        if suffix <= 0 or length <= 0:
+            raise fail("invalid-range")
+        start = max(0, length - suffix)
+        return start, length - 1
+    try:
+        start = int(start_s)
+    except ValueError as exc:
+        raise fail("invalid-range") from exc
+    if start < 0 or start >= length:
+        raise fail("invalid-range")
+    if end_s == "":
+        return start, length - 1
+    try:
+        end = int(end_s)
+    except ValueError as exc:
+        raise fail("invalid-range") from exc
+    if end < start:
+        raise fail("invalid-range")
+    if end >= length:
+        end = length - 1
+    return start, end
+
+
+def _is_client_disconnect(exc: BaseException) -> bool:
+    if isinstance(exc, (BrokenPipeError, ConnectionResetError, ConnectionAbortedError)):
+        return True
+    if isinstance(exc, OSError):
+        winerror = getattr(exc, "winerror", None)
+        if winerror == 10053:
+            return True
+        if exc.errno in {errno.EPIPE, errno.ECONNRESET, errno.ECONNABORTED}:
+            return True
+    return False
+
+
+def _scan_progress(kind: str, rel: str) -> None:
+    print(f"{kind} {rel}", flush=True)
 
 
 def listen_url(host: str, port: int) -> str:
@@ -112,20 +167,24 @@ class LibraryHandler(BaseHTTPRequestHandler):
             allowed.add(f"http://0.0.0.0:{self.port}")
         return origin.rstrip("/") in {item.rstrip("/") for item in allowed}
 
-    def _send(
-        self,
-        status: int,
-        body: bytes,
-        content_type: str,
-        extra_headers: list[tuple[str, str]] | None = None,
-    ) -> None:
+    def _require_idle(self) -> None:
+        if getattr(self.library, "_scanning", False) or getattr(
+            self.library, "_inferring", False
+        ):
+            raise fail("busy")
+
+    def _yield_scan(self) -> None:
+        self.lock.release()
+        try:
+            time.sleep(0.05)
+        finally:
+            self.lock.acquire()
+
+    def _send(self, status: int, body: bytes, content_type: str) -> None:
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        if extra_headers:
-            for key, value in extra_headers:
-                self.send_header(key, value)
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
@@ -178,6 +237,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
             if route == "/api/health" and method in {"GET", "HEAD"}:
                 self._send_json(200, {"ok": True})
                 return
+            if route == "/api/version" and method in {"GET", "HEAD"}:
+                from library.version import version_payload
+
+                self._send_json(200, version_payload())
+                return
             if route == "/api/runtime" and method in {"GET", "HEAD"}:
                 self._send_json(
                     200,
@@ -195,11 +259,13 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/undo" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.undo())
                 return
             if route == "/api/redo" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.redo())
                 return
@@ -210,26 +276,255 @@ class LibraryHandler(BaseHTTPRequestHandler):
             if route == "/api/sources" and method == "POST":
                 body = self._read_json()
                 with self.lock:
-                    self._send_json(202, self.library.scan(body))
+                    self._require_idle()
+                    source = self.library.start_http_scan(body)
+                lock = self.lock
+                library = self.library
+
+                def yield_scan() -> None:
+                    lock.release()
+                    try:
+                        time.sleep(0.05)
+                    finally:
+                        lock.acquire()
+
+                def scan_worker() -> None:
+                    lock.acquire()
+                    try:
+                        library.finish_http_scan(
+                            body,
+                            source,
+                            on_progress=_scan_progress,
+                            between=yield_scan,
+                        )
+                    except Exception:
+                        library._scanning = False
+                    finally:
+                        lock.release()
+
+                threading.Thread(target=scan_worker, name="library-scan", daemon=True).start()
+                self._send_json(202, source)
+                return
+            if route == "/api/pick-folder" and method == "POST":
+                self._read_json()
+                from library.picker import pick_folder
+
+                chosen = pick_folder()
+                self._send_json(200, {"path": chosen})
+                return
+            if route == "/api/update" and method == "GET":
+                from library.app_update import update_status
+
+                self._send_json(200, update_status())
+                return
+            if route == "/api/update" and method == "POST":
+                self._read_json()
+                self._send_json(200, self.library.update())
+                return
+            if (
+                route.startswith("/api/sources/")
+                and route.endswith("/copy-here")
+                and method == "POST"
+            ):
+                source_id = route[len("/api/sources/") : -len("/copy-here")]
+                if not source_id or "/" in source_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(202, self.library.copy_here(source_id))
                 return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/places/analyze" and method == "POST":
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.analyze_places())
+                return
+            if route == "/api/places" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.places_list(query))
+                return
+            if route == "/api/globe/tour" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.globe_tour(query))
+                return
+            if route == "/api/groups" and method in {"GET", "HEAD"}:
+                query = _query_map(parsed.query)
+                with self.lock:
+                    self._send_json(200, self.library.groups_list(query))
+                return
             if route == "/api/rebuild-index" and method == "POST":
                 self._read_json()
+                self._require_idle()
                 with self.lock:
                     self._send_json(200, self.library.rebuild_index())
                 return
-            if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
-                item_id = route[len("/api/media/") :]
-                query = _query_map(parsed.query)
+            if route == "/api/renditions/relocate" and method == "POST":
+                self._read_json()
+                self._require_idle()
                 with self.lock:
-                    status, body, content_type, extra = self.library.media(
-                        item_id, query, self.headers.get("Range")
+                    self._send_json(200, self.library.relocate())
+                return
+            if route == "/api/people" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.people_list())
+                return
+            if route == "/api/jobs" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.jobs_get())
+                return
+            if route == "/api/jobs" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.jobs_set(body))
+                return
+            if route == "/api/analyze" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.analyze_status())
+                return
+            if route == "/api/analyze" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.analyze(body))
+                return
+            if route == "/api/faces" and method in {"GET", "HEAD"}:
+                self._send_json(200, self.library.faces_status())
+                return
+            if route == "/api/faces/setup" and method == "POST":
+                from library.faces import read_setup_payload
+
+                body = self._read_json()
+                payload = read_setup_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.setup_faces(payload))
+                return
+            if route == "/api/faces/infer" and method == "POST":
+                from library.faces import read_infer_payload
+
+                body = self._read_json()
+                payload = read_infer_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.infer_faces(payload))
+                return
+            if route == "/api/people/merge" and method == "POST":
+                from library.annotate import read_merge_payload
+
+                body = self._read_json()
+                payload = read_merge_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(
+                        200,
+                        self.library.people_merge(payload["keepId"], payload["dropId"]),
                     )
-                self._send(status, body, content_type, extra)
+                return
+            if route.startswith("/api/people/") and method == "PUT":
+                person_id = route[len("/api/people/") :]
+                if not person_id or "/" in person_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.person_update(person_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "PUT"
+            ):
+                from library.favorites import parse_favorite_body
+
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                on = parse_favorite_body(body)
+                with self.lock:
+                    self._send_json(200, self.library.set_favorite(item_id, on))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/annotations")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/annotations")]
+                if not item_id or item_id.endswith("/"):
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.annotate(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/favorite")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/favorite")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.favorite(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/reveal")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/reveal")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.reveal(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/open")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/open")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.open(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/remove")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/remove")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.remove(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/delete-file")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/delete-file")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.delete_file(item_id))
+                return
+            if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
+                self._send_media(route, parsed.query)
                 return
             if route == "/" and method in {"GET", "HEAD"}:
                 self._send_static(WEB_DIR / "index.html", "text/html; charset=utf-8")
@@ -248,27 +543,71 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 if path.suffix == ".css":
                     content_type = "text/css; charset=utf-8"
                 elif path.suffix == ".js":
-                    content_type = "text/javascript; charset=utf-8"
+                    content_type = "application/javascript; charset=utf-8"
+                elif path.suffix == ".png":
+                    content_type = "image/png"
                 else:
                     content_type = "application/octet-stream"
                 self._send_static(path, content_type)
                 return
             raise fail("not-found")
         except AppError as exc:
-            self._error(exc.code, exc.status)
-        except BrokenPipeError:
-            return
-        except Exception:
+            try:
+                self._error(exc.code, exc.status)
+            except Exception as send_exc:
+                if not _is_client_disconnect(send_exc):
+                    raise
+        except Exception as exc:
+            if _is_client_disconnect(exc):
+                return
             append_error(
                 self.library.root,
                 parsed.path + (("?" + parsed.query) if parsed.query else ""),
                 "internal-error",
             )
-            self._send_json(500, {"error": "internal-error"})
+            try:
+                self._send_json(500, {"error": "internal-error"})
+            except Exception as send_exc:
+                if not _is_client_disconnect(send_exc):
+                    raise
 
     def _send_static(self, path: Path, content_type: str) -> None:
         data = path.read_bytes()
         self._send(200, data, content_type)
+
+    def _send_media(self, route: str, query: str) -> None:
+        item_id = route[len("/api/media/") :]
+        if not item_id or "/" in item_id:
+            raise fail("not-found")
+        params = _query_map(query)
+        with self.lock:
+            resolved = self.library.media_resolve(item_id, params)
+        path = resolved["path"]
+        content_type = resolved["content_type"]
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            which = params.get("which")
+            raise fail("unavailable" if which == "original" else "preview-unavailable") from exc
+        if not data:
+            which = params.get("which")
+            raise fail("unavailable" if which == "original" else "preview-unavailable")
+        spec = parse_byte_range(self.headers.get("Range"), len(data))
+        if spec is None:
+            self._send(200, data, content_type)
+            return
+        start, end = spec
+        self._send_partial(data[start : end + 1], content_type, start, end, len(data))
+
+    def _send_partial(self, body: bytes, content_type: str, start: int, end: int, total: int) -> None:
+        self.send_response(206)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(body)
 
 
 def _read_listen_target(root: Path) -> tuple[str, int]:
@@ -303,6 +642,8 @@ def serve(root: Path) -> int:
     lock = WriteLock(root)
     lock.acquire()
     httpd = None
+    drain_stop = threading.Event()
+    drain_thread: threading.Thread | None = None
     try:
         library = Library(root)
         library.recover()
@@ -330,25 +671,29 @@ def serve(root: Path) -> int:
             root / RUNTIME_NAME,
             runtime_record(root, os.getpid(), url),
         )
-        from library.renditions import rendition_loop
-
-        stop = threading.Event()
-        worker = threading.Thread(
-            target=rendition_loop,
-            args=(library, handler.lock, stop),
-            daemon=True,
-            name="renditions",
-        )
-        worker.start()
         print(url, flush=True)
+
+        def drain_loop() -> None:
+            while not drain_stop.is_set():
+                worked = False
+                try:
+                    with handler.lock:
+                        worked = library.drain_step()
+                except Exception:
+                    worked = False
+                drain_stop.wait(0.05 if worked else 0.25)
+
+        drain_thread = threading.Thread(target=drain_loop, name="rendition-drain", daemon=True)
+        drain_thread.start()
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass
-        finally:
-            stop.set()
         return 0
     finally:
+        drain_stop.set()
+        if drain_thread is not None:
+            drain_thread.join(timeout=5)
         if httpd is not None:
             httpd.server_close()
         runtime_path = root / RUNTIME_NAME

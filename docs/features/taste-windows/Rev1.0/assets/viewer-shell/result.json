@@ -1,0 +1,537 @@
+{
+  "slice": "TASTE-VIEWER",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "update-library-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Update Library\", \"hidden\": false, \"width\": 116.609375, \"height\": 28.1875}"
+    },
+    {
+      "name": "update-http-shape",
+      "pass": true,
+      "detail": "{\"status\": 200, \"body\": {\"ok\": true, \"updated\": false, \"revision\": \"b94209ebe99af29dd4323bdc4033facd1eea367a\", \"message\": \"Already up to date.\"}}"
+    },
+    {
+      "name": "back-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Back\", \"disabled\": false, \"hidden\": false, \"width\": 56.828125, \"height\": 26.1875, \"top\": 18.09375, \"left\": 20, \"bottom\": 44.28125}"
+    },
+    {
+      "name": "prev-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 475.203125, \"bottom\": 637.03125}"
+    },
+    {
+      "name": "next-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 700.796875, \"bottom\": 637.03125}"
+    },
+    {
+      "name": "rotate-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Rotate\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 588, \"bottom\": 637.03125}"
+    },
+    {
+      "name": "favorite-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"\\u2661\", \"disabled\": false, \"hidden\": false, \"width\": 41.59375, \"height\": 38.390625, \"top\": 12, \"left\": 977.96875, \"bottom\": 50.390625}"
+    },
+    {
+      "name": "reveal-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Reveal in Explorer\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125, \"top\": 674.625, \"left\": 410.40625, \"bottom\": 702.40625}"
+    },
+    {
+      "name": "info-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Info\", \"disabled\": false, \"hidden\": false, \"width\": 47.828125, \"height\": 27.78125, \"top\": 17.296875, \"left\": 1212.171875, \"bottom\": 45.078125}"
+    },
+    {
+      "name": "open-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Open\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125, \"top\": 674.625, \"left\": 568, \"bottom\": 702.40625}"
+    },
+    {
+      "name": "slideshow-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Slideshow\", \"disabled\": false, \"hidden\": false, \"width\": 86.359375, \"height\": 27.78125, \"top\": 17.296875, \"left\": 1025.953125, \"bottom\": 45.078125}"
+    },
+    {
+      "name": "fullscreen-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Fullscreen\", \"disabled\": false, \"hidden\": false, \"width\": 87.078125, \"height\": 27.78125, \"top\": 17.296875, \"left\": 1118.703125, \"bottom\": 45.078125}"
+    },
+    {
+      "name": "no-zoom-minus",
+      "pass": true,
+      "detail": "{\"present\": false}"
+    },
+    {
+      "name": "no-zoom-plus",
+      "pass": true,
+      "detail": "{\"present\": false}"
+    },
+    {
+      "name": "zoom-is-slider",
+      "pass": true,
+      "detail": "{\"present\": true, \"type\": \"range\", \"min\": \"25\", \"max\": \"1600\", \"hidden\": false, \"width\": 352, \"top\": 647.828125}"
+    },
+    {
+      "name": "back-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Back\", \"disabled\": false, \"hidden\": false, \"width\": 56.828125, \"height\": 26.1875, \"top\": 18.09375, \"left\": 20, \"bottom\": 44.28125}"
+    },
+    {
+      "name": "prev-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 475.203125, \"bottom\": 637.03125}"
+    },
+    {
+      "name": "next-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 700.796875, \"bottom\": 637.03125}"
+    },
+    {
+      "name": "info-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Info\", \"disabled\": false, \"hidden\": false, \"width\": 47.828125, \"height\": 27.78125, \"top\": 17.296875, \"left\": 1212.171875, \"bottom\": 45.078125}"
+    },
+    {
+      "name": "open-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Open\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125, \"top\": 674.625, \"left\": 568, \"bottom\": 702.40625}"
+    },
+    {
+      "name": "no-showing-original-button",
+      "pass": true,
+      "detail": "false"
+    },
+    {
+      "name": "prev-or-next-enabled",
+      "pass": true,
+      "detail": "{\"prev\": {\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 475.203125, \"bottom\": 637.03125}, \"next\": {\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 700.796875, \"bottom\": 637.03125}}"
+    },
+    {
+      "name": "reveal-label",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Reveal in Explorer\", \"disabled\": false, \"hidden\": false, \"width\": 144, \"height\": 27.78125, \"top\": 674.625, \"left\": 410.40625, \"bottom\": 702.40625}"
+    },
+    {
+      "name": "tooltip-prev",
+      "pass": true,
+      "detail": "{\"prev\": \"Previous \\u2190\", \"next\": \"Next \\u2192\", \"rotate\": \"Rotate Ctrl+R\", \"slideshow\": \"Slideshow F5\", \"fullscreen\": \"Fullscreen F11\"}"
+    },
+    {
+      "name": "tooltip-next",
+      "pass": true,
+      "detail": "{\"prev\": \"Previous \\u2190\", \"next\": \"Next \\u2192\", \"rotate\": \"Rotate Ctrl+R\", \"slideshow\": \"Slideshow F5\", \"fullscreen\": \"Fullscreen F11\"}"
+    },
+    {
+      "name": "tooltip-rotate",
+      "pass": true,
+      "detail": "{\"prev\": \"Previous \\u2190\", \"next\": \"Next \\u2192\", \"rotate\": \"Rotate Ctrl+R\", \"slideshow\": \"Slideshow F5\", \"fullscreen\": \"Fullscreen F11\"}"
+    },
+    {
+      "name": "tooltip-slideshow",
+      "pass": true,
+      "detail": "{\"prev\": \"Previous \\u2190\", \"next\": \"Next \\u2192\", \"rotate\": \"Rotate Ctrl+R\", \"slideshow\": \"Slideshow F5\", \"fullscreen\": \"Fullscreen F11\"}"
+    },
+    {
+      "name": "tooltip-fullscreen",
+      "pass": true,
+      "detail": "{\"prev\": \"Previous \\u2190\", \"next\": \"Next \\u2192\", \"rotate\": \"Rotate Ctrl+R\", \"slideshow\": \"Slideshow F5\", \"fullscreen\": \"Fullscreen F11\"}"
+    },
+    {
+      "name": "heart-unfilled",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"\\u2661\", \"disabled\": false, \"hidden\": false, \"width\": 41.59375, \"height\": 38.390625, \"top\": 12, \"left\": 977.96875, \"bottom\": 50.390625}"
+    },
+    {
+      "name": "crumb-filename",
+      "pass": true,
+      "detail": "IMG_1042.jpg"
+    },
+    {
+      "name": "nav-at-bottom",
+      "pass": true,
+      "detail": "{\"prev\": {\"present\": true, \"text\": \"Previous\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 475.203125, \"bottom\": 637.03125}, \"next\": {\"present\": true, \"text\": \"Next\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 700.796875, \"bottom\": 637.03125}, \"rotate\": {\"present\": true, \"text\": \"Rotate\", \"disabled\": false, \"hidden\": false, \"width\": 104, \"height\": 27.78125, \"top\": 609.25, \"left\": 588, \"bottom\": 637.03125}}"
+    },
+    {
+      "name": "info-top-right",
+      "pass": true,
+      "detail": "{\"present\": true, \"text\": \"Info\", \"disabled\": false, \"hidden\": false, \"width\": 47.828125, \"height\": 27.78125, \"top\": 17.296875, \"left\": 1212.171875, \"bottom\": 45.078125}"
+    },
+    {
+      "name": "no-overlay-label-row",
+      "pass": true,
+      "detail": "false"
+    },
+    {
+      "name": "no-stage-pills",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "info-lists-kinds",
+      "pass": true,
+      "detail": "[\"File\", \"People\", \"Places\", \"Things\"]"
+    },
+    {
+      "name": "info-facts-first",
+      "pass": true,
+      "detail": "[\"File\", \"People\", \"Places\", \"Things\"]"
+    },
+    {
+      "name": "info-date-taken",
+      "pass": true,
+      "detail": "\"2024-06-12 15:04:00\""
+    },
+    {
+      "name": "info-no-camera",
+      "pass": true,
+      "detail": "\"No camera info for this file.\""
+    },
+    {
+      "name": "info-dimensions",
+      "pass": true,
+      "detail": "\"640 \\u00d7 480\""
+    },
+    {
+      "name": "info-size",
+      "pass": true,
+      "detail": "\"14.9 KB\""
+    },
+    {
+      "name": "info-path",
+      "pass": true,
+      "detail": "\"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\""
+    },
+    {
+      "name": "info-gps",
+      "pass": true,
+      "detail": "\"41.88000\\u00b0N, 87.63000\\u00b0W\""
+    },
+    {
+      "name": "person-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "place-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "thing-field-labeled",
+      "pass": true,
+      "detail": "Person Place Thing"
+    },
+    {
+      "name": "fields-in-info",
+      "pass": true,
+      "detail": "{\"headings\": [\"File\", \"People\", \"Places\", \"Things\"], \"facts\": [{\"label\": \"Date taken\", \"value\": \"2024-06-12 15:04:00\"}, {\"label\": \"Camera\", \"value\": \"No camera info for this file.\"}, {\"label\": \"Dimensions\", \"value\": \"640 \\u00d7 480\"}, {\"label\": \"Size\", \"value\": \"14.9 KB\"}, {\"label\": \"Path\", \"value\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\"}, {\"label\": \"GPS\", \"value\": \"41.88000\\u00b0N, 87.63000\\u00b0W\"}], \"fields\": [\"Person\", \"Place\", \"Thing\"], \"personPlaceholder\": \"Person\", \"placePlaceholder\": \"Place\", \"thingPlaceholder\": \"Thing\", \"personInPanel\": true}"
+    },
+    {
+      "name": "no-mystery-inputs",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "info-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "viewer-chrome-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "next-moves",
+      "pass": true,
+      "detail": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview"
+    },
+    {
+      "name": "prev-returns",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "arrow-right-moves",
+      "pass": true,
+      "detail": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview"
+    },
+    {
+      "name": "arrow-left-returns",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-autoload-no-toggle",
+      "pass": true,
+      "detail": "{\"text\": \"Open\", \"pressed\": null, \"showing\": \"1\", \"originalSrc\": \"/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=original\", \"originalHidden\": false}"
+    },
+    {
+      "name": "open-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "open-path",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"opened\": true}"
+    },
+    {
+      "name": "open-keeps-preview",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "heart-favorites",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reveal-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "reveal-folder",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a\", \"opened\": true}"
+    },
+    {
+      "name": "reveal-file",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-media/a\", \"opened\": true}"
+    },
+    {
+      "name": "zoom-slider-in",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": -320, \"top\": -360, \"width\": 1920, \"height\": 1440, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "click-hold-pan-zoomed",
+      "pass": true,
+      "detail": "{\"errorPx\": 0, \"before\": {\"left\": -320, \"top\": -360, \"width\": 1920, \"height\": 1440, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": -280, \"top\": -335, \"width\": 1920, \"height\": 1440, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "zoom-slider-out-below-fit",
+      "pass": true,
+      "detail": "{\"fit\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}, \"out\": {\"left\": 410, \"top\": 186.25, \"width\": 480, \"height\": 360, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "ctrl-0-fit",
+      "pass": true,
+      "detail": "{\"fit\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "ctrl-1-100",
+      "pass": true,
+      "detail": "{\"left\": 320, \"top\": 120, \"width\": 640, \"height\": 480, \"complete\": true, \"naturalWidth\": 640}"
+    },
+    {
+      "name": "ctrl-plus-zoom-in",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 320, \"top\": 120, \"width\": 640, \"height\": 480, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": 288, \"top\": 96, \"width\": 704, \"height\": 528, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "ctrl-minus-zoom-out",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 288, \"top\": 96, \"width\": 704, \"height\": 528, \"complete\": true, \"naturalWidth\": 640}, \"after\": {\"left\": 320, \"top\": 120, \"width\": 640, \"height\": 480, \"complete\": true, \"naturalWidth\": 640}}"
+    },
+    {
+      "name": "rotate-90",
+      "pass": true,
+      "detail": "90"
+    },
+    {
+      "name": "ctrl-r-rotate",
+      "pass": true,
+      "detail": "180"
+    },
+    {
+      "name": "back-same-url",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/ -> http://127.0.0.1:18765/"
+    },
+    {
+      "name": "back-same-port",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/"
+    },
+    {
+      "name": "back-shows-grid",
+      "pass": true,
+      "detail": "grid=1"
+    },
+    {
+      "name": "f5-starts-slideshow",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"slideshow\": \"1\", \"paused\": \"0\", \"intervalMs\": 5000, \"active\": true}"
+    },
+    {
+      "name": "space-pauses-slideshow",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "paused-slideshow-holds",
+      "pass": true,
+      "detail": "clip.mp4|||/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy"
+    },
+    {
+      "name": "space-resumes-slideshow",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "slideshow-advances",
+      "pass": true,
+      "detail": "oriented.jpg|/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview||"
+    },
+    {
+      "name": "esc-stops-slideshow",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"slideshow\": \"0\"}"
+    },
+    {
+      "name": "f-enters-fullscreen",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "esc-exits-fullscreen",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"fullscreen\": \"0\"}"
+    },
+    {
+      "name": "esc-then-closes-viewer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-zoom-out",
+      "pass": true,
+      "detail": "{\"fit\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720}, \"out\": {\"left\": 400, \"top\": 180, \"width\": 480, \"height\": 360}}"
+    },
+    {
+      "name": "video-pan-zoomed",
+      "pass": true,
+      "detail": "{\"errorPx\": 0, \"before\": {\"left\": -320, \"top\": -360, \"width\": 1920, \"height\": 1440}, \"after\": {\"left\": -280, \"top\": -335, \"width\": 1920, \"height\": 1440}}"
+    },
+    {
+      "name": "video-click-hold-pan-zoomed",
+      "pass": true,
+      "detail": "{\"errorPx\": 0, \"before\": {\"left\": -280, \"top\": -335, \"width\": 1920, \"height\": 1440}, \"after\": {\"left\": -250, \"top\": -315, \"width\": 1920, \"height\": 1440}}"
+    },
+    {
+      "name": "play-preview-click-pauses",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "play-preview-click-plays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "video-back-same-url",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "empty-slideshow-copy",
+      "pass": true,
+      "detail": "{\"text\": \"Add photos first\", \"hidden\": false, \"viewerHidden\": true}"
+    },
+    {
+      "name": "empty-slideshow-no-viewer",
+      "pass": true,
+      "detail": "{\"text\": \"Add photos first\", \"hidden\": false, \"viewerHidden\": true}"
+    },
+    {
+      "name": "empty-slideshow-esc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "api-favorite-after-heart",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "favorites-json",
+      "pass": true,
+      "detail": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/taste-viewer-root/catalog/favorites.json"
+    },
+    {
+      "name": "favorites-has-photo",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"itemIds\": [\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "http-unfavorite",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "rotate-original-unchanged",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "b94209ebe99af29dd4323bdc4033facd1eea367a",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/result.json",
+    "stdout.log": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/stdout.log",
+    "viewer-chrome.json": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.json",
+    "viewer-chrome.png": "docs/features/taste-windows/Rev1.0/assets/viewer-shell/viewer-chrome.png"
+  }
+}

@@ -1,0 +1,430 @@
+{
+  "check": "F15",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "jpeg-two-locations",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "viewer-ada-label",
+      "pass": true,
+      "detail": "Ada"
+    },
+    {
+      "name": "viewer-mug-label",
+      "pass": true,
+      "detail": "mug"
+    },
+    {
+      "name": "viewer-kitchen-label",
+      "pass": true,
+      "detail": "Kitchen"
+    },
+    {
+      "name": "viewer-annotations-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "failed-annotate-keeps-text",
+      "pass": true,
+      "detail": "Nope"
+    },
+    {
+      "name": "failed-annotate-inline-error",
+      "pass": true,
+      "detail": "invalid-argument"
+    },
+    {
+      "name": "http-second-mug",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-alias-cup-write",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "alias-cup-present",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_74198042be82\", \"name\": \"mug\", \"aliases\": [\"Cup\"]}]"
+    },
+    {
+      "name": "search-mug-cells",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "search-mug-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "inspector-name-mug",
+      "pass": true,
+      "detail": "{\"name\": \"mug\", \"count\": 2, \"filenames\": [\"IMG_1042.jpg\", \"no-exif.jpg\"], \"entityId\": \"thing_74198042be82\", \"kind\": \"thing\"}"
+    },
+    {
+      "name": "inspector-count-2",
+      "pass": true,
+      "detail": "{\"name\": \"mug\", \"count\": 2, \"filenames\": [\"IMG_1042.jpg\", \"no-exif.jpg\"], \"entityId\": \"thing_74198042be82\", \"kind\": \"thing\"}"
+    },
+    {
+      "name": "inspector-page-filenames",
+      "pass": true,
+      "detail": "{\"name\": \"mug\", \"count\": 2, \"filenames\": [\"IMG_1042.jpg\", \"no-exif.jpg\"], \"entityId\": \"thing_74198042be82\", \"kind\": \"thing\"}"
+    },
+    {
+      "name": "esc-restores-filter",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "filtered-arrow-left-end",
+      "pass": true,
+      "detail": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview"
+    },
+    {
+      "name": "filtered-arrow-right-moves",
+      "pass": true,
+      "detail": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview"
+    },
+    {
+      "name": "filtered-arrow-right-end",
+      "pass": true,
+      "detail": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview"
+    },
+    {
+      "name": "esc-keeps-mug-grid",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "empty-search-copy",
+      "pass": true,
+      "detail": "No matching pictures"
+    },
+    {
+      "name": "clear-search-restores-grid",
+      "pass": true,
+      "detail": "['clip.mp4', 'oriented.jpg', 'IMG_1042.jpg', 'no-exif.jpg', 'clip.avi']"
+    },
+    {
+      "name": "chip-people-ada",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    },
+    {
+      "name": "chip-things-ada-empty",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 400 (Bad Request)\"]"
+    },
+    {
+      "name": "ada-on-jpeg",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_0df656cb80a8\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "mug-on-jpeg",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_74198042be82\", \"name\": \"mug\", \"aliases\": [\"Cup\"]}]"
+    },
+    {
+      "name": "http-second-mug",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-alias-cup-write",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "alias-cup-present",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_74198042be82\", \"name\": \"mug\", \"aliases\": [\"Cup\"]}]"
+    },
+    {
+      "name": "http-q_IMG_1042-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_IMG_1042-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q_mug-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_mug-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-q_MUG-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_MUG-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-q_Ada-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_Ada-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q_ada_people-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_ada_people-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q_ada_things-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_ada_things-unique",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "http-q_mug_things-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_mug_things-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-q_Kitchen_places-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_Kitchen_places-unique",
+      "pass": true,
+      "detail": "['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q_Cup_things-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_Cup_things-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-thing_id-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-thing_id-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-person_id-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-person_id-unique",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-place_id-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-place_id-unique",
+      "pass": true,
+      "detail": "['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q_empty-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-q_empty-unique",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "http-q-IMG_1042-filename",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    },
+    {
+      "name": "http-q-IMG_1042-once",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q-mug-both",
+      "pass": true,
+      "detail": "['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q-MUG-casefold",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-q-Ada-only",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-chip-people-ada",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-chip-things-ada-empty",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "http-chip-things-mug",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-chip-places-kitchen",
+      "pass": true,
+      "detail": "['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-alias-cup",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-thing-id",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-person-id",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-place-id",
+      "pass": true,
+      "detail": "['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-empty-q",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "inspector-count-unique-ids",
+      "pass": true,
+      "detail": "{\"name\": \"mug\", \"count\": 2, \"filenames\": [\"IMG_1042.jpg\", \"no-exif.jpg\"], \"itemIds\": [\"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "inspector-filenames",
+      "pass": true,
+      "detail": "{\"name\": \"mug\", \"count\": 2, \"filenames\": [\"IMG_1042.jpg\", \"no-exif.jpg\"], \"itemIds\": [\"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "b8e2663254f3f10cb0e3b41b121d4cb90b472638",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "POST /api/items/<other-id>/annotations mug",
+    "POST /api/items/<id>/annotations alias Cup",
+    "POST /api/items/<other-id>/annotations mug",
+    "POST /api/items/<id>/annotations alias Cup",
+    "GET /api/items?q=IMG_1042",
+    "GET /api/items?q=mug",
+    "GET /api/items?q=MUG",
+    "GET /api/items?q=Ada",
+    "GET /api/items?q=Ada&scope=people",
+    "GET /api/items?q=Ada&scope=things",
+    "GET /api/items?q=mug&scope=things",
+    "GET /api/items?q=Kitchen&scope=places",
+    "GET /api/items?q=Cup&scope=things",
+    "GET /api/items?thing=thing_74198042be82",
+    "GET /api/items?person=person_0df656cb80a8",
+    "GET /api/items?place=place_89bc0c612fd3",
+    "GET /api/items?q=zzzz-no-such"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S09/Rev1.0/assets/orchestrator-rerun/f15/result.json",
+    "stdout.log": "/workspace/docs/features/S09/Rev1.0/assets/orchestrator-rerun/f15/stdout.log",
+    "inspector.json": "/workspace/docs/features/S09/Rev1.0/assets/orchestrator-rerun/f15/inspector.json",
+    "search-mug.png": "/workspace/docs/features/S09/Rev1.0/assets/orchestrator-rerun/f15/search-mug.png",
+    "viewer-annotations.png": "/workspace/docs/features/S09/Rev1.0/assets/orchestrator-rerun/f15/viewer-annotations.png"
+  }
+}

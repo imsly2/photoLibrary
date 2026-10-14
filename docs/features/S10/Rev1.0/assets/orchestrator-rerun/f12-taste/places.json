@@ -1,0 +1,18 @@
+[
+  {
+    "id": "place_9c0759888ce6",
+    "latitude": 41.88,
+    "longitude": -87.63,
+    "name": null,
+    "itemCount": 2,
+    "newestItemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+  },
+  {
+    "id": "place_dbc9a0f22827",
+    "latitude": 41.925,
+    "longitude": -87.63,
+    "name": null,
+    "itemCount": 1,
+    "newestItemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+  }
+]

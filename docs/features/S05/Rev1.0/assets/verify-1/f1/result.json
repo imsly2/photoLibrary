@@ -1,0 +1,135 @@
+{
+  "check": "F1",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-two-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-catalog-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-rel-resolves:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-rel-resolves:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-http-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-item-available:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes:clip.mp4",
+      "pass": true,
+      "detail": "status=200 len=23631"
+    },
+    {
+      "name": "move-item-available:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-original-bytes:photo.jpg",
+      "pass": true,
+      "detail": "status=200 len=15274"
+    },
+    {
+      "name": "move-source-untouched",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-catalog-in-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-serial",
+      "pass": true,
+      "detail": "{\"volumeSerial\": \"windows:s05-linked\", \"pathFromVolumeRoot\": \"\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/vol-a\"}"
+    },
+    {
+      "name": "remap-items-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-still-available",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\",\n    \"kind\": \"video\",\n    \"filename\": \"clip.mp4\",\n    \"capturedAt\": \"2024-06-12T15:07:00Z\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_08f30aab3005\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": 2.0,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_d12bf441b853\",\n        \"role\": \"primary\",\n        \"component\": \"motion\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/clip.mp4\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/vol-a/a/clip.mp4\",\n        \"sizeBytes\": 23631,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_d12bf441b853\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"not-applicable\",\n        \"preview\": \"not-applicable\",\n        \"poster\": \"queued\",\n        \"proxy\": \"queued\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": true,\n    \"motionAvailable\": true,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_08f30aab3005\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  },\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\",\n    \"kind\": \"photo\",\n    \"filename\": \"photo.jpg\",\n    \"capturedAt\": \"2024-06-12T15:04:00\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_08f30aab3005\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": 1,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_d12bf441b853\",\n        \"role\": \"primary\",\n        \"component\": \"still\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/photo.jpg\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/vol-a/a/photo.jpg\",\n        \"sizeBytes\": 15274,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_d12bf441b853\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"queued\",\n        \"preview\": \"queued\",\n        \"poster\": \"not-applicable\",\n        \"proxy\": \"not-applicable\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": true,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_08f30aab3005\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  }\n]\n"
+    },
+    {
+      "name": "remap-other-serial-ignored",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "remap-old-path-wrong-serial-unavailable",
+      "pass": true,
+      "detail": "[\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\",\n    \"kind\": \"video\",\n    \"filename\": \"clip.mp4\",\n    \"capturedAt\": \"2024-06-12T15:07:00Z\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_08f30aab3005\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": null,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": 2.0,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_d12bf441b853\",\n        \"role\": \"primary\",\n        \"component\": \"motion\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/clip.mp4\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/vol-a/a/clip.mp4\",\n        \"sizeBytes\": 23631,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_d12bf441b853\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"not-applicable\",\n        \"preview\": \"not-applicable\",\n        \"poster\": \"queued\",\n        \"proxy\": \"queued\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": false,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_08f30aab3005\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  },\n  {\n    \"schemaVersion\": 1,\n    \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\",\n    \"kind\": \"photo\",\n    \"filename\": \"photo.jpg\",\n    \"capturedAt\": \"2024-06-12T15:04:00\",\n    \"capturedAtSource\": \"exif\",\n    \"placeId\": \"place_08f30aab3005\",\n    \"metadata\": {\n      \"width\": 640,\n      \"height\": 480,\n      \"orientation\": 1,\n      \"camera\": null,\n      \"lens\": null,\n      \"durationSec\": null,\n      \"latitude\": 41.88,\n      \"longitude\": -87.63\n    },\n    \"contentIdentifier\": null,\n    \"locations\": [\n      {\n        \"sourceId\": \"src_d12bf441b853\",\n        \"role\": \"primary\",\n        \"component\": \"still\",\n        \"kind\": \"volume\",\n        \"current\": true,\n        \"libraryRelativePath\": null,\n        \"volumeSerial\": \"windows:s05-linked\",\n        \"pathFromVolumeRoot\": \"a/photo.jpg\",\n        \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/vol-a/a/photo.jpg\",\n        \"sizeBytes\": 15274,\n        \"modifiedAt\": \"2022-01-01T00:00:00Z\",\n        \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"\n      }\n    ],\n    \"renditions\": {\n      \"store\": \"with-server\",\n      \"sourceId\": \"src_d12bf441b853\",\n      \"thumb\": null,\n      \"preview\": null,\n      \"poster\": null,\n      \"proxy\": null,\n      \"status\": {\n        \"thumb\": \"queued\",\n        \"preview\": \"queued\",\n        \"poster\": \"not-applicable\",\n        \"proxy\": \"not-applicable\"\n      }\n    },\n    \"faces\": [],\n    \"things\": [],\n    \"available\": false,\n    \"motionAvailable\": false,\n    \"entities\": {\n      \"people\": [],\n      \"places\": [\n        {\n          \"schemaVersion\": 1,\n          \"id\": \"place_08f30aab3005\",\n          \"name\": null,\n          \"latitude\": 41.88,\n          \"longitude\": -87.63\n        }\n      ],\n      \"things\": []\n    }\n  }\n]\n"
+    },
+    {
+      "name": "f1-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f1-no-catalog-in-source",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "244771d0224a9c66d89547fdd18862f76e37eff3",
+  "commands": [
+    "scan --copy-here then move library-data",
+    "scan linked volume then remount"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/result.json",
+    "stdout.log": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/stdout.log",
+    "paths-before-after.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/paths-before-after.json",
+    "copied-items": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/copied-items",
+    "collision.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/collision.json",
+    "original-hashes.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f1/original-hashes.json"
+  }
+}

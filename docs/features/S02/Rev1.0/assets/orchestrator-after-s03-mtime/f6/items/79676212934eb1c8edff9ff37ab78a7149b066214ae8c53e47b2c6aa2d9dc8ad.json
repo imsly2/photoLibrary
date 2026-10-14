@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad",
+  "kind": "video",
+  "filename": "clip.m4v",
+  "capturedAt": "2022-01-01T00:00:00Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 2.0,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_8bc56f1a0909",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/fixture-sandbox/media/formats/clip.m4v",
+      "lastKnownPath": "/workspace/docs/features/S02/Rev1.0/assets/orchestrator-after-s03-mtime/f6/fixture-sandbox/media/formats/clip.m4v",
+      "sizeBytes": 23358,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_8bc56f1a0909",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued"
+    }
+  },
+  "faces": [],
+  "things": []
+}

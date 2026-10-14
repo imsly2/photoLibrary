@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "previewStore": "with-server",
+  "unavailableItems": "show",
+  "addFolderDefault": "ask",
+  "playProxies": "days-and-all",
+  "listenHost": "127.0.0.1",
+  "port": 8765,
+  "thumbPx": 320,
+  "previewPx": 1600,
+  "proxyWidth": 480,
+  "placeMatchMeters": 100,
+  "tourOrbitSec": 8,
+  "tourPictures": 5,
+  "tourPictureSec": 3,
+  "sort": "date",
+  "dir": "desc",
+  "zoomLevel": "years"
+}

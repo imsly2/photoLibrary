@@ -1,0 +1,59 @@
+PASS scan-exit: exit=1 stderr=''
+PASS broken-heic-scan-error: [{'path': 'formats/broken.heic', 'error': 'decode-error'}]
+PASS oriented-item
+PASS broken-item
+PASS oriented-store
+PASS oriented-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS oriented-paths-null: {'store': 'with-server', 'sourceId': 'src_d84b3b74b95f', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}
+PASS oriented-video-slots
+PASS oriented-raw-size: {'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}
+PASS scan-no-thumb-webp
+PASS scan-no-preview-webp
+PASS original-unchanged-after-scan
+PASS broken-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-paths-null
+PASS broken-no-webp
+PASS png-item
+PASS png-still-queued: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS png-no-webp
+PASS serve-health: {'ok': True}
+PASS runtime-pid: 5082
+PASS oriented-ready: {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS ready-thumb-rel
+PASS ready-preview-rel
+PASS metadata-stays-raw: {'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}
+PASS original-unchanged-after-ready
+PASS thumb-size: {'width': 240, 'height': 320, 'bytes': 1740}
+PASS preview-size: {'width': 480, 'height': 640, 'bytes': 4154}
+PASS thumb-cap
+PASS preview-cap
+PASS broken-after-serve
+PASS broken-stays-error: {'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS broken-still-no-webp
+PASS broken-decode-error-kept: ['formats/broken.heic']
+PASS png-after-serve
+PASS png-still-queued-after-serve: {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS png-still-no-webp
+PASS thumb-http
+PASS thumb-length
+PASS thumb-sha
+PASS preview-http
+PASS preview-length
+PASS original-http
+PASS original-sha
+PASS original-length
+PASS range-206: {"status": 206, "contentType": "image/webp", "contentLength": 1, "contentRange": "bytes 0-0/1740", "bodyLength": 1, "sha256": "8c2574892063f995fdf756bce07f46c1a5193e54cd52837ed91e32008ccf41ac", "body": null}
+PASS bad-range-416: {"status": 416, "contentType": "application/json", "contentLength": 25, "contentRange": null, "bodyLength": 25, "sha256": "53a9beda5df606f8f0b0b6b8f54e27bbc240e55a93acd5ae5b58d69446ddb2d3", "body": {"error": "invalid-range"}}
+PASS unknown-id-404: {"status": 404, "contentType": "application/json", "contentLength": 21, "contentRange": null, "bodyLength": 21, "sha256": "803cb0e9b33bf52c5617f82d9857d432d8b080c0d2adc0a8bf7727bd04547256", "body": {"error": "not-found"}}
+PASS page-no-empty-state-copy-baked-pixels
+PASS page-has-script
+PASS playwright-import
+PASS page-not-empty
+PASS viewer-src-preview: /api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview
+PASS esc-closes-viewer
+PASS first-still-exists: /workspace/docs/features/S03/Rev1.0/assets/implementer-1/first-still.png
+PASS first-still-1280x720: 1280x720
+PASS preview-file-deleted
+PASS deleted-preview-unavailable: {"status": 404, "contentType": "application/json", "contentLength": 31, "contentRange": null, "bodyLength": 31, "sha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7", "body": {"error": "preview-unavailable"}}
+PASS deleted-preview-status-unchanged: {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}
+PASS deleted-preview-not-recreated

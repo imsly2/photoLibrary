@@ -1,0 +1,16 @@
+{
+  "levelAnchor": {
+    "before": {
+      "x": 86,
+      "y": 139.15625,
+      "width": 64,
+      "height": 64
+    },
+    "after": {
+      "x": 20,
+      "y": 253.15625,
+      "width": 64,
+      "height": 64
+    }
+  }
+}

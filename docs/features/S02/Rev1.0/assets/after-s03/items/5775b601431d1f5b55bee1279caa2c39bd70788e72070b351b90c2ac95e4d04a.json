@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a",
+  "kind": "photo",
+  "filename": "旅行 photo.jpg",
+  "capturedAt": "2026-10-13T16:30:22Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_a350eb0d128a",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S02/Rev1.0/assets/after-s03/fixture-sandbox/media/family/旅行 photo.jpg",
+      "lastKnownPath": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/fixture-sandbox/media/family/旅行 photo.jpg",
+      "sizeBytes": 14277,
+      "modifiedAt": "2026-10-13T16:30:22.213305Z",
+      "sha256": "5775b601431d1f5b55bee1279caa2c39bd70788e72070b351b90c2ac95e4d04a"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_a350eb0d128a",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

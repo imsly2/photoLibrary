@@ -1,0 +1,27 @@
+{
+  "copyStatus": 202,
+  "copyElapsedSec": 0.010210905002168147,
+  "copyBodyScan": {
+    "state": "running",
+    "added": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  "sawRunningAfter202": true,
+  "serveStatus": 202,
+  "serveElapsedSec": 0.008885451003152411,
+  "serveBodyScan": {
+    "state": "running",
+    "added": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  "sawServeRunningAfter202": true,
+  "picker": {
+    "status": 404,
+    "body": {
+      "error": "picker-unavailable"
+    }
+  },
+  "scanConsoleChars": 92
+}

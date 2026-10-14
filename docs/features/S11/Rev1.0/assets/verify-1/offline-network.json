@@ -1,0 +1,447 @@
+[
+  {
+    "url": "http://127.0.0.1:18765/",
+    "method": "GET",
+    "resourceType": "document"
+  },
+  {
+    "url": "http://127.0.0.1:18765/assets/style.css",
+    "method": "GET",
+    "resourceType": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:18765/assets/library.js",
+    "method": "GET",
+    "resourceType": "script"
+  },
+  {
+    "url": "http://127.0.0.1:18765/assets/globe.js",
+    "method": "GET",
+    "resourceType": "script"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/places",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/assets/earth.png",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/globe/tour",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+    "method": "GET",
+    "resourceType": "media"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=preview",
+    "method": "GET",
+    "resourceType": "image"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/globe/tour",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/globe/tour",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/globe/tour",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/items?sort=date&dir=desc",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/groups?sort=date&dir=desc&level=years",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/sources",
+    "method": "GET",
+    "resourceType": "fetch"
+  },
+  {
+    "url": "http://127.0.0.1:18765/api/settings",
+    "method": "GET",
+    "resourceType": "fetch"
+  }
+]

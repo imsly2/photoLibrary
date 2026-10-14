@@ -1,0 +1,12 @@
+{
+  "cellW": 420,
+  "cellH": 420,
+  "videoW": 418,
+  "videoH": 418,
+  "dx": 1,
+  "dy": 1,
+  "objectFit": "cover",
+  "position": "absolute",
+  "imgHidden": false,
+  "imgDisplay": "block"
+}

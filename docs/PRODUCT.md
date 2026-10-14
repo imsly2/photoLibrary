@@ -7,8 +7,10 @@ those pictures, browse small pictures quickly, and open one. An agent can then
 write who, where, and what is in them so they can be found again.
 
 It is a local library server that travels with its app and data folder. It is not
-the phone copier, a cloud host, a bundled image model, a desktop browser shell, or
-a tool that rearranges originals on its own. Copying originals is an explicit
+the phone copier, a cloud host, a required bundled image model, a desktop browser
+shell, or a tool that rearranges originals on its own. Optional local place,
+object, and face workers can be downloaded into the library folder; they stay
+off until setup and never call a cloud API. Copying originals is an explicit
 choice; linking leaves them where they are. No accounts or separate family mode.
 
 The pictures you already have stay files on disk. The library adds a catalog
@@ -47,26 +49,30 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 
 | Decision | Locked behavior / reason |
 |---|---|
-| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, favorites or editing tools. |
+| User and scope | Steve sets up; his mother-in-law browses. Existing photos and video, no new accounts, albums, or editing tools. A per-item favorite heart writes `catalog/favorites.json` (viewer heart, tile hearts, collapsible Favorites). Windows Reveal in Explorer is a named action, not a setting. Neither is an album system. |
 | Packaging | Folder, Python + ffmpeg, local browser, CLI and HTTP. Windows first; macOS/Linux launcher promises need their own verification. |
 | Catalog | JSON is authoritative; SQLite is disposable. Relative local paths; volume identity for linked drives. |
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate; no model inference or automatic geographic names. |
-| Globe | Shipped texture, no network; cluster opens filtered items; orbit/place/media/orbit tour. |
+| Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name). No cloud geocoder or cloud AI. Browse works with models missing. |
+| Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
-| Playback clarification | Full-length silent video proxies. `always` allows hovered proxies even at Years/Months; stills otherwise. Video poster precedes playback. |
+| Playback clarification | Full-length silent video proxies. Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original or `playback.mp4` without a fit/time jump. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
 | Recovery first | Durable writes, history and log start in foundation, not after user mutations already exist. |
-| Scope over mockups | Reference extras are decoration, not features. No added keybinding editor or filesystem clipboard actions from the generic app baseline. |
+| Scope over mockups | Reference extras are decoration, not features. No albums, storage meter, or keybinding editor. Library and Globe in the header are pressed/unpressed buttons. Favorite and Reveal in Explorer are named sibling actions, not mockup leftovers. |
 | Testing | Synthetic/supplied test media only. Fresh verifier evidence for every Check; no real-disk scan in this plan. |
+| Windows Presentable Shell | First-class family-PC surface, not a taste overlay. Must-for-presentable (fullscreen, slideshow, viewer keys, EXIF Info, Open with, empty/error, remove vs delete-file, sort/filters, search, Update UX) plus the earlier launch/grid/viewer locks live in [UI-SPEC — Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell). The **Presentable for family PC** checklist there is the taste definition of done. Soon rows do not block it. No 23rd Check. No accounts or editor. |
 
 Technical decisions not previously specified are listed explicitly at the top of
 CONTRACTS. Changing them requires a doc edit before implementation.
 
 ## The finished run
 
-1. Copy this folder onto a drive and run the launcher.
+1. Copy this folder onto a drive. On a new Windows PC, run `Setup.bat`
+   once (Python, ffmpeg, local faces/objects/places packs). Then run
+   `Library.bat` every day. New code is `Update.bat` / Update Library
+   (`git pull`), then `Setup.bat` again only if models were added.
 2. The browser opens on this computer and shows an empty library.
 3. Add a folder. Choose copy onto this drive, or serve that folder where it is.
 4. The server reads each picture and video, writes a JSON record, and builds a
@@ -75,11 +81,48 @@ CONTRACTS. Changing them requires a doc edit before implementation.
    Spin a globe of every picture that has a location. Click a cluster to
    filter to those pictures and open one. Play a tour that orbits the globe,
    zooms into a place, shows pictures from there, and zooms back out.
-6. An agent writes people, places, and things onto records. Search returns
-   every picture tied to that name.
+6. After a one-time local install, GPS pictures can show a city, objects
+   can become Things, and faces can become unnamed People clusters.
+   An agent or a person still writes names. Search returns every picture
+   tied to that name.
 7. Plug the drive into another computer and launch it again. Files that were
    copied here open. Files that were only linked, and are not on this computer,
    follow the unavailable setting.
+
+## Windows Presentable Shell
+
+The family Windows PC is the primary surface. Locked Must-for-presentable
+in [UI-SPEC](UI-SPEC.md#windows-presentable-shell):
+
+1. Fullscreen (F11 or F); Esc exits fullscreen then the viewer
+2. Slideshow (F5; Space pause; Esc stop; empty “Add photos first”)
+3. Viewer keys: arrows; Ctrl++/− or **plain wheel** zoom (side slider
+   secondary); Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause
+   video; tooltips show shortcuts
+4. Info = EXIF/file facts first (date, camera, dimensions, size, path,
+   GPS; empty “No camera info”), then people/places/things
+5. Open with default app beside Reveal in Explorer
+6. Empty / first-run / error: Add-folder CTA; scan Retry; missing-file
+   placeholder; reconnect banner
+7. Remove from library (Delete key + confirm, originals stay) vs Delete
+   file (extra confirm, Recycle Bin)
+8. Sort Newest / Oldest / Name; filters All / Photos / Videos / Favorites
+9. Search filename + date + existing tags; empty “No matches for …”
+10. Update UX finish (launcher + in-app; Updating…; already current / failed; header shows checkout SHA)
+
+Also locked: `Library.bat`, native Add folder, live-origin Back, grid
+wall/hearts/VIDEO, Win7 prev/next/slider/pan, no overlay pills, no
+“Showing original”, globe yaw + local Earth, progressive video start,
+hover at every Size, one grid Size slider + Dates Years/Months/Days/Off
+in the bottom-left cluster, a right People splitter, processing
+Pause/Start, vertical side viewer Zoom, viewer/tile scrub in bottom
+chrome. macOS/Linux launch is pinned later.
+
+**Presentable for family PC** is the 19-step checklist in UI-SPEC. Until
+that path is green, do not call the shell presentable, and do not
+prioritize S13 settings or Soon rows (filmstrip, multi-select, Print,
+`?`, recently added) over a Must gap. Those rows are not F23–Fn. Remove
+and delete-file are CONTRACTS commands, not a new Check.
 
 ## F1 — Two folders
 
@@ -101,7 +144,19 @@ library-data/
     people/<id>.json
     places/<id>.json
     things/<id>.json
+    favorites.json       # item ids marked with a heart
     catalog.sqlite       # rebuilt from the JSON
+  geo/                   # optional offline cities pack (setup-geo); not in git
+    cities.csv
+    ATTRIBUTION.txt
+  models/                # optional; created by setup-ml objects / faces
+    yolov8n.onnx
+    objects.json
+    objects-state.json
+    faces/
+      manifest.json
+      index.json
+      buffalo_s/
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
     preview.webp
@@ -124,7 +179,20 @@ arguments and full assertions in SLICES). Move a fixture app/data folder to anot
 
 ## F2 — Launch
 
-`launch.ps1` on Windows, `launch.sh` on macOS and Linux.
+`launch.ps1` on Windows, `launch.sh` on macOS and Linux. On Windows,
+double-click `Library.bat` in the app folder; it runs `launch.ps1` in a
+visible console so scan progress is readable. Do not require typing a
+command prompt. macOS/Linux launch stays `launch.sh` and is not graded here.
+
+On a new Windows PC, double-click `Setup.bat` once first. It installs
+Python 3.12+ and ffmpeg the same way as the launcher (winget
+`Python.Python.3.12`, `Gyan.FFmpeg`), creates `.venv`, installs the app,
+and runs `setup-geo` plus `setup-ml objects` and `setup-ml faces` when
+those commands exist. If a command is missing, it prints that Update
+Library must pull it and exits non-zero. Models stay under
+`library-data/`. No MSI. First run needs the internet. Daily use is
+`Library.bat`. New code is Update Library / `Update.bat` (`git pull`).
+`Setup.bat` does not start the server.
 
 The launcher checks for Python 3.12+ and ffmpeg on PATH. If either is missing
 on Windows it installs them with winget (`Python.Python.3.12`, `Gyan.FFmpeg`)
@@ -133,6 +201,21 @@ address.
 
 The server listens on `127.0.0.1` and port `8765` unless settings say otherwise.
 Binding every interface is a setting, off by default.
+
+The opened page stays on that live origin. Back (in-app or the browser button)
+must not jump to another host or port — including a leftover QA listen such as
+`127.0.0.1:18765`. History, links, and fetches use the current origin or
+root-relative paths. Never embed `settings.port` or a stored runtime URL from
+a previous listen.
+
+Family installs update without a command prompt. A header **Update Library**
+control, and the same action from the launcher, pulls the current git
+branch (`git fetch` then `git pull --ff-only`, or the equivalent). While
+it runs the page says Updating… Then one sentence: updated / already
+current / git missing / not a git copy / pull failed. It does not ask
+anyone to type git, open GitHub Desktop, or switch branches. The header
+shows this copy's short git SHA (or `local` when not a git checkout) so
+a successful Update is visible.
 
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
@@ -157,16 +240,45 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
+| `favorite <id> --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}` | Marks or clears the heart in `catalog/favorites.json`. |
+| `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
+| `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
+| `remove <id>` | `POST /api/items/<id>/remove` `{}` | Drops the catalog record; original bytes stay. |
+| `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
+| `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
+| `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |
+| `people update <id> --name … --thumbnail <item-id>` | `PUT /api/people/<id>` | Renames a person or chooses the thumbnail face item. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects. |
+| `jobs pause` / `jobs resume` | `POST /api/jobs` `{"action":"pause"\|"resume"}` | Pauses or resumes the serve-process drain. Does not block browse. |
+| `setup-geo` [--from \<dir\>] [--force] | (CLI setup; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
+| `analyze-places` | `POST /api/places/analyze` `{}` | Fills null GPS `place.name` from that pack. Never overwrites a set name. |
+| `setup-ml objects` | (CLI / `Setup.bat` / `launch.ps1 -SetupMl`; no HTTP) | Downloads a small local YOLO into `models/`. CPU. No cloud inference. |
+| `setup-ml faces` | `POST /api/faces/setup` | Installs InsightFace buffalo_s ONNX into `models/faces/`. Never uploads photos. |
+| `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Runs local object detection and writes Things through `annotate`. |
+| `infer-faces` | `POST /api/faces/infer` | Detects faces, clusters unnamed people. Never guesses a name. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
 | `undo` / `redo` | `POST /api/undo` / `POST /api/redo` | Catalog and settings history. |
 
+The header **Update Library** button calls `POST /api/update` so a family
+install can pull a newer app folder without opening a command prompt.
+The header shows the checkout SHA from `GET /api/version` and refreshes
+it from a successful update payload.
+
 `GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
-`person=`, `place=`, `thing=`, `from=`, `to=`, `unavailable=0|1`, `q=` for a
-name or filename. Names match case-insensitively. `scope=people|places|things`
-restricts the query for the existing search chips.
+`person=` (one id/name, or comma-separated ids meaning **all** faces),
+`place=`, `thing=`, `kind=photo|video|live` or a comma list,
+`from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
+Names match case-insensitively. `scope=people|places|things` restricts
+the query for the existing search chips. `kind` keeps only those media
+kinds (`photo,live` for Photos). The toolbar All / Photos / Videos /
+Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
+`favorite=1`. Kind and favorite are transient filters, not settings.
+`favorite=1` keeps only hearted items. Item reads include computed
+`favorite` (not stored on the item JSON). `q` also matches a capturedAt
+date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
 file. `original` on a missing disk returns HTTP 404 and
@@ -182,7 +294,12 @@ arguments and full assertions in SLICES). Run every mutation through CLI and HTT
 
 ## F4 — Add a folder
 
-The Add folder dialog shows the path and two choices.
+The Add folder dialog shows the path and two choices. On Windows, Browse
+opens a native folder picker on this computer and fills the path — he does
+not have to type a directory. Typed or pasted paths still work. After Add,
+the dialog closes on the 202, the library confirms the folder, and scan
+progress appears in the page and the server console. Pictures show as they
+become ready. The dialog never stays open on a dead `busy` wait.
 
 **Copy onto this drive.** Files are copied under
 `library-data/originals/<safe-name>-<source-id>/`, keeping the folder structure below
@@ -261,14 +378,27 @@ ISO6709 location string, not EXIF. The scan reads both.
 The place name you see in the iPhone Photos app is not in the file. Photos
 looks the coordinates up and keeps the name in its own database. A copied
 camera roll brings the coordinates across and leaves the name behind. This
-library stores the coordinates and leaves `name` null until a person or an
-agent sets it. A screenshot, a download, or a photo shared with location
-removed has no coordinates and does not appear on the globe.
+library stores the coordinates. `name` stays null until either a person or
+an agent sets it, or a **local** offline geo pack fills it.
+
+The geo pack lives in `library-data/geo/` (not in git). Steve fetches it
+once with `python -m library setup-geo` or `Setup-geo.bat`. The pack is a
+GeoNames-class cities table — nearest city/region, no network at scan
+time, no cloud API. Without the pack, behavior is unchanged: `name`
+stays null. `Setup.bat` runs that same `setup-geo` (plus `setup-ml`).
+
+When a place has coordinates and `name` is null, scan / `resolve_place`
+(and `analyze-places` for a library scanned before the pack) set
+`name` to that city/region, like `Chicago, Illinois`. A nonempty name
+written by a person or an agent is never overwritten. A screenshot, a
+download, or a photo shared with location removed has no coordinates and
+does not appear on the globe.
 
 GPS attaches a place. A new fix within `placeMatchMeters` (default 100) of an
-existing place reuses that place id. The place `name` stays null until set.
-Sort by location uses the name when it exists, otherwise a label made from the
-rounded coordinates, otherwise the group "No location".
+existing place reuses that place id. Sort by location uses the name when it
+exists, otherwise a label made from the rounded coordinates, otherwise the
+group "No location". Info and search show the name the same way they show
+an annotated place.
 
 **Check:** `python -m tests.qa check F6` (planned runner; common root/artifact
 arguments and full assertions in SLICES). fixture JPEG with EXIF date `2024-06-12T15:04:00` and GPS near
@@ -289,15 +419,27 @@ Every video gets:
 
 - `poster.webp`, one frame near the start, at thumb size.
 - `proxy.mp4`, width `proxyWidth` (default 480), H.264, no audio, long enough
-  to cover the whole clip. The grid and the carousel play this file. Opening
-  the item plays the original when it is available.
+  to cover the whole clip. The grid and the carousel play this file.
+- `playback.mp4` when the original is not a browser-safe MP4 (typical
+  iPhone `.MOV` / HEVC). Full length, original pixel size, H.264 + AAC
+  (remux when the bitstream already allows). The original file stays on
+  disk. A browser-safe MP4 does not get this file.
+
+Opening the item starts the proxy immediately, then swaps to the original
+when the browser can decode it, otherwise to `playback.mp4`, keeping time
+and fit. `#viewer-source` says Preview, Loading full…, Original, Full
+(library H.264/AAC), or Preview — full unavailable.
 
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
 
-Years and months show stills under the default setting. Days and All play the proxy, muted and
+Years, Months, Days, and a Dates-off wall play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
-`days-and-all` (default), `always`, or `off`.
+`days-and-all` (default) and `always` both hover-play at every Dates
+grouping; `off` never does. Hover playback fills the whole
+tile at every Size stop; the still stays underneath as a poster. The tile never splits still on
+one side and video on the other. Every video cell shows a VIDEO badge; live
+cells keep LIVE. A small scrub on the hovered tile seeks that preview.
 
 **Check:** `python -m tests.qa check F7` (planned runner; common root/artifact
 arguments and full assertions in SLICES). after scan of one JPEG and one 2-second MP4, these files exist and
@@ -333,14 +475,35 @@ source tree. Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 
-Four levels: Years, Months, Days, All. The slider and Ctrl+wheel move between
-them. The item under the cursor stays in view. The level is saved in
-`zoomLevel`.
+One Size slider steps cell pixels (eight useful stops: 72, 104, 144,
+192, 256, 336, 420, 520). Ctrl+wheel on the grid drives that slider
+only. Size does not change date grouping. Size is a session view option,
+not a settings.json key. Size and Dates sit together at the **bottom
+of the library grid** (bottom-left cluster).
 
-Years is one card per year, a mosaic of that year's thumbs.
-Months is one card per month.
-Days is a header per day and the photos from that day.
-All is every item under day headers.
+Date grouping is a separate `#date-group` control: Years, Months, Days,
+or Off. It is not a second zoom slider. Years is one card per year.
+Months is one card per month. Days is a header per day and the photos
+from that day. Off cascades every matching thumb onto one continuous
+wall — no date-section gaps. Years/Months/Days persist in `zoomLevel`
+(`all` remains a valid API/settings value and displays as Days). Off is
+session-only.
+
+Changing Dates or Size must keep already-loaded thumbnails on screen;
+the grid does not blank during the interaction. The item under the
+cursor stays in view when Dates changes.
+
+Tiles that are large enough (Size 144 px and up) show a heart control in
+the same corner language as the VIDEO/LIVE badge — under or beside that
+badge. At the two tiniest stops (72 and 104) the heart hides so a wall
+stays readable. Clicking the heart marks or clears the item; it does not
+open the viewer. A Favorites section sits at the top of the Library grid
+whenever any current result is hearted. It starts expanded and can
+collapse to its heading. Hearted items also stay in their date or wall
+positions. Ctrl+Z undoes a heart.
+
+Library and Globe in the header are view toggles, not plain labels: hover
+and active/click states are visible, and the pressed view stays marked.
 
 Reference: [years](reference/library-years.jpg), [grid](reference/library-grid.jpg).
 
@@ -352,18 +515,51 @@ JSON responses.
 
 ## F10 — Open a picture
 
-Click a cell to open the viewer. Arrow keys move to the next and previous item
-in the current sort. Esc returns to the grid.
+Click a cell to open the viewer. Previous and Next sit at the **bottom** with
+Rotate, Windows Photo Viewer style. Arrow keys move in the current sort and
+stop at the ends. Back (and Esc) returns to the grid he came from on the
+**same** live origin and port. Browser Back does the same while the page is
+open; it must not load a stale port or call a hop that leaves this listen URL.
 
-For a photo the viewer shows `preview.webp` first, then the original if available.
-For video it shows the poster, then plays the original or proxy; a browser that
-cannot decode the original falls back to the proxy.
-Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags it.
-Click a video, or press Space, to play or pause. Playback of a video uses the
-original when available, otherwise the proxy.
+The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
+the **bottom**; Left/Right arrows still change photo and stop at the ends.
+Rotate sits next to them (button or Ctrl+R). Zoom is a **vertical side slider** (with percentage) plus
+**plain wheel** (primary), Ctrl+wheel and Ctrl++/− — not discrete
+zoom-in/out buttons, including smaller than fit. The slider does not
+sit on the bottom scrubber. Ctrl+0 fits; Ctrl+1 is 100%. Click-hold
+pans while zoomed. Rotate turns the displayed still 90° and does not
+change the file. F11 or F toggles fullscreen; Esc leaves fullscreen,
+then the viewer. F5 starts a slideshow; Space pauses it; Esc stops it.
 
-The viewer lists the place, the people, and the things already written on the
-record.
+A heart in the viewer favorites or unfavorites that item. The mark is
+stored in `catalog/favorites.json` and is visible on the heart.
+
+For a photo the viewer shows `preview.webp` first, then the original if
+available, with no “Showing original” button or notification. Reveal in
+Explorer and Open sit side by side. Reveal opens the original's containing
+folder on this computer whenever the file is here (`explorer.exe` argv
+`/select,fullpath` on Windows — comma glued, no extra quotes, so paths
+with spaces still select the file). Open launches that file in the computer's default app. Delete
+removes the catalog record (confirm; bytes stay). Delete file extra-confirms
+and Recycle-Bins the original. For video the viewer shows the poster, then
+starts the proxy and swaps to the original when the browser can decode
+it, otherwise to `playback.mp4` (full quality + sound). `#viewer-source`
+beside the filename says Preview, Loading full…, Original, Full, or
+Preview — full unavailable. A silent proxy is never labeled Original. Play preview still
+toggles pause/play on click. `#viewer-scrub` sits in `#viewer-bottom`
+and seeks at any zoom or source. It does not overlay the picture.
+Ctrl+wheel zooms the picture, anchored at the cursor. Middle-click drags
+it; a still also pans with a left drag, and any zoomed item pans with a
+left drag. Click a video, or press Space (when no slideshow), to play or
+pause. Playback of a video uses the original when the browser can decode
+it, otherwise `playback.mp4`, otherwise the proxy.
+
+Person, Place, and Thing are **not** pills painted over the preview. A
+top-right **Info** control shows file facts first (date taken, camera,
+dimensions, size, path, GPS; empty “No camera info for this file.”), then
+the people, places, and things already written on the record; clicking
+one filters the grid to that entity. The three type-in fields stay inside
+Info and stay labeled Person, Place, and Thing. Tooltips name the shortcuts.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.
@@ -372,8 +568,12 @@ source is available. Artifact: both responses' content types and lengths.
 
 ## F11 — Sort
 
-The toolbar sorts by date, location, or name. Direction is ascending or
-descending. Default is date, newest first (`sort=date`, `dir=desc`).
+The toolbar’s presentable sort labels are Newest, Oldest, and Name
+(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
+stays available. Default is Newest. Filters All / Photos / Videos /
+Favorites are mutually exclusive: no kind, `kind=photo,live`,
+`kind=video`, or `favorite=1`. They keep the current sort among those
+items.
 
 Date uses `capturedAt`. Location groups by place name, then unnamed GPS
 places, then "No location", and by date inside a group. Name uses the filename.
@@ -387,9 +587,13 @@ Artifact: the items JSON.
 ## F12 — Globe
 
 A Globe view draws every place that has coordinates. The earth is a WebGL
-globe with a texture shipped inside the app folder. The page does not load
-map tiles and does not send coordinates anywhere. Drag spins the globe.
-The wheel zooms it, and the point under the cursor stays put.
+globe with a **realistic** equirectangular Earth texture shipped as
+`library/web/assets/earth.png` (license beside it). Abstract blob continents
+are not presentable. The page does not load map tiles and does not send
+coordinates anywhere. Drag spins the globe: left-right yaw is inverted from
+the first grab (drag right turns the globe so the surface follows the pointer
+east); up/down pitch is unchanged. The wheel zooms it, and the point under
+the cursor stays put.
 
 Pins that overlap at the current zoom draw as one cluster with a count.
 Pictures with no coordinates are absent.
@@ -446,8 +650,23 @@ These are the serialized index. Each one is a JSON file. Pictures point at
 them by id. Search does not look at pixels. It reads the ids.
 
 An agent, or a person typing in the viewer, writes them with `annotate`.
-The server does not download or run an image model. Analysis is whoever calls
-`annotate` after looking at `preview.webp`.
+The server does not ship a model and does not guess names. After a
+one-time local install, optional workers on this computer may write
+associations through the same catalog:
+
+- `setup-geo` / `analyze-places` fills a null GPS `place.name` from the
+  offline cities pack. It never overwrites a human or agent name.
+- `setup-ml objects` / `analyze` looks at each still and writes Things
+  through annotate. Name-only payloads reuse an existing thing id.
+  Human tags stay. The COCO `person` class is ignored.
+- `setup-ml faces` / `infer-faces` detects faces, stores embeddings in
+  `models/faces/index.json`, and clusters unnamed people (`name: null`).
+  A human confirms every name in the People panel or Info. Faces never
+  leave the machine.
+
+Browse stays up when models or the geo pack are missing (`models-missing`
+/ idle queues). Processing Pause/Start on `/api/jobs` starts or stops
+the real serve-time drains.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be
@@ -456,8 +675,16 @@ empty until somebody supplies them. The records stay readable JSON.
 `box` is x, y, width, height, each from 0 to 1, on the oriented picture.
 It may be omitted. A face is a box that points at a person. A person with
 `"name": null` is an unnamed face. Setting the name updates that person file.
-`people merge <keep-id> <drop-id>` rewrites every face and deletes the dropped
-person file.
+`people merge <keep-id> <drop-id>` rewrites every face, merges stored
+face embeddings when `models/faces/index.json` exists, and deletes the
+dropped person file.
+
+The Library page lists people in a right side panel. Named people always
+appear. An unnamed cluster appears only when that face is on at least
+`personOfInterestMin` photos (constant 3). Click filters to that face;
+selecting several people keeps photos that contain all of them. The
+panel is where unknowns are named and a thumbnail face is chosen. Info
+still names a person on the open item.
 
 Naming a thing reuses an existing thing id when the name matches,
 case-insensitively, including aliases. Otherwise annotate creates the thing file.
@@ -471,8 +698,10 @@ Artifact: the people file, the thing file, and the search JSON.
 
 ## F15 — Search
 
-The search box matches a person, place, or thing name, or a filename.
-Chips limit the match to People, Places, or Things. Reference:
+The search box matches a person, place, or thing name, a filename, or a
+capturedAt date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). A local city/region
+written on a GPS place is a place name. Chips limit the match
+to People, Places, or Things. Empty results say “No matches for …”. Reference:
 [search](reference/library-search.jpg).
 
 The inspector for a thing shows its name, how many pictures point at it, and
@@ -497,8 +726,8 @@ Setting `unavailableItems`:
 | `hide` | The item is left out of the grid and out of `GET /api/items` unless `unavailable=1`. |
 
 Opening an unavailable item shows the preview when the preview file is here,
-a banner "Original is not on this computer", and Open original does nothing.
-Play preview plays the proxy for a video. Reference:
+a banner "Original is not on this computer", and Open with default program
+and Reveal do nothing. Play preview plays the proxy for a video. Reference:
 [unavailable](reference/library-unavailable.jpg).
 
 **Check:** `python -m tests.qa check F16` (planned runner; common root/artifact
@@ -553,10 +782,14 @@ History is files in `library-data/undo/`, about 500 steps, then the oldest
 file is dropped. Undo of a newly added copied source removes its catalog registration and
 does not delete the copied originals. Undo of converting an existing linked source
 restores its earlier catalog locations. Those files stay until a person deletes
-them.
+them. Undo of remove-from-library restores the catalog record. Undo of
+delete-file restores the catalog only — not the Recycle-Binned bytes.
 
-Esc cancels the innermost active interaction: tour or gesture, dialog, viewer,
-settings, then selection. Text fields retain their standard editing shortcuts.
+Esc cancels the innermost active interaction: confirm dialog, Info,
+slideshow, fullscreen, tour or gesture, Add dialog, viewer, settings, then
+selection. Text fields retain their standard editing shortcuts. Delete
+removes from the library after confirm. Delete file is a separate extra
+confirm.
 
 Ctrl+C copies the primary path of the selected item as text. If the item is
 unavailable, the copied text is the last known path and the page says it is
@@ -595,18 +828,26 @@ search the thing, get the same item id. Artifact: the search JSON.
 
 | Key | Action |
 |-----|--------|
-| Ctrl+wheel on the grid | Change year / month / day / all, cursor stays put |
-| Ctrl+wheel in the viewer | Zoom the picture, cursor stays put |
+| Ctrl+wheel on the grid | Change Size (density), cursor stays put |
+| Ctrl+wheel, plain wheel, or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
+| Ctrl+0 / Ctrl+1 | Fit / 100% in the viewer |
+| Ctrl+R | Rotate the displayed still 90° |
 | Middle-click drag | Pan the open picture |
 | Click a cell | Open it |
-| Click or Space in the viewer | Play or pause video |
+| Click or Space in the viewer | Play or pause video (Space pauses a slideshow if one is running) |
 | Arrows | Previous and next open item |
-| Esc | Active tour/gesture, dialog, viewer, settings, then selection |
+| F11 or F | Toggle viewer fullscreen |
+| F5 | Start slideshow of the current set |
+| Delete | Remove from library (confirm; originals stay) |
+| Esc | Confirm, Info, slideshow, fullscreen, tour/gesture, dialog, viewer, settings, then selection |
 | Ctrl+F | Search |
 | Ctrl+, | Settings |
 | Ctrl+Z / Ctrl+Shift+Z | Undo / redo |
 | Ctrl+C | Copy the primary path |
 | Esc during the tour | Stop the tour and stay on the globe |
+
+`?` cheat-sheet, Print Ctrl+P, and I / Alt+Enter for Info are UI-SPEC Soon.
+F is fullscreen, not favorite. Do not fail this Check for Soon keys.
 
 
 **Check:** `python -m tests.qa check F21` (planned runner; common root/artifact
@@ -614,13 +855,14 @@ arguments and full assertions in SLICES). Drive every key and gesture in the tab
 
 ## F22 — Web pages
 
-One page, five views. The address is the listen host and port.
+One page, five views. The address is the live listen host and port. Back
+and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, search, sort. |
-| Globe | The WebGL earth, clusters, Play for the tour. |
-| Viewer | One item, preview then original, people and things. |
+| Library | The zoomed grid, Add folder, search, sort Newest/Oldest/Name, All/Photos/Videos/Favorites, Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People panel and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
+| Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
 | Settings | The settings file, as controls. |
 
@@ -637,6 +879,9 @@ Every F1–F22 Check above. The exact fixture set and scenarios are in
 All checks use a fixture-owned temp library and never a real photo disk.
 
 Build in [SLICES.md](SLICES.md) dependency order. First taste is small fixture
-pictures on screen and one photo opened; names and globe come later. Then continue
-to 100% (22/22) fresh-verifier-backed Checks. [STATUS.md](STATUS.md) records what
-actually passed, not what the help file promises.
+pictures on screen and one photo opened; names and globe come later. The
+family-PC gate after A+B+C is the UI-SPEC **Presentable for family PC**
+checklist — close gaps on that path before treating S13 settings as the
+next taste job. Then continue to 100% (22/22) fresh-verifier-backed
+Checks. [STATUS.md](STATUS.md) records what actually passed, not what the
+help file promises.

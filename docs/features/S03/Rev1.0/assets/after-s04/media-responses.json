@@ -1,0 +1,71 @@
+{
+  "thumb": {
+    "status": 200,
+    "contentType": "image/webp",
+    "contentLength": 1740,
+    "contentRange": null,
+    "bodyLength": 1740,
+    "sha256": "8c63909eee5621bf5a713c5ad0094e81a3819392c1d06c08fffa2055313be27c",
+    "body": null
+  },
+  "preview": {
+    "status": 200,
+    "contentType": "image/webp",
+    "contentLength": 4154,
+    "contentRange": null,
+    "bodyLength": 4154,
+    "sha256": "f712a3f5860dc08389bd9030be0a198d4d6ec9841163ee1225b755b6c5805023",
+    "body": null
+  },
+  "original": {
+    "status": 200,
+    "contentType": "image/jpeg",
+    "contentLength": 21251,
+    "contentRange": null,
+    "bodyLength": 21251,
+    "sha256": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+    "body": null
+  },
+  "range": {
+    "status": 206,
+    "contentType": "image/webp",
+    "contentLength": 1,
+    "contentRange": "bytes 0-0/1740",
+    "bodyLength": 1,
+    "sha256": "8c2574892063f995fdf756bce07f46c1a5193e54cd52837ed91e32008ccf41ac",
+    "body": null
+  },
+  "badRange": {
+    "status": 416,
+    "contentType": "application/json",
+    "contentLength": 25,
+    "contentRange": null,
+    "bodyLength": 25,
+    "sha256": "53a9beda5df606f8f0b0b6b8f54e27bbc240e55a93acd5ae5b58d69446ddb2d3",
+    "body": {
+      "error": "invalid-range"
+    }
+  },
+  "unknownId": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": 21,
+    "contentRange": null,
+    "bodyLength": 21,
+    "sha256": "803cb0e9b33bf52c5617f82d9857d432d8b080c0d2adc0a8bf7727bd04547256",
+    "body": {
+      "error": "not-found"
+    }
+  },
+  "deletedPreview": {
+    "status": 404,
+    "contentType": "application/json",
+    "contentLength": 31,
+    "contentRange": null,
+    "bodyLength": 31,
+    "sha256": "ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7",
+    "body": {
+      "error": "preview-unavailable"
+    }
+  }
+}

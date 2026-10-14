@@ -1,21 +1,21 @@
 {
   "slice": "S00",
-  "pass": true,
+  "pass": false,
   "assertions": [
     {
       "name": "python-3.12+",
       "pass": true,
-      "detail": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      "detail": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
     },
     {
       "name": "ffmpeg-present",
       "pass": true,
-      "detail": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+      "detail": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers"
     },
     {
       "name": "ffprobe-present",
       "pass": true,
-      "detail": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers"
+      "detail": "ffprobe version 6.1.1-3ubuntu5 Copyright (c) 2007-2023 the FFmpeg developers"
     },
     {
       "name": "server-does-not-import-pillow",
@@ -30,7 +30,7 @@
     {
       "name": "committed-manifest-exists",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\manifest.json"
+      "detail": "/workspace/tests/fixtures/manifest.json"
     },
     {
       "name": "fixture-listed:a/IMG_1042.jpg",
@@ -165,7 +165,7 @@
     {
       "name": "fixture-exists:a/IMG_1042.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\a\\IMG_1042.jpg"
+      "detail": "/workspace/tests/fixtures/media/a/IMG_1042.jpg"
     },
     {
       "name": "fixture-hash:a/IMG_1042.jpg",
@@ -179,8 +179,8 @@
     },
     {
       "name": "fixture-mtime:a/IMG_1042.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:a/IMG_1042.jpg",
@@ -190,7 +190,7 @@
     {
       "name": "fixture-exists:a/near.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\a\\near.jpg"
+      "detail": "/workspace/tests/fixtures/media/a/near.jpg"
     },
     {
       "name": "fixture-hash:a/near.jpg",
@@ -204,8 +204,8 @@
     },
     {
       "name": "fixture-mtime:a/near.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:a/near.jpg",
@@ -215,7 +215,7 @@
     {
       "name": "fixture-exists:b/far.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\far.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/far.jpg"
     },
     {
       "name": "fixture-hash:b/far.jpg",
@@ -229,8 +229,8 @@
     },
     {
       "name": "fixture-mtime:b/far.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/far.jpg",
@@ -240,7 +240,7 @@
     {
       "name": "fixture-exists:b/no-exif.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\no-exif.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/no-exif.jpg"
     },
     {
       "name": "fixture-hash:b/no-exif.jpg",
@@ -254,8 +254,8 @@
     },
     {
       "name": "fixture-mtime:b/no-exif.jpg",
-      "pass": true,
-      "detail": "want 2022-02-03T04:05:06Z got 2022-02-03T04:05:06Z"
+      "pass": false,
+      "detail": "want 2022-02-03T04:05:06Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/no-exif.jpg",
@@ -265,7 +265,7 @@
     {
       "name": "fixture-exists:b/created.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\created.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/created.jpg"
     },
     {
       "name": "fixture-hash:b/created.jpg",
@@ -279,8 +279,8 @@
     },
     {
       "name": "fixture-mtime:b/created.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/created.jpg",
@@ -290,7 +290,7 @@
     {
       "name": "fixture-exists:b/holiday_20200102.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\holiday_20200102.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/holiday_20200102.jpg"
     },
     {
       "name": "fixture-hash:b/holiday_20200102.jpg",
@@ -304,8 +304,8 @@
     },
     {
       "name": "fixture-mtime:b/holiday_20200102.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/holiday_20200102.jpg",
@@ -315,7 +315,7 @@
     {
       "name": "fixture-exists:b/holiday_2020-01-03.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\holiday_2020-01-03.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/holiday_2020-01-03.jpg"
     },
     {
       "name": "fixture-hash:b/holiday_2020-01-03.jpg",
@@ -329,8 +329,8 @@
     },
     {
       "name": "fixture-mtime:b/holiday_2020-01-03.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/holiday_2020-01-03.jpg",
@@ -340,7 +340,7 @@
     {
       "name": "fixture-exists:b/oriented.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\b\\oriented.jpg"
+      "detail": "/workspace/tests/fixtures/media/b/oriented.jpg"
     },
     {
       "name": "fixture-hash:b/oriented.jpg",
@@ -354,8 +354,8 @@
     },
     {
       "name": "fixture-mtime:b/oriented.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:b/oriented.jpg",
@@ -365,7 +365,7 @@
     {
       "name": "fixture-exists:live/LIVE_0001.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\live\\LIVE_0001.jpg"
+      "detail": "/workspace/tests/fixtures/media/live/LIVE_0001.jpg"
     },
     {
       "name": "fixture-hash:live/LIVE_0001.jpg",
@@ -379,8 +379,8 @@
     },
     {
       "name": "fixture-mtime:live/LIVE_0001.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:live/LIVE_0001.jpg",
@@ -390,7 +390,7 @@
     {
       "name": "fixture-exists:family/\u65c5\u884c photo.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\family\\\u65c5\u884c photo.jpg"
+      "detail": "/workspace/tests/fixtures/media/family/\u65c5\u884c photo.jpg"
     },
     {
       "name": "fixture-hash:family/\u65c5\u884c photo.jpg",
@@ -404,8 +404,8 @@
     },
     {
       "name": "fixture-mtime:family/\u65c5\u884c photo.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:family/\u65c5\u884c photo.jpg",
@@ -415,7 +415,7 @@
     {
       "name": "fixture-exists:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\nested\\deep\\level03\\level04\\level05\\dir\\dir\\dir\\raw_relative_path_would_make_a_bad_pending_json_filename.jpg"
+      "detail": "/workspace/tests/fixtures/media/nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg"
     },
     {
       "name": "fixture-hash:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
@@ -429,8 +429,8 @@
     },
     {
       "name": "fixture-mtime:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
@@ -440,7 +440,7 @@
     {
       "name": "fixture-exists:a/clip.mp4",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\a\\clip.mp4"
+      "detail": "/workspace/tests/fixtures/media/a/clip.mp4"
     },
     {
       "name": "fixture-hash:a/clip.mp4",
@@ -454,8 +454,8 @@
     },
     {
       "name": "fixture-mtime:a/clip.mp4",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:a/clip.mp4",
@@ -465,7 +465,7 @@
     {
       "name": "fixture-exists:live/LIVE_0001.mov",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\live\\LIVE_0001.mov"
+      "detail": "/workspace/tests/fixtures/media/live/LIVE_0001.mov"
     },
     {
       "name": "fixture-hash:live/LIVE_0001.mov",
@@ -479,8 +479,8 @@
     },
     {
       "name": "fixture-mtime:live/LIVE_0001.mov",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:live/LIVE_0001.mov",
@@ -490,7 +490,7 @@
     {
       "name": "fixture-exists:formats/quad.png",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.png"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.png"
     },
     {
       "name": "fixture-hash:formats/quad.png",
@@ -504,8 +504,8 @@
     },
     {
       "name": "fixture-mtime:formats/quad.png",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.png",
@@ -515,7 +515,7 @@
     {
       "name": "fixture-exists:formats/quad.gif",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.gif"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.gif"
     },
     {
       "name": "fixture-hash:formats/quad.gif",
@@ -529,8 +529,8 @@
     },
     {
       "name": "fixture-mtime:formats/quad.gif",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.gif",
@@ -540,7 +540,7 @@
     {
       "name": "fixture-exists:formats/quad.webp",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.webp"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.webp"
     },
     {
       "name": "fixture-hash:formats/quad.webp",
@@ -554,8 +554,8 @@
     },
     {
       "name": "fixture-mtime:formats/quad.webp",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.webp",
@@ -565,7 +565,7 @@
     {
       "name": "fixture-exists:formats/quad.tiff",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.tiff"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.tiff"
     },
     {
       "name": "fixture-hash:formats/quad.tiff",
@@ -579,8 +579,8 @@
     },
     {
       "name": "fixture-mtime:formats/quad.tiff",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.tiff",
@@ -590,7 +590,7 @@
     {
       "name": "fixture-exists:formats/quad.bmp",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.bmp"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.bmp"
     },
     {
       "name": "fixture-hash:formats/quad.bmp",
@@ -604,8 +604,8 @@
     },
     {
       "name": "fixture-mtime:formats/quad.bmp",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.bmp",
@@ -615,7 +615,7 @@
     {
       "name": "fixture-exists:formats/quad.heic",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.heic"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.heic"
     },
     {
       "name": "fixture-hash:formats/quad.heic",
@@ -629,13 +629,13 @@
     },
     {
       "name": "fixture-mtime:formats/quad.heic",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.heic",
-      "pass": true,
-      "detail": ""
+      "pass": false,
+      "detail": "kind: expected 'photo' got None; width: expected 640 got None; height: expected 480 got None"
     },
     {
       "name": "heif-ftyp:formats/quad.heic",
@@ -645,7 +645,7 @@
     {
       "name": "fixture-exists:formats/quad.heif",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\quad.heif"
+      "detail": "/workspace/tests/fixtures/media/formats/quad.heif"
     },
     {
       "name": "fixture-hash:formats/quad.heif",
@@ -659,13 +659,13 @@
     },
     {
       "name": "fixture-mtime:formats/quad.heif",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/quad.heif",
-      "pass": true,
-      "detail": ""
+      "pass": false,
+      "detail": "kind: expected 'photo' got None; width: expected 640 got None; height: expected 480 got None"
     },
     {
       "name": "heif-ftyp:formats/quad.heif",
@@ -675,7 +675,7 @@
     {
       "name": "fixture-exists:formats/clip.mov",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\clip.mov"
+      "detail": "/workspace/tests/fixtures/media/formats/clip.mov"
     },
     {
       "name": "fixture-hash:formats/clip.mov",
@@ -689,8 +689,8 @@
     },
     {
       "name": "fixture-mtime:formats/clip.mov",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/clip.mov",
@@ -700,7 +700,7 @@
     {
       "name": "fixture-exists:formats/clip.m4v",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\clip.m4v"
+      "detail": "/workspace/tests/fixtures/media/formats/clip.m4v"
     },
     {
       "name": "fixture-hash:formats/clip.m4v",
@@ -714,8 +714,8 @@
     },
     {
       "name": "fixture-mtime:formats/clip.m4v",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/clip.m4v",
@@ -725,7 +725,7 @@
     {
       "name": "fixture-exists:formats/clip.mkv",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\clip.mkv"
+      "detail": "/workspace/tests/fixtures/media/formats/clip.mkv"
     },
     {
       "name": "fixture-hash:formats/clip.mkv",
@@ -739,8 +739,8 @@
     },
     {
       "name": "fixture-mtime:formats/clip.mkv",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/clip.mkv",
@@ -750,7 +750,7 @@
     {
       "name": "fixture-exists:formats/clip.avi",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\clip.avi"
+      "detail": "/workspace/tests/fixtures/media/formats/clip.avi"
     },
     {
       "name": "fixture-hash:formats/clip.avi",
@@ -764,8 +764,8 @@
     },
     {
       "name": "fixture-mtime:formats/clip.avi",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/clip.avi",
@@ -775,7 +775,7 @@
     {
       "name": "fixture-exists:formats/clip.webm",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\clip.webm"
+      "detail": "/workspace/tests/fixtures/media/formats/clip.webm"
     },
     {
       "name": "fixture-hash:formats/clip.webm",
@@ -789,8 +789,8 @@
     },
     {
       "name": "fixture-mtime:formats/clip.webm",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "fixture-metadata:formats/clip.webm",
@@ -800,7 +800,7 @@
     {
       "name": "fixture-exists:formats/broken.heic",
       "pass": true,
-      "detail": "J:\\slyOS\\projects\\photoLibrary\\tests\\fixtures\\media\\formats\\broken.heic"
+      "detail": "/workspace/tests/fixtures/media/formats/broken.heic"
     },
     {
       "name": "fixture-hash:formats/broken.heic",
@@ -814,8 +814,8 @@
     },
     {
       "name": "fixture-mtime:formats/broken.heic",
-      "pass": true,
-      "detail": "want 2022-01-01T00:00:00Z got 2022-01-01T00:00:00Z"
+      "pass": false,
+      "detail": "want 2022-01-01T00:00:00Z got 2026-10-13T16:30:22Z"
     },
     {
       "name": "broken-heic-invalid",
@@ -970,7 +970,7 @@
     {
       "name": "refuse-unmarked-nonempty-root",
       "pass": true,
-      "detail": "refusing nonempty root without library-data/.fixture-root: J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\unmarked-root"
+      "detail": "refusing nonempty root without library-data/.fixture-root: /workspace/docs/features/S00/Rev1.0/assets/after-s03/unmarked-root"
     },
     {
       "name": "first-open-settings-exit",
@@ -1040,17 +1040,17 @@
     {
       "name": "runtime-pid",
       "pass": true,
-      "detail": "runtime=29820 popen=29820"
+      "detail": "runtime=7633 popen=7633"
     },
     {
       "name": "runtime-root",
       "pass": true,
-      "detail": "C:\\Users\\sly2.0\\AppData\\Local\\Temp\\library-s00-after-s03\\library-data"
+      "detail": "/tmp/s00-after-s03/library-data"
     },
     {
       "name": "runtime-url",
       "pass": true,
-      "detail": "http://127.0.0.1:18765/"
+      "detail": "http://127.0.0.1:18766/"
     },
     {
       "name": "empty-page-title",
@@ -1075,12 +1075,12 @@
     {
       "name": "reopen-url",
       "pass": true,
-      "detail": "http://127.0.0.1:18765/"
+      "detail": "http://127.0.0.1:18766/"
     },
     {
       "name": "reopen-same-pid",
       "pass": true,
-      "detail": "first=29820 second=29820"
+      "detail": "first=7633 second=7633"
     },
     {
       "name": "http-set-port",
@@ -1150,7 +1150,7 @@
     {
       "name": "server-log-404-line",
       "pass": true,
-      "detail": "2026-10-13T16:28:31.712334Z\t/api/settings\tinvalid-argument\n2026-10-13T16:28:31.715671Z\t/api/settings\tinvalid-argument\n2026-10-13T16:28:31.743091Z\t/api/settings\tinvalid-argument\n2026-10-13T16:28:31.747853Z\t/api/media/missing?which=original\tnot-found\n"
+      "detail": "2026-10-13T16:52:21.294552Z\t/api/settings\tinvalid-argument\n2026-10-13T16:52:21.296624Z\t/api/settings\tinvalid-argument\n2026-10-13T16:52:21.297584Z\t/api/settings\tinvalid-argument\n2026-10-13T16:52:21.298823Z\t/api/media/missing?which=original\tnot-found\n"
     },
     {
       "name": "unknown-asset-404",
@@ -1160,7 +1160,7 @@
     {
       "name": "history-501-writes",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'previewStore': 'with-server', 'unavailableItems': 'show', 'addFolderDefault': 'ask', 'playProxies': 'days-and-all', 'listenHost': '127.0.0.1', 'port': 18765, 'thumbPx': 320, 'previewPx': 1600, 'proxyWidth': 480, 'placeMatchMeters': 100, 'tourOrbitSec': 8, 'tourPictures': 501, 'tourPictureSec': 3, 'sort': 'date', 'dir': 'desc', 'zoomLevel': 'years'}"
+      "detail": "{'schemaVersion': 1, 'previewStore': 'with-server', 'unavailableItems': 'show', 'addFolderDefault': 'ask', 'playProxies': 'days-and-all', 'listenHost': '127.0.0.1', 'port': 18766, 'thumbPx': 320, 'previewPx': 1600, 'proxyWidth': 480, 'placeMatchMeters': 100, 'tourOrbitSec': 8, 'tourPictures': 501, 'tourPictureSec': 3, 'sort': 'date', 'dir': 'desc', 'zoomLevel': 'years'}"
     },
     {
       "name": "history-cap-500",
@@ -1195,7 +1195,7 @@
     {
       "name": "default-port-pid",
       "pass": true,
-      "detail": "36068"
+      "detail": "8170"
     },
     {
       "name": "default-port-reopen",
@@ -1205,7 +1205,7 @@
     {
       "name": "default-port-same-pid",
       "pass": true,
-      "detail": "36068"
+      "detail": "8170"
     },
     {
       "name": "default-port-stopped",
@@ -1259,23 +1259,23 @@
     }
   ],
   "platform": {
-    "system": "Windows",
-    "release": "11",
-    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
-  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
-  "revision": "18f28e52e6622a499ec02e2155d2585811cb0934",
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "02dc6d44a92646aa768472d2bc9a3691fdf7217a",
   "commands": [
     "python -m tests.qa fixtures --output <sandbox>",
     "python -m library settings get"
   ],
   "artifactPaths": {
-    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\result.json",
-    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\stdout.log",
-    "health.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\health.json",
-    "settings.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\settings.json",
-    "recovery.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\recovery.json",
-    "dependency-probe.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\dependency-probe.log",
-    "fixture-manifest.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S00\\Rev1.0\\assets\\after-s03\\fixture-manifest.json"
+    "result.json": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/result.json",
+    "stdout.log": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/stdout.log",
+    "health.json": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/health.json",
+    "settings.json": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/settings.json",
+    "recovery.json": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/recovery.json",
+    "dependency-probe.log": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/dependency-probe.log",
+    "fixture-manifest.json": "/workspace/docs/features/S00/Rev1.0/assets/after-s03/fixture-manifest.json"
   }
 }

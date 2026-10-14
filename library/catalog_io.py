@@ -13,11 +13,15 @@ from library.records import (
     location_key,
     make_file_entry,
     ordered_item,
+    ordered_person,
     ordered_place,
     ordered_source,
+    ordered_thing,
     read_item,
+    read_person,
     read_place,
     read_source,
+    read_thing,
     renditions_for,
 )
 from library.volumes import same_origin, source_available
@@ -39,10 +43,20 @@ def places_dir(root: Path) -> Path:
     return catalog_root(root) / "places"
 
 
+def people_dir(root: Path) -> Path:
+    return catalog_root(root) / "people"
+
+
+def things_dir(root: Path) -> Path:
+    return catalog_root(root) / "things"
+
+
 def ensure_catalog_dirs(root: Path) -> None:
     items_dir(root).mkdir(parents=True, exist_ok=True)
     sources_dir(root).mkdir(parents=True, exist_ok=True)
     places_dir(root).mkdir(parents=True, exist_ok=True)
+    people_dir(root).mkdir(parents=True, exist_ok=True)
+    things_dir(root).mkdir(parents=True, exist_ok=True)
 
 
 def item_rel(item_id: str) -> str:
@@ -55,6 +69,14 @@ def source_rel(source_id: str) -> str:
 
 def place_rel(place_id: str) -> str:
     return f"catalog/places/{place_id}.json"
+
+
+def person_rel(person_id: str) -> str:
+    return f"catalog/people/{person_id}.json"
+
+
+def thing_rel(thing_id: str) -> str:
+    return f"catalog/things/{thing_id}.json"
 
 
 def iter_source_ids(root: Path) -> list[str]:
@@ -142,6 +164,66 @@ def new_place_id(root: Path) -> str:
     raise fail("internal-error")
 
 
+def iter_person_ids(root: Path) -> list[str]:
+    folder = people_dir(root)
+    if not folder.exists():
+        return []
+    return sorted(path.stem for path in folder.glob("*.json"))
+
+
+def iter_thing_ids(root: Path) -> list[str]:
+    folder = things_dir(root)
+    if not folder.exists():
+        return []
+    return sorted(path.stem for path in folder.glob("*.json"))
+
+
+def load_person(root: Path, person_id: str) -> dict[str, Any]:
+    path = people_dir(root) / f"{person_id}.json"
+    try:
+        return read_person(load_json(path))
+    except FileNotFoundError as exc:
+        raise fail("not-found") from exc
+    except OSError as exc:
+        raise fail("io-error") from exc
+
+
+def load_thing(root: Path, thing_id: str) -> dict[str, Any]:
+    path = things_dir(root) / f"{thing_id}.json"
+    try:
+        return read_thing(load_json(path))
+    except FileNotFoundError as exc:
+        raise fail("not-found") from exc
+    except OSError as exc:
+        raise fail("io-error") from exc
+
+
+def new_person_id(root: Path) -> str:
+    existing = set(iter_person_ids(root))
+    for _ in range(32):
+        candidate = "person_" + secrets.token_hex(6)
+        if candidate not in existing:
+            return candidate
+    raise fail("internal-error")
+
+
+def new_thing_id(root: Path) -> str:
+    existing = set(iter_thing_ids(root))
+    for _ in range(32):
+        candidate = "thing_" + secrets.token_hex(6)
+        if candidate not in existing:
+            return candidate
+    raise fail("internal-error")
+
+
+def load_people(root: Path) -> list[dict[str, Any]]:
+    return [load_person(root, person_id) for person_id in iter_person_ids(root)]
+
+
+def load_things(root: Path) -> list[dict[str, Any]]:
+    return [load_thing(root, thing_id) for thing_id in iter_thing_ids(root)]
+
+
 def new_source_id(root: Path) -> str:
     existing = set(iter_source_ids(root))
     for _ in range(32):
@@ -156,6 +238,21 @@ def find_source_by_origin(root: Path, serial: str, path_from_root: str) -> dict[
         source = load_source(root, source_id)
         if same_origin(source, serial, path_from_root):
             return source
+    return None
+
+
+def file_key_for_location(source: dict[str, Any], item_id: str, location: dict[str, Any]) -> str | None:
+    for key, entry in (source.get("files") or {}).items():
+        if entry.get("itemId") == item_id:
+            return key
+    dest = location.get("libraryRelativePath")
+    if type(dest) is str and dest:
+        for key, entry in (source.get("files") or {}).items():
+            if entry.get("destination") == dest:
+                return key
+    path = location.get("pathFromVolumeRoot")
+    if type(path) is str:
+        return relative_from_origin(source, path)
     return None
 
 
@@ -177,19 +274,62 @@ def source_read(source: dict[str, Any], root: Path) -> dict[str, Any]:
     return out
 
 
-def item_read(item: dict[str, Any], root: Path) -> dict[str, Any]:
+def try_load_person(root: Path, person_id: str) -> dict[str, Any] | None:
+    path = people_dir(root) / f"{person_id}.json"
+    if not path.exists():
+        return None
+    return read_person(load_json(path))
+
+
+def try_load_thing(root: Path, thing_id: str) -> dict[str, Any] | None:
+    path = things_dir(root) / f"{thing_id}.json"
+    if not path.exists():
+        return None
+    return read_thing(load_json(path))
+
+
+def item_read(
+    item: dict[str, Any],
+    root: Path,
+    favorites: set[str] | None = None,
+) -> dict[str, Any]:
+    from library.favorites import favorite_ids
     from library.volumes import item_available, item_motion_available
 
     out = ordered_item(item)
     out["available"] = item_available(item, root)
     out["motionAvailable"] = item_motion_available(item, root)
+    marked = favorite_ids(root) if favorites is None else favorites
+    out["favorite"] = item.get("id") in marked
     places: list[dict[str, Any]] = []
     place_id = item.get("placeId")
     if type(place_id) is str and place_id:
         place = try_load_place(root, place_id)
         if place is not None:
             places = [ordered_place(place)]
-    out["entities"] = {"people": [], "places": places, "things": []}
+    people: list[dict[str, Any]] = []
+    seen_people: set[str] = set()
+    for face in item.get("faces") or []:
+        person_id = face.get("personId")
+        if type(person_id) is not str or person_id in seen_people:
+            continue
+        person = try_load_person(root, person_id)
+        if person is not None:
+            people.append(ordered_person(person))
+            seen_people.add(person_id)
+    people.sort(key=lambda rec: rec["id"])
+    things: list[dict[str, Any]] = []
+    seen_things: set[str] = set()
+    for ref in item.get("things") or []:
+        thing_id = ref.get("thingId")
+        if type(thing_id) is not str or thing_id in seen_things:
+            continue
+        thing = try_load_thing(root, thing_id)
+        if thing is not None:
+            things.append(ordered_thing(thing))
+            seen_things.add(thing_id)
+    things.sort(key=lambda rec: rec["id"])
+    out["entities"] = {"people": people, "places": places, "things": things}
     return out
 
 
@@ -261,7 +401,7 @@ def pending_item_ids(root: Path) -> list[str]:
 
 
 def finish_pending_publications(root: Path) -> list[str]:
-    from library.history import plan_extend_entry, scan_entry_id
+    from library.history import extend_current_operation
 
     finished: list[str] = []
     for item_id in pending_item_ids(root):
@@ -277,8 +417,8 @@ def finish_pending_publications(root: Path) -> list[str]:
             continue
         published = publish_pending(root, pending)
         before_source = clone(source)
-        rel = relative_from_origin(source, pending["locations"][0]["pathFromVolumeRoot"])
-        entry = source["files"].get(rel)
+        rel = file_key_for_location(source, pending["id"], pending["locations"][0])
+        entry = source["files"].get(rel) if rel is not None else None
         if entry is not None:
             entry["itemId"] = published["id"]
             entry["sha256"] = sha256
@@ -305,16 +445,36 @@ def finish_pending_publications(root: Path) -> list[str]:
                 "after": ordered_source(source),
             },
         ]
-        entry_id = scan_entry_id(root)
-        if entry_id is not None:
-            changes = plan_extend_entry(root, entry_id, changes)
-        transact(root, changes)
+        from library.annotate import plan_rebase_pending
+
+        changes.extend(plan_rebase_pending(root, pending["id"], published))
+        from library.favorites import plan_remap_favorite
+
+        changes.extend(plan_remap_favorite(root, pending["id"], published["id"]))
+        transact(root, extend_current_operation(root, changes))
         finished.append(published["id"])
     return finished
 
 
+def _live_renditions_from_still(still_item: dict[str, Any]) -> dict[str, Any]:
+    rend = still_item.get("renditions") or {}
+    out = renditions_for(
+        "live",
+        rend.get("sourceId") or still_item["locations"][0]["sourceId"],
+        store=rend.get("store") or "with-server",
+    )
+    status = rend.get("status") or {}
+    for slot in ("thumb", "preview"):
+        slot_status = status.get(slot)
+        if slot_status in {"ready", "error"}:
+            out[slot] = rend.get(slot)
+            out["status"][slot] = slot_status
+    return out
+
+
 def pair_live_items(root: Path, source_id: str) -> None:
-    from library.history import plan_extend_entry, scan_entry_id
+    from library.annotate import plan_absorb_item_refs
+    from library.history import extend_current_operation, latest_entry_id
 
     stills: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     motions: dict[str, list[tuple[str, dict[str, Any]]]] = {}
@@ -341,7 +501,9 @@ def pair_live_items(root: Path, source_id: str) -> None:
         motion_list.sort(key=lambda pair: pair[0])
         still_item = clone(still_list[0][1])
         motion_item = clone(motion_list[0][1])
-        if still_item["id"] == motion_item["id"] and still_item["kind"] == "live":
+        if still_item["id"] == motion_item["id"]:
+            continue
+        if still_item["kind"] != "photo" or motion_item["kind"] != "video":
             continue
         before_still = try_load_item(root, still_item["id"])
         before_motion = try_load_item(root, motion_item["id"])
@@ -349,14 +511,15 @@ def pair_live_items(root: Path, source_id: str) -> None:
         live["kind"] = "live"
         live["id"] = still_item["id"]
         for loc in motion_item["locations"]:
-            live = merge_location(live, loc)
+            if loc.get("component") == "motion":
+                live = merge_location(live, loc)
         live = merge_associations(live, motion_item)
-        live["renditions"] = renditions_for("live", source_id)
+        live["renditions"] = _live_renditions_from_still(still_item)
         live = ordered_item(live)
         source = load_source(root, source_id)
         before_source = clone(source)
         for rel, entry in list(source["files"].items()):
-            if entry["itemId"] == motion_item["id"]:
+            if entry["itemId"] == motion_item["id"] and entry.get("component") == "motion":
                 entry["itemId"] = live["id"]
                 entry["component"] = "motion"
                 source["files"][rel] = make_file_entry(
@@ -382,7 +545,12 @@ def pair_live_items(root: Path, source_id: str) -> None:
                 "after": ordered_source(source),
             }
         )
-        entry_id = scan_entry_id(root)
-        if entry_id is not None:
-            changes = plan_extend_entry(root, entry_id, changes)
-        transact(root, changes)
+        changes.extend(
+            plan_absorb_item_refs(
+                root,
+                motion_item["id"],
+                live,
+                skip_entry_id=latest_entry_id(root),
+            )
+        )
+        transact(root, extend_current_operation(root, changes))

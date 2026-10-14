@@ -1,0 +1,253 @@
+{
+  "check": "GEO",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "lookup-without-pack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pack-missing",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-geo-from-fixture",
+      "pass": true,
+      "detail": "exit=0 {'ok': True, 'path': 'geo/cities.csv', 'cityCount': 3, 'downloaded': False, 'source': 'local'} err="
+    },
+    {
+      "name": "pack-ready-after-from",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lookup-chicago",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lookup-near",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lookup-nyc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-geo-existing-noop",
+      "pass": true,
+      "detail": "{'ok': True, 'path': 'geo/cities.csv', 'cityCount': 3, 'downloaded': False, 'source': 'existing'}"
+    },
+    {
+      "name": "convert-header",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-chicago",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-root-pack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-scan-ok",
+      "pass": true,
+      "detail": "exit=0 {'sourceId': 'src_f38367866880', 'added': 4, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "named-two-gps-places",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "named-img-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-near-same",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-far-other",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-no-gps",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "named-img-chicago",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'place_1e478ecdb35f', 'name': 'Chicago, Illinois', 'latitude': 41.88, 'longitude': -87.63}"
+    },
+    {
+      "name": "named-far-chicago",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': 'place_d4faa120b90a', 'name': 'Chicago, Illinois', 'latitude': 41.925, 'longitude': -87.63}"
+    },
+    {
+      "name": "search-chicago-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "search-chicago-has-img",
+      "pass": true,
+      "detail": "['near.jpg', 'IMG_1042.jpg', 'far.jpg']"
+    },
+    {
+      "name": "search-chicago-omits-no-exif",
+      "pass": true,
+      "detail": "['near.jpg', 'IMG_1042.jpg', 'far.jpg']"
+    },
+    {
+      "name": "search-scope-places",
+      "pass": true,
+      "detail": "['near.jpg', 'IMG_1042.jpg', 'far.jpg']"
+    },
+    {
+      "name": "info-entities-place-name",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_1e478ecdb35f\", \"name\": \"Chicago, Illinois\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "keep-scan",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'kind': 'photo', 'filename': 'IMG_1042.jpg', 'capturedAt': '2024-06-12T15:04:00', 'capturedAtSource': 'exif', 'placeId': 'place_2a3a4b2a424a', 'metadata': {'width': 640, 'height': 480, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': 41.88, 'longitude': -87.63}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_d04098fda2b2', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'tmp/qa-geo/artifacts/keep-name-media/a/IMG_1042.jpg', 'lastKnownPath': '/tmp/qa-geo/artifacts/keep-name-media/a/IMG_1042.jpg', 'sizeBytes': 15274, 'modifiedAt': '2026-10-13T17:38:55.358054Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_d04098fda2b2', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+    },
+    {
+      "name": "keep-annotate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "keep-kitchen-after-annotate",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_2a3a4b2a424a\", \"name\": \"Kitchen\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "keep-analyze-noop",
+      "pass": true,
+      "detail": "{'ok': True, 'named': 0, 'skipped': 1, 'packReady': True}"
+    },
+    {
+      "name": "keep-kitchen-after-analyze",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_2a3a4b2a424a\", \"name\": \"Kitchen\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "keep-rescan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "keep-kitchen-after-rescan",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_2a3a4b2a424a\", \"name\": \"Kitchen\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "backfill-starts-null",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_ffa7ced67fe6\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "analyze-without-pack",
+      "pass": true,
+      "detail": "{'ok': True, 'named': 0, 'skipped': 1, 'packReady': False}"
+    },
+    {
+      "name": "backfill-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "backfill-named-one",
+      "pass": true,
+      "detail": "{'ok': True, 'named': 1, 'skipped': 0, 'packReady': True}"
+    },
+    {
+      "name": "backfill-chicago",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_ffa7ced67fe6\", \"name\": \"Chicago, Illinois\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "http-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-scan-null-name",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_5f0b51df70a4\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "http-analyze-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-analyze-named",
+      "pass": true,
+      "detail": "{\"ok\": true, \"named\": 1, \"skipped\": 0, \"packReady\": true}"
+    },
+    {
+      "name": "http-search-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-search-img",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    },
+    {
+      "name": "http-search-no-exif",
+      "pass": true,
+      "detail": "['IMG_1042.jpg']"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "010948946c0195a54760e57bb211474843674a7e",
+  "commands": [
+    "python -m library setup-geo --from tests/fixtures/geo",
+    "python -m library setup-geo --from tests/fixtures/geo",
+    "python -m library scan <three-jpeg+no-exif> --serve-from-there",
+    "python -m library items --q Chicago",
+    "python -m library items --q chicago --scope places",
+    "python -m library annotate <id> --place Kitchen",
+    "python -m library analyze-places",
+    "python -m library scan <keep-name-media> --serve-from-there",
+    "python -m library scan <img> --serve-from-there # no pack",
+    "python -m library setup-geo --from tests/fixtures/geo",
+    "python -m library analyze-places",
+    "python -m library scan <http-media> --serve-from-there",
+    "POST /api/places/analyze"
+  ],
+  "artifactPaths": {
+    "result.json": "/tmp/qa-geo/artifacts/result.json",
+    "stdout.log": "/tmp/qa-geo/artifacts/stdout.log",
+    "named-places": "/tmp/qa-geo/artifacts/named-places"
+  }
+}

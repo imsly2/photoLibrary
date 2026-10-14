@@ -1,0 +1,506 @@
+{
+  "check": "F4",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "choice-required-exit",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "choice-required-code",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "cli-flag-wins-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-link-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-no-originals",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-has-originals",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "implicit-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "implicit-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-added-2",
+      "pass": true,
+      "detail": "{\"sourceId\": \"src_8dc944bc469e\", \"added\": 2, \"skipped\": 0, \"errors\": []}"
+    },
+    {
+      "name": "f4-one-copied-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "f4-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-root-shape",
+      "pass": true,
+      "detail": "originals/f4-copy-media-src_8dc944bc469e"
+    },
+    {
+      "name": "f4-copied-photo",
+      "pass": true,
+      "detail": "/tmp/s05-verify-f4/library-data/originals/f4-copy-media-src_8dc944bc469e/a/photo.jpg"
+    },
+    {
+      "name": "f4-copied-clip",
+      "pass": true,
+      "detail": "/tmp/s05-verify-f4/library-data/originals/f4-copy-media-src_8dc944bc469e/a/clip.mp4"
+    },
+    {
+      "name": "f4-structure-kept",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-source-bytes-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-two-items",
+      "pass": true,
+      "detail": "['photo.jpg', 'clip.mp4']"
+    },
+    {
+      "name": "f4-filenames",
+      "pass": true,
+      "detail": "{'photo.jpg', 'clip.mp4'}"
+    },
+    {
+      "name": "f4-loc0-library-relative:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-no-partial-path:photo.jpg",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-loc0-library-relative:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-no-partial-path:clip.mp4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "copied-items-artifact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-no-extra-originals",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "f4-two-sources",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "f4-linked-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-linked-kind-volume:no-exif.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_7e9e0d05213e\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/f4-link-media/b/no-exif.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/f4-link-media/b/no-exif.jpg\", \"sizeBytes\": 13170, \"modifiedAt\": \"2022-02-03T04:05:06Z\", \"sha256\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}]"
+    },
+    {
+      "name": "f4-linked-kind-volume:far.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_7e9e0d05213e\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/f4-link-media/b/far.jpg\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/f4-link-media/b/far.jpg\", \"sizeBytes\": 12289, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}]"
+    },
+    {
+      "name": "collision-seed-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-rescan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-wrote-photo-3",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_8df566ed1db2/keep.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_8df566ed1db2/photo_2.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_8df566ed1db2/photo.jpg'), PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_8df566ed1db2/photo_3.jpg')]"
+    },
+    {
+      "name": "collision-seed-a-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-seed-b-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-not-overwrite-photo",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-item-filename",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-record-points-photo-3",
+      "pass": true,
+      "detail": "originals/collision-media-src_8df566ed1db2/photo_3.jpg"
+    },
+    {
+      "name": "collision-display-name",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-exit-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"copy-partial\"}\n"
+    },
+    {
+      "name": "interrupt-barrier",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"copy-partial\"}\n"
+    },
+    {
+      "name": "interrupt-no-published-original",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "interrupt-partial-present",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/interrupt-root/originals/interrupt-media-src_45bc3d6061a1/photo.jpg.partial-src_45bc3d6061a1')]"
+    },
+    {
+      "name": "interrupt-partial-not-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-mapping-persisted",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"src_45bc3d6061a1\", \"name\": \"interrupt-media\", \"mode\": \"copy-here\", \"origin\": {\"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/interrupt-media\", \"lastKnownPath\": \"/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/interrupt-media\"}, \"copyRoot\": \"originals/interrupt-media-src_45bc3d6061a1\", \"previewStore\": null, \"files\": {\"photo.jpg\": {\"destination\": \"originals/interrupt-media-src_45bc3d6061a1/photo.jpg\", \"itemId\": \"pending-src_45bc3d6061a1-aff6100bd4df0ea66736e1d3304208069a0f24303e21b43422398c935540a236\", \"component\": \"still\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"state\": \"pending\"}}, \"scan\": {\"state\": \"running\", \"added\": 0, \"skipped\": 0, \"errors\": []}}]"
+    },
+    {
+      "name": "interrupt-resume-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-resume-one-original",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/interrupt-root/originals/interrupt-media-src_45bc3d6061a1/photo.jpg')]"
+    },
+    {
+      "name": "interrupt-no-extra-copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "interrupt-partial-cleared",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "interrupt-one-item",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "interrupt-item-not-partial",
+      "pass": true,
+      "detail": "{'sourceId': 'src_45bc3d6061a1', 'role': 'primary', 'component': 'still', 'kind': 'library-relative', 'current': True, 'libraryRelativePath': 'originals/interrupt-media-src_45bc3d6061a1/photo.jpg', 'volumeSerial': None, 'pathFromVolumeRoot': None, 'lastKnownPath': '/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/interrupt-root/originals/interrupt-media-src_45bc3d6061a1/photo.jpg', 'sizeBytes': 15274, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}"
+    },
+    {
+      "name": "interrupt-kind",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-barrier-exit",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "convert-pending-present",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/convert-root/catalog/items/pending-src_892a0a6726b4-aff6100bd4df0ea66736e1d3304208069a0f24303e21b43422398c935540a236.json')]"
+    },
+    {
+      "name": "convert-pending-seeded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-recover",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-one-final",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-final-seeded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-source-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-item-id",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "convert-annotations",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_aaaaaaaaaaaa\"}]"
+    },
+    {
+      "name": "convert-copied-primary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-old-volume-alternate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-same-source-on-locs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-noop-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "convert-noop-no-extra",
+      "pass": true,
+      "detail": "[PosixPath('/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/convert-root/originals/convert-media-src_892a0a6726b4/photo.jpg')]"
+    },
+    {
+      "name": "undo-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-has-originals",
+      "pass": true,
+      "detail": "{'originals/undo-media-src_c7537ff4c06d/a/clip.mp4': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'originals/undo-media-src_c7537ff4c06d/a/photo.jpg': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}"
+    },
+    {
+      "name": "undo-has-catalog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-source-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-items-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-bytes-remain",
+      "pass": true,
+      "detail": "{\"originals/undo-media-src_c7537ff4c06d/a/clip.mp4\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"originals/undo-media-src_c7537ff4c06d/a/photo.jpg\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}"
+    },
+    {
+      "name": "undo-source-folder-untouched",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-empty-sources",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-ask-choice-required",
+      "pass": true,
+      "detail": "{'error': 'choice-required'}"
+    },
+    {
+      "name": "http-copy-202",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-copy-here-noop",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-copy-here-same-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-ask-neither",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-copy-choice-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-preselect-copy-here",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-add-enabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-wrote-copy-source",
+      "pass": true,
+      "detail": "[{'schemaVersion': 1, 'id': 'src_0cc5a4664900', 'name': 'dialog-media', 'mode': 'copy-here', 'origin': {'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/dialog-media', 'lastKnownPath': '/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/dialog-media'}, 'copyRoot': 'originals/dialog-media-src_0cc5a4664900', 'previewStore': None, 'files': {'a/clip.mp4': {'destination': 'originals/dialog-media-src_0cc5a4664900/a/clip.mp4', 'itemId': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'component': 'motion', 'sizeBytes': 23631, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', 'state': 'indexed'}, 'a/photo.jpg': {'destination': 'originals/dialog-media-src_0cc5a4664900/a/photo.jpg', 'itemId': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'component': 'still', 'sizeBytes': 15274, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'state': 'indexed'}}, 'scan': {'state': 'complete', 'added': 2, 'skipped': 0, 'errors': []}}]"
+    },
+    {
+      "name": "dialog-copied-files",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-default-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "244771d0224a9c66d89547fdd18862f76e37eff3",
+  "commands": [
+    "scan <path> # ask default",
+    "addFolderDefault=copy-here scan --serve-from-there",
+    "addFolderDefault=serve-from-there scan --copy-here",
+    "addFolderDefault=copy-here scan <path>",
+    "scan <a/> --copy-here",
+    "scan <second/> --serve-from-there",
+    "scan keep.jpg --copy-here",
+    "scan photo.jpg --copy-here after seeded dest",
+    "scan --copy-here LIBRARY_TEST_BARRIER=copy-partial",
+    "scan --copy-here # resume",
+    "copy-here src_892a0a6726b4",
+    "scan --copy-here then undo",
+    "serve + dialog copy-here"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/result.json",
+    "stdout.log": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/stdout.log",
+    "paths-before-after.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/paths-before-after.json",
+    "copied-items": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/copied-items",
+    "collision.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/collision.json",
+    "original-hashes.json": "/workspace/docs/features/S05/Rev1.0/assets/verify-1/f4/original-hashes.json"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "id": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+  "kind": "photo",
+  "filename": "still.jpg",
+  "capturedAt": "2026-10-14T05:29:54Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 810,
+    "height": 1080,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_fe7b1aecf9a5",
+      "role": "primary",
+      "component": "still",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-media/still.jpg",
+      "lastKnownPath": "/workspace/docs/features/taste-objects/Rev1.0/assets/verify-1/objects-media/still.jpg",
+      "sizeBytes": 137419,
+      "modifiedAt": "2026-10-14T05:29:54.683610Z",
+      "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_fe7b1aecf9a5",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": [
+    {
+      "thingId": "thing_44d56629f302"
+    },
+    {
+      "thingId": "thing_0b8772bcaeef",
+      "box": [
+        0.027327,
+        0.213791,
+        0.950962,
+        0.487982
+      ]
+    }
+  ],
+  "available": true,
+  "motionAvailable": false,
+  "favorite": false,
+  "entities": {
+    "people": [],
+    "places": [],
+    "things": [
+      {
+        "schemaVersion": 1,
+        "id": "thing_0b8772bcaeef",
+        "name": "bus",
+        "aliases": []
+      },
+      {
+        "schemaVersion": 1,
+        "id": "thing_44d56629f302",
+        "name": "mug",
+        "aliases": []
+      }
+    ]
+  }
+}

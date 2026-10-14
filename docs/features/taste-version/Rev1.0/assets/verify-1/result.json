@@ -1,0 +1,142 @@
+{
+  "slice": "TASTE-VERSION",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "identity-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"reason\": null, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"revision\": \"8ea0b99\", \"branch\": \"cursor/library-version-7c68\", \"dirty\": true, \"label\": \"8ea0b99\", \"message\": \"This copy is 8ea0b99 on cursor/library-version-7c68.\"}"
+    },
+    {
+      "name": "identity-sha",
+      "pass": true,
+      "detail": "8ea0b99"
+    },
+    {
+      "name": "identity-label",
+      "pass": true,
+      "detail": "8ea0b99"
+    },
+    {
+      "name": "payload-sha",
+      "pass": true,
+      "detail": "8ea0b99"
+    },
+    {
+      "name": "payload-label",
+      "pass": true,
+      "detail": "8ea0b99"
+    },
+    {
+      "name": "fallback-not-git",
+      "pass": true,
+      "detail": "not-a-git-copy"
+    },
+    {
+      "name": "fallback-label-local",
+      "pass": true,
+      "detail": "local"
+    },
+    {
+      "name": "fallback-sha-null",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "health-liveness",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "version-http",
+      "pass": true,
+      "detail": "{'ok': True, 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'label': '8ea0b99', 'reason': None}"
+    },
+    {
+      "name": "version-sha",
+      "pass": true,
+      "detail": "{\"ok\": true, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"label\": \"8ea0b99\", \"reason\": null}"
+    },
+    {
+      "name": "update-get",
+      "pass": true,
+      "detail": "{'ok': True, 'reason': None, 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'revision': '8ea0b99', 'branch': 'cursor/library-version-7c68', 'dirty': True, 'label': '8ea0b99', 'message': 'This copy is 8ea0b99 on cursor/library-version-7c68.'}"
+    },
+    {
+      "name": "update-get-sha",
+      "pass": true,
+      "detail": "{\"ok\": true, \"reason\": null, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"revision\": \"8ea0b99\", \"branch\": \"cursor/library-version-7c68\", \"dirty\": true, \"label\": \"8ea0b99\", \"message\": \"This copy is 8ea0b99 on cursor/library-version-7c68.\"}"
+    },
+    {
+      "name": "update-post",
+      "pass": true,
+      "detail": "{'ok': True, 'updated': False, 'alreadyCurrent': True, 'revision': '8ea0b99', 'message': 'Already up to date.', 'git_sha': '8ea0b99', 'git_branch': 'cursor/library-version-7c68', 'git_date': '2026-10-14', 'git_subject': 'feat(windows): show checkout SHA next to Update Library', 'branch': 'cursor/library-version-7c68'}"
+    },
+    {
+      "name": "update-post-sha",
+      "pass": true,
+      "detail": "{\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"revision\": \"8ea0b99\", \"message\": \"Already up to date.\", \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"branch\": \"cursor/library-version-7c68\"}"
+    },
+    {
+      "name": "update-post-revision",
+      "pass": true,
+      "detail": "{\"revision\": \"8ea0b99\", \"git_sha\": \"8ea0b99\"}"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "header-sha",
+      "pass": true,
+      "detail": "{\"text\": \"8ea0b99\", \"hidden\": false, \"button\": \"Update Library\"}"
+    },
+    {
+      "name": "header-update-label",
+      "pass": true,
+      "detail": "{\"text\": \"8ea0b99\", \"hidden\": false, \"button\": \"Update Library\"}"
+    },
+    {
+      "name": "update-button-sha",
+      "pass": true,
+      "detail": "{\"status\": 200, \"body\": {\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"revision\": \"8ea0b99\", \"message\": \"Already up to date.\", \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"branch\": \"cursor/library-version-7c68\"}}"
+    },
+    {
+      "name": "header-sha-after-update",
+      "pass": true,
+      "detail": "{\"version\": \"8ea0b99\", \"status\": \"Already up to date.\"}"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "8ea0b99f1c88449949a26a5cb013ffbf80909dff",
+  "commands": [
+    "GET /api/health",
+    "GET /api/version",
+    "GET /api/update",
+    "POST /api/update"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-version/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-version/Rev1.0/assets/verify-1/stdout.log",
+    "identity": "{\"liveSha\": \"8ea0b99\", \"identity\": {\"ok\": true, \"reason\": null, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"revision\": \"8ea0b99\", \"branch\": \"cursor/library-version-7c68\", \"dirty\": true, \"label\": \"8ea0b99\", \"message\": \"This copy is 8ea0b99 on cursor/library-version-7c68.\"}, \"payload\": {\"ok\": true, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"label\": \"8ea0b99\", \"reason\": null}, \"fallback\": {\"ok\": false, \"reason\": \"not-a-git-copy\", \"git_sha\": null, \"git_branch\": null, \"git_date\": null, \"git_subject\": null, \"revision\": null, \"branch\": null, \"dirty\": false, \"label\": \"local\", \"message\": \"This Library folder is not a git copy, so it cannot show a checkout version.\"}}",
+    "http": "{\"url\": \"http://127.0.0.1:18766/\", \"port\": 18766, \"health\": {\"ok\": true}, \"version\": {\"ok\": true, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"label\": \"8ea0b99\", \"reason\": null}, \"updateGet\": {\"ok\": true, \"reason\": null, \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"revision\": \"8ea0b99\", \"branch\": \"cursor/library-version-7c68\", \"dirty\": true, \"label\": \"8ea0b99\", \"message\": \"This copy is 8ea0b99 on cursor/library-version-7c68.\"}, \"updatePost\": {\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"revision\": \"8ea0b99\", \"message\": \"Already up to date.\", \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"branch\": \"cursor/library-version-7c68\"}}",
+    "ui": "{\"shown\": {\"text\": \"8ea0b99\", \"hidden\": false, \"button\": \"Update Library\"}, \"updateHttp\": {\"status\": 200, \"body\": {\"ok\": true, \"updated\": false, \"alreadyCurrent\": true, \"revision\": \"8ea0b99\", \"message\": \"Already up to date.\", \"git_sha\": \"8ea0b99\", \"git_branch\": \"cursor/library-version-7c68\", \"git_date\": \"2026-10-14\", \"git_subject\": \"feat(windows): show checkout SHA next to Update Library\", \"branch\": \"cursor/library-version-7c68\"}}, \"afterUpdate\": {\"version\": \"8ea0b99\", \"status\": \"Already up to date.\"}}",
+    "version-header.png": "/workspace/docs/features/taste-version/Rev1.0/assets/verify-1/version-header.png"
+  }
+}

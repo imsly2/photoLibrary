@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "paused": false,
+  "processing": true,
+  "queues": [
+    {
+      "id": "renditions",
+      "label": "Previews",
+      "pending": 17,
+      "done": 1,
+      "error": 0,
+      "state": "running",
+      "available": true
+    },
+    {
+      "id": "analyze",
+      "label": "Analyze",
+      "pending": 0,
+      "done": 2,
+      "error": 0,
+      "state": "idle",
+      "available": true
+    },
+    {
+      "id": "infer-faces",
+      "label": "Faces",
+      "pending": 0,
+      "done": 9,
+      "error": 0,
+      "state": "idle",
+      "available": true
+    },
+    {
+      "id": "objects",
+      "label": "Objects",
+      "pending": 9,
+      "done": 0,
+      "error": 0,
+      "state": "running",
+      "available": true
+    }
+  ]
+}

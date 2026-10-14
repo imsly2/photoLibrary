@@ -1,0 +1,57 @@
+{
+  "photo": {
+    "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "filename": "IMG_1042.jpg",
+    "preview": {
+      "status": 200,
+      "contentType": "image/webp",
+      "contentLength": 2698,
+      "bodyLength": 2698
+    },
+    "original": {
+      "status": 200,
+      "contentType": "image/jpeg",
+      "contentLength": 15274,
+      "bodyLength": 15274
+    }
+  },
+  "video": {
+    "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+    "filename": "clip.mp4",
+    "poster": {
+      "status": 200,
+      "contentType": "image/webp",
+      "contentLength": 224,
+      "bodyLength": 224
+    },
+    "original": {
+      "status": 200,
+      "contentType": "video/mp4",
+      "contentLength": 23631,
+      "bodyLength": 23631
+    },
+    "proxy": {
+      "status": 200,
+      "contentType": "video/mp4",
+      "contentLength": 3467,
+      "bodyLength": 3467
+    }
+  },
+  "fallback": {
+    "id": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+    "filename": "clip.avi",
+    "proxy": {
+      "status": 200,
+      "contentType": "video/mp4",
+      "contentLength": 3539,
+      "bodyLength": 3539
+    }
+  },
+  "browser": {
+    "stillPreviewFirst": true,
+    "stillOriginalAfter": true,
+    "videoPosterFirst": true,
+    "videoPlayback": "original",
+    "fallbackProxy": true
+  }
+}

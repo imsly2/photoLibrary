@@ -1,0 +1,40 @@
+[
+  {
+    "type": "hover",
+    "filename": "oriented.jpg",
+    "x": 118.0,
+    "y": 171.15625
+  },
+  {
+    "type": "ctrl-wheel",
+    "deltaY": -100,
+    "levelFrom": "years"
+  },
+  {
+    "type": "slider",
+    "value": 3,
+    "level": "all"
+  },
+  {
+    "type": "arrows",
+    "first": "/api/media/35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6?which=preview",
+    "afterLeft": "/api/media/35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6?which=preview",
+    "afterRight": "/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview",
+    "end": "/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=preview"
+  },
+  {
+    "type": "viewer-zoom",
+    "x": 640.0,
+    "y": 360.0,
+    "deltaY": -100
+  },
+  {
+    "type": "middle-drag",
+    "dx": 40,
+    "dy": 25
+  },
+  {
+    "type": "toolbar-sort",
+    "url": "http://127.0.0.1:18768/api/items?sort=location&dir=desc"
+  }
+]

@@ -1,0 +1,351 @@
+{
+  "slice": "TASTE-VIDEO",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-unwrapped-string-filepath-before-filepath-is-C",
+      "pass": true,
+      "detail": "{'FilePath': 'C'}"
+    },
+    {
+      "name": "launch-unwrapped-string-filepath-after-filepath-is-full-exe",
+      "pass": true,
+      "detail": "{'FilePath': 'C:\\\\Users\\\\Family\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe'}"
+    },
+    {
+      "name": "launch-unwrapped-string-filepath-after-excludes-python-exe",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-python-exe-before-includes-python-exe",
+      "pass": true,
+      "detail": "{'ArgumentList': ['C:\\\\Users\\\\Family\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe', '-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-python-exe-after-excludes-python-exe",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-python-exe-after-is-module-serve",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-python-exe-filepath-is-interpreter",
+      "pass": true,
+      "detail": "C:\\Users\\Family\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+    },
+    {
+      "name": "launch-length-2-py-3.12-keeps-launcher-extra",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-3.12', '-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-2-py-3.12-filepath-is-interpreter",
+      "pass": true,
+      "detail": "C:\\Windows\\py.exe"
+    },
+    {
+      "name": "launch-length-1-venv-python-exe-before-includes-python-exe",
+      "pass": true,
+      "detail": "{'ArgumentList': ['C:\\\\Library\\\\.venv\\\\Scripts\\\\python.exe', '-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-venv-python-exe-after-excludes-python-exe",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-venv-python-exe-after-is-module-serve",
+      "pass": true,
+      "detail": "{'ArgumentList': ['-m', 'library', 'serve']}"
+    },
+    {
+      "name": "launch-length-1-venv-python-exe-filepath-is-interpreter",
+      "pass": true,
+      "detail": "C:\\Library\\.venv\\Scripts\\python.exe"
+    },
+    {
+      "name": "launch-guard-length-gt-1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-prefers-venv-scripts-python",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-library-bat-pauses-on-error",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-no-unguarded-start-process-slice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-rewrapped-python-array",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-exe-is-string-index-zero",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-unary-comma-single-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "launch-keeps-update-switch",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-clip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dated-years-stay-still",
+      "pass": true,
+      "detail": "{\"videoCount\": 0, \"playingCount\": 0, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": []}"
+    },
+    {
+      "name": "no-level-slider",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "size-label",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "size-has-eight-stops",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "date-group-present",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "date-group-modes",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "viewer-zoom-present",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "viewer-zoom-pct-present",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "viewer-zoom-not-in-bottom",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "no-viewer-zoom-on-grid",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "two-intentional-sliders",
+      "pass": true,
+      "detail": "{\"hasLevelSlider\": false, \"sizeLabel\": \"Size\", \"sizeAria\": \"Grid density thumbnail size\", \"sizeMax\": \"7\", \"dateGroup\": true, \"dateOptions\": [\"years\", \"months\", \"days\", \"off\"], \"viewerZoom\": true, \"viewerZoomPct\": true, \"zoomInBottom\": false, \"gridHasViewerZoom\": false, \"rangeCount\": 2}"
+    },
+    {
+      "name": "ctrl-wheel-steps-size",
+      "pass": true,
+      "detail": "{\"dateBefore\": \"days\", \"levelBefore\": \"all\", \"after\": {\"size\": \"104\", \"dateGroup\": \"days\", \"level\": \"all\"}}"
+    },
+    {
+      "name": "ctrl-wheel-keeps-dates",
+      "pass": true,
+      "detail": "{\"dateBefore\": \"days\", \"levelBefore\": \"all\", \"after\": {\"size\": \"104\", \"dateGroup\": \"days\", \"level\": \"all\"}}"
+    },
+    {
+      "name": "hover-at-size-72",
+      "pass": true,
+      "detail": "{\"ok\": true, \"cell\": {\"width\": 72, \"height\": 72}, \"video\": {\"width\": 70, \"height\": 70, \"left\": 21, \"top\": 179.140625}, \"fillDx\": 2, \"fillDy\": 2, \"playing\": true, \"hasScrub\": true, \"size\": \"72\"}"
+    },
+    {
+      "name": "hover-fills-small-tile",
+      "pass": true,
+      "detail": "{\"ok\": true, \"cell\": {\"width\": 72, \"height\": 72}, \"video\": {\"width\": 70, \"height\": 70, \"left\": 21, \"top\": 179.140625}, \"fillDx\": 2, \"fillDy\": 2, \"playing\": true, \"hasScrub\": true, \"size\": \"72\"}"
+    },
+    {
+      "name": "tile-scrub-present",
+      "pass": true,
+      "detail": "{\"ok\": true, \"cell\": {\"width\": 72, \"height\": 72}, \"video\": {\"width\": 70, \"height\": 70, \"left\": 21, \"top\": 179.140625}, \"fillDx\": 2, \"fillDy\": 2, \"playing\": true, \"hasScrub\": true, \"size\": \"72\"}"
+    },
+    {
+      "name": "tile-scrub-seeks",
+      "pass": true,
+      "detail": "{\"before\": 0.1155, \"after\": 1.2}"
+    },
+    {
+      "name": "open-from-tile-autoplay",
+      "pass": true,
+      "detail": "{\"tileTime\": 1.2, \"viewer\": {\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"paused\": false, \"hidden\": false, \"currentTime\": 1.226, \"duration\": 2, \"usingProxy\": true, \"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}}"
+    },
+    {
+      "name": "open-from-tile-keeps-time",
+      "pass": true,
+      "detail": "{\"tileTime\": 1.2, \"viewer\": {\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy\", \"paused\": false, \"hidden\": false, \"currentTime\": 1.226, \"duration\": 2, \"usingProxy\": true, \"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}}"
+    },
+    {
+      "name": "dates-off-keeps-size",
+      "pass": true,
+      "detail": "{\"before\": \"72\", \"after\": \"72\"}"
+    },
+    {
+      "name": "dates-off-is-wall",
+      "pass": true,
+      "detail": "off"
+    },
+    {
+      "name": "wall-years-hover-plays",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}"
+    },
+    {
+      "name": "viewer-source-visible",
+      "pass": true,
+      "detail": "{\"text\": \"Original\", \"hidden\": false, \"state\": \"original\", \"usingProxy\": false, \"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\"}"
+    },
+    {
+      "name": "viewer-source-original",
+      "pass": true,
+      "detail": "{\"text\": \"Original\", \"hidden\": false, \"state\": \"original\", \"usingProxy\": false, \"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\"}"
+    },
+    {
+      "name": "play-starts-proxy",
+      "pass": true,
+      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\", \"paused\": false, \"hidden\": false, \"currentTime\": 0.0686, \"duration\": 2, \"usingProxy\": false, \"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}"
+    },
+    {
+      "name": "play-keeps-fit",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}, \"after\": {\"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}, \"delta\": 0.0}"
+    },
+    {
+      "name": "swap-keeps-fit",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}, \"after\": {\"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}, \"delta\": 0.0}"
+    },
+    {
+      "name": "swap-keeps-time",
+      "pass": true,
+      "detail": "{\"src\": \"http://127.0.0.1:18765/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original\", \"paused\": false, \"hidden\": false, \"currentTime\": 0.384443, \"duration\": 2, \"usingProxy\": false, \"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}"
+    },
+    {
+      "name": "viewer-source-says-original",
+      "pass": true,
+      "detail": "{\"text\": \"Original\", \"hidden\": false, \"state\": \"original\"}"
+    },
+    {
+      "name": "viewer-scrub-visible",
+      "pass": true,
+      "detail": "{\"present\": true, \"hidden\": false, \"value\": \"116\"}"
+    },
+    {
+      "name": "scrub-in-bottom-chrome",
+      "pass": true,
+      "detail": "{\"scrubInBottom\": true, \"zoomInBottom\": false, \"zoomVertical\": true, \"pctText\": \"100%\", \"scrubBelowStage\": true, \"bottomBelowStage\": true}"
+    },
+    {
+      "name": "scrub-not-over-picture",
+      "pass": true,
+      "detail": "{\"scrubInBottom\": true, \"zoomInBottom\": false, \"zoomVertical\": true, \"pctText\": \"100%\", \"scrubBelowStage\": true, \"bottomBelowStage\": true}"
+    },
+    {
+      "name": "bottom-chrome-below-stage",
+      "pass": true,
+      "detail": "{\"scrubInBottom\": true, \"zoomInBottom\": false, \"zoomVertical\": true, \"pctText\": \"100%\", \"scrubBelowStage\": true, \"bottomBelowStage\": true}"
+    },
+    {
+      "name": "viewer-zoom-vertical",
+      "pass": true,
+      "detail": "{\"scrubInBottom\": true, \"zoomInBottom\": false, \"zoomVertical\": true, \"pctText\": \"100%\", \"scrubBelowStage\": true, \"bottomBelowStage\": true}"
+    },
+    {
+      "name": "viewer-zoom-shows-percent",
+      "pass": true,
+      "detail": "{\"scrubInBottom\": true, \"zoomInBottom\": false, \"zoomVertical\": true, \"pctText\": \"100%\", \"scrubBelowStage\": true, \"bottomBelowStage\": true}"
+    },
+    {
+      "name": "viewer-scrub-seeks",
+      "pass": true,
+      "detail": "1.4"
+    },
+    {
+      "name": "plain-wheel-zooms",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 230.3333282470703, \"top\": 63.390625, \"width\": 749.3333740234375, \"height\": 562}, \"after\": {\"left\": 192.86666870117188, \"top\": 28.990623474121094, \"width\": 824.2666015625, \"height\": 618.2000122070312}}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "ad66b3f772ac98d1b0f63956fd912d4771fde080",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m tests.qa.launch_ps1_args",
+    "python -m library scan <folder> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/result.json",
+    "stdout.log": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/stdout.log",
+    "launch-arglist.json": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/launch-arglist.json",
+    "video-zoom.json": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/video-zoom.json",
+    "video-viewer.png": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/video-viewer.png",
+    "video-grid.png": "/workspace/docs/features/taste-video/Rev1.0/assets/verify-4/video-grid.png"
+  }
+}

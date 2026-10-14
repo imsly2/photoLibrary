@@ -1,0 +1,396 @@
+{
+  "check": "F19",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "pair-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "one-live-item",
+      "pass": true,
+      "detail": "['db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1']"
+    },
+    {
+      "name": "live-kind",
+      "pass": true,
+      "detail": "live"
+    },
+    {
+      "name": "live-id-is-still-hash",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "live-cid",
+      "pass": true,
+      "detail": "11111111-2222-4333-8444-555555555555"
+    },
+    {
+      "name": "live-two-locations",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "live-components",
+      "pass": true,
+      "detail": "['motion', 'still']"
+    },
+    {
+      "name": "live-still-primary",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "live-motion-primary",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "no-stolen-second-live",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "orphan-still-one",
+      "pass": true,
+      "detail": "{\"count\": 1, \"kinds\": [\"photo\"], \"ids\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "orphan-still-photo",
+      "pass": true,
+      "detail": "photo"
+    },
+    {
+      "name": "orphan-still-id",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "orphan-still-one-location",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "orphan-motion-one",
+      "pass": true,
+      "detail": "{\"count\": 1, \"kinds\": [\"video\"], \"ids\": [\"594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2\"]}"
+    },
+    {
+      "name": "orphan-motion-video",
+      "pass": true,
+      "detail": "video"
+    },
+    {
+      "name": "orphan-motion-id",
+      "pass": true,
+      "detail": "594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2"
+    },
+    {
+      "name": "orphan-motion-not-still-hash",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-motion-only-video",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-one-item",
+      "pass": true,
+      "detail": "{\"count\": 1, \"liveIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"kinds\": [\"live\"]}"
+    },
+    {
+      "name": "reverse-one-live",
+      "pass": true,
+      "detail": "{\"count\": 1, \"liveIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"kinds\": [\"live\"]}"
+    },
+    {
+      "name": "reverse-id-still-hash",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "reverse-did-not-keep-motion-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-two-locations",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "restart-still-one-item",
+      "pass": true,
+      "detail": "{\"count\": 1, \"liveIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "restart-same-live-id",
+      "pass": true,
+      "detail": "{\"count\": 1, \"liveIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "mismatch-two-items",
+      "pass": true,
+      "detail": "{\"count\": 2, \"kinds\": [\"video\", \"photo\"], \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"cids\": [null, \"11111111-2222-4333-8444-555555555555\"]}"
+    },
+    {
+      "name": "mismatch-no-live",
+      "pass": true,
+      "detail": "{\"count\": 2, \"kinds\": [\"video\", \"photo\"], \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"cids\": [null, \"11111111-2222-4333-8444-555555555555\"]}"
+    },
+    {
+      "name": "mismatch-kept-still-id",
+      "pass": true,
+      "detail": "{\"count\": 2, \"kinds\": [\"video\", \"photo\"], \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"cids\": [null, \"11111111-2222-4333-8444-555555555555\"]}"
+    },
+    {
+      "name": "mismatch-kept-clip-id",
+      "pass": true,
+      "detail": "{\"count\": 2, \"kinds\": [\"video\", \"photo\"], \"ids\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"cids\": [null, \"11111111-2222-4333-8444-555555555555\"]}"
+    },
+    {
+      "name": "identifier-not-filename-one",
+      "pass": true,
+      "detail": "{\"count\": 1, \"kinds\": [\"live\"], \"ids\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "identifier-not-filename-id",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "absorb-motion-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "absorb-annotate-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "absorb-history-had-motion",
+      "pass": true,
+      "detail": "[\"catalog/items/594fda2ec92e8cf20515d0438ff8950b8a1958ef674d7dbedc9cbe4552068fd2.json\"]"
+    },
+    {
+      "name": "absorb-one-live",
+      "pass": true,
+      "detail": "{\"count\": 1, \"liveIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"faces\": [{\"personId\": \"person_3dc5f798b3ce\"}], \"things\": [{\"thingId\": \"thing_8b5137b49376\"}]}"
+    },
+    {
+      "name": "absorb-id-still-hash",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "absorb-kept-faces",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_3dc5f798b3ce\"}]"
+    },
+    {
+      "name": "absorb-kept-things",
+      "pass": true,
+      "detail": "[{\"thingId\": \"thing_8b5137b49376\"}]"
+    },
+    {
+      "name": "absorb-history-now-live",
+      "pass": true,
+      "detail": "[\"catalog/items/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1.json\"]"
+    },
+    {
+      "name": "absorb-history-dropped-motion",
+      "pass": true,
+      "detail": "[\"catalog/items/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1.json\"]"
+    },
+    {
+      "name": "absorb-motion-file-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live-annotate-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live-annotate-stays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live-annotate-place",
+      "pass": true,
+      "detail": "place_6c43ce6d6d39"
+    },
+    {
+      "name": "live-all-four-ready",
+      "pass": true,
+      "detail": "{\"thumb\": \"ready\", \"preview\": \"ready\", \"poster\": \"ready\", \"proxy\": \"ready\"}"
+    },
+    {
+      "name": "live-motion-available",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live-cell-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "live-badge-text",
+      "pass": true,
+      "detail": "LIVE"
+    },
+    {
+      "name": "hover-plays-one",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "hover-muted",
+      "pass": true,
+      "detail": "{\"videoCount\": 1, \"playingCount\": 1, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"]}"
+    },
+    {
+      "name": "hover-uses-proxy",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=proxy"
+    },
+    {
+      "name": "hover-leave-restores-still",
+      "pass": true,
+      "detail": "db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"
+    },
+    {
+      "name": "live-shot-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "viewer-still-first",
+      "pass": true,
+      "detail": "{\"img\": \"http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=preview\", \"videoHidden\": true}"
+    },
+    {
+      "name": "viewer-space-plays",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"paused\": false, \"src\": \"http://127.0.0.1:18765/api/media/db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1?which=original&component=motion\", \"usingProxy\": false}"
+    },
+    {
+      "name": "missing-motion-live",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "missing-motion-flag",
+      "pass": true,
+      "detail": "false"
+    },
+    {
+      "name": "missing-motion-stills-ready",
+      "pass": true,
+      "detail": "{\"thumb\": \"ready\", \"preview\": \"ready\", \"poster\": \"queued\", \"proxy\": \"queued\"}"
+    },
+    {
+      "name": "missing-motion-hover-still",
+      "pass": true,
+      "detail": "{\"videoCount\": 0, \"playingCount\": 0, \"muted\": true, \"volumeZero\": true, \"looped\": true, \"ids\": []}"
+    },
+    {
+      "name": "missing-motion-cell-still",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "missing-motion-viewer-still",
+      "pass": true,
+      "detail": "{\"videoHidden\": true, \"videoPaused\": true, \"imgHidden\": false}"
+    },
+    {
+      "name": "regression-F5",
+      "pass": true,
+      "detail": "{\"pass\": true, \"exit\": 0, \"artifacts\": \"/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f5\"}"
+    },
+    {
+      "name": "regression-F7",
+      "pass": true,
+      "detail": "{\"pass\": true, \"exit\": 0, \"artifacts\": \"/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f7\"}"
+    },
+    {
+      "name": "regression-F10",
+      "pass": true,
+      "detail": "{\"pass\": true, \"exit\": 0, \"artifacts\": \"/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f10\"}"
+    },
+    {
+      "name": "regression-F14",
+      "pass": true,
+      "detail": "{\"pass\": true, \"exit\": 0, \"artifacts\": \"/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f14\"}"
+    },
+    {
+      "name": "regression-F16",
+      "pass": true,
+      "detail": "{\"pass\": true, \"exit\": 0, \"artifacts\": \"/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression/f16\"}"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "fccfbe6805c040de59559ca6f42ead76f1880144",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library annotate <motion-id> --person Ada --thing mug",
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library annotate <live-id> --place Kitchen",
+    "python -m library scan <folder> --serve-from-there"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/result.json",
+    "stdout.log": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/stdout.log",
+    "live-item.json": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/live-item.json",
+    "live.png": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/live.png",
+    "live-playback.json": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/live-playback.json",
+    "regression.json": "/workspace/docs/features/S12/Rev1.0/assets/orchestrator-rerun/f19/regression.json"
+  }
+}

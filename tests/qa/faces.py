@@ -1,0 +1,348 @@
+"""Optional local face inference. Fixture proof; this log is not the grade."""
+
+from __future__ import annotations
+
+import json
+import shutil
+import struct
+import subprocess
+import zlib
+from pathlib import Path
+from typing import Any
+
+from library.httpjson import request_json
+from library.media import sha256_file
+from tests.qa.s00 import (
+    Checks,
+    _env,
+    parse_json,
+    run_library,
+    stop_owned,
+)
+from tests.qa.s01 import load_items
+from tests.qa.s08 import fresh_root, load_people, start_owned, write_result
+
+FACE_A = (16, 200, 48)
+FACE_B = (32, 48, 220)
+BEACON = (255, 0, 170)
+WHITE = (255, 255, 255)
+BG = (30, 30, 36)
+
+
+def write_png(path: Path, width: int, height: int, rgb: bytes) -> None:
+    def chunk(tag: bytes, data: bytes) -> bytes:
+        crc = zlib.crc32(tag + data) & 0xFFFFFFFF
+        return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", crc)
+
+    raw = bytearray()
+    stride = width * 3
+    for y in range(height):
+        raw.append(0)
+        raw.extend(rgb[y * stride : (y + 1) * stride])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(bytes(raw), 9))
+        + chunk(b"IEND", b"")
+    )
+
+
+def _fill(buf: bytearray, width: int, x0: int, y0: int, x1: int, y1: int, color: tuple[int, int, int]) -> None:
+    r, g, b = color
+    for y in range(y0, y1):
+        row = y * width * 3
+        for x in range(x0, x1):
+            p = row + x * 3
+            buf[p] = r
+            buf[p + 1] = g
+            buf[p + 2] = b
+
+
+def paint_face(
+    buf: bytearray,
+    width: int,
+    height: int,
+    x: int,
+    y: int,
+    fw: int,
+    fh: int,
+    identity: tuple[int, int, int],
+) -> None:
+    x1 = min(width, x + fw)
+    y1 = min(height, y + fh)
+    _fill(buf, width, x, y, x1, y1, identity)
+    border = 8
+    _fill(buf, width, x, y, x1, y + border, BEACON)
+    _fill(buf, width, x, y1 - border, x1, y1, BEACON)
+    _fill(buf, width, x, y, x + border, y1, BEACON)
+    _fill(buf, width, x1 - border, y, x1, y1, BEACON)
+    eye_w = max(8, fw // 8)
+    eye_h = max(8, fh // 10)
+    left = x + fw // 4
+    right = x + (fw * 3) // 5
+    eye_y = y + fh // 3
+    _fill(buf, width, left, eye_y, left + eye_w, eye_y + eye_h, WHITE)
+    _fill(buf, width, right, eye_y, right + eye_w, eye_y + eye_h, WHITE)
+
+
+def make_face_media(dest: Path) -> Path:
+    if dest.exists():
+        shutil.rmtree(dest)
+    dest.mkdir(parents=True)
+    width, height = 640, 480
+    specs = {
+        "a1.png": [("A", 80, 80, 140, 180)],
+        "a2.png": [("A", 220, 110, 140, 180)],
+        "b1.png": [("B", 360, 90, 140, 180)],
+        "b2.png": [("B", 120, 170, 140, 180)],
+        "both.png": [("A", 60, 90, 140, 180), ("B", 400, 100, 140, 180)],
+        "empty.png": [],
+    }
+    colors = {"A": FACE_A, "B": FACE_B}
+    for name, faces in specs.items():
+        buf = bytearray(width * height * 3)
+        _fill(buf, width, 0, 0, width, height, BG)
+        for who, x, y, fw, fh in faces:
+            paint_face(buf, width, height, x, y, fw, fh, colors[who])
+        write_png(dest / name, width, height, bytes(buf))
+    return dest
+
+
+def test_env() -> dict[str, str]:
+    env = _env()
+    env["LIBRARY_TEST"] = "1"
+    return env
+
+
+def last_error(proc: subprocess.CompletedProcess[str]) -> dict[str, Any]:
+    try:
+        return parse_json(proc.stderr.strip().splitlines()[-1])
+    except Exception:
+        return {}
+
+
+def item_by_name(items: list[dict[str, Any]], name: str) -> dict[str, Any] | None:
+    for item in items:
+        if item.get("filename") == name:
+            return item
+    return None
+
+
+def box_ok(box: Any) -> bool:
+    if not isinstance(box, list) or len(box) != 4:
+        return False
+    x, y, w, h = (float(v) for v in box)
+    return x >= 0 and y >= 0 and w > 0 and h > 0 and x + w <= 1.0001 and y + h <= 1.0001
+
+
+def run_slice(root: Path, artifacts: Path) -> int:
+    checks = Checks()
+    commands = [
+        "setup-ml faces --backend fixture",
+        "GET /api/faces",
+        "scan <faces> --serve-from-there",
+        "infer-faces",
+        "POST /api/items/<id>/annotations {id,name}",
+        "GET /api/items?person=Ada",
+        "people merge",
+        "infer-faces without models",
+    ]
+    artifacts.mkdir(parents=True, exist_ok=True)
+    fresh_root(root)
+    media = make_face_media(artifacts / "faces-media")
+    originals = {path.name: sha256_file(path) for path in sorted(media.glob("*.png"))}
+
+    missing = run_library(root, ["infer-faces"], env=test_env())
+    missing_err = last_error(missing)
+    checks.check("infer-without-models-exit", missing.returncode != 0, missing.stderr)
+    checks.check(
+        "infer-without-models",
+        missing_err.get("error") == "models-missing",
+        json.dumps(missing_err),
+    )
+
+    prod_fixture = run_library(root, ["setup-ml", "faces", "--backend", "fixture"], env=_env())
+    prod_err = last_error(prod_fixture)
+    checks.check(
+        "fixture-backend-prod-rejected",
+        prod_fixture.returncode != 0 and prod_err.get("error") == "invalid-argument",
+        prod_fixture.stderr,
+    )
+
+    setup = run_library(root, ["setup-ml", "faces", "--backend", "fixture"], env=test_env())
+    checks.check("setup-exit", setup.returncode == 0, setup.stderr)
+    setup_body = parse_json(setup.stdout) if setup.returncode == 0 else {}
+    checks.check("setup-ready", setup_body.get("ready") is True, setup.stdout)
+    checks.check("setup-backend", setup_body.get("backend") == "fixture", setup.stdout)
+    checks.check(
+        "manifest-exists",
+        (root / "models" / "faces" / "manifest.json").is_file(),
+        str(root / "models" / "faces" / "manifest.json"),
+    )
+
+    scan = run_library(
+        root,
+        ["scan", str(media), "--serve-from-there"],
+        env=test_env(),
+        timeout=120,
+    )
+    checks.check("scan-exit", scan.returncode == 0, scan.stderr)
+
+    infer = run_library(root, ["infer-faces"], env=test_env(), timeout=120)
+    checks.check("infer-exit", infer.returncode == 0, infer.stderr)
+    infer_body = parse_json(infer.stdout) if infer.returncode == 0 else {}
+    checks.check("infer-ok", infer_body.get("ok") is True, infer.stdout)
+    checks.check("infer-backend", infer_body.get("backend") == "fixture", infer.stdout)
+    checks.check("infer-faces-6", infer_body.get("faces") == 6, infer.stdout)
+    checks.check("infer-people-created-2", infer_body.get("peopleCreated") == 2, infer.stdout)
+    write_json = artifacts / "infer.json"
+    write_json.write_text(json.dumps(infer_body, indent=2) + "\n", encoding="utf-8")
+
+    people = load_people(root)
+    checks.check("people-count-2", len(people) == 2, json.dumps(people))
+    checks.check(
+        "people-unnamed",
+        all(rec.get("name") is None for rec in people),
+        json.dumps(people),
+    )
+    guessed = [
+        rec
+        for rec in people
+        if type(rec.get("name")) is str and rec["name"].strip() != ""
+    ]
+    checks.check("no-guessed-name", guessed == [], json.dumps(guessed))
+
+    items = load_items(root)
+    by_name = {item["filename"]: item for item in items}
+    a1 = by_name.get("a1.png") or {}
+    a2 = by_name.get("a2.png") or {}
+    b1 = by_name.get("b1.png") or {}
+    b2 = by_name.get("b2.png") or {}
+    both = by_name.get("both.png") or {}
+    empty = by_name.get("empty.png") or {}
+    checks.check("a1-one-face", len(a1.get("faces") or []) == 1, json.dumps(a1.get("faces")))
+    checks.check("empty-no-faces", empty.get("faces") == [], json.dumps(empty.get("faces")))
+    checks.check("both-two-faces", len(both.get("faces") or []) == 2, json.dumps(both.get("faces")))
+
+    def person_of(item: dict[str, Any]) -> str | None:
+        faces = item.get("faces") or []
+        if not faces:
+            return None
+        return faces[0].get("personId")
+
+    person_a = person_of(a1)
+    person_b = person_of(b1)
+    checks.check("a-cluster", person_a is not None and person_of(a2) == person_a, json.dumps([a1.get("faces"), a2.get("faces")]))
+    checks.check("b-cluster", person_b is not None and person_of(b2) == person_b, json.dumps([b1.get("faces"), b2.get("faces")]))
+    checks.check("a-ne-b", person_a != person_b, f"{person_a} {person_b}")
+    both_ids = sorted(pid for pid in {face.get("personId") for face in both.get("faces") or []} if pid)
+    expected = sorted(pid for pid in (person_a, person_b) if pid)
+    checks.check("both-has-a-and-b", both_ids == expected and len(expected) == 2, json.dumps(both_ids))
+    all_boxes = [
+        face.get("box")
+        for item in items
+        for face in item.get("faces") or []
+    ]
+    checks.check("boxes-in-range", all(box_ok(box) for box in all_boxes), json.dumps(all_boxes))
+
+    people_dir = artifacts / "people"
+    if people_dir.exists():
+        shutil.rmtree(people_dir)
+    shutil.copytree(root / "catalog" / "people", people_dir)
+
+    server = None
+    owned: list[int] = []
+    try:
+        server, url, owned = start_owned(root)
+        status, face_status = request_json(url + "api/faces", timeout=5)
+        checks.check("http-faces-status", status == 200 and face_status.get("ready") is True, json.dumps(face_status))
+        status, http_infer = request_json(
+            url + "api/faces/infer", method="POST", body={"force": False}, timeout=60
+        )
+        checks.check("http-infer-skip", status == 200 and http_infer.get("faces") == 0, json.dumps(http_infer))
+        a1_id = a1.get("id")
+        status, named = request_json(
+            url + f"api/items/{a1_id}/annotations",
+            method="POST",
+            body={"people": [{"id": person_a, "name": "Ada"}]},
+            timeout=10,
+        )
+        checks.check("name-ada-http", status == 200, json.dumps(named))
+        ada = json.loads((root / "catalog" / "people" / f"{person_a}.json").read_text(encoding="utf-8"))
+        checks.check("ada-name", ada.get("name") == "Ada", json.dumps(ada))
+        still_b = json.loads((root / "catalog" / "people" / f"{person_b}.json").read_text(encoding="utf-8"))
+        checks.check("b-still-unnamed", still_b.get("name") is None, json.dumps(still_b))
+        status, by_person = request_json(url + "api/items?person=Ada", timeout=5)
+        names = sorted(item.get("filename") for item in (by_person or []) if isinstance(item, dict))
+        checks.check("search-person-ada", status == 200 and set(names) == {"a1.png", "a2.png", "both.png"}, json.dumps(names))
+        status, by_q = request_json(url + "api/items?q=Ada&scope=people", timeout=5)
+        q_names = sorted(item.get("filename") for item in (by_q or []) if isinstance(item, dict))
+        checks.check("search-q-ada", status == 200 and set(q_names) == {"a1.png", "a2.png", "both.png"}, json.dumps(q_names))
+        (artifacts / "search.json").write_text(
+            json.dumps({"person": by_person, "q": by_q}, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        status, merged = request_json(
+            url + "api/people/merge",
+            method="POST",
+            body={"keepId": person_a, "dropId": person_b},
+            timeout=10,
+        )
+        checks.check("merge-http", status == 200 and merged.get("id") == person_a, json.dumps(merged))
+    finally:
+        stop_owned(server, owned)
+
+    after_people = load_people(root)
+    checks.check("merge-one-person", len(after_people) == 1, json.dumps(after_people))
+    checks.check("merge-keep-ada", after_people[0].get("name") == "Ada", json.dumps(after_people))
+    checks.check(
+        "drop-gone",
+        not (root / "catalog" / "people" / f"{person_b}.json").exists(),
+        person_b or "",
+    )
+    after_items = load_items(root)
+    face_ids = {
+        face.get("personId")
+        for item in after_items
+        for face in item.get("faces") or []
+    }
+    checks.check("all-faces-keep", face_ids == {person_a}, json.dumps(sorted(face_ids)))
+    index = json.loads((root / "models" / "faces" / "index.json").read_text(encoding="utf-8"))
+    checks.check("index-keep-only", set((index.get("people") or {}).keys()) == {person_a}, json.dumps(index))
+    (artifacts / "merge.json").write_text(json.dumps({"keep": person_a, "drop": person_b, "index": index}, indent=2) + "\n", encoding="utf-8")
+
+    after_hashes = {path.name: sha256_file(path) for path in sorted(media.glob("*.png"))}
+    checks.check("original-hashes", after_hashes == originals, json.dumps({"before": originals, "after": after_hashes}))
+
+    history = []
+    state_path = root / "undo" / "state.json"
+    if state_path.is_file():
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        for entry_id in state.get("entries") or []:
+            path = root / "undo" / "entries" / f"{entry_id}.json"
+            if path.is_file():
+                history.append(json.loads(path.read_text(encoding="utf-8")))
+    ops = [entry.get("operation") for entry in history]
+    checks.check("history-faces-infer", "faces-infer" in ops, json.dumps(ops))
+
+    genderage = root / "models" / "faces" / "buffalo_s" / "genderage.onnx"
+    checks.check("no-genderage", not genderage.exists(), str(genderage))
+
+    return write_result(
+        "FACES",
+        "slice",
+        checks,
+        artifacts,
+        commands,
+        {
+            "infer.json": str(artifacts / "infer.json"),
+            "search.json": str(artifacts / "search.json"),
+            "merge.json": str(artifacts / "merge.json"),
+            "people": str(artifacts / "people"),
+        },
+    )
+
+
+def run_check(root: Path, artifacts: Path) -> int:
+    return run_slice(root, artifacts)

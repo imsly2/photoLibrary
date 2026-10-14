@@ -1,0 +1,26 @@
+PASS playwright-import
+PASS add-disabled-until-path-mode
+PASS add-ask-neither-mode
+PASS add-still-disabled-without-mode
+PASS add-esc-closes
+PASS add-esc-no-write: []
+PASS add-cancel-closes
+PASS add-cancel-no-write: []
+PASS add-enabled-with-path-mode
+PASS date-desc-http: 200
+PASS date-desc-order: ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']
+PASS no-exif-mtime: {"capturedAt": "2022-02-03T04:05:06Z", "capturedAtSource": "mtime", "filename": "no-exif.jpg"}
+PASS cli-date-desc-exit
+PASS cli-http-date-same-ids: ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']
+PASS location-http
+PASS location-no-location-last-asc: ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']
+PASS location-no-location-last-desc: ['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']
+PASS location-gps-before-none: {'asc': ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']}
+PASS location-dir-reverses-gps: {'asc': ['IMG_1042.jpg', 'far.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg']}
+PASS name-http
+PASS name-asc-order: ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']
+PASS name-desc-order: ['no-exif.jpg', 'far.jpg', 'IMG_1042.jpg']
+PASS toolbar-location-query: http://127.0.0.1:18768/api/items?sort=location&dir=desc
+PASS toolbar-sort-persists: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18768, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "location", "dir": "desc", "zoomLevel": "years"}
+PASS toolbar-dir-persists: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18768, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "location", "dir": "asc", "zoomLevel": "years"}
+PASS no-console-errors: []

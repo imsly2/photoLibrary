@@ -1,0 +1,284 @@
+{
+  "check": "F12",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "catalog-four",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "name": "places-http-200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "places-count-two",
+      "pass": true,
+      "detail": "[{'id': 'place_1a7fd3280a7c', 'latitude': 41.925, 'longitude': -87.63, 'name': None, 'itemCount': 1, 'newestItemId': 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc'}, {'id': 'place_716230141022', 'latitude': 41.88, 'longitude': -87.63, 'name': None, 'itemCount': 2, 'newestItemId': 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a'}]"
+    },
+    {
+      "name": "no-exif-item",
+      "pass": true,
+      "detail": "{'schemaVersion': 1, 'id': '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', 'kind': 'photo', 'filename': 'no-exif.jpg', 'capturedAt': '2022-02-03T04:05:06Z', 'capturedAtSource': 'mtime', 'placeId': None, 'metadata': {'width': 640, 'height': 480, 'orientation': None, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_22e8111ff534', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/s10-media/b/no-exif.jpg', 'lastKnownPath': '/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/s10-media/b/no-exif.jpg', 'sizeBytes': 13170, 'modifiedAt': '2022-02-03T04:05:06Z', 'sha256': '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_22e8111ff534', 'thumb': 'renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp', 'preview': 'renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp', 'poster': None, 'proxy': None, 'status': {'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': [], 'available': True, 'motionAvailable': False, 'entities': {'people': [], 'places': [], 'things': []}}"
+    },
+    {
+      "name": "no-exif-no-place",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "name": "places-omit-no-exif",
+      "pass": true,
+      "detail": "{'place_1a7fd3280a7c', 'place_716230141022'}"
+    },
+    {
+      "name": "chicago-same-place",
+      "pass": true,
+      "detail": "{'place_716230141022'}"
+    },
+    {
+      "name": "far-other-place",
+      "pass": true,
+      "detail": "place_1a7fd3280a7c"
+    },
+    {
+      "name": "places-fields",
+      "pass": true,
+      "detail": "[{\"id\": \"place_1a7fd3280a7c\", \"latitude\": 41.925, \"longitude\": -87.63, \"name\": null, \"itemCount\": 1, \"newestItemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, {\"id\": \"place_716230141022\", \"latitude\": 41.88, \"longitude\": -87.63, \"name\": null, \"itemCount\": 2, \"newestItemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}]"
+    },
+    {
+      "name": "items-place-http-place_1a7fd3280a7c",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "items-place-only-place_1a7fd3280a7c",
+      "pass": true,
+      "detail": "[\"far.jpg\"]"
+    },
+    {
+      "name": "far-items",
+      "pass": true,
+      "detail": "[\"far.jpg\"]"
+    },
+    {
+      "name": "far-count-1",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "items-place-http-place_716230141022",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "items-place-only-place_716230141022",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "chicago-items",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "chicago-newest-near",
+      "pass": true,
+      "detail": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    },
+    {
+      "name": "chicago-count-2",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-view-default",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "globe-png-size",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "globe-texture-local",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cluster-present",
+      "pass": true,
+      "detail": "[{\"placeIds\": [\"place_1a7fd3280a7c\", \"place_716230141022\"], \"itemCounts\": [1, 2], \"itemCount\": 3, \"newestCandidates\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"], \"centroid\": {\"x\": 640, \"y\": 317.828125, \"clientX\": 640, \"clientY\": 402.171875}, \"positions\": [{\"id\": \"place_1a7fd3280a7c\", \"itemCount\": 1, \"newestItemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\", \"x\": 640, \"y\": 317.665249358513, \"clientX\": 640, \"clientY\": 402.008999358513}, {\"id\": \"place_716230141022\", \"itemCount\": 2, \"newestItemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"x\": 640, \"y\": 317.991000641487, \"clientX\": 640, \"clientY\": 402.334750641487}], \"pairwise\": [0.3257512829740108]}]"
+    },
+    {
+      "name": "cluster-two-places",
+      "pass": true,
+      "detail": "[\"place_1a7fd3280a7c\", \"place_716230141022\"]"
+    },
+    {
+      "name": "cluster-count-3",
+      "pass": true,
+      "detail": "3"
+    },
+    {
+      "name": "cluster-member-counts",
+      "pass": true,
+      "detail": "[1, 2]"
+    },
+    {
+      "name": "cluster-within-32",
+      "pass": true,
+      "detail": "[0.3257512829740108]"
+    },
+    {
+      "name": "cluster-png-size",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "globe-pick-hit",
+      "pass": true,
+      "detail": "{\"x\": 640, \"y\": 381.39375, \"lat\": 33.02916977847289, \"lon\": -87.63, \"clientX\": 640, \"clientY\": 465.7375}"
+    },
+    {
+      "name": "drag-0.25-deg-per-px",
+      "pass": true,
+      "detail": "{\"before\": {\"yawDeg\": 87.63, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"after\": {\"yawDeg\": 77.63000000000001, \"pitchDeg\": 41.9025, \"distance\": 2.85}, \"dx\": 40, \"deltaYawDeg\": -9.999999999999986, \"degPerPixel\": 0.24999999999999964}"
+    },
+    {
+      "name": "zoom-anchor-le-2px",
+      "pass": true,
+      "detail": "{\"x\": 640, \"y\": 381.51889451224264, \"visible\": true, \"drift\": 0.12514451224262757}"
+    },
+    {
+      "name": "offline-no-external",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "offline-earth-png",
+      "pass": true,
+      "detail": "[\"http://127.0.0.1:18767/\", \"http://127.0.0.1:18767/assets/style.css\", \"http://127.0.0.1:18767/assets/library.js\", \"http://127.0.0.1:18767/assets/globe.js\", \"http://127.0.0.1:18767/api/settings\", \"http://127.0.0.1:18767/api/items?sort=date&dir=desc\", \"http://127.0.0.1:18767/api/groups?sort=date&dir=desc&level=years\", \"http://127.0.0.1:18767/api/sources\", \"http://127.0.0.1:18767/api/settings\", \"http://127.0.0.1:18767/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"http://127.0.0.1:18767/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"http://127.0.0.1:18767/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"http://127.0.0.1:18767/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"http://127.0.0.1:18767/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=thumb\", \"http://127.0.0.1:18767/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb\", \"http://127.0.0.1:18767/api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=thumb\", \"http://127.0.0.1:18767/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb\", \"http://127.0.0.1:18767/api/places\", \"http://127.0.0.1:18767/assets/earth.png\", \"http://127.0.0.1:18767/api/items?sort=date&dir=desc\", \"http://127.0.0.1:18767/api/groups?sort=date&dir=desc&level=years\", \"http://127.0.0.1:18767/api/sources\", \"http://127.0.0.1:18767/api/settings\"]"
+    },
+    {
+      "name": "cluster-opens-viewer",
+      "pass": true,
+      "detail": "{\"open\": true, \"src\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview\", \"view\": \"library\", \"place\": \"place_1a7fd3280a7c,place_716230141022\"}"
+    },
+    {
+      "name": "cluster-opens-newest-near",
+      "pass": true,
+      "detail": "{\"open\": true, \"src\": \"/api/media/b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a?which=preview\", \"view\": \"library\", \"place\": \"place_1a7fd3280a7c,place_716230141022\"}"
+    },
+    {
+      "name": "esc-viewer-closed",
+      "pass": true,
+      "detail": "{\"view\": \"library\", \"viewerHidden\": true, \"place\": \"place_1a7fd3280a7c,place_716230141022\", \"filenames\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\"], \"ids\": [\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "esc-library-grid",
+      "pass": true,
+      "detail": "{\"view\": \"library\", \"viewerHidden\": true, \"place\": \"place_1a7fd3280a7c,place_716230141022\", \"filenames\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\"], \"ids\": [\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "esc-place-filter",
+      "pass": true,
+      "detail": "{\"view\": \"library\", \"viewerHidden\": true, \"place\": \"place_1a7fd3280a7c,place_716230141022\", \"filenames\": [\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\"], \"ids\": [\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "esc-grid-only-cluster",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\", \"far.jpg\"]"
+    },
+    {
+      "name": "globe-again-shows-globe",
+      "pass": true,
+      "detail": "{\"view\": \"globe\", \"globeHidden\": false, \"workspaceHidden\": true, \"viewerHidden\": true}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "page-has-globe",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-no-settings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-no-play",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "texture-shipped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "texture-license",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "9c2ab3a331f61cb168abc6205820215aa0a8f73c",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "GET /api/places",
+    "GET /api/items?place=place_1a7fd3280a7c",
+    "GET /api/items?place=place_716230141022"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/result.json",
+    "stdout.log": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/stdout.log",
+    "globe.png": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/globe.png",
+    "cluster.png": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/cluster.png",
+    "cluster-members.json": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/cluster-members.json",
+    "offline-network.json": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/offline-network.json",
+    "places.json": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/places.json",
+    "items-place.json": "/workspace/docs/features/S10/Rev1.0/assets/verify-1/f12/items-place.json"
+  }
+}

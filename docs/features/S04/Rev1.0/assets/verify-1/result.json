@@ -1,0 +1,460 @@
+{
+  "slice": "S04",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "page-no-localStorage",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-has-add-dialog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-has-levels",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sources-empty-before-dialog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "empty-before-add",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-disabled-until-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-ask-neither-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-still-disabled-without-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-cancel-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-cancel-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-enabled-with-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-not-empty-after-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sources-after-dialog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-not-running",
+      "pass": true,
+      "detail": "{'state': 'complete', 'added': 5, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "status-line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page-no-localStorage",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "years-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "hover-target",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ctrl-wheel-to-months",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "hover-stays-in-viewport",
+      "pass": true,
+      "detail": "{\"x\": 20, \"y\": 253.15625, \"width\": 64, \"height\": 64}"
+    },
+    {
+      "name": "all-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "zoomLevel-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"all\"}"
+    },
+    {
+      "name": "viewer-src-preview",
+      "pass": true,
+      "detail": "/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview"
+    },
+    {
+      "name": "viewer-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "esc-restores-scroll",
+      "pass": true,
+      "detail": "saved=80 restored=80"
+    },
+    {
+      "name": "esc-restores-level",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "viewer-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "arrows-stop-at-ends",
+      "pass": true,
+      "detail": "/api/media/35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6?which=preview /api/media/c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc?which=preview"
+    },
+    {
+      "name": "arrow-right-moves",
+      "pass": true,
+      "detail": "/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview"
+    },
+    {
+      "name": "zoom-anchor-drift",
+      "pass": true,
+      "detail": "{\"cursor\": {\"x\": 640.0, \"y\": 360.0}, \"before\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 480}, \"after\": {\"left\": 112, \"top\": -36, \"width\": 1056, \"height\": 792, \"complete\": true, \"naturalWidth\": 480}, \"projected\": {\"x\": 640.0, \"y\": 360.0}, \"driftPx\": 0.0}"
+    },
+    {
+      "name": "zoom-enlarged",
+      "pass": true,
+      "detail": "{\"before\": {\"left\": 160, \"top\": 0, \"width\": 960, \"height\": 720, \"complete\": true, \"naturalWidth\": 480}, \"after\": {\"left\": 112, \"top\": -36, \"width\": 1056, \"height\": 792, \"complete\": true, \"naturalWidth\": 480}}"
+    },
+    {
+      "name": "pan-1to1",
+      "pass": true,
+      "detail": "{\"drag\": {\"x\": 40, \"y\": 25}, \"moved\": {\"x\": 40, \"y\": 25}, \"errorPx\": 0, \"before\": {\"left\": 112, \"top\": -36, \"width\": 1056, \"height\": 792, \"complete\": true, \"naturalWidth\": 480}, \"after\": {\"left\": 152, \"top\": -11, \"width\": 1056, \"height\": 792, \"complete\": true, \"naturalWidth\": 480}}"
+    },
+    {
+      "name": "dialog-wrote-one-source",
+      "pass": true,
+      "detail": "[{'schemaVersion': 1, 'id': 'src_f5a59872c3f1', 'name': 'two-year-media', 'mode': 'serve-from-there', 'origin': {'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S04/Rev1.0/assets/verify-1/two-year-media', 'lastKnownPath': '/workspace/docs/features/S04/Rev1.0/assets/verify-1/two-year-media'}, 'copyRoot': None, 'previewStore': None, 'files': {'a/IMG_1042.jpg': {'destination': None, 'itemId': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'component': 'still', 'sizeBytes': 15274, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', 'state': 'indexed'}, 'a/near.jpg': {'destination': None, 'itemId': 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a', 'component': 'still', 'sizeBytes': 12642, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': 'b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a', 'state': 'indexed'}, 'b/created.jpg': {'destination': None, 'itemId': '35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6', 'component': 'still', 'sizeBytes': 13587, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6', 'state': 'indexed'}, 'b/far.jpg': {'destination': None, 'itemId': 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc', 'component': 'still', 'sizeBytes': 12289, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': 'c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc', 'state': 'indexed'}, 'b/oriented.jpg': {'destination': None, 'itemId': '52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7', 'component': 'still', 'sizeBytes': 21251, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7', 'state': 'indexed'}}, 'scan': {'state': 'complete', 'added': 5, 'skipped': 0, 'errors': []}, 'available': True}]"
+    },
+    {
+      "name": "items-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "groups-years-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "groups-years-ids-once",
+      "pass": true,
+      "detail": "{\"flat\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"], \"items\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-years-shape:2024",
+      "pass": true,
+      "detail": "{\"key\": \"2024\", \"itemIds\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "groups-years-shape:2023",
+      "pass": true,
+      "detail": "{\"key\": \"2023\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-months-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "groups-months-ids-once",
+      "pass": true,
+      "detail": "{\"flat\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"], \"items\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-months-shape:2024-07",
+      "pass": true,
+      "detail": "{\"key\": \"2024-07\", \"itemIds\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\"]}"
+    },
+    {
+      "name": "groups-months-shape:2024-06",
+      "pass": true,
+      "detail": "{\"key\": \"2024-06\", \"itemIds\": [\"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "groups-months-shape:2023-06",
+      "pass": true,
+      "detail": "{\"key\": \"2023-06\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-days-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "groups-days-ids-once",
+      "pass": true,
+      "detail": "{\"flat\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"], \"items\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-days-shape:2024-07-04",
+      "pass": true,
+      "detail": "{\"key\": \"2024-07-04\", \"itemIds\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\"]}"
+    },
+    {
+      "name": "groups-days-shape:2024-06-12",
+      "pass": true,
+      "detail": "{\"key\": \"2024-06-12\", \"itemIds\": [\"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "groups-days-shape:2023-06-12",
+      "pass": true,
+      "detail": "{\"key\": \"2023-06-12\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-all-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "groups-all-ids-once",
+      "pass": true,
+      "detail": "{\"flat\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"], \"items\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\", \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-all-shape:2024-07-04",
+      "pass": true,
+      "detail": "{\"key\": \"2024-07-04\", \"itemIds\": [\"35903a5ecad12bacaf94374addc3884d1c4dedc98cd44d43b4d4f594545629d6\"]}"
+    },
+    {
+      "name": "groups-all-shape:2024-06-12",
+      "pass": true,
+      "detail": "{\"key\": \"2024-06-12\", \"itemIds\": [\"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"]}"
+    },
+    {
+      "name": "groups-all-shape:2023-06-12",
+      "pass": true,
+      "detail": "{\"key\": \"2023-06-12\", \"itemIds\": [\"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"]}"
+    },
+    {
+      "name": "groups-years-count",
+      "pass": true,
+      "detail": "['2024', '2023']"
+    },
+    {
+      "name": "groups-invalid-level",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "years-two-keys",
+      "pass": true,
+      "detail": "[\"2024\", \"2023\"]"
+    },
+    {
+      "name": "add-disabled-until-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-ask-neither-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-still-disabled-without-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-esc-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-cancel-closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "add-cancel-no-write",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "add-enabled-with-path-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "date-desc-http",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "date-desc-order",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "no-exif-mtime",
+      "pass": true,
+      "detail": "{\"capturedAt\": \"2022-02-03T04:05:06Z\", \"capturedAtSource\": \"mtime\", \"filename\": \"no-exif.jpg\"}"
+    },
+    {
+      "name": "cli-date-desc-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-http-date-same-ids",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "location-no-location-last-asc",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-no-location-last-desc",
+      "pass": true,
+      "detail": "['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "location-gps-before-none",
+      "pass": true,
+      "detail": "{'asc': ['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg', 'no-exif.jpg']}"
+    },
+    {
+      "name": "location-dir-reverses-gps",
+      "pass": true,
+      "detail": "{'asc': ['IMG_1042.jpg', 'far.jpg'], 'desc': ['far.jpg', 'IMG_1042.jpg']}"
+    },
+    {
+      "name": "name-http",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "name-asc-order",
+      "pass": true,
+      "detail": "['IMG_1042.jpg', 'far.jpg', 'no-exif.jpg']"
+    },
+    {
+      "name": "name-desc-order",
+      "pass": true,
+      "detail": "['no-exif.jpg', 'far.jpg', 'IMG_1042.jpg']"
+    },
+    {
+      "name": "toolbar-location-query",
+      "pass": true,
+      "detail": "http://127.0.0.1:18766/api/items?sort=location&dir=desc"
+    },
+    {
+      "name": "toolbar-sort-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18766, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"location\", \"dir\": \"desc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "toolbar-dir-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18766, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"location\", \"dir\": \"asc\", \"zoomLevel\": \"years\"}"
+    },
+    {
+      "name": "page-no-baked-pixels",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "009f6a7ea038ee68a83d62d59d9a2e8d4fb5f61c",
+  "commands": [
+    "serve + Add folder serve-from-there",
+    "python -m library items --sort date --dir desc"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/stdout.log",
+    "years.png": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/years.png",
+    "all.png": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/all.png",
+    "viewer.png": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/viewer.png",
+    "input-trace.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/input-trace.json",
+    "measurements.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/measurements.json",
+    "groups-years.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/groups-years.json",
+    "groups-months.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/groups-months.json",
+    "groups-days.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/groups-days.json",
+    "groups-all.json": "/workspace/docs/features/S04/Rev1.0/assets/verify-1/groups-all.json"
+  }
+}

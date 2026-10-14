@@ -1,0 +1,52 @@
+PASS scan-ok
+PASS has-four-stills
+PASS annotate-ada
+PASS ada-id: person_b4cfca3e030b
+PASS annotate-ada-bob
+PASS bob-id: person_32a2f724fbf7
+PASS unnamed-one
+PASS cluster-create
+PASS cluster-id: person_7f5b4a6918ce
+PASS people-list-cli
+PASS poi-min-3: {"personOfInterestMin": 3, "people": [{"id": "person_b4cfca3e030b", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}, {"id": "person_32a2f724fbf7", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, {"id": "person_7f5b4a6918ce", "name": null, "itemCount": 3, "visible": true, "named": false, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}, {"id": "person_5d7274e01426", "name": null, "itemCount": 1, "visible": false, "named": false, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}]}
+PASS ada-visible: {"id": "person_b4cfca3e030b", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}
+PASS ada-named: {"id": "person_b4cfca3e030b", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": null}
+PASS singleton-hidden: {"id": "person_5d7274e01426", "name": null, "itemCount": 1, "visible": false, "named": false, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}
+PASS cluster-visible: {"id": "person_7f5b4a6918ce", "name": null, "itemCount": 3, "visible": true, "named": false, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}
+PASS and-cli
+PASS and-only-near: ["near.jpg"]
+PASS rename-cli
+PASS rename-pat: {"id": "person_7f5b4a6918ce", "name": "Pat", "itemCount": 3, "visible": true, "named": true, "thumbnail": {"itemId": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}, "thumbnailItemId": null}
+PASS thumb-cli
+PASS thumb-item: {"id": "person_b4cfca3e030b", "name": "Ada", "itemCount": 2, "visible": true, "named": true, "thumbnail": {"itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}, "thumbnailItemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"}
+PASS jobs-cli
+PASS jobs-queues: ["renditions", "analyze", "infer-faces", "objects"]
+PASS jobs-ok: {"ok": true, "paused": false, "processing": true, "queues": [{"id": "renditions", "label": "Previews", "pending": 8, "done": 0, "error": 0, "state": "running", "available": true}, {"id": "analyze", "label": "Analyze", "pending": 4, "done": 4, "error": 0, "state": "idle", "available": false}, {"id": "infer-faces", "label": "Faces", "pending": 0, "done": 4, "error": 0, "state": "idle", "available": false}, {"id": "objects", "label": "Objects", "pending": 4, "done": 0, "error": 0, "state": "idle", "available": false}]}
+PASS jobs-pause
+PASS jobs-resume
+PASS people-http: 200
+PASS and-http: ["near.jpg"]
+PASS jobs-http
+PASS jobs-pause-http
+PASS browser-scan
+PASS playwright-import
+PASS chrome-present: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}, "side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "splitter": {"top": 127.734375, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 592.265625}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS size-in-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}, "side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "splitter": {"top": 127.734375, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 592.265625}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS date-in-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}, "side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "splitter": {"top": 127.734375, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 592.265625}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS date-not-in-toolbar: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}, "side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "splitter": {"top": 127.734375, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 592.265625}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS chrome-below-grid: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}}
+PASS side-right-of-grid: {"side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}}
+PASS date-modes: ["years", "months", "days", "off"]
+PASS people-has-ada: ["Ada", "Bob", "Pat"]
+PASS people-has-bob: ["Ada", "Bob", "Pat"]
+PASS people-has-pat: ["Ada", "Bob", "Pat"]
+PASS people-no-singleton-unnamed: ["Ada", "Bob", "Pat"]
+PASS jobs-chrome: {"chrome": {"top": 677.625, "left": 0, "bottom": 720, "right": 1010, "width": 1010, "height": 42.375}, "grid": {"top": 127.734375, "left": 0, "bottom": 677.625, "right": 1010, "width": 1010, "height": 549.890625}, "side": {"top": 127.734375, "left": 1016, "bottom": 720, "right": 1280, "width": 264, "height": 592.265625}, "splitter": {"top": 127.734375, "left": 1010, "bottom": 720, "right": 1016, "width": 6, "height": 592.265625}, "dateInToolbar": false, "sizeInChrome": true, "dateInChrome": true, "dateOptions": ["years", "months", "days", "off"], "people": ["Ada", "Bob", "Pat"], "jobs": "Processing \u2014 Previews 3", "pause": true, "resume": "Start", "sideCollapsed": false}
+PASS click-ada-filters: ["near.jpg", "IMG_1042.jpg"]
+PASS multiselect-and: ["near.jpg"]
+PASS rename-in-panel: ["Ada", "Bob", "Patricia"]
+PASS side-toggle
+PASS no-console-errors: []
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

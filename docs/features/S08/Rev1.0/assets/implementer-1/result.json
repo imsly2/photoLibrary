@@ -1,0 +1,566 @@
+{
+  "slice": "S08",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "ada-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ada-two-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "annotate-cli-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "created-ada",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_fcbf4a0ae531\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "created-mug",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_a4a9ef91b907\", \"name\": \"mug\", \"aliases\": []}]"
+    },
+    {
+      "name": "item-lists-ada",
+      "pass": true,
+      "detail": "[\"person_fcbf4a0ae531\"]"
+    },
+    {
+      "name": "item-lists-mug",
+      "pass": true,
+      "detail": "[\"thing_a4a9ef91b907\"]"
+    },
+    {
+      "name": "cli-item-id",
+      "pass": true,
+      "detail": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "reuse-cli-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mug-reused",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_a4a9ef91b907\", \"name\": \"mug\", \"aliases\": []}]"
+    },
+    {
+      "name": "second-lists-mug",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "items-thing-cli-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-thing-mug-both",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-thing-mug-status",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "http-thing-mug-both",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-q-ada",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-person-ada",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "http-q-filename",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "edges-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unnamed-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unnamed-created",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_b4f0b34a20db\", \"name\": null}]"
+    },
+    {
+      "name": "name-assign-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "name-assigned",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_b4f0b34a20db\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "place-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "place-renamed",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_ca9b95e638e3\", \"name\": \"Kitchen\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "place-kept-gps",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"place_ca9b95e638e3\", \"name\": \"Kitchen\", \"latitude\": 41.88, \"longitude\": -87.63}]"
+    },
+    {
+      "name": "box-rejected-exit",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "box-rejected-code",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "box-accepted",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mug-create",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "alias-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "one-mug",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_c4cb9e54c123\", \"name\": \"mug\", \"aliases\": [\"Cup\"]}]"
+    },
+    {
+      "name": "alias-cup",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"thing_c4cb9e54c123\", \"name\": \"mug\", \"aliases\": [\"Cup\"]}]"
+    },
+    {
+      "name": "cup-reuses-mug",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cup-same-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "other-created",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_42addef05cbd\", \"name\": \"Other\"}, {\"schemaVersion\": 1, \"id\": \"person_b4f0b34a20db\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "self-merge-exit",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "self-merge-code",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "merge-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "merge-kept-id",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_b4f0b34a20db\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "drop-file-gone",
+      "pass": true,
+      "detail": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/edges-root/catalog/people/person_42addef05cbd.json"
+    },
+    {
+      "name": "no-drop-faces",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "keep-faces-present",
+      "pass": true,
+      "detail": "[{\"itemId\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\", \"personId\": \"person_b4f0b34a20db\"}, {\"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"personId\": \"person_b4f0b34a20db\"}, {\"itemId\": \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"personId\": \"person_b4f0b34a20db\", \"box\": [0.1, 0.2, 0.3, 0.4]}, {\"itemId\": \"52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7\", \"personId\": \"person_b4f0b34a20db\"}]"
+    },
+    {
+      "name": "one-merge-history",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "undo-ada-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-no-dangling-ada",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reannotate-after-undo",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reannotate-creates-ada",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-barrier-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "pending-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "hash-not-published",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-annotate-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-not-rejected",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-has-faces",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_db20366e5508\"}]"
+    },
+    {
+      "name": "pending-recover-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-cleared",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "one-hash-item",
+      "pass": true,
+      "detail": "['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "hash-has-ada",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_db20366e5508\"}]"
+    },
+    {
+      "name": "hash-has-mug",
+      "pass": true,
+      "detail": "[{\"thingId\": \"thing_e31d1bc449b1\"}]"
+    },
+    {
+      "name": "history-after-id-hash",
+      "pass": true,
+      "detail": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    },
+    {
+      "name": "history-no-pending-path",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "history-refs-hash",
+      "pass": true,
+      "detail": "[\"catalog/items/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81.json\"]"
+    },
+    {
+      "name": "pending-undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-restart-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-keeps-hash",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-clears-associations",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-no-dangling-name",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "pending-redo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "redo-restores",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-scan",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "http-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-annotate",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "empty-payload",
+      "pass": true,
+      "detail": "{'error': 'invalid-argument'}"
+    },
+    {
+      "name": "http-self-merge",
+      "pass": true,
+      "detail": "{'error': 'invalid-argument'}"
+    },
+    {
+      "name": "scan-was-running",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-busy-status",
+      "pass": true,
+      "detail": "409"
+    },
+    {
+      "name": "rebuild-busy-code",
+      "pass": true,
+      "detail": "{'error': 'busy'}"
+    },
+    {
+      "name": "annotate-allowed-during-scan",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "annotate-not-busy",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "rebuild-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-before",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-ok",
+      "pass": true,
+      "detail": "{\"ok\": true}"
+    },
+    {
+      "name": "sqlite-after",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rebuild-thing-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "rebuild-person-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "rebuild-place-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']"
+    },
+    {
+      "name": "rebuild-q-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "canonical-json-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-sqlite",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "auto-rebuild-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "sqlite-barrier-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"sqlite-rebuild\"}\n"
+    },
+    {
+      "name": "sqlite-deleted-at-barrier",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-barrier-resume",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-one-index",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sqlite-barrier-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "http-rebuild",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "groups-thing-ids",
+      "pass": true,
+      "detail": "['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every-proof-ran",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "ae025b57f97fbba6e991f3af43c32ec67b7e2215",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library annotate <jpeg-id> --person Ada --thing mug",
+    "python -m library annotate <other-id> --thing mug",
+    "python -m library items --thing mug",
+    "GET /api/items?thing=mug",
+    "annotate <id> --json unnamed-face",
+    "annotate <id> --json name-assignment",
+    "annotate <id> --place Kitchen",
+    "annotate <id> --json out-of-range-box",
+    "annotate <id> aliases Cup",
+    "annotate <other> --thing Cup",
+    "people merge <keep> <keep>",
+    "people merge <ada> <other>",
+    "scan --serve-from-there # hash-publication barrier",
+    "annotate <pending-id> --person Ada --thing mug",
+    "settings get # resume publication",
+    "POST /api/sources",
+    "POST /api/items/<id>/annotations",
+    "POST /api/people/merge self",
+    "POST /api/sources during busy probe",
+    "python -m library rebuild-index",
+    "rebuild-index # sqlite-rebuild barrier",
+    "POST /api/rebuild-index"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/result.json",
+    "stdout.log": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/stdout.log",
+    "annotation-records": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/annotation-records",
+    "merge.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/merge.json",
+    "pending-migration.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/pending-migration.json",
+    "rebuild-before-after.json": "/workspace/docs/features/S08/Rev1.0/assets/implementer-1/rebuild-before-after.json"
+  }
+}

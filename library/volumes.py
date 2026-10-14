@@ -68,6 +68,21 @@ def volume_of_path(path: Path) -> tuple[str, Path]:
     resolved = normalize_root(path)
     if not resolved.exists():
         raise fail("invalid-argument")
+    mapping = load_test_volumes()
+    if mapping is not None:
+        matches: list[tuple[str, Path]] = []
+        for serial, mount in mapping.items():
+            if mount is None:
+                continue
+            mount_path = normalize_root(mount)
+            try:
+                resolved.relative_to(mount_path)
+            except ValueError:
+                continue
+            matches.append((serial, mount_path))
+        if matches:
+            matches.sort(key=lambda pair: len(str(pair[1])), reverse=True)
+            return matches[0]
     if os.name == "nt":
         return windows_volume(resolved)
     return posix_volume(resolved)
@@ -95,6 +110,16 @@ def resolve_volume_mount(serial: str) -> Path | None:
         return normalize_root(mount)
     if serial.startswith("windows:") and os.name == "nt":
         return _windows_mount_for_serial(serial)
+    if serial.startswith("linux:") and os.name != "nt":
+        mount = Path(serial[len("linux:") :])
+        if mount.exists():
+            return normalize_root(mount)
+        return None
+    if serial.startswith("macos:") and sys.platform == "darwin":
+        mount = Path(serial[len("macos:") :])
+        if mount.exists():
+            return normalize_root(mount)
+        return None
     return None
 
 
@@ -160,6 +185,17 @@ def location_matches_stat(location: dict[str, Any], path: Path) -> bool:
 
 
 def source_available(source: dict[str, Any], library_root: Path) -> bool:
+    if source.get("mode") == "copy-here":
+        copy_root = source.get("copyRoot")
+        if type(copy_root) is not str or not copy_root:
+            return False
+        from library.paths import library_path
+
+        try:
+            path = library_path(library_root, copy_root)
+        except Exception:
+            return False
+        return path.exists()
     origin = source.get("origin") or {}
     serial = origin.get("volumeSerial")
     rel = origin.get("pathFromVolumeRoot")
@@ -169,42 +205,24 @@ def source_available(source: dict[str, Any], library_root: Path) -> bool:
     return path is not None and path.exists()
 
 
-def has_component_location(item: dict[str, Any], component: str) -> bool:
-    return any(loc.get("component") == component for loc in item.get("locations") or [])
-
-
-def resolve_component_path(
-    item: dict[str, Any],
-    component: str,
-    library_root: Path,
-) -> Path | None:
-    candidates = [
-        loc
-        for loc in item.get("locations") or []
-        if loc.get("current") is True and loc.get("component") == component
-    ]
-    candidates.sort(
-        key=lambda loc: (
-            0 if loc.get("role") == "primary" else 1,
-            loc.get("sourceId") or "",
-            loc.get("pathFromVolumeRoot") or loc.get("libraryRelativePath") or "",
-        )
-    )
-    for loc in candidates:
-        path = location_file(loc, library_root)
-        if path is None or not path.is_file():
-            continue
-        if location_matches_stat(loc, path):
-            return path
-    return None
-
-
 def item_component_available(
     item: dict[str, Any],
     component: str,
     library_root: Path,
 ) -> bool:
-    return resolve_component_path(item, component, library_root) is not None
+    candidates = [
+        loc
+        for loc in item.get("locations") or []
+        if loc.get("current") is True and loc.get("component") == component
+    ]
+    candidates.sort(key=lambda loc: (0 if loc.get("role") == "primary" else 1, loc.get("sourceId") or "", loc.get("pathFromVolumeRoot") or loc.get("libraryRelativePath") or ""))
+    for loc in candidates:
+        path = location_file(loc, library_root)
+        if path is None or not path.is_file():
+            continue
+        if location_matches_stat(loc, path):
+            return True
+    return False
 
 
 def item_available(item: dict[str, Any], library_root: Path) -> bool:

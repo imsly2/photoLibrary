@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -17,14 +18,6 @@ from library.paths import default_root, normalize_root, roots_equal
 from library.server import serve
 from library.service import Library, error_payload
 from library.settings import parse_cli_value
-
-UNIMPLEMENTED = {
-    "copy-here",
-    "annotate",
-    "people",
-    "renditions",
-}
-
 
 def _print_error(code: str) -> None:
     sys.stderr.buffer.write(error_payload(code) + b"\n")
@@ -48,6 +41,24 @@ def _print_scan_summary(source: Any) -> None:
             "errors": scan.get("errors"),
         }
     )
+
+
+def _wait_scan_complete(url: str, source_id: str, timeout: float = 300.0) -> Any:
+    deadline = time.time() + timeout
+    last: Any = None
+    while time.time() < deadline:
+        status, payload = _forward(url, "GET", "/api/sources", None, timeout=5.0)
+        if status == 200 and isinstance(payload, list):
+            for src in payload:
+                if isinstance(src, dict) and src.get("id") == source_id:
+                    last = src
+                    state = (src.get("scan") or {}).get("state")
+                    if state != "running":
+                        return src
+        time.sleep(0.25)
+    if last is not None:
+        return last
+    raise fail("internal-error")
 
 
 def _scan_exit(source: Any) -> int:
@@ -130,10 +141,17 @@ def _with_lock(root: Path, fn):
         lock.release()
 
 
-def _mutation(root: Path, local_fn, method: str, route: str, body: Any | None) -> Any:
+def _mutation(
+    root: Path,
+    local_fn,
+    method: str,
+    route: str,
+    body: Any | None,
+    timeout: float = 5.0,
+) -> Any:
     url = _running_server_url(root)
     if url is not None:
-        status, payload = _forward(url, method, route, body)
+        status, payload = _forward(url, method, route, body, timeout=timeout)
         if status in {200, 202}:
             return payload
         if isinstance(payload, dict) and "error" in payload:
@@ -183,6 +201,15 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--sort")
     items.add_argument("--dir")
     items.add_argument("--q")
+    items.add_argument("--unavailable")
+    items.add_argument("--person")
+    items.add_argument("--place")
+    items.add_argument("--thing")
+    items.add_argument("--from", dest="from_")
+    items.add_argument("--to")
+    items.add_argument("--scope")
+    items.add_argument("--kind")
+    items.add_argument("--favorite")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -191,11 +218,54 @@ def build_parser() -> argparse.ArgumentParser:
     annotate.add_argument("--thing")
     annotate.add_argument("--place")
 
+    favorite = sub.add_parser("favorite")
+    favorite.add_argument("id")
+    favorite_on = favorite.add_mutually_exclusive_group(required=True)
+    favorite_on.add_argument("--on", action="store_true")
+    favorite_on.add_argument("--off", action="store_true")
+
+    reveal = sub.add_parser("reveal")
+    reveal.add_argument("id")
+
+    open_item = sub.add_parser("open")
+    open_item.add_argument("id")
+
+    remove_cmd = sub.add_parser("remove")
+    remove_cmd.add_argument("id")
+
+    delete_file_cmd = sub.add_parser("delete-file")
+    delete_file_cmd.add_argument("id")
+
+    sub.add_parser("update")
+
     people = sub.add_parser("people")
-    people_sub = people.add_subparsers(dest="people_cmd")
+    people_sub = people.add_subparsers(dest="people_cmd", required=False)
+    people_sub.add_parser("list")
     merge = people_sub.add_parser("merge")
     merge.add_argument("keep")
     merge.add_argument("drop")
+    update_person = people_sub.add_parser("update")
+    update_person.add_argument("id")
+    update_person.add_argument("--name")
+    update_person.add_argument("--thumbnail")
+
+    jobs = sub.add_parser("jobs")
+    jobs.add_argument("action", nargs="?", choices=("pause", "resume"))
+
+    setup_geo = sub.add_parser("setup-geo")
+    setup_geo.add_argument("--from", dest="from_path")
+    setup_geo.add_argument("--force", action="store_true")
+    sub.add_parser("analyze-places")
+
+    setup_ml = sub.add_parser("setup-ml")
+    setup_ml.add_argument("target", choices=("objects", "faces"))
+    setup_ml.add_argument("--backend")
+
+    analyze = sub.add_parser("analyze")
+    analyze.add_argument("--item")
+
+    infer_faces = sub.add_parser("infer-faces")
+    infer_faces.add_argument("--force", action="store_true")
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -213,11 +283,6 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "serve":
             return serve(root)
-        if args.command in UNIMPLEMENTED or (
-            args.command == "people" and getattr(args, "people_cmd", None) == "merge"
-        ):
-            _print_error("not-found")
-            return 1
         if args.command == "settings":
             if args.settings_cmd == "get":
                 url = _running_server_url(root)
@@ -248,9 +313,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "scan":
             if args.copy_here and args.serve_from_there:
                 raise fail("invalid-argument")
-            if args.copy_here:
-                raise fail("not-found")
             body: dict[str, Any] = {"path": args.path}
+            if args.copy_here:
+                body["mode"] = "copy-here"
             if args.serve_from_there:
                 body["mode"] = "serve-from-there"
             url = _running_server_url(root)
@@ -260,6 +325,10 @@ def main(argv: list[str] | None = None) -> int:
                     if isinstance(payload, dict) and "error" in payload:
                         raise AppError(payload["error"], status)
                     raise fail_from_status(status)
+                source_id = payload.get("id") if isinstance(payload, dict) else None
+                state = (payload.get("scan") or {}).get("state") if isinstance(payload, dict) else None
+                if state == "running" and type(source_id) is str and source_id:
+                    payload = _wait_scan_complete(url, source_id)
                 _print_scan_summary(payload)
                 return _scan_exit(payload)
             source = _with_lock(
@@ -284,6 +353,17 @@ def main(argv: list[str] | None = None) -> int:
             payload = _with_lock(root, lambda: Library(root).sources_list())
             _print_json(payload)
             return 0
+        if args.command == "copy-here":
+            result = _mutation(
+                root,
+                lambda: Library(root).copy_here(args.source_id),
+                "POST",
+                f"/api/sources/{args.source_id}/copy-here",
+                {},
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
         if args.command == "items":
             query = {}
             if args.sort:
@@ -292,6 +372,24 @@ def main(argv: list[str] | None = None) -> int:
                 query["dir"] = args.dir
             if args.q:
                 query["q"] = args.q
+            if args.unavailable is not None:
+                query["unavailable"] = args.unavailable
+            if args.person:
+                query["person"] = args.person
+            if args.place:
+                query["place"] = args.place
+            if args.thing:
+                query["thing"] = args.thing
+            if getattr(args, "from_", None):
+                query["from"] = args.from_
+            if getattr(args, "to", None):
+                query["to"] = args.to
+            if args.scope:
+                query["scope"] = args.scope
+            if getattr(args, "kind", None):
+                query["kind"] = args.kind
+            if getattr(args, "favorite", None) is not None:
+                query["favorite"] = args.favorite
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -305,6 +403,229 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             payload = _with_lock(root, lambda: Library(root).items_list(query))
             _print_json(payload)
+            return 0
+        if args.command == "annotate":
+            from library.annotate import cli_payload_from_flags
+
+            payload = cli_payload_from_flags(
+                json_path=args.json,
+                person=args.person,
+                thing=args.thing,
+                place=args.place,
+            )
+            result = _mutation(
+                root,
+                lambda: Library(root).annotate(args.id, payload),
+                "POST",
+                f"/api/items/{args.id}/annotations",
+                payload,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "favorite":
+            body = {"favorite": bool(args.on)}
+            result = _mutation(
+                root,
+                lambda: Library(root).set_favorite(args.id, bool(args.on)),
+                "PUT",
+                f"/api/items/{args.id}/favorite",
+                body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "reveal":
+            result = _mutation(
+                root,
+                lambda: Library(root).reveal(args.id),
+                "POST",
+                f"/api/items/{args.id}/reveal",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "open":
+            result = _mutation(
+                root,
+                lambda: Library(root).open(args.id),
+                "POST",
+                f"/api/items/{args.id}/open",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "remove":
+            result = _mutation(
+                root,
+                lambda: Library(root).remove(args.id),
+                "POST",
+                f"/api/items/{args.id}/remove",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "delete-file":
+            result = _mutation(
+                root,
+                lambda: Library(root).delete_file(args.id),
+                "POST",
+                f"/api/items/{args.id}/delete-file",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "update":
+            result = _mutation(
+                root,
+                lambda: Library(root).update(),
+                "POST",
+                "/api/update",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "people":
+            if args.people_cmd in {None, "list"}:
+                url = _running_server_url(root)
+                if url is not None:
+                    status, payload = _forward(url, "GET", "/api/people", None)
+                    if status != 200:
+                        if isinstance(payload, dict) and "error" in payload:
+                            raise AppError(payload["error"], status)
+                        raise fail_from_status(status)
+                    _print_json(payload)
+                    return 0
+                payload = _with_lock(root, lambda: Library(root).people_list())
+                _print_json(payload)
+                return 0
+            if args.people_cmd == "update":
+                body: dict[str, Any] = {}
+                if args.name is not None:
+                    body["name"] = args.name
+                if args.thumbnail is not None:
+                    body["thumbnailItemId"] = args.thumbnail
+                result = _mutation(
+                    root,
+                    lambda: Library(root).person_update(args.id, body),
+                    "PUT",
+                    f"/api/people/{args.id}",
+                    body,
+                )
+                _print_json(result)
+                return 0
+            if args.people_cmd != "merge":
+                _print_error("invalid-argument")
+                return 2
+            body = {"keepId": args.keep, "dropId": args.drop}
+            result = _mutation(
+                root,
+                lambda: Library(root).people_merge(args.keep, args.drop),
+                "POST",
+                "/api/people/merge",
+                body,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "jobs":
+            action = getattr(args, "action", None)
+            if action in {"pause", "resume"}:
+                body = {"action": action}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).jobs_set(body),
+                    "POST",
+                    "/api/jobs",
+                    body,
+                )
+                _print_json(result)
+                return 0
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "GET", "/api/jobs", None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).jobs_get())
+            _print_json(payload)
+            return 0
+        if args.command == "setup-geo":
+            from library.geo import setup_geo
+
+            result = setup_geo(root, source=args.from_path, force=bool(args.force))
+            _print_json(result)
+            return 0
+        if args.command == "analyze-places":
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze_places(),
+                "POST",
+                "/api/places/analyze",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "setup-ml":
+            if args.target == "objects":
+                result = Library(root).setup_ml("objects")
+                _print_json(result)
+                return 0
+            if args.target != "faces":
+                _print_error("invalid-argument")
+                return 2
+            body: dict[str, Any] = {}
+            if getattr(args, "backend", None):
+                body["backend"] = args.backend
+            result = _mutation(
+                root,
+                lambda: Library(root).setup_faces(body or None),
+                "POST",
+                "/api/faces/setup",
+                body,
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "analyze":
+            body = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            result = _mutation(
+                root,
+                lambda: Library(root).analyze(body or None),
+                "POST",
+                "/api/analyze",
+                body,
+                timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "infer-faces":
+            body = {"force": bool(args.force)}
+            result = _mutation(
+                root,
+                lambda: Library(root).infer_faces(body),
+                "POST",
+                "/api/faces/infer",
+                body,
+                timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "renditions":
+            if getattr(args, "action", None) != "relocate":
+                _print_error("invalid-argument")
+                return 2
+            result = _mutation(
+                root,
+                lambda: Library(root).relocate(),
+                "POST",
+                "/api/renditions/relocate",
+                {},
+                timeout=300.0,
+            )
+            _print_json(result)
             return 0
         if args.command == "rebuild-index":
             result = _mutation(

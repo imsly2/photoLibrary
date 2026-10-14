@@ -1,0 +1,179 @@
+{
+  "slice": "TASTE-WIN",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "copy-202",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "copy-202-while-running",
+      "pass": true,
+      "detail": "running=True elapsed=0.010"
+    },
+    {
+      "name": "serve-202",
+      "pass": true,
+      "detail": "202"
+    },
+    {
+      "name": "serve-202-while-running",
+      "pass": true,
+      "detail": "running=True elapsed=0.009"
+    },
+    {
+      "name": "picker-unavailable",
+      "pass": true,
+      "detail": "{'error': 'picker-unavailable'}"
+    },
+    {
+      "name": "playwright-import-add",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "typed-path-add-enabled",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-closed-on-202",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-status-visible",
+      "pass": true,
+      "detail": "added 0, skipped 0, errors 0"
+    },
+    {
+      "name": "typed-path-added-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-console-progress",
+      "pass": true,
+      "detail": "http://127.0.0.1:18765/\nadded big.jpg\nadded photo.jpg\nadded linked-big.jpg\nadded linked.jpg\n"
+    },
+    {
+      "name": "disconnect-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "health-after-abort",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "disconnected-banner-text",
+      "pass": true,
+      "detail": "Library is not responding"
+    },
+    {
+      "name": "grid-kept",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "banner-cleared-on-health",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "origin-scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-stale-18765-link",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-stays-live-origin",
+      "pass": true,
+      "detail": "{'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/#item/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}"
+    },
+    {
+      "name": "in-app-back-live-origin",
+      "pass": true,
+      "detail": "{'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/', 'viewerHidden': True}"
+    },
+    {
+      "name": "history-back-live-origin",
+      "pass": true,
+      "detail": "{'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/', 'viewerHidden': True}"
+    },
+    {
+      "name": "history-back-not-blank",
+      "pass": true,
+      "detail": "http://127.0.0.1:18768/"
+    },
+    {
+      "name": "second-back-stays-live",
+      "pass": true,
+      "detail": "http://127.0.0.1:18768/"
+    },
+    {
+      "name": "library-bat-exists",
+      "pass": true,
+      "detail": "/workspace/Library.bat"
+    },
+    {
+      "name": "library-bat-invokes-launch-ps1",
+      "pass": true,
+      "detail": "@echo off\ncd /d \"%~dp0\"\npowershell -NoProfile -ExecutionPolicy Bypass -File \"%~dp0launch.ps1\"\n"
+    },
+    {
+      "name": "library-bat-visible-console",
+      "pass": true,
+      "detail": "@echo off\ncd /d \"%~dp0\"\npowershell -NoProfile -ExecutionPolicy Bypass -File \"%~dp0launch.ps1\"\n"
+    },
+    {
+      "name": "launch-sh-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "c4b953e1eda771e6d54d0b2ca7b2d61e3871f2a4",
+  "commands": [
+    "POST /api/sources copy-here slow",
+    "POST /api/sources serve-from-there",
+    "POST /api/pick-folder",
+    "scan disconnect fixtures",
+    "abort GET /api/items",
+    "scan live-origin fixtures"
+  ],
+  "artifactPaths": {
+    "result.json": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/result.json",
+    "stdout.log": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/stdout.log",
+    "add-progress.json": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/add-progress.json",
+    "disconnect.json": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/disconnect.json",
+    "live-origin.json": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/live-origin.json",
+    "scan-console.log": "docs/features/taste-windows/Rev1.0/assets/orchestrator-rerun/scan-console.log"
+  }
+}

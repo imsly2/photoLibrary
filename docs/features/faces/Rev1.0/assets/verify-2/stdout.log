@@ -1,0 +1,90 @@
+PASS infer-without-models-exit: {"error":"models-missing"}
+
+PASS infer-without-models: {"error": "models-missing"}
+PASS fixture-backend-prod-rejected: {"error":"invalid-argument"}
+
+PASS setup-exit
+PASS setup-ready: {
+  "ok": true,
+  "ready": true,
+  "backend": "fixture",
+  "modelsDir": "models/faces"
+}
+
+PASS setup-backend: {
+  "ok": true,
+  "ready": true,
+  "backend": "fixture",
+  "modelsDir": "models/faces"
+}
+
+PASS manifest-exists: /tmp/qa-faces/root/models/faces/manifest.json
+PASS scan-exit
+PASS infer-exit
+PASS infer-ok: {
+  "ok": true,
+  "backend": "fixture",
+  "items": 6,
+  "faces": 6,
+  "peopleCreated": 2,
+  "peopleReused": 0,
+  "skipped": 0
+}
+
+PASS infer-backend: {
+  "ok": true,
+  "backend": "fixture",
+  "items": 6,
+  "faces": 6,
+  "peopleCreated": 2,
+  "peopleReused": 0,
+  "skipped": 0
+}
+
+PASS infer-faces-6: {
+  "ok": true,
+  "backend": "fixture",
+  "items": 6,
+  "faces": 6,
+  "peopleCreated": 2,
+  "peopleReused": 0,
+  "skipped": 0
+}
+
+PASS infer-people-created-2: {
+  "ok": true,
+  "backend": "fixture",
+  "items": 6,
+  "faces": 6,
+  "peopleCreated": 2,
+  "peopleReused": 0,
+  "skipped": 0
+}
+
+PASS people-count-2: [{"schemaVersion": 1, "id": "person_a69438efe9c3", "name": null}, {"schemaVersion": 1, "id": "person_ff8e401a6638", "name": null}]
+PASS people-unnamed: [{"schemaVersion": 1, "id": "person_a69438efe9c3", "name": null}, {"schemaVersion": 1, "id": "person_ff8e401a6638", "name": null}]
+PASS no-guessed-name: []
+PASS a1-one-face: [{"personId": "person_ff8e401a6638", "box": [0.125, 0.16666666666666666, 0.21875, 0.375]}]
+PASS empty-no-faces: []
+PASS both-two-faces: [{"personId": "person_ff8e401a6638", "box": [0.09375, 0.1875, 0.21875, 0.375]}, {"personId": "person_a69438efe9c3", "box": [0.625, 0.20833333333333334, 0.21875, 0.375]}]
+PASS a-cluster: [[{"personId": "person_ff8e401a6638", "box": [0.125, 0.16666666666666666, 0.21875, 0.375]}], [{"personId": "person_ff8e401a6638", "box": [0.34375, 0.22916666666666666, 0.21875, 0.375]}]]
+PASS b-cluster: [[{"personId": "person_a69438efe9c3", "box": [0.5625, 0.1875, 0.21875, 0.375]}], [{"personId": "person_a69438efe9c3", "box": [0.1875, 0.3541666666666667, 0.21875, 0.375]}]]
+PASS a-ne-b: person_ff8e401a6638 person_a69438efe9c3
+PASS both-has-a-and-b: ["person_a69438efe9c3", "person_ff8e401a6638"]
+PASS boxes-in-range: [[0.34375, 0.22916666666666666, 0.21875, 0.375], [0.125, 0.16666666666666666, 0.21875, 0.375], [0.09375, 0.1875, 0.21875, 0.375], [0.625, 0.20833333333333334, 0.21875, 0.375], [0.1875, 0.3541666666666667, 0.21875, 0.375], [0.5625, 0.1875, 0.21875, 0.375]]
+PASS http-faces-status: {"ok": true, "ready": true, "backend": "fixture", "modelsDir": "models/faces"}
+PASS http-infer-skip: {"ok": true, "backend": "fixture", "items": 1, "faces": 0, "peopleCreated": 0, "peopleReused": 0, "skipped": 5}
+PASS name-ada-http: {"schemaVersion": 1, "id": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a", "kind": "photo", "filename": "a1.png", "capturedAt": "2026-10-14T07:14:20Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 480, "orientation": null, "camera": null, "lens": null, "durationSec": null, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_1e6cdbec606c", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "linux:/", "pathFromVolumeRoot": "tmp/qa-faces/artifacts/faces-media/a1.png", "lastKnownPath": "/tmp/qa-faces/artifacts/faces-media/a1.png", "sizeBytes": 2105, "modifiedAt": "2026-10-14T07:14:20.646654Z", "sha256": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a"}], "renditions": {"store": "with-server", "sourceId": "src_1e6cdbec606c", "thumb": null, "preview": null, "poster": null, "proxy": null, "playback": null, "status": {"thumb": "queued", "preview": "queued", "poster": "not-applicable", "proxy": "not-applicable", "playback": "not-applicable"}}, "faces": [{"personId": "person_ff8e401a6638", "box": [0.125, 0.16666666666666666, 0.21875, 0.375]}, {"personId": "person_ff8e401a6638"}], "things": [], "available": true, "motionAvailable": false, "favorite": false, "entities": {"people": [{"schemaVersion": 1, "id": "person_ff8e401a6638", "name": "Ada"}], "places": [], "things": []}}
+PASS ada-name: {"schemaVersion": 1, "id": "person_ff8e401a6638", "name": "Ada"}
+PASS b-still-unnamed: {"schemaVersion": 1, "id": "person_a69438efe9c3", "name": null}
+PASS search-person-ada: ["a1.png", "a2.png", "both.png"]
+PASS search-q-ada: ["a1.png", "a2.png", "both.png"]
+PASS merge-http: {"schemaVersion": 1, "id": "person_ff8e401a6638", "name": "Ada"}
+PASS merge-one-person: [{"schemaVersion": 1, "id": "person_ff8e401a6638", "name": "Ada"}]
+PASS merge-keep-ada: [{"schemaVersion": 1, "id": "person_ff8e401a6638", "name": "Ada"}]
+PASS drop-gone: person_a69438efe9c3
+PASS all-faces-keep: ["person_ff8e401a6638"]
+PASS index-keep-only: {"schemaVersion": 1, "backend": "fixture", "matchThreshold": 0.85, "people": {"person_ff8e401a6638": {"centroid": [0.0961978707636033, 0.4891586841331973, 0.5398749272086185, -0.392960813369594, -0.05071624307542135, 0.4436770564450153, 0.010104763087694715, 0.325673209767962], "faces": [{"itemId": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed", "box": [0.34375, 0.22916666666666666, 0.21875, 0.375]}, {"itemId": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a", "box": [0.125, 0.16666666666666666, 0.21875, 0.375]}, {"itemId": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92", "box": [0.09375, 0.1875, 0.21875, 0.375]}, {"itemId": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92", "box": [0.625, 0.20833333333333334, 0.21875, 0.375]}, {"itemId": "74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6", "box": [0.1875, 0.3541666666666667, 0.21875, 0.375]}, {"itemId": "77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81", "box": [0.5625, 0.1875, 0.21875, 0.375]}]}}, "scanned": {"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed": true, "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a": true, "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92": true, "74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6": true, "77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81": true, "93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077": true}}
+PASS original-hashes: {"before": {"a1.png": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a", "a2.png": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed", "b1.png": "77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81", "b2.png": "74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6", "both.png": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92", "empty.png": "93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077"}, "after": {"a1.png": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a", "a2.png": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed", "b1.png": "77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81", "b2.png": "74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6", "both.png": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92", "empty.png": "93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077"}}
+PASS history-faces-infer: ["settings", "scan", "faces-infer", "annotate", "people-merge"]
+PASS no-genderage: /tmp/qa-faces/root/models/faces/buffalo_s/genderage.onnx

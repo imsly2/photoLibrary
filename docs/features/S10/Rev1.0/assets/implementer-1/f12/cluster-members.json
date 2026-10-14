@@ -1,0 +1,99 @@
+{
+  "clusters": [
+    {
+      "placeIds": [
+        "place_524b4ba7021e",
+        "place_f9532e2a01b0"
+      ],
+      "itemCounts": [
+        1,
+        2
+      ],
+      "itemCount": 3,
+      "newestCandidates": [
+        "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+        "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+      ],
+      "centroid": {
+        "x": 640,
+        "y": 317.828125,
+        "clientX": 640,
+        "clientY": 402.171875
+      },
+      "positions": [
+        {
+          "id": "place_524b4ba7021e",
+          "itemCount": 1,
+          "newestItemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+          "x": 640,
+          "y": 317.665249358513,
+          "clientX": 640,
+          "clientY": 402.008999358513
+        },
+        {
+          "id": "place_f9532e2a01b0",
+          "itemCount": 2,
+          "newestItemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+          "x": 640,
+          "y": 317.991000641487,
+          "clientX": 640,
+          "clientY": 402.334750641487
+        }
+      ],
+      "pairwise": [
+        0.3257512829740108
+      ]
+    }
+  ],
+  "rulePixels": 32,
+  "places": [
+    {
+      "id": "place_524b4ba7021e",
+      "itemCount": 1,
+      "newestItemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+    },
+    {
+      "id": "place_f9532e2a01b0",
+      "itemCount": 2,
+      "newestItemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    }
+  ],
+  "within32": true,
+  "centroid": {
+    "x": 640,
+    "y": 317.828125,
+    "clientX": 640,
+    "clientY": 402.171875
+  },
+  "rotation": {
+    "before": {
+      "yawDeg": 87.63,
+      "pitchDeg": 41.9025,
+      "distance": 2.85
+    },
+    "after": {
+      "yawDeg": 77.63000000000001,
+      "pitchDeg": 41.9025,
+      "distance": 2.85
+    },
+    "dx": 40,
+    "deltaYawDeg": -9.999999999999986,
+    "degPerPixel": 0.24999999999999964
+  },
+  "zoomAnchor": {
+    "before": {
+      "x": 640,
+      "y": 381.39375,
+      "lat": 33.02916977847289,
+      "lon": -77.63000000000001,
+      "clientX": 640,
+      "clientY": 465.7375
+    },
+    "after": {
+      "x": 640,
+      "y": 381.51889451224264,
+      "visible": true,
+      "drift": 0.12514451224262757
+    }
+  }
+}

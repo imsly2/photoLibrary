@@ -1,0 +1,206 @@
+{
+  "slice": "TASTE-REVEAL",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "command-windows-spaces",
+      "pass": true,
+      "detail": "explorer.exe /select,\"C:\\Family Photos\\Vacation 2024\\IMG_1042.jpg\""
+    },
+    {
+      "name": "command-quoted-fullpath",
+      "pass": true,
+      "detail": "explorer.exe /select,\"/tmp/Family Photos/Vacation 2024/clip.mp4\""
+    },
+    {
+      "name": "command-selects-file-not-folder",
+      "pass": true,
+      "detail": "/tmp/Family Photos/Vacation 2024/clip.mp4"
+    },
+    {
+      "name": "command-not-documents",
+      "pass": true,
+      "detail": "/tmp/Family Photos/Vacation 2024/clip.mp4"
+    },
+    {
+      "name": "existing-absolute",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg"
+    },
+    {
+      "name": "existing-rejects-missing",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "existing-rejects-directory",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "existing-rejects-catalog-relative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-windows-returns-true",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-windows-one-launch",
+      "pass": true,
+      "detail": "[(('explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\"',), {})]"
+    },
+    {
+      "name": "open-windows-select-command",
+      "pass": true,
+      "detail": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\""
+    },
+    {
+      "name": "open-windows-selects-real-file",
+      "pass": true,
+      "detail": "{\"command\": \"explorer.exe /select,\\\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\\\"\", \"photo\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\"}"
+    },
+    {
+      "name": "open-windows-not-documents",
+      "pass": true,
+      "detail": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/unit-files/Family Photos/Vacation 2024/IMG_1042.jpg\""
+    },
+    {
+      "name": "open-missing-false",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-missing-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "open-relative-false",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-relative-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "linked-item",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_4e5d604db671\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentI"
+    },
+    {
+      "name": "linked-reveal-opened",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-absolute-file",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-folder-is-parent",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-explorer-select",
+      "pass": true,
+      "detail": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024/IMG_1042.jpg\""
+    },
+    {
+      "name": "linked-reveal-not-documents",
+      "pass": true,
+      "detail": "{\"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024\", \"command\": \"explorer.exe /select,\\\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/Family Photos/Vacation 2024/IMG_1042.jpg\\\"\"}"
+    },
+    {
+      "name": "missing-raises-unavailable",
+      "pass": true,
+      "detail": "unavailable"
+    },
+    {
+      "name": "missing-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "copy-item",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_6553ac1c3a6e\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentI"
+    },
+    {
+      "name": "copy-reveal-absolute-under-originals",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/copy-root/originals/a-src_b1872b6fc614/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/copy-root/originals/a-src_b1872b6fc614\", \"opened\": true}"
+    },
+    {
+      "name": "copy-catalog-path-is-relative",
+      "pass": true,
+      "detail": "originals/a-src_b1872b6fc614/IMG_1042.jpg"
+    },
+    {
+      "name": "copy-reveal-not-catalog-relative",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/copy-root/originals/a-src_b1872b6fc614/IMG_1042.jpg\", \"catalog\": \"originals/a-src_b1872b6fc614/IMG_1042.jpg\"}"
+    },
+    {
+      "name": "copy-reveal-explorer-selects-copy",
+      "pass": true,
+      "detail": "explorer.exe /select,\"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/copy-root/originals/a-src_b1872b6fc614/IMG_1042.jpg\""
+    },
+    {
+      "name": "source-uses-explorer-select-quoted",
+      "pass": true,
+      "detail": "favorites.py command form"
+    },
+    {
+      "name": "source-no-list-form-explorer",
+      "pass": true,
+      "detail": "favorites.py argv"
+    },
+    {
+      "name": "source-ui-shows-missing-error",
+      "pass": true,
+      "detail": "library.js reveal error"
+    },
+    {
+      "name": "source-ui-does-not-swallow-reveal",
+      "pass": true,
+      "detail": "library.js reveal handler"
+    },
+    {
+      "name": "uispec-reveal-selects-file",
+      "pass": true,
+      "detail": "UI-SPEC checklist 15"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "adff486aaecb0f88865768e4252874ec2ccd0bf1",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --copy-here"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-1/stdout.log"
+  }
+}

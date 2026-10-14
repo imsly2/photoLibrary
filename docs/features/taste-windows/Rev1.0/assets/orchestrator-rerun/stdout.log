@@ -1,0 +1,41 @@
+PASS copy-202: 202
+PASS copy-202-while-running: running=True elapsed=0.010
+PASS serve-202: 202
+PASS serve-202-while-running: running=True elapsed=0.009
+PASS picker-unavailable: {'error': 'picker-unavailable'}
+PASS playwright-import-add
+PASS typed-path-add-enabled
+PASS dialog-closed-on-202
+PASS scan-status-visible: added 0, skipped 0, errors 0
+PASS typed-path-added-items
+PASS scan-console-progress: http://127.0.0.1:18765/
+added big.jpg
+added photo.jpg
+added linked-big.jpg
+added linked.jpg
+
+PASS disconnect-scan-exit
+PASS health-after-abort: {'ok': True}
+PASS disconnected-banner-text: Library is not responding
+PASS grid-kept: 2
+PASS banner-cleared-on-health
+PASS origin-scan-exit
+PASS no-stale-18765-link
+PASS open-stays-live-origin: {'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/#item/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0'}
+PASS in-app-back-live-origin: {'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/', 'viewerHidden': True}
+PASS history-back-live-origin: {'origin': 'http://127.0.0.1:18768', 'href': 'http://127.0.0.1:18768/', 'viewerHidden': True}
+PASS history-back-not-blank: http://127.0.0.1:18768/
+PASS second-back-stays-live: http://127.0.0.1:18768/
+PASS library-bat-exists: /workspace/Library.bat
+PASS library-bat-invokes-launch-ps1: @echo off
+cd /d "%~dp0"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0launch.ps1"
+
+PASS library-bat-visible-console: @echo off
+cd /d "%~dp0"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0launch.ps1"
+
+PASS launch-sh-unchanged
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS original-fixture-bytes

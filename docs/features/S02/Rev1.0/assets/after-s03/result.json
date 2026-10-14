@@ -1,6 +1,6 @@
 {
   "slice": "S02",
-  "pass": true,
+  "pass": false,
   "assertions": [
     {
       "name": "library-metadata-no-probe",
@@ -124,8 +124,8 @@
     },
     {
       "name": "capturedAt:b/no-exif.jpg",
-      "pass": true,
-      "detail": "'2022-02-03T04:05:06Z' != '2022-02-03T04:05:06Z'"
+      "pass": false,
+      "detail": "'2026-10-13T16:30:22Z' != '2022-02-03T04:05:06Z'"
     },
     {
       "name": "capturedAtSource:b/no-exif.jpg",
@@ -400,7 +400,7 @@
     {
       "name": "img-place-coords",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': 'place_8248ba220440', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
+      "detail": "{'schemaVersion': 1, 'id': 'place_1705132ca4d1', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
     },
     {
       "name": "far-place-name-null",
@@ -410,7 +410,7 @@
     {
       "name": "far-place-coords",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': 'place_a3f963a9824c', 'name': None, 'latitude': 41.925, 'longitude': -87.63}"
+      "detail": "{'schemaVersion': 1, 'id': 'place_b40d97078427', 'name': None, 'latitude': 41.925, 'longitude': -87.63}"
     },
     {
       "name": "no-place:b/no-exif.jpg",
@@ -460,7 +460,7 @@
     {
       "name": "subset-scan-ok",
       "pass": true,
-      "detail": "exit=0 {'sourceId': 'src_f55f135f10bb', 'added': 3, 'skipped': 0, 'errors': []}"
+      "detail": "exit=0 {'sourceId': 'src_9bb02db775d2', 'added': 3, 'skipped': 0, 'errors': []}"
     },
     {
       "name": "subset-two-places",
@@ -480,7 +480,7 @@
     {
       "name": "subset-shared-seed-coords",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': 'place_97b05ee7e86f', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
+      "detail": "{'schemaVersion': 1, 'id': 'place_7448bd4f7225', 'name': None, 'latitude': 41.88, 'longitude': -87.63}"
     },
     {
       "name": "subset-shared-name-null",
@@ -495,17 +495,17 @@
     {
       "name": "offset-utc",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca', 'kind': 'photo', 'filename': 'offset.jpg', 'capturedAt': '2024-06-12T20:04:00Z', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_6a7e8cbb597a', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/offset.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\after-s03\\\\date-edge-media\\\\offset.jpg', 'sizeBytes': 778, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_6a7e8cbb597a', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+      "detail": "{'schemaVersion': 1, 'id': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca', 'kind': 'photo', 'filename': 'offset.jpg', 'capturedAt': '2024-06-12T20:04:00Z', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_5da17c2758e9', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/offset.jpg', 'lastKnownPath': '/workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/offset.jpg', 'sizeBytes': 778, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '197eab3c2e68ef403069ce2999f9c42ec69f1dddcd48cc04f69396a23b5569ca'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_5da17c2758e9', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
     },
     {
       "name": "filename-leftmost",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39', 'kind': 'photo', 'filename': 'left_20200102_2021-03-04.jpg', 'capturedAt': '2020-01-02T00:00:00', 'capturedAtSource': 'filename', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_6a7e8cbb597a', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/left_20200102_2021-03-04.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\after-s03\\\\date-edge-media\\\\left_20200102_2021-03-04.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_6a7e8cbb597a', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+      "detail": "{'schemaVersion': 1, 'id': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39', 'kind': 'photo', 'filename': 'left_20200102_2021-03-04.jpg', 'capturedAt': '2020-01-02T00:00:00', 'capturedAtSource': 'filename', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_5da17c2758e9', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/left_20200102_2021-03-04.jpg', 'lastKnownPath': '/workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/left_20200102_2021-03-04.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-01-01T00:00:00Z', 'sha256': '5448231d9703693c35c8d785762aa8c3f9f815a837dc63ebf50bc695dbaa3c39'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_5da17c2758e9', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
     },
     {
       "name": "invalid-filename-mtime",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b', 'kind': 'photo', 'filename': 'bad_20201332.jpg', 'capturedAt': '2022-03-04T05:06:07Z', 'capturedAtSource': 'mtime', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_6a7e8cbb597a', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/bad_20201332.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\after-s03\\\\date-edge-media\\\\bad_20201332.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-03-04T05:06:07Z', 'sha256': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_6a7e8cbb597a', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+      "detail": "{'schemaVersion': 1, 'id': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b', 'kind': 'photo', 'filename': 'bad_20201332.jpg', 'capturedAt': '2022-03-04T05:06:07Z', 'capturedAtSource': 'mtime', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_5da17c2758e9', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/bad_20201332.jpg', 'lastKnownPath': '/workspace/docs/features/S02/Rev1.0/assets/after-s03/date-edge-media/bad_20201332.jpg', 'sizeBytes': 713, 'modifiedAt': '2022-03-04T05:06:07Z', 'sha256': '13bf0d3de3d81c0581e3c0de9077cb30f4c6071046f093c886268b735703633b'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_5da17c2758e9', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
     },
     {
       "name": "tie-pair",
@@ -530,7 +530,7 @@
     {
       "name": "changed-rescan-added",
       "pass": true,
-      "detail": "{'sourceId': 'src_756140087deb', 'added': 1, 'skipped': 0, 'errors': []}"
+      "detail": "{'sourceId': 'src_4490de8ee618', 'added': 1, 'skipped': 0, 'errors': []}"
     },
     {
       "name": "changed-old-kept",
@@ -540,16 +540,16 @@
     {
       "name": "changed-new-metadata",
       "pass": true,
-      "detail": "{'schemaVersion': 1, 'id': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617', 'kind': 'photo', 'filename': 'shot.jpg', 'capturedAt': '2024-08-08T08:08:08', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_756140087deb', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'windows:CC4B95CA', 'pathFromVolumeRoot': 'slyOS/projects/photoLibrary/docs/features/S02/Rev1.0/assets/after-s03/changed-media/shot.jpg', 'lastKnownPath': 'J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\S02\\\\Rev1.0\\\\assets\\\\after-s03\\\\changed-media\\\\shot.jpg', 'sizeBytes': 759, 'modifiedAt': '2022-04-05T06:07:08Z', 'sha256': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_756140087deb', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
+      "detail": "{'schemaVersion': 1, 'id': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617', 'kind': 'photo', 'filename': 'shot.jpg', 'capturedAt': '2024-08-08T08:08:08', 'capturedAtSource': 'exif', 'placeId': None, 'metadata': {'width': 64, 'height': 48, 'orientation': 1, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}, 'contentIdentifier': None, 'locations': [{'sourceId': 'src_4490de8ee618', 'role': 'primary', 'component': 'still', 'kind': 'volume', 'current': True, 'libraryRelativePath': None, 'volumeSerial': 'linux:/', 'pathFromVolumeRoot': 'workspace/docs/features/S02/Rev1.0/assets/after-s03/changed-media/shot.jpg', 'lastKnownPath': '/workspace/docs/features/S02/Rev1.0/assets/after-s03/changed-media/shot.jpg', 'sizeBytes': 759, 'modifiedAt': '2022-04-05T06:07:08Z', 'sha256': '90ea4ce405298fa98bed62f62aee68c2f4f8f51bbc79f2d8132f54d2cde1a617'}], 'renditions': {'store': 'with-server', 'sourceId': 'src_4490de8ee618', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}, 'faces': [], 'things': []}"
     }
   ],
   "platform": {
-    "system": "Windows",
-    "release": "11",
-    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
-  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
-  "revision": "18f28e52e6622a499ec02e2155d2585811cb0934",
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "02dc6d44a92646aa768472d2bc9a3691fdf7217a",
   "commands": [
     "python -m library scan <media> --serve-from-there",
     "python -m library scan <media> --serve-from-there #2",
@@ -560,11 +560,11 @@
     "python -m library scan <changed> --serve-from-there #2"
   ],
   "artifactPaths": {
-    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\result.json",
-    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\stdout.log",
-    "metadata.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\metadata.json",
-    "items": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\items",
-    "places": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\places",
-    "extraction-dumps": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S02\\Rev1.0\\assets\\after-s03\\extraction-dumps"
+    "result.json": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/result.json",
+    "stdout.log": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/stdout.log",
+    "metadata.json": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/metadata.json",
+    "items": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/items",
+    "places": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/places",
+    "extraction-dumps": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/extraction-dumps"
   }
 }

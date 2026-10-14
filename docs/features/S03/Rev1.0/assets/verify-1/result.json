@@ -3,212 +3,72 @@
   "pass": true,
   "assertions": [
     {
-      "name": "library-no-pillow",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "library-no-pillow-heif",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "library-no-playwright",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "library-no-noautorotate",
-      "pass": true,
-      "detail": ""
-    },
-    {
       "name": "scan-exit",
       "pass": true,
       "detail": "exit=1 stderr=''"
     },
     {
-      "name": "one-source",
+      "name": "broken-heic-scan-error",
       "pass": true,
-      "detail": "1"
+      "detail": "[{'path': 'formats/broken.heic', 'error': 'decode-error'}]"
     },
     {
-      "name": "oriented-present",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "broken-present",
+      "name": "oriented-item",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "oriented-thumb-queued",
+      "name": "broken-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-store",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "oriented-queued",
       "pass": true,
       "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
     },
     {
-      "name": "oriented-preview-queued",
+      "name": "oriented-paths-null",
       "pass": true,
-      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+      "detail": "{'store': 'with-server', 'sourceId': 'src_dfa2875cd565', 'thumb': None, 'preview': None, 'poster': None, 'proxy': None, 'status': {'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}}"
     },
     {
-      "name": "oriented-thumb-path-null",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "oriented-preview-path-null",
+      "name": "oriented-video-slots",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "oriented-raw-width",
+      "name": "oriented-raw-size",
       "pass": true,
-      "detail": "640"
+      "detail": "{'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}"
     },
     {
-      "name": "oriented-raw-height",
+      "name": "scan-no-thumb-webp",
       "pass": true,
-      "detail": "480"
+      "detail": ""
     },
     {
-      "name": "oriented-orientation",
+      "name": "scan-no-preview-webp",
       "pass": true,
-      "detail": "6"
+      "detail": ""
     },
     {
-      "name": "broken-thumb-error",
+      "name": "original-unchanged-after-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-error",
       "pass": true,
       "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
     },
     {
-      "name": "broken-preview-error",
-      "pass": true,
-      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
-    },
-    {
-      "name": "broken-thumb-path-null",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "broken-preview-path-null",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "scan-no-webp",
-      "pass": true,
-      "detail": "[]"
-    },
-    {
-      "name": "scan-history-present",
-      "pass": true,
-      "detail": "1"
-    },
-    {
-      "name": "oriented-ready-timeout-not-hit",
-      "pass": true,
-      "detail": "timeout"
-    },
-    {
-      "name": "oriented-thumb-ready",
-      "pass": true,
-      "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
-    },
-    {
-      "name": "oriented-preview-ready",
-      "pass": true,
-      "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
-    },
-    {
-      "name": "oriented-thumb-rel",
-      "pass": true,
-      "detail": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/thumb.webp"
-    },
-    {
-      "name": "oriented-preview-rel",
-      "pass": true,
-      "detail": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/preview.webp"
-    },
-    {
-      "name": "oriented-meta-width-unchanged",
-      "pass": true,
-      "detail": "640"
-    },
-    {
-      "name": "oriented-meta-height-unchanged",
-      "pass": true,
-      "detail": "480"
-    },
-    {
-      "name": "oriented-meta-orientation-unchanged",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "thumb-file",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "preview-file",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "thumb-size",
-      "pass": true,
-      "detail": "240x320"
-    },
-    {
-      "name": "preview-size",
-      "pass": true,
-      "detail": "480x640"
-    },
-    {
-      "name": "thumb-longest-cap",
-      "pass": true,
-      "detail": "320"
-    },
-    {
-      "name": "preview-longest-cap",
-      "pass": true,
-      "detail": "640"
-    },
-    {
-      "name": "history-unchanged-by-renditions",
-      "pass": true,
-      "detail": "2 vs 2"
-    },
-    {
-      "name": "png-thumb-still-queued",
-      "pass": true,
-      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
-    },
-    {
-      "name": "png-paths-null",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "video-poster-still-queued",
-      "pass": true,
-      "detail": "{'thumb': 'not-applicable', 'preview': 'not-applicable', 'poster': 'queued', 'proxy': 'queued'}"
-    },
-    {
-      "name": "video-paths-null",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "broken-still-error",
-      "pass": true,
-      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
-    },
-    {
-      "name": "broken-still-null",
+      "name": "broken-paths-null",
       "pass": true,
       "detail": ""
     },
@@ -218,29 +78,129 @@
       "detail": ""
     },
     {
-      "name": "thumb-200",
+      "name": "png-item",
       "pass": true,
-      "detail": "200"
+      "detail": ""
     },
     {
-      "name": "thumb-type",
+      "name": "png-still-queued",
       "pass": true,
-      "detail": "image/webp"
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "png-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "serve-health",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "runtime-pid",
+      "pass": true,
+      "detail": "6927"
+    },
+    {
+      "name": "oriented-ready",
+      "pass": true,
+      "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "ready-thumb-rel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ready-preview-rel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "metadata-stays-raw",
+      "pass": true,
+      "detail": "{'width': 640, 'height': 480, 'orientation': 6, 'camera': None, 'lens': None, 'durationSec': None, 'latitude': None, 'longitude': None}"
+    },
+    {
+      "name": "original-unchanged-after-ready",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-size",
+      "pass": true,
+      "detail": "{'width': 240, 'height': 320, 'bytes': 1740}"
+    },
+    {
+      "name": "preview-size",
+      "pass": true,
+      "detail": "{'width': 480, 'height': 640, 'bytes': 4154}"
+    },
+    {
+      "name": "thumb-cap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "preview-cap",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-after-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-stays-error",
+      "pass": true,
+      "detail": "{'thumb': 'error', 'preview': 'error', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "broken-still-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "broken-decode-error-kept",
+      "pass": true,
+      "detail": "['formats/broken.heic']"
+    },
+    {
+      "name": "png-after-serve",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "png-still-queued-after-serve",
+      "pass": true,
+      "detail": "{'thumb': 'queued', 'preview': 'queued', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
+    },
+    {
+      "name": "png-still-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-http",
+      "pass": true,
+      "detail": ""
     },
     {
       "name": "thumb-length",
       "pass": true,
-      "detail": "1740"
+      "detail": ""
     },
     {
-      "name": "preview-200",
+      "name": "thumb-sha",
       "pass": true,
-      "detail": "200"
+      "detail": ""
     },
     {
-      "name": "preview-type",
+      "name": "preview-http",
       "pass": true,
-      "detail": "image/webp"
+      "detail": ""
     },
     {
       "name": "preview-length",
@@ -248,147 +208,111 @@
       "detail": ""
     },
     {
-      "name": "original-200",
+      "name": "original-http",
       "pass": true,
-      "detail": "200"
+      "detail": ""
     },
     {
-      "name": "original-type",
+      "name": "original-sha",
       "pass": true,
-      "detail": "image/jpeg"
+      "detail": ""
     },
     {
-      "name": "original-sha256",
+      "name": "original-length",
       "pass": true,
-      "detail": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7"
+      "detail": ""
     },
     {
       "name": "range-206",
       "pass": true,
-      "detail": "206"
+      "detail": "{\"status\": 206, \"contentType\": \"image/webp\", \"contentLength\": 1, \"contentRange\": \"bytes 0-0/1740\", \"bodyLength\": 1, \"sha256\": \"8c2574892063f995fdf756bce07f46c1a5193e54cd52837ed91e32008ccf41ac\", \"body\": null}"
     },
     {
-      "name": "range-content-range",
+      "name": "bad-range-416",
       "pass": true,
-      "detail": "bytes 0-0/1740"
+      "detail": "{\"status\": 416, \"contentType\": \"application/json\", \"contentLength\": 25, \"contentRange\": null, \"bodyLength\": 25, \"sha256\": \"53a9beda5df606f8f0b0b6b8f54e27bbc240e55a93acd5ae5b58d69446ddb2d3\", \"body\": {\"error\": \"invalid-range\"}}"
     },
     {
-      "name": "range-content-length",
+      "name": "unknown-id-404",
       "pass": true,
-      "detail": "1"
+      "detail": "{\"status\": 404, \"contentType\": \"application/json\", \"contentLength\": 21, \"contentRange\": null, \"bodyLength\": 21, \"sha256\": \"803cb0e9b33bf52c5617f82d9857d432d8b080c0d2adc0a8bf7727bd04547256\", \"body\": {\"error\": \"not-found\"}}"
     },
     {
-      "name": "range-body",
-      "pass": true,
-      "detail": "82"
-    },
-    {
-      "name": "bad-range",
-      "pass": true,
-      "detail": "{'error': 'invalid-range'}"
-    },
-    {
-      "name": "multi-range",
+      "name": "page-no-empty-state-copy-baked-pixels",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "non-bytes-range",
+      "name": "page-has-script",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "missing-which",
+      "name": "playwright-import",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "unknown-which",
+      "name": "page-not-empty",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "unknown-id",
+      "name": "viewer-src-preview",
       "pass": true,
-      "detail": "{'error': 'not-found'}"
+      "detail": "/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=preview"
     },
     {
-      "name": "unknown-id-logged",
-      "pass": true,
-      "detail": "a11c056c7?which=nope\tinvalid-argument\n2026-10-13T16:24:58.963724Z\t/api/media/missing?which=original\tnot-found\n2026-10-13T16:24:58.970217Z\t/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=original&component=motion\tinvalid-argument\n2026-10-13T16:24:58.975065Z\t/api/media/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7?which=poster\tpreview-unavailable\n"
-    },
-    {
-      "name": "motion-on-photo",
+      "name": "esc-closes-viewer",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "poster-unavailable",
+      "name": "first-still-exists",
+      "pass": true,
+      "detail": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/first-still.png"
+    },
+    {
+      "name": "first-still-1280x720",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "preview-file-deleted",
       "pass": true,
       "detail": ""
-    },
-    {
-      "name": "broken-thumb-unavailable",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "empty-hidden-when-items",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "first-still-written",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "first-still-size",
-      "pass": true,
-      "detail": "(1280, 720)"
-    },
-    {
-      "name": "first-still-png",
-      "pass": true,
-      "detail": "PNG"
     },
     {
       "name": "deleted-preview-unavailable",
       "pass": true,
-      "detail": "{'error': 'preview-unavailable'}"
+      "detail": "{\"status\": 404, \"contentType\": \"application/json\", \"contentLength\": 31, \"contentRange\": null, \"bodyLength\": 31, \"sha256\": \"ee203b5fbeca9593fdb7dca6db3f95c62cd3ecfb2356bafabdf9eff6cfa620a7\", \"body\": {\"error\": \"preview-unavailable\"}}"
     },
     {
-      "name": "deleted-status-unchanged",
+      "name": "deleted-preview-status-unchanged",
       "pass": true,
       "detail": "{'thumb': 'ready', 'preview': 'ready', 'poster': 'not-applicable', 'proxy': 'not-applicable'}"
     },
     {
-      "name": "deleted-not-recreated",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "originals-unchanged",
+      "name": "deleted-preview-not-recreated",
       "pass": true,
       "detail": ""
     }
   ],
   "platform": {
-    "system": "Windows",
-    "release": "11",
-    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
   },
-  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
-  "revision": "18f28e52e6622a499ec02e2155d2585811cb0934",
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "02dc6d44a92646aa768472d2bc9a3691fdf7217a",
   "commands": [
-    "python -m library scan <media> --serve-from-there",
-    "python -m library serve"
+    "python -m library scan <media> --serve-from-there"
   ],
   "artifactPaths": {
-    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\verify-1\\result.json",
-    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\verify-1\\stdout.log",
-    "sizes.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\verify-1\\sizes.json",
-    "media-responses.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\verify-1\\media-responses.json",
-    "first-still.png": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\S03\\Rev1.0\\assets\\verify-1\\first-still.png"
+    "result.json": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/stdout.log",
+    "sizes.json": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/sizes.json",
+    "media-responses.json": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/media-responses.json",
+    "first-still.png": "/workspace/docs/features/S03/Rev1.0/assets/verify-1/first-still.png"
   }
 }

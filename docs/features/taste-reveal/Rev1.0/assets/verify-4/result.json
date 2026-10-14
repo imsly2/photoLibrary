@@ -1,0 +1,283 @@
+{
+  "slice": "TASTE-REVEAL",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "command-is-argv-list",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,C:\\\\Family Photos\\\\Vacation 2024\\\\IMG_1042.jpg\"]"
+    },
+    {
+      "name": "command-windows-spaces",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,C:\\\\Family Photos\\\\Vacation 2024\\\\IMG_1042.jpg\"]"
+    },
+    {
+      "name": "command-iphone-backup-spaces",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,J:\\\\Iphone Backup\\\\Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "command-select-arg-has-no-quotes",
+      "pass": true,
+      "detail": "/select,J:\\Iphone Backup\\Another Rope Swing.MOV"
+    },
+    {
+      "name": "command-comma-glued",
+      "pass": true,
+      "detail": "/select,J:\\Iphone Backup\\Another Rope Swing.MOV"
+    },
+    {
+      "name": "command-posix-argv",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/tmp/Iphone Backup/Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "command-selects-file-not-folder",
+      "pass": true,
+      "detail": "/tmp/Iphone Backup/Another Rope Swing.MOV"
+    },
+    {
+      "name": "command-not-documents",
+      "pass": true,
+      "detail": "/tmp/Iphone Backup/Another Rope Swing.MOV"
+    },
+    {
+      "name": "select-arg-helper",
+      "pass": true,
+      "detail": "/select,J:\\Iphone Backup\\Another Rope Swing.MOV"
+    },
+    {
+      "name": "existing-absolute",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV"
+    },
+    {
+      "name": "existing-rejects-missing",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "existing-rejects-directory",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "existing-rejects-catalog-relative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-windows-returns-true",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-windows-one-launch",
+      "pass": true,
+      "detail": "[((['explorer.exe', '/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV'],), {})]"
+    },
+    {
+      "name": "open-windows-select-command",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "open-windows-selects-real-file",
+      "pass": true,
+      "detail": "{\"command\": [\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV\"], \"photo\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV\"}"
+    },
+    {
+      "name": "open-windows-spaces-in-arg",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV"
+    },
+    {
+      "name": "open-windows-not-documents",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files/Iphone Backup/Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "open-missing-false",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-missing-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "open-relative-false",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "open-relative-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "linked-item",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"Another Rope Swing.MOV\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0cd1ab38d50c\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.6"
+    },
+    {
+      "name": "linked-reveal-opened",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-absolute-file",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-folder-is-parent",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup\", \"opened\": true}"
+    },
+    {
+      "name": "linked-reveal-explorer-select",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "linked-reveal-argv-no-quotes",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\"]"
+    },
+    {
+      "name": "linked-reveal-iphone-backup-spaces",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV"
+    },
+    {
+      "name": "linked-reveal-not-documents",
+      "pass": true,
+      "detail": "{\"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup\", \"command\": [\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/Iphone Backup/Another Rope Swing.MOV\"]}"
+    },
+    {
+      "name": "missing-raises-unavailable",
+      "pass": true,
+      "detail": "unavailable"
+    },
+    {
+      "name": "missing-no-explorer",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "copy-item",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_7e5ea6bb37ce\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentI"
+    },
+    {
+      "name": "copy-reveal-absolute-under-originals",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root/originals/a-src_d860510cd2a3/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root/originals/a-src_d860510cd2a3\", \"opened\": true}"
+    },
+    {
+      "name": "copy-catalog-path-is-relative",
+      "pass": true,
+      "detail": "originals/a-src_d860510cd2a3/IMG_1042.jpg"
+    },
+    {
+      "name": "copy-reveal-not-catalog-relative",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root/originals/a-src_d860510cd2a3/IMG_1042.jpg\", \"catalog\": \"originals/a-src_d860510cd2a3/IMG_1042.jpg\"}"
+    },
+    {
+      "name": "copy-reveal-explorer-selects-copy",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root/originals/a-src_d860510cd2a3/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "copy-reveal-argv-list",
+      "pass": true,
+      "detail": "[\"explorer.exe\", \"/select,/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root/originals/a-src_d860510cd2a3/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "source-uses-explorer-select-argv",
+      "pass": true,
+      "detail": "favorites.py command form"
+    },
+    {
+      "name": "source-list-form-glued-select",
+      "pass": true,
+      "detail": "favorites.py glued select arg"
+    },
+    {
+      "name": "source-ui-shows-missing-error",
+      "pass": true,
+      "detail": "library.js reveal error"
+    },
+    {
+      "name": "source-ui-does-not-swallow-reveal",
+      "pass": true,
+      "detail": "library.js reveal handler"
+    },
+    {
+      "name": "uispec-reveal-selects-file",
+      "pass": true,
+      "detail": "UI-SPEC checklist 15"
+    },
+    {
+      "name": "source-volume-chrome",
+      "pass": true,
+      "detail": "mute + volume beside scrub"
+    },
+    {
+      "name": "source-hover-stays-muted",
+      "pass": true,
+      "detail": "grid hover proxy stays silent"
+    },
+    {
+      "name": "uispec-volume-beside-scrub",
+      "pass": true,
+      "detail": "UI-SPEC scrub volume"
+    },
+    {
+      "name": "source-viewer-source-chrome",
+      "pass": true,
+      "detail": "viewer source + hover resume"
+    },
+    {
+      "name": "source-hover-keeps-years-policy",
+      "pass": true,
+      "detail": "dated Years/Months stay stills unless wall or always"
+    },
+    {
+      "name": "uispec-viewer-source",
+      "pass": true,
+      "detail": "UI-SPEC source chrome"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "03328fbdce09175bd5fe7947deb9ae31f8a4d16c",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library scan <folder> --copy-here"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/result.json",
+    "stdout.log": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/stdout.log",
+    "unit-files": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/unit-files",
+    "copy-root": "/workspace/docs/features/taste-reveal/Rev1.0/assets/verify-4/copy-root"
+  }
+}

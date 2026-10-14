@@ -15,7 +15,11 @@ HTTP_STATUS = {
     "choice-required": 400,
     "not-found": 404,
     "unavailable": 404,
+    "update-unavailable": 404,
     "preview-unavailable": 404,
+    "picker-unavailable": 404,
+    "model-unavailable": 404,
+    "models-missing": 404,
     "busy": 409,
     "port-in-use": 409,
     "volume-identity-unavailable": 409,
@@ -24,6 +28,7 @@ HTTP_STATUS = {
     "invalid-catalog": 500,
     "decode-error": 500,
     "internal-error": 500,
+    "dependency-missing": 500,
 }
 
 

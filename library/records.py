@@ -47,8 +47,10 @@ LOCATION_KEYS = (
     "modifiedAt",
     "sha256",
 )
-RENDITION_KEYS = ("store", "sourceId", "thumb", "preview", "poster", "proxy", "status")
-RENDITION_STATUS_KEYS = ("thumb", "preview", "poster", "proxy")
+RENDITION_KEYS = ("store", "sourceId", "thumb", "preview", "poster", "proxy", "playback", "status")
+RENDITION_STATUS_KEYS = ("thumb", "preview", "poster", "proxy", "playback")
+LEGACY_RENDITION_KEYS = ("store", "sourceId", "thumb", "preview", "poster", "proxy", "status")
+LEGACY_RENDITION_STATUS_KEYS = ("thumb", "preview", "poster", "proxy")
 SOURCE_KEYS = (
     "schemaVersion",
     "id",
@@ -73,6 +75,9 @@ FILE_ENTRY_KEYS = (
 SCAN_KEYS = ("state", "added", "skipped", "errors")
 SCAN_ERROR_KEYS = ("path", "error")
 PLACE_KEYS = ("schemaVersion", "id", "name", "latitude", "longitude")
+PERSON_KEYS = ("schemaVersion", "id", "name")
+PERSON_OPTIONAL_KEYS = ("thumbnailItemId",)
+THING_KEYS = ("schemaVersion", "id", "name", "aliases")
 SOURCE_MODES = frozenset({"copy-here", "serve-from-there"})
 ITEM_KINDS = frozenset({"photo", "video", "live"})
 CAPTURE_SOURCES = frozenset({"exif", "filename", "mtime"})
@@ -94,6 +99,18 @@ def _require_dict(value: Any, code: str = "invalid-catalog") -> dict[str, Any]:
 
 def _exact_keys(data: dict[str, Any], keys: tuple[str, ...], code: str = "invalid-catalog") -> None:
     if set(data.keys()) != set(keys):
+        raise fail(code)
+
+
+def _allowed_keys(
+    data: dict[str, Any],
+    required: tuple[str, ...],
+    optional: tuple[str, ...] = (),
+    code: str = "invalid-catalog",
+) -> None:
+    extra = set(data) - set(required) - set(optional)
+    missing = set(required) - set(data)
+    if extra or missing:
         raise fail(code)
 
 
@@ -214,21 +231,40 @@ def read_location(value: Any) -> dict[str, Any]:
     }
 
 
+def _default_playback_status(status: dict[str, Any]) -> str:
+    if status.get("poster") == "not-applicable" and status.get("proxy") == "not-applicable":
+        return "not-applicable"
+    return "queued"
+
+
 def read_rendition_status(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    _exact_keys(data, RENDITION_STATUS_KEYS)
+    extra = set(data) - set(RENDITION_STATUS_KEYS)
+    missing = set(LEGACY_RENDITION_STATUS_KEYS) - set(data)
+    if extra or missing:
+        raise fail("invalid-catalog")
     out: dict[str, Any] = {}
-    for key in RENDITION_STATUS_KEYS:
+    for key in LEGACY_RENDITION_STATUS_KEYS:
         status = _str(data[key])
         if status not in RENDITION_STATUSES:
             raise fail("invalid-catalog")
         out[key] = status
+    if "playback" in data:
+        playback = _str(data["playback"])
+        if playback not in RENDITION_STATUSES:
+            raise fail("invalid-catalog")
+        out["playback"] = playback
+    else:
+        out["playback"] = _default_playback_status(out)
     return out
 
 
 def read_renditions(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    _exact_keys(data, RENDITION_KEYS)
+    extra = set(data) - set(RENDITION_KEYS)
+    missing = set(LEGACY_RENDITION_KEYS) - set(data)
+    if extra or missing:
+        raise fail("invalid-catalog")
     store = _str(data["store"])
     if store not in PREVIEW_STORES:
         raise fail("invalid-catalog")
@@ -239,6 +275,7 @@ def read_renditions(value: Any) -> dict[str, Any]:
         "preview": _null_or_str(data["preview"]),
         "poster": _null_or_str(data["poster"]),
         "proxy": _null_or_str(data["proxy"]),
+        "playback": _null_or_str(data["playback"]) if "playback" in data else None,
         "status": read_rendition_status(data["status"]),
     }
 
@@ -458,6 +495,63 @@ def ordered_place(place: dict[str, Any]) -> dict[str, Any]:
     return {key: place[key] for key in PLACE_KEYS}
 
 
+def read_person(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _allowed_keys(data, PERSON_KEYS, PERSON_OPTIONAL_KEYS)
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    name = _null_or_str(data["name"])
+    if name is not None and name == "":
+        raise fail("invalid-catalog")
+    out: dict[str, Any] = {
+        "schemaVersion": 1,
+        "id": _str(data["id"]),
+        "name": name,
+    }
+    if "thumbnailItemId" in data and data["thumbnailItemId"] is not None:
+        out["thumbnailItemId"] = _str(data["thumbnailItemId"])
+    return out
+
+
+def ordered_person(person: dict[str, Any]) -> dict[str, Any]:
+    person = read_person(person)
+    out = {key: person[key] for key in PERSON_KEYS}
+    if person.get("thumbnailItemId"):
+        out["thumbnailItemId"] = person["thumbnailItemId"]
+    return out
+
+
+def read_thing(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, THING_KEYS)
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    name = _str(data["name"])
+    aliases = data["aliases"]
+    if not isinstance(aliases, list):
+        raise fail("invalid-catalog")
+    seen: set[str] = set()
+    out_aliases: list[str] = []
+    for alias in aliases:
+        text = _str(alias)
+        folded = text.casefold()
+        if folded in seen:
+            continue
+        seen.add(folded)
+        out_aliases.append(text)
+    return {
+        "schemaVersion": 1,
+        "id": _str(data["id"]),
+        "name": name,
+        "aliases": out_aliases,
+    }
+
+
+def ordered_thing(thing: dict[str, Any]) -> dict[str, Any]:
+    thing = read_thing(thing)
+    return {key: thing[key] for key in THING_KEYS}
+
+
 def make_place(
     *,
     place_id: str,
@@ -480,13 +574,22 @@ def empty_metadata() -> dict[str, Any]:
     return {key: None for key in METADATA_KEYS}
 
 
-def renditions_for(kind: str, source_id: str, *, decode_error: bool = False) -> dict[str, Any]:
+def renditions_for(
+    kind: str,
+    source_id: str,
+    *,
+    decode_error: bool = False,
+    store: str = "with-server",
+) -> dict[str, Any]:
+    if store not in PREVIEW_STORES:
+        raise fail("invalid-catalog")
     if kind == "photo":
         status = {
             "thumb": "error" if decode_error else "queued",
             "preview": "error" if decode_error else "queued",
             "poster": "not-applicable",
             "proxy": "not-applicable",
+            "playback": "not-applicable",
         }
     elif kind == "video":
         status = {
@@ -494,6 +597,7 @@ def renditions_for(kind: str, source_id: str, *, decode_error: bool = False) -> 
             "preview": "not-applicable",
             "poster": "error" if decode_error else "queued",
             "proxy": "error" if decode_error else "queued",
+            "playback": "error" if decode_error else "queued",
         }
     else:
         status = {
@@ -501,14 +605,16 @@ def renditions_for(kind: str, source_id: str, *, decode_error: bool = False) -> 
             "preview": "error" if decode_error else "queued",
             "poster": "error" if decode_error else "queued",
             "proxy": "error" if decode_error else "queued",
+            "playback": "error" if decode_error else "queued",
         }
     return {
-        "store": "with-server",
+        "store": store,
         "sourceId": source_id,
         "thumb": None,
         "preview": None,
         "poster": None,
         "proxy": None,
+        "playback": None,
         "status": status,
     }
 

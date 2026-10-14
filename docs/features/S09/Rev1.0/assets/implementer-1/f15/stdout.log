@@ -1,0 +1,78 @@
+PASS scan-exit
+PASS jpeg-two-locations: 2
+PASS playwright-import
+PASS viewer-ada-label: Ada
+PASS viewer-mug-label: mug
+PASS viewer-kitchen-label: Kitchen
+PASS viewer-annotations-png: 1280x720
+PASS failed-annotate-keeps-text: Nope
+PASS failed-annotate-inline-error: invalid-argument
+PASS http-second-mug: 200
+PASS http-alias-cup-write: 200
+PASS alias-cup-present: [{"schemaVersion": 1, "id": "thing_863a870f556b", "name": "mug", "aliases": ["Cup"]}]
+PASS search-mug-cells: ['IMG_1042.jpg', 'no-exif.jpg']
+PASS search-mug-png: 1280x720
+PASS inspector-name-mug: {"name": "mug", "count": 2, "filenames": ["IMG_1042.jpg", "no-exif.jpg"], "entityId": "thing_863a870f556b", "kind": "thing"}
+PASS inspector-count-2: {"name": "mug", "count": 2, "filenames": ["IMG_1042.jpg", "no-exif.jpg"], "entityId": "thing_863a870f556b", "kind": "thing"}
+PASS inspector-page-filenames: {"name": "mug", "count": 2, "filenames": ["IMG_1042.jpg", "no-exif.jpg"], "entityId": "thing_863a870f556b", "kind": "thing"}
+PASS esc-restores-filter: ['IMG_1042.jpg', 'no-exif.jpg']
+PASS filtered-arrow-left-end: /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview /api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=preview
+PASS filtered-arrow-right-moves: /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview
+PASS filtered-arrow-right-end: /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview /api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=preview
+PASS esc-keeps-mug-grid: ['IMG_1042.jpg', 'no-exif.jpg']
+PASS empty-search-copy: No matching pictures
+PASS clear-search-restores-grid: ['clip.mp4', 'oriented.jpg', 'IMG_1042.jpg', 'no-exif.jpg', 'clip.avi']
+PASS chip-people-ada: ['IMG_1042.jpg']
+PASS chip-things-ada-empty
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 400 (Bad Request)"]
+PASS ada-on-jpeg: [{"schemaVersion": 1, "id": "person_2929af5ad0e9", "name": "Ada"}]
+PASS mug-on-jpeg: [{"schemaVersion": 1, "id": "thing_863a870f556b", "name": "mug", "aliases": ["Cup"]}]
+PASS http-second-mug: 200
+PASS http-alias-cup-write: 200
+PASS alias-cup-present: [{"schemaVersion": 1, "id": "thing_863a870f556b", "name": "mug", "aliases": ["Cup"]}]
+PASS http-q_IMG_1042-status: 200
+PASS http-q_IMG_1042-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q_mug-status: 200
+PASS http-q_mug-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q_MUG-status: 200
+PASS http-q_MUG-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q_Ada-status: 200
+PASS http-q_Ada-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q_ada_people-status: 200
+PASS http-q_ada_people-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q_ada_things-status: 200
+PASS http-q_ada_things-unique: []
+PASS http-q_mug_things-status: 200
+PASS http-q_mug_things-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q_Kitchen_places-status: 200
+PASS http-q_Kitchen_places-unique: ['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q_Cup_things-status: 200
+PASS http-q_Cup_things-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-thing_id-status: 200
+PASS http-thing_id-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-person_id-status: 200
+PASS http-person_id-unique: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-place_id-status: 200
+PASS http-place_id-unique: ['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q_empty-status: 200
+PASS http-q_empty-unique: []
+PASS http-q-IMG_1042-filename: ['IMG_1042.jpg']
+PASS http-q-IMG_1042-once: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q-mug-both: ['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-q-MUG-casefold: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-q-Ada-only: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-chip-people-ada: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-chip-things-ada-empty: []
+PASS http-chip-things-mug: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-chip-places-kitchen: ['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-alias-cup: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-thing-id: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0', '1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']
+PASS http-person-id: ['1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-place-id: ['93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913', '1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0']
+PASS http-empty-q: []
+PASS inspector-count-unique-ids: {"name": "mug", "count": 2, "filenames": ["IMG_1042.jpg", "no-exif.jpg"], "itemIds": ["1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS inspector-filenames: {"name": "mug", "count": 2, "filenames": ["IMG_1042.jpg", "no-exif.jpg"], "itemIds": ["1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81", "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"]}
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS every-proof-ran

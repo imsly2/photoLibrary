@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+  "kind": "video",
+  "filename": "clip.avi",
+  "capturedAt": "2026-10-13T16:30:22Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 2.0,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_8b6834fa26c9",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/formats/clip.avi",
+      "lastKnownPath": "/workspace/docs/features/S02/Rev1.0/assets/after-s03/f6/fixture-sandbox/media/formats/clip.avi",
+      "sizeBytes": 192104,
+      "modifiedAt": "2026-10-13T16:30:22.213305Z",
+      "sha256": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_8b6834fa26c9",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued"
+    }
+  },
+  "faces": [],
+  "things": []
+}

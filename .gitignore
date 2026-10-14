@@ -1,4 +1,5 @@
-# Runtime catalog, originals, renditions, locks, and logs. Never track these.
+# Runtime catalog, originals, renditions, locks, logs, and the optional
+# offline cities pack (library-data/geo/) plus local ML models. Never track these.
 library-data/
 
 # Optional private samples. Deterministic fixtures elsewhere may be tracked.
@@ -31,6 +32,44 @@ docs/features/**/date-edge-library-data/
 docs/features/**/date-edge-media/
 docs/features/**/three-jpeg-library-data/
 docs/features/**/three-jpeg-media/
+docs/features/**/two-year-media/
+docs/features/**/date-sort-media/
+docs/features/**/date-sort-library-data/
+docs/features/**/dialog-library-data/
+docs/features/**/dialog-page-library-data/
+docs/features/**/remap-library-data/
+docs/features/**/moved-library-data/
+docs/features/**/old-library-data-hidden/
+docs/features/**/choice-media/
+docs/features/**/collision-media/
+docs/features/**/convert-media/
+docs/features/**/copied-items-media/
+docs/features/**/dialog-link-media/
+docs/features/**/dialog-media/
+docs/features/**/f4-copy-media/
+docs/features/**/f4-link-media/
+docs/features/**/move-copy-media/
+docs/features/**/undo-media/
+docs/features/**/vol-a/
+docs/features/**/vol-b/
+docs/features/**/s06-media/
+docs/features/**/f5-media/
+docs/features/**/f5-heic-media/
+docs/features/**/f5-interrupt-media/
+docs/features/**/f5-modified-media/
+docs/features/**/f5-skip-media/
+docs/features/**/*-library-data/
+docs/features/**/f8-folder/
+docs/features/**/s09-media/
+docs/features/**/taste-viewer-media/
+docs/features/**/s10-media/
+docs/features/**/s11-media/
+docs/features/**/s12-media/
+docs/features/**/api-media/
+docs/features/**/ui-media/
+docs/features/**/objects-media/
+docs/features/faces/**/library-data/
+docs/features/faces/**/faces-media/
 
 # Python
 __pycache__/
