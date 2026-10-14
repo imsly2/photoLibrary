@@ -775,11 +775,18 @@ dialog h2 {
 #viewer-prev,
 #viewer-next,
 #viewer-rotate,
+#viewer-slideshow,
+#viewer-fullscreen,
 #reveal-original,
 #open-original,
 #open-default,
 #viewer-info {
   background: #2a2a32;
+}
+
+#viewer-slideshow[aria-pressed="true"],
+#viewer-fullscreen[aria-pressed="true"] {
+  background: #2d4a7a;
 }
 
 #viewer-info[aria-expanded="true"] {
@@ -827,6 +834,53 @@ dialog h2 {
   content: "None";
   color: #8a8a94;
   font-size: 0.8rem;
+}
+
+#viewer-facts .info-heading {
+  margin-top: 0;
+}
+
+.info-fact-list {
+  margin: 0 0 0.65rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.65rem;
+}
+
+.info-fact {
+  display: contents;
+}
+
+.info-fact dt {
+  margin: 0;
+  color: #8a8a94;
+  font-size: 0.75rem;
+}
+
+.info-fact dd {
+  margin: 0;
+  color: #f2f2f4;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+#slideshow-empty {
+  position: fixed;
+  left: 50%;
+  top: 5.5rem;
+  transform: translateX(-50%);
+  z-index: 20;
+  margin: 0;
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #2a2a32;
+  border-radius: 6px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.95rem;
+}
+
+#slideshow-empty[hidden] {
+  display: none;
 }
 
 #viewer-favorite {

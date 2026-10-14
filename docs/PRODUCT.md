@@ -482,10 +482,10 @@ the proxy.
 
 Person, Place, and Thing are **not** pills painted over the preview. A
 top-right **Info** control shows file facts first (date taken, camera,
-dimensions, size, path, GPS; empty “No camera info”), then the people,
-places, and things already written on the record; clicking one filters
-the grid to that entity. The three type-in fields stay inside Info and
-stay labeled Person, Place, and Thing. Tooltips name the shortcuts.
+dimensions, size, path, GPS; empty “No camera info for this file.”), then
+the people, places, and things already written on the record; clicking
+one filters the grid to that entity. The three type-in fields stay inside
+Info and stay labeled Person, Place, and Thing. Tooltips name the shortcuts.
 
 **Check:** `python -m tests.qa check F10` (planned runner; common root/artifact
 arguments and full assertions in SLICES). `GET /api/media/<photo-id>?which=preview` returns image bytes.
