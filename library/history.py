@@ -21,6 +21,7 @@ OPERATIONS = frozenset(
         "annotate",
         "favorite",
         "people-merge",
+        "person-update",
         "settings",
         "relocate",
         "remove",

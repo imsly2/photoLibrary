@@ -363,6 +363,19 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.relocate())
                 return
+            if route == "/api/people" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.people_list())
+                return
+            if route == "/api/jobs" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.jobs_get())
+                return
+            if route == "/api/jobs" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.jobs_set(body))
+                return
             if route == "/api/people/merge" and method == "POST":
                 from library.annotate import read_merge_payload
 
@@ -374,6 +387,14 @@ class LibraryHandler(BaseHTTPRequestHandler):
                         200,
                         self.library.people_merge(payload["keepId"], payload["dropId"]),
                     )
+                return
+            if route.startswith("/api/people/") and method == "PUT":
+                person_id = route[len("/api/people/") :]
+                if not person_id or "/" in person_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.person_update(person_id, body))
                 return
             if (
                 route.startswith("/api/items/")

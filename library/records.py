@@ -76,6 +76,7 @@ SCAN_KEYS = ("state", "added", "skipped", "errors")
 SCAN_ERROR_KEYS = ("path", "error")
 PLACE_KEYS = ("schemaVersion", "id", "name", "latitude", "longitude")
 PERSON_KEYS = ("schemaVersion", "id", "name")
+PERSON_OPTIONAL_KEYS = ("thumbnailItemId",)
 THING_KEYS = ("schemaVersion", "id", "name", "aliases")
 SOURCE_MODES = frozenset({"copy-here", "serve-from-there"})
 ITEM_KINDS = frozenset({"photo", "video", "live"})
@@ -98,6 +99,18 @@ def _require_dict(value: Any, code: str = "invalid-catalog") -> dict[str, Any]:
 
 def _exact_keys(data: dict[str, Any], keys: tuple[str, ...], code: str = "invalid-catalog") -> None:
     if set(data.keys()) != set(keys):
+        raise fail(code)
+
+
+def _allowed_keys(
+    data: dict[str, Any],
+    required: tuple[str, ...],
+    optional: tuple[str, ...] = (),
+    code: str = "invalid-catalog",
+) -> None:
+    extra = set(data) - set(required) - set(optional)
+    missing = set(required) - set(data)
+    if extra or missing:
         raise fail(code)
 
 
@@ -484,22 +497,28 @@ def ordered_place(place: dict[str, Any]) -> dict[str, Any]:
 
 def read_person(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    _exact_keys(data, PERSON_KEYS)
+    _allowed_keys(data, PERSON_KEYS, PERSON_OPTIONAL_KEYS)
     if data["schemaVersion"] != 1:
         raise fail("invalid-catalog")
     name = _null_or_str(data["name"])
     if name is not None and name == "":
         raise fail("invalid-catalog")
-    return {
+    out: dict[str, Any] = {
         "schemaVersion": 1,
         "id": _str(data["id"]),
         "name": name,
     }
+    if "thumbnailItemId" in data and data["thumbnailItemId"] is not None:
+        out["thumbnailItemId"] = _str(data["thumbnailItemId"])
+    return out
 
 
 def ordered_person(person: dict[str, Any]) -> dict[str, Any]:
     person = read_person(person)
-    return {key: person[key] for key in PERSON_KEYS}
+    out = {key: person[key] for key in PERSON_KEYS}
+    if person.get("thumbnailItemId"):
+        out["thumbnailItemId"] = person["thumbnailItemId"]
+    return out
 
 
 def read_thing(value: Any) -> dict[str, Any]:

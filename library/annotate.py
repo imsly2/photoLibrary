@@ -303,9 +303,7 @@ def _resolve_person(
         if current is None:
             raise fail("not-found")
         if "name" in entry:
-            updated = ordered_person(
-                {"schemaVersion": 1, "id": person_id, "name": entry["name"]}
-            )
+            updated = ordered_person({**current, "name": entry["name"]})
             if updated != current:
                 _record_change(changes, person_rel(person_id), current, updated)
         return person_id

@@ -160,6 +160,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_version import run_slice as runner
         elif args.slice_id == "TASTE-REVEAL":
             from tests.qa.taste_reveal import run_slice as runner
+        elif args.slice_id == "TASTE-PEOPLE":
+            from tests.qa.taste_people import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
