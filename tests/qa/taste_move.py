@@ -9,6 +9,7 @@ from typing import Any
 
 from library.httpjson import request_json
 from library.media import sha256_file
+from library.service import Library
 from tests.qa.s00 import Checks, _env, assert_no_pillow_in_server, stop_owned
 from tests.qa.s01 import load_items, load_sources, parse_summary
 from tests.qa.s03 import request_raw
@@ -74,6 +75,16 @@ def seed_two_folders(media_src: Path, artifacts: Path, prefix: str) -> tuple[Pat
     return src, dest
 
 
+def drain_renditions(root: Path, limit: int = 80) -> int:
+    library = Library(root)
+    library.recover()
+    library.ensure_settings()
+    steps = 0
+    while library.drain_step() and steps < limit:
+        steps += 1
+    return steps
+
+
 def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any]:
     record: dict[str, Any] = {}
     i18n_text = I18N.read_text(encoding="utf-8")
@@ -111,10 +122,11 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
     empty = run_library(root, ["move", "--to", str(dest_folder)])
     checks.check("cli-move-no-ids", empty.returncode == 2, empty.stderr[-200:])
 
+    drain_renditions(root)
     server, url, pids = start_owned(root)
     try:
         base = url.rstrip("/")
-        wait_ready(url, need, slots=("thumb",), timeout=120)
+        wait_ready(url, ("IMG_1042.jpg", "near.jpg", "no-exif.jpg"), slots=("thumb",), timeout=90)
         status, thumb_before, thumb_bytes = request_raw(f"{base}/api/media/{photo_a}?which=thumb")
         checks.check("thumb-before-200", status == 200 and bool(thumb_bytes), str(status))
         thumb_hash = sha256_file(root / "renditions" / photo_a / "thumb.webp") if (
