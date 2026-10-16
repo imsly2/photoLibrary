@@ -1,0 +1,398 @@
+{
+  "slice": "TASTE-MOVE",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "i18n-move-en",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-move-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-move-title-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-move-confirm-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-src-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-dest-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-four",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "favorite-on",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "annotate-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "faces-before",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_8f92d688d253\"}]"
+    },
+    {
+      "name": "things-before",
+      "pass": true,
+      "detail": "[{\"thingId\": \"thing_b03daa57a91c\"}]"
+    },
+    {
+      "name": "cli-move-no-ids",
+      "pass": true,
+      "detail": "[-h] [--to TO] [--source SOURCE]\n                              [--subpath SUBPATH]\n                              ids [ids ...]\npython -m library move: error: the following arguments are required: ids\n"
+    },
+    {
+      "name": "thumb-before-200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "thumb-file-before",
+      "pass": true,
+      "detail": "4af6e8e8ca8d6bedee8d826a76e9bc215f80d283df1774f3193b746d822d77f5"
+    },
+    {
+      "name": "http-move-empty",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "http-move-unknown",
+      "pass": true,
+      "detail": "{\"error\": \"not-found\"}"
+    },
+    {
+      "name": "http-move-outside",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "outside-leaves-file",
+      "pass": true,
+      "detail": "docs/features/taste-move/Rev1.0/assets/verify-1/api-src/b/no-exif.jpg"
+    },
+    {
+      "name": "cli-move-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-move-count",
+      "pass": true,
+      "detail": "{\"ok\": true, \"destination\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest\", \"sourceId\": \"src_4b839941cfd4\", \"moved\": [{\"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"files\": [{\"from\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/IMG_1042.jpg\", \"to\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg\", \"filename\": \"IMG_1042.jpg\", \"renamed\": false}]}, {\"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"files\": [{\"from\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/clip.mp4\", \"to\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/clip.mp4\", \"filename\": \"clip.mp4\", \"renamed\": false}]}], \"skipped\": [], \"failed\": []}"
+    },
+    {
+      "name": "old-a-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "old-video-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "new-a-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "new-video-exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unmoved-stays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "catalog-a-new",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "catalog-a-old-gone",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "catalog-video-new",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/clip.mp4\"]"
+    },
+    {
+      "name": "faces-kept",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_8f92d688d253\"}]"
+    },
+    {
+      "name": "things-kept",
+      "pass": true,
+      "detail": "[{\"thingId\": \"thing_b03daa57a91c\"}]"
+    },
+    {
+      "name": "favorite-kept",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "thumb-status-ready",
+      "pass": true,
+      "detail": "{\"thumb\": \"ready\", \"preview\": \"ready\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}"
+    },
+    {
+      "name": "thumb-file-stays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-served",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "reveal-new-path",
+      "pass": true,
+      "detail": "{\"path\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg\", \"folder\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest\", \"opened\": true}"
+    },
+    {
+      "name": "collision-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-renamed",
+      "pass": true,
+      "detail": "docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/near_2.jpg"
+    },
+    {
+      "name": "collision-no-overwrite",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-old-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-catalog",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/near_2.jpg\"]"
+    },
+    {
+      "name": "has-src-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-dest-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-src-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-src-added-0",
+      "pass": true,
+      "detail": "{\"sourceId\": \"src_9d9606061892\", \"added\": 0, \"skipped\": 1, \"errors\": []}"
+    },
+    {
+      "name": "rescan-dest-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-dest-skipped-moved",
+      "pass": true,
+      "detail": "{\"sourceId\": \"src_4b839941cfd4\", \"added\": 1, \"skipped\": 3, \"errors\": []}"
+    },
+    {
+      "name": "rescan-no-dupes",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "name": "barrier-exit",
+      "pass": true,
+      "detail": "86{\"error\":\"test-barrier\",\"barrier\":\"move-after-item\"}\n"
+    },
+    {
+      "name": "barrier-first-moved",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-first-old-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-second-stays",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-second-not-dest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-catalog-first",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/fail-dest/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "barrier-catalog-second",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/fail-src/a/near.jpg\"]"
+    },
+    {
+      "name": "bytes-barrier-exit",
+      "pass": true,
+      "detail": "86"
+    },
+    {
+      "name": "bytes-rollback-src",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bytes-rollback-dest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bytes-rollback-catalog",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/rollback-src/b/no-exif.jpg\"]"
+    },
+    {
+      "name": "cross-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cross-dest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cross-src-gone",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "move-btn-en",
+      "pass": true,
+      "detail": "\"Move\""
+    },
+    {
+      "name": "move-btn-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dialog-zh-title",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "confirm-count-dest",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"moveLabel\": \"Move\", \"dialogOpen\": true, \"confirm\": \"Move 2 items to /workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest?\", \"path\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest\", \"sources\": [{\"id\": \"src_1ca0fbad17ad\", \"text\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-src\", \"pressed\": \"false\"}, {\"id\": \"src_a2171a8b1ce4\", \"text\": \"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest\", \"pressed\": \"true\"}], \"files\": [\"clip.mp4\", \"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"], \"lang\": \"en\"}"
+    },
+    {
+      "name": "cancel-leaves-catalog",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "cancel-leaves-files",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "after-move-a",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "after-move-b",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "browser-catalog-a",
+      "pass": true,
+      "detail": "[\"/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest/IMG_1042.jpg\"]"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "2a3f9a0b080c927e26bfa62222e3d5787e3058d8",
+  "commands": [
+    "python -m library move <id> <id> --to <folder>",
+    "POST /api/items/move"
+  ],
+  "artifactPaths": {
+    "result.json": "docs/features/taste-move/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "docs/features/taste-move/Rev1.0/assets/verify-1/stdout.log",
+    "move-api.json": "docs/features/taste-move/Rev1.0/assets/verify-1/move-api.json",
+    "move-browser.json": "docs/features/taste-move/Rev1.0/assets/verify-1/move-browser.json",
+    "selection-move.png": "docs/features/taste-move/Rev1.0/assets/verify-1/selection-move.png",
+    "selection-move-zh.png": "docs/features/taste-move/Rev1.0/assets/verify-1/selection-move-zh.png",
+    "move-confirm.png": "docs/features/taste-move/Rev1.0/assets/verify-1/move-confirm.png",
+    "move-zh.png": "docs/features/taste-move/Rev1.0/assets/verify-1/move-zh.png",
+    "after-move.png": "docs/features/taste-move/Rev1.0/assets/verify-1/after-move.png"
+  }
+}

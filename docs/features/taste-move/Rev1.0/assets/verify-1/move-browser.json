@@ -1,0 +1,69 @@
+{
+  "selected": {
+    "hidden": false,
+    "moveLabel": "Move",
+    "dialogOpen": false,
+    "confirm": "",
+    "path": "",
+    "sources": [],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "lang": "en"
+  },
+  "zhDialog": {
+    "hidden": false,
+    "moveLabel": "\u79fb\u52a8",
+    "dialogOpen": true,
+    "confirm": "",
+    "path": "",
+    "sources": [
+      {
+        "id": "src_1ca0fbad17ad",
+        "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-src",
+        "pressed": "false"
+      },
+      {
+        "id": "src_a2171a8b1ce4",
+        "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest",
+        "pressed": "false"
+      }
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "lang": "zh-Hans"
+  },
+  "picked": {
+    "hidden": false,
+    "moveLabel": "Move",
+    "dialogOpen": true,
+    "confirm": "Move 2 items to /workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest?",
+    "path": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest",
+    "sources": [
+      {
+        "id": "src_1ca0fbad17ad",
+        "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-src",
+        "pressed": "false"
+      },
+      {
+        "id": "src_a2171a8b1ce4",
+        "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest",
+        "pressed": "true"
+      }
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "lang": "en"
+  }
+}

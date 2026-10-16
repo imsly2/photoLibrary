@@ -1,0 +1,79 @@
+PASS i18n-move-en
+PASS i18n-move-zh
+PASS i18n-move-title-zh
+PASS i18n-move-confirm-zh
+PASS scan-src-ok
+PASS scan-dest-ok
+PASS has-four: ["IMG_1042.jpg", "clip.mp4", "near.jpg", "no-exif.jpg"]
+PASS favorite-on
+PASS annotate-ok
+PASS faces-before: [{"personId": "person_8f92d688d253"}]
+PASS things-before: [{"thingId": "thing_b03daa57a91c"}]
+PASS cli-move-no-ids: [-h] [--to TO] [--source SOURCE]
+                              [--subpath SUBPATH]
+                              ids [ids ...]
+python -m library move: error: the following arguments are required: ids
+
+PASS thumb-before-200: 200
+PASS thumb-file-before: 4af6e8e8ca8d6bedee8d826a76e9bc215f80d283df1774f3193b746d822d77f5
+PASS http-move-empty: {"error": "invalid-argument"}
+PASS http-move-unknown: {"error": "not-found"}
+PASS http-move-outside: {"error": "invalid-argument"}
+PASS outside-leaves-file: docs/features/taste-move/Rev1.0/assets/verify-1/api-src/b/no-exif.jpg
+PASS cli-move-ok
+PASS cli-move-count: {"ok": true, "destination": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest", "sourceId": "src_4b839941cfd4", "moved": [{"id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "files": [{"from": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/IMG_1042.jpg", "to": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg", "filename": "IMG_1042.jpg", "renamed": false}]}, {"id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "files": [{"from": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/clip.mp4", "to": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/clip.mp4", "filename": "clip.mp4", "renamed": false}]}], "skipped": [], "failed": []}
+PASS old-a-gone
+PASS old-video-gone
+PASS new-a-exists
+PASS new-video-exists
+PASS unmoved-stays
+PASS catalog-a-new: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg"]
+PASS catalog-a-old-gone: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg"]
+PASS catalog-video-new: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/clip.mp4"]
+PASS faces-kept: [{"personId": "person_8f92d688d253"}]
+PASS things-kept: [{"thingId": "thing_b03daa57a91c"}]
+PASS favorite-kept: true
+PASS thumb-status-ready: {"thumb": "ready", "preview": "ready", "poster": "not-applicable", "proxy": "not-applicable", "playback": "not-applicable"}
+PASS thumb-file-stays
+PASS thumb-served: 200
+PASS reveal-new-path: {"path": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg", "folder": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest", "opened": true}
+PASS collision-cli
+PASS collision-renamed: docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/near_2.jpg
+PASS collision-no-overwrite
+PASS collision-old-gone
+PASS collision-catalog: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/near_2.jpg"]
+PASS has-src-source
+PASS has-dest-source
+PASS rescan-src-ok
+PASS rescan-src-added-0: {"sourceId": "src_9d9606061892", "added": 0, "skipped": 1, "errors": []}
+PASS rescan-dest-ok
+PASS rescan-dest-skipped-moved: {"sourceId": "src_4b839941cfd4", "added": 1, "skipped": 3, "errors": []}
+PASS rescan-no-dupes: 4
+PASS barrier-exit: 86{"error":"test-barrier","barrier":"move-after-item"}
+
+PASS barrier-first-moved
+PASS barrier-first-old-gone
+PASS barrier-second-stays
+PASS barrier-second-not-dest
+PASS barrier-catalog-first: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/fail-dest/IMG_1042.jpg"]
+PASS barrier-catalog-second: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/fail-src/a/near.jpg"]
+PASS bytes-barrier-exit: 86
+PASS bytes-rollback-src
+PASS bytes-rollback-dest
+PASS bytes-rollback-catalog: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/rollback-src/b/no-exif.jpg"]
+PASS cross-ok
+PASS cross-dest
+PASS cross-src-gone
+PASS playwright-import
+PASS move-btn-en: "Move"
+PASS move-btn-zh
+PASS dialog-zh-title
+PASS confirm-count-dest: {"hidden": false, "moveLabel": "Move", "dialogOpen": true, "confirm": "Move 2 items to /workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest?", "path": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest", "sources": [{"id": "src_1ca0fbad17ad", "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-src", "pressed": "false"}, {"id": "src_a2171a8b1ce4", "text": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest", "pressed": "true"}], "files": ["clip.mp4", "near.jpg", "IMG_1042.jpg", "no-exif.jpg"], "lang": "en"}
+PASS cancel-leaves-catalog: ["IMG_1042.jpg", "clip.mp4", "near.jpg", "no-exif.jpg"]
+PASS cancel-leaves-files
+PASS after-move-a
+PASS after-move-b
+PASS browser-catalog-a: ["/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/browser-dest/IMG_1042.jpg"]
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)"]
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
