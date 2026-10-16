@@ -1,0 +1,76 @@
+PASS html-recent
+PASS html-folder
+PASS html-help
+PASS html-fit
+PASS html-locate
+PASS js-recent-query
+PASS js-source-query
+PASS js-missing-badge
+PASS js-fit-fill
+PASS js-help-key
+PASS i18n-recent-en
+PASS i18n-recent-zh
+PASS i18n-locate-zh
+PASS i18n-missing-zh
+PASS i18n-help-zh
+PASS i18n-fill-zh
+PASS i18n-show-zh
+PASS no-auto-delete-js
+PASS scan-a-ok
+PASS recent-after-a: ["IMG_1042.jpg", "near.jpg"]
+PASS scan-b-ok
+PASS recent-after-b: ["far.jpg", "no-exif.jpg"]
+PASS two-sources: ["src_1c68313b465c", "src_9dba220f1228"]
+PASS source-ids
+PASS source-a-names: ["near.jpg", "IMG_1042.jpg"]
+PASS source-b-names: ["far.jpg", "no-exif.jpg"]
+PASS recent-invalid: {"error":"invalid-argument"}
+
+PASS rescan-a-ok
+PASS recent-rescan-late: ["late.jpg"]
+PASS missing-target-exists: /workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a/IMG_1042.jpg
+PASS original-unlinked
+PASS http-source-200: ["late.jpg", "near.jpg", "IMG_1042.jpg"]
+PASS http-source-a: ["late.jpg", "near.jpg", "IMG_1042.jpg"]
+PASS http-recent-200
+PASS http-recent-has-ids: ["late.jpg"]
+PASS http-recent-invalid: {"error": "invalid-argument"}
+PASS missing-still-listed: "IMG_1042.jpg"
+PASS missing-available-false: false
+PASS missing-last-known: "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a/IMG_1042.jpg"
+PASS missing-folder-exists: "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a"
+PASS no-auto-delete-catalog
+PASS locate-200: {"path": null, "folder": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a", "opened": true, "mode": "locate"}
+PASS locate-mode: {"path": null, "folder": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a", "opened": true, "mode": "locate"}
+PASS locate-folder: {"path": null, "folder": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a", "opened": true, "mode": "locate"}
+PASS locate-no-delete
+PASS folder-b-bytes-stay
+PASS playwright-import
+PASS ui-recent
+PASS ui-folder
+PASS ui-help
+PASS ui-fit-fill
+PASS ui-locate
+PASS ui-folder-options: ["", "src_1be41d7bfad9", "src_d904e078f382"]
+PASS click-recent
+PASS recent-grid-not-all: ["far.jpg", "no-exif.jpg"]
+PASS folder-filter-a: ["near.jpg", "IMG_1042.jpg"]
+PASS folder-filter-has-a: ["near.jpg", "IMG_1042.jpg"]
+PASS settings-show-photos
+PASS help-open: {"open": true, "title": "Keyboard shortcuts"}
+PASS help-title: "Keyboard shortcuts"
+PASS help-esc
+PASS fill-key
+PASS fit-button
+PASS info-key
+PASS tile-missing: {"tileMissing": true, "badge": "Missing", "locateHidden": false, "locateDisabled": false, "bannerHidden": false}
+PASS tile-badge-text: "Missing"
+PASS locate-offered: {"tileMissing": true, "badge": "Missing", "locateHidden": false, "locateDisabled": false, "bannerHidden": false}
+PASS info-missing: Missing original
+PASS zh-recent: {"recent": "\u6700\u8fd1\u6dfb\u52a0", "locate": "\u5b9a\u4f4d", "fit": "\u9002\u5408\u7a97\u53e3", "fill": "\u94fa\u6ee1", "show": "Show photos"}
+PASS zh-fit: {"recent": "\u6700\u8fd1\u6dfb\u52a0", "locate": "\u5b9a\u4f4d", "fit": "\u9002\u5408\u7a97\u53e3", "fill": "\u94fa\u6ee1", "show": "Show photos"}
+PASS zh-fill: {"recent": "\u6700\u8fd1\u6dfb\u52a0", "locate": "\u5b9a\u4f4d", "fit": "\u9002\u5408\u7a97\u53e3", "fill": "\u94fa\u6ee1", "show": "Show photos"}
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)"]
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL

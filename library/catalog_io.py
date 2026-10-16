@@ -305,6 +305,7 @@ def item_read(
     out = ordered_item(item)
     out["available"] = item_available(item, root)
     out["motionAvailable"] = item_motion_available(item, root)
+    out.update(_last_known_read(item))
     marked = favorite_ids(root) if favorites is None else favorites
     out["favorite"] = item.get("id") in marked
     places: list[dict[str, Any]] = []
@@ -337,6 +338,38 @@ def item_read(
     things.sort(key=lambda rec: rec["id"])
     out["entities"] = {"people": people, "places": places, "things": things}
     return out
+
+
+def _last_known_read(item: dict[str, Any]) -> dict[str, Any]:
+    from library.favorites import existing_folder, existing_original
+
+    locs = [loc for loc in item.get("locations") or [] if loc.get("current") is True]
+    locs.sort(
+        key=lambda loc: (
+            0 if loc.get("role") == "primary" else 1,
+            loc.get("sourceId") or "",
+            loc.get("lastKnownPath") or "",
+        )
+    )
+    last = ""
+    last_file = False
+    last_folder = ""
+    for loc in locs:
+        path = loc.get("lastKnownPath")
+        if type(path) is not str or not path:
+            continue
+        if not last:
+            last = path
+        if existing_original(Path(path)) is not None:
+            last_file = True
+        folder = existing_folder(Path(path).parent)
+        if folder is not None and not last_folder:
+            last_folder = str(folder)
+    return {
+        "lastKnownPath": last,
+        "lastKnownFile": last_file,
+        "lastKnownFolder": last_folder,
+    }
 
 
 def has_primary(item: dict[str, Any], component: str) -> bool:

@@ -1419,6 +1419,59 @@ main > p {
   fill: currentColor;
 }
 
+.missing-badge {
+  background: #e8b84a;
+  color: #1a1408;
+}
+
+.info-missing {
+  color: #e8b84a;
+}
+
+#viewer-fit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+#viewer-fit,
+#viewer-fill {
+  min-width: 0;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.75rem;
+}
+
+#viewer-fit[aria-pressed="true"],
+#viewer-fill[aria-pressed="true"] {
+  background: #2d4a7a;
+  border-color: #4a7ad4;
+}
+
+#keyboard-help-list {
+  margin: 0.6rem 0 0;
+  display: grid;
+  gap: 0.35rem 1rem;
+}
+
+#keyboard-help-list > div {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+#keyboard-help-list dt {
+  margin: 0;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.85rem;
+  color: #c8c8d0;
+}
+
+#keyboard-help-list dd {
+  margin: 0;
+}
+
 .heart {
   pointer-events: auto;
   width: 1.35rem;

@@ -62,8 +62,15 @@
       <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false" data-i18n="photos">Photos</button>
       <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false" data-i18n="videos">Videos</button>
       <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false" data-i18n="favorites">Favorites</button>
+      <button type="button" id="filter-recent" class="toolbar-toggle" aria-pressed="false" data-i18n="recentlyAdded">Recently added</button>
       <button type="button" id="filter-duplicates" data-i18n="duplicates">Duplicates</button>
     </div>
+    <label class="toolbar-field">
+      <span data-i18n="folder">Folder</span>
+      <select id="filter-folder" aria-label="Folder" data-i18n-aria="folder">
+        <option value="" data-i18n="allFolders">All folders</option>
+      </select>
+    </label>
     <div id="active-filters" aria-label="Active filters" data-i18n-aria="activeFilters"></div>
     <button type="button" id="clear-filters" hidden data-i18n="clearAll">Clear all</button>
     <label class="toolbar-field">
@@ -436,9 +443,13 @@
         <video id="viewer-video" hidden playsinline></video>
         <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
       </div>
-      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · Ctrl+1 100%" data-i18n-title="zoom">
+      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · V fill · Ctrl+1 100%" data-i18n-title="zoom">
         <span id="viewer-zoom-pct">100%</span>
         <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom" data-i18n-aria="viewerZoom">
+        <div id="viewer-fit-actions">
+          <button type="button" id="viewer-fit" aria-pressed="true" title="Fit Ctrl+0" data-i18n="fit" data-i18n-title="fitTitle">Fit</button>
+          <button type="button" id="viewer-fill" aria-pressed="false" title="Fill V" data-i18n="fill" data-i18n-title="fillTitle">Fill</button>
+        </div>
       </aside>
     </div>
     <div id="viewer-bottom">
@@ -455,6 +466,7 @@
       </div>
       <div id="viewer-actions">
         <button type="button" id="reveal-original" data-i18n="reveal">Reveal in Explorer</button>
+        <button type="button" id="locate-original" hidden data-i18n="locate">Locate</button>
         <button type="button" id="open-original" data-i18n="open">Open</button>
         <button type="button" id="play-preview" disabled data-i18n="playPreview">Play preview</button>
         <p id="reveal-error" hidden data-i18n="originalMissing">Original is not on this computer</p>
@@ -520,6 +532,30 @@
     <div class="dialog-actions">
       <button type="button" id="confirm-merge-cancel" data-i18n="cancel">Cancel</button>
       <button type="button" id="confirm-merge-ok" data-i18n="merge">Merge</button>
+    </div>
+  </dialog>
+  <dialog id="keyboard-help" aria-labelledby="keyboard-help-title">
+    <h2 id="keyboard-help-title" data-i18n="keyboardHelpTitle">Keyboard shortcuts</h2>
+    <dl id="keyboard-help-list">
+      <div><dt>?</dt><dd data-i18n="helpThis">This list</dd></div>
+      <div><dt>← →</dt><dd data-i18n="helpArrows">Previous / Next</dd></div>
+      <div><dt>Ctrl+0</dt><dd data-i18n="helpFit">Fit</dd></div>
+      <div><dt>V</dt><dd data-i18n="helpFill">Fit / Fill</dd></div>
+      <div><dt>Ctrl+1</dt><dd data-i18n="helpActual">100%</dd></div>
+      <div><dt>Ctrl++ / wheel</dt><dd data-i18n="helpZoom">Zoom</dd></div>
+      <div><dt>Ctrl+R</dt><dd data-i18n="helpRotate">Rotate</dd></div>
+      <div><dt>Space</dt><dd data-i18n="helpSpace">Play / pause</dd></div>
+      <div><dt>F11 / F</dt><dd data-i18n="helpFullscreen">Fullscreen</dd></div>
+      <div><dt>F5</dt><dd data-i18n="helpSlideshow">Slideshow</dd></div>
+      <div><dt>I / Alt+Enter</dt><dd data-i18n="helpInfo">Info</dd></div>
+      <div><dt>Esc</dt><dd data-i18n="helpEsc">Close</dd></div>
+      <div><dt>Delete</dt><dd data-i18n="helpDelete">Remove from library</dd></div>
+      <div><dt>Ctrl+F</dt><dd data-i18n="helpSearch">Search</dd></div>
+      <div><dt>Ctrl+,</dt><dd data-i18n="helpSettings">Settings</dd></div>
+      <div><dt>Ctrl+Z</dt><dd data-i18n="helpUndo">Undo</dd></div>
+    </dl>
+    <div class="dialog-actions">
+      <button type="button" id="keyboard-help-close" data-i18n="cancel">Cancel</button>
     </div>
   </dialog>
   <dialog id="confirm-remove-source" aria-labelledby="confirm-remove-source-title">

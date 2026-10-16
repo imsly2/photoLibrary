@@ -319,6 +319,7 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | favorite id [id…] --on/--off / PUT or POST `/api/items/<id>/favorite` | `{favorite:true\|false}`; 200 updated item with computed `favorite`; writes `catalog/favorites.json`; no-op success when unchanged. Several ids: POST `/api/items/favorite` `{itemIds,favorite}`; 200 `{ok,items}` |
 | POST `/api/items/favorite` | `{itemIds:[…],favorite:bool}`; 200 `{ok,items}` one `favorite` history step; empty ids `invalid-argument`; unknown id `not-found` with no write |
 | reveal id / POST `/api/items/<id>/reveal` | `{}`; 200 `{path,folder,opened}` or 404 `unavailable` |
+| locate id / POST `/api/items/<id>/locate` | `{}`; 200 `{path,folder,opened,mode}` — `mode` is `reveal` when the last-known file is still there, `locate` when only the parent folder is; 404 `unavailable` if neither exists. Does not delete the catalog record. |
 | open id / POST `/api/items/<id>/open` | `{}`; 200 `{path,opened}` or 404 `unavailable`; default-app launch |
 | remove id [id…] / POST `/api/items/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops item JSON, favorite entry, and index row; original bytes stay; undoable `remove`. Unknown id is `not-found`. Several ids: POST `/api/items/remove` `{itemIds}` |
 | POST `/api/items/remove` | `{itemIds:[…]}`; 200 `{ok:true,ids}` one `remove` history step; same catalog drop as one-id remove; originals stay; empty ids `invalid-argument`; unknown id `not-found` with no drop |
@@ -367,6 +368,10 @@ against names, thing aliases, filename, and capturedAt calendar text
 (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). Scope chips restrict q to that entity
 type. `from` inclusive and `to` exclusive ISO date/timestamp filter capturedAt.
 unavailable omitted follows settings; 0 means available only, 1 means include both.
+`source=` is a source id; keeps items that have a location on that folder.
+`recent=1` keeps ids listed in session `library-data/recent.json` (last scan
+that added items). Any other `recent` value is `invalid-argument`. Empty
+recent list returns no items.
 Sort ties: date then id; name then date then id; location puts named, unnamed GPS,
 no-location groups in that category order regardless of dir; dir orders names/
 coordinates and dates within category. Compare capturedAt as stored normalized

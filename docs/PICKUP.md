@@ -38,11 +38,12 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (move to folder):** Restart Library. Select tiles, then
-**Move** on the selection bar. Pick a Settings folder or a subfolder,
-confirm the count and destination. Originals relocate; thumbs/proxies
-stay (no reprocess). Cancel moves nothing. Name collisions become
-`name_2.ext` and never overwrite. Re-run Faces only if a wrongly
-joined cluster still needs a fresh detect.
+**After Pull (recently added / keyboard / missing original):** Restart
+Library. After a scan, **Recently added** shows those new items.
+Settings folder **Show photos** (or the Folder control) filters to that
+source. Press `?` for the shortcut list; `V` toggles Fit/Fill in the
+viewer. Tiles and Info mark a missing original; Locate opens the last
+known folder when it is still there. Nothing is auto-deleted. Re-run
+Faces only if a wrongly joined cluster still needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.

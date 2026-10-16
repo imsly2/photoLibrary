@@ -24,7 +24,12 @@
   const addBrowse = document.getElementById("add-browse");
   const viewerPlaceholder = document.getElementById("viewer-placeholder");
   const revealOriginalBtn = document.getElementById("reveal-original");
+  const locateOriginalBtn = document.getElementById("locate-original");
   const openOriginalBtn = document.getElementById("open-original");
+  const viewerFitBtn = document.getElementById("viewer-fit");
+  const viewerFillBtn = document.getElementById("viewer-fill");
+  const keyboardHelp = document.getElementById("keyboard-help");
+  const keyboardHelpClose = document.getElementById("keyboard-help-close");
   const revealError = document.getElementById("reveal-error");
   const playPreviewBtn = document.getElementById("play-preview");
   const viewerScrubWrap = document.getElementById("viewer-scrub-wrap");
@@ -77,6 +82,8 @@
   const filterPhotos = document.getElementById("filter-photos");
   const filterVideos = document.getElementById("filter-videos");
   const filterFavorites = document.getElementById("filter-favorites");
+  const filterRecent = document.getElementById("filter-recent");
+  const filterFolder = document.getElementById("filter-folder");
   const filterBar = document.getElementById("filter-bar");
   const activeFilters = document.getElementById("active-filters");
   const clearFiltersBtn = document.getElementById("clear-filters");
@@ -204,9 +211,10 @@
   let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
-  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
   let savedSearch = "";
-  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
+  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
+  let fitMode = "fit";
   let selectedId = null;
   let pendingRemoveId = null;
   let pendingRemoveIds = [];
@@ -335,6 +343,12 @@
     if (filter.favorite) {
       merged.favorite = filter.favorite;
     }
+    if (filter.source) {
+      merged.source = filter.source;
+    }
+    if (filter.recent) {
+      merged.recent = filter.recent;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
         merged[key] = extra[key];
@@ -361,7 +375,7 @@
   }
 
   function hasActiveFilter() {
-    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite);
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite || filter.source || filter.recent);
   }
 
   function emptySearchText() {
@@ -382,20 +396,20 @@
     return tagsCatalog.length > 0;
   }
 
+  function emptyFilter() {
+    return { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
+  }
+
   function copyFilter(src) {
-    return {
-      q: src.q || "",
-      scope: src.scope || "",
-      person: src.person || "",
-      place: src.place || "",
-      thing: src.thing || "",
-      kind: src.kind || "",
-      favorite: src.favorite || "",
-    };
+    const next = emptyFilter();
+    Object.keys(next).forEach(function (key) {
+      next[key] = (src && src[key]) || "";
+    });
+    return next;
   }
 
   function filtersEqual(a, b) {
-    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite;
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite && a.source === b.source && a.recent === b.recent;
   }
 
   function selectedPeople() {
@@ -432,6 +446,41 @@
       return parts.join(",");
     }
     return token;
+  }
+
+  function sourceDisplayName(id) {
+    if (!id) {
+      return "";
+    }
+    for (let i = 0; i < lastSources.length; i += 1) {
+      const source = lastSources[i];
+      if (source && source.id === id) {
+        return source.name || (source.origin && source.origin.lastKnownPath) || source.path || id;
+      }
+    }
+    return id;
+  }
+
+  function fillFolderSelect(sources) {
+    if (!filterFolder) {
+      return;
+    }
+    const current = filter.source || "";
+    filterFolder.innerHTML = "";
+    const all = document.createElement("option");
+    all.value = "";
+    all.textContent = t("allFolders");
+    filterFolder.appendChild(all);
+    (sources || []).forEach(function (source) {
+      if (!source || !source.id) {
+        return;
+      }
+      const opt = document.createElement("option");
+      opt.value = source.id;
+      opt.textContent = source.name || (source.origin && source.origin.lastKnownPath) || source.path || source.id;
+      filterFolder.appendChild(opt);
+    });
+    filterFolder.value = current;
   }
 
   function entityName(kind, id) {
@@ -502,7 +551,13 @@
     if (filter.scope) {
       addChip("scope", filter.scope, t("scopeChip", { name: t(filter.scope) }));
     }
-    const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite);
+    if (filter.source) {
+      addChip("source", filter.source, t("folderChip", { name: sourceDisplayName(filter.source) }));
+    }
+    if (filter.recent) {
+      addChip("recent", "1", t("recentChip"));
+    }
+    const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite || filter.source || filter.recent);
     if (clearFiltersBtn) {
       clearFiltersBtn.hidden = !hasEntity;
     }
@@ -523,6 +578,10 @@
       next.q = "";
     } else if (kind === "scope") {
       next.scope = "";
+    } else if (kind === "source") {
+      next.source = "";
+    } else if (kind === "recent") {
+      next.recent = "";
     }
     applyFilterState(next, next.q);
     renderKey = "";
@@ -530,7 +589,7 @@
   }
 
   function clearAllFilters() {
-    applyFilterState({ q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" }, "");
+    applyFilterState(emptyFilter(), "");
     renderKey = "";
     return loadCatalog();
   }
@@ -543,7 +602,9 @@
     main.dataset.thing = filter.thing;
     main.dataset.kind = filter.kind;
     main.dataset.favorite = filter.favorite;
-    const allOn = !filter.kind && !filter.favorite;
+    main.dataset.source = filter.source;
+    main.dataset.recent = filter.recent;
+    const allOn = !filter.kind && !filter.favorite && !filter.recent;
     if (filterAll) {
       filterAll.setAttribute("aria-pressed", allOn ? "true" : "false");
     }
@@ -555,6 +616,12 @@
     }
     if (filterFavorites) {
       filterFavorites.setAttribute("aria-pressed", filter.favorite === "1" ? "true" : "false");
+    }
+    if (filterRecent) {
+      filterRecent.setAttribute("aria-pressed", filter.recent === "1" ? "true" : "false");
+    }
+    if (filterFolder && filterFolder.value !== (filter.source || "")) {
+      filterFolder.value = filter.source || "";
     }
     renderActiveFilters();
   }
@@ -922,6 +989,7 @@
     if (lastJobs) {
       renderJobs(lastJobs);
     }
+    fillFolderSelect(lastSources);
     render();
     if (compareOpen()) {
       paintCompare();
@@ -1145,6 +1213,13 @@
       scanLine.textContent = bits.join(" · ");
       const actions = document.createElement("div");
       actions.className = "source-actions";
+      const showBtn = document.createElement("button");
+      showBtn.type = "button";
+      showBtn.className = "source-show";
+      showBtn.textContent = t("showFolder");
+      showBtn.addEventListener("click", function () {
+        browseSource(source.id);
+      });
       const refresh = document.createElement("button");
       refresh.type = "button";
       refresh.className = "source-rescan";
@@ -1160,6 +1235,7 @@
       removeBtn.addEventListener("click", function () {
         askRemoveSource(source.id);
       });
+      actions.appendChild(showBtn);
       actions.appendChild(refresh);
       actions.appendChild(removeBtn);
       li.appendChild(path);
@@ -1169,6 +1245,15 @@
       li.appendChild(actions);
       settingsSources.appendChild(li);
     });
+  }
+
+  function browseSource(sourceId) {
+    const next = copyFilter(filter);
+    next.source = sourceId || "";
+    applyFilterState(next, next.q);
+    renderKey = "";
+    showView("library");
+    return loadCatalog();
   }
 
   function rescanSource(sourceId) {
@@ -1957,6 +2042,14 @@
   }
 
   function fitViewer() {
+    applyContainOrCover("fit");
+  }
+
+  function fillViewer() {
+    applyContainOrCover("fill");
+  }
+
+  function applyContainOrCover(mode) {
     const box = viewerBox();
     const sw = box.w;
     const sh = box.h;
@@ -1966,7 +2059,8 @@
     const oriented = rotation % 180 === 0;
     const boxW = oriented ? naturalW : naturalH;
     const boxH = oriented ? naturalH : naturalW;
-    fitScale = Math.min(sw / boxW, sh / boxH);
+    const ratio = mode === "fill" ? Math.max(sw / boxW, sh / boxH) : Math.min(sw / boxW, sh / boxH);
+    fitScale = ratio;
     if (!isFinite(fitScale) || fitScale <= 0) {
       fitScale = 1;
     }
@@ -1975,6 +2069,32 @@
     ty = (sh - naturalH * scale) / 2;
     applyTransform();
     syncZoomChrome();
+  }
+
+  function applyFitMode() {
+    if (fitMode === "fill") {
+      fillViewer();
+    } else {
+      fitViewer();
+    }
+  }
+
+  function setFitMode(mode) {
+    fitMode = mode === "fill" ? "fill" : "fit";
+    if (viewer) {
+      viewer.dataset.fitMode = fitMode;
+    }
+    if (viewerFitBtn) {
+      viewerFitBtn.setAttribute("aria-pressed", fitMode === "fit" ? "true" : "false");
+    }
+    if (viewerFillBtn) {
+      viewerFillBtn.setAttribute("aria-pressed", fitMode === "fill" ? "true" : "false");
+    }
+    applyFitMode();
+  }
+
+  function toggleFitFill() {
+    setFitMode(fitMode === "fill" ? "fit" : "fill");
   }
 
   function itemPixelSize(item) {
@@ -2106,7 +2226,7 @@
     }
     rotation = (rotation + 90) % 360;
     viewer.dataset.rotation = String(rotation);
-    fitViewer();
+    applyFitMode();
   }
 
   function syncNavChrome() {
@@ -2423,6 +2543,14 @@
     const height = Number(meta.height) || 0;
     if (width > 0 && height > 0) {
       appendFact(list, t("dimensions"), width + " × " + height);
+    }
+    if (item && item.available === false) {
+      const miss = document.createElement("p");
+      miss.className = "info-missing";
+      miss.id = "info-missing";
+      miss.textContent = t("missingOriginal");
+      viewerFacts.appendChild(miss);
+      appendFact(list, t("lastKnown"), item.lastKnownPath || (loc && (loc.lastKnownPath || loc.libraryRelativePath)) || "");
     }
     if (loc) {
       appendFact(list, t("fileSize"), formatFileSize(loc.sizeBytes));
@@ -3002,8 +3130,14 @@
 
   function syncViewerChrome(item) {
     const available = !!(item && item.available);
+    const lastFile = !!(item && item.lastKnownFile);
+    const lastFolder = !!(item && item.lastKnownFolder);
     unavailableBanner.hidden = available;
-    revealOriginalBtn.disabled = !available;
+    revealOriginalBtn.disabled = !(available || lastFile);
+    if (locateOriginalBtn) {
+      locateOriginalBtn.hidden = available;
+      locateOriginalBtn.disabled = !lastFolder && !lastFile;
+    }
     openOriginalBtn.disabled = !available;
     if (available) {
       clearRevealFailed();
@@ -3073,6 +3207,10 @@
     viewerPlaceholder.hidden = true;
     clearRevealFailed();
     revealOriginalBtn.disabled = true;
+    if (locateOriginalBtn) {
+      locateOriginalBtn.disabled = true;
+      locateOriginalBtn.hidden = true;
+    }
     openOriginalBtn.disabled = true;
     setInfoOpen(false);
     playPreviewBtn.disabled = true;
@@ -3771,7 +3909,7 @@
       naturalW = viewerImage.naturalWidth;
       naturalH = viewerImage.naturalHeight;
       if (fitOnLoad) {
-        fitViewer();
+        applyFitMode();
         fitOnLoad = false;
       }
       loadViewerOriginal(item);
@@ -3790,7 +3928,7 @@
       return;
     }
     if (!had || forceFit) {
-      fitViewer();
+      applyFitMode();
       return;
     }
     applyTransform();
@@ -3973,6 +4111,13 @@
       const duration = formatDuration((item.metadata || {}).durationSec);
       badge.innerHTML = PLAY_ICON + "<span>VIDEO</span>" + (duration ? "<span>" + duration + "</span>" : "");
       badges.appendChild(badge);
+    }
+    if (item.available === false) {
+      cell.dataset.missing = "1";
+      const missing = document.createElement("span");
+      missing.className = "missing-badge tile-badge";
+      missing.textContent = t("missingBadge");
+      badges.appendChild(missing);
     }
     const heart = document.createElement("span");
     heart.className = "heart";
@@ -5302,6 +5447,7 @@
       const nextGroups = Array.isArray(parts[1]) ? parts[1] : [];
       const sources = Array.isArray(parts[2]) ? parts[2] : [];
       lastSources = sources;
+      fillFolderSelect(lastSources);
       if (currentView === "settings") {
         renderSettingsSources(lastSources);
       }
@@ -5485,7 +5631,7 @@
     if (!id) {
       return;
     }
-    const next = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
+    const next = emptyFilter();
     if (kind === "person") {
       next.person = id;
     } else if (kind === "place") {
@@ -5515,6 +5661,8 @@
       thing: "",
       kind: filter.kind,
       favorite: filter.favorite,
+      source: filter.source,
+      recent: filter.recent,
     }, searchInput ? searchInput.value : "");
     renderKey = "";
     return loadCatalog();
@@ -6169,6 +6317,27 @@
     const next = copyFilter(filter);
     next.kind = kind || "";
     next.favorite = favorite || "";
+    next.recent = "";
+    applyFilterState(next, next.q);
+    renderKey = "";
+    loadCatalog();
+  }
+
+  function setRecentFilter(on) {
+    const next = copyFilter(filter);
+    next.recent = on ? "1" : "";
+    if (on) {
+      next.kind = "";
+      next.favorite = "";
+    }
+    applyFilterState(next, next.q);
+    renderKey = "";
+    loadCatalog();
+  }
+
+  function setSourceFilter(sourceId) {
+    const next = copyFilter(filter);
+    next.source = sourceId || "";
     applyFilterState(next, next.q);
     renderKey = "";
     loadCatalog();
@@ -6279,6 +6448,16 @@
   if (filterFavorites) {
     filterFavorites.addEventListener("click", function () {
       setKindFilter("", filter.favorite === "1" ? "" : "1");
+    });
+  }
+  if (filterRecent) {
+    filterRecent.addEventListener("click", function () {
+      setRecentFilter(filter.recent !== "1");
+    });
+  }
+  if (filterFolder) {
+    filterFolder.addEventListener("change", function () {
+      setSourceFilter(filterFolder.value || "");
     });
   }
   if (clearFiltersBtn) {
@@ -6475,6 +6654,46 @@
     handleGridWheel(event);
   }, { passive: false });
 
+  function keyboardHelpOpen() {
+    return !!(keyboardHelp && keyboardHelp.open);
+  }
+
+  function closeKeyboardHelp() {
+    if (keyboardHelp && keyboardHelp.open) {
+      keyboardHelp.close();
+    }
+  }
+
+  function openKeyboardHelp() {
+    if (keyboardHelp && keyboardHelp.showModal && !keyboardHelp.open) {
+      keyboardHelp.showModal();
+    }
+  }
+
+  function toggleKeyboardHelp() {
+    if (keyboardHelpOpen()) {
+      closeKeyboardHelp();
+      return;
+    }
+    openKeyboardHelp();
+  }
+
+  if (keyboardHelpClose) {
+    keyboardHelpClose.addEventListener("click", function () {
+      closeKeyboardHelp();
+    });
+  }
+  if (viewerFitBtn) {
+    viewerFitBtn.addEventListener("click", function () {
+      setFitMode("fit");
+    });
+  }
+  if (viewerFillBtn) {
+    viewerFillBtn.addEventListener("click", function () {
+      setFitMode("fill");
+    });
+  }
+
   document.addEventListener("keydown", function (event) {
     if ((event.ctrlKey || event.metaKey) && (event.key === "f" || event.key === "F")) {
       if (searchInput) {
@@ -6494,6 +6713,11 @@
       return;
     }
     if (event.key === "Escape") {
+      if (keyboardHelp && keyboardHelp.open) {
+        event.preventDefault();
+        closeKeyboardHelp();
+        return;
+      }
       if (moveFolder && moveFolder.open) {
         event.preventDefault();
         closeMoveFolder();
@@ -6586,6 +6810,11 @@
     if (textFocused()) {
       return;
     }
+    if (event.key === "?" || (event.key === "/" && event.shiftKey) || (event.code === "Slash" && event.shiftKey)) {
+      event.preventDefault();
+      toggleKeyboardHelp();
+      return;
+    }
     const accel = event.ctrlKey || event.metaKey;
     if (!viewer.hidden && accel) {
       const plus = event.key === "+" || event.key === "=" || event.code === "Equal" || event.code === "NumpadAdd";
@@ -6621,7 +6850,17 @@
       toggleFullscreen();
       return;
     }
+    if (!viewer.hidden && ((event.key === "i" || event.key === "I") || (event.altKey && event.key === "Enter"))) {
+      event.preventDefault();
+      setInfoOpen(!infoOpen());
+      return;
+    }
     if (viewer.hidden) {
+      return;
+    }
+    if (!accel && (event.key === "v" || event.key === "V")) {
+      event.preventDefault();
+      toggleFitFill();
       return;
     }
     if (event.key === " " || event.key === "Spacebar") {
@@ -6902,7 +7141,7 @@
       return;
     }
     const item = syncViewerIndex();
-    if (!item || item.available === false) {
+    if (!item || (item.available === false && !item.lastKnownFile)) {
       showRevealFailed();
       return;
     }
@@ -6916,6 +7155,27 @@
       showRevealFailed();
     });
   });
+  if (locateOriginalBtn) {
+    locateOriginalBtn.addEventListener("click", function () {
+      if (locateOriginalBtn.disabled) {
+        return;
+      }
+      const item = syncViewerIndex();
+      if (!item || (!item.lastKnownFolder && !item.lastKnownFile)) {
+        showRevealFailed();
+        return;
+      }
+      fetch("/api/items/" + encodeURIComponent(item.id) + "/locate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      }).then(readJson).then(function () {
+        clearRevealFailed();
+      }).catch(function () {
+        showRevealFailed();
+      });
+    });
+  }
   openOriginalBtn.addEventListener("click", function () {
     if (openOriginalBtn.disabled) {
       return;
@@ -7115,6 +7375,8 @@
           thing: "",
           kind: filter.kind,
           favorite: filter.favorite,
+          source: filter.source,
+          recent: filter.recent,
         }, filter.q);
         renderKey = "";
         loadCatalog();
