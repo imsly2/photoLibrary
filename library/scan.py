@@ -38,6 +38,7 @@ from library.media import (
 )
 from library.metadata import read_capture
 from library.places import named_place_update, resolve_place
+from library.recent import remember_recent
 from library.paths import normalize_root, roots_equal
 from library.records import (
     clone,
@@ -482,6 +483,11 @@ def _index_file(
     return published["id"]
 
 
+def _record_added_id(added_ids: list[str], item_id: str) -> None:
+    if type(item_id) is str and item_id and item_id not in added_ids:
+        added_ids.append(item_id)
+
+
 def _default_progress(kind: str, rel: str) -> None:
     print(f"{kind} {rel}", flush=True)
 
@@ -524,6 +530,7 @@ def scan_serve_from_there(
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []
+    added_ids: list[str] = []
     match_meters = _place_match_meters(root)
     files = iter_media_files(scan_path, root)
     for rel, path in files:
@@ -536,14 +543,17 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            _index_file(root, source, rel, path, match_meters, between=between)
+            item_id = _index_file(root, source, rel, path, match_meters, between=between)
             added += 1
+            _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)
         except Exception as exc:
             code = getattr(exc, "code", None)
             if code == "decode-error":
                 added += 1
+                entry = ((try_load_source(root, source["id"]) or source).get("files") or {}).get(rel) or {}
+                _record_added_id(added_ids, entry.get("itemId") or "")
                 errors.append({"path": rel, "error": "decode-error"})
                 if on_progress is not None:
                     on_progress("added", rel)
@@ -553,6 +563,7 @@ def scan_serve_from_there(
                 continue
             errors.append({"path": rel, "error": "io-error"})
     pair_live_items(root, source["id"])
+    remember_recent(root, added_ids)
     source = try_load_source(root, source["id"]) or source
     before = clone(source)
     source["scan"] = {
@@ -608,6 +619,7 @@ def scan_copy_here(
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []
+    added_ids: list[str] = []
     match_meters = _place_match_meters(root)
     for rel, path in files:
         source = try_load_source(root, source["id"]) or source
@@ -628,7 +640,7 @@ def scan_copy_here(
                 on_progress("skipped", rel)
             continue
         try:
-            _index_file(
+            item_id = _index_file(
                 root,
                 source,
                 rel,
@@ -638,12 +650,15 @@ def scan_copy_here(
                 between=between,
             )
             added += 1
+            _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)
         except Exception as exc:
             code = getattr(exc, "code", None)
             if code == "decode-error":
                 added += 1
+                entry = ((try_load_source(root, source["id"]) or source).get("files") or {}).get(rel) or {}
+                _record_added_id(added_ids, entry.get("itemId") or "")
                 errors.append({"path": rel, "error": "decode-error"})
                 if on_progress is not None:
                     on_progress("added", rel)
@@ -653,6 +668,7 @@ def scan_copy_here(
                 continue
             errors.append({"path": rel, "error": "io-error"})
     pair_live_items(root, source["id"])
+    remember_recent(root, added_ids)
     source = try_load_source(root, source["id"]) or source
     before = clone(source)
     source["scan"] = {

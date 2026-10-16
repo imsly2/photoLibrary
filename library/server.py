@@ -624,6 +624,18 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if (
                 route.startswith("/api/items/")
+                and route.endswith("/locate")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/locate")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.locate(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
                 and route.endswith("/open")
                 and method == "POST"
             ):

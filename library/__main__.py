@@ -218,6 +218,8 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--scope")
     items.add_argument("--kind")
     items.add_argument("--favorite")
+    items.add_argument("--source")
+    items.add_argument("--recent")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -234,6 +236,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     reveal = sub.add_parser("reveal")
     reveal.add_argument("id")
+
+    locate = sub.add_parser("locate")
+    locate.add_argument("id")
 
     open_item = sub.add_parser("open")
     open_item.add_argument("id")
@@ -477,6 +482,10 @@ def main(argv: list[str] | None = None) -> int:
                 query["kind"] = args.kind
             if getattr(args, "favorite", None) is not None:
                 query["favorite"] = args.favorite
+            if getattr(args, "source", None):
+                query["source"] = args.source
+            if getattr(args, "recent", None) is not None:
+                query["recent"] = args.recent
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -538,6 +547,16 @@ def main(argv: list[str] | None = None) -> int:
                 lambda: Library(root).reveal(args.id),
                 "POST",
                 f"/api/items/{args.id}/reveal",
+                {},
+            )
+            _print_json(result)
+            return 0
+        if args.command == "locate":
+            result = _mutation(
+                root,
+                lambda: Library(root).locate(args.id),
+                "POST",
+                f"/api/items/{args.id}/locate",
                 {},
             )
             _print_json(result)

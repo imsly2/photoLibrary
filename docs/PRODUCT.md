@@ -257,6 +257,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
 | `favorite <id> [id…] --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}`; many ids: `POST /api/items/favorite` `{"itemIds":[…],"favorite":true\|false}` | Marks or clears hearts in `catalog/favorites.json`. Several ids are one undo step. |
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
+| `locate <id>` | `POST /api/items/<id>/locate` `{}` | Opens the last-known folder when the original is missing. Does not delete the catalog record. |
 | `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
 | `remove <id> [id…]` | `POST /api/items/<id>/remove` `{}`; many ids: `POST /api/items/remove` `{"itemIds":[…]}` | Drops catalog records; original bytes stay. Several ids are one undo step. Not Delete file. |
 | `move <id> [id…] --to <folder>` | `POST /api/items/move` `{"itemIds":[…],"destination":"<folder>"}` or `{"itemIds":[…],"sourceId":"<id>","subpath"?}` | Relocates selected originals into a registered source folder or a subfolder. Thumbs/proxies/playback stay; catalog paths update. Never overwrites (`name_2.ext`). One undo step. |
@@ -292,11 +293,14 @@ it from a successful update payload.
 `place=`, `thing=` (one id/name, or comma-separated ids/names meaning
 **all** those tags), `kind=photo|video|live` or a comma list,
 `from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
-Names match case-insensitively, including Chinese. `scope=people|places|things`
+`source=` keeps items that belong to that Settings folder. `recent=1`
+keeps items added by the last scan that wrote `library-data/recent.json`
+(session Recently added). Names match case-insensitively, including Chinese. `scope=people|places|things`
 still restricts a query on the API. `kind` keeps only those media
 kinds (`photo,live` for Photos). The filter bar All / Photos / Videos /
-Favorites controls send no kind, `kind=photo,live`, `kind=video`, or
-`favorite=1`. Kind and favorite are transient filters, not settings.
+Favorites / Recently added controls send no kind, `kind=photo,live`, `kind=video`,
+`favorite=1`, or `recent=1`. Kind, favorite, recent, and source are transient
+filters, not settings.
 `favorite=1` keeps only hearted items. Item reads include computed
 `favorite` (not stored on the item JSON). `q` also matches a capturedAt
 date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
@@ -918,6 +922,9 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Ctrl+wheel on the grid | Change Size (density), cursor stays put |
 | Ctrl+wheel, plain wheel, or Ctrl++/− in the viewer | Zoom the picture, cursor stays put |
 | Ctrl+0 / Ctrl+1 | Fit / 100% in the viewer |
+| V | Toggle Fit / Fill in the viewer |
+| ? | Open the keyboard cheat sheet |
+| I / Alt+Enter | Toggle Info |
 | Ctrl+R | Rotate the displayed still 90° |
 | Middle-click drag | Pan the open picture |
 | Click a cell | Open it |
@@ -926,15 +933,15 @@ search the thing, get the same item id. Artifact: the search JSON.
 | F11 or F | Toggle viewer fullscreen |
 | F5 | Start slideshow of the current set |
 | Delete | Remove from library (confirm; originals stay) |
-| Esc | Confirm, Info, slideshow, fullscreen, tour/gesture, dialog, viewer, settings, then selection |
+| Esc | Confirm, keyboard help, Info, slideshow, fullscreen, tour/gesture, dialog, viewer, settings, then selection |
 | Ctrl+F | Search |
 | Ctrl+, | Settings |
 | Ctrl+Z / Ctrl+Shift+Z | Undo / redo |
 | Ctrl+C | Copy the primary path |
 | Esc during the tour | Stop the tour and stay on the globe |
 
-`?` cheat-sheet, Print Ctrl+P, and I / Alt+Enter for Info are UI-SPEC Soon.
-F is fullscreen, not favorite. Do not fail this Check for Soon keys.
+Print Ctrl+P stays UI-SPEC Soon. F is fullscreen, not favorite.
+`?`, V (Fit/Fill), and I / Alt+Enter are presentable chrome, not F21 extras.
 
 
 **Check:** `python -m tests.qa check F21` (planned runner; common root/artifact

@@ -4,6 +4,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Flight fillers after Move PR #41 (`bd583a5`) on
+  `cursor/flight-fillers-aef8`. **Recently added** plus per-folder
+  browse (`source=` / Settings Show photos). `?` opens the shortcut
+  cheat sheet; viewer **Fit/Fill** with `V`. Tiles and Info flag a
+  missing original; Locate/Reveal if the last-known path still exists.
+  No auto-delete. Chinese strings included. ASCII launchers untouched.
+  After Pull: restart Library. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-fillers](features/taste-fillers/Rev1.0/PLAN.md).
+  Evidence: pending verify-1 on this branch.
 - 2026-10-16 — Multi-select Move to folder on
   `cursor/move-to-folder-6d43` after duplicate-compare PR #40
   (`72d9ab9`). `#selection-bar` **Move** opens `#move-folder`:

@@ -342,6 +342,7 @@ class Library:
         if extra:
             raise fail("invalid-argument")
         from library.favorites import favorite_ids
+        from library.recent import load_recent_ids
 
         marked = favorite_ids(self.root)
         items = [
@@ -350,6 +351,11 @@ class Library:
         ]
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
+        if "recent" in query:
+            if query.get("recent") != "1":
+                raise fail("invalid-argument")
+            allowed = set(load_recent_ids(self.root))
+            items = [item for item in items if item.get("id") in allowed]
         return _sort_items(items, query, settings)
 
     def duplicates_list(self) -> dict[str, Any]:
@@ -532,6 +538,34 @@ class Library:
             "path": str(path),
             "folder": str(path.parent),
             "opened": opened,
+        }
+
+    def locate(self, item_id: str) -> dict[str, Any]:
+        from library.favorites import open_containing_folder, open_folder
+
+        self.recover()
+        self.ensure_settings()
+        if type(item_id) is not str or not item_id:
+            raise fail("invalid-argument")
+        item = load_item(self.root, item_id)
+        path = _reveal_original_path(item, self.root)
+        if path is not None:
+            opened = open_containing_folder(path)
+            return {
+                "path": str(path),
+                "folder": str(path.parent),
+                "opened": opened,
+                "mode": "reveal",
+            }
+        folder = _last_known_folder(item)
+        if folder is None:
+            raise fail("unavailable")
+        opened = open_folder(folder)
+        return {
+            "path": None,
+            "folder": str(folder),
+            "opened": opened,
+            "mode": "locate",
         }
 
     def open(self, item_id: str) -> dict[str, Any]:
@@ -846,6 +880,8 @@ ITEM_QUERY_KEYS = frozenset(
         "unavailable",
         "q",
         "scope",
+        "source",
+        "recent",
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
@@ -873,6 +909,27 @@ def _item_component(item: dict[str, Any]) -> str:
     if item.get("kind") == "video":
         return "motion"
     return "still"
+
+
+def _last_known_folder(item: dict[str, Any]) -> Path | None:
+    from library.favorites import existing_folder
+
+    candidates = [loc for loc in item.get("locations") or [] if loc.get("current") is True]
+    candidates.sort(
+        key=lambda loc: (
+            0 if loc.get("role") == "primary" else 1,
+            loc.get("sourceId") or "",
+            loc.get("lastKnownPath") or "",
+        )
+    )
+    for loc in candidates:
+        last = loc.get("lastKnownPath")
+        if type(last) is not str or not last:
+            continue
+        folder = existing_folder(Path(last).parent)
+        if folder is not None:
+            return folder
+    return None
 
 
 def _last_known_original(item: dict[str, Any], component: str) -> Path | None:
@@ -1104,6 +1161,13 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
             if _label_query_match(item, needle):
                 matched = True
         if not matched:
+            return False
+    source = query.get("source")
+    if source is not None:
+        if type(source) is not str or source == "":
+            raise fail("invalid-argument")
+        locs = item.get("locations") or []
+        if not any(isinstance(loc, dict) and loc.get("sourceId") == source for loc in locs):
             return False
     return True
 

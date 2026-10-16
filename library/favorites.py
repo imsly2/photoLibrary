@@ -191,6 +191,25 @@ def _strip_extended_prefix(text: str) -> str:
     return text
 
 
+def existing_folder(path: Path) -> Path | None:
+    """Absolute on-disk directory, or None. Never resolve a relative path against CWD."""
+    try:
+        candidate = Path(path).expanduser()
+        if not candidate.is_absolute():
+            return None
+        text = _strip_extended_prefix(str(candidate))
+        candidate = Path(text)
+        if candidate.exists() and candidate.is_dir():
+            resolved = candidate.resolve()
+            cleaned = Path(_strip_extended_prefix(str(resolved)))
+            if cleaned.is_dir():
+                return cleaned
+            return candidate
+    except OSError:
+        return None
+    return None
+
+
 def existing_original(path: Path) -> Path | None:
     """Absolute on-disk file, or None. Never resolve a relative path against CWD."""
     try:
@@ -264,6 +283,26 @@ def open_containing_folder(path: Path) -> bool:
         opener = _which("xdg-open")
         if opener:
             subprocess.Popen([opener, str(folder)])
+            return True
+    except OSError:
+        return False
+    return False
+
+
+def open_folder(folder: Path) -> bool:
+    target = existing_folder(folder)
+    if target is None:
+        return False
+    try:
+        if _windows():
+            subprocess.Popen(["explorer.exe", _strip_extended_prefix(str(target))])
+            return True
+        if sys.platform == "darwin":
+            subprocess.Popen(["open", str(target)])
+            return True
+        opener = _which("xdg-open")
+        if opener:
+            subprocess.Popen([opener, str(target)])
             return True
     except OSError:
         return False

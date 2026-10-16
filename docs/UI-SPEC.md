@@ -648,12 +648,12 @@ editor.
 | Multi-select + batch favorite / remove | Shift+click range, Ctrl+click toggle. Batch favorite, **Move to folder**, or batch **remove-from-library**. No batch Delete file, no batch export. |
 | Print Ctrl+P | Browser print of the current still. No print suite. Photo Viewer had this. |
 | Copy path / copy file | Ctrl+C already copies the path (F18). Copy file (bytes to a folder) needs a CONTRACTS promotion first. |
-| Fit / Fill / 100% near the zoom slider | Visible twins of Ctrl+0 / Ctrl+1. Fill is Soon; Fit and 100% keys are already Must. |
-| Tile badges LIVE / ♥ / missing | LIVE and heart already exist. Missing-original badge on the tile is Soon polish. |
-| Recently added + per-folder browse | Session “Recently added” after a scan; filter to one source. Not albums. |
-| Keyboard help `?` | Overlay of locked keys. Not an editor. I / Alt+Enter may toggle Info here. |
+| Fit / Fill / 100% near the zoom slider | `#viewer-fit` / `#viewer-fill` beside the zoom slider. Ctrl+0 Fit; `V` toggles Fill. 100% stays Ctrl+1. |
+| Tile badges LIVE / ♥ / missing | LIVE and heart already exist. `.missing-badge` on the tile plus Info `#info-missing` when `available` is false. No auto-delete. Locate if the last-known folder is here. |
+| Recently added + per-folder browse | `#filter-recent` after a scan (`recent=1`). `#filter-folder` and Settings **Show photos** send `source=<id>`. Not albums. |
+| Keyboard help `?` | `#keyboard-help` overlay of locked keys. Not an editor. I / Alt+Enter toggle Info. |
 | Remember window / last view | Last Library vs Globe and last filter for the session. Zoom/sort already persist. This is a browser tab — do not persist OS window size via Electron. |
-| Missing-original polish | Stronger banner / disabled Open+Reveal+Delete-file. Core placeholders are already Must. |
+| Missing-original polish | Stronger banner / disabled Open+Delete-file. Reveal if the last-known file is here; Locate if the folder is. Core placeholders stay Must. |
 
 ### Later / non-goals
 
