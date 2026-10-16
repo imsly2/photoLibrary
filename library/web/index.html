@@ -62,6 +62,7 @@
       <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false" data-i18n="photos">Photos</button>
       <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false" data-i18n="videos">Videos</button>
       <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false" data-i18n="favorites">Favorites</button>
+      <button type="button" id="filter-duplicates" data-i18n="duplicates">Duplicates</button>
     </div>
     <div id="active-filters" aria-label="Active filters" data-i18n-aria="activeFilters"></div>
     <button type="button" id="clear-filters" hidden data-i18n="clearAll">Clear all</button>
@@ -85,6 +86,7 @@
   <div id="selection-bar" hidden role="region" aria-label="Selection" data-i18n-aria="selection">
     <p id="selection-count">0 selected</p>
     <button type="button" id="selection-favorite" data-i18n="favorite">Favorite</button>
+    <button type="button" id="selection-compare" hidden data-i18n="compare">Compare</button>
     <button type="button" id="selection-remove" data-i18n="remove">Remove</button>
     <button type="button" id="selection-clear" data-i18n="clearSelection">Clear selection</button>
   </div>
@@ -459,6 +461,22 @@
     </div>
   </div>
   <p id="slideshow-empty" hidden data-i18n="addPhotosFirst">Add photos first</p>
+  <dialog id="duplicate-compare" aria-labelledby="duplicate-compare-title">
+    <h2 id="duplicate-compare-title" data-i18n="compareTitle">Compare duplicates</h2>
+    <p id="duplicate-compare-help" data-i18n="compareHelp">Nothing is removed until you choose Remove and confirm. Files stay on disk.</p>
+    <p id="duplicate-compare-meta"></p>
+    <div id="duplicate-compare-nav" hidden>
+      <button type="button" id="duplicate-compare-prev" data-i18n="previous">Previous</button>
+      <span id="duplicate-compare-index"></span>
+      <button type="button" id="duplicate-compare-next" data-i18n="next">Next</button>
+    </div>
+    <div id="duplicate-compare-sides"></div>
+    <p id="duplicate-compare-empty" hidden data-i18n="noDuplicates">No duplicates to compare.</p>
+    <div class="dialog-actions">
+      <button type="button" id="duplicate-compare-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="duplicate-compare-apply" data-i18n="applyChoices">Apply choices</button>
+    </div>
+  </dialog>
   <dialog id="confirm-remove" aria-labelledby="confirm-remove-title">
     <h2 id="confirm-remove-title" data-i18n="removeTitle">Remove from Library?</h2>
     <p id="confirm-remove-help" data-i18n="removeHelp">The file stays on disk.</p>

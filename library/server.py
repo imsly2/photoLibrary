@@ -417,6 +417,10 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.items_list(query))
                 return
+            if route == "/api/duplicates" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.duplicates_list())
+                return
             if route == "/api/items/tags" and method == "POST":
                 body = self._read_json()
                 with self.lock:

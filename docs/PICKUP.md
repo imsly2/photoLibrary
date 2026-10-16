@@ -38,11 +38,12 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (batch favorite / remove):** Restart Library. Ctrl/Shift
-select shows `#selection-bar` (count, Favorite / Unfavorite, Remove,
-Clear). Remove is catalog-only — originals stay on disk; generated
-thumbs/proxies are not wiped (same as one-item Remove). Cancel leaves
-the selection. Never auto-deletes on hash match. Re-run Faces only if
-a wrongly joined cluster still needs a fresh detect.
+**After Pull (duplicate compare):** Restart Library. Duplicates on
+the filter bar (or Compare on a 2+ selection, or Info Compare copies)
+opens the side-by-side dialog. Keep is the default; Remove uses the
+existing catalog-only confirm. Originals stay. Same-hash copies stay
+one item with Info **Also at** — nothing is deleted until you
+confirm Remove. Re-run Faces only if a wrongly joined cluster still
+needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.
