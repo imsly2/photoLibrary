@@ -38,9 +38,11 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (video UX leftovers):** Restart Library. Do **not**
-delete `playback.mp4` / `*.tmp` and requeue — encode defaults did
-not change. Re-run Faces only if a wrongly joined cluster still
-needs a fresh detect.
+**After Pull (batch favorite / remove):** Restart Library. Ctrl/Shift
+select shows `#selection-bar` (count, Favorite / Unfavorite, Remove,
+Clear). Remove is catalog-only — originals stay on disk; generated
+thumbs/proxies are not wiped (same as one-item Remove). Cancel leaves
+the selection. Never auto-deletes on hash match. Re-run Faces only if
+a wrongly joined cluster still needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.

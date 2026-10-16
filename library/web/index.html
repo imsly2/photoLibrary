@@ -82,6 +82,12 @@
       <button type="button" id="tag-remove" data-i18n="remove">Remove</button>
     </div>
   </div>
+  <div id="selection-bar" hidden role="region" aria-label="Selection" data-i18n-aria="selection">
+    <p id="selection-count">0 selected</p>
+    <button type="button" id="selection-favorite" data-i18n="favorite">Favorite</button>
+    <button type="button" id="selection-remove" data-i18n="remove">Remove</button>
+    <button type="button" id="selection-clear" data-i18n="clearSelection">Clear selection</button>
+  </div>
   <div id="disconnected-wrap">
     <p id="disconnected-banner" hidden data-i18n="disconnected">Library is not responding</p>
     <button type="button" id="reconnect-retry" hidden data-i18n="retry">Retry</button>
@@ -455,7 +461,7 @@
   <p id="slideshow-empty" hidden data-i18n="addPhotosFirst">Add photos first</p>
   <dialog id="confirm-remove" aria-labelledby="confirm-remove-title">
     <h2 id="confirm-remove-title" data-i18n="removeTitle">Remove from Library?</h2>
-    <p data-i18n="removeHelp">The file stays on disk.</p>
+    <p id="confirm-remove-help" data-i18n="removeHelp">The file stays on disk.</p>
     <div class="dialog-actions">
       <button type="button" id="confirm-remove-cancel" data-i18n="cancel">Cancel</button>
       <button type="button" id="confirm-remove-ok" data-i18n="remove">Remove</button>

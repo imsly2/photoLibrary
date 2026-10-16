@@ -113,13 +113,74 @@ def apply_favorite(root: Path, item_id: str, favorite: bool) -> dict[str, Any]:
     return set_item_favorite(root, item_id, favorite)
 
 
-def parse_favorite_body(body: Any) -> bool:
-    if not isinstance(body, dict) or set(body) - {"favorite"}:
-        raise fail("invalid-argument")
-    value = body.get("favorite")
+def read_favorite_flag(value: Any) -> bool:
     if type(value) is not bool:
         raise fail("invalid-argument")
     return value
+
+
+def parse_favorite_body(body: Any) -> bool:
+    if not isinstance(body, dict) or set(body) - {"favorite"}:
+        raise fail("invalid-argument")
+    return read_favorite_flag(body.get("favorite"))
+
+
+def read_item_ids(raw: Any) -> list[str]:
+    if not isinstance(raw, list) or not raw:
+        raise fail("invalid-argument")
+    ids: list[str] = []
+    seen: set[str] = set()
+    for item_id in raw:
+        if type(item_id) is not str or not item_id:
+            raise fail("invalid-argument")
+        if item_id in seen:
+            continue
+        seen.add(item_id)
+        ids.append(item_id)
+    return ids
+
+
+def read_batch_favorite_body(body: Any) -> dict[str, Any]:
+    if not isinstance(body, dict) or set(body) - {"itemIds", "favorite"}:
+        raise fail("invalid-argument")
+    return {
+        "itemIds": read_item_ids(body.get("itemIds")),
+        "favorite": read_favorite_flag(body.get("favorite")),
+    }
+
+
+def set_items_favorite(root: Path, item_ids: list[str], on: bool) -> dict[str, Any]:
+    from library.catalog_io import item_read, load_item, try_load_item
+
+    if type(on) is not bool:
+        raise fail("invalid-argument")
+    ids = read_item_ids(item_ids)
+    loaded = [load_item(root, item_id) for item_id in ids]
+    before = load_favorites(root)
+    after = before
+    for item_id in ids:
+        after = with_id(after, item_id, on)
+    if before == after and favorites_path(root).exists():
+        marked = set(after["itemIds"])
+        return {
+            "ok": True,
+            "items": [item_read(item, root, marked) for item in loaded],
+        }
+    file_change = {
+        "path": FAVORITES_REL,
+        "before": before if favorites_path(root).exists() else None,
+        "after": after,
+    }
+    entry = make_history_entry(root, "favorite", [file_change])
+    transact(root, plan_append(root, entry) + [file_change])
+    marked = set(after["itemIds"])
+    return {
+        "ok": True,
+        "items": [
+            item_read(try_load_item(root, item["id"]) or item, root, marked)
+            for item in loaded
+        ],
+    }
 
 
 def _strip_extended_prefix(text: str) -> str:

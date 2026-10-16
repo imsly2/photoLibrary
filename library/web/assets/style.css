@@ -194,6 +194,45 @@ h1 {
   border-color: #6a6a7a;
 }
 
+#selection-bar[hidden] {
+  display: none;
+}
+
+#selection-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  padding: 0.4rem 1.25rem;
+  border-bottom: 1px solid #2d4a7a;
+  background: #182033;
+  flex-shrink: 0;
+}
+
+#selection-count {
+  margin: 0;
+  color: #f2f2f4;
+  font-weight: 600;
+}
+
+#selection-favorite,
+#selection-remove,
+#selection-clear {
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+}
+
+#selection-favorite:hover,
+#selection-remove:hover,
+#selection-clear:hover {
+  border-color: #4a7ad4;
+  color: #ffffff;
+}
+
 #tag-actions {
   display: flex;
   align-items: center;

@@ -14,7 +14,7 @@ from library.catalog_io import (
     source_rel,
 )
 from library.errors import fail
-from library.favorites import FAVORITES_REL, favorites_path, load_favorites, with_id
+from library.favorites import FAVORITES_REL, favorites_path, load_favorites, read_item_ids, with_id
 from library.history import make_history_entry, plan_append
 from library.index import rebuild_sqlite
 from library.records import clone, ordered_item, ordered_source
@@ -41,15 +41,21 @@ def current_original_paths(item: dict[str, Any], root: Path) -> list[Path]:
     return found
 
 
-def plan_drop_item(root: Path, item_id: str) -> list[dict[str, Any]]:
-    item = load_item(root, item_id)
-    changes: list[dict[str, Any]] = [
-        {"path": item_rel(item_id), "before": ordered_item(item), "after": None}
-    ]
+def plan_drop_items(root: Path, item_ids: list[str]) -> list[dict[str, Any]]:
+    ids = read_item_ids(item_ids)
+    changes: list[dict[str, Any]] = []
+    wanted = set(ids)
+    for item_id in ids:
+        item = load_item(root, item_id)
+        changes.append(
+            {"path": item_rel(item_id), "before": ordered_item(item), "after": None}
+        )
     fav_path = favorites_path(root)
     if fav_path.exists():
         before_fav = load_favorites(root)
-        after_fav = with_id(before_fav, item_id, False)
+        after_fav = before_fav
+        for item_id in ids:
+            after_fav = with_id(after_fav, item_id, False)
         if before_fav != after_fav:
             changes.append(
                 {
@@ -64,7 +70,7 @@ def plan_drop_item(root: Path, item_id: str) -> list[dict[str, Any]]:
         dropped = {
             rel: entry
             for rel, entry in files.items()
-            if isinstance(entry, dict) and entry.get("itemId") == item_id
+            if isinstance(entry, dict) and entry.get("itemId") in wanted
         }
         if not dropped:
             continue
@@ -85,14 +91,32 @@ def plan_drop_item(root: Path, item_id: str) -> list[dict[str, Any]]:
     return changes
 
 
-def remove_item(root: Path, item_id: str) -> dict[str, Any]:
+def plan_drop_item(root: Path, item_id: str) -> list[dict[str, Any]]:
     if type(item_id) is not str or not item_id:
         raise fail("invalid-argument")
-    changes = plan_drop_item(root, item_id)
+    return plan_drop_items(root, [item_id])
+
+
+def remove_items(root: Path, item_ids: list[str]) -> dict[str, Any]:
+    ids = read_item_ids(item_ids)
+    changes = plan_drop_items(root, ids)
     entry = make_history_entry(root, "remove", changes)
     transact(root, plan_append(root, entry) + changes)
     rebuild_sqlite(root, use_barrier=False)
+    return {"ok": True, "ids": ids}
+
+
+def remove_item(root: Path, item_id: str) -> dict[str, Any]:
+    if type(item_id) is not str or not item_id:
+        raise fail("invalid-argument")
+    remove_items(root, [item_id])
     return {"ok": True, "id": item_id}
+
+
+def read_batch_remove_body(body: Any) -> list[str]:
+    if not isinstance(body, dict) or set(body) - {"itemIds"}:
+        raise fail("invalid-argument")
+    return read_item_ids(body.get("itemIds"))
 
 
 def delete_file(root: Path, item_id: str) -> dict[str, Any]:

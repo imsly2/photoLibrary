@@ -281,6 +281,14 @@ viewer and makes that item the selection. `#tag-apply` / `#tag-remove`
 and the viewer Info tag row write the same catalog. This is tag
 apply/remove, not batch Delete file and not albums.
 
+`#selection-bar` appears when the grid has a selection and the viewer
+is closed. It shows the count, **Favorite** (hearts every selected
+item; **Unfavorite** when all selected items are already hearted —
+the same toggle as one item), **Remove** (same confirm as one item;
+catalog drop only; originals stay), and **Clear selection**. Esc
+clears the selection after other innermost UI. Delete with a
+multi-selection confirm-removes those ids. No batch Delete file.
+
 ### Processing
 
 `#jobs-panel` reports background work and never blocks browse. Poll

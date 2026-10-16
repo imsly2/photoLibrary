@@ -422,6 +422,24 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.tags_apply(body))
                 return
+            if route == "/api/items/favorite" and method == "POST":
+                from library.favorites import read_batch_favorite_body
+
+                body = read_batch_favorite_body(self._read_json())
+                with self.lock:
+                    self._send_json(
+                        200,
+                        self.library.set_favorites(body["itemIds"], body["favorite"]),
+                    )
+                return
+            if route == "/api/items/remove" and method == "POST":
+                from library.remove import read_batch_remove_body
+
+                ids = read_batch_remove_body(self._read_json())
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.remove_many(ids))
+                return
             if route == "/api/tags" and method in {"GET", "HEAD"}:
                 with self.lock:
                     self._send_json(200, self.library.tags_list())
