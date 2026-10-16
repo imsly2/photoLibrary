@@ -1,0 +1,324 @@
+{
+  "slice": "TASTE-SELECT",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "i18n-selected-en",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-selected-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-clear-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-remove-many-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-four",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "single-favorite-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "single-favorite-true",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "batch-favorite-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "batch-favorite-count",
+      "pass": true,
+      "detail": "{\"ok\": true, \"items\": [{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"kind\": \"photo\", \"filename\": \"near.jpg\", \"capturedAt\": \"2024-06-12T15:05:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88045, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"sizeBytes\": 12642, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"clip.mp4\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"motion\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\", \"playback\": \"queued\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": true, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}]}"
+    },
+    {
+      "name": "batch-favorite-all-true",
+      "pass": true,
+      "detail": "[true, true, true]"
+    },
+    {
+      "name": "cli-items-hearted",
+      "pass": true,
+      "detail": "{\"IMG_1042.jpg\": true, \"near.jpg\": true, \"no-exif.jpg\": false, \"clip.mp4\": true}"
+    },
+    {
+      "name": "http-favorite-200",
+      "pass": true,
+      "detail": "{\"ok\": true, \"items\": [{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"kind\": \"photo\", \"filename\": \"near.jpg\", \"capturedAt\": \"2024-06-12T15:05:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88045, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"sizeBytes\": 12642, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"clip.mp4\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"motion\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\", \"playback\": \"queued\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": true, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}]}"
+    },
+    {
+      "name": "http-favorite-all-true",
+      "pass": true,
+      "detail": "{\"ok\": true, \"items\": [{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"kind\": \"photo\", \"filename\": \"near.jpg\", \"capturedAt\": \"2024-06-12T15:05:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88045, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"sizeBytes\": 12642, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"clip.mp4\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"motion\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\", \"playback\": \"queued\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": true, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}]}"
+    },
+    {
+      "name": "http-get-hearted",
+      "pass": true,
+      "detail": "{\"IMG_1042.jpg\": true, \"near.jpg\": true, \"no-exif.jpg\": false, \"clip.mp4\": true}"
+    },
+    {
+      "name": "http-unfavorite-all-false",
+      "pass": true,
+      "detail": "{\"ok\": true, \"items\": [{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": false, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"kind\": \"photo\", \"filename\": \"near.jpg\", \"capturedAt\": \"2024-06-12T15:05:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88045, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/near.jpg\", \"sizeBytes\": 12642, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": false, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}, {\"schemaVersion\": 1, \"id\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"kind\": \"video\", \"filename\": \"clip.mp4\", \"capturedAt\": \"2024-06-12T15:07:00Z\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": 2.0, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"motion\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/clip.mp4\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"not-applicable\", \"preview\": \"not-applicable\", \"poster\": \"queued\", \"proxy\": \"queued\", \"playback\": \"queued\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": true, \"favorite\": false, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}]}"
+    },
+    {
+      "name": "http-one-via-batch",
+      "pass": true,
+      "detail": "{\"ok\": true, \"items\": [{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": true, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}]}"
+    },
+    {
+      "name": "http-single-put-stays",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"kind\": \"photo\", \"filename\": \"IMG_1042.jpg\", \"capturedAt\": \"2024-06-12T15:04:00\", \"capturedAtSource\": \"exif\", \"placeId\": \"place_0905a01a8e6d\", \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": 1, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": 41.88, \"longitude\": -87.63}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_acaf6ab8a9fa\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"lastKnownPath\": \"/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/api-media/a/IMG_1042.jpg\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_acaf6ab8a9fa\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": false, \"entities\": {\"people\": [], \"places\": [{\"schemaVersion\": 1, \"id\": \"place_0905a01a8e6d\", \"name\": null, \"latitude\": 41.88, \"longitude\": -87.63}], \"things\": []}}"
+    },
+    {
+      "name": "http-favorite-empty",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "http-favorite-unknown",
+      "pass": true,
+      "detail": "{\"error\": \"not-found\"}"
+    },
+    {
+      "name": "http-remove-empty",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "http-remove-unknown",
+      "pass": true,
+      "detail": "{\"error\": \"not-found\"}"
+    },
+    {
+      "name": "unknown-remove-leaves-catalog",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "http-remove-200",
+      "pass": true,
+      "detail": "{\"ok\": true, \"ids\": [\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}"
+    },
+    {
+      "name": "http-remove-ids",
+      "pass": true,
+      "detail": "{\"ok\": true, \"ids\": [\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\"]}"
+    },
+    {
+      "name": "http-remove-gone",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "http-remove-keeps-others",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "cli-remove-batch",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-remove-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"ids\": [\"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"]}"
+    },
+    {
+      "name": "cli-remove-empty",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "originals-stay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "bar-hidden-idle",
+      "pass": true,
+      "detail": "{\"hidden\": true, \"count\": \"0 selected\", \"favorite\": \"Favorite\", \"selected\": [], \"files\": [\"clip.mp4\", \"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"], \"hearts\": {\"clip.mp4\": \"false\", \"near.jpg\": \"false\", \"IMG_1042.jpg\": \"false\", \"no-exif.jpg\": \"false\"}, \"confirmOpen\": false, \"confirmTitle\": \"Remove from Library?\", \"confirmHelp\": \"The file stays on disk.\", \"lang\": \"en\"}"
+    },
+    {
+      "name": "bar-visible",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"count\": \"2 selected\", \"favorite\": \"Favorite\", \"selected\": [\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"], \"files\": [\"clip.mp4\", \"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"], \"hearts\": {\"clip.mp4\": \"false\", \"near.jpg\": \"false\", \"IMG_1042.jpg\": \"false\", \"no-exif.jpg\": \"false\"}, \"confirmOpen\": false, \"confirmTitle\": \"Remove from Library?\", \"confirmHelp\": \"The file stays on disk.\", \"lang\": \"en\"}"
+    },
+    {
+      "name": "count-en",
+      "pass": true,
+      "detail": "\"2 selected\""
+    },
+    {
+      "name": "favorite-label",
+      "pass": true,
+      "detail": "\"Favorite\""
+    },
+    {
+      "name": "selected-two",
+      "pass": true,
+      "detail": "[\"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"]"
+    },
+    {
+      "name": "shift-keeps-bar",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"count\": \"2 selected\", \"favorite\": \"Favorite\", \"selected\": [\"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"], \"files\": [\"clip.mp4\", \"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"], \"hearts\": {\"clip.mp4\": \"false\", \"near.jpg\": \"false\", \"IMG_1042.jpg\": \"false\", \"no-exif.jpg\": \"false\"}, \"confirmOpen\": false, \"confirmTitle\": \"Remove from Library?\", \"confirmHelp\": \"The file stays on disk.\", \"lang\": \"en\"}"
+    },
+    {
+      "name": "clear-hides-bar",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "count-zh",
+      "pass": true,
+      "detail": "\"\\u5df2\\u9009 2 \\u9879\""
+    },
+    {
+      "name": "favorite-zh",
+      "pass": true,
+      "detail": "\"\\u6536\\u85cf\""
+    },
+    {
+      "name": "batch-favorite-hearts",
+      "pass": true,
+      "detail": "{\"clip.mp4\": \"false\", \"near.jpg\": \"true\", \"IMG_1042.jpg\": \"true\", \"no-exif.jpg\": \"false\"}"
+    },
+    {
+      "name": "batch-favorite-api-true",
+      "pass": true,
+      "detail": "{\"IMG_1042.jpg\": true, \"near.jpg\": true}"
+    },
+    {
+      "name": "batch-unfavorite-toggle",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "batch-favorite-again",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "confirm-open",
+      "pass": true,
+      "detail": "\"Remove 2 items from Library?\""
+    },
+    {
+      "name": "confirm-many-title",
+      "pass": true,
+      "detail": "\"Remove 2 items from Library?\""
+    },
+    {
+      "name": "confirm-files-stay",
+      "pass": true,
+      "detail": "\"The files stay on disk.\""
+    },
+    {
+      "name": "cancel-leaves-items",
+      "pass": true,
+      "detail": "[\"clip.mp4\", \"near.jpg\", \"IMG_1042.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "cancel-leaves-catalog",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"clip.mp4\", \"near.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "remove-drops-grid",
+      "pass": true,
+      "detail": "[\"clip.mp4\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "remove-drops-catalog",
+      "pass": true,
+      "detail": "[\"clip.mp4\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "remove-keeps-others",
+      "pass": true,
+      "detail": "[\"clip.mp4\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "esc-clears-selection",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "browser-originals-stay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "90e9d20eeaf13221b39109370c58ead049727d35",
+  "commands": [
+    "python -m library favorite <id> <id> --on",
+    "python -m library remove <id> <id>",
+    "POST /api/items/favorite",
+    "POST /api/items/remove"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/stdout.log",
+    "select-api.json": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/select-api.json",
+    "select-browser.json": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/select-browser.json",
+    "selection-bar.png": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/selection-bar.png",
+    "selection-bar-zh.png": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/selection-bar-zh.png",
+    "batch-remove-confirm.png": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/batch-remove-confirm.png",
+    "after-batch-remove.png": "/workspace/docs/features/taste-select/Rev1.0/assets/verify-1/after-batch-remove.png"
+  }
+}
