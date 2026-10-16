@@ -4356,7 +4356,8 @@
       if (hoverVideo && hoverCell === cell) {
         rememberHoverTime(item.id, hoverVideo);
       }
-      const saidStart = item.saidInVideo && item.saidInVideo.start != null ? item.saidInVideo.start : null;
+      const live = itemById(item.id);
+      const saidStart = live.saidInVideo && live.saidInVideo.start != null ? live.saidInVideo.start : null;
       openViewer(item.id, saidStart);
     });
     return cell;
@@ -4559,6 +4560,32 @@
     }
   }
 
+  function syncSaidBadge(cell, item) {
+    if (!cell) {
+      return;
+    }
+    const badges = cell.querySelector(".tile-badges");
+    if (!badges) {
+      return;
+    }
+    let said = badges.querySelector(".said-badge");
+    if (item && item.saidInVideo) {
+      if (!said) {
+        said = document.createElement("span");
+        said.className = "said-badge tile-badge";
+        const heart = badges.querySelector(".heart");
+        if (heart) {
+          badges.insertBefore(said, heart);
+        } else {
+          badges.appendChild(said);
+        }
+      }
+      said.textContent = t("saidInVideo");
+    } else if (said) {
+      said.remove();
+    }
+  }
+
   function takeCell(existing, id, slot) {
     const key = (slot || "grid") + ":" + id;
     let cell = existing[key];
@@ -4567,6 +4594,7 @@
       const item = itemById(id);
       syncHeartButton(cell.querySelector(".heart"), !!(item && item.favorite));
       syncStackBadge(cell, item);
+      syncSaidBadge(cell, item);
       const placeholder = cell.querySelector(".placeholder");
       if (placeholder) {
         placeholder.textContent = t("previewUnavailable");

@@ -1,0 +1,131 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS product-setup-ml-transcribe
+PASS product-transcribe-cmd
+PASS product-said-in-video
+PASS contracts-transcribe
+PASS contracts-saidInVideo
+PASS ui-transcript
+PASS setup-ps1-transcribe
+PASS i18n-zh-transcribe
+PASS html-settings-transcribe
+PASS html-info-transcript
+PASS spoken-en-file: /workspace/tests/fixtures/transcript/spoken-en.mp4
+PASS spoken-zh-file: /workspace/tests/fixtures/transcript/spoken-zh.mp4
+PASS spoken-en-audio
+PASS spoken-zh-audio
+PASS default-transcribe-on
+PASS settings-key-transcribe
+PASS legacy-fills-transcribe: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 8765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchThreshold": 0.8, "faceMinSidePx": 80, "transcribeVideos": true}
+PASS extractive-en-summary: The garden fountain is running today.
+PASS extractive-en-keywords: ["fountain", "running", "garden", "today"]
+PASS extractive-zh-summary: 今天天气很好。花园的喷泉在流水。
+PASS extractive-zh-keywords: ["\u4eca\u5929", "\u55b7\u6cc9", "\u56ed\u7684", "\u5728\u6d41", "\u5929\u5929", "\u5929\u6c14"]
+PASS cjk-fold-search: {"start": 0.9, "text": "\u5929\u6c23", "field": "transcript"}
+PASS transcribe-without-model: {"error": "model-unavailable"}
+PASS silent-no-audio: /workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/silent.mp4
+PASS setup-ml-exit
+PASS setup-ml-ok: {"ok": true, "kind": "transcribe", "engine": "faster-whisper", "modelFamily": "whisper", "model": "small", "path": "models/whisper", "device": "cpu"}
+PASS setup-ml-model-small: {"ok": true, "kind": "transcribe", "engine": "faster-whisper", "modelFamily": "whisper", "model": "small", "path": "models/whisper", "device": "cpu"}
+PASS model-bin: /workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-root/models/whisper
+PASS scan-added-3: {"sourceId": "src_64d4483391f4", "added": 3, "skipped": 0, "errors": []}
+PASS transcribe-exit
+PASS transcribe-ok: {"ok": true, "transcribed": 3, "skipped": 0, "errors": 0, "items": [{"id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f", "language": "en", "text": "The garden fountain is running today.", "summary": "The garden fountain is running today.", "keywords": ["fountain", "running", "garden", "today"]}, {"id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85", "language": null, "text": "", "summary": "", "keywords": []}, {"id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af", "language": "zh", "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "summary": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "keywords": ["\u4eca\u5929", "\u518d\u6d41", "\u5674\u6cc9", "\u5712\u5f97", "\u5929\u5929", "\u5929\u6c23"]}], "summaryMethod": "extractive"}
+PASS summary-method-extractive: {"ok": true, "transcribed": 3, "skipped": 0, "errors": 0, "items": [{"id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f", "language": "en", "text": "The garden fountain is running today.", "summary": "The garden fountain is running today.", "keywords": ["fountain", "running", "garden", "today"]}, {"id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85", "language": null, "text": "", "summary": "", "keywords": []}, {"id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af", "language": "zh", "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "summary": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "keywords": ["\u4eca\u5929", "\u518d\u6d41", "\u5674\u6cc9", "\u5712\u5f97", "\u5929\u5929", "\u5929\u6c23"]}], "summaryMethod": "extractive"}
+PASS transcribed-at-least-2: {"ok": true, "transcribed": 3, "skipped": 0, "errors": 0, "items": [{"id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f", "language": "en", "text": "The garden fountain is running today.", "summary": "The garden fountain is running today.", "keywords": ["fountain", "running", "garden", "today"]}, {"id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85", "language": null, "text": "", "summary": "", "keywords": []}, {"id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af", "language": "zh", "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "summary": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "keywords": ["\u4eca\u5929", "\u518d\u6d41", "\u5674\u6cc9", "\u5712\u5f97", "\u5929\u5929", "\u5929\u6c23"]}], "summaryMethod": "extractive"}
+PASS items-three: [
+  {
+    "schemaVersion": 1,
+    "id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85",
+    "kind": "video",
+    "filename": "silent.mp4",
+    "capturedAt": "2026-10-16T05:38:01Z",
+    "capturedAtSource": "mtime",
+    "placeId": null,
+    "metadata": {
+      "width": 320,
+      "height": 240,
+      "orientation": null,
+      "camera": null,
+      "lens": null,
+      "durationSe
+PASS en-ready: {"schemaVersion": 1, "status": "ready", "language": "en", "text": "The garden fountain is running today.", "segments": [{"start": 0.0, "end": 1.92, "text": "The garden fountain is running today."}], "words": [{"start": 0.0, "end": 0.16, "word": "The"}, {"start": 0.16, "end": 0.48, "word": "garden"}, {"start": 0.48, "end": 0.88, "word": "fountain"}, {"start": 0.88, "end": 1.26, "word": "is"}, {"start": 1.26, "end": 1.52, "word": "running"}, {"start": 1.52, "end": 1.92, "word": "today."}], "summary": "The garden fountain is running today.", "keywords": ["fountain", "running", "garden", "today"], "sourceSizeBytes": 27406, "sourceModifiedAt": "2026-10-16T05:22:35.195572Z", "model": "faster-whisper-small", "device": "cpu", "summaryMethod": "extractive"}
+PASS en-language: en
+PASS en-garden: The garden fountain is running today.
+PASS en-fountain: The garden fountain is running today.
+PASS en-summary: The garden fountain is running today.
+PASS en-keywords: ["fountain", "running", "garden", "today"]
+PASS en-segments
+PASS zh-ready: {"schemaVersion": 1, "status": "ready", "language": "zh", "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "segments": [{"start": 0.0, "end": 3.0, "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002"}], "words": [{"start": 0.0, "end": 0.22, "word": "\u4eca\u5929"}, {"start": 0.22, "end": 0.48, "word": "\u5929"}, {"start": 0.48, "end": 0.68, "word": "\u6c23"}, {"start": 0.68, "end": 1.1, "word": "\u5f88\u597d,"}, {"start": 1.44, "end": 1.6, "word": "\u82b1"}, {"start": 1.6, "end": 1.82, "word": "\u5712"}, {"start": 1.82, "end": 1.94, "word": "\u5f97"}, {"start": 1.94, "end": 2.16, "word": "\u5674"}, {"start": 2.16, "end": 2.4, "word": "\u6cc9"}, {"start": 2.4, "end": 2.56, "word": "\u518d"
+PASS zh-language: zh
+PASS zh-today: 今天天氣很好,花園得噴泉再流水。
+PASS zh-weather: 今天天氣很好,花園得噴泉再流水。
+PASS zh-garden: 今天天氣很好,花園得噴泉再流水。
+PASS zh-summary: 今天天氣很好,花園得噴泉再流水。
+PASS zh-keywords: ["\u4eca\u5929", "\u518d\u6d41", "\u5674\u6cc9", "\u5712\u5f97", "\u5929\u5929", "\u5929\u6c23"]
+PASS silent-skipped: {"schemaVersion": 1, "status": "skipped", "language": null, "text": "", "segments": [], "words": [], "summary": "", "keywords": [], "sourceSizeBytes": 2320, "sourceModifiedAt": "2026-10-16T05:38:01.121439Z", "model": "faster-whisper-small", "device": "cpu", "summaryMethod": "extractive"}
+PASS search-fountain: [{"schemaVersion": 1, "id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f", "kind": "video", "filename": "spoken-en.mp4", "capturedAt": "2026-10-16T05:22:35Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 360, "orientation": null, "camera": null, "lens": null, "durationSec": 2.694014, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_64d4483391f4", "role": "primary", "component": "motion", "k
+PASS search-said-en: {"start": 0.48, "text": "fountain", "field": "transcript"}
+PASS search-weather: [{"schemaVersion": 1, "id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af", "kind": "video", "filename": "spoken-zh.mp4", "capturedAt": "2026-10-16T05:22:35Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 360, "orientation": null, "camera": null, "lens": null, "durationSec": 3.332018, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_64d4483391f4", "role": "primary", "component": "motion", "k
+PASS search-said-zh: {"start": 0.0, "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002", "field": "transcript"}
+PASS rescan-transcribe-exit
+PASS rescan-transcribed-0: {"ok": true, "transcribed": 0, "skipped": 3, "errors": 0, "items": [], "summaryMethod": "extractive"}
+PASS rescan-skipped-positive: {"ok": true, "transcribed": 0, "skipped": 3, "errors": 0, "items": [], "summaryMethod": "extractive"}
+PASS stamp-unchanged: {"before": [27406, "2026-10-16T05:22:35.195572Z"], "after": [27406, "2026-10-16T05:22:35.195572Z"]}
+PASS folder-rescan-added-0: {"sourceId": "src_64d4483391f4", "added": 0, "skipped": 3, "errors": []}
+PASS folder-rescan-transcribed-0: {"ok": true, "transcribed": 0, "skipped": 3, "errors": 0, "items": [], "summaryMethod": "extractive"}
+PASS setting-off-exit
+PASS setting-off-persists: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18766, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchThreshold": 0.8, "faceMinSidePx": 80, "transcribeVideos": false}
+PASS jobs-has-transcribe: {"ok": true, "paused": false, "processing": true, "queues": [{"id": "renditions", "label": "Previews", "pending": 9, "done": 0, "error": 0, "state": "running", "available": true}, {"id": "analyze", "label": "Analyze", "pending": 0, "done": 0, "error": 0, "state": "idle", "available": false}, {"id": "infer-faces", "label": "Faces", "pending": 0, "done": 0, "error": 0, "state": "idle", "available": false}, {"id": "objects", "label": "Objects", "pending": 0, "done": 0, "error": 0, "state": "idle", 
+PASS setting-off-unavailable: {"id": "transcribe", "label": "Transcribe", "pending": 0, "done": 3, "error": 0, "state": "idle", "available": false}
+PASS setting-off-pending-0: {"id": "transcribe", "label": "Transcribe", "pending": 0, "done": 3, "error": 0, "state": "idle", "available": false}
+PASS setting-off-skips-step
+PASS setting-on-exit
+PASS setting-on-available: {"id": "transcribe", "label": "Transcribe", "pending": 0, "done": 3, "error": 0, "state": "idle", "available": true}
+PASS health: {'ok': True}
+PASS transcribe-get
+PASS http-search-fountain: [{"schemaVersion": 1, "id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f", "kind": "video", "filename": "spoken-en.mp4", "capturedAt": "2026-10-16T05:22:35Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 360, "orientation": null, "camera": null, "lens": null, "durationSec": 2.694014, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_64d4483391f4", "role": "primary", "component": "motion", "k
+PASS http-said-en
+PASS http-search-weather: [{"schemaVersion": 1, "id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af", "kind": "video", "filename": "spoken-zh.mp4", "capturedAt": "2026-10-16T05:22:35Z", "capturedAtSource": "mtime", "placeId": null, "metadata": {"width": 640, "height": 360, "orientation": null, "camera": null, "lens": null, "durationSec": 3.332018, "latitude": null, "longitude": null}, "contentIdentifier": null, "locations": [{"sourceId": "src_64d4483391f4", "role": "primary", "component": "motion", "k
+PASS playwright-import
+PASS search-png: 1280x720
+PASS said-badge-en: Said in video
+PASS search-seeks: current=0.4928 expected=0.48
+PASS info-transcript-visible
+PASS info-summary: Summary: The garden fountain is running today.
+PASS info-keywords: Keywords: fountain · running · garden · today
+PASS info-transcript-line
+PASS line-seeks: before=0.521513 after=0.322794
+PASS info-png: 1280x720
+PASS zh-search-badge
+PASS zh-said-label: 视频里说到
+PASS zh-transcript-label: 逐字稿
+PASS zh-settings-transcribe: 文件夹
+添加文件夹
+
+这个图库读取的每一个文件夹。刷新会再扫一遍，没改过的文件会跳过。
+
+/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media
+
+可用 · 在原位置打开 · 0 张照片 · 3 个视频 · 3 项
+
+预览：完成 3，排队 0，出错 0
+
+上次扫描完成 · 新增 0，跳过 3
+
+显示照片
+刷新
+移出文件夹
+预览
+预览文件放在哪里
+跟着服务器
+library-data/renditions — 和这个图库文件夹一起走。
+跟着源文件夹
+选中文件夹里的 .library/renditions。拔掉那个盘，缩略图也一起走。
+
+新的缩略图写到 library-data/renditions。已有文件要等 relocate 才会搬。
+
+缩略图长边
+预览图长边
+视频预览宽度
+找不到

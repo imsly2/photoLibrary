@@ -14,6 +14,7 @@ tmp/
 # or fixture copies the runner leaves beside those summaries.
 docs/features/**/fixture-sandbox/
 docs/features/**/*-root/
+docs/features/**/transcribe-media/
 docs/features/**/barrier-*/
 docs/features/**/unmarked-root/
 docs/features/**/offline-history/

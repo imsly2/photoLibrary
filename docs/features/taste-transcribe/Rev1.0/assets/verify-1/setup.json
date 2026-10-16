@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "kind": "transcribe",
+  "engine": "faster-whisper",
+  "modelFamily": "whisper",
+  "model": "small",
+  "path": "models/whisper",
+  "device": "cpu"
+}

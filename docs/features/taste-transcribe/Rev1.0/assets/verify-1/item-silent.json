@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85",
+  "kind": "video",
+  "filename": "silent.mp4",
+  "capturedAt": "2026-10-16T05:38:01Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 320,
+    "height": 240,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 1.0,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_64d4483391f4",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/silent.mp4",
+      "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/silent.mp4",
+      "sizeBytes": 2320,
+      "modifiedAt": "2026-10-16T05:38:01.121439Z",
+      "sha256": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_64d4483391f4",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "playback": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued",
+      "playback": "queued"
+    }
+  },
+  "faces": [],
+  "things": [],
+  "transcript": {
+    "schemaVersion": 1,
+    "status": "skipped",
+    "language": null,
+    "text": "",
+    "segments": [],
+    "words": [],
+    "summary": "",
+    "keywords": [],
+    "sourceSizeBytes": 2320,
+    "sourceModifiedAt": "2026-10-16T05:38:01.121439Z",
+    "model": "faster-whisper-small",
+    "device": "cpu",
+    "summaryMethod": "extractive"
+  },
+  "available": true,
+  "motionAvailable": true,
+  "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/silent.mp4",
+  "lastKnownFile": true,
+  "lastKnownFolder": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media",
+  "favorite": false,
+  "entities": {
+    "people": [],
+    "places": [],
+    "things": []
+  }
+}

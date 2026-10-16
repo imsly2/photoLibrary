@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "transcribed": 3,
+  "skipped": 0,
+  "errors": 0,
+  "items": [
+    {
+      "id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f",
+      "language": "en",
+      "text": "The garden fountain is running today.",
+      "summary": "The garden fountain is running today.",
+      "keywords": [
+        "fountain",
+        "running",
+        "garden",
+        "today"
+      ]
+    },
+    {
+      "id": "72a359efa1ca774f1a5e091ac7883ad5e6e4e52defccbf1f08bccac509e56e85",
+      "language": null,
+      "text": "",
+      "summary": "",
+      "keywords": []
+    },
+    {
+      "id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af",
+      "language": "zh",
+      "text": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002",
+      "summary": "\u4eca\u5929\u5929\u6c23\u5f88\u597d,\u82b1\u5712\u5f97\u5674\u6cc9\u518d\u6d41\u6c34\u3002",
+      "keywords": [
+        "\u4eca\u5929",
+        "\u518d\u6d41",
+        "\u5674\u6cc9",
+        "\u5712\u5f97",
+        "\u5929\u5929",
+        "\u5929\u6c23"
+      ]
+    }
+  ],
+  "summaryMethod": "extractive"
+}

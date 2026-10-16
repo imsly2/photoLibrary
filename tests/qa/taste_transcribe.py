@@ -300,7 +300,7 @@ def prove_cli_and_http(checks: Checks, artifacts: Path) -> dict[str, Any]:
     second_body = parse_json(second.stdout) if second.returncode == 0 else {}
     record["transcribeSkip"] = second_body
     checks.check("rescan-transcribe-exit", second.returncode == 0, second.stderr[-200:])
-    checks.check("rescan-transcribed-0", int(second_body.get("transcribed") or -1) == 0, json.dumps(second_body))
+    checks.check("rescan-transcribed-0", int(second_body.get("transcribed", -1)) == 0, json.dumps(second_body))
     checks.check("rescan-skipped-positive", int(second_body.get("skipped") or 0) >= 3, json.dumps(second_body))
     after_skip = _item_by_name(parse_json(run_library(root, ["items"], timeout=30).stdout), "spoken-en.mp4")
     after_tr = after_skip.get("transcript") or {}
@@ -314,7 +314,7 @@ def prove_cli_and_http(checks: Checks, artifacts: Path) -> dict[str, Any]:
     rescan_summary = parse_summary(rescan.stdout)
     checks.check("folder-rescan-added-0", rescan_summary.get("added") == 0, json.dumps(rescan_summary))
     third = parse_json(run_library(root, ["transcribe"], timeout=120).stdout)
-    checks.check("folder-rescan-transcribed-0", int(third.get("transcribed") or -1) == 0, json.dumps(third))
+    checks.check("folder-rescan-transcribed-0", int(third.get("transcribed", -1)) == 0, json.dumps(third))
 
     off = run_library(root, ["settings", "set", "transcribeVideos", "false"], timeout=30)
     checks.check("setting-off-exit", off.returncode == 0, off.stderr[-200:])
@@ -324,7 +324,7 @@ def prove_cli_and_http(checks: Checks, artifacts: Path) -> dict[str, Any]:
     transcribe_q = next((q for q in (jobs_off.get("queues") or []) if q.get("id") == "transcribe"), {})
     checks.check("jobs-has-transcribe", transcribe_q.get("id") == "transcribe", json.dumps(jobs_off)[:500])
     checks.check("setting-off-unavailable", transcribe_q.get("available") is False, json.dumps(transcribe_q))
-    checks.check("setting-off-pending-0", int(transcribe_q.get("pending") or -1) == 0, json.dumps(transcribe_q))
+    checks.check("setting-off-pending-0", int(transcribe_q.get("pending", -1)) == 0, json.dumps(transcribe_q))
     from library.transcribe import transcribe_step
 
     checks.check("setting-off-skips-step", transcribe_step(root) is False)
@@ -377,11 +377,19 @@ def prove_http_and_browser(checks: Checks, artifacts: Path, cli: dict[str, Any])
             page = browser.new_page(viewport={"width": 1280, "height": 720})
             console = collect_console(page)
             page.goto(url, wait_until="load", timeout=60000)
+            request_json(url.rstrip("/") + "/api/jobs", method="POST", body={"action": "pause"}, timeout=5)
             page.select_option("#date-group", "off")
+            page.locator("#size-slider").evaluate(
+                """(el) => {
+                  el.value = '4';
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                }"""
+            )
             page.wait_for_selector(".cell", timeout=20000)
             page.fill("#search", "fountain")
-            page.wait_for_timeout(500)
-            page.wait_for_selector(".said-badge", timeout=15000)
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(400)
+            page.wait_for_selector(".said-badge", timeout=20000)
             search_shot = artifacts / "search-said.png"
             page.screenshot(path=str(search_shot), full_page=False)
             sw, sh = png_size(search_shot)
@@ -427,35 +435,45 @@ def prove_http_and_browser(checks: Checks, artifacts: Path, cli: dict[str, Any])
             after_line = page.evaluate("() => (document.getElementById('viewer-video') || {}).currentTime || 0")
             record["lineSeek"] = {"before": before, "after": after_line}
             checks.check("line-seeks", True, f"before={before} after={after_line}")
+            wrap.scroll_into_view_if_needed()
+            page.wait_for_timeout(200)
             info_shot = artifacts / "info-transcript.png"
             page.screenshot(path=str(info_shot), full_page=False)
             iw, ih = png_size(info_shot)
             checks.check("info-png", info_shot.is_file() and iw == 1280 and ih == 720, f"{iw}x{ih}")
             page.locator("#viewer-back").click()
-            page.wait_for_selector("#viewer[hidden]", timeout=10000)
+            page.wait_for_function("() => document.getElementById('viewer').hidden", timeout=10000)
             page.fill("#search", "天气")
             page.wait_for_timeout(500)
             page.wait_for_selector(".said-badge", timeout=15000)
-            zh_search = artifacts / "search-zh.png"
-            page.screenshot(path=str(zh_search), full_page=False)
             checks.check("zh-search-badge", page.locator(".said-badge").count() >= 1)
             page.select_option("#language", "zh-Hans")
             page.wait_for_timeout(400)
             zh_badge = page.locator(".said-badge").first.inner_text()
             checks.check("zh-said-label", "视频里说到" in zh_badge, zh_badge)
+            zh_search = artifacts / "search-zh.png"
+            page.screenshot(path=str(zh_search), full_page=False)
             page.locator(".cell").first.click()
             page.wait_for_selector("#viewer:not([hidden])", timeout=10000)
             page.locator("#viewer-info").click()
             page.wait_for_selector("#viewer-info-panel:not([hidden])", timeout=5000)
-            summary_zh = page.locator("#viewer-transcript-wrap summary").inner_text()
+            wrap_zh = page.locator("#viewer-transcript-wrap")
+            if wrap_zh.get_attribute("open") is None:
+                wrap_zh.locator("summary").click()
+            wrap_zh.scroll_into_view_if_needed()
+            page.wait_for_timeout(200)
+            summary_zh = wrap_zh.locator("summary").inner_text()
             checks.check("zh-transcript-label", "逐字稿" in summary_zh, summary_zh)
             chinese_shot = artifacts / "chinese-transcribe.png"
             page.screenshot(path=str(chinese_shot), full_page=False)
             page.locator("#viewer-back").click()
+            page.wait_for_function("() => document.getElementById('viewer').hidden", timeout=10000)
             page.locator("#view-settings").click()
             page.wait_for_selector("#settings-view:not([hidden])", timeout=5000)
             settings_zh = page.locator("#settings-view").inner_text()
             checks.check("zh-settings-transcribe", "转录视频" in settings_zh and "开" in settings_zh and "关" in settings_zh, settings_zh[:400])
+            page.locator("#settings-view h2[data-i18n='transcribeVideos']").scroll_into_view_if_needed()
+            page.wait_for_timeout(200)
             settings_shot = artifacts / "settings-transcribe-zh.png"
             page.screenshot(path=str(settings_shot), full_page=False)
             record["console"] = console
