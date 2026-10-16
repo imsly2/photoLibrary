@@ -227,6 +227,7 @@
   let originalPreloadId = null;
   let originalSwapTimer = 0;
   let videoSourceState = "";
+  let viewerWantPlay = false;
   const ORIGINAL_SWAP_MS = 20000;
   const PLAYBACK_WAIT_MS = 90000;
   const PLAYBACK_POLL_MS = 750;
@@ -2438,6 +2439,7 @@
     viewerVideo.load();
     viewerVideo.hidden = true;
     videoSourceState = "";
+    viewerWantPlay = false;
     hideViewerScrub();
     syncViewerSourceChrome();
   }
@@ -2763,7 +2765,7 @@
 
   function swapViewerTo(item, url, state, startTime) {
     const t = Math.max(viewerVideo.currentTime || 0, Number(startTime) || 0);
-    const paused = viewerVideo.paused;
+    const paused = viewerVideo.paused && !viewerWantPlay;
     const rate = viewerVideo.playbackRate || 1;
     const snap = snapshotViewTransform();
     cancelOriginalPreload();
@@ -2955,6 +2957,9 @@
     viewerVideo.hidden = false;
     showViewerPlaceholder(false);
     showViewerScrub();
+    if (autoplay) {
+      viewerWantPlay = true;
+    }
     let appliedStart = false;
     function afterReady() {
       if (viewerItemId !== item.id || viewer.hidden) {
@@ -3122,6 +3127,11 @@
     }
     if (item.kind !== "video") {
       return;
+    }
+    if (viewerVideo.paused) {
+      viewerWantPlay = true;
+    } else {
+      viewerWantPlay = false;
     }
     playOriginalOrProxy(item);
     if (viewerVideo.paused) {
