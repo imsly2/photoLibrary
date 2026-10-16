@@ -1,0 +1,377 @@
+{
+  "first": {
+    "open": true,
+    "title": "Compare duplicates",
+    "help": "Nothing is removed until you choose Remove and confirm. Files stay on disk.",
+    "meta": "Same file \u2014 one library item",
+    "empty": false,
+    "apply": "Apply choices",
+    "cancel": "Cancel",
+    "index": "Group 1 of 2",
+    "infoCompare": "",
+    "infoFacts": {},
+    "infoOpen": false,
+    "confirmOpen": false,
+    "sides": [
+      {
+        "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "1b76f94527b0\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0-0",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "1b76f94527b0\u2026"
+        }
+      },
+      {
+        "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "1b76f94527b0\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0-1",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "1b76f94527b0\u2026"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "file": "twin.jpg"
+      },
+      {
+        "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+        "file": "no-exif.jpg"
+      }
+    ],
+    "lang": "en"
+  },
+  "chinese": {
+    "open": true,
+    "title": "\u6bd4\u8f83\u91cd\u590d\u9879",
+    "help": "\u53ea\u6709\u9009\u62e9\u201c\u79fb\u51fa\u56fe\u5e93\u201d\u5e76\u786e\u8ba4\u540e\u624d\u4f1a\u79fb\u9664\u3002\u78c1\u76d8\u4e0a\u7684\u6587\u4ef6\u4f1a\u4fdd\u7559\u3002",
+    "meta": "",
+    "empty": false,
+    "apply": "\u5e94\u7528\u9009\u62e9",
+    "cancel": "\u53d6\u6d88",
+    "index": "\u7b2c 2 / 2 \u7ec4",
+    "infoCompare": "",
+    "infoFacts": {},
+    "infoOpen": false,
+    "confirmOpen": false,
+    "sides": [
+      {
+        "itemId": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "86403059afd6\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0-0",
+        "facts": {
+          "\u5c3a\u5bf8": "640 \u00d7 480",
+          "\u5927\u5c0f": "14.9 KB",
+          "\u8def\u5f84": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+          "\u6587\u4ef6\u5939": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+          "\u62cd\u6444\u65e5\u671f": "2024-06-12 15:04:00",
+          "\u54c8\u5e0c": "86403059afd6\u2026"
+        }
+      },
+      {
+        "itemId": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "4415179d2c22\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39-1",
+        "facts": {
+          "\u5c3a\u5bf8": "640 \u00d7 480",
+          "\u5927\u5c0f": "14.9 KB",
+          "\u8def\u5f84": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+          "\u6587\u4ef6\u5939": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+          "\u62cd\u6444\u65e5\u671f": "2024-06-12 15:04:00",
+          "\u54c8\u5e0c": "4415179d2c22\u2026"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "file": "twin.jpg"
+      },
+      {
+        "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+        "file": "no-exif.jpg"
+      }
+    ],
+    "lang": "zh-Hans"
+  },
+  "chosen": {
+    "open": true,
+    "title": "Compare duplicates",
+    "help": "Nothing is removed until you choose Remove and confirm. Files stay on disk.",
+    "meta": "",
+    "empty": false,
+    "apply": "Apply choices",
+    "cancel": "Cancel",
+    "index": "Group 2 of 2",
+    "infoCompare": "",
+    "infoFacts": {},
+    "infoOpen": false,
+    "confirmOpen": false,
+    "sides": [
+      {
+        "itemId": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "86403059afd6\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0-0",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "86403059afd6\u2026"
+        }
+      },
+      {
+        "itemId": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "4415179d2c22\u2026",
+        "choice": "remove",
+        "radioName": "compare-choice-4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39-1",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "4415179d2c22\u2026"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "file": "twin.jpg"
+      },
+      {
+        "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+        "file": "no-exif.jpg"
+      }
+    ],
+    "lang": "en"
+  },
+  "info": {
+    "open": false,
+    "title": "Compare duplicates",
+    "help": "Nothing is removed until you choose Remove and confirm. Files stay on disk.",
+    "meta": "",
+    "empty": false,
+    "apply": "Apply choices",
+    "cancel": "Cancel",
+    "index": "Group 2 of 2",
+    "infoCompare": "Compare copies",
+    "infoFacts": {
+      "Date taken": "2024-06-12 15:04:00",
+      "Camera": "No camera info for this file.",
+      "Dimensions": "640 \u00d7 480",
+      "Size": "14.9 KB",
+      "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+      "Hash": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "GPS": "41.88000\u00b0N, 87.63000\u00b0W",
+      "Also at": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg"
+    },
+    "infoOpen": true,
+    "confirmOpen": false,
+    "sides": [
+      {
+        "itemId": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "86403059afd6\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0-0",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep/IMG_1042.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/keep",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "86403059afd6\u2026"
+        }
+      },
+      {
+        "itemId": "4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "4415179d2c22\u2026",
+        "choice": "remove",
+        "radioName": "compare-choice-4415179d2c22dddeee193e024336ce531d62a9089788bb44415a28e1678ceb39-1",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop/IMG_1042.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/drop",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "4415179d2c22\u2026"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "file": "twin.jpg"
+      },
+      {
+        "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+        "file": "no-exif.jpg"
+      }
+    ],
+    "lang": "en"
+  },
+  "fromInfo": {
+    "open": true,
+    "title": "Compare duplicates",
+    "help": "Nothing is removed until you choose Remove and confirm. Files stay on disk.",
+    "meta": "Same file \u2014 one library item",
+    "empty": false,
+    "apply": "Apply choices",
+    "cancel": "Cancel",
+    "index": "Group 1 of 1",
+    "infoCompare": "Compare copies",
+    "infoFacts": {
+      "Date taken": "2024-06-12 15:04:00",
+      "Camera": "No camera info for this file.",
+      "Dimensions": "640 \u00d7 480",
+      "Size": "14.9 KB",
+      "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+      "Hash": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "GPS": "41.88000\u00b0N, 87.63000\u00b0W",
+      "Also at": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg"
+    },
+    "infoOpen": true,
+    "confirmOpen": false,
+    "sides": [
+      {
+        "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "1b76f94527b0\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0-0",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a/twin.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-a",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "1b76f94527b0\u2026"
+        }
+      },
+      {
+        "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg",
+        "folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b",
+        "dimensions": "640 \u00d7 480",
+        "size": "14.9 KB",
+        "date": "2024-06-12 15:04:00",
+        "hash": "1b76f94527b0\u2026",
+        "choice": "keep",
+        "radioName": "compare-choice-1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0-1",
+        "facts": {
+          "Dimensions": "640 \u00d7 480",
+          "Size": "14.9 KB",
+          "Path": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b/twin.jpg",
+          "Folder": "/workspace/docs/features/taste-duplicates/Rev1.0/assets/verify-1/browser-media/exact-b",
+          "Date taken": "2024-06-12 15:04:00",
+          "Hash": "1b76f94527b0\u2026"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "86403059afd6e81651b96c3d017d0e3034621b5028cdd120164cf2e1a42962d0",
+        "file": "IMG_1042.jpg"
+      },
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "file": "twin.jpg"
+      },
+      {
+        "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+        "file": "no-exif.jpg"
+      }
+    ],
+    "lang": "en"
+  }
+}

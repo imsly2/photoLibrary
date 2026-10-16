@@ -4,6 +4,31 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Duplicate compare UI on
+  `cursor/duplicate-compare-6d12` after batch-remove PR #39
+  (`79daf9a`). `#filter-duplicates`, selection **Compare** (2+),
+  and Info **Compare copies** open `#duplicate-compare`: both
+  sides plus dimensions / size / path / folder / date / hash.
+  Each distinct item has Keep / Remove (default Keep). Same-item
+  hash sides use one radio group per side so both can stay Keep.
+  Apply with any Remove uses the existing confirm +
+  `POST /api/items/remove`. Cancel and confirm-cancel leave both.
+  Same-hash copies stay one item with Info **Also at**. Never
+  auto-deletes on hash match. Originals stay. Chinese chrome
+  included. ASCII launchers untouched. After Pull: restart
+  Library. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-duplicates](features/taste-duplicates/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-DUPLICATES](features/taste-duplicates/Rev1.0/assets/verify-1/result.json)
+  **60/60** (compare shows both sides + stats; unique radio
+  groups; keep A / remove B drops B and keeps A; cancel and
+  confirm-cancel keep both; no removal without confirm; zh
+  重复项 / 比较重复项 / 保留 / 移出图库 / 应用选择 / 也在),
+  [compare](features/taste-duplicates/Rev1.0/assets/verify-1/compare-sides.png),
+  [chinese](features/taste-duplicates/Rev1.0/assets/verify-1/compare-zh.png),
+  [confirm](features/taste-duplicates/Rev1.0/assets/verify-1/compare-confirm.png),
+  [after](features/taste-duplicates/Rev1.0/assets/verify-1/after-keep-remove.png),
+  [also-at](features/taste-duplicates/Rev1.0/assets/verify-1/info-also-at.png).
 - 2026-10-16 — Multi-select batch favorite / remove on
   `cursor/batch-favorite-remove-4d93` after video UX PR #38
   (`89c1104`). `#selection-bar` on the existing Ctrl/Shift grid
