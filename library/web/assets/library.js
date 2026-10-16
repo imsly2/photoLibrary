@@ -119,6 +119,11 @@
   const personProfile = document.getElementById("person-profile");
   const personNameInput = document.getElementById("person-name");
   const personFaces = document.getElementById("person-faces");
+  const peopleMergeBtn = document.getElementById("people-merge");
+  const confirmMerge = document.getElementById("confirm-merge");
+  const confirmMergeTitle = document.getElementById("confirm-merge-title");
+  const confirmMergeHelp = document.getElementById("confirm-merge-help");
+  const viewerFaceCrops = document.getElementById("viewer-face-crops");
   const jobsStatus = document.getElementById("jobs-status");
   const jobsQueues = document.getElementById("jobs-queues");
   const jobsPause = document.getElementById("jobs-pause");
@@ -179,6 +184,11 @@
   let gridSize = 0;
   let groupDates = true;
   let favoritesOpen = true;
+  let togetherOpen = true;
+  let togetherSolosOpen = {};
+  let extraById = {};
+  let togetherByPerson = {};
+  let pendingMerge = null;
   let peopleCatalog = [];
   let pendingThumb = null;
   let personOfInterestMin = 3;
@@ -3116,6 +3126,7 @@
       });
     }
     addLabels(peopleLabels, "person", entities.people);
+    renderViewerFaceCrops(item);
     addLabels(placeLabels, "place", entities.places);
     addLabels(thingsLabels, "thing", entities.things);
     if (viewerTags) {
@@ -3162,6 +3173,41 @@
     fillEmpty(placeLabels);
     fillEmpty(thingsLabels);
     fillEmpty(viewerTags);
+  }
+
+  function renderViewerFaceCrops(item) {
+    if (!viewerFaceCrops) {
+      return;
+    }
+    viewerFaceCrops.innerHTML = "";
+    if (!item) {
+      return;
+    }
+    ((item.faces) || []).forEach(function (face) {
+      if (!face || !face.personId) {
+        return;
+      }
+      const person = peopleCatalog.filter(function (row) { return row.id === face.personId; })[0] || { id: face.personId, name: null };
+      const wrap = document.createElement("div");
+      wrap.className = "viewer-face-crop";
+      const crop = document.createElement("span");
+      crop.className = "person-face";
+      paintFace(crop, { itemId: item.id, box: face.box || null });
+      wrap.appendChild(crop);
+      const split = document.createElement("button");
+      split.type = "button";
+      split.className = "face-split";
+      split.textContent = t("notThisPerson");
+      split.title = t("notThisPerson");
+      split.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        splitFace(face.personId, item.id, face.box || null);
+      });
+      wrap.appendChild(split);
+      wrap.title = personDisplayName(person);
+      viewerFaceCrops.appendChild(wrap);
+    });
   }
 
   function openStillViewer(item, index) {
@@ -3468,7 +3514,18 @@
         return items[i];
       }
     }
+    if (extraById[id]) {
+      return extraById[id];
+    }
     return { id: id, filename: "" };
+  }
+
+  function leftoverCount() {
+    let n = 0;
+    Object.keys(togetherByPerson).forEach(function (id) {
+      n += (togetherByPerson[id] || []).length;
+    });
+    return n;
   }
 
   function currentCellSize() {
@@ -3652,13 +3709,93 @@
     return section;
   }
 
+  function makeTogetherSection(existing, mosaic) {
+    const ids = selectedPeople();
+    if (ids.length < 2) {
+      delete main.dataset.together;
+      return null;
+    }
+    const section = document.createElement("section");
+    section.id = "photos-together";
+    section.className = "group photos-together" + (togetherOpen ? "" : " collapsed");
+    const heading = document.createElement("h2");
+    heading.className = "group-key";
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.id = "photos-together-toggle";
+    toggle.textContent = t("photosTogether", { n: items.length });
+    toggle.setAttribute("aria-expanded", togetherOpen ? "true" : "false");
+    toggle.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      togetherOpen = !togetherOpen;
+      section.classList.toggle("collapsed", !togetherOpen);
+      toggle.setAttribute("aria-expanded", togetherOpen ? "true" : "false");
+    });
+    heading.appendChild(toggle);
+    section.appendChild(heading);
+    const list = document.createElement("div");
+    list.className = mosaic ? "mosaic" : "item-list";
+    items.forEach(function (item) {
+      list.appendChild(takeCell(existing, item.id, "together"));
+    });
+    section.appendChild(list);
+    main.dataset.together = String(items.length);
+    return section;
+  }
+
+  function makePersonSoloSections(existing, mosaic) {
+    const ids = selectedPeople();
+    if (ids.length < 2) {
+      return [];
+    }
+    const out = [];
+    ids.forEach(function (id) {
+      const leftover = togetherByPerson[id] || [];
+      if (!leftover.length) {
+        return;
+      }
+      const person = peopleCatalog.filter(function (row) { return row.id === id; })[0] || { id: id, name: null };
+      const open = togetherSolosOpen[id] !== false;
+      const section = document.createElement("section");
+      section.id = "photos-person-" + id;
+      section.className = "group photos-person" + (open ? "" : " collapsed");
+      section.dataset.personId = id;
+      const heading = document.createElement("h2");
+      heading.className = "group-key";
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "photos-person-toggle";
+      toggle.textContent = t("photosOfPerson", { name: personDisplayName(person), n: leftover.length });
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const next = togetherSolosOpen[id] === false;
+        togetherSolosOpen[id] = next;
+        section.classList.toggle("collapsed", !next);
+        toggle.setAttribute("aria-expanded", next ? "true" : "false");
+      });
+      heading.appendChild(toggle);
+      section.appendChild(heading);
+      const list = document.createElement("div");
+      list.className = mosaic ? "mosaic" : "item-list";
+      leftover.forEach(function (item) {
+        list.appendChild(takeCell(existing, item.id, "solo-" + id));
+      });
+      section.appendChild(list);
+      out.push(section);
+    });
+    return out;
+  }
+
   function render() {
     const level = settings.zoomLevel;
     applyGridMetrics();
     syncPresentableSort();
     syncFilterDataset();
     syncSelectionChrome();
-    if (!items.length) {
+    if (!items.length && leftoverCount() === 0) {
       stopHover();
       if (hasActiveFilter()) {
         main.innerHTML = "<p>" + emptySearchText() + "</p>";
@@ -3683,7 +3820,12 @@
     }).map(function (item) {
       return item.id;
     }).join(",");
-    const key = level + "|" + arrangeBy + "|" + (groupDates ? "dates" : "wall") + "|" + favKey + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
+    const togetherKey = selectedPeople().join(",") + ":" + items.map(function (item) {
+      return item.id;
+    }).join(",") + ":" + Object.keys(togetherByPerson).map(function (id) {
+      return id + "=" + (togetherByPerson[id] || []).map(function (item) { return item.id; }).join(",");
+    }).join(";");
+    const key = level + "|" + arrangeBy + "|" + (groupDates ? "dates" : "wall") + "|" + favKey + "|" + togetherKey + "|" + settings.sort + "|" + settings.dir + "|" + queryString() + "|" + groups.map(function (group) {
       return group.key + ":" + (group.itemIds || []).join(",");
     }).join(";");
     if (key === renderKey) {
@@ -3698,6 +3840,10 @@
     const fav = makeFavoritesSection(existing, mosaic);
     if (fav) {
       fragment.appendChild(fav);
+    }
+    const together = makeTogetherSection(existing, mosaic);
+    if (together) {
+      fragment.appendChild(together);
     }
     if (!groupDates && arrangeBy === "dates") {
       const list = document.createElement("div");
@@ -3744,6 +3890,9 @@
         fragment.appendChild(section);
       });
     }
+    makePersonSoloSections(existing, mosaic).forEach(function (section) {
+      fragment.appendChild(section);
+    });
     Object.keys(existing).forEach(function (keyName) {
       const leftover = existing[keyName];
       if (leftover && leftover.parentNode) {
@@ -3885,7 +4034,14 @@
   }
 
   function visiblePeople() {
+    const selected = {};
+    selectedPeople().forEach(function (id) {
+      selected[id] = true;
+    });
     return peopleCatalog.filter(function (person) {
+      if (selected[person.id]) {
+        return true;
+      }
       if (person.visible === false) {
         return false;
       }
@@ -3952,6 +4108,8 @@
     personFaces.dataset.keys = nextKeys;
     personFaces.innerHTML = "";
     thumbs.forEach(function (thumb) {
+      const wrap = document.createElement("div");
+      wrap.className = "person-face-wrap";
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "person-face-choice";
@@ -3979,7 +4137,19 @@
       }
       btn.addEventListener("pointerdown", pick);
       btn.addEventListener("click", pick);
-      personFaces.appendChild(btn);
+      wrap.appendChild(btn);
+      const split = document.createElement("button");
+      split.type = "button";
+      split.className = "face-split";
+      split.textContent = t("notThisPerson");
+      split.title = t("notThisPerson");
+      split.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        splitFace(id, thumb.itemId, thumb.box || null);
+      });
+      wrap.appendChild(split);
+      personFaces.appendChild(wrap);
     });
     syncFaceChoicePressed(id);
   }
@@ -4033,6 +4203,9 @@
       peopleEmpty.hidden = rows.length > 0;
     }
     peopleList.innerHTML = "";
+    if (peopleMergeBtn) {
+      peopleMergeBtn.hidden = selectedPeople().length < 2;
+    }
     rows.forEach(function (person) {
       const li = document.createElement("li");
       const btn = document.createElement("button");
@@ -4317,6 +4490,101 @@
     });
   }
 
+  function splitFace(personId, itemId, box) {
+    if (!personId || !itemId) {
+      return Promise.resolve();
+    }
+    const body = { personId: personId, itemId: itemId };
+    if (box && box.length === 4) {
+      body.box = box;
+    }
+    return fetch("/api/people/split", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(readJson).then(function (row) {
+      const nextId = row && row.id;
+      return loadPeople().then(function () {
+        if (nextId) {
+          return selectPerson(nextId);
+        }
+        return loadCatalog();
+      });
+    });
+  }
+
+  function joinPersonNames(list) {
+    if (!list.length) {
+      return "";
+    }
+    if (list.length === 1) {
+      return list[0];
+    }
+    if (language === "zh-Hans") {
+      return list.join("、");
+    }
+    if (list.length === 2) {
+      return list[0] + " and " + list[1];
+    }
+    return list.slice(0, -1).join(", ") + ", and " + list[list.length - 1];
+  }
+
+  function askMergePeople() {
+    const ids = selectedPeople();
+    if (ids.length < 2) {
+      return;
+    }
+    const keepId = ids[0];
+    const dropIds = ids.slice(1);
+    const keep = peopleCatalog.filter(function (row) { return row.id === keepId; })[0] || { id: keepId, name: null };
+    const dropNames = dropIds.map(function (id) {
+      const row = peopleCatalog.filter(function (person) { return person.id === id; })[0];
+      return personDisplayName(row || { id: id, name: null });
+    });
+    pendingMerge = { keepId: keepId, dropIds: dropIds };
+    if (confirmMergeTitle) {
+      confirmMergeTitle.textContent = t("mergeTitle", { name: personDisplayName(keep) });
+    }
+    if (confirmMergeHelp) {
+      confirmMergeHelp.textContent = t("mergeHelp", {
+        name: personDisplayName(keep),
+        names: joinPersonNames(dropNames),
+      });
+    }
+    if (confirmMerge && confirmMerge.showModal) {
+      confirmMerge.showModal();
+      return;
+    }
+    if (window.confirm(t("mergeTitle", { name: personDisplayName(keep) }))) {
+      runPendingMerge();
+    }
+  }
+
+  function runPendingMerge() {
+    const job = pendingMerge;
+    pendingMerge = null;
+    if (!job || !job.keepId || !job.dropIds || !job.dropIds.length) {
+      return Promise.resolve();
+    }
+    let chain = Promise.resolve();
+    job.dropIds.forEach(function (dropId) {
+      chain = chain.then(function () {
+        return fetch("/api/people/merge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ keepId: job.keepId, dropId: dropId }),
+        }).then(readJson);
+      });
+    });
+    return chain.then(function () {
+      const next = copyFilter(filter);
+      next.person = job.keepId;
+      applyFilterState(next, next.q);
+      renderKey = "";
+      return Promise.all([loadPeople(), loadCatalog()]);
+    });
+  }
+
   function commitPersonName() {
     if (!personNameInput) {
       return;
@@ -4461,8 +4729,12 @@
         }
       }
     }
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
+    const catalogItems = items.slice();
+    Object.keys(extraById).forEach(function (id) {
+      catalogItems.push(extraById[id]);
+    });
+    for (let i = 0; i < catalogItems.length; i += 1) {
+      const item = catalogItems[i];
       const slot = stillWhich(item);
       const status = ((item.renditions || {}).status || {})[slot];
       if (status !== "ready" && status !== "error" && status !== "not-applicable") {
@@ -4480,9 +4752,17 @@
     const gen = loadGen + 1;
     loadGen = gen;
     const qs = queryString();
+    const togetherIds = selectedPeople();
     loadJobs();
     loadPeople();
     loadTags();
+    const leftoverFetches = togetherIds.length >= 2
+      ? togetherIds.map(function (id) {
+          return fetch("/api/items?" + queryString({ person: id })).then(readJson).catch(function () {
+            return [];
+          });
+        })
+      : [];
     catalogInFlight = Promise.all([
       fetch("/api/items?" + qs).then(readJson),
       fetch("/api/groups?" + groupsQuery()).then(readJson).catch(function () {
@@ -4494,6 +4774,7 @@
       fetch("/api/settings").then(readJson).catch(function () {
         return null;
       }),
+      Promise.all(leftoverFetches),
     ]).then(function (parts) {
       const nextItems = Array.isArray(parts[0]) ? parts[0] : null;
       if (!nextItems) {
@@ -4521,6 +4802,27 @@
       const prevIds = items.map(function (it) { return it.id; }).join("\n");
       const prevQs = queryString();
       items = nextItems;
+      extraById = {};
+      togetherByPerson = {};
+      if (togetherIds.length >= 2) {
+        const andIds = {};
+        nextItems.forEach(function (item) {
+          andIds[item.id] = true;
+        });
+        const leftoverLists = Array.isArray(parts[4]) ? parts[4] : [];
+        togetherIds.forEach(function (id, index) {
+          const list = Array.isArray(leftoverLists[index]) ? leftoverLists[index] : [];
+          const rest = [];
+          list.forEach(function (item) {
+            if (!item || !item.id || andIds[item.id]) {
+              return;
+            }
+            rest.push(item);
+            extraById[item.id] = item;
+          });
+          togetherByPerson[id] = rest;
+        });
+      }
       catalogReady = true;
       groups = nextGroups.length ? nextGroups : (arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy));
       renderPeople();
@@ -4927,6 +5229,28 @@
       });
     }
   }
+  if (confirmMerge) {
+    const cancelMerge = document.getElementById("confirm-merge-cancel");
+    const okMerge = document.getElementById("confirm-merge-ok");
+    if (cancelMerge) {
+      cancelMerge.addEventListener("click", function () {
+        pendingMerge = null;
+        confirmMerge.close();
+      });
+    }
+    if (okMerge) {
+      okMerge.addEventListener("click", function () {
+        confirmMerge.close();
+        runPendingMerge();
+      });
+    }
+  }
+  if (peopleMergeBtn) {
+    peopleMergeBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      askMergePeople();
+    });
+  }
   if (scanRetry) {
     scanRetry.addEventListener("click", function () {
       const path = scanRetry.dataset.path || "";
@@ -5317,6 +5641,12 @@
         confirmDeleteFile.close();
         return;
       }
+      if (confirmMerge && confirmMerge.open) {
+        event.preventDefault();
+        pendingMerge = null;
+        confirmMerge.close();
+        return;
+      }
       if (confirmRemoveSource && confirmRemoveSource.open) {
         event.preventDefault();
         confirmRemoveSource.close();
@@ -5359,7 +5689,7 @@
       return;
     }
     if (event.key === "Delete" && !textFocused()) {
-      if ((confirmRemove && confirmRemove.open) || (confirmDeleteFile && confirmDeleteFile.open)) {
+      if ((confirmRemove && confirmRemove.open) || (confirmDeleteFile && confirmDeleteFile.open) || (confirmMerge && confirmMerge.open)) {
         return;
       }
       const target = viewerItemId || selectedId;

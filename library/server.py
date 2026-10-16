@@ -519,6 +519,22 @@ class LibraryHandler(BaseHTTPRequestHandler):
                         self.library.people_merge(payload["keepId"], payload["dropId"]),
                     )
                 return
+            if route == "/api/people/split" and method == "POST":
+                from library.annotate import read_split_payload
+
+                body = self._read_json()
+                payload = read_split_payload(body)
+                self._require_idle()
+                with self.lock:
+                    self._send_json(
+                        200,
+                        self.library.people_split(
+                            payload["personId"],
+                            payload["itemId"],
+                            payload.get("box"),
+                        ),
+                    )
+                return
             if route.startswith("/api/people/") and method == "PUT":
                 person_id = route[len("/api/people/") :]
                 if not person_id or "/" in person_id:

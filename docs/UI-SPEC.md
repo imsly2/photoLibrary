@@ -209,11 +209,24 @@ Info’s Person field — `PUT /api/people/<id>` `{name}`) and choose which
 face crop is the thumbnail (`thumbnailItemId`). A profile face choice is
 its own hit target: one click selects exactly one crop (a bright ring
 plus a corner dot; never two pressed) and does not toggle the person
-row. The click updates the pressed crop immediately. The crop image
-always has width and height; a
+row. The click updates the pressed crop immediately. **Not this person**
+under a crop (`POST /api/people/split`) removes only that detection;
+the crop becomes its own Unnamed person (selected so it can be named)
+and the original person stays. Info shows the same crops and action.
+The crop image always has width and height; a
 pending or 404 thumb shows a placeholder and refreshes when the
-rendition is ready. Naming stays available in Info. Person merge stays
-CLI/HTTP; no merge wizard.
+rendition is ready. Naming stays available in Info.
+
+With two or more people selected, `#people-merge` **Merge into…** opens
+`#confirm-merge` (keep = first selected). Confirm runs existing
+`POST /api/people/merge` for each other person. No extra wizard.
+
+When two or more people are selected, `#photos-together` is the first
+collapsible group after Favorites: **Photos together (N)** is the AND
+intersection (same chrome as `#favorites-toggle`). Below that, each
+selected person may have a collapsible leftover group of that person’s
+items that were not already in Photos together. `person=id1,id2` AND
+filtering is unchanged; leftover cells use a non-`grid` slot.
 
 ## Filter bar, chips, arrange, and tags
 

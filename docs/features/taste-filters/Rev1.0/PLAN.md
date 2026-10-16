@@ -16,7 +16,9 @@ F11 / F14 / F22, CONTRACTS `person`/`thing` AND, `GET /api/groups?by=`,
 3. Group Dates / People / Places / Tags. Unknown / No place / Untagged.
 4. Collapse any group header; session memory.
 5. Multi-person AND (`person=id1,id2`) with fixture data of 2–3 people
-   and chip-removal proof.
+   and chip-removal proof. With 2+ people selected, `#photos-together`
+   (Favorites-style collapse) lists the intersection, then leftover
+   per-person groups (Ada/Bob/Cam).
 6. User tags (Things): create, apply/remove on one or many selected
    items, filter chip, group by tag. Persist; survive re-infer.
 

@@ -255,6 +255,10 @@ def build_parser() -> argparse.ArgumentParser:
     merge = people_sub.add_parser("merge")
     merge.add_argument("keep")
     merge.add_argument("drop")
+    split_person = people_sub.add_parser("split")
+    split_person.add_argument("id")
+    split_person.add_argument("--item", required=True)
+    split_person.add_argument("--box")
     update_person = people_sub.add_parser("update")
     update_person.add_argument("id")
     update_person.add_argument("--name")
@@ -575,6 +579,28 @@ def main(argv: list[str] | None = None) -> int:
                     "PUT",
                     f"/api/people/{args.id}",
                     body,
+                )
+                _print_json(result)
+                return 0
+            if args.people_cmd == "split":
+                from library.annotate import parse_box_csv
+
+                split_body: dict[str, Any] = {
+                    "personId": args.id,
+                    "itemId": args.item,
+                }
+                if args.box:
+                    split_body["box"] = parse_box_csv(args.box)
+                result = _mutation(
+                    root,
+                    lambda: Library(root).people_split(
+                        split_body["personId"],
+                        split_body["itemId"],
+                        split_body.get("box"),
+                    ),
+                    "POST",
+                    "/api/people/split",
+                    split_body,
                 )
                 _print_json(result)
                 return 0
