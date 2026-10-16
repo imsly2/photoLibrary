@@ -1,0 +1,524 @@
+{
+  "person": [
+    {
+      "schemaVersion": 1,
+      "id": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92",
+      "kind": "photo",
+      "filename": "both.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/both.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/both.png",
+          "sizeBytes": 2573,
+          "modifiedAt": "2026-10-16T03:38:46.498898Z",
+          "sha256": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": null,
+        "preview": null,
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "queued",
+          "preview": "queued",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.09375,
+            0.1875,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        },
+        {
+          "personId": "person_271424e8b22e",
+          "box": [
+            0.625,
+            0.20833333333333334,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_271424e8b22e",
+            "name": null
+          },
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a",
+      "kind": "photo",
+      "filename": "a1.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png",
+          "sizeBytes": 2105,
+          "modifiedAt": "2026-10-16T03:38:46.366898Z",
+          "sha256": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": null,
+        "preview": null,
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "queued",
+          "preview": "queued",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.125,
+            0.16666666666666666,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        },
+        {
+          "personId": "person_7372ee3491a7"
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed",
+      "kind": "photo",
+      "filename": "a2.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a2.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a2.png",
+          "sizeBytes": 2118,
+          "modifiedAt": "2026-10-16T03:38:46.398898Z",
+          "sha256": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": "renditions/1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed/thumb.webp",
+        "preview": "renditions/1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.34375,
+            0.22916666666666666,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    }
+  ],
+  "q": [
+    {
+      "schemaVersion": 1,
+      "id": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92",
+      "kind": "photo",
+      "filename": "both.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/both.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/both.png",
+          "sizeBytes": 2573,
+          "modifiedAt": "2026-10-16T03:38:46.498898Z",
+          "sha256": "6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": null,
+        "preview": null,
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "queued",
+          "preview": "queued",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.09375,
+            0.1875,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        },
+        {
+          "personId": "person_271424e8b22e",
+          "box": [
+            0.625,
+            0.20833333333333334,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_271424e8b22e",
+            "name": null
+          },
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a",
+      "kind": "photo",
+      "filename": "a1.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png",
+          "sizeBytes": 2105,
+          "modifiedAt": "2026-10-16T03:38:46.366898Z",
+          "sha256": "5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": null,
+        "preview": null,
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "queued",
+          "preview": "queued",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.125,
+            0.16666666666666666,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        },
+        {
+          "personId": "person_7372ee3491a7"
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed",
+      "kind": "photo",
+      "filename": "a2.png",
+      "capturedAt": "2026-10-16T03:38:46Z",
+      "capturedAtSource": "mtime",
+      "placeId": null,
+      "metadata": {
+        "width": 640,
+        "height": 480,
+        "orientation": null,
+        "camera": null,
+        "lens": null,
+        "durationSec": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "contentIdentifier": null,
+      "locations": [
+        {
+          "sourceId": "src_9dd44793c54f",
+          "role": "primary",
+          "component": "still",
+          "kind": "volume",
+          "current": true,
+          "libraryRelativePath": null,
+          "volumeSerial": "linux:/",
+          "pathFromVolumeRoot": "workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a2.png",
+          "lastKnownPath": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a2.png",
+          "sizeBytes": 2118,
+          "modifiedAt": "2026-10-16T03:38:46.398898Z",
+          "sha256": "1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed"
+        }
+      ],
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_9dd44793c54f",
+        "thumb": "renditions/1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed/thumb.webp",
+        "preview": "renditions/1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      },
+      "faces": [
+        {
+          "personId": "person_7372ee3491a7",
+          "box": [
+            0.34375,
+            0.22916666666666666,
+            0.21875,
+            0.375
+          ],
+          "detScore": 1.0,
+          "matchScore": 1.0
+        }
+      ],
+      "things": [],
+      "available": true,
+      "motionAvailable": false,
+      "favorite": false,
+      "entities": {
+        "people": [
+          {
+            "schemaVersion": 1,
+            "id": "person_7372ee3491a7",
+            "name": "Ada"
+          }
+        ],
+        "places": [],
+        "things": []
+      }
+    }
+  ]
+}

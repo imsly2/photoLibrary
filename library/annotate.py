@@ -188,6 +188,19 @@ def _read_thing_entry(value: Any) -> dict[str, Any]:
     return out
 
 
+def parse_box_csv(raw: str) -> list[float]:
+    if type(raw) is not str or raw.strip() == "":
+        raise fail("invalid-argument")
+    parts = [part.strip() for part in raw.split(",")]
+    nums: list[float] = []
+    for part in parts:
+        try:
+            nums.append(float(part))
+        except ValueError as exc:
+            raise fail("invalid-argument") from exc
+    return read_box_arg(nums)
+
+
 def read_merge_payload(value: Any) -> dict[str, str]:
     data = _require_dict(value)
     extra = set(data.keys()) - {"keepId", "dropId"}
@@ -200,6 +213,21 @@ def read_merge_payload(value: Any) -> dict[str, str]:
     if keep == drop:
         raise fail("invalid-argument")
     return {"keepId": keep, "dropId": drop}
+
+
+def read_split_payload(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    extra = set(data.keys()) - {"personId", "itemId", "box"}
+    if extra:
+        raise fail("invalid-argument")
+    person_id = data.get("personId")
+    item_id = data.get("itemId")
+    if type(person_id) is not str or person_id == "" or type(item_id) is not str or item_id == "":
+        raise fail("invalid-argument")
+    out: dict[str, Any] = {"personId": person_id, "itemId": item_id}
+    if "box" in data:
+        out["box"] = read_box_arg(data["box"])
+    return out
 
 
 def _face_key(face: dict[str, Any]) -> tuple[str, tuple[float, ...] | None]:
@@ -511,6 +539,74 @@ def apply_people_merge(root: Path, keep_id: str, drop_id: str) -> dict[str, Any]
     entry = make_history_entry(root, "people-merge", changes)
     transact(root, plan_append(root, entry) + changes)
     return ordered_person(keep)
+
+
+def apply_people_split(
+    root: Path,
+    person_id: str,
+    item_id: str,
+    box: list[float] | None,
+) -> dict[str, Any]:
+    if type(person_id) is not str or type(item_id) is not str or not person_id or not item_id:
+        raise fail("invalid-argument")
+    from_person = load_person(root, person_id)
+    item = load_item(root, item_id)
+    faces = list(item.get("faces") or [])
+    from library.faces import face_boxes_equal
+
+    matches: list[int] = []
+    for index, face in enumerate(faces):
+        if face.get("personId") != person_id:
+            continue
+        if box is None or face_boxes_equal(face.get("box"), box):
+            matches.append(index)
+    if not matches:
+        raise fail("not-found")
+    if len(matches) != 1:
+        raise fail("invalid-argument")
+    chosen = matches[0]
+    new_id = new_person_id(root)
+    before_item = clone(item)
+    rewritten: list[dict[str, Any]] = []
+    moved_box = faces[chosen].get("box")
+    for index, face in enumerate(faces):
+        face = clone(face)
+        if index == chosen:
+            face["personId"] = new_id
+        rewritten.append(face)
+    item["faces"] = collapse_faces(rewritten)
+    after_item = ordered_item(item)
+    created = ordered_person({"schemaVersion": 1, "id": new_id, "name": None})
+    changes: list[dict[str, Any]] = []
+    if after_item != before_item:
+        changes.append({"path": item_rel(item_id), "before": before_item, "after": after_item})
+    after_person = clone(from_person)
+    thumb = after_person.get("thumbnailItemId")
+    if thumb == item_id and not any(face.get("personId") == person_id for face in item["faces"]):
+        after_person.pop("thumbnailItemId", None)
+        before_person = ordered_person(from_person)
+        next_person = ordered_person(after_person)
+        if next_person != before_person:
+            changes.append(
+                {"path": person_rel(person_id), "before": before_person, "after": next_person}
+            )
+    changes.append({"path": person_rel(new_id), "before": None, "after": created})
+    try:
+        from library.faces import plan_split_index
+
+        split_box = None
+        if isinstance(moved_box, list) and len(moved_box) == 4:
+            split_box = [float(v) for v in moved_box]
+        elif box is not None:
+            split_box = list(box)
+        index_change = plan_split_index(root, person_id, new_id, item_id, split_box)
+        if index_change is not None:
+            changes.append(index_change)
+    except ImportError:
+        pass
+    entry = make_history_entry(root, "people-split", changes)
+    transact(root, plan_append(root, entry) + changes)
+    return created
 
 
 def rebase_item_snapshot(snapshot: Any, published: dict[str, Any]) -> Any:

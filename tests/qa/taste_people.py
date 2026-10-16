@@ -188,6 +188,13 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
         record["httpPeople"] = http_people
     finally:
         stop_owned(server, extra_pids=pids)
+    merged = run_library(root, ["people", "merge", ada_id, bob_id])
+    checks.check("merge-cli", merged.returncode == 0, merged.stderr[-200:])
+    after_merge = json.loads(run_library(root, ["people", "list"]).stdout)
+    after_ids = {row.get("id"): row.get("name") for row in after_merge.get("people") or []}
+    checks.check("merge-ada-kept", after_ids.get(ada_id) == "Ada", json.dumps(after_ids))
+    checks.check("merge-bob-dropped", bob_id not in after_ids, json.dumps(after_ids))
+    record["mergeCli"] = json.loads(merged.stdout) if merged.returncode == 0 else {}
     return record
 
 
@@ -314,19 +321,44 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.locator(".person-row", has_text="Bob").click(modifiers=["ControlOrMeta"])
     page.wait_for_function(
         """() => {
-          const names = Array.from(document.querySelectorAll('#grid .cell')).map(function (el) {
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(function (el) {
             return el.getAttribute('data-filename');
           });
           const person = (document.getElementById('grid').dataset.person || '');
-          return person.indexOf(',') >= 0 && names.length === 1 && names[0] === 'near.jpg';
+          const merge = document.getElementById('people-merge');
+          return person.indexOf(',') >= 0 && names.length === 1 && names[0] === 'near.jpg'
+            && merge && !merge.hidden;
         }""",
         timeout=8000,
     )
     and_names = page.evaluate(
-        "() => Array.from(document.querySelectorAll('#grid .cell')).map(el => el.getAttribute('data-filename'))"
+        "() => Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'))"
     )
     record["andGrid"] = and_names
     checks.check("multiselect-and", and_names == ["near.jpg"], json.dumps(and_names))
+    merge_hidden = page.evaluate("() => !!(document.getElementById('people-merge') || {}).hidden")
+    checks.check("merge-visible-when-two", merge_hidden is False)
+    page.locator("#people-merge").click()
+    page.wait_for_function(
+        "() => { const d = document.getElementById('confirm-merge'); return d && d.open; }",
+        timeout=5000,
+    )
+    page.locator("#confirm-merge-ok").click()
+    page.wait_for_function(
+        """() => {
+          const names = Array.from(document.querySelectorAll('.person-row .person-name')).map(function (el) {
+            return el.textContent.trim();
+          });
+          return names.indexOf('Ada') >= 0 && names.indexOf('Bob') < 0;
+        }""",
+        timeout=8000,
+    )
+    after_merge_ui = page.evaluate(
+        "() => Array.from(document.querySelectorAll('.person-row .person-name')).map(el => el.textContent.trim())"
+    )
+    record["afterMergeUi"] = after_merge_ui
+    checks.check("merge-ui-keeps-ada", "Ada" in after_merge_ui, json.dumps(after_merge_ui))
+    checks.check("merge-ui-drops-bob", "Bob" not in after_merge_ui, json.dumps(after_merge_ui))
 
     page.locator(".person-row", has_text="Pat").click()
     page.wait_for_selector("#person-profile:not([hidden])", timeout=5000)

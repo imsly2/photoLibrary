@@ -22,6 +22,9 @@ F22, CONTRACTS `GET /api/people`, `PUT /api/people/<id>`, `person` AND,
 6. `#jobs-panel`: processing line, Pause / Start (Resume). Renditions
    drain honors pause. Analyze / infer-faces / objects report catalog
    pending and the same pause flag.
+7. With 2+ people selected, **Merge into…** (`#people-merge`) confirms
+   and keeps the first selected person (Ada←Bob). Profile / Info
+   **Not this person** splits one face crop.
 
 ## Out of scope
 

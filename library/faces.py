@@ -1080,6 +1080,19 @@ def cluster_detections(
     return assigned, next_index, created, reused
 
 
+def face_boxes_equal(left: Any, right: Any, eps: float = 1e-4) -> bool:
+    if left is None and right is None:
+        return True
+    if not isinstance(left, list) or not isinstance(right, list):
+        return False
+    if len(left) != 4 or len(right) != 4:
+        return False
+    try:
+        return all(abs(float(left[i]) - float(right[i])) <= eps for i in range(4))
+    except (TypeError, ValueError):
+        return False
+
+
 def plan_merge_index(root: Path, keep_id: str, drop_id: str) -> dict[str, Any] | None:
     current = load_index(root)
     if current is None:
@@ -1105,6 +1118,58 @@ def plan_merge_index(root: Path, keep_id: str, drop_id: str) -> dict[str, Any] |
         "faces": faces,
     }
     people.pop(drop_id, None)
+    after = {
+        "schemaVersion": 1,
+        "backend": current.get("backend"),
+        "matchThreshold": current.get("matchThreshold"),
+        "people": people,
+    }
+    if "scanned" in current:
+        after["scanned"] = current.get("scanned")
+    if after == before:
+        return None
+    return {"path": INDEX_REL, "before": before, "after": after}
+
+
+def plan_split_index(
+    root: Path,
+    from_id: str,
+    new_id: str,
+    item_id: str,
+    box: list[float] | None,
+) -> dict[str, Any] | None:
+    current = load_index(root)
+    if current is None:
+        return None
+    people = dict(current.get("people") or {})
+    before = clone(current)
+    src = dict(people.get(from_id) or {"centroid": [], "faces": []})
+    moved: dict[str, Any] | None = None
+    kept: list[dict[str, Any]] = []
+    for ref in src.get("faces") or []:
+        rec = dict(ref)
+        same_item = rec.get("itemId") == item_id
+        same_box = box is None or face_boxes_equal(rec.get("box"), box)
+        if moved is None and same_item and same_box:
+            moved = rec
+            continue
+        kept.append(rec)
+    if moved is None:
+        moved = {"itemId": item_id}
+        if box is not None:
+            moved["box"] = list(box)
+    src_centroid = list(src.get("centroid") or [])
+    new_centroid: list[float] = []
+    if not kept and src_centroid:
+        new_centroid = src_centroid
+        src_centroid = []
+    people[from_id] = {"centroid": src_centroid, "faces": kept}
+    dest = dict(people.get(new_id) or {"centroid": [], "faces": []})
+    dest_faces = list(dest.get("faces") or [])
+    if moved not in dest_faces:
+        dest_faces.append(moved)
+    dest_centroid = list(dest.get("centroid") or []) or new_centroid
+    people[new_id] = {"centroid": dest_centroid, "faces": dest_faces}
     after = {
         "schemaVersion": 1,
         "backend": current.get("backend"),

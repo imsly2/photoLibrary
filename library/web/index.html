@@ -124,6 +124,7 @@
       <section id="people-panel" aria-labelledby="people-heading">
         <p id="people-empty" hidden data-i18n="noPeople">No people yet</p>
         <ul id="people-list"></ul>
+        <button type="button" id="people-merge" hidden data-i18n="mergeInto">Merge into…</button>
         <div id="person-profile" hidden>
           <label class="chrome-field" for="person-name">
             <span data-i18n="name">Name</span>
@@ -392,6 +393,7 @@
             <div id="viewer-facts"></div>
             <p class="info-heading" data-i18n="people">People</p>
             <div id="viewer-people" class="label-row"></div>
+            <div id="viewer-face-crops"></div>
             <p class="info-heading" data-i18n="places">Places</p>
             <div id="viewer-place" class="label-row"></div>
             <p class="info-heading" data-i18n="things">Things</p>
@@ -465,6 +467,14 @@
     <div class="dialog-actions">
       <button type="button" id="confirm-delete-cancel" data-i18n="cancel">Cancel</button>
       <button type="button" id="confirm-delete-ok" data-i18n="deleteFile">Delete file</button>
+    </div>
+  </dialog>
+  <dialog id="confirm-merge" aria-labelledby="confirm-merge-title">
+    <h2 id="confirm-merge-title">Merge into this person?</h2>
+    <p id="confirm-merge-help"></p>
+    <div class="dialog-actions">
+      <button type="button" id="confirm-merge-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="confirm-merge-ok" data-i18n="merge">Merge</button>
     </div>
   </dialog>
   <dialog id="confirm-remove-source" aria-labelledby="confirm-remove-source-title">

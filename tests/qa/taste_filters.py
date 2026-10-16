@@ -274,6 +274,58 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     record["andGrid"] = and_names
     checks.check("multiselect-and", set(and_names) == {"near.jpg", "no-exif.jpg"}, json.dumps(and_names))
+    page.wait_for_selector("#photos-together", timeout=8000)
+    together = page.evaluate(
+        """() => {
+          const section = document.getElementById('photos-together');
+          const toggle = document.getElementById('photos-together-toggle');
+          const files = Array.from(document.querySelectorAll('#photos-together .cell')).map(function (el) {
+            return el.getAttribute('data-filename');
+          });
+          const solos = Array.from(document.querySelectorAll('.photos-person')).map(function (sec) {
+            return {
+              heading: ((sec.querySelector('.photos-person-toggle') || {}).textContent || '').trim(),
+              files: Array.from(sec.querySelectorAll('.cell')).map(function (el) { return el.getAttribute('data-filename'); }),
+            };
+          });
+          return {
+            present: !!section,
+            label: (toggle || {}).textContent || '',
+            expanded: toggle ? toggle.getAttribute('aria-expanded') : null,
+            files: files,
+            solos: solos,
+          };
+        }"""
+    )
+    record["photosTogether"] = together
+    checks.check("photos-together-present", together.get("present") is True, json.dumps(together))
+    checks.check(
+        "photos-together-label",
+        "Photos together" in (together.get("label") or "") and "(" in (together.get("label") or ""),
+        json.dumps(together.get("label")),
+    )
+    checks.check(
+        "photos-together-files",
+        set(together.get("files") or []) == {"near.jpg", "no-exif.jpg"},
+        json.dumps(together.get("files")),
+    )
+    solo_files = []
+    for row in together.get("solos") or []:
+        solo_files.extend(row.get("files") or [])
+    checks.check("photos-together-ada-solo", "IMG_1042.jpg" in solo_files, json.dumps(together.get("solos")))
+    checks.check("photos-together-not-and-in-solo", "near.jpg" not in solo_files, json.dumps(together.get("solos")))
+    page.locator("#photos-together-toggle").click()
+    page.wait_for_function(
+        "() => document.getElementById('photos-together') && document.getElementById('photos-together').classList.contains('collapsed')",
+        timeout=5000,
+    )
+    checks.check("photos-together-collapse", True)
+    page.locator("#photos-together-toggle").click()
+    page.wait_for_function(
+        "() => document.getElementById('photos-together') && !document.getElementById('photos-together').classList.contains('collapsed')",
+        timeout=5000,
+    )
+    page.screenshot(path=str(artifacts / "photos-together.png"))
 
     page.locator(".person-row", has_text="Ada").click()
     page.wait_for_function(
@@ -445,6 +497,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
             extra["filters-browser.json"] = str(artifacts / "filters-browser.json")
             extra["filter-bar.png"] = str(artifacts / "filter-bar.png")
             extra["group-people.png"] = str(artifacts / "group-people.png")
+            extra["photos-together.png"] = str(artifacts / "photos-together.png")
         finally:
             stop_owned(server, extra_pids=pids)
         checks.check("original-fixture-bytes", hash_tree(media_src) == before)

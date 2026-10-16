@@ -263,6 +263,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |
 | `people update <id> --name … --thumbnail <item-id>` | `PUT /api/people/<id>` | Renames a person or chooses the thumbnail face item. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `people split <id> --item <item-id> [--box x,y,w,h]` | `POST /api/people/split` | Removes one face detection from that person. The crop becomes a new Unnamed person. |
 | `tags` / `tags list` | `GET /api/tags` | Lists user tags (Things) with counts. Hiking / Singing / Painting are names. |
 | `tags create <name>` | `POST /api/tags` `{"name":"Hiking"}` | Creates a tag Thing without attaching it. Reuses a matching name. |
 | `tags apply --item <id> --add Hiking --remove Painting` | `POST /api/items/tags` `{"itemIds":["…"],"add":["Hiking"],"remove":["Painting"]}` | Applies or removes tags on one or many items. Human tags survive re-infer. |
@@ -725,7 +726,13 @@ It may be omitted. A face is a box that points at a person. A person with
 `"name": null` is an unnamed face. Setting the name updates that person file.
 `people merge <keep-id> <drop-id>` rewrites every face, merges stored
 face embeddings when `models/faces/index.json` exists, and deletes the
-dropped person file.
+dropped person file. `people split` takes one boxed face off a person
+and writes it as a new Unnamed person; the original person (Steve, Ada)
+stays. The People panel **Merge into…** confirm (two or more selected)
+runs the same merge. **Not this person** on a profile or Info crop runs
+split. With two or more people selected, the grid still ANDs
+(`person=id1,id2`) and shows a collapsible **Photos together** group
+(intersection) above leftover photos for each selected person.
 
 The Library page lists people in a right side panel. Named people always
 appear. An unnamed cluster appears only when that face is on at least

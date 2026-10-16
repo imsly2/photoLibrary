@@ -567,6 +567,19 @@ class Library:
         self._assert_idle()
         return apply_people_merge(self.root, keep_id, drop_id)
 
+    def people_split(
+        self,
+        person_id: str,
+        item_id: str,
+        box: list[float] | None = None,
+    ) -> dict[str, Any]:
+        from library.annotate import apply_people_split
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return apply_people_split(self.root, person_id, item_id, box)
+
     def people_list(self) -> dict[str, Any]:
         from library.people_panel import people_index
 

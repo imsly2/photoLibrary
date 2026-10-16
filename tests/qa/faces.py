@@ -146,6 +146,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
         "POST /api/items/<id>/annotations {id,name}",
         "GET /api/items?person=Ada",
         "people merge",
+        "people split",
         "infer-faces without models",
     ]
     artifacts.mkdir(parents=True, exist_ok=True)
@@ -312,6 +313,8 @@ def run_slice(root: Path, artifacts: Path) -> int:
     checks.check("index-keep-only", set((index.get("people") or {}).keys()) == {person_a}, json.dumps(index))
     (artifacts / "merge.json").write_text(json.dumps({"keep": person_a, "drop": person_b, "index": index}, indent=2) + "\n", encoding="utf-8")
 
+    prove_split(checks, artifacts, media)
+
     after_hashes = {path.name: sha256_file(path) for path in sorted(media.glob("*.png"))}
     checks.check("original-hashes", after_hashes == originals, json.dumps({"before": originals, "after": after_hashes}))
 
@@ -341,8 +344,98 @@ def run_slice(root: Path, artifacts: Path) -> int:
             "infer.json": str(artifacts / "infer.json"),
             "search.json": str(artifacts / "search.json"),
             "merge.json": str(artifacts / "merge.json"),
+            "split.json": str(artifacts / "split.json"),
             "people": str(artifacts / "people"),
         },
+    )
+
+
+def prove_split(checks: Checks, artifacts: Path, media: Path) -> None:
+    root = fresh_root(artifacts / "split-root")
+    setup = run_library(root, ["setup-ml", "faces", "--backend", "fixture"], env=test_env())
+    checks.check("split-setup", setup.returncode == 0, setup.stderr)
+    scan = run_library(root, ["scan", str(media), "--serve-from-there"], env=test_env(), timeout=120)
+    checks.check("split-scan", scan.returncode == 0, scan.stderr)
+    infer = run_library(root, ["infer-faces"], env=test_env(), timeout=120)
+    checks.check("split-infer", infer.returncode == 0, infer.stderr)
+    items = {item["filename"]: item for item in load_items(root)}
+    a1 = items.get("a1.png") or {}
+    b1 = items.get("b1.png") or {}
+    person_a = ((a1.get("faces") or [{}])[0] or {}).get("personId")
+    person_b = ((b1.get("faces") or [{}])[0] or {}).get("personId")
+    checks.check("split-two-people", bool(person_a) and bool(person_b) and person_a != person_b, f"{person_a} {person_b}")
+    name_json = artifacts / "split-name-ada.json"
+    name_json.write_text(json.dumps({"people": [{"id": person_a, "name": "Ada"}]}), encoding="utf-8")
+    named = run_library(root, ["annotate", a1["id"], "--json", str(name_json)], env=test_env())
+    checks.check("split-name-ada", named.returncode == 0, named.stderr)
+    merged = run_library(root, ["people", "merge", person_a, person_b], env=test_env())
+    checks.check("split-wrong-join", merged.returncode == 0, merged.stderr)
+    after_join = {item["filename"]: item for item in load_items(root)}
+    b1_face = (after_join.get("b1.png", {}).get("faces") or [{}])[0]
+    checks.check("split-b1-on-ada", b1_face.get("personId") == person_a, json.dumps(b1_face))
+    split = run_library(
+        root,
+        ["people", "split", person_a, "--item", after_join["b1.png"]["id"]],
+        env=test_env(),
+    )
+    checks.check("split-cli", split.returncode == 0, split.stderr)
+    split_body = parse_json(split.stdout) if split.returncode == 0 else {}
+    new_id = split_body.get("id")
+    checks.check("split-new-id", type(new_id) is str and new_id.startswith("person_") and new_id != person_a, json.dumps(split_body))
+    ada = json.loads((root / "catalog" / "people" / f"{person_a}.json").read_text(encoding="utf-8"))
+    checks.check("split-ada-remains", ada.get("name") == "Ada", json.dumps(ada))
+    created = json.loads((root / "catalog" / "people" / f"{new_id}.json").read_text(encoding="utf-8"))
+    checks.check("split-unnamed", created.get("name") is None, json.dumps(created))
+    after_split = {item["filename"]: item for item in load_items(root)}
+    a1_ids = {face.get("personId") for face in after_split.get("a1.png", {}).get("faces") or []}
+    b1_ids = {face.get("personId") for face in after_split.get("b1.png", {}).get("faces") or []}
+    checks.check("split-a1-still-ada", a1_ids == {person_a}, json.dumps(sorted(a1_ids)))
+    checks.check("split-b1-left", b1_ids == {new_id}, json.dumps(sorted(b1_ids)))
+    people = load_people(root)
+    names = {rec.get("id"): rec.get("name") for rec in people}
+    checks.check("split-ada-file", names.get(person_a) == "Ada", json.dumps(names))
+    checks.check("split-bob-person-gone", person_b not in names, json.dumps(names))
+    index = json.loads((root / "models" / "faces" / "index.json").read_text(encoding="utf-8"))
+    index_people = set((index.get("people") or {}).keys())
+    checks.check("split-index-both", {person_a, new_id} <= index_people, json.dumps(sorted(index_people)))
+    src_faces = (index.get("people") or {}).get(person_a, {}).get("faces") or []
+    new_faces = (index.get("people") or {}).get(new_id, {}).get("faces") or []
+    checks.check(
+        "split-index-moved",
+        any(ref.get("itemId") == after_join["b1.png"]["id"] for ref in new_faces)
+        and not any(ref.get("itemId") == after_join["b1.png"]["id"] for ref in src_faces),
+        json.dumps({"src": src_faces, "new": new_faces}),
+    )
+    missing = run_library(root, ["people", "split", "person_missing", "--item", after_join["b1.png"]["id"]], env=test_env())
+    missing_err = last_error(missing)
+    checks.check(
+        "split-missing-person",
+        missing.returncode != 0 and missing_err.get("error") in {"not-found", "invalid-argument"},
+        json.dumps(missing_err),
+    )
+    http_split: dict[str, Any] | None = None
+    server = None
+    owned: list[int] = []
+    try:
+        server, url, owned = start_owned(root)
+        status, http_split = request_json(
+            url + "api/people/split",
+            method="POST",
+            body={
+                "personId": person_a,
+                "itemId": after_split["b2.png"]["id"],
+                "box": (after_split.get("b2.png", {}).get("faces") or [{}])[0].get("box"),
+            },
+            timeout=10,
+        )
+        checks.check("split-http", status == 200 and (http_split or {}).get("id") != person_a, json.dumps(http_split))
+        ada_http = json.loads((root / "catalog" / "people" / f"{person_a}.json").read_text(encoding="utf-8"))
+        checks.check("split-http-ada-stays", ada_http.get("name") == "Ada", json.dumps(ada_http))
+    finally:
+        stop_owned(server, owned)
+    (artifacts / "split.json").write_text(
+        json.dumps({"from": person_a, "cli": split_body, "http": http_split}, indent=2) + "\n",
+        encoding="utf-8",
     )
 
 
@@ -440,6 +533,16 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     checks.check("js-choice-stop", "stopPropagation" in js and "person-face-choice" in js, "picker isolation")
     checks.check("js-choice-pointerdown", "pointerdown" in js and "choosePersonThumb" in js, "picker pointerdown")
     html = Path("library/web/index.html").read_text(encoding="utf-8")
+    checks.check("html-merge-dialog", 'id="confirm-merge"' in html and 'id="people-merge"' in html, "merge confirm")
+    checks.check("html-split-info-crops", 'id="viewer-face-crops"' in html, "info face crops")
+    checks.check("js-split-route", "/api/people/split" in js, "split HTTP")
+    checks.check("js-photos-together", 'id="photos-together"' in js or "photos-together" in js, "photos together")
+    i18n = Path("library/web/assets/i18n.js").read_text(encoding="utf-8")
+    checks.check(
+        "i18n-split-merge-together",
+        "notThisPerson" in i18n and "mergeInto" in i18n and "photosTogether" in i18n and "不是这个人" in i18n and "共同的照片" in i18n,
+        "zh split/merge/together",
+    )
     checks.check(
         "html-threshold-slider",
         'id="set-faceMatchThreshold"' in html

@@ -33,15 +33,18 @@ guess real names. Do not upload faces. Do not align-before-detect.
 - `GET /api/faces` reports ready/backend.
 - Info lists Unnamed; select + Person field names via existing annotate
   `{id,name}`. Search is existing `person=` / `q=`. `people merge` merges
-  embeddings too.
+  embeddings too. `people split` / `POST /api/people/split` takes one
+  boxed face off a person into a new Unnamed person and updates
+  `models/faces/index.json`. Light **Merge into…** confirm and **Not
+  this person** are UI on that same pair of operations.
 - `python -m tests.qa slice FACES` on fixture-owned roots.
 
 ## Out of scope
 
-YOLO / things inference, auto real-name guess, cloud upload, a merge
-wizard, F23. Align-before-detect is impossible without a box and stays
-out. Face-quality keys are Settings page controls (slider + min side)
-plus settings.json.
+YOLO / things inference, auto real-name guess, cloud upload, a multi-step
+merge wizard (confirm dialog is enough), F23. Align-before-detect is
+impossible without a box and stays out. Face-quality keys are Settings
+page controls (slider + min side) plus settings.json.
 
 ## Gate
 
@@ -57,5 +60,7 @@ The gate must:
 3. Name one person Ada via `{id,name}`; `?person=Ada` and `?q=Ada` hit
    that person's items only.
 4. Merge the other cluster into Ada; drop file gone; embeddings merged.
-5. Infer without models → `models-missing`.
-6. Original hashes unchanged. Exit 0 only when every proof ran.
+5. Wrongly joined Bob face split out of Ada; Ada remains named; new
+   Unnamed person gets that crop; index moves the face ref.
+6. Infer without models → `models-missing`.
+7. Original hashes unchanged. Exit 0 only when every proof ran.
