@@ -21,6 +21,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Evidence:
   [TASTE-SETTINGS](features/taste-settings/Rev1.0/assets/verify-1/result.json)
   31/31,
+  [folders](features/taste-settings/Rev1.0/assets/verify-1/settings-folders.png),
+  [slider](features/taste-settings/Rev1.0/assets/verify-1/settings-faces-slider.png),
   [FACES](features/faces/Rev1.0/assets/verify-3/result.json)
   93/93 (200 px face on 4032×3024 is 32 px on the 640 canvas vs 100 px
   on a 1280 tile; named-weak stays Unnamed),
