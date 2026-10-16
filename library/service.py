@@ -567,6 +567,15 @@ class Library:
         self._assert_idle()
         return remove_items(self.root, item_ids)
 
+    def move_items(self, body: dict[str, Any]) -> dict[str, Any]:
+        from library.move import move_items, read_move_body
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        spec = read_move_body(body)
+        return move_items(self.root, spec["itemIds"], spec)
+
     def delete_file(self, item_id: str) -> dict[str, Any]:
         from library.remove import delete_file
 

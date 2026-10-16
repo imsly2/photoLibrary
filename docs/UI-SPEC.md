@@ -285,11 +285,13 @@ apply/remove, not batch Delete file and not albums.
 is closed. It shows the count, **Favorite** (hearts every selected
 item; **Unfavorite** when all selected items are already hearted —
 the same toggle as one item), **Compare** (two or more selected;
-opens `#duplicate-compare` for those ids), **Remove** (same confirm
-as one item; catalog drop only; originals stay), and **Clear
-selection**. Esc clears the selection after other innermost UI.
-Delete with a multi-selection confirm-removes those ids. No batch
-Delete file.
+opens `#duplicate-compare` for those ids), **Move** (opens
+`#move-folder`: pick a registered source folder and/or browse to a
+subfolder; confirm shows count + destination; cancel moves nothing),
+**Remove** (same confirm as one item; catalog drop only; originals
+stay), and **Clear selection**. Esc clears the selection after other
+innermost UI. Delete with a multi-selection confirm-removes those
+ids. No batch Delete file.
 
 `#filter-duplicates` on `#filter-bar` opens `#duplicate-compare` for
 groups already in the catalog (same-hash locations, or the same
@@ -643,7 +645,7 @@ editor.
 | Feature | Bound |
 |---|---|
 | Filmstrip under the viewer | Neighbors; click jumps; hide in fullscreen if chrome hides. XnView / Lightroom. |
-| Multi-select + batch favorite / remove | Shift+click range, Ctrl+click toggle. Batch favorite or batch **remove-from-library** only. No batch Delete file, no batch export. |
+| Multi-select + batch favorite / remove | Shift+click range, Ctrl+click toggle. Batch favorite, **Move to folder**, or batch **remove-from-library**. No batch Delete file, no batch export. |
 | Print Ctrl+P | Browser print of the current still. No print suite. Photo Viewer had this. |
 | Copy path / copy file | Ctrl+C already copies the path (F18). Copy file (bytes to a folder) needs a CONTRACTS promotion first. |
 | Fit / Fill / 100% near the zoom slider | Visible twins of Ctrl+0 / Ctrl+1. Fill is Soon; Fit and 100% keys are already Must. |
