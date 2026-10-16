@@ -98,6 +98,7 @@ def prove_command_form(checks: Checks) -> None:
 
 
 def prove_existing_original(checks: Checks, workspace: Path) -> Path:
+    workspace = Path(workspace).resolve()
     if workspace.exists():
         shutil.rmtree(workspace)
     folder = workspace / "Iphone Backup"
@@ -394,8 +395,10 @@ def prove_last_known_fallback(checks: Checks, artifacts: Path, commands: list[st
 def prove_static_source(checks: Checks) -> None:
     favorites = (PRODUCT_ROOT / "library" / "favorites.py").read_text(encoding="utf-8")
     page = (PRODUCT_ROOT / "library" / "web" / "assets" / "library.js").read_text(encoding="utf-8")
+    i18n = (PRODUCT_ROOT / "library" / "web" / "assets" / "i18n.js").read_text(encoding="utf-8")
     html = (PRODUCT_ROOT / "library" / "web" / "index.html").read_text(encoding="utf-8")
     spec = (PRODUCT_ROOT / "docs" / "UI-SPEC.md").read_text(encoding="utf-8")
+    page_text = page + "\n" + i18n
     checks.check(
         "source-uses-explorer-select-argv",
         '["explorer.exe"' in favorites
@@ -410,7 +413,7 @@ def prove_static_source(checks: Checks) -> None:
     )
     checks.check(
         "source-ui-shows-missing-error",
-        "showRevealFailed" in page and "Original is not on this computer" in page,
+        "showRevealFailed" in page and "Original is not on this computer" in page_text,
         "library.js reveal error",
     )
     checks.check(
@@ -444,9 +447,9 @@ def prove_static_source(checks: Checks) -> None:
         "source-viewer-source-chrome",
         'id="viewer-source"' in html
         and "setVideoSourceState" in page
-        and "Loading full…" in page
-        and 'full: "Full"' in page
-        and "Preview — full unavailable" in page
+        and "Loading full…" in page_text
+        and 'full: "Full"' in page_text
+        and "Preview — full unavailable" in page_text
         and "resumeHoverIfNeeded" in page,
         "viewer source + hover resume",
     )

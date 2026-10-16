@@ -19,9 +19,13 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Plans: [taste-settings](features/taste-settings/Rev1.0/PLAN.md),
   [faces](features/faces/Rev1.0/PLAN.md).
   Evidence:
-  [TASTE-SETTINGS](features/taste-settings/Rev1.0/assets/verify-1/result.json),
-  [FACES](features/faces/Rev1.0/assets/verify-3/result.json),
-  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-6/result.json).
+  [TASTE-SETTINGS](features/taste-settings/Rev1.0/assets/verify-1/result.json)
+  31/31,
+  [FACES](features/faces/Rev1.0/assets/verify-3/result.json)
+  93/93 (200 px face on 4032×3024 is 32 px on the 640 canvas vs 100 px
+  on a 1280 tile; named-weak stays Unnamed),
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-6/result.json)
+  57/57 (spaces + lastKnown fallback).
 - 2026-10-14 — Lean deploy zip for USB / family PCs: double-click
   `PackDeploy.bat` (thin `pack-deploy.ps1` + `pack-deploy.py`). Writes
   `dist/photoLibrary-deploy.zip` and overwrites that file on re-run.
