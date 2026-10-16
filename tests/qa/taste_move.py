@@ -257,7 +257,11 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
             rescan_dest = run_library(root, ["rescan", dest_source["id"]], timeout=180)
             checks.check("rescan-dest-ok", rescan_dest.returncode == 0, rescan_dest.stderr[-200:])
             dest_summary = parse_summary(rescan_dest.stdout)
-            checks.check("rescan-dest-added-0", dest_summary.get("added") == 0, json.dumps(dest_summary))
+            checks.check(
+                "rescan-dest-skipped-moved",
+                int(dest_summary.get("skipped") or 0) >= 3,
+                json.dumps(dest_summary),
+            )
         checks.check("rescan-no-dupes", len(load_items(root)) == before_count, str(len(load_items(root))))
     finally:
         stop_owned(server, extra_pids=pids)

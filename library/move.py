@@ -468,6 +468,7 @@ def move_items(root: Path, item_ids: list[str], dest_spec: dict[str, Any]) -> di
             continue
         byte_ops: list[tuple[Path, Path, str]] = []
         rend_ops: list[tuple[Path, Path, str]] = []
+        committed = False
         try:
             for loc, src, dest_file, kind in planned:
                 if kind == "already" and same_path(src, dest_file):
@@ -510,6 +511,7 @@ def move_items(root: Path, item_ids: list[str], dest_spec: dict[str, Any]) -> di
             entry_id = _persist_item_move(
                 root, entry_id, item, after, sources_before, sources_after
             )
+            committed = True
             for src, dest_file, method in byte_ops:
                 if method == "copied" and src.exists():
                     try:
@@ -542,10 +544,11 @@ def move_items(root: Path, item_ids: list[str], dest_spec: dict[str, Any]) -> di
             }
             moved.append(row)
         except BaseException as exc:
-            for src, dest_file, method in reversed(rend_ops):
-                _rollback_bytes(src, dest_file, method)
-            for src, dest_file, method in reversed(byte_ops):
-                _rollback_bytes(src, dest_file, method)
+            if not committed:
+                for src, dest_file, method in reversed(rend_ops):
+                    _rollback_bytes(src, dest_file, method)
+                for src, dest_file, method in reversed(byte_ops):
+                    _rollback_bytes(src, dest_file, method)
             if isinstance(exc, SystemExit):
                 raise
             code = getattr(exc, "code", None)
