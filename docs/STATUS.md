@@ -4,6 +4,29 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Multi-select batch favorite / remove on
+  `cursor/batch-favorite-remove-4d93` after video UX PR #38
+  (`89c1104`). `#selection-bar` on the existing Ctrl/Shift grid
+  selection: count, Favorite / Unfavorite (same toggle as one item),
+  Remove with confirm, Clear. `POST /api/items/favorite` and
+  `POST /api/items/remove` reuse `catalog/favorites.json` and the
+  catalog-only drop (item JSON, favorite entry, source file pointers,
+  index) in one undo step. Original bytes stay. Generated
+  thumbs/proxies are not wiped (same as one-item Remove). Cancel
+  leaves the selection. Esc clears it. Chinese strings included.
+  Never auto-deletes on hash match. No batch Delete file, export, or
+  move-to-folder. ASCII launchers untouched. After Pull: restart
+  Library. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-select](features/taste-select/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SELECT](features/taste-select/Rev1.0/assets/verify-1/result.json)
+  59/59 (select N → batch favorite all true; confirm cancel leaves
+  them; confirm OK drops catalog/grid; originals stay; 已选 / 收藏 /
+  移出图库 / 清除选择),
+  [selection-bar](features/taste-select/Rev1.0/assets/verify-1/selection-bar.png),
+  [chinese](features/taste-select/Rev1.0/assets/verify-1/selection-bar-zh.png),
+  [confirm](features/taste-select/Rev1.0/assets/verify-1/batch-remove-confirm.png),
+  [after remove](features/taste-select/Rev1.0/assets/verify-1/after-batch-remove.png).
 - 2026-10-16 — Video UX leftovers on
   `cursor/video-ux-taste-9a03` after faces PR #37 (`b71e85d`).
   Viewer play/swap keep the fitted box (stage-local wheel/slider

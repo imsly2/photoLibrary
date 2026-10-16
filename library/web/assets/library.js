@@ -91,6 +91,13 @@
   const viewerTags = document.getElementById("viewer-tags");
   const removeItemBtn = document.getElementById("remove-item");
   const deleteFileBtn = document.getElementById("delete-file");
+  const selectionBar = document.getElementById("selection-bar");
+  const selectionCount = document.getElementById("selection-count");
+  const selectionFavoriteBtn = document.getElementById("selection-favorite");
+  const selectionRemoveBtn = document.getElementById("selection-remove");
+  const selectionClearBtn = document.getElementById("selection-clear");
+  const confirmRemoveTitle = document.getElementById("confirm-remove-title");
+  const confirmRemoveHelp = document.getElementById("confirm-remove-help");
   const scanStatus = document.getElementById("scan-status");
   const scanStatusText = document.getElementById("scan-status-text");
   const scanErrorText = document.getElementById("scan-error-text");
@@ -180,6 +187,7 @@
   let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "" };
   let selectedId = null;
   let pendingRemoveId = null;
+  let pendingRemoveIds = [];
   let lastSources = [];
   let gridSize = 0;
   let groupDates = true;
@@ -564,14 +572,78 @@
     syncPresentableSort();
   }
 
+  function selectionFavoriteOn() {
+    const ids = selectedIds.length ? selectedIds : selectedItemIds();
+    if (!ids.length) {
+      return true;
+    }
+    return !ids.every(function (id) {
+      return !!(itemById(id) && itemById(id).favorite);
+    });
+  }
+
+  function syncRemoveConfirm() {
+    const n = pendingRemoveIds.length || (pendingRemoveId ? 1 : 0);
+    if (confirmRemoveTitle) {
+      confirmRemoveTitle.textContent = n > 1 ? t("removeTitleMany", { n: n }) : t("removeTitle");
+    }
+    if (confirmRemoveHelp) {
+      confirmRemoveHelp.textContent = n > 1 ? t("removeHelpMany") : t("removeHelp");
+    }
+  }
+
   function syncSelectionChrome() {
-    const id = viewerItemId || selectedId;
-    const enabled = !!id;
+    const ids = selectedIds.slice();
+    const viewerOpen = !!(viewer && !viewer.hidden);
+    const showBar = ids.length >= 1 && !viewerOpen && currentView === "library";
+    if (selectionBar) {
+      selectionBar.hidden = !showBar;
+    }
+    if (selectionCount) {
+      selectionCount.textContent = t("selectedCount", { n: ids.length });
+    }
+    if (selectionFavoriteBtn) {
+      const on = selectionFavoriteOn();
+      selectionFavoriteBtn.textContent = on ? t("favorite") : t("unfavorite");
+      selectionFavoriteBtn.setAttribute("aria-pressed", on ? "false" : "true");
+      selectionFavoriteBtn.disabled = !ids.length;
+    }
+    if (selectionRemoveBtn) {
+      selectionRemoveBtn.disabled = !ids.length;
+    }
+    const id = viewerItemId || selectedId || (ids.length === 1 ? ids[0] : null);
     if (removeItemBtn) {
-      removeItemBtn.disabled = !enabled;
+      removeItemBtn.disabled = !(viewerItemId || ids.length || selectedId);
     }
     if (deleteFileBtn) {
-      deleteFileBtn.disabled = !enabled;
+      deleteFileBtn.disabled = !id || (!viewerItemId && ids.length > 1);
+    }
+  }
+
+  function clearSelection() {
+    selectedIds = [];
+    selectedId = null;
+    lastClickedId = null;
+    paintSelection();
+    syncSelectionChrome();
+  }
+
+  function pruneSelection() {
+    const live = {};
+    items.forEach(function (item) {
+      live[item.id] = true;
+    });
+    Object.keys(extraById).forEach(function (id) {
+      live[id] = true;
+    });
+    selectedIds = selectedIds.filter(function (id) {
+      return live[id];
+    });
+    if (selectedId && !live[selectedId]) {
+      selectedId = selectedIds.length ? selectedIds[selectedIds.length - 1] : null;
+    }
+    if (lastClickedId && !live[lastClickedId]) {
+      lastClickedId = selectedId;
     }
   }
 
@@ -710,6 +782,7 @@
       renderSettingsSources(lastSources);
       fillSettingsForm(settings);
     }
+    syncSelectionChrome();
   }
 
   function openSettings() {
@@ -2665,6 +2738,7 @@
     if (thingsLabels) {
       thingsLabels.innerHTML = "";
     }
+    syncSelectionChrome();
   }
 
   function closeViewer() {
@@ -4910,6 +4984,7 @@
         });
       }
       catalogReady = true;
+      pruneSelection();
       groups = nextGroups.length ? nextGroups : (arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy));
       renderPeople();
       const open = syncViewerIndex();
@@ -5209,13 +5284,19 @@
   }
 
   function askRemove(id) {
-    pendingRemoveId = id;
+    const ids = Array.isArray(id) ? id.filter(Boolean) : (id ? [id] : []);
+    pendingRemoveIds = ids;
+    pendingRemoveId = ids.length === 1 ? ids[0] : null;
+    syncRemoveConfirm();
     if (confirmRemove && confirmRemove.showModal) {
       confirmRemove.showModal();
       return;
     }
-    if (window.confirm("Remove from Library? The file stays on disk.")) {
-      performRemove(id);
+    const msg = ids.length > 1
+      ? t("removeTitleMany", { n: ids.length }) + " " + t("removeHelpMany")
+      : t("removeTitle") + " " + t("removeHelp");
+    if (window.confirm(msg)) {
+      performRemoveIds(ids);
     }
   }
 
@@ -5230,27 +5311,80 @@
     }
   }
 
-  function afterItemGone(id) {
-    if (viewerItemId === id) {
+  function afterItemsGone(ids) {
+    const gone = {};
+    (ids || []).forEach(function (id) {
+      gone[id] = true;
+    });
+    if (viewerItemId && gone[viewerItemId]) {
       hideViewerChrome();
       stayOnLiveOrigin({ library: true, view: "grid" }, "", true);
     }
-    if (selectedId === id) {
-      selectedId = null;
+    selectedIds = selectedIds.filter(function (id) {
+      return !gone[id];
+    });
+    if (selectedId && gone[selectedId]) {
+      selectedId = selectedIds.length ? selectedIds[selectedIds.length - 1] : null;
     }
     pendingRemoveId = null;
+    pendingRemoveIds = [];
     syncSelectionChrome();
     renderKey = "";
     return loadCatalog();
   }
 
-  function performRemove(id) {
-    return fetch("/api/items/" + encodeURIComponent(id) + "/remove", {
+  function afterItemGone(id) {
+    return afterItemsGone(id ? [id] : []);
+  }
+
+  function performRemoveIds(ids) {
+    const list = (ids || []).filter(Boolean);
+    if (!list.length) {
+      return Promise.resolve();
+    }
+    if (list.length === 1) {
+      return fetch("/api/items/" + encodeURIComponent(list[0]) + "/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      }).then(readJson).then(function () {
+        return afterItemsGone(list);
+      }).catch(function () {});
+    }
+    return fetch("/api/items/remove", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: "{}",
+      body: JSON.stringify({ itemIds: list }),
     }).then(readJson).then(function () {
-      return afterItemGone(id);
+      return afterItemsGone(list);
+    }).catch(function () {});
+  }
+
+  function performRemove(id) {
+    return performRemoveIds(id ? [id] : []);
+  }
+
+  function favoriteSelected() {
+    const ids = selectedIds.length ? selectedIds.slice() : selectedItemIds();
+    if (!ids.length) {
+      return Promise.resolve();
+    }
+    const on = selectionFavoriteOn();
+    return fetch("/api/items/favorite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemIds: ids, favorite: on }),
+    }).then(readJson).then(function (body) {
+      const rows = (body && body.items) || [];
+      rows.forEach(function (item) {
+        if (item && item.id) {
+          setItemFavorite(item.id, !!item.favorite);
+        }
+      });
+      ids.forEach(function (id) {
+        setItemFavorite(id, on);
+      });
+      syncSelectionChrome();
     }).catch(function () {});
   }
 
@@ -5266,10 +5400,32 @@
 
   if (removeItemBtn) {
     removeItemBtn.addEventListener("click", function () {
-      const id = viewerItemId || selectedId;
-      if (id) {
-        askRemove(id);
+      if (viewerItemId) {
+        askRemove(viewerItemId);
+        return;
       }
+      const ids = selectedIds.length ? selectedIds.slice() : selectedItemIds();
+      if (ids.length) {
+        askRemove(ids);
+      }
+    });
+  }
+  if (selectionFavoriteBtn) {
+    selectionFavoriteBtn.addEventListener("click", function () {
+      favoriteSelected();
+    });
+  }
+  if (selectionRemoveBtn) {
+    selectionRemoveBtn.addEventListener("click", function () {
+      const ids = selectedIds.slice();
+      if (ids.length) {
+        askRemove(ids);
+      }
+    });
+  }
+  if (selectionClearBtn) {
+    selectionClearBtn.addEventListener("click", function () {
+      clearSelection();
     });
   }
   if (deleteFileBtn) {
@@ -5290,10 +5446,10 @@
     }
     if (ok) {
       ok.addEventListener("click", function () {
-        const id = pendingRemoveId;
+        const ids = pendingRemoveIds.length ? pendingRemoveIds.slice() : (pendingRemoveId ? [pendingRemoveId] : []);
         confirmRemove.close();
-        if (id) {
-          performRemove(id);
+        if (ids.length) {
+          performRemoveIds(ids);
         }
       });
     }
@@ -5803,18 +5959,28 @@
         showView(previousView === "settings" ? "library" : previousView);
         return;
       }
+      if (selectedIds.length) {
+        event.preventDefault();
+        clearSelection();
+        return;
+      }
       return;
     }
     if (event.key === "Delete" && !textFocused()) {
       if ((confirmRemove && confirmRemove.open) || (confirmDeleteFile && confirmDeleteFile.open) || (confirmMerge && confirmMerge.open)) {
         return;
       }
-      const target = viewerItemId || selectedId;
-      if (!target) {
+      if (viewerItemId) {
+        event.preventDefault();
+        askRemove(viewerItemId);
+        return;
+      }
+      const ids = selectedIds.length ? selectedIds.slice() : (selectedId ? [selectedId] : []);
+      if (!ids.length) {
         return;
       }
       event.preventDefault();
-      askRemove(target);
+      askRemove(ids);
       return;
     }
     if (textFocused()) {

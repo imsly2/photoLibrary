@@ -1,0 +1,192 @@
+{
+  "start": {
+    "hidden": true,
+    "count": "0 selected",
+    "favorite": "Favorite",
+    "selected": [],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "false",
+      "IMG_1042.jpg": "false",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove from Library?",
+    "confirmHelp": "The file stays on disk.",
+    "lang": "en"
+  },
+  "two": {
+    "hidden": false,
+    "count": "2 selected",
+    "favorite": "Favorite",
+    "selected": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "false",
+      "IMG_1042.jpg": "false",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove from Library?",
+    "confirmHelp": "The file stays on disk.",
+    "lang": "en"
+  },
+  "shift": {
+    "hidden": false,
+    "count": "2 selected",
+    "favorite": "Favorite",
+    "selected": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "false",
+      "IMG_1042.jpg": "false",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove from Library?",
+    "confirmHelp": "The file stays on disk.",
+    "lang": "en"
+  },
+  "chinese": {
+    "hidden": false,
+    "count": "\u5df2\u9009 2 \u9879",
+    "favorite": "\u6536\u85cf",
+    "selected": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "false",
+      "IMG_1042.jpg": "false",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "\u4ece\u56fe\u5e93\u4e2d\u79fb\u9664\uff1f",
+    "confirmHelp": "\u78c1\u76d8\u4e0a\u7684\u6587\u4ef6\u4f1a\u4fdd\u7559\u3002",
+    "lang": "zh-Hans"
+  },
+  "hearted": {
+    "hidden": false,
+    "count": "2 selected",
+    "favorite": "Unfavorite",
+    "selected": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "true",
+      "IMG_1042.jpg": "true",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove from Library?",
+    "confirmHelp": "The file stays on disk.",
+    "lang": "en"
+  },
+  "confirm": {
+    "hidden": false,
+    "count": "2 selected",
+    "favorite": "Unfavorite",
+    "selected": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "true",
+      "IMG_1042.jpg": "true",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": true,
+    "confirmTitle": "Remove 2 items from Library?",
+    "confirmHelp": "The files stay on disk.",
+    "lang": "en"
+  },
+  "afterCancel": {
+    "hidden": false,
+    "count": "2 selected",
+    "favorite": "Unfavorite",
+    "selected": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+      "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+    ],
+    "files": [
+      "clip.mp4",
+      "near.jpg",
+      "IMG_1042.jpg",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "near.jpg": "true",
+      "IMG_1042.jpg": "true",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove 2 items from Library?",
+    "confirmHelp": "The files stay on disk.",
+    "lang": "en"
+  },
+  "afterRemove": {
+    "hidden": true,
+    "count": "0 selected",
+    "favorite": "Favorite",
+    "selected": [],
+    "files": [
+      "clip.mp4",
+      "no-exif.jpg"
+    ],
+    "hearts": {
+      "clip.mp4": "false",
+      "no-exif.jpg": "false"
+    },
+    "confirmOpen": false,
+    "confirmTitle": "Remove 2 items from Library?",
+    "confirmHelp": "The files stay on disk.",
+    "lang": "en"
+  }
+}

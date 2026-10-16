@@ -225,7 +225,7 @@ def build_parser() -> argparse.ArgumentParser:
     annotate.add_argument("--place")
 
     favorite = sub.add_parser("favorite")
-    favorite.add_argument("id")
+    favorite.add_argument("ids", nargs="+")
     favorite_on = favorite.add_mutually_exclusive_group(required=True)
     favorite_on.add_argument("--on", action="store_true")
     favorite_on.add_argument("--off", action="store_true")
@@ -237,7 +237,7 @@ def build_parser() -> argparse.ArgumentParser:
     open_item.add_argument("id")
 
     remove_cmd = sub.add_parser("remove")
-    remove_cmd.add_argument("id")
+    remove_cmd.add_argument("ids", nargs="+")
 
     delete_file_cmd = sub.add_parser("delete-file")
     delete_file_cmd.add_argument("id")
@@ -489,14 +489,26 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "favorite":
-            body = {"favorite": bool(args.on)}
-            result = _mutation(
-                root,
-                lambda: Library(root).set_favorite(args.id, bool(args.on)),
-                "PUT",
-                f"/api/items/{args.id}/favorite",
-                body,
-            )
+            on = bool(args.on)
+            ids = list(args.ids)
+            if len(ids) == 1:
+                body: dict[str, Any] = {"favorite": on}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).set_favorite(ids[0], on),
+                    "PUT",
+                    f"/api/items/{ids[0]}/favorite",
+                    body,
+                )
+            else:
+                body = {"itemIds": ids, "favorite": on}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).set_favorites(ids, on),
+                    "POST",
+                    "/api/items/favorite",
+                    body,
+                )
             _print_json(result)
             return 0
         if args.command == "reveal":
@@ -520,13 +532,23 @@ def main(argv: list[str] | None = None) -> int:
             _print_json(result)
             return 0
         if args.command == "remove":
-            result = _mutation(
-                root,
-                lambda: Library(root).remove(args.id),
-                "POST",
-                f"/api/items/{args.id}/remove",
-                {},
-            )
+            ids = list(args.ids)
+            if len(ids) == 1:
+                result = _mutation(
+                    root,
+                    lambda: Library(root).remove(ids[0]),
+                    "POST",
+                    f"/api/items/{ids[0]}/remove",
+                    {},
+                )
+            else:
+                result = _mutation(
+                    root,
+                    lambda: Library(root).remove_many(ids),
+                    "POST",
+                    "/api/items/remove",
+                    {"itemIds": ids},
+                )
             _print_json(result)
             return 0
         if args.command == "delete-file":

@@ -359,6 +359,13 @@ class Library:
         self.ensure_settings()
         return set_item_favorite(self.root, item_id, favorite)
 
+    def set_favorites(self, item_ids: list[str], favorite: bool) -> dict[str, Any]:
+        from library.favorites import set_items_favorite
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return set_items_favorite(self.root, item_ids, favorite)
+
     def places_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         self.recover()
         settings = self.ensure_settings()
@@ -545,6 +552,14 @@ class Library:
         self.ensure_settings()
         self._assert_idle()
         return remove_item(self.root, item_id)
+
+    def remove_many(self, item_ids: list[str]) -> dict[str, Any]:
+        from library.remove import remove_items
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return remove_items(self.root, item_ids)
 
     def delete_file(self, item_id: str) -> dict[str, Any]:
         from library.remove import delete_file
