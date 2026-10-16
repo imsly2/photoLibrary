@@ -1,0 +1,50 @@
+{
+  "grid": {
+    "names": [
+      "IMG_2001.jpg",
+      "LIVE_0001.jpg",
+      "near.jpg",
+      "far.jpg"
+    ],
+    "burst": [
+      {
+        "name": "IMG_2001.jpg",
+        "count": "3",
+        "badge": "BURST 3",
+        "rep": "1"
+      }
+    ],
+    "live": [
+      "LIVE_0001.jpg"
+    ],
+    "hiddenBurst": 0
+  },
+  "viewerStack": {
+    "hidden": false,
+    "count": 3,
+    "labels": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "print": {
+    "printed": true,
+    "src": "/api/media/e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80?which=original"
+  },
+  "zh": {
+    "print": "\u6253\u5370",
+    "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba",
+    "skip": "\u8df3\u8fc7",
+    "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba",
+    "burst": "\u8fde\u62cd 3",
+    "burstT": "\u8fde\u62cd 3"
+  },
+  "peopleBefore": [
+    "Ada",
+    "Bob"
+  ],
+  "peopleMerged": [
+    "Ada"
+  ]
+}

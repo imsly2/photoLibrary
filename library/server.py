@@ -496,6 +496,17 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.people_list())
                 return
+            if route == "/api/people/suggestions" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.people_suggestions())
+                return
+            if route == "/api/people/not-same" and method == "POST":
+                from library.people_suggest import read_not_same_payload
+
+                body = read_not_same_payload(self._read_json())
+                with self.lock:
+                    self._send_json(200, self.library.people_not_same(body["a"], body["b"]))
+                return
             if route == "/api/jobs" and method in {"GET", "HEAD"}:
                 with self.lock:
                     self._send_json(200, self.library.jobs_get())

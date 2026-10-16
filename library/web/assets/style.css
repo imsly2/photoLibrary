@@ -906,7 +906,8 @@ button:disabled {
   color: #d0d8ea;
 }
 
-#people-merge {
+#people-merge,
+#people-review {
   margin: 0.55rem 0 0;
   align-self: flex-start;
   background: #2a2a36;
@@ -919,11 +920,13 @@ button:disabled {
   cursor: pointer;
 }
 
-#people-merge:hover {
+#people-merge:hover,
+#people-review:hover {
   border-color: #4a7ad4;
 }
 
-#people-merge[hidden] {
+#people-merge[hidden],
+#people-review[hidden] {
   display: none;
 }
 
@@ -1422,6 +1425,11 @@ main > p {
 .missing-badge {
   background: #e8b84a;
   color: #1a1408;
+}
+
+.burst-badge {
+  background: #d8e4f8;
+  color: #1b1b22;
 }
 
 .info-missing {
@@ -2355,4 +2363,107 @@ dialog h2 {
 
 .settings-source.is-away .source-path {
   color: #e0a0a0;
+}
+
+#merge-wizard-pair {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  margin: 0.75rem 0 1rem;
+}
+
+.merge-wizard-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 7rem;
+}
+
+.merge-wizard-person .person-face {
+  width: 72px;
+  height: 72px;
+}
+
+#merge-wizard-progress {
+  margin: 0.25rem 0 0;
+  color: #9a9aa6;
+  font-size: 0.82rem;
+}
+
+#viewer-stack {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 4;
+}
+
+#viewer-stack[hidden] {
+  display: none;
+}
+
+#viewer-stack button {
+  border: 2px solid transparent;
+  background: #1b1b22;
+  color: #f2f2f4;
+  border-radius: 6px;
+  padding: 0;
+  min-width: 3.2rem;
+  min-height: 2.2rem;
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+#viewer-stack button img {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+#viewer-stack button[aria-current="true"] {
+  border-color: #4a7ad4;
+}
+
+#print-sheet {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #print-sheet,
+  #print-sheet * {
+    visibility: visible !important;
+  }
+
+  #print-sheet {
+    display: flex !important;
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+
+  #print-image {
+    display: block;
+    max-width: 100%;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
 }

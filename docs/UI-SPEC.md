@@ -115,7 +115,11 @@ The grid must not clear to an empty surface while zoom is in progress.
 
 Tiles use one badge system. Video cells show a VIDEO badge (play mark plus
 the word VIDEO, and duration when `metadata.durationSec` exists). Live
-cells keep the existing LIVE badge (`.live-badge` text `LIVE`). Badges sit
+cells keep the existing LIVE badge (`.live-badge` text `LIVE`). Burst
+stills share one tile with `.burst-badge` (`BURST n` / `连拍 n`); non-
+representative members stay out of the wall. Unpaired same-stem
+still+short-video pairs also share a LIVE tile. Open the tile to expand
+the stack in `#viewer-stack`. Originals stay. Badges sit
 on the tile and do not crop the media.
 
 The All / Photos / Videos / Favorites controls live on `#filter-bar`
@@ -219,7 +223,10 @@ rendition is ready. Naming stays available in Info.
 
 With two or more people selected, `#people-merge` **Merge into…** opens
 `#confirm-merge` (keep = first selected). Confirm runs existing
-`POST /api/people/merge` for each other person. No extra wizard.
+`POST /api/people/merge` for each other person. `#people-review` **Review
+matches** opens `#merge-wizard` on `GET /api/people/suggestions` pairs
+(face-centroid cosine). Merge / Not same / Skip; nothing merges until
+Merge. Not same is `POST /api/people/not-same`. Skip only advances.
 
 When two or more people are selected, `#photos-together` is the first
 collapsible group after Favorites: **Photos together (N)** is the AND
@@ -337,7 +344,8 @@ requests retain text and show inline error. Unnamed people (local face clusters
 or `{name:null}`) appear as **Unnamed** in Info. Clicking Unnamed selects that
 person for naming and focuses Person; Enter then sends `annotate` `{id,name}`
 and does not close the viewer. Clicking a named person still filters the grid.
-Person merge is the existing CLI/HTTP operation; no merge wizard is authorized.
+Person merge is the existing CLI/HTTP operation. The light Review matches
+wizard only suggests pairs; it never merges without a Merge click.
 Labels update after rename/merge. Local face inference never paints a guessed
 real name.
 
@@ -646,7 +654,7 @@ editor.
 |---|---|
 | Filmstrip under the viewer | Neighbors; click jumps; hide in fullscreen if chrome hides. XnView / Lightroom. |
 | Multi-select + batch favorite / remove | Shift+click range, Ctrl+click toggle. Batch favorite, **Move to folder**, or batch **remove-from-library**. No batch Delete file, no batch export. |
-| Print Ctrl+P | Browser print of the current still. No print suite. Photo Viewer had this. |
+| Print Ctrl+P | Browser print of the current still, fit to the page (`#print-sheet`). No print suite. Photo Viewer had this. **This tip.** |
 | Copy path / copy file | Ctrl+C already copies the path (F18). Copy file (bytes to a folder) needs a CONTRACTS promotion first. |
 | Fit / Fill / 100% near the zoom slider | `#viewer-fit` / `#viewer-fill` beside the zoom slider. Ctrl+0 Fit; `V` toggles Fill. 100% stays Ctrl+1. |
 | Tile badges LIVE / ♥ / missing | LIVE and heart already exist. `.missing-badge` on the tile plus Info `#info-missing` when `available` is false. No auto-delete. Locate if the last-known folder is here. |

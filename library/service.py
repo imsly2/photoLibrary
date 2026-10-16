@@ -356,7 +356,9 @@ class Library:
                 raise fail("invalid-argument")
             allowed = set(load_recent_ids(self.root))
             items = [item for item in items if item.get("id") in allowed]
-        return _sort_items(items, query, settings)
+        from library.stacks import annotate_stacks
+
+        return annotate_stacks(_sort_items(items, query, settings))
 
     def duplicates_list(self) -> dict[str, Any]:
         from library.duplicates import list_duplicate_groups
@@ -650,6 +652,20 @@ class Library:
         self.recover()
         self.ensure_settings()
         return people_index(self.root)
+
+    def people_suggestions(self) -> dict[str, Any]:
+        from library.people_suggest import people_suggestions
+
+        self.recover()
+        self.ensure_settings()
+        return people_suggestions(self.root)
+
+    def people_not_same(self, a: str, b: str) -> dict[str, Any]:
+        from library.people_suggest import remember_not_same
+
+        self.recover()
+        self.ensure_settings()
+        return remember_not_same(self.root, a, b)
 
     def person_update(self, person_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         from library.people_panel import apply_person_update

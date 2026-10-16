@@ -23,8 +23,8 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    slider, Dates Years/Months/Days/Off, Ctrl+wheel on Size only,
    `#viewer-nav` / `#viewer-zoom-slider` / `#viewer-scrub`. Do **not**
    restore a Level slider, header search, or People/Places/Things search chips.
-3. Do **not** start S13/S14 or Soon rows (filmstrip, multi-select, Print,
-   `?`, recently added) while a Must checklist row is red. Globe polish
+3. Do **not** start S13/S14 or leftover Soon rows (filmstrip as a
+   general strip, export) while a Must checklist row is red. Globe polish
    beyond F12 waits. macOS/Linux launch is pinned.
 4. Optional local AI is stacked on this tip: `setup-geo`,
    `setup-ml objects`, `setup-ml faces`. Processing Pause/Start drives
@@ -38,12 +38,12 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (recently added / keyboard / missing original):** Restart
-Library. After a scan, **Recently added** shows those new items.
-Settings folder **Show photos** (or the Folder control) filters to that
-source. Press `?` for the shortcut list; `V` toggles Fit/Fill in the
-viewer. Tiles and Info mark a missing original; Locate opens the last
-known folder when it is still there. Nothing is auto-deleted. Re-run
-Faces only if a wrongly joined cluster still needs a fresh detect.
+**After Pull (merge wizard / Live-burst / Print):** Restart Library.
+People **Review matches** steps likely same-person pairs (Merge / Not
+same / Skip). Nothing merges until Merge. Live and burst stacks share
+one tile with a badge; open the viewer to expand. Ctrl+P prints the
+open picture fit to the page. Recently added, `?`, Fit/Fill, and the
+missing-original badge stay from #42. Nothing is auto-deleted or
+auto-merged. Re-run Faces only if a cluster still needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.

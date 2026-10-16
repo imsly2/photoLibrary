@@ -1,0 +1,428 @@
+{
+  "slice": "TASTE-BURN",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "html-review",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-wizard",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-wizard-merge",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-wizard-not-same",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-wizard-skip",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-stack",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-print",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-help-print",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-suggestions",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-not-same",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-no-auto-merge",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-stack-hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-print",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "css-print",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-review-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-not-same-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-skip-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-print-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-burst-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-auto-delete-js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-auto-merge-js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unit-burst-kind",
+      "pass": true,
+      "detail": "{\"id\": \"burst:b1\", \"kind\": \"burst\", \"itemIds\": [\"b1\", \"b2\", \"b3\"], \"count\": 3, \"index\": 0, \"representative\": true}"
+    },
+    {
+      "name": "unit-burst-count",
+      "pass": true,
+      "detail": "[\"b1\", \"b2\", \"b3\"]"
+    },
+    {
+      "name": "unit-burst-rep",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unit-burst-hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unit-live-self",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unit-other-none",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unit-stem-live",
+      "pass": true,
+      "detail": "{\"id\": \"live:stem-still\", \"kind\": \"live\", \"itemIds\": [\"stem-still\", \"stem-motion\"], \"count\": 2, \"index\": 0, \"representative\": true}"
+    },
+    {
+      "name": "unit-stem-motion-hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has-near-far",
+      "pass": true,
+      "detail": "[\"IMG_2001.jpg\", \"IMG_2002.jpg\", \"IMG_2003.jpg\", \"LIVE_0001.jpg\", \"far.jpg\", \"near.jpg\"]"
+    },
+    {
+      "name": "live-kind",
+      "pass": true,
+      "detail": "\"live\""
+    },
+    {
+      "name": "live-stack",
+      "pass": true,
+      "detail": "{\"id\": \"live:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\", \"kind\": \"live\", \"itemIds\": [\"db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1\"], \"count\": 1, \"index\": 0, \"representative\": true}"
+    },
+    {
+      "name": "burst-scanned",
+      "pass": true,
+      "detail": "[\"IMG_2002.jpg\", \"IMG_2003.jpg\", \"IMG_2001.jpg\", \"LIVE_0001.jpg\", \"near.jpg\", \"far.jpg\"]"
+    },
+    {
+      "name": "burst-kind",
+      "pass": true,
+      "detail": "{\"id\": \"burst:e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80\", \"kind\": \"burst\", \"itemIds\": [\"e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80\", \"8dae7e64ee6954123590f187d6cb4dada781a9a00f86c870f85f5e551d440fa9\", \"4186219444c9e944e6c0eaf80f3b5bace4370ee2b89474e347ac653c8868dcfe\"], \"count\": 3, \"index\": 0, \"representative\": true}"
+    },
+    {
+      "name": "burst-count",
+      "pass": true,
+      "detail": "[\"e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80\", \"8dae7e64ee6954123590f187d6cb4dada781a9a00f86c870f85f5e551d440fa9\", \"4186219444c9e944e6c0eaf80f3b5bace4370ee2b89474e347ac653c8868dcfe\"]"
+    },
+    {
+      "name": "burst-one-rep",
+      "pass": true,
+      "detail": "[\"IMG_2001.jpg\", \"IMG_2002.jpg\", \"IMG_2003.jpg\"]"
+    },
+    {
+      "name": "disk-no-stack",
+      "pass": true,
+      "detail": "[\"capturedAt\", \"capturedAtSource\", \"contentIdentifier\", \"faces\", \"filename\", \"id\", \"kind\", \"locations\", \"metadata\", \"placeId\", \"renditions\", \"schemaVersion\", \"things\"]"
+    },
+    {
+      "name": "burst-bytes-same",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live-bytes-same",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "annotate-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "person-ids",
+      "pass": true,
+      "detail": "{\"ada\": \"person_ead55a62f5cf\", \"bob\": \"person_94efe2237d47\"}"
+    },
+    {
+      "name": "suggest-empty-no-index",
+      "pass": true,
+      "detail": "{\"suggestions\": []}"
+    },
+    {
+      "name": "suggest-one",
+      "pass": true,
+      "detail": "[{\"keepId\": \"person_ead55a62f5cf\", \"dropId\": \"person_94efe2237d47\", \"score\": 0.98, \"keep\": {\"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, \"drop\": {\"id\": \"person_94efe2237d47\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}}]"
+    },
+    {
+      "name": "suggest-ada-bob",
+      "pass": true,
+      "detail": "{\"keepId\": \"person_ead55a62f5cf\", \"dropId\": \"person_94efe2237d47\", \"score\": 0.98, \"keep\": {\"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, \"drop\": {\"id\": \"person_94efe2237d47\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}}"
+    },
+    {
+      "name": "suggest-score",
+      "pass": true,
+      "detail": "{\"keepId\": \"person_ead55a62f5cf\", \"dropId\": \"person_94efe2237d47\", \"score\": 0.98, \"keep\": {\"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, \"drop\": {\"id\": \"person_94efe2237d47\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}}"
+    },
+    {
+      "name": "suggest-no-merge",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "not-same-self",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "http-suggest-200",
+      "pass": true,
+      "detail": "{\"suggestions\": [{\"keepId\": \"person_ead55a62f5cf\", \"dropId\": \"person_94efe2237d47\", \"score\": 0.98, \"keep\": {\"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, \"drop\": {\"id\": \"person_94efe2237d47\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}}]}"
+    },
+    {
+      "name": "http-suggest-one",
+      "pass": true,
+      "detail": "{\"suggestions\": [{\"keepId\": \"person_ead55a62f5cf\", \"dropId\": \"person_94efe2237d47\", \"score\": 0.98, \"keep\": {\"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\"}, \"thumbnailItemId\": null}, \"drop\": {\"id\": \"person_94efe2237d47\", \"name\": \"Bob\", \"itemCount\": 1, \"visible\": true, \"named\": true, \"thumbnail\": {\"itemId\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}, \"thumbnailItemId\": null}}]}"
+    },
+    {
+      "name": "http-items-200",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-burst",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-live",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-not-same-200",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"pairs\": [[\"person_94efe2237d47\", \"person_ead55a62f5cf\"]]}"
+    },
+    {
+      "name": "not-same-hides",
+      "pass": true,
+      "detail": "{\"suggestions\": []}"
+    },
+    {
+      "name": "not-same-no-merge",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "merge-still-explicit",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_ead55a62f5cf\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "merge-kept-ada",
+      "pass": true,
+      "detail": "[\"Ada\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "grid-hides-burst-members",
+      "pass": true,
+      "detail": "[\"IMG_2001.jpg\", \"LIVE_0001.jpg\", \"near.jpg\", \"far.jpg\"]"
+    },
+    {
+      "name": "grid-shows-burst-rep",
+      "pass": true,
+      "detail": "[\"IMG_2001.jpg\", \"LIVE_0001.jpg\", \"near.jpg\", \"far.jpg\"]"
+    },
+    {
+      "name": "grid-one-burst",
+      "pass": true,
+      "detail": "[{\"name\": \"IMG_2001.jpg\", \"count\": \"3\", \"badge\": \"BURST 3\", \"rep\": \"1\"}]"
+    },
+    {
+      "name": "grid-burst-badge",
+      "pass": true,
+      "detail": "[{\"name\": \"IMG_2001.jpg\", \"count\": \"3\", \"badge\": \"BURST 3\", \"rep\": \"1\"}]"
+    },
+    {
+      "name": "grid-live-badge",
+      "pass": true,
+      "detail": "[\"LIVE_0001.jpg\"]"
+    },
+    {
+      "name": "viewer-stack-open",
+      "pass": true,
+      "detail": "{\"hidden\": false, \"count\": 3, \"labels\": [\"1\", \"2\", \"3\"]}"
+    },
+    {
+      "name": "print-ctrl-p",
+      "pass": true,
+      "detail": "{\"printed\": true, \"src\": \"/api/media/e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80?which=original\"}"
+    },
+    {
+      "name": "print-src",
+      "pass": true,
+      "detail": "{\"printed\": true, \"src\": \"/api/media/e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80?which=original\"}"
+    },
+    {
+      "name": "zh-print",
+      "pass": true,
+      "detail": "{\"print\": \"\\u6253\\u5370\", \"review\": \"\\u6838\\u5bf9\\u53ef\\u80fd\\u662f\\u540c\\u4e00\\u4eba\", \"skip\": \"\\u8df3\\u8fc7\", \"notSame\": \"\\u4e0d\\u662f\\u540c\\u4e00\\u4eba\", \"burst\": \"\\u8fde\\u62cd 3\", \"burstT\": \"\\u8fde\\u62cd 3\"}"
+    },
+    {
+      "name": "zh-review",
+      "pass": true,
+      "detail": "{\"print\": \"\\u6253\\u5370\", \"review\": \"\\u6838\\u5bf9\\u53ef\\u80fd\\u662f\\u540c\\u4e00\\u4eba\", \"skip\": \"\\u8df3\\u8fc7\", \"notSame\": \"\\u4e0d\\u662f\\u540c\\u4e00\\u4eba\", \"burst\": \"\\u8fde\\u62cd 3\", \"burstT\": \"\\u8fde\\u62cd 3\"}"
+    },
+    {
+      "name": "zh-skip",
+      "pass": true,
+      "detail": "{\"print\": \"\\u6253\\u5370\", \"review\": \"\\u6838\\u5bf9\\u53ef\\u80fd\\u662f\\u540c\\u4e00\\u4eba\", \"skip\": \"\\u8df3\\u8fc7\", \"notSame\": \"\\u4e0d\\u662f\\u540c\\u4e00\\u4eba\", \"burst\": \"\\u8fde\\u62cd 3\", \"burstT\": \"\\u8fde\\u62cd 3\"}"
+    },
+    {
+      "name": "zh-not-same",
+      "pass": true,
+      "detail": "{\"print\": \"\\u6253\\u5370\", \"review\": \"\\u6838\\u5bf9\\u53ef\\u80fd\\u662f\\u540c\\u4e00\\u4eba\", \"skip\": \"\\u8df3\\u8fc7\", \"notSame\": \"\\u4e0d\\u662f\\u540c\\u4e00\\u4eba\", \"burst\": \"\\u8fde\\u62cd 3\", \"burstT\": \"\\u8fde\\u62cd 3\"}"
+    },
+    {
+      "name": "zh-burst",
+      "pass": true,
+      "detail": "{\"print\": \"\\u6253\\u5370\", \"review\": \"\\u6838\\u5bf9\\u53ef\\u80fd\\u662f\\u540c\\u4e00\\u4eba\", \"skip\": \"\\u8df3\\u8fc7\", \"notSame\": \"\\u4e0d\\u662f\\u540c\\u4e00\\u4eba\", \"burst\": \"\\u8fde\\u62cd 3\", \"burstT\": \"\\u8fde\\u62cd 3\"}"
+    },
+    {
+      "name": "people-ada-bob",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "esc-no-merge",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "skip-no-merge",
+      "pass": true,
+      "detail": "[\"Ada\", \"Bob\"]"
+    },
+    {
+      "name": "wizard-merge-ada",
+      "pass": true,
+      "detail": "[\"Ada\"]"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "344565befcf5c3e15748b8052ccdd812b8b179c1",
+  "commands": [
+    "python -m library people suggestions",
+    "python -m library people not-same <a> <b>",
+    "python -m library items"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/stdout.log",
+    "burn-api.json": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/burn-api.json",
+    "burn-browser.json": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/burn-browser.json",
+    "burst-tile.png": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/burst-tile.png",
+    "burst-viewer.png": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/burst-viewer.png",
+    "merge-wizard.png": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/merge-wizard.png",
+    "chinese-burn.png": "/workspace/docs/features/taste-burn/Rev1.0/assets/verify-1/chinese-burn.png"
+  }
+}

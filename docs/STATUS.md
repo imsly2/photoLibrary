@@ -4,6 +4,29 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Flight burn fillers after PR #42 (`9a610ef`) on
+  `cursor/flight-fillers-643d`. **Review matches** wizard suggests
+  same-person pairs by face cosine; Merge / Not same / Skip; never
+  merges without a click (builds on Merge into… #37). Live and burst
+  stacks share one tile with a badge and expand in the viewer;
+  originals stay. **Print** Ctrl+P fits the open still to the page.
+  Chinese strings included. ASCII launchers untouched. Already on
+  main (skipped): recently added, folder filter, `?`, Fit/Fill,
+  missing-original badge (#42); multi-select / Move / duplicates
+  (#39–#41). After Pull: restart Library. Does not close a Check.
+  16/22 unchanged.
+  Plan: [taste-burn](features/taste-burn/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-BURN](features/taste-burn/Rev1.0/assets/verify-1/result.json)
+  **80/80** (Ada←Bob suggestion does not merge until Merge; Not same
+  hides the pair; Skip/Esc leave Ada and Bob; burst is one `BURST 3`
+  tile; live stack; item JSON has no stack rewrite; originals
+  unchanged; Ctrl+P fills `#print-sheet`; zh 核对可能是同一人 /
+  不是同一人 / 跳过 / 打印 / 连拍 3),
+  [burst tile](features/taste-burn/Rev1.0/assets/verify-1/burst-tile.png),
+  [burst viewer](features/taste-burn/Rev1.0/assets/verify-1/burst-viewer.png),
+  [merge wizard](features/taste-burn/Rev1.0/assets/verify-1/merge-wizard.png),
+  [chinese](features/taste-burn/Rev1.0/assets/verify-1/chinese-burn.png).
 - 2026-10-16 — Flight fillers after Move PR #41 (`bd583a5`) on
   `cursor/flight-fillers-aef8`. **Recently added** plus per-folder
   browse (`source=` / Settings Show photos). `?` opens the shortcut
