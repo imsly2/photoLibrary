@@ -1,0 +1,33 @@
+{
+  "ada": "person_ead55a62f5cf",
+  "bob": "person_94efe2237d47",
+  "suggestions": [
+    {
+      "keepId": "person_ead55a62f5cf",
+      "dropId": "person_94efe2237d47",
+      "score": 0.98,
+      "keep": {
+        "id": "person_ead55a62f5cf",
+        "name": "Ada",
+        "itemCount": 1,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"
+        },
+        "thumbnailItemId": null
+      },
+      "drop": {
+        "id": "person_94efe2237d47",
+        "name": "Bob",
+        "itemCount": 1,
+        "visible": true,
+        "named": true,
+        "thumbnail": {
+          "itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"
+        },
+        "thumbnailItemId": null
+      }
+    }
+  ]
+}

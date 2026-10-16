@@ -4435,6 +4435,42 @@
     return map;
   }
 
+  function syncStackBadge(cell, item) {
+    if (!cell || !item) {
+      return;
+    }
+    const badges = cell.querySelector(".tile-badges");
+    if (!badges) {
+      return;
+    }
+    const stack = item.stack || null;
+    if (stack) {
+      cell.dataset.stackKind = stack.kind || "";
+      cell.dataset.stackCount = String(stack.count || 1);
+      cell.dataset.stackRep = stack.representative ? "1" : "0";
+    } else {
+      delete cell.dataset.stackKind;
+      delete cell.dataset.stackCount;
+      delete cell.dataset.stackRep;
+    }
+    let burst = badges.querySelector(".burst-badge");
+    if (stack && stack.kind === "burst" && stack.count > 1) {
+      if (!burst) {
+        burst = document.createElement("span");
+        burst.className = "burst-badge tile-badge";
+        const live = badges.querySelector(".live-badge, .video-badge");
+        if (live) {
+          badges.insertBefore(burst, live);
+        } else {
+          badges.insertBefore(burst, badges.firstChild);
+        }
+      }
+      burst.textContent = t("burstBadge", { n: stack.count });
+    } else if (burst) {
+      burst.remove();
+    }
+  }
+
   function takeCell(existing, id, slot) {
     const key = (slot || "grid") + ":" + id;
     let cell = existing[key];
@@ -4442,6 +4478,7 @@
       delete existing[key];
       const item = itemById(id);
       syncHeartButton(cell.querySelector(".heart"), !!(item && item.favorite));
+      syncStackBadge(cell, item);
       const placeholder = cell.querySelector(".placeholder");
       if (placeholder) {
         placeholder.textContent = t("previewUnavailable");

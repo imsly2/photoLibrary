@@ -101,6 +101,10 @@ def _keep_drop(left: dict[str, Any], right: dict[str, Any]) -> tuple[dict[str, A
     right_count = int(right.get("itemCount") or 0)
     if left_count != right_count:
         return (left, right) if left_count > right_count else (right, left)
+    left_name = (left.get("name") or "").casefold()
+    right_name = (right.get("name") or "").casefold()
+    if left_name != right_name:
+        return (left, right) if left_name < right_name else (right, left)
     if left["id"] <= right["id"]:
         return left, right
     return right, left

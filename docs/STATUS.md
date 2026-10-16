@@ -18,7 +18,15 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Plan: [taste-burn](features/taste-burn/Rev1.0/PLAN.md).
   Evidence:
   [TASTE-BURN](features/taste-burn/Rev1.0/assets/verify-1/result.json)
-  (pass count filled after the verifier run).
+  **80/80** (Ada←Bob suggestion does not merge until Merge; Not same
+  hides the pair; Skip/Esc leave Ada and Bob; burst is one `BURST 3`
+  tile; live stack; item JSON has no stack rewrite; originals
+  unchanged; Ctrl+P fills `#print-sheet`; zh 核对可能是同一人 /
+  不是同一人 / 跳过 / 打印 / 连拍 3),
+  [burst tile](features/taste-burn/Rev1.0/assets/verify-1/burst-tile.png),
+  [burst viewer](features/taste-burn/Rev1.0/assets/verify-1/burst-viewer.png),
+  [merge wizard](features/taste-burn/Rev1.0/assets/verify-1/merge-wizard.png),
+  [chinese](features/taste-burn/Rev1.0/assets/verify-1/chinese-burn.png).
 - 2026-10-16 — Flight fillers after Move PR #41 (`bd583a5`) on
   `cursor/flight-fillers-aef8`. **Recently added** plus per-folder
   browse (`source=` / Settings Show photos). `?` opens the shortcut

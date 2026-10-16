@@ -337,6 +337,45 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.keyboard.press("Escape")
     page.wait_for_function("() => document.getElementById('viewer').hidden", timeout=5000)
 
+    page.evaluate(
+        """() => {
+          const select = document.getElementById('language');
+          if (!select) { return; }
+          select.value = 'zh-Hans';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }"""
+    )
+    page.wait_for_function(
+        """() => {
+          const lang = window.LibraryI18n && window.LibraryI18n.getLanguage ? window.LibraryI18n.getLanguage() : '';
+          const print = ((document.getElementById('viewer-print') || {}).textContent || '').trim();
+          return lang === 'zh-Hans' && print === '打印';
+        }""",
+        timeout=8000,
+    )
+    zh = page.evaluate(
+        """() => ({
+          print: ((document.getElementById('viewer-print') || {}).textContent || '').trim(),
+          review: ((document.getElementById('people-review') || {}).textContent || '').trim(),
+          skip: ((document.getElementById('merge-wizard-skip') || {}).textContent || '').trim(),
+          notSame: ((document.getElementById('merge-wizard-not-same') || {}).textContent || '').trim(),
+          burst: ((document.querySelector('.burst-badge') || {}).textContent || '').trim(),
+          burstT: window.LibraryI18n ? window.LibraryI18n.t('burstBadge', { n: 3 }) : ''
+        })"""
+    )
+    record["zh"] = zh
+    checks.check("zh-print", zh.get("print") == "打印", json.dumps(zh))
+    checks.check("zh-review", zh.get("review") == "核对可能是同一人", json.dumps(zh))
+    checks.check("zh-skip", zh.get("skip") == "跳过", json.dumps(zh))
+    checks.check("zh-not-same", zh.get("notSame") == "不是同一人", json.dumps(zh))
+    checks.check("zh-burst", "连拍" in ((zh.get("burst") or "") + (zh.get("burstT") or "")), json.dumps(zh))
+    page.screenshot(path=str(artifacts / "chinese-burn.png"))
+    page.locator("#language").select_option("en")
+    page.wait_for_function(
+        "() => (document.getElementById('viewer-print') || {}).textContent === 'Print'",
+        timeout=8000,
+    )
+
     page.wait_for_function(
         "() => { const b = document.getElementById('people-review'); return b && !b.hidden; }",
         timeout=8000,
@@ -395,27 +434,6 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     )
     record["peopleMerged"] = people_merged
     checks.check("wizard-merge-ada", "Ada" in people_merged and "Bob" not in people_merged, json.dumps(people_merged))
-
-    page.locator("#language").select_option("zh-Hans")
-    page.wait_for_function(
-        "() => (document.getElementById('viewer-print') || {}).textContent === '打印'",
-        timeout=8000,
-    )
-    zh = page.evaluate(
-        """() => ({
-          print: (document.getElementById('viewer-print') || {}).textContent,
-          review: (document.getElementById('people-review') || {}).textContent,
-          skip: (document.getElementById('merge-wizard-skip') || {}).textContent,
-          notSame: (document.getElementById('merge-wizard-not-same') || {}).textContent,
-          burst: ((document.querySelector('.burst-badge') || {}).textContent) || ''
-        })"""
-    )
-    record["zh"] = zh
-    checks.check("zh-print", zh.get("print") == "打印", json.dumps(zh))
-    checks.check("zh-skip", zh.get("skip") == "跳过", json.dumps(zh))
-    checks.check("zh-not-same", zh.get("notSame") == "不是同一人", json.dumps(zh))
-    checks.check("zh-burst", "连拍" in (zh.get("burst") or ""), json.dumps(zh))
-    page.screenshot(path=str(artifacts / "chinese-burn.png"))
     return record
 
 

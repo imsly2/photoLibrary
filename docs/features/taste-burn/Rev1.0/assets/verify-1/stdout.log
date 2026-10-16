@@ -1,0 +1,81 @@
+PASS html-review
+PASS html-wizard
+PASS html-wizard-merge
+PASS html-wizard-not-same
+PASS html-wizard-skip
+PASS html-stack
+PASS html-print
+PASS html-help-print
+PASS js-suggestions
+PASS js-not-same
+PASS js-no-auto-merge
+PASS js-stack-hidden
+PASS js-print
+PASS css-print
+PASS i18n-review-zh
+PASS i18n-not-same-zh
+PASS i18n-skip-zh
+PASS i18n-print-zh
+PASS i18n-burst-zh
+PASS no-auto-delete-js
+PASS no-auto-merge-js
+PASS unit-burst-kind: {"id": "burst:b1", "kind": "burst", "itemIds": ["b1", "b2", "b3"], "count": 3, "index": 0, "representative": true}
+PASS unit-burst-count: ["b1", "b2", "b3"]
+PASS unit-burst-rep
+PASS unit-burst-hidden
+PASS unit-live-self
+PASS unit-other-none
+PASS unit-stem-live: {"id": "live:stem-still", "kind": "live", "itemIds": ["stem-still", "stem-motion"], "count": 2, "index": 0, "representative": true}
+PASS unit-stem-motion-hidden
+PASS scan-ok
+PASS has-near-far: ["IMG_2001.jpg", "IMG_2002.jpg", "IMG_2003.jpg", "LIVE_0001.jpg", "far.jpg", "near.jpg"]
+PASS live-kind: "live"
+PASS live-stack: {"id": "live:db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1", "kind": "live", "itemIds": ["db41b6416b1a15516faf563b79a5ee55c54c0297ed9cea19482539fc5495dcd1"], "count": 1, "index": 0, "representative": true}
+PASS burst-scanned: ["IMG_2002.jpg", "IMG_2003.jpg", "IMG_2001.jpg", "LIVE_0001.jpg", "near.jpg", "far.jpg"]
+PASS burst-kind: {"id": "burst:e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80", "kind": "burst", "itemIds": ["e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80", "8dae7e64ee6954123590f187d6cb4dada781a9a00f86c870f85f5e551d440fa9", "4186219444c9e944e6c0eaf80f3b5bace4370ee2b89474e347ac653c8868dcfe"], "count": 3, "index": 0, "representative": true}
+PASS burst-count: ["e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80", "8dae7e64ee6954123590f187d6cb4dada781a9a00f86c870f85f5e551d440fa9", "4186219444c9e944e6c0eaf80f3b5bace4370ee2b89474e347ac653c8868dcfe"]
+PASS burst-one-rep: ["IMG_2001.jpg", "IMG_2002.jpg", "IMG_2003.jpg"]
+PASS disk-no-stack: ["capturedAt", "capturedAtSource", "contentIdentifier", "faces", "filename", "id", "kind", "locations", "metadata", "placeId", "renditions", "schemaVersion", "things"]
+PASS burst-bytes-same
+PASS live-bytes-same
+PASS annotate-ok
+PASS person-ids: {"ada": "person_ead55a62f5cf", "bob": "person_94efe2237d47"}
+PASS suggest-empty-no-index: {"suggestions": []}
+PASS suggest-one: [{"keepId": "person_ead55a62f5cf", "dropId": "person_94efe2237d47", "score": 0.98, "keep": {"id": "person_ead55a62f5cf", "name": "Ada", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, "drop": {"id": "person_94efe2237d47", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}}]
+PASS suggest-ada-bob: {"keepId": "person_ead55a62f5cf", "dropId": "person_94efe2237d47", "score": 0.98, "keep": {"id": "person_ead55a62f5cf", "name": "Ada", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, "drop": {"id": "person_94efe2237d47", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}}
+PASS suggest-score: {"keepId": "person_ead55a62f5cf", "dropId": "person_94efe2237d47", "score": 0.98, "keep": {"id": "person_ead55a62f5cf", "name": "Ada", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, "drop": {"id": "person_94efe2237d47", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}}
+PASS suggest-no-merge: ["Ada", "Bob"]
+PASS not-same-self: {"error":"invalid-argument"}
+
+PASS http-suggest-200: {"suggestions": [{"keepId": "person_ead55a62f5cf", "dropId": "person_94efe2237d47", "score": 0.98, "keep": {"id": "person_ead55a62f5cf", "name": "Ada", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, "drop": {"id": "person_94efe2237d47", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}}]}
+PASS http-suggest-one: {"suggestions": [{"keepId": "person_ead55a62f5cf", "dropId": "person_94efe2237d47", "score": 0.98, "keep": {"id": "person_ead55a62f5cf", "name": "Ada", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a"}, "thumbnailItemId": null}, "drop": {"id": "person_94efe2237d47", "name": "Bob", "itemCount": 1, "visible": true, "named": true, "thumbnail": {"itemId": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}, "thumbnailItemId": null}}]}
+PASS http-items-200
+PASS http-burst
+PASS http-live
+PASS http-not-same-200: {"schemaVersion": 1, "pairs": [["person_94efe2237d47", "person_ead55a62f5cf"]]}
+PASS not-same-hides: {"suggestions": []}
+PASS not-same-no-merge: ["Ada", "Bob"]
+PASS merge-still-explicit: {"schemaVersion": 1, "id": "person_ead55a62f5cf", "name": "Ada"}
+PASS merge-kept-ada: ["Ada"]
+PASS playwright-import
+PASS grid-hides-burst-members: ["IMG_2001.jpg", "LIVE_0001.jpg", "near.jpg", "far.jpg"]
+PASS grid-shows-burst-rep: ["IMG_2001.jpg", "LIVE_0001.jpg", "near.jpg", "far.jpg"]
+PASS grid-one-burst: [{"name": "IMG_2001.jpg", "count": "3", "badge": "BURST 3", "rep": "1"}]
+PASS grid-burst-badge: [{"name": "IMG_2001.jpg", "count": "3", "badge": "BURST 3", "rep": "1"}]
+PASS grid-live-badge: ["LIVE_0001.jpg"]
+PASS viewer-stack-open: {"hidden": false, "count": 3, "labels": ["1", "2", "3"]}
+PASS print-ctrl-p: {"printed": true, "src": "/api/media/e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80?which=original"}
+PASS print-src: {"printed": true, "src": "/api/media/e9cb2ffda4a7bbc5e378e886674355e13913bda1cec9f7b2824fc6d62319ee80?which=original"}
+PASS zh-print: {"print": "\u6253\u5370", "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba", "skip": "\u8df3\u8fc7", "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba", "burst": "\u8fde\u62cd 3", "burstT": "\u8fde\u62cd 3"}
+PASS zh-review: {"print": "\u6253\u5370", "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba", "skip": "\u8df3\u8fc7", "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba", "burst": "\u8fde\u62cd 3", "burstT": "\u8fde\u62cd 3"}
+PASS zh-skip: {"print": "\u6253\u5370", "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba", "skip": "\u8df3\u8fc7", "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba", "burst": "\u8fde\u62cd 3", "burstT": "\u8fde\u62cd 3"}
+PASS zh-not-same: {"print": "\u6253\u5370", "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba", "skip": "\u8df3\u8fc7", "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba", "burst": "\u8fde\u62cd 3", "burstT": "\u8fde\u62cd 3"}
+PASS zh-burst: {"print": "\u6253\u5370", "review": "\u6838\u5bf9\u53ef\u80fd\u662f\u540c\u4e00\u4eba", "skip": "\u8df3\u8fc7", "notSame": "\u4e0d\u662f\u540c\u4e00\u4eba", "burst": "\u8fde\u62cd 3", "burstT": "\u8fde\u62cd 3"}
+PASS people-ada-bob: ["Ada", "Bob"]
+PASS esc-no-merge: ["Ada", "Bob"]
+PASS skip-no-merge: ["Ada", "Bob"]
+PASS wizard-merge-ada: ["Ada"]
+PASS no-console-errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)", "Failed to load resource: the server responded with a status of 404 (Not Found)"]
+PASS original-fixture-bytes
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
