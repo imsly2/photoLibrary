@@ -41,6 +41,48 @@ MEDIA_RELS = (
     "formats/clip.mov",
 )
 
+GARDEN_MP4 = "a/2023-06-01-garden.mp4"
+GARDEN_MOV = "a/2023-06-01-garden.mov"
+
+
+def write_scene_clip(photo: Path, dest: Path, container: str = "mp4") -> bool:
+    """Short clip from a real still — not lavfi testsrc / color bars."""
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fmt = "mov" if container == "mov" else "mp4"
+    proc = subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-loop",
+            "1",
+            "-i",
+            str(photo),
+            "-f",
+            "lavfi",
+            "-i",
+            "sine=frequency=330:sample_rate=44100",
+            "-t",
+            "3",
+            "-vf",
+            "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,format=yuv420p",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-c:a",
+            "aac",
+            "-shortest",
+            "-movflags",
+            "+faststart",
+            "-f",
+            fmt,
+            str(dest),
+        ],
+        capture_output=True,
+        check=False,
+    )
+    return proc.returncode == 0 and dest.is_file() and dest.stat().st_size > 0
+
 
 def wait_catalog(base: str, names: tuple[str, ...] | list[str], timeout: float = 90) -> list[dict[str, Any]]:
     deadline = time.time() + timeout
@@ -115,6 +157,36 @@ def box_delta(before: dict[str, float], after: dict[str, float]) -> float:
         abs((after.get("top") or 0) - (before.get("top") or 0)),
         abs((after.get("width") or 0) - (before.get("width") or 0)),
         abs((after.get("height") or 0) - (before.get("height") or 0)),
+    )
+
+
+def video_center(box: dict[str, float]) -> tuple[float, float]:
+    return (
+        (box.get("left") or 0) + (box.get("width") or 0) / 2,
+        (box.get("top") or 0) + (box.get("height") or 0) / 2,
+    )
+
+
+def zoom_chrome(page: Any) -> dict[str, Any]:
+    return page.evaluate(
+        """() => {
+          const slider = document.getElementById('viewer-zoom-slider');
+          const pct = document.getElementById('viewer-zoom-pct');
+          const video = document.getElementById('viewer-video');
+          const stage = document.getElementById('viewer-stage');
+          const sr = stage ? stage.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+          const vr = video ? video.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+          const pctText = pct ? (pct.textContent || '').trim() : '';
+          const sliderVal = slider ? Number(slider.value) : 0;
+          return {
+            slider: sliderVal,
+            pctText: pctText,
+            pct: parseInt(pctText, 10) || 0,
+            match: sliderVal === (parseInt(pctText, 10) || 0),
+            stage: { left: sr.left, top: sr.top, width: sr.width, height: sr.height },
+            video: { left: vr.left, top: vr.top, width: vr.width, height: vr.height },
+          };
+        }"""
     )
 
 
@@ -297,6 +369,31 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         "ctrl-wheel-keeps-dates",
         after_wheel.get("dateGroup") == date_before_wheel and after_wheel.get("level") == level_before_wheel,
         json.dumps(record["ctrlWheelSize"]),
+    )
+    slider_after_wheel = page.evaluate("() => document.getElementById('size-slider') && document.getElementById('size-slider').value")
+    record["sizeSliderAfterWheel"] = slider_after_wheel
+    checks.check("ctrl-wheel-updates-size-slider", slider_after_wheel == "1", str(slider_after_wheel))
+    page.locator("#size-slider").evaluate(
+        """(el) => {
+          el.value = '3';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '192'",
+        timeout=5000,
+    )
+    size_from_slider = page.evaluate(
+        """() => ({
+          slider: document.getElementById('size-slider').value,
+          size: document.getElementById('grid').dataset.size,
+        })"""
+    )
+    record["sizeSliderDrivesGrid"] = size_from_slider
+    checks.check(
+        "size-slider-drives-grid",
+        size_from_slider.get("slider") == "3" and size_from_slider.get("size") == "192",
+        json.dumps(size_from_slider),
     )
     page.locator("#size-slider").evaluate(
         """(el) => {
@@ -492,6 +589,20 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         json.dumps(proxy_state),
     )
     checks.check("play-keeps-fit", play_jump <= 2, json.dumps({"before": before_play, "after": after_play, "delta": play_jump}))
+    stage_box = media_box(page, "#viewer-stage")
+    play_cx, play_cy = video_center(after_play)
+    stage_cx, stage_cy = video_center(stage_box)
+    record["playCenter"] = {
+        "video": {"cx": play_cx, "cy": play_cy},
+        "stage": {"cx": stage_cx, "cy": stage_cy},
+        "dx": abs(play_cx - stage_cx),
+        "dy": abs(play_cy - stage_cy),
+    }
+    checks.check(
+        "play-stays-centered",
+        record["playCenter"]["dx"] <= 24 and record["playCenter"]["dy"] <= 24,
+        json.dumps(record["playCenter"]),
+    )
 
     page.wait_for_timeout(400)
     later = video_state(page)
@@ -508,14 +619,22 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     record["sourceAfterSwap"] = later_source
     later_src = later.get("src") or ""
     if "which=original" in later_src:
-        checks.check("swap-keeps-time", (later.get("currentTime") or 0) > 0.05, json.dumps(later))
+        checks.check(
+            "swap-keeps-time",
+            (later.get("currentTime") or 0) >= max(0.05, (proxy_state.get("currentTime") or 0) - 0.2),
+            json.dumps({"proxy": proxy_state, "later": later}),
+        )
         checks.check(
             "viewer-source-says-original",
             later_source.get("text") == "Original" and later_source.get("hidden") is False,
             json.dumps(later_source),
         )
     elif "which=playback" in later_src:
-        checks.check("swap-keeps-time", (later.get("currentTime") or 0) > 0.05, json.dumps(later))
+        checks.check(
+            "swap-keeps-time",
+            (later.get("currentTime") or 0) >= max(0.05, (proxy_state.get("currentTime") or 0) - 0.2),
+            json.dumps({"proxy": proxy_state, "later": later}),
+        )
         checks.check(
             "viewer-source-says-full",
             later_source.get("text") == "Full" and later_source.get("hidden") is False,
@@ -602,6 +721,57 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
         post_wheel["width"] > pre_wheel["width"] + 2 and post_wheel["height"] > pre_wheel["height"] + 2,
         json.dumps(record["wheelZoom"]),
     )
+    pre_cx, pre_cy = video_center(pre_wheel)
+    post_cx, post_cy = video_center(post_wheel)
+    record["wheelCenter"] = {
+        "before": {"cx": pre_cx, "cy": pre_cy},
+        "after": {"cx": post_cx, "cy": post_cy},
+        "dx": abs(post_cx - pre_cx),
+        "dy": abs(post_cy - pre_cy),
+    }
+    checks.check(
+        "plain-wheel-keeps-center",
+        record["wheelCenter"]["dx"] <= 36 and record["wheelCenter"]["dy"] <= 36,
+        json.dumps(record["wheelCenter"]),
+    )
+    wheel_chrome = zoom_chrome(page)
+    record["wheelZoomChrome"] = wheel_chrome
+    checks.check("wheel-zoom-chrome-sync", wheel_chrome.get("match") is True, json.dumps(wheel_chrome))
+    page.locator("#viewer-zoom-slider").evaluate(
+        """(el) => {
+          el.value = '140';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    slider_chrome = zoom_chrome(page)
+    record["sliderZoomChrome"] = slider_chrome
+    checks.check(
+        "slider-updates-percent",
+        slider_chrome.get("pct") == 140 and slider_chrome.get("slider") == 140,
+        json.dumps(slider_chrome),
+    )
+    page.evaluate(
+        """() => {
+          const slider = document.getElementById('viewer-zoom-slider');
+          if (slider) { slider.blur(); }
+        }"""
+    )
+    page.keyboard.down("Control")
+    page.keyboard.press("=")
+    page.keyboard.up("Control")
+    key_chrome = zoom_chrome(page)
+    record["keyZoomChrome"] = key_chrome
+    checks.check(
+        "percent-updates-slider",
+        key_chrome.get("match") is True and (key_chrome.get("slider") or 0) > 140,
+        json.dumps(key_chrome),
+    )
+    page.locator("#viewer-zoom-slider").evaluate(
+        """(el) => {
+          el.value = '100';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
 
     page.screenshot(path=str(artifacts / "video-viewer.png"), full_page=False)
     page.locator("#viewer-back").click()
@@ -661,6 +831,99 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
     page.screenshot(path=str(artifacts / "video-mov.png"), full_page=False)
     page.locator("#viewer-back").click()
     wait_viewer_closed(page)
+
+    garden = page.locator('#grid .cell[data-slot="grid"][data-filename="2023-06-01-garden.mp4"]')
+    if garden.count() > 0:
+        garden.click()
+        page.wait_for_function(
+            """() => {
+              const viewer = document.getElementById('viewer');
+              const video = document.getElementById('viewer-video');
+              if (!viewer || viewer.hidden || !video || video.hidden) return false;
+              const src = video.currentSrc || video.getAttribute('src') || '';
+              return src.indexOf('which=proxy') !== -1 && video.paused === false;
+            }""",
+            timeout=15000,
+        )
+        garden_proxy = video_state(page)
+        garden_before = media_box(page, "#viewer-video")
+        page.wait_for_timeout(500)
+        page.wait_for_function(
+            """() => {
+              const video = document.getElementById('viewer-video');
+              const src = video ? (video.currentSrc || video.getAttribute('src') || '') : '';
+              return src.indexOf('which=original') !== -1 && video.paused === false;
+            }""",
+            timeout=20000,
+        )
+        garden_after = video_state(page)
+        garden_jump = box_delta(
+            garden_before,
+            {
+                "left": garden_after.get("left") or 0,
+                "top": garden_after.get("top") or 0,
+                "width": garden_after.get("width") or 0,
+                "height": garden_after.get("height") or 0,
+            },
+        )
+        record["gardenSwap"] = {
+            "before": garden_before,
+            "proxy": garden_proxy,
+            "after": garden_after,
+            "jump": garden_jump,
+        }
+        checks.check("garden-play-starts-proxy", "which=proxy" in (garden_proxy.get("src") or ""), json.dumps(garden_proxy))
+        checks.check("garden-swap-to-original", "which=original" in (garden_after.get("src") or ""), json.dumps(garden_after))
+        checks.check("garden-swap-keeps-fit", garden_jump <= 3, json.dumps(record["gardenSwap"]))
+        checks.check(
+            "garden-swap-keeps-time",
+            (garden_after.get("currentTime") or 0) >= max(0.2, (garden_proxy.get("currentTime") or 0) - 0.25),
+            json.dumps(record["gardenSwap"]),
+        )
+        garden_scrub = page.evaluate(
+            """() => {
+              const wrap = document.getElementById('viewer-scrub-wrap');
+              return { present: !!wrap, hidden: !wrap || wrap.hidden };
+            }"""
+        )
+        checks.check("garden-viewer-scrub", garden_scrub.get("present") is True and garden_scrub.get("hidden") is False, json.dumps(garden_scrub))
+        page.locator("#viewer-back").click()
+        wait_viewer_closed(page)
+
+    page.locator("#language").select_option("zh-Hans")
+    page.wait_for_function(
+        "() => document.documentElement.lang === 'zh-Hans'",
+        timeout=5000,
+    )
+    page.locator("#size-slider").evaluate(
+        """(el) => {
+          el.value = '0';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }"""
+    )
+    page.wait_for_function(
+        "() => document.getElementById('grid') && document.getElementById('grid').dataset.size === '72'",
+        timeout=5000,
+    )
+    page.locator('.cell[data-slot="grid"][data-kind="video"]').first.hover()
+    page.wait_for_function(
+        "() => document.querySelector('.tile-scrub')",
+        timeout=8000,
+    )
+    zh_chrome = page.evaluate(
+        """() => {
+          const scrub = document.querySelector('.tile-scrub');
+          const viewerScrub = document.getElementById('viewer-scrub');
+          return {
+            tile: scrub ? (scrub.getAttribute('aria-label') || '') : '',
+            viewer: viewerScrub ? (viewerScrub.getAttribute('aria-label') || '') : '',
+            size: (document.querySelector('label[for="size-slider"] span') || {}).textContent || '',
+          };
+        }"""
+    )
+    record["zhChrome"] = zh_chrome
+    checks.check("zh-tile-scrub", zh_chrome.get("tile") == "预览进度", json.dumps(zh_chrome))
+    checks.check("zh-viewer-scrub", zh_chrome.get("viewer") == "视频进度", json.dumps(zh_chrome))
     page.screenshot(path=str(artifacts / "video-grid.png"), full_page=False)
     return record
 
@@ -974,7 +1237,12 @@ def run_slice(root: Path, artifacts: Path) -> int:
         fresh_root(isolated)
         folder = artifacts / "scan-media"
         copy_rels(media_src, folder, MEDIA_RELS)
-        scanned = run_library(isolated, ["scan", str(folder), "--serve-from-there"], timeout=180)
+        photo = folder / "a" / "IMG_1042.jpg"
+        garden_mp4 = folder / GARDEN_MP4
+        garden_mov = folder / GARDEN_MOV
+        checks.check("scene-clip-mp4", write_scene_clip(photo, garden_mp4, "mp4"), str(garden_mp4))
+        checks.check("scene-clip-mov", write_scene_clip(photo, garden_mov, "mov"), str(garden_mov))
+        scanned = run_library(isolated, ["scan", str(folder), "--serve-from-there"], timeout=240)
         commands.append("python -m library scan <folder> --serve-from-there")
         checks.check("scan-ok", scanned.returncode == 0, scanned.stderr[-200:])
         units = prove_playback_units(checks, media_src, artifacts)
@@ -990,9 +1258,15 @@ def run_slice(root: Path, artifacts: Path) -> int:
             checks.check("launch-" + str(item["name"]), bool(item["pass"]), str(item.get("detail") or ""))
         server, url, pids = start_owned(isolated)
         try:
-            items = wait_catalog(url.rstrip("/"), ("IMG_1042.jpg", "clip.mp4", "clip.mov"))
+            items = wait_catalog(
+                url.rstrip("/"),
+                ("IMG_1042.jpg", "clip.mp4", "clip.mov", "2023-06-01-garden.mp4", "2023-06-01-garden.mov"),
+                timeout=180,
+            )
             checks.check("has-clip", find_item(items, "clip.mp4") is not None)
             checks.check("has-mov", find_item(items, "clip.mov") is not None)
+            checks.check("has-garden-mp4", find_item(items, "2023-06-01-garden.mp4") is not None)
+            checks.check("has-garden-mov", find_item(items, "2023-06-01-garden.mov") is not None)
             http_record = prove_playback_http(checks, url, items)
             (artifacts / "playback-http.json").write_text(json.dumps(http_record, indent=2) + "\n", encoding="utf-8")
             extra["playback-http.json"] = str(artifacts / "playback-http.json")

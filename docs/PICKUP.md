@@ -38,8 +38,9 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (faces split / merge UI / Photos together):** Restart
-Library. Re-run Faces only if a wrongly joined cluster still needs a
-fresh detect; split and merge do not require it.
+**After Pull (video UX leftovers):** Restart Library. Do **not**
+delete `playback.mp4` / `*.tmp` and requeue — encode defaults did
+not change. Re-run Faces only if a wrongly joined cluster still
+needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.

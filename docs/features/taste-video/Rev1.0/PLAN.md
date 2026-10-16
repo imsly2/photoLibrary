@@ -43,6 +43,22 @@ F2. Hover play + `.tile-scrub` work in dated Years/Months (default
 leaves tiles still.
 Do not fight a separate version-label PR.
 
+## Leftovers (2026-10-16 burn)
+
+Steve’s 2026-10-13 video UX notes that were still wrong on `main`
+after PR #37 (`b71e85d`):
+
+1. Viewer play must keep the fitted/filled box — no jump to a corner.
+2. Small Size tiles still hover-play the proxy, covering the tile.
+3. Size slider and Ctrl+wheel stay in sync both ways; viewer zoom
+   slider and `#viewer-zoom-pct` stay in sync both ways.
+4. Plain wheel zooms the viewer around the cursor (stage-local coords).
+5. Progressive proxy→original/playback keeps `currentTime` and fit.
+6. `#viewer-scrub` and `.tile-scrub` show at every tile Size.
+
+Do not change encode defaults (proxy ≤480 CRF 28; playback ≤1280 CRF 23).
+Do not auto-delete playback files. Skip export. Do not touch Win7 ids.
+
 ## Gate
 
 ```

@@ -1209,6 +1209,8 @@ main > p {
   cursor: pointer;
   overflow: hidden;
   flex: 0 0 var(--cell);
+  font: inherit;
+  color: inherit;
 }
 
 .tile-badges {
@@ -1508,7 +1510,7 @@ dialog h2 {
   max-height: none;
   background: transparent;
   user-select: none;
-  object-fit: contain;
+  object-fit: fill;
   object-position: center;
 }
 
@@ -1893,15 +1895,17 @@ dialog h2 {
 
 .tile-scrub {
   position: absolute;
-  left: 0.2rem;
-  right: 0.2rem;
-  bottom: 0.2rem;
-  z-index: 4;
-  height: 0.55rem;
+  left: 0.12rem;
+  right: 0.12rem;
+  bottom: 0.12rem;
+  z-index: 5;
+  height: max(0.5rem, 8px);
+  min-height: 8px;
   margin: 0;
   padding: 0;
   accent-color: #4a7ac8;
   pointer-events: auto;
+  opacity: 1;
 }
 
 #viewer-nav {

@@ -1,0 +1,316 @@
+{
+  "datedYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "datedYearsScrub": {
+    "before": 0.0663,
+    "after": 1.2,
+    "target": "600",
+    "expected": 1.2
+  },
+  "datedMonthsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "datedMonthsScrub": {
+    "before": 1.2554,
+    "after": 0.4,
+    "target": "200",
+    "expected": 0.4
+  },
+  "sliders": {
+    "hasLevelSlider": false,
+    "sizeLabel": "Size",
+    "sizeAria": "Grid density thumbnail size",
+    "sizeMax": "7",
+    "dateGroup": true,
+    "dateOptions": [
+      "years",
+      "months",
+      "days",
+      "off"
+    ],
+    "viewerZoom": true,
+    "viewerZoomPct": true,
+    "zoomInBottom": false,
+    "gridHasViewerZoom": false,
+    "rangeCount": 2
+  },
+  "ctrlWheelSize": {
+    "dateBefore": "days",
+    "levelBefore": "all",
+    "after": {
+      "size": "104",
+      "dateGroup": "days",
+      "level": "all"
+    }
+  },
+  "sizeSliderAfterWheel": "1",
+  "sizeSliderDrivesGrid": {
+    "slider": "3",
+    "size": "192"
+  },
+  "smallHover": {
+    "ok": true,
+    "cell": {
+      "width": 74,
+      "height": 74
+    },
+    "video": {
+      "width": 72,
+      "height": 72,
+      "left": 21,
+      "top": 182.75
+    },
+    "fillDx": 2,
+    "fillDy": 2,
+    "playing": true,
+    "hasScrub": true,
+    "size": "72"
+  },
+  "tileScrub": {
+    "before": 0.0851,
+    "after": 1.2,
+    "target": "600",
+    "expected": 1.2
+  },
+  "openFromTile": {
+    "tileTime": 1.2,
+    "viewer": {
+      "src": "http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=proxy",
+      "paused": false,
+      "hidden": false,
+      "currentTime": 1.2346,
+      "duration": 2,
+      "usingProxy": true,
+      "left": 230.3333282470703,
+      "top": 63.390625,
+      "width": 749.3333740234375,
+      "height": 562
+    }
+  },
+  "datesKeepSize": {
+    "before": "72",
+    "after": "72"
+  },
+  "wallYearsHover": {
+    "videoCount": 1,
+    "playingCount": 1,
+    "muted": true,
+    "volumeZero": true,
+    "looped": true,
+    "ids": [
+      "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+    ]
+  },
+  "beforePlay": {
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "proxyPlay": {
+    "src": "http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.0511,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "playJumpPx": 0.0,
+  "sourceChrome": {
+    "text": "Original",
+    "hidden": false,
+    "state": "original",
+    "usingProxy": false,
+    "src": "http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original"
+  },
+  "playCenter": {
+    "video": {
+      "cx": 605.0000152587891,
+      "cy": 344.390625
+    },
+    "stage": {
+      "cx": 605.109375,
+      "cy": 329.5390625
+    },
+    "dx": 0.1093597412109375,
+    "dy": 14.8515625
+  },
+  "afterSwap": {
+    "src": "http://127.0.0.1:18766/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=original",
+    "paused": false,
+    "hidden": false,
+    "currentTime": 0.371446,
+    "duration": 2,
+    "usingProxy": false,
+    "left": 230.3333282470703,
+    "top": 63.390625,
+    "width": 749.3333740234375,
+    "height": 562
+  },
+  "sourceAfterSwap": {
+    "text": "Original",
+    "hidden": false,
+    "state": "original"
+  },
+  "viewerScrub": {
+    "present": true,
+    "hidden": false,
+    "value": "111"
+  },
+  "chromeLayout": {
+    "scrubInBottom": true,
+    "zoomInBottom": false,
+    "zoomVertical": true,
+    "pctText": "100%",
+    "scrubBelowStage": true,
+    "bottomBelowStage": true
+  },
+  "viewerScrubSeek": 1.4,
+  "wheelZoom": {
+    "before": {
+      "left": 230.3333282470703,
+      "top": 63.390625,
+      "width": 749.3333740234375,
+      "height": 562
+    },
+    "after": {
+      "left": 192.86666870117188,
+      "top": 35.329689025878906,
+      "width": 824.2666015625,
+      "height": 618.2000122070312
+    }
+  },
+  "wheelCenter": {
+    "before": {
+      "cx": 605.0000152587891,
+      "cy": 344.390625
+    },
+    "after": {
+      "cx": 604.9999694824219,
+      "cy": 344.42969512939453
+    },
+    "dx": 4.57763671875e-05,
+    "dy": 0.03907012939453125
+  },
+  "wheelZoomChrome": {
+    "slider": 110,
+    "pctText": "110%",
+    "pct": 110,
+    "match": true,
+    "stage": {
+      "left": 0,
+      "top": 63.390625,
+      "width": 1210.21875,
+      "height": 532.296875
+    },
+    "video": {
+      "left": 192.86666870117188,
+      "top": 35.329689025878906,
+      "width": 824.2666015625,
+      "height": 618.2000122070312
+    }
+  },
+  "sliderZoomChrome": {
+    "slider": 140,
+    "pctText": "140%",
+    "pct": 140,
+    "match": true,
+    "stage": {
+      "left": 0,
+      "top": 63.390625,
+      "width": 1210.21875,
+      "height": 532.296875
+    },
+    "video": {
+      "left": 80.46666717529297,
+      "top": -44.868751525878906,
+      "width": 1049.066650390625,
+      "height": 786.800048828125
+    }
+  },
+  "keyZoomChrome": {
+    "slider": 154,
+    "pctText": "154%",
+    "pct": 154,
+    "match": true,
+    "stage": {
+      "left": 0,
+      "top": 63.390625,
+      "width": 1210.21875,
+      "height": 532.296875
+    },
+    "video": {
+      "left": 28.013334274291992,
+      "top": -82.29469299316406,
+      "width": 1153.9732666015625,
+      "height": 865.47998046875
+    }
+  },
+  "movSource": {
+    "text": "Full",
+    "hidden": false,
+    "state": "full",
+    "usingProxy": false,
+    "usingPlayback": true,
+    "src": "http://127.0.0.1:18766/api/media/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9?which=playback",
+    "muted": false,
+    "paused": false
+  },
+  "gardenSwap": {
+    "before": {
+      "left": 105.44444274902344,
+      "top": 63.390625,
+      "width": 999.111083984375,
+      "height": 562
+    },
+    "proxy": {
+      "src": "http://127.0.0.1:18766/api/media/cee44fc5f62d4df5bceb7995f712d51462de43429971ee095b49a7805c17a73e?which=proxy",
+      "paused": false,
+      "hidden": false,
+      "currentTime": 0.0134,
+      "duration": 3,
+      "usingProxy": true,
+      "left": 105.44444274902344,
+      "top": 63.390625,
+      "width": 999.111083984375,
+      "height": 562
+    },
+    "after": {
+      "src": "http://127.0.0.1:18766/api/media/cee44fc5f62d4df5bceb7995f712d51462de43429971ee095b49a7805c17a73e?which=original",
+      "paused": false,
+      "hidden": false,
+      "currentTime": 0.422325,
+      "duration": 3,
+      "usingProxy": false,
+      "left": 105.44444274902344,
+      "top": 63.390625,
+      "width": 999.111083984375,
+      "height": 562
+    },
+    "jump": 0.0
+  },
+  "zhChrome": {
+    "tile": "\u9884\u89c8\u8fdb\u5ea6",
+    "viewer": "\u89c6\u9891\u8fdb\u5ea6",
+    "size": "\u5927\u5c0f"
+  }
+}
