@@ -352,6 +352,12 @@ class Library:
         items = [item for item in items if _item_matches(item, query)]
         return _sort_items(items, query, settings)
 
+    def duplicates_list(self) -> dict[str, Any]:
+        from library.duplicates import list_duplicate_groups
+
+        items = self.items_list({})
+        return {"groups": list_duplicate_groups(items)}
+
     def set_favorite(self, item_id: str, favorite: bool) -> dict[str, Any]:
         from library.favorites import set_item_favorite
 

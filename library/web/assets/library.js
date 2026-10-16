@@ -94,8 +94,20 @@
   const selectionBar = document.getElementById("selection-bar");
   const selectionCount = document.getElementById("selection-count");
   const selectionFavoriteBtn = document.getElementById("selection-favorite");
+  const selectionCompareBtn = document.getElementById("selection-compare");
   const selectionRemoveBtn = document.getElementById("selection-remove");
   const selectionClearBtn = document.getElementById("selection-clear");
+  const filterDuplicatesBtn = document.getElementById("filter-duplicates");
+  const duplicateCompare = document.getElementById("duplicate-compare");
+  const duplicateCompareSides = document.getElementById("duplicate-compare-sides");
+  const duplicateCompareEmpty = document.getElementById("duplicate-compare-empty");
+  const duplicateCompareMeta = document.getElementById("duplicate-compare-meta");
+  const duplicateCompareNav = document.getElementById("duplicate-compare-nav");
+  const duplicateCompareIndex = document.getElementById("duplicate-compare-index");
+  const duplicateComparePrev = document.getElementById("duplicate-compare-prev");
+  const duplicateCompareNext = document.getElementById("duplicate-compare-next");
+  const duplicateCompareApply = document.getElementById("duplicate-compare-apply");
+  const duplicateCompareCancel = document.getElementById("duplicate-compare-cancel");
   const confirmRemoveTitle = document.getElementById("confirm-remove-title");
   const confirmRemoveHelp = document.getElementById("confirm-remove-help");
   const scanStatus = document.getElementById("scan-status");
@@ -205,6 +217,9 @@
   let collapsedGroups = {};
   let selectedIds = [];
   let lastClickedId = null;
+  let compareGroups = [];
+  let compareIndex = 0;
+  let compareChoices = {};
   let sideOpen = true;
   let sideWidth = 264;
   let splitDragging = false;
@@ -611,6 +626,11 @@
     if (selectionRemoveBtn) {
       selectionRemoveBtn.disabled = !ids.length;
     }
+    if (selectionCompareBtn) {
+      const canCompare = ids.length >= 2 && !viewerOpen && currentView === "library";
+      selectionCompareBtn.hidden = !canCompare;
+      selectionCompareBtn.disabled = !canCompare;
+    }
     const id = viewerItemId || selectedId || (ids.length === 1 ? ids[0] : null);
     if (removeItemBtn) {
       removeItemBtn.disabled = !(viewerItemId || ids.length || selectedId);
@@ -890,6 +910,15 @@
       renderJobs(lastJobs);
     }
     render();
+    if (compareOpen()) {
+      paintCompare();
+    }
+    if (!viewer.hidden && infoOpen() && viewerItemId) {
+      const openItem = findItemById(viewerItemId);
+      if (openItem) {
+        renderFacts(openItem);
+      }
+    }
     if (currentView === "settings") {
       renderSettingsSources(lastSources);
       fillSettingsForm(settings);
@@ -2385,9 +2414,310 @@
     if (loc) {
       appendFact(list, t("fileSize"), formatFileSize(loc.sizeBytes));
       appendFact(list, t("filePath"), loc.lastKnownPath || loc.libraryRelativePath || "");
+      const hash = loc.sha256 || "";
+      if (hash) {
+        appendFact(list, t("fileHash"), hash);
+      }
     }
     appendFact(list, t("gps"), formatGps(meta.latitude, meta.longitude));
+    const extras = alsoAtPaths(item);
+    if (extras.length) {
+      appendFact(list, t("alsoAt"), extras.join(" · "));
+    }
     viewerFacts.appendChild(list);
+    if (extras.length || filenameSiblings(item).length > 1) {
+      const compareBtn = document.createElement("button");
+      compareBtn.type = "button";
+      compareBtn.id = "info-compare-copies";
+      compareBtn.className = "compare-copies";
+      compareBtn.textContent = t("compareCopies");
+      compareBtn.addEventListener("click", function () {
+        openCompareForItem(item);
+      });
+      viewerFacts.appendChild(compareBtn);
+    }
+  }
+
+  function alsoAtPaths(item) {
+    const loc = primaryLocation(item);
+    const primary = loc ? (loc.lastKnownPath || loc.libraryRelativePath || loc.pathFromVolumeRoot || "") : "";
+    const extras = [];
+    currentComponentLocations(item).forEach(function (row) {
+      const path = row.lastKnownPath || row.libraryRelativePath || row.pathFromVolumeRoot || "";
+      if (path && path !== primary && extras.indexOf(path) < 0) {
+        extras.push(path);
+      }
+    });
+    return extras;
+  }
+
+  function currentComponentLocations(item) {
+    const locs = (item && item.locations) || [];
+    const want = item && item.kind === "video" ? "motion" : "still";
+    const current = [];
+    const fallback = [];
+    locs.forEach(function (row) {
+      if (!row || !row.current) {
+        return;
+      }
+      fallback.push(row);
+      if (row.component === want) {
+        current.push(row);
+      }
+    });
+    return current.length ? current : fallback;
+  }
+
+  function filenameSiblings(item) {
+    const name = ((item && item.filename) || "").toLowerCase();
+    if (!name) {
+      return item ? [item] : [];
+    }
+    return items.filter(function (row) {
+      return ((row && row.filename) || "").toLowerCase() === name;
+    });
+  }
+
+  function findItemById(id) {
+    for (let i = 0; i < items.length; i += 1) {
+      if (items[i] && items[i].id === id) {
+        return items[i];
+      }
+    }
+    return extraById[id] || null;
+  }
+
+  function sideFromItem(item, loc, index) {
+    const meta = (item && item.metadata) || {};
+    const row = loc || {};
+    const path = row.lastKnownPath || row.libraryRelativePath || row.pathFromVolumeRoot || "";
+    const folder = path ? path.replace(/[\\/][^\\/]+$/, "") : "";
+    return {
+      itemId: item && item.id,
+      filename: item && item.filename,
+      kind: item && item.kind,
+      capturedAt: item && item.capturedAt,
+      width: meta.width,
+      height: meta.height,
+      sizeBytes: row.sizeBytes,
+      path: path,
+      folder: folder,
+      sha256: row.sha256 || ((item && item.id && String(item.id).indexOf("pending-") !== 0) ? item.id : ""),
+      role: row.role,
+      available: item && item.available,
+      locationIndex: index
+    };
+  }
+
+  function groupFromItems(list, reason, key) {
+    const sides = [];
+    const ids = [];
+    (list || []).forEach(function (item) {
+      if (!item || !item.id) {
+        return;
+      }
+      if (ids.indexOf(item.id) < 0) {
+        ids.push(item.id);
+      }
+      const locs = currentComponentLocations(item);
+      if (reason === "hash" && locs.length > 1) {
+        locs.forEach(function (loc, index) {
+          sides.push(sideFromItem(item, loc, index));
+        });
+        return;
+      }
+      sides.push(sideFromItem(item, locs[0] || {}, 0));
+    });
+    return { key: key || reason, reason: reason, itemIds: ids, sides: sides };
+  }
+
+  function compareOpen() {
+    return !!(duplicateCompare && duplicateCompare.open);
+  }
+
+  function closeCompare() {
+    if (duplicateCompare && duplicateCompare.open) {
+      duplicateCompare.close();
+    }
+  }
+
+  function shortHash(value) {
+    const text = value ? String(value) : "";
+    if (text.length <= 16) {
+      return text;
+    }
+    return text.slice(0, 12) + "…";
+  }
+
+  function compareMediaUrl(side) {
+    const kind = side && side.kind;
+    const which = kind === "video" ? "poster" : "preview";
+    return "/api/media/" + encodeURIComponent(side.itemId) + "?which=" + which;
+  }
+
+  function paintCompare() {
+    if (!duplicateCompareSides) {
+      return;
+    }
+    const group = compareGroups[compareIndex];
+    duplicateCompareSides.innerHTML = "";
+    if (duplicateCompareEmpty) {
+      duplicateCompareEmpty.hidden = !!group;
+    }
+    if (duplicateCompareApply) {
+      duplicateCompareApply.hidden = !group;
+    }
+    if (duplicateCompareMeta) {
+      if (!group) {
+        duplicateCompareMeta.textContent = "";
+      } else if (group.reason === "hash" && (group.itemIds || []).length === 1) {
+        duplicateCompareMeta.textContent = t("sameLibraryItem");
+      } else {
+        duplicateCompareMeta.textContent = "";
+      }
+    }
+    if (duplicateCompareNav) {
+      duplicateCompareNav.hidden = compareGroups.length < 2;
+    }
+    if (duplicateCompareIndex) {
+      duplicateCompareIndex.textContent = compareGroups.length
+        ? t("compareGroup", { current: compareIndex + 1, total: compareGroups.length })
+        : "";
+    }
+    if (duplicateComparePrev) {
+      duplicateComparePrev.disabled = compareIndex <= 0;
+    }
+    if (duplicateCompareNext) {
+      duplicateCompareNext.disabled = compareIndex >= compareGroups.length - 1;
+    }
+    if (!group) {
+      return;
+    }
+    (group.sides || []).forEach(function (side, index) {
+      const article = document.createElement("article");
+      article.className = "compare-side";
+      article.setAttribute("data-item-id", side.itemId || "");
+      article.setAttribute("data-side", String(index));
+      const img = document.createElement("img");
+      img.alt = side.filename || "";
+      img.src = compareMediaUrl(side);
+      article.appendChild(img);
+      const list = document.createElement("dl");
+      list.className = "compare-stats info-fact-list";
+      const width = Number(side.width) || 0;
+      const height = Number(side.height) || 0;
+      if (width > 0 && height > 0) {
+        appendFact(list, t("dimensions"), width + " × " + height);
+      }
+      appendFact(list, t("fileSize"), formatFileSize(side.sizeBytes));
+      appendFact(list, t("filePath"), side.path || "");
+      appendFact(list, t("folder"), side.folder || "");
+      appendFact(list, t("dateTaken"), formatDateTaken(side.capturedAt));
+      appendFact(list, t("fileHash"), shortHash(side.sha256));
+      article.appendChild(list);
+      const choice = document.createElement("div");
+      choice.className = "compare-choice";
+      const itemId = side.itemId || ("side-" + index);
+      const selected = compareChoices[itemId] || "keep";
+      ["keep", "remove"].forEach(function (value) {
+        const label = document.createElement("label");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "compare-choice-" + itemId;
+        radio.value = value;
+        radio.checked = selected === value;
+        radio.addEventListener("change", function () {
+          if (radio.checked) {
+            compareChoices[itemId] = value;
+          }
+        });
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(value === "keep" ? t("keep") : t("remove")));
+        choice.appendChild(label);
+      });
+      article.appendChild(choice);
+      duplicateCompareSides.appendChild(article);
+    });
+  }
+
+  function showCompare(groups) {
+    compareGroups = (groups || []).filter(function (group) {
+      return group && (group.sides || []).length;
+    });
+    compareIndex = 0;
+    compareChoices = {};
+    compareGroups.forEach(function (group) {
+      (group.itemIds || []).forEach(function (id) {
+        if (id && !compareChoices[id]) {
+          compareChoices[id] = "keep";
+        }
+      });
+    });
+    paintCompare();
+    if (duplicateCompare && duplicateCompare.showModal) {
+      if (!duplicateCompare.open) {
+        duplicateCompare.showModal();
+      }
+      return;
+    }
+  }
+
+  function openDetectedCompare() {
+    return fetch("/api/duplicates").then(readJson).then(function (body) {
+      showCompare((body && body.groups) || []);
+    }).catch(function () {
+      showCompare([]);
+    });
+  }
+
+  function openCompareForIds(ids) {
+    const list = [];
+    const seen = {};
+    (ids || []).forEach(function (id) {
+      const item = findItemById(id);
+      if (item && !seen[item.id]) {
+        seen[item.id] = true;
+        list.push(item);
+      }
+    });
+    if (list.length < 2) {
+      return;
+    }
+    showCompare([groupFromItems(list, "selection", "selection")]);
+  }
+
+  function openCompareForItem(item) {
+    if (!item) {
+      return;
+    }
+    const groups = [];
+    const locs = currentComponentLocations(item);
+    if (locs.length > 1) {
+      groups.push(groupFromItems([item], "hash", "hash:" + item.id));
+    }
+    const siblings = filenameSiblings(item);
+    if (siblings.length > 1) {
+      groups.push(groupFromItems(siblings, "filename", "name:" + String(item.filename || "").toLowerCase()));
+    }
+    if (!groups.length) {
+      groups.push(groupFromItems([item], "item", "item:" + item.id));
+    }
+    showCompare(groups);
+  }
+
+  function applyCompareChoices() {
+    const gone = {};
+    Object.keys(compareChoices).forEach(function (id) {
+      if (compareChoices[id] === "remove") {
+        gone[id] = true;
+      }
+    });
+    const ids = Object.keys(gone);
+    closeCompare();
+    if (!ids.length) {
+      return;
+    }
+    askRemove(ids);
   }
 
   function zoomActual() {
@@ -5428,6 +5758,42 @@
       clearSelection();
     });
   }
+  if (selectionCompareBtn) {
+    selectionCompareBtn.addEventListener("click", function () {
+      openCompareForIds(selectedIds.slice());
+    });
+  }
+  if (filterDuplicatesBtn) {
+    filterDuplicatesBtn.addEventListener("click", function () {
+      openDetectedCompare();
+    });
+  }
+  if (duplicateCompareCancel) {
+    duplicateCompareCancel.addEventListener("click", function () {
+      closeCompare();
+    });
+  }
+  if (duplicateCompareApply) {
+    duplicateCompareApply.addEventListener("click", function () {
+      applyCompareChoices();
+    });
+  }
+  if (duplicateComparePrev) {
+    duplicateComparePrev.addEventListener("click", function () {
+      if (compareIndex > 0) {
+        compareIndex -= 1;
+        paintCompare();
+      }
+    });
+  }
+  if (duplicateCompareNext) {
+    duplicateCompareNext.addEventListener("click", function () {
+      if (compareIndex < compareGroups.length - 1) {
+        compareIndex += 1;
+        paintCompare();
+      }
+    });
+  }
   if (deleteFileBtn) {
     deleteFileBtn.addEventListener("click", function () {
       const id = viewerItemId || selectedId;
@@ -5907,6 +6273,11 @@
       if (confirmRemove && confirmRemove.open) {
         event.preventDefault();
         confirmRemove.close();
+        return;
+      }
+      if (compareOpen()) {
+        event.preventDefault();
+        closeCompare();
         return;
       }
       if (confirmDeleteFile && confirmDeleteFile.open) {

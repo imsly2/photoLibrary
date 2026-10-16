@@ -253,6 +253,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `remove-source <source-id>` | `POST /api/sources/<id>/remove` `{}` | Drops that folder from the catalog (and items that only belonged to it). Originals stay. Not Delete file. |
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
+| `duplicates` | `GET /api/duplicates` | Groups items that already look like copies: several current locations on one hash, or the same filename on two or more items. Read-only. Never deletes. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
 | `favorite <id> [id…] --on` / `--off` | `PUT` or `POST /api/items/<id>/favorite` `{"favorite":true\|false}`; many ids: `POST /api/items/favorite` `{"itemIds":[…],"favorite":true\|false}` | Marks or clears hearts in `catalog/favorites.json`. Several ids are one undo step. |
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |

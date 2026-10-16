@@ -203,6 +203,8 @@ def build_parser() -> argparse.ArgumentParser:
     remove_source_cmd = sub.add_parser("remove-source")
     remove_source_cmd.add_argument("source_id")
 
+    sub.add_parser("duplicates")
+
     items = sub.add_parser("items")
     items.add_argument("--sort")
     items.add_argument("--dir")
@@ -429,6 +431,19 @@ def main(argv: list[str] | None = None) -> int:
                 {},
             )
             _print_json(result)
+            return 0
+        if args.command == "duplicates":
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(url, "GET", "/api/duplicates", None)
+                if status != 200:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                _print_json(payload)
+                return 0
+            payload = _with_lock(root, lambda: Library(root).duplicates_list())
+            _print_json(payload)
             return 0
         if args.command == "items":
             query = {}

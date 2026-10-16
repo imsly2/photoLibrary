@@ -52,7 +52,7 @@ fill. They must read as clickable toggles, not heading text.
 | Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local`). Click runs `POST /api/update`, which always tracks `main` over anonymous HTTPS git, or a zip of `main` if git is missing. No `gh`, no GitHub login. `library-data/` is never replaced. While the pull runs, `#update-status` says Updating… Then one i18n sentence: updated / already current / pull failed / diverged / need-public / update-unavailable. A successful Update refreshes `#library-version`. When the pull writes a newer `main` and this Library serve is running, stop only that process on the settings port and relaunch; the page says Restarting… then reloads. If Library was not running, Update finishes without launching. No command prompt. Launcher `Update.bat` uses the same pull and relaunch. |
-| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
+| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS, hash; extra current paths as **Also at**; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes `#duplicate-compare`, then Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matches for …” including the query (or “No matches” when only a chip/filter is empty). Clearing query/chip returns matching broader grid, no catalog mutation. |
@@ -284,10 +284,26 @@ apply/remove, not batch Delete file and not albums.
 `#selection-bar` appears when the grid has a selection and the viewer
 is closed. It shows the count, **Favorite** (hearts every selected
 item; **Unfavorite** when all selected items are already hearted —
-the same toggle as one item), **Remove** (same confirm as one item;
-catalog drop only; originals stay), and **Clear selection**. Esc
-clears the selection after other innermost UI. Delete with a
-multi-selection confirm-removes those ids. No batch Delete file.
+the same toggle as one item), **Compare** (two or more selected;
+opens `#duplicate-compare` for those ids), **Remove** (same confirm
+as one item; catalog drop only; originals stay), and **Clear
+selection**. Esc clears the selection after other innermost UI.
+Delete with a multi-selection confirm-removes those ids. No batch
+Delete file.
+
+`#filter-duplicates` on `#filter-bar` opens `#duplicate-compare` for
+groups already in the catalog (same-hash locations, or the same
+filename on two or more items). The dialog is side-by-side: preview
+plus dimensions, size, path/folder, date, and hash. Each distinct
+item has **Keep** / **Remove** (default Keep). Apply with any Remove
+uses the existing Remove confirm and `POST /api/items/remove`.
+Cancel and Esc leave both. Hash match never removes a record or a
+file by itself.
+
+Info file facts include the content hash and **Also at** for extra
+current paths on that item, with **Compare copies** to open the same
+dialog. This is the existing multi-location hint, not a second
+orphan list.
 
 ### Processing
 
@@ -428,7 +444,8 @@ slider, scrub) keeps the native slider behavior.
 
 **4. Info = file facts, then names.** `#viewer-info` is a top-right
 dropdown, not overlay pills. First block: date taken, camera, dimensions,
-size, path, GPS from the item record. Missing camera/EXIF: “No camera
+size, path, GPS, hash from the item record. Extra current locations
+list as **Also at** with **Compare copies**. Missing camera/EXIF: “No camera
 info for this file.” Then people / places / things already on the record
 (a GPS place may already show a local city/region name from the offline
 geo pack; unnamed face clusters show **Unnamed**); clicking a named

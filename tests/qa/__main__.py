@@ -186,6 +186,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_settings import run_slice as runner
         elif args.slice_id == "TASTE-SELECT":
             from tests.qa.taste_select import run_slice as runner
+        elif args.slice_id == "TASTE-DUPLICATES":
+            from tests.qa.taste_duplicates import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))
