@@ -141,6 +141,7 @@
         <p id="people-empty" hidden data-i18n="noPeople">No people yet</p>
         <ul id="people-list"></ul>
         <button type="button" id="people-merge" hidden data-i18n="mergeInto">Merge into…</button>
+        <button type="button" id="people-review" hidden data-i18n="reviewMatches">Review matches</button>
         <div id="person-profile" hidden>
           <label class="chrome-field" for="person-name">
             <span data-i18n="name">Name</span>
@@ -442,6 +443,7 @@
         <img id="viewer-original" alt="" hidden>
         <video id="viewer-video" hidden playsinline></video>
         <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
+        <nav id="viewer-stack" hidden></nav>
       </div>
       <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · V fill · Ctrl+1 100%" data-i18n-title="zoom">
         <span id="viewer-zoom-pct">100%</span>
@@ -468,6 +470,7 @@
         <button type="button" id="reveal-original" data-i18n="reveal">Reveal in Explorer</button>
         <button type="button" id="locate-original" hidden data-i18n="locate">Locate</button>
         <button type="button" id="open-original" data-i18n="open">Open</button>
+        <button type="button" id="viewer-print" title="Print Ctrl+P" data-i18n="print" data-i18n-title="printTitle">Print</button>
         <button type="button" id="play-preview" disabled data-i18n="playPreview">Play preview</button>
         <p id="reveal-error" hidden data-i18n="originalMissing">Original is not on this computer</p>
       </div>
@@ -534,6 +537,27 @@
       <button type="button" id="confirm-merge-ok" data-i18n="merge">Merge</button>
     </div>
   </dialog>
+  <dialog id="merge-wizard" aria-labelledby="merge-wizard-title">
+    <h2 id="merge-wizard-title" data-i18n="samePerson">Same person?</h2>
+    <p id="merge-wizard-progress"></p>
+    <p id="merge-wizard-help" data-i18n="mergeWizardHelp">Suggested because their faces look alike. Nothing is merged until you click Merge.</p>
+    <div id="merge-wizard-pair">
+      <div class="merge-wizard-person">
+        <span class="person-face" id="merge-wizard-keep-face"></span>
+        <span id="merge-wizard-keep-name"></span>
+      </div>
+      <div class="merge-wizard-person">
+        <span class="person-face" id="merge-wizard-drop-face"></span>
+        <span id="merge-wizard-drop-name"></span>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" id="merge-wizard-skip" data-i18n="skip">Skip</button>
+      <button type="button" id="merge-wizard-not-same" data-i18n="notSame">Not same</button>
+      <button type="button" id="merge-wizard-merge" data-i18n="merge">Merge</button>
+      <button type="button" id="merge-wizard-close" data-i18n="cancel">Cancel</button>
+    </div>
+  </dialog>
   <dialog id="keyboard-help" aria-labelledby="keyboard-help-title">
     <h2 id="keyboard-help-title" data-i18n="keyboardHelpTitle">Keyboard shortcuts</h2>
     <dl id="keyboard-help-list">
@@ -553,6 +577,7 @@
       <div><dt>Ctrl+F</dt><dd data-i18n="helpSearch">Search</dd></div>
       <div><dt>Ctrl+,</dt><dd data-i18n="helpSettings">Settings</dd></div>
       <div><dt>Ctrl+Z</dt><dd data-i18n="helpUndo">Undo</dd></div>
+      <div><dt>Ctrl+P</dt><dd data-i18n="helpPrint">Print this picture</dd></div>
     </dl>
     <div class="dialog-actions">
       <button type="button" id="keyboard-help-close" data-i18n="cancel">Cancel</button>
@@ -566,6 +591,9 @@
       <button type="button" id="confirm-remove-source-ok" data-i18n="removeFolder">Remove folder</button>
     </div>
   </dialog>
+  <div id="print-sheet" aria-hidden="true">
+    <img id="print-image" alt="">
+  </div>
   <script src="/assets/i18n.js"></script>
   <script src="/assets/library.js"></script>
   <script src="/assets/globe.js"></script>

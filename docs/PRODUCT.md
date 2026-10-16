@@ -266,6 +266,8 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |
 | `people update <id> --name … --thumbnail <item-id>` | `PUT /api/people/<id>` | Renames a person or chooses the thumbnail face item. |
 | `people merge <keep-id> <drop-id>` | `POST /api/people/merge` | Reassigns faces to the kept person. |
+| `people suggestions` | `GET /api/people/suggestions` | Likely same-person pairs from face-centroid cosine. Never merges. |
+| `people not-same <a> <b>` | `POST /api/people/not-same` | Remembers that those two people are not the same. Suggestions skip the pair. |
 | `people split <id> --item <item-id> [--box x,y,w,h]` | `POST /api/people/split` | Removes one face detection from that person. The crop becomes a new Unnamed person. |
 | `tags` / `tags list` | `GET /api/tags` | Lists user tags (Things) with counts. Hiking / Singing / Painting are names. |
 | `tags create <name>` | `POST /api/tags` `{"name":"Hiking"}` | Creates a tag Thing without attaching it. Reuses a matching name. |
@@ -735,8 +737,9 @@ face embeddings when `models/faces/index.json` exists, and deletes the
 dropped person file. `people split` takes one boxed face off a person
 and writes it as a new Unnamed person; the original person (Steve, Ada)
 stays. The People panel **Merge into…** confirm (two or more selected)
-runs the same merge. **Not this person** on a profile or Info crop runs
-split. With two or more people selected, the grid still ANDs
+runs the same merge. **Review matches** steps suggested pairs
+(Merge / Not same / Skip); nothing merges until Merge. **Not this person**
+on a profile or Info crop runs split. With two or more people selected, the grid still ANDs
 (`person=id1,id2`) and shows a collapsible **Photos together** group
 (intersection) above leftover photos for each selected person.
 
@@ -900,7 +903,10 @@ A still and a short movie that share the same Apple content identifier are one
 item, `kind: "live"`. The still is the picture. The movie is the motion.
 The grid badge reads LIVE. Hover, when proxies are allowed to play, plays that
 short movie. The two files keep one item id, taken from the still's hash, and
-both paths are stored on the item.
+both paths are stored on the item. Burst stills (sequential names, close
+`capturedAt`) and unpaired same-stem still+short-video pairs share one grid
+tile with a badge; the viewer expands the stack. Originals and item JSON are
+not rewritten.
 
 **Check:** `python -m tests.qa check F19` (planned runner; common root/artifact
 arguments and full assertions in SLICES). a fixture pair with the same content identifier produces one item
@@ -938,10 +944,11 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Ctrl+, | Settings |
 | Ctrl+Z / Ctrl+Shift+Z | Undo / redo |
 | Ctrl+C | Copy the primary path |
+| Ctrl+P | Print the open viewer still, fit to the page |
 | Esc during the tour | Stop the tour and stay on the globe |
 
-Print Ctrl+P stays UI-SPEC Soon. F is fullscreen, not favorite.
-`?`, V (Fit/Fill), and I / Alt+Enter are presentable chrome, not F21 extras.
+F is fullscreen, not favorite. `?`, V (Fit/Fill), I / Alt+Enter, and
+Ctrl+P print are presentable chrome, not F21 extras.
 
 
 **Check:** `python -m tests.qa check F21` (planned runner; common root/artifact

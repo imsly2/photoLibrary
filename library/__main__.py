@@ -265,9 +265,13 @@ def build_parser() -> argparse.ArgumentParser:
     people = sub.add_parser("people")
     people_sub = people.add_subparsers(dest="people_cmd", required=False)
     people_sub.add_parser("list")
+    people_sub.add_parser("suggestions")
     merge = people_sub.add_parser("merge")
     merge.add_argument("keep")
     merge.add_argument("drop")
+    not_same = people_sub.add_parser("not-same")
+    not_same.add_argument("a")
+    not_same.add_argument("b")
     split_person = people_sub.add_parser("split")
     split_person.add_argument("id")
     split_person.add_argument("--item", required=True)
@@ -646,6 +650,30 @@ def main(argv: list[str] | None = None) -> int:
                     return 0
                 payload = _with_lock(root, lambda: Library(root).people_list())
                 _print_json(payload)
+                return 0
+            if args.people_cmd == "suggestions":
+                url = _running_server_url(root)
+                if url is not None:
+                    status, payload = _forward(url, "GET", "/api/people/suggestions", None)
+                    if status != 200:
+                        if isinstance(payload, dict) and "error" in payload:
+                            raise AppError(payload["error"], status)
+                        raise fail_from_status(status)
+                    _print_json(payload)
+                    return 0
+                payload = _with_lock(root, lambda: Library(root).people_suggestions())
+                _print_json(payload)
+                return 0
+            if args.people_cmd == "not-same":
+                body = {"a": args.a, "b": args.b}
+                result = _mutation(
+                    root,
+                    lambda: Library(root).people_not_same(args.a, args.b),
+                    "POST",
+                    "/api/people/not-same",
+                    body,
+                )
+                _print_json(result)
                 return 0
             if args.people_cmd == "update":
                 body: dict[str, Any] = {}

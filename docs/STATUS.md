@@ -4,6 +4,21 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Flight burn fillers after PR #42 (`9a610ef`) on
+  `cursor/flight-fillers-643d`. **Review matches** wizard suggests
+  same-person pairs by face cosine; Merge / Not same / Skip; never
+  merges without a click (builds on Merge into… #37). Live and burst
+  stacks share one tile with a badge and expand in the viewer;
+  originals stay. **Print** Ctrl+P fits the open still to the page.
+  Chinese strings included. ASCII launchers untouched. Already on
+  main (skipped): recently added, folder filter, `?`, Fit/Fill,
+  missing-original badge (#42); multi-select / Move / duplicates
+  (#39–#41). After Pull: restart Library. Does not close a Check.
+  16/22 unchanged.
+  Plan: [taste-burn](features/taste-burn/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-BURN](features/taste-burn/Rev1.0/assets/verify-1/result.json)
+  (pass count filled after the verifier run).
 - 2026-10-16 — Flight fillers after Move PR #41 (`bd583a5`) on
   `cursor/flight-fillers-aef8`. **Recently added** plus per-folder
   browse (`source=` / Settings Show photos). `?` opens the shortcut

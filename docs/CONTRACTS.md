@@ -159,9 +159,11 @@ folder without git still updates via zip. A 200 success body includes the
 new short `git_sha` (and `revision`). When `updated` is true and this
 Library serve is running, the payload may include `restarting:true`.
 
-Availability, motion, favorite, and entity expansion are computed, not persisted:
+Availability, motion, favorite, stack, and entity expansion are computed, not persisted:
 HTTP/CLI item reads extend disk records with `available`, `motionAvailable`,
-and `favorite` booleans and `entities`:
+and `favorite` booleans, optional `stack`
+`{id,kind:live|burst,itemIds,count,index,representative}` (omitted when the
+item is alone), and `entities`:
 `{people:[person-record],places:[place-record],things:[thing-record]}` containing
 every referenced entity exactly once, sorted by id (places empty or one). These
 are the complete record shapes above/below, including names and aliases; no extra
@@ -328,6 +330,8 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | people / people list / GET `/api/people` | 200 `{personOfInterestMin,people}` where each person is `{id,name,itemCount,visible,named,thumbnail}`. `personOfInterestMin` is the constant **3** (not a settings key). `visible` is true for any named person and for unnamed clusters with `itemCount >= personOfInterestMin`. `thumbnail` is `{itemId,box?}` or null. |
 | people update id / PUT `/api/people/<id>` | `{name?,thumbnailItemId?}`; 200 updated person read (same shape as a people-list row). Name null unnames. `thumbnailItemId` must be an item that already has that person. Undoable `person-update`. Unknown id is `not-found`. |
 | people merge keep drop / POST `/api/people/merge` | `{keepId,dropId}`; 200 kept person; rewrite all faces and history transaction, remove dropped record, merge `models/faces/index.json` embeddings when that file exists; self merge invalid |
+| people suggestions / GET `/api/people/suggestions` | 200 `{suggestions}` each `{keepId,dropId,score,keep,drop}`. Ranked by face-centroid cosine above 0.55. Excludes `catalog/people-not-same.json` pairs. Empty when the face index is missing. Never merges. |
+| people not-same a b / POST `/api/people/not-same` | `{a,b}`; 200 `{schemaVersion,pairs}`; remembers the pair so suggestions skip it. Same id is `invalid-argument`. Unknown person is `not-found`. |
 | people split id --item item [--box x,y,w,h] / POST `/api/people/split` | `{personId,itemId,box?}`; 200 new unnamed person `{schemaVersion,id,name:null}`; rewrite that one face, keep the source person, move the index face ref when `models/faces/index.json` exists. Omit box only when that item has exactly one face of this person. Unknown person/item/face is `not-found`. Undoable `people-split`. |
 | jobs / GET `/api/jobs` | 200 `{ok,paused,processing,queues}` where `queues` is renditions, analyze, infer-faces, objects, each `{id,label,pending,done,error,state,available}`. Renditions counts come from item rendition status. Analyze counts unnamed GPS places; `available` is the local geo pack. Infer-faces counts photo/live stills not yet scanned; `available` is face models ready. Objects counts stills not yet analyzed; `available` is the YOLO file. Missing pack/models: `available` false, queue idle, no crash. `state` is `running\|paused\|idle`. Browse stays up. |
 | jobs pause / jobs resume / POST `/api/jobs` | `{action:"pause"\|"resume"\|"rerun-faces"}`; 200 same body as GET. Pause stops the serve-process drain for renditions, analyze-places, infer-faces, and objects. Resume starts them again. `rerun-faces` clears the face scanned map and force-redetects with current quality gates; named people are kept. Does not block `GET /api/items`. |

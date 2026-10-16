@@ -156,9 +156,20 @@
   const personNameInput = document.getElementById("person-name");
   const personFaces = document.getElementById("person-faces");
   const peopleMergeBtn = document.getElementById("people-merge");
+  const peopleReviewBtn = document.getElementById("people-review");
   const confirmMerge = document.getElementById("confirm-merge");
   const confirmMergeTitle = document.getElementById("confirm-merge-title");
   const confirmMergeHelp = document.getElementById("confirm-merge-help");
+  const mergeWizard = document.getElementById("merge-wizard");
+  const mergeWizardProgress = document.getElementById("merge-wizard-progress");
+  const mergeWizardKeepFace = document.getElementById("merge-wizard-keep-face");
+  const mergeWizardDropFace = document.getElementById("merge-wizard-drop-face");
+  const mergeWizardKeepName = document.getElementById("merge-wizard-keep-name");
+  const mergeWizardDropName = document.getElementById("merge-wizard-drop-name");
+  const viewerStack = document.getElementById("viewer-stack");
+  const viewerPrintBtn = document.getElementById("viewer-print");
+  const printSheet = document.getElementById("print-sheet");
+  const printImage = document.getElementById("print-image");
   const viewerFaceCrops = document.getElementById("viewer-face-crops");
   const jobsStatus = document.getElementById("jobs-status");
   const jobsQueues = document.getElementById("jobs-queues");
@@ -227,6 +238,8 @@
   let extraById = {};
   let togetherByPerson = {};
   let pendingMerge = null;
+  let mergeSuggestions = [];
+  let wizardIndex = 0;
   let peopleCatalog = [];
   let pendingThumb = null;
   let personOfInterestMin = 3;
@@ -2962,16 +2975,23 @@
     if (!items.length) {
       return;
     }
-    let next = viewerIndex + delta;
-    if (slideshowActive) {
-      next = ((next % items.length) + items.length) % items.length;
-    } else if (next < 0 || next >= items.length) {
-      return;
-    }
-    openViewerAt(next);
-    if (slideshowActive && !slideshowPaused) {
-      playSlideshowProxy(items[next]);
-      scheduleSlideshow();
+    let next = viewerIndex;
+    const limit = items.length;
+    for (let n = 0; n < limit; n += 1) {
+      next += delta;
+      if (slideshowActive) {
+        next = ((next % limit) + limit) % limit;
+      } else if (next < 0 || next >= limit) {
+        return;
+      }
+      if (!isStackHidden(items[next])) {
+        openViewerAt(next);
+        if (slideshowActive && !slideshowPaused) {
+          playSlideshowProxy(items[next]);
+          scheduleSlideshow();
+        }
+        return;
+      }
     }
   }
 
@@ -3128,7 +3148,78 @@
     }
   }
 
+  function renderViewerStack(item) {
+    if (!viewerStack) {
+      return;
+    }
+    viewerStack.innerHTML = "";
+    const stack = item && item.stack;
+    if (!item || !stack || !stack.itemIds || stack.itemIds.length < 1) {
+      viewerStack.hidden = true;
+      return;
+    }
+    if (stack.kind === "live" && stack.itemIds.length === 1) {
+      const stillBtn = document.createElement("button");
+      stillBtn.type = "button";
+      stillBtn.textContent = t("stackStill");
+      stillBtn.setAttribute("aria-current", item.kind === "video" ? "false" : "true");
+      stillBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        openViewer(item.id);
+      });
+      const liveBtn = document.createElement("button");
+      liveBtn.type = "button";
+      liveBtn.textContent = t("stackLive");
+      liveBtn.setAttribute("aria-current", viewerVideo && !viewerVideo.hidden ? "true" : "false");
+      liveBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof showLiveMotion === "function") {
+          showLiveMotion(item);
+        } else if (typeof toggleViewerPlay === "function") {
+          toggleViewerPlay();
+        }
+      });
+      viewerStack.appendChild(stillBtn);
+      viewerStack.appendChild(liveBtn);
+      viewerStack.hidden = false;
+      return;
+    }
+    if (stack.itemIds.length < 2) {
+      viewerStack.hidden = true;
+      return;
+    }
+    stack.itemIds.forEach(function (id, index) {
+      const member = itemById(id) || { id: id };
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.id = id;
+      btn.setAttribute("aria-current", id === item.id ? "true" : "false");
+      const img = document.createElement("img");
+      img.alt = "";
+      img.src = "/api/media/" + encodeURIComponent(id) + "?which=thumb";
+      btn.appendChild(img);
+      const label = document.createElement("span");
+      if (stack.kind === "live") {
+        label.textContent = index === 0 ? t("stackStill") : t("stackLive");
+      } else {
+        label.textContent = String(index + 1);
+      }
+      btn.appendChild(label);
+      btn.title = (member.filename || id);
+      btn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        openViewer(id);
+      });
+      viewerStack.appendChild(btn);
+    });
+    viewerStack.hidden = false;
+  }
+
   function syncViewerChrome(item) {
+    renderViewerStack(item);
     const available = !!(item && item.available);
     const lastFile = !!(item && item.lastKnownFile);
     const lastFolder = !!(item && item.lastKnownFolder);
@@ -4100,10 +4191,21 @@
     cell.appendChild(img);
     const badges = document.createElement("div");
     badges.className = "tile-badges";
-    if (item.kind === "live") {
+    const stack = item.stack || null;
+    if (stack) {
+      cell.dataset.stackKind = stack.kind || "";
+      cell.dataset.stackCount = String(stack.count || 1);
+      cell.dataset.stackRep = stack.representative ? "1" : "0";
+    }
+    if (item.kind === "live" || (stack && stack.kind === "live")) {
       const badge = document.createElement("span");
       badge.className = "live-badge tile-badge";
       badge.textContent = "LIVE";
+      badges.appendChild(badge);
+    } else if (stack && stack.kind === "burst" && stack.count > 1) {
+      const badge = document.createElement("span");
+      badge.className = "burst-badge tile-badge";
+      badge.textContent = t("burstBadge", { n: stack.count });
       badges.appendChild(badge);
     } else if (item.kind === "video") {
       const badge = document.createElement("span");
@@ -4170,6 +4272,17 @@
       openViewer(item.id);
     });
     return cell;
+  }
+
+  function isStackHidden(item) {
+    return !!(item && item.stack && item.stack.representative === false);
+  }
+
+  function takeVisibleCell(existing, id, slot) {
+    if (isStackHidden(itemById(id))) {
+      return null;
+    }
+    return takeCell(existing, id, slot);
   }
 
   function itemById(id) {
@@ -4401,7 +4514,10 @@
     const list = document.createElement("div");
     list.className = mosaic ? "mosaic" : "item-list";
     items.forEach(function (item) {
-      list.appendChild(takeCell(existing, item.id, "together"));
+      const cell = takeVisibleCell(existing, item.id, "together");
+      if (cell) {
+        list.appendChild(cell);
+      }
     });
     section.appendChild(list);
     main.dataset.together = String(items.length);
@@ -4445,7 +4561,10 @@
       const list = document.createElement("div");
       list.className = mosaic ? "mosaic" : "item-list";
       leftover.forEach(function (item) {
-        list.appendChild(takeCell(existing, item.id, "solo-" + id));
+        const cell = takeVisibleCell(existing, item.id, "solo-" + id);
+        if (cell) {
+          list.appendChild(cell);
+        }
       });
       section.appendChild(list);
       out.push(section);
@@ -4512,9 +4631,12 @@
     if (!groupDates && arrangeBy === "dates") {
       const list = document.createElement("div");
       list.className = "item-list wall-list";
-      items.forEach(function (item) {
-        list.appendChild(takeCell(existing, item.id, "grid"));
-      });
+    items.forEach(function (item) {
+      const cell = takeVisibleCell(existing, item.id, "grid");
+      if (cell) {
+        list.appendChild(cell);
+      }
+    });
       fragment.appendChild(list);
     } else {
       const shown = (arrangeBy === "dates") ? groups : (groups.length ? groups : groupsFromArrange(items, arrangeBy));
@@ -4548,7 +4670,10 @@
         const list = document.createElement("div");
         list.className = mosaic && arrangeBy === "dates" ? "mosaic" : "item-list";
         (group.itemIds || []).forEach(function (id) {
-          list.appendChild(takeCell(existing, id, "grid"));
+          const cell = takeVisibleCell(existing, id, "grid");
+          if (cell) {
+            list.appendChild(cell);
+          }
         });
         section.appendChild(list);
         fragment.appendChild(section);
@@ -4921,6 +5046,7 @@
       }
       renderPeople();
       renderActiveFilters();
+      loadSuggestions();
       return body;
     }).catch(function () {
       return null;
@@ -5247,6 +5373,165 @@
       renderKey = "";
       return Promise.all([loadPeople(), loadCatalog()]);
     });
+  }
+
+  function currentWizardPair() {
+    return mergeSuggestions[wizardIndex] || null;
+  }
+
+  function paintMergeWizard() {
+    const pair = currentWizardPair();
+    if (!pair) {
+      closeMergeWizard();
+      return;
+    }
+    if (mergeWizardProgress) {
+      mergeWizardProgress.textContent = t("mergeWizardProgress", {
+        current: wizardIndex + 1,
+        total: mergeSuggestions.length,
+      });
+    }
+    if (mergeWizardKeepName) {
+      mergeWizardKeepName.textContent = personDisplayName(pair.keep || { id: pair.keepId, name: null });
+    }
+    if (mergeWizardDropName) {
+      mergeWizardDropName.textContent = personDisplayName(pair.drop || { id: pair.dropId, name: null });
+    }
+    if (mergeWizardKeepFace) {
+      paintFace(mergeWizardKeepFace, (pair.keep || {}).thumbnail || null);
+    }
+    if (mergeWizardDropFace) {
+      paintFace(mergeWizardDropFace, (pair.drop || {}).thumbnail || null);
+    }
+  }
+
+  function openMergeWizard() {
+    if (!mergeSuggestions.length || !mergeWizard) {
+      return;
+    }
+    if (wizardIndex >= mergeSuggestions.length) {
+      wizardIndex = 0;
+    }
+    paintMergeWizard();
+    if (mergeWizard.showModal) {
+      mergeWizard.showModal();
+    }
+  }
+
+  function closeMergeWizard() {
+    if (mergeWizard && mergeWizard.open) {
+      mergeWizard.close();
+    }
+  }
+
+  function wizardSkip() {
+    wizardIndex += 1;
+    if (wizardIndex >= mergeSuggestions.length) {
+      wizardIndex = 0;
+      closeMergeWizard();
+      return;
+    }
+    paintMergeWizard();
+  }
+
+  function wizardNotSame() {
+    const pair = currentWizardPair();
+    if (!pair) {
+      return;
+    }
+    fetch("/api/people/not-same", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ a: pair.keepId, b: pair.dropId }),
+    }).then(readJson).then(function () {
+      return loadSuggestions();
+    }).then(function () {
+      if (!mergeSuggestions.length) {
+        closeMergeWizard();
+        return;
+      }
+      if (wizardIndex >= mergeSuggestions.length) {
+        wizardIndex = 0;
+      }
+      paintMergeWizard();
+    });
+  }
+
+  function wizardMerge() {
+    const pair = currentWizardPair();
+    if (!pair) {
+      return;
+    }
+    pendingMerge = { keepId: pair.keepId, dropIds: [pair.dropId] };
+    runPendingMerge().then(function () {
+      return loadSuggestions();
+    }).then(function () {
+      if (wizardIndex >= mergeSuggestions.length) {
+        wizardIndex = 0;
+      }
+      if (!mergeSuggestions.length) {
+        closeMergeWizard();
+        return;
+      }
+      paintMergeWizard();
+    });
+  }
+
+  function loadSuggestions() {
+    return fetch("/api/people/suggestions").then(readJson).then(function (body) {
+      mergeSuggestions = (body && body.suggestions) || [];
+      if (wizardIndex >= mergeSuggestions.length) {
+        wizardIndex = 0;
+      }
+      if (peopleReviewBtn) {
+        peopleReviewBtn.hidden = mergeSuggestions.length === 0;
+      }
+      return body;
+    }).catch(function () {
+      mergeSuggestions = [];
+      if (peopleReviewBtn) {
+        peopleReviewBtn.hidden = true;
+      }
+      return null;
+    });
+  }
+
+  function printSrcForViewer() {
+    if (viewerOriginal && !viewerOriginal.hidden && viewerOriginal.getAttribute("src")) {
+      return viewerOriginal.getAttribute("src");
+    }
+    if (viewerImage && viewerImage.getAttribute("src")) {
+      return viewerImage.getAttribute("src");
+    }
+    if (viewerItemId) {
+      return "/api/media/" + encodeURIComponent(viewerItemId) + "?which=preview";
+    }
+    return "";
+  }
+
+  function preparePrint() {
+    const src = printSrcForViewer();
+    if (printImage) {
+      if (src) {
+        printImage.src = src;
+      } else {
+        printImage.removeAttribute("src");
+      }
+    }
+    if (printSheet) {
+      printSheet.setAttribute("aria-hidden", src ? "false" : "true");
+    }
+    return !!src;
+  }
+
+  function printViewer() {
+    if (viewer.hidden) {
+      return;
+    }
+    if (!preparePrint()) {
+      return;
+    }
+    window.print();
   }
 
   function commitPersonName() {
@@ -6232,6 +6517,49 @@
       askMergePeople();
     });
   }
+  if (peopleReviewBtn) {
+    peopleReviewBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      openMergeWizard();
+    });
+  }
+  if (mergeWizard) {
+    const skipBtn = document.getElementById("merge-wizard-skip");
+    const notSameBtn = document.getElementById("merge-wizard-not-same");
+    const mergeBtn = document.getElementById("merge-wizard-merge");
+    const closeBtn = document.getElementById("merge-wizard-close");
+    if (skipBtn) {
+      skipBtn.addEventListener("click", function () {
+        wizardSkip();
+      });
+    }
+    if (notSameBtn) {
+      notSameBtn.addEventListener("click", function () {
+        wizardNotSame();
+      });
+    }
+    if (mergeBtn) {
+      mergeBtn.addEventListener("click", function () {
+        wizardMerge();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        closeMergeWizard();
+      });
+    }
+  }
+  if (viewerPrintBtn) {
+    viewerPrintBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      printViewer();
+    });
+  }
+  window.addEventListener("beforeprint", function () {
+    if (!viewer.hidden) {
+      preparePrint();
+    }
+  });
   if (scanRetry) {
     scanRetry.addEventListener("click", function () {
       const path = scanRetry.dataset.path || "";
@@ -6713,6 +7041,11 @@
       return;
     }
     if (event.key === "Escape") {
+      if (mergeWizard && mergeWizard.open) {
+        event.preventDefault();
+        closeMergeWizard();
+        return;
+      }
       if (keyboardHelp && keyboardHelp.open) {
         event.preventDefault();
         closeKeyboardHelp();
@@ -6816,6 +7149,13 @@
       return;
     }
     const accel = event.ctrlKey || event.metaKey;
+    if (accel && (event.key === "p" || event.key === "P")) {
+      if (!viewer.hidden) {
+        event.preventDefault();
+        printViewer();
+      }
+      return;
+    }
     if (!viewer.hidden && accel) {
       const plus = event.key === "+" || event.key === "=" || event.code === "Equal" || event.code === "NumpadAdd";
       const minus = event.key === "-" || event.key === "_" || event.code === "Minus" || event.code === "NumpadSubtract";
