@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "id": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f",
+  "kind": "video",
+  "filename": "spoken-en.mp4",
+  "capturedAt": "2026-10-16T05:22:35Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 360,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 2.694014,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_64d4483391f4",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-en.mp4",
+      "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-en.mp4",
+      "sizeBytes": 27406,
+      "modifiedAt": "2026-10-16T05:22:35.195572Z",
+      "sha256": "5209a77abdd039887a5864031c6609142df86afaa692e9d6e655db45a5f7ca9f"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_64d4483391f4",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "playback": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued",
+      "playback": "queued"
+    }
+  },
+  "faces": [],
+  "things": [],
+  "transcript": {
+    "schemaVersion": 1,
+    "status": "ready",
+    "language": "en",
+    "text": "The garden fountain is running today.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 1.92,
+        "text": "The garden fountain is running today."
+      }
+    ],
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.16,
+        "word": "The"
+      },
+      {
+        "start": 0.16,
+        "end": 0.48,
+        "word": "garden"
+      },
+      {
+        "start": 0.48,
+        "end": 0.88,
+        "word": "fountain"
+      },
+      {
+        "start": 0.88,
+        "end": 1.26,
+        "word": "is"
+      },
+      {
+        "start": 1.26,
+        "end": 1.52,
+        "word": "running"
+      },
+      {
+        "start": 1.52,
+        "end": 1.92,
+        "word": "today."
+      }
+    ],
+    "summary": "The garden fountain is running today.",
+    "keywords": [
+      "fountain",
+      "running",
+      "garden",
+      "today"
+    ],
+    "sourceSizeBytes": 27406,
+    "sourceModifiedAt": "2026-10-16T05:22:35.195572Z",
+    "model": "faster-whisper-small",
+    "device": "cpu",
+    "summaryMethod": "extractive"
+  },
+  "available": true,
+  "motionAvailable": true,
+  "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-en.mp4",
+  "lastKnownFile": true,
+  "lastKnownFolder": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media",
+  "favorite": false,
+  "entities": {
+    "people": [],
+    "places": [],
+    "things": []
+  }
+}

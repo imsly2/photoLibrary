@@ -351,6 +351,7 @@ class Library:
         ]
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
+        items = [_attach_search_hint(item, query) for item in items]
         if "recent" in query:
             if query.get("recent") != "1":
                 raise fail("invalid-argument")
@@ -712,6 +713,12 @@ class Library:
             return setup_objects(self.root)
         if kind == "faces":
             return self.setup_faces(payload)
+        if kind == "transcribe":
+            from library.transcribe import setup_transcribe
+
+            self.root.mkdir(parents=True, exist_ok=True)
+            self.ensure_settings()
+            return setup_transcribe(self.root)
         raise fail("invalid-argument")
 
     def setup_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -757,6 +764,21 @@ class Library:
         self.ensure_settings()
         return analyze_status(self.root)
 
+    def transcribe(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.transcribe import read_transcribe_payload, transcribe_videos
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        parsed = read_transcribe_payload(payload)
+        return transcribe_videos(self.root, parsed.get("itemId"), force=bool(parsed.get("force")))
+
+    def transcribe_status(self) -> dict[str, Any]:
+        from library.transcribe import transcribe_status
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return transcribe_status(self.root)
+
     def drain_step(self) -> bool:
         if getattr(self, "_jobs_paused", False):
             return False
@@ -799,6 +821,13 @@ class Library:
             from library.objects import analyze_step as run_analyze_step
 
             if run_analyze_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.transcribe import transcribe_step
+
+            if transcribe_step(self.root):
                 return True
         except Exception:
             pass
@@ -1176,6 +1205,8 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
                 matched = True
             if _label_query_match(item, needle):
                 matched = True
+            if _transcript_query_match(item, q):
+                matched = True
         if not matched:
             return False
     source = query.get("source")
@@ -1204,6 +1235,26 @@ def _label_query_match(item: dict[str, Any], needle: str) -> bool:
         things = (item.get("entities") or {}).get("things") or []
         return not things
     return False
+
+
+def _transcript_query_match(item: dict[str, Any], needle: str) -> bool:
+    from library.transcribe import transcript_search_hit
+
+    return transcript_search_hit(item, needle) is not None
+
+
+def _attach_search_hint(item: dict[str, Any], query: dict[str, str]) -> dict[str, Any]:
+    q = query.get("q")
+    if type(q) is not str or q == "":
+        return item
+    from library.transcribe import transcript_search_hit
+
+    hit = transcript_search_hit(item, q)
+    if hit is None:
+        return item
+    out = dict(item)
+    out["saidInVideo"] = hit
+    return out
 
 
 def _date_query_match(captured: str, needle: str) -> bool:

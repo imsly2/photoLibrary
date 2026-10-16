@@ -23,7 +23,9 @@ ITEM_KEYS = (
     "renditions",
     "faces",
     "things",
+    "transcript",
 )
+ITEM_REQUIRED_KEYS = tuple(key for key in ITEM_KEYS if key != "transcript")
 METADATA_KEYS = (
     "width",
     "height",
@@ -89,6 +91,24 @@ FILE_STATES = frozenset({"pending", "copied", "indexed", "error"})
 SCAN_STATES = frozenset({"idle", "running", "complete", "interrupted", "error"})
 PREVIEW_STORES = frozenset({"with-server", "with-source"})
 RENDITION_STATUSES = frozenset({"not-applicable", "queued", "ready", "error"})
+TRANSCRIPT_STATUSES = frozenset({"ready", "skipped", "error"})
+TRANSCRIPT_KEYS = (
+    "schemaVersion",
+    "status",
+    "language",
+    "text",
+    "segments",
+    "words",
+    "summary",
+    "keywords",
+    "sourceSizeBytes",
+    "sourceModifiedAt",
+    "model",
+    "device",
+    "summaryMethod",
+)
+TRANSCRIPT_SEGMENT_KEYS = ("start", "end", "text")
+TRANSCRIPT_WORD_KEYS = ("start", "end", "word")
 SCAN_FILE_ERRORS = frozenset({"io-error", "decode-error", "invalid-argument"})
 
 
@@ -338,9 +358,79 @@ def read_thing_ref(value: Any) -> dict[str, Any]:
     return out
 
 
+def _read_time(value: Any) -> float:
+    if type(value) is bool or not isinstance(value, (int, float)):
+        raise fail("invalid-catalog")
+    number = float(value)
+    if not math.isfinite(number) or number < 0:
+        raise fail("invalid-catalog")
+    return number
+
+
+def read_transcript_segment(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, TRANSCRIPT_SEGMENT_KEYS)
+    return {
+        "start": _read_time(data["start"]),
+        "end": _read_time(data["end"]),
+        "text": _str(data["text"], allow_empty=True),
+    }
+
+
+def read_transcript_word(value: Any) -> dict[str, Any]:
+    data = _require_dict(value)
+    _exact_keys(data, TRANSCRIPT_WORD_KEYS)
+    return {
+        "start": _read_time(data["start"]),
+        "end": _read_time(data["end"]),
+        "word": _str(data["word"], allow_empty=True),
+    }
+
+
+def read_transcript(value: Any) -> dict[str, Any] | None:
+    if value is None:
+        return None
+    data = _require_dict(value)
+    extra = set(data) - set(TRANSCRIPT_KEYS)
+    missing = set(TRANSCRIPT_KEYS) - set(data)
+    if extra or missing:
+        raise fail("invalid-catalog")
+    if data["schemaVersion"] != 1:
+        raise fail("invalid-catalog")
+    status = _str(data["status"])
+    if status not in TRANSCRIPT_STATUSES:
+        raise fail("invalid-catalog")
+    segments = data["segments"]
+    words = data["words"]
+    keywords = data["keywords"]
+    if not isinstance(segments, list) or not isinstance(words, list) or not isinstance(keywords, list):
+        raise fail("invalid-catalog")
+    size = _int(data["sourceSizeBytes"])
+    if size < 0:
+        raise fail("invalid-catalog")
+    return {
+        "schemaVersion": 1,
+        "status": status,
+        "language": _null_or_str(data["language"]),
+        "text": _str(data["text"], allow_empty=True),
+        "segments": [read_transcript_segment(row) for row in segments],
+        "words": [read_transcript_word(row) for row in words],
+        "summary": _str(data["summary"], allow_empty=True),
+        "keywords": [_str(row, allow_empty=False) for row in keywords],
+        "sourceSizeBytes": size,
+        "sourceModifiedAt": _str(data["sourceModifiedAt"]),
+        "model": _str(data["model"]),
+        "device": _str(data["device"]),
+        "summaryMethod": _str(data["summaryMethod"]),
+    }
+
+
 def read_item(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    _exact_keys(data, ITEM_KEYS)
+    extra = set(data) - set(ITEM_KEYS)
+    missing = set(ITEM_REQUIRED_KEYS) - set(data)
+    if extra or missing:
+        raise fail("invalid-catalog")
     if data["schemaVersion"] != 1:
         raise fail("invalid-catalog")
     kind = _str(data["kind"])
@@ -370,12 +460,16 @@ def read_item(value: Any) -> dict[str, Any]:
         "renditions": read_renditions(data["renditions"]),
         "faces": [read_face(item) for item in faces],
         "things": [read_thing_ref(item) for item in things],
+        "transcript": read_transcript(data.get("transcript")),
     }
 
 
 def ordered_item(item: dict[str, Any]) -> dict[str, Any]:
     item = read_item(item)
-    return {key: item[key] for key in ITEM_KEYS}
+    out = {key: item[key] for key in ITEM_KEYS}
+    if out.get("transcript") is None:
+        del out["transcript"]
+    return out
 
 
 def read_origin(value: Any) -> dict[str, Any]:
@@ -675,6 +769,7 @@ def make_item(
     metadata: dict[str, Any] | None = None,
     faces: list[dict[str, Any]] | None = None,
     things: list[dict[str, Any]] | None = None,
+    transcript: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return ordered_item(
         {
@@ -691,6 +786,7 @@ def make_item(
             "renditions": renditions,
             "faces": faces or [],
             "things": things or [],
+            "transcript": transcript,
         }
     )
 

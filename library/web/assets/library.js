@@ -1011,6 +1011,7 @@
       const openItem = findItemById(viewerItemId);
       if (openItem) {
         renderFacts(openItem);
+        renderTranscript(openItem);
       }
     }
     if (currentView === "settings") {
@@ -1045,6 +1046,7 @@
     settings.tourPictureSec = data.tourPictureSec != null ? data.tourPictureSec : settings.tourPictureSec;
     settings.faceMatchThreshold = data.faceMatchThreshold != null ? data.faceMatchThreshold : settings.faceMatchThreshold;
     settings.faceMinSidePx = data.faceMinSidePx != null ? data.faceMinSidePx : settings.faceMinSidePx;
+    settings.transcribeVideos = data.transcribeVideos !== false;
     if (data.language) {
       settings.language = I18N.normalize(data.language);
     }
@@ -1096,6 +1098,7 @@
     setFieldValue("set-faceMatchThreshold", data.faceMatchThreshold);
     syncFaceThresholdOutput(data.faceMatchThreshold);
     setFieldValue("set-faceMinSidePx", data.faceMinSidePx);
+    setRadioGroup("set-transcribeVideos", data.transcribeVideos === false ? "false" : "true");
     showFaceRerunNote(facesRerunNeeded);
     if (settingsRenditionNote) {
       settingsRenditionNote.textContent = data.previewStore === "with-source"
@@ -1322,6 +1325,10 @@
         }
         const key = (node.name || "").replace(/^set-/, "");
         if (!key) {
+          return;
+        }
+        if (key === "transcribeVideos") {
+          commitSetting(key, node.value === "true");
           return;
         }
         commitSetting(key, node.value);
@@ -3326,6 +3333,10 @@
     if (thingsLabels) {
       thingsLabels.innerHTML = "";
     }
+    const transcriptWrap = document.getElementById("viewer-transcript-wrap");
+    if (transcriptWrap) {
+      transcriptWrap.hidden = true;
+    }
     syncSelectionChrome();
   }
 
@@ -3600,7 +3611,7 @@
 
   function applyViewerStartTime(startTime) {
     const seekTo = Number(startTime);
-    if (!isFinite(seekTo) || seekTo <= 0) {
+    if (!isFinite(seekTo) || seekTo < 0) {
       return;
     }
     const duration = viewerVideo.duration;
@@ -3817,8 +3828,70 @@
     }
   }
 
+  function seekViewerTo(seconds) {
+    const t = Number(seconds);
+    if (!viewerVideo || viewer.hidden || !isFinite(t)) {
+      return;
+    }
+    try {
+      viewerVideo.currentTime = Math.max(0, t);
+    } catch (err) {}
+    viewerWantPlay = true;
+    const play = viewerVideo.play && viewerVideo.play();
+    if (play && play.catch) {
+      play.catch(function () {});
+    }
+  }
+
+  function renderTranscript(item) {
+    const wrap = document.getElementById("viewer-transcript-wrap");
+    const summaryNode = document.getElementById("viewer-summary");
+    const keywordsNode = document.getElementById("viewer-keywords");
+    const lines = document.getElementById("viewer-transcript-lines");
+    if (!wrap) {
+      return;
+    }
+    const rec = item && item.transcript;
+    const ready = rec && rec.status === "ready" && (rec.text || (rec.segments || []).length);
+    wrap.hidden = !ready;
+    if (summaryNode) {
+      summaryNode.textContent = "";
+    }
+    if (keywordsNode) {
+      keywordsNode.textContent = "";
+    }
+    if (lines) {
+      lines.innerHTML = "";
+    }
+    if (!ready) {
+      return;
+    }
+    if (summaryNode && rec.summary) {
+      summaryNode.textContent = t("summary") + ": " + rec.summary;
+    }
+    if (keywordsNode && rec.keywords && rec.keywords.length) {
+      keywordsNode.textContent = t("keywords") + ": " + rec.keywords.join(" · ");
+    }
+    if (lines) {
+      (rec.segments || []).forEach(function (seg) {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "transcript-line";
+        const start = Number(seg.start) || 0;
+        btn.textContent = formatDuration(start) + "  " + (seg.text || "");
+        btn.addEventListener("click", function () {
+          seekViewerTo(start);
+        });
+        li.appendChild(btn);
+        lines.appendChild(li);
+      });
+    }
+  }
+
   function renderViewerLabels(item) {
     renderFacts(item);
+    renderTranscript(item);
     if (peopleLabels) {
       peopleLabels.innerHTML = "";
     }
@@ -4074,7 +4147,7 @@
     openStillViewer(item, index);
   }
 
-  function openViewer(id) {
+  function openViewer(id, startTime) {
     hideSlideshowEmpty();
     const index = items.findIndex(function (item) {
       return item.id === id;
@@ -4088,7 +4161,15 @@
     savedSearch = searchInput ? searchInput.value : filter.q;
     selectedId = id;
     syncSelectionChrome();
-    openViewerAt(index, hoverPreviewTime(id), true);
+    const item = items[index];
+    let seek = startTime;
+    if (seek == null && item && item.saidInVideo && item.saidInVideo.start != null) {
+      seek = item.saidInVideo.start;
+    }
+    if (seek == null) {
+      seek = hoverPreviewTime(id);
+    }
+    openViewerAt(index, seek, true);
     if (!skipHistory) {
       stayOnLiveOrigin({ library: true, view: "viewer", id: id }, "#item/" + encodeURIComponent(id), false);
     }
@@ -4221,6 +4302,12 @@
       missing.textContent = t("missingBadge");
       badges.appendChild(missing);
     }
+    if (item.saidInVideo) {
+      const said = document.createElement("span");
+      said.className = "said-badge tile-badge";
+      said.textContent = t("saidInVideo");
+      badges.appendChild(said);
+    }
     const heart = document.createElement("span");
     heart.className = "heart";
     heart.setAttribute("role", "button");
@@ -4269,7 +4356,9 @@
       if (hoverVideo && hoverCell === cell) {
         rememberHoverTime(item.id, hoverVideo);
       }
-      openViewer(item.id);
+      const live = itemById(item.id);
+      const saidStart = live.saidInVideo && live.saidInVideo.start != null ? live.saidInVideo.start : null;
+      openViewer(item.id, saidStart);
     });
     return cell;
   }
@@ -4471,6 +4560,32 @@
     }
   }
 
+  function syncSaidBadge(cell, item) {
+    if (!cell) {
+      return;
+    }
+    const badges = cell.querySelector(".tile-badges");
+    if (!badges) {
+      return;
+    }
+    let said = badges.querySelector(".said-badge");
+    if (item && item.saidInVideo) {
+      if (!said) {
+        said = document.createElement("span");
+        said.className = "said-badge tile-badge";
+        const heart = badges.querySelector(".heart");
+        if (heart) {
+          badges.insertBefore(said, heart);
+        } else {
+          badges.appendChild(said);
+        }
+      }
+      said.textContent = t("saidInVideo");
+    } else if (said) {
+      said.remove();
+    }
+  }
+
   function takeCell(existing, id, slot) {
     const key = (slot || "grid") + ":" + id;
     let cell = existing[key];
@@ -4479,6 +4594,7 @@
       const item = itemById(id);
       syncHeartButton(cell.querySelector(".heart"), !!(item && item.favorite));
       syncStackBadge(cell, item);
+      syncSaidBadge(cell, item);
       const placeholder = cell.querySelector(".placeholder");
       if (placeholder) {
         placeholder.textContent = t("previewUnavailable");

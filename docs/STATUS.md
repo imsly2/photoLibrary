@@ -4,6 +4,30 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Local video transcription after PR #43 (`cba0ce3`) on
+  `cursor/transcribe-videos-557d`. Queue stage **Transcribe** runs on
+  videos with audio (faster-whisper `small`; CUDA float16 when
+  present, else CPU int8). Timestamped segments/words live on the
+  item. Summary is **extractive** (one or two sentences plus
+  keywords; no local LLM, no cloud). Search matches spoken words
+  with a **Said in video** hint and seeks. Info has a collapsible
+  transcript; a line click seeks. Settings `transcribeVideos`
+  (default On) turns the stage off. Same size+mtime is skipped.
+  Chinese strings included. ASCII launchers untouched. After Pull:
+  rerun Setup.bat once for Whisper `small`, restart Library, Start
+  Processing. Does not close a Check. 16/22 unchanged.
+  Plan:
+  [taste-transcribe](features/taste-transcribe/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-TRANSCRIBE](features/taste-transcribe/Rev1.0/assets/verify-1/result.json)
+  **88/88** (EN exact “The garden fountain is running today.”;
+  ZH 今天天氣很好…; fountain `saidInVideo` seek 0.48s; rescan
+  transcribed 0 skipped 3; setting off `available` false; zh
+  视频里说到 / 逐字稿 / 转录视频),
+  [search said](features/taste-transcribe/Rev1.0/assets/verify-1/search-said.png),
+  [info](features/taste-transcribe/Rev1.0/assets/verify-1/info-transcript.png),
+  [chinese](features/taste-transcribe/Rev1.0/assets/verify-1/chinese-transcribe.png),
+  [settings](features/taste-transcribe/Rev1.0/assets/verify-1/settings-transcribe-zh.png).
 - 2026-10-16 — Flight burn fillers after PR #42 (`9a610ef`) on
   `cursor/flight-fillers-643d`. **Review matches** wizard suggests
   same-person pairs by face cosine; Merge / Not same / Skip; never

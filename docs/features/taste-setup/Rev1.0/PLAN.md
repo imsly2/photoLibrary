@@ -9,8 +9,8 @@ Read PRODUCT F2 (Setup once), UI-SPEC **Portable install**, and this file.
 
 1. `Setup.bat` is the one-time family-PC install: Python 3.12+, ffmpeg
    (same winget ids as `launch.ps1`), `.venv`, `pip install -e .`.
-2. Then `python -m library setup-geo`, `setup-ml objects`, and
-   `setup-ml faces` when those commands exist on this copy.
+2. Then `python -m library setup-geo`, `setup-ml objects`,
+   `setup-ml faces`, and `setup-ml transcribe` when those commands exist on this copy.
 3. If a command is missing, print that **Update Library** must pull it
    and exit non-zero. Same `Setup.bat` works after the stack merge
    without a rewrite.

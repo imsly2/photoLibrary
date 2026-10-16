@@ -27,18 +27,24 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    general strip, export) while a Must checklist row is red. Globe polish
    beyond F12 waits. macOS/Linux launch is pinned.
 4. Optional local AI is stacked on this tip: `setup-geo`,
-   `setup-ml objects`, `setup-ml faces`. Processing Pause/Start drives
-   those drains when models/pack are installed.    People fills from real
-   face clusters. `Setup.bat` composes those CLIs. After Update, re-run
-   faces with the stricter gates: `python -m library infer-faces --force`
-   or Processing **Re-run Faces**. Tune `faceMatchThreshold` (default 0.80,
-   Settings slider 0.35–0.95) and `faceMinSidePx` (default 80). Large
-   stills use overlapping 1280 detect tiles, then the same original→112
-   ArcFace crop. No 23rd Check.
+   `setup-ml objects`, `setup-ml faces`, `setup-ml transcribe`. Processing
+   Pause/Start drives those drains when models/pack are installed.
+   People fills from real face clusters. Videos with sound get a local
+   Whisper transcript plus an extractive summary. `Setup.bat` composes
+   those CLIs. After Update, re-run Setup.bat once for the Whisper model,
+   restart Library, and Start Processing. Re-run faces with the stricter
+   gates: `python -m library infer-faces --force` or Processing **Re-run
+   Faces**. Tune `faceMatchThreshold` (default 0.80, Settings slider
+   0.35–0.95) and `faceMinSidePx` (default 80). Large stills use overlapping
+   1280 detect tiles, then the same original→112 ArcFace crop. No 23rd Check.
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (merge wizard / Live-burst / Print):** Restart Library.
+**After Pull (transcript / merge wizard / Live-burst / Print):** Rerun
+`Setup.bat` once so `setup-ml transcribe` can download Whisper `small`
+if this PC does not have it yet. Restart Library. Start Processing so
+the Transcribe queue can run. Settings **Transcribe videos** stays On
+unless Steve turns it off.
 People **Review matches** steps likely same-person pairs (Merge / Not
 same / Skip). Nothing merges until Merge. Live and burst stacks share
 one tile with a badge; open the viewer to expand. Ctrl+P prints the

@@ -525,6 +525,15 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.analyze(body))
                 return
+            if route == "/api/transcribe" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.transcribe_status())
+                return
+            if route == "/api/transcribe" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.transcribe(body))
+                return
             if route == "/api/faces" and method in {"GET", "HEAD"}:
                 self._send_json(200, self.library.faces_status())
                 return

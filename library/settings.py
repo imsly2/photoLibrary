@@ -33,6 +33,7 @@ KEY_ORDER = (
     "language",
     "faceMatchThreshold",
     "faceMinSidePx",
+    "transcribeVideos",
 )
 
 ENUMS: dict[str, frozenset[str]] = {
@@ -49,6 +50,7 @@ ENUMS: dict[str, frozenset[str]] = {
 
 INT_KEYS = frozenset({"port", "thumbPx", "previewPx", "proxyWidth", "tourPictures", "faceMinSidePx"})
 NUMBER_KEYS = frozenset({"placeMatchMeters", "tourOrbitSec", "tourPictureSec", "faceMatchThreshold"})
+BOOL_KEYS = frozenset({"transcribeVideos"})
 SETTING_KEYS = frozenset(KEY_ORDER[1:])
 
 DEFAULTS: dict[str, Any] = {
@@ -72,6 +74,7 @@ DEFAULTS: dict[str, Any] = {
     "language": "en",
     "faceMatchThreshold": 0.8,
     "faceMinSidePx": 80,
+    "transcribeVideos": True,
 }
 
 
@@ -92,6 +95,10 @@ def validate_value(key: str, value: Any) -> Any:
         raise fail("invalid-argument")
     if key in ENUMS:
         if type(value) is not str or value not in ENUMS[key]:
+            raise fail("invalid-argument")
+        return value
+    if key in BOOL_KEYS:
+        if type(value) is not bool:
             raise fail("invalid-argument")
         return value
     if key == "port":
@@ -158,6 +165,12 @@ def parse_cli_value(key: str, raw: str) -> Any:
     if key not in SETTING_KEYS:
         raise fail("invalid-argument")
     lowered = raw.lower()
+    if key in BOOL_KEYS:
+        if lowered == "true":
+            return validate_value(key, True)
+        if lowered == "false":
+            return validate_value(key, False)
+        raise fail("invalid-argument")
     if lowered in ("true", "false"):
         raise fail("invalid-argument")
     if key in ENUMS:
@@ -197,7 +210,7 @@ def settings_path(root: Path) -> Path:
 
 
 def fill_missing_defaults(data: dict[str, Any]) -> dict[str, Any]:
-    """Accept a pre-language or pre-face-quality file by filling new keys from defaults."""
+    """Accept a pre-language, pre-face-quality, or pre-transcribe file by filling new keys from defaults."""
     if not isinstance(data, dict):
         raise fail("invalid-catalog")
     extra = [key for key in data if key not in KEY_ORDER]

@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af",
+  "kind": "video",
+  "filename": "spoken-zh.mp4",
+  "capturedAt": "2026-10-16T05:22:35Z",
+  "capturedAtSource": "mtime",
+  "placeId": null,
+  "metadata": {
+    "width": 640,
+    "height": 360,
+    "orientation": null,
+    "camera": null,
+    "lens": null,
+    "durationSec": 3.332018,
+    "latitude": null,
+    "longitude": null
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_64d4483391f4",
+      "role": "primary",
+      "component": "motion",
+      "kind": "volume",
+      "current": true,
+      "libraryRelativePath": null,
+      "volumeSerial": "linux:/",
+      "pathFromVolumeRoot": "workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-zh.mp4",
+      "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-zh.mp4",
+      "sizeBytes": 36212,
+      "modifiedAt": "2026-10-16T05:22:35.387561Z",
+      "sha256": "a21a545007d53a91a9dd3bde462d4411eb4fbf74e6982dc82b6d149f6be665af"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_64d4483391f4",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "playback": null,
+    "status": {
+      "thumb": "not-applicable",
+      "preview": "not-applicable",
+      "poster": "queued",
+      "proxy": "queued",
+      "playback": "queued"
+    }
+  },
+  "faces": [],
+  "things": [],
+  "transcript": {
+    "schemaVersion": 1,
+    "status": "ready",
+    "language": "zh",
+    "text": "今天天氣很好,花園得噴泉再流水。",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.0,
+        "text": "今天天氣很好,花園得噴泉再流水。"
+      }
+    ],
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.22,
+        "word": "今天"
+      },
+      {
+        "start": 0.22,
+        "end": 0.48,
+        "word": "天"
+      },
+      {
+        "start": 0.48,
+        "end": 0.68,
+        "word": "氣"
+      },
+      {
+        "start": 0.68,
+        "end": 1.1,
+        "word": "很好,"
+      },
+      {
+        "start": 1.44,
+        "end": 1.6,
+        "word": "花"
+      },
+      {
+        "start": 1.6,
+        "end": 1.82,
+        "word": "園"
+      },
+      {
+        "start": 1.82,
+        "end": 1.94,
+        "word": "得"
+      },
+      {
+        "start": 1.94,
+        "end": 2.16,
+        "word": "噴"
+      },
+      {
+        "start": 2.16,
+        "end": 2.4,
+        "word": "泉"
+      },
+      {
+        "start": 2.4,
+        "end": 2.56,
+        "word": "再"
+      },
+      {
+        "start": 2.56,
+        "end": 2.76,
+        "word": "流"
+      },
+      {
+        "start": 2.76,
+        "end": 3.0,
+        "word": "水。"
+      }
+    ],
+    "summary": "今天天氣很好,花園得噴泉再流水。",
+    "keywords": [
+      "今天",
+      "再流",
+      "噴泉",
+      "園得",
+      "天天",
+      "天氣"
+    ],
+    "sourceSizeBytes": 36212,
+    "sourceModifiedAt": "2026-10-16T05:22:35.387561Z",
+    "model": "faster-whisper-small",
+    "device": "cpu",
+    "summaryMethod": "extractive"
+  },
+  "available": true,
+  "motionAvailable": true,
+  "lastKnownPath": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media/spoken-zh.mp4",
+  "lastKnownFile": true,
+  "lastKnownFolder": "/workspace/docs/features/taste-transcribe/Rev1.0/assets/verify-1/transcribe-media",
+  "favorite": false,
+  "entities": {
+    "people": [],
+    "places": [],
+    "things": []
+  }
+}
