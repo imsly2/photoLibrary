@@ -436,7 +436,7 @@ def prove_browser(page: Any, url: str, dest_folder: Path, artifacts: Path, check
           const path = (document.getElementById('move-folder-path') || {}).value || '';
           return path && confirm.indexOf('2') !== -1 && (confirm.indexOf(dest) !== -1 || path.indexOf(dest) !== -1);
         }""",
-        dest_text,
+        arg=dest_text,
         timeout=5000,
     )
     picked = bar_state(page)
