@@ -2618,17 +2618,19 @@
       const choice = document.createElement("div");
       choice.className = "compare-choice";
       const itemId = side.itemId || ("side-" + index);
+      const groupName = "compare-choice-" + itemId + "-" + index;
       const selected = compareChoices[itemId] || "keep";
       ["keep", "remove"].forEach(function (value) {
         const label = document.createElement("label");
         const radio = document.createElement("input");
         radio.type = "radio";
-        radio.name = "compare-choice-" + itemId;
+        radio.name = groupName;
         radio.value = value;
         radio.checked = selected === value;
         radio.addEventListener("change", function () {
           if (radio.checked) {
             compareChoices[itemId] = value;
+            syncCompareChoiceRadios(itemId, value);
           }
         });
         label.appendChild(radio);
@@ -2637,6 +2639,20 @@
       });
       article.appendChild(choice);
       duplicateCompareSides.appendChild(article);
+    });
+  }
+
+  function syncCompareChoiceRadios(itemId, value) {
+    if (!duplicateCompareSides) {
+      return;
+    }
+    Array.from(duplicateCompareSides.querySelectorAll(".compare-side")).forEach(function (el) {
+      if ((el.getAttribute("data-item-id") || "") !== itemId) {
+        return;
+      }
+      Array.from(el.querySelectorAll('input[type="radio"]')).forEach(function (node) {
+        node.checked = node.value === value;
+      });
     });
   }
 

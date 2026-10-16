@@ -29,6 +29,7 @@ def seed_duplicates(media_src: Path, dest: Path) -> dict[str, Path]:
     for path in (keep, drop, exact_a, exact_b, leftover):
         path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, keep)
+    keep.write_bytes(keep.read_bytes() + b"\r\n")
     shutil.copy2(src, drop)
     drop.write_bytes(drop.read_bytes() + b"\n")
     shutil.copy2(src, exact_a)
@@ -197,6 +198,9 @@ def compare_state(page: Any) -> dict[str, Any]:
               facts[dt] = dd;
             });
             const checked = el.querySelector('input[type=\"radio\"]:checked');
+            const radios = Array.from(el.querySelectorAll('input[type=\"radio\"]')).map(function (node) {
+              return node.name || '';
+            });
             return {
               itemId: el.getAttribute('data-item-id') || '',
               path: facts.Path || facts['路径'] || '',
@@ -206,6 +210,7 @@ def compare_state(page: Any) -> dict[str, Any]:
               date: facts['Date taken'] || facts['拍摄日期'] || '',
               hash: facts.Hash || facts['哈希'] || '',
               choice: checked ? checked.value : '',
+              radioName: checked ? checked.name : (radios[0] || ''),
               facts: facts
             };
           });
@@ -275,6 +280,12 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, ids: dic
         "default-keep",
         all(side.get("choice") == "keep" for side in sides),
         json.dumps([side.get("choice") for side in sides]),
+    )
+    radio_names = [side.get("radioName") for side in sides]
+    checks.check(
+        "unique-radio-groups",
+        len(radio_names) == len(set(radio_names)) and all(radio_names),
+        json.dumps(radio_names),
     )
     page.screenshot(path=str(artifacts / "compare-sides.png"))
 
@@ -349,28 +360,31 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, ids: dic
                 break
         raise RuntimeError("filename group not shown " + json.dumps(compare_state(page)))
 
+    def mark_remove(item_id: str) -> None:
+        page.evaluate(
+            """(dropId) => {
+              const radio = document.querySelector(
+                '#duplicate-compare-sides .compare-side[data-item-id=\"' + dropId + '\"] input[value=\"remove\"]'
+              );
+              if (radio) {
+                radio.click();
+              }
+            }""",
+            item_id,
+        )
+        page.wait_for_function(
+            """(dropId) => {
+              const radio = document.querySelector(
+                '#duplicate-compare-sides .compare-side[data-item-id=\"' + dropId + '\"] input[value=\"remove\"]'
+              );
+              return radio && radio.checked;
+            }""",
+            arg=item_id,
+            timeout=5000,
+        )
+
     show_filename_group()
-    page.evaluate(
-        """(dropId) => {
-          const radio = document.querySelector(
-            '#duplicate-compare-sides input[name=\"compare-choice-' + dropId + '\"][value=\"remove\"]'
-          );
-          if (radio) {
-            radio.click();
-          }
-        }""",
-        drop_id,
-    )
-    page.wait_for_function(
-        """(dropId) => {
-          const radio = document.querySelector(
-            '#duplicate-compare-sides input[name=\"compare-choice-' + dropId + '\"][value=\"remove\"]'
-          );
-          return radio && radio.checked;
-        }""",
-        drop_id,
-        timeout=5000,
-    )
+    mark_remove(drop_id)
     chosen = compare_state(page)
     record["chosen"] = chosen
     drop_side = next((side for side in (chosen.get("sides") or []) if side.get("itemId") == drop_id), None)
@@ -383,6 +397,31 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, ids: dic
         timeout=8000,
     )
     page.screenshot(path=str(artifacts / "compare-confirm.png"))
+    page.locator("#confirm-remove-cancel").click()
+    page.wait_for_function(
+        "() => !document.getElementById('confirm-remove').open",
+        timeout=5000,
+    )
+    status, listed = request_json(url.rstrip("/") + "/api/items", timeout=5)
+    after_dismiss = {item.get("id") for item in (listed or [])}
+    checks.check(
+        "confirm-cancel-keeps-both",
+        status == 200 and keep_id in after_dismiss and drop_id in after_dismiss,
+        json.dumps(sorted(after_dismiss)),
+    )
+
+    page.locator("#filter-duplicates").click()
+    page.wait_for_function(
+        "() => document.getElementById('duplicate-compare') && document.getElementById('duplicate-compare').open",
+        timeout=8000,
+    )
+    show_filename_group()
+    mark_remove(drop_id)
+    page.locator("#duplicate-compare-apply").click()
+    page.wait_for_function(
+        "() => document.getElementById('confirm-remove') && document.getElementById('confirm-remove').open",
+        timeout=8000,
+    )
     page.locator("#confirm-remove-ok").click()
     page.wait_for_function(
         """(dropId) => {
@@ -391,7 +430,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, ids: dic
           });
           return ids.indexOf(dropId) < 0;
         }""",
-        drop_id,
+        arg=drop_id,
         timeout=10000,
     )
     status, listed = request_json(url.rstrip("/") + "/api/items", timeout=5)
