@@ -259,6 +259,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `reveal <id>` | `POST /api/items/<id>/reveal` `{}` | Opens the original's folder (Explorer on Windows). |
 | `open <id>` | `POST /api/items/<id>/open` `{}` | Opens the original in the default app. |
 | `remove <id> [id…]` | `POST /api/items/<id>/remove` `{}`; many ids: `POST /api/items/remove` `{"itemIds":[…]}` | Drops catalog records; original bytes stay. Several ids are one undo step. Not Delete file. |
+| `move <id> [id…] --to <folder>` | `POST /api/items/move` `{"itemIds":[…],"destination":"<folder>"}` or `{"itemIds":[…],"sourceId":"<id>","subpath"?}` | Relocates selected originals into a registered source folder or a subfolder. Thumbs/proxies/playback stay; catalog paths update. Never overwrites (`name_2.ext`). One undo step. |
 | `delete-file <id>` | `POST /api/items/<id>/delete-file` `{}` | Recycle Bin the original (Windows), then remove from the catalog. UI extra-confirms. |
 | `update` | `POST /api/update` `{}` | Pulls a newer app folder when this copy is a git checkout. Success includes the new short `git_sha`. `GET /api/update` and `GET /api/version` report that SHA. |
 | `people` / `people list` | `GET /api/people` | Lists people with counts, visibility, and thumbnail face. Unnamed clusters below `personOfInterestMin` (3) stay in the payload with `visible:false`. |

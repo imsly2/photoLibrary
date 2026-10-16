@@ -87,6 +87,7 @@
     <p id="selection-count">0 selected</p>
     <button type="button" id="selection-favorite" data-i18n="favorite">Favorite</button>
     <button type="button" id="selection-compare" hidden data-i18n="compare">Compare</button>
+    <button type="button" id="selection-move" data-i18n="move">Move</button>
     <button type="button" id="selection-remove" data-i18n="remove">Remove</button>
     <button type="button" id="selection-clear" data-i18n="clearSelection">Clear selection</button>
   </div>
@@ -475,6 +476,26 @@
     <div class="dialog-actions">
       <button type="button" id="duplicate-compare-cancel" data-i18n="cancel">Cancel</button>
       <button type="button" id="duplicate-compare-apply" data-i18n="applyChoices">Apply choices</button>
+    </div>
+  </dialog>
+  <dialog id="move-folder" aria-labelledby="move-folder-title">
+    <h2 id="move-folder-title" data-i18n="moveTitle">Move to folder</h2>
+    <p id="move-folder-help" data-i18n="moveHelp">Originals move to the folder you pick. Previews stay; nothing is reprocessed.</p>
+    <p id="move-folder-confirm"></p>
+    <p class="side-label" data-i18n="chooseFolder">Choose a folder</p>
+    <div id="move-folder-sources"></div>
+    <label class="path-field" for="move-folder-path">
+      <span data-i18n="path">Path</span>
+      <div class="path-row">
+        <input type="text" id="move-folder-path" autocomplete="off" spellcheck="false">
+        <button type="button" id="move-folder-browse" data-i18n="browse">Browse</button>
+      </div>
+    </label>
+    <p id="move-folder-error" class="dialog-error" hidden></p>
+    <p id="move-folder-report" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" id="move-folder-cancel" data-i18n="cancel">Cancel</button>
+      <button type="button" id="move-folder-ok" data-i18n="move">Move</button>
     </div>
   </dialog>
   <dialog id="confirm-remove" aria-labelledby="confirm-remove-title">

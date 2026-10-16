@@ -241,6 +241,12 @@ def build_parser() -> argparse.ArgumentParser:
     remove_cmd = sub.add_parser("remove")
     remove_cmd.add_argument("ids", nargs="+")
 
+    move_cmd = sub.add_parser("move")
+    move_cmd.add_argument("ids", nargs="+")
+    move_cmd.add_argument("--to")
+    move_cmd.add_argument("--source")
+    move_cmd.add_argument("--subpath")
+
     delete_file_cmd = sub.add_parser("delete-file")
     delete_file_cmd.add_argument("id")
 
@@ -564,6 +570,24 @@ def main(argv: list[str] | None = None) -> int:
                     "/api/items/remove",
                     {"itemIds": ids},
                 )
+            _print_json(result)
+            return 0
+        if args.command == "move":
+            body: dict[str, Any] = {"itemIds": list(args.ids)}
+            if args.to:
+                body["destination"] = args.to
+            if args.source:
+                body["sourceId"] = args.source
+            if args.subpath:
+                body["subpath"] = args.subpath
+            result = _mutation(
+                root,
+                lambda: Library(root).move_items(body),
+                "POST",
+                "/api/items/move",
+                body,
+                timeout=300.0,
+            )
             _print_json(result)
             return 0
         if args.command == "delete-file":

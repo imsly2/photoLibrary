@@ -217,6 +217,7 @@ h1 {
 
 #selection-favorite,
 #selection-compare,
+#selection-move,
 #selection-remove,
 #selection-clear,
 #filter-duplicates {
@@ -230,6 +231,7 @@ h1 {
 
 #selection-favorite:hover,
 #selection-compare:hover,
+#selection-move:hover,
 #selection-remove:hover,
 #selection-clear:hover,
 #filter-duplicates:hover {
@@ -239,6 +241,52 @@ h1 {
 
 #selection-compare[hidden] {
   display: none;
+}
+
+#move-folder-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0 0 0.85rem;
+  max-height: 12rem;
+  overflow: auto;
+}
+
+#move-folder-sources button {
+  text-align: left;
+  background: #16161c;
+  color: #f2f2f4;
+  border: 1px solid #2a2a32;
+  border-radius: 6px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+
+#move-folder-sources button[aria-pressed="true"] {
+  border-color: #4a7ad4;
+}
+
+#move-folder-path {
+  flex: 1 1 auto;
+  background: #111114;
+  color: #f2f2f4;
+  border: 1px solid #2a2a32;
+  border-radius: 4px;
+  padding: 0.45rem 0.6rem;
+}
+
+#move-folder-browse {
+  flex: 0 0 auto;
+  background: #2a2a32;
+  border: 1px solid #2a2a32;
+  color: #f2f2f4;
+  border-radius: 4px;
+  padding: 0.45rem 0.75rem;
+}
+
+#move-folder-confirm,
+#move-folder-report {
+  color: #c8c8d0;
 }
 
 #duplicate-compare {

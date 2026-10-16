@@ -444,6 +444,12 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.remove_many(ids))
                 return
+            if route == "/api/items/move" and method == "POST":
+                body = self._read_json()
+                self._require_idle()
+                with self.lock:
+                    self._send_json(200, self.library.move_items(body))
+                return
             if route == "/api/tags" and method in {"GET", "HEAD"}:
                 with self.lock:
                     self._send_json(200, self.library.tags_list())

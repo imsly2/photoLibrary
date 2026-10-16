@@ -95,8 +95,18 @@
   const selectionCount = document.getElementById("selection-count");
   const selectionFavoriteBtn = document.getElementById("selection-favorite");
   const selectionCompareBtn = document.getElementById("selection-compare");
+  const selectionMoveBtn = document.getElementById("selection-move");
   const selectionRemoveBtn = document.getElementById("selection-remove");
   const selectionClearBtn = document.getElementById("selection-clear");
+  const moveFolder = document.getElementById("move-folder");
+  const moveFolderSources = document.getElementById("move-folder-sources");
+  const moveFolderPath = document.getElementById("move-folder-path");
+  const moveFolderBrowse = document.getElementById("move-folder-browse");
+  const moveFolderConfirm = document.getElementById("move-folder-confirm");
+  const moveFolderError = document.getElementById("move-folder-error");
+  const moveFolderReport = document.getElementById("move-folder-report");
+  const moveFolderCancel = document.getElementById("move-folder-cancel");
+  const moveFolderOk = document.getElementById("move-folder-ok");
   const filterDuplicatesBtn = document.getElementById("filter-duplicates");
   const duplicateCompare = document.getElementById("duplicate-compare");
   const duplicateCompareSides = document.getElementById("duplicate-compare-sides");
@@ -622,6 +632,9 @@
       selectionFavoriteBtn.textContent = on ? t("favorite") : t("unfavorite");
       selectionFavoriteBtn.setAttribute("aria-pressed", on ? "false" : "true");
       selectionFavoriteBtn.disabled = !ids.length;
+    }
+    if (selectionMoveBtn) {
+      selectionMoveBtn.disabled = !ids.length;
     }
     if (selectionRemoveBtn) {
       selectionRemoveBtn.disabled = !ids.length;
@@ -5761,6 +5774,201 @@
       favoriteSelected();
     });
   }
+  let pendingMoveIds = [];
+  let pendingMoveSourceId = "";
+
+  function closeMoveFolder() {
+    pendingMoveIds = [];
+    pendingMoveSourceId = "";
+    if (moveFolder && moveFolder.open) {
+      moveFolder.close();
+    }
+  }
+
+  function sourceDestPath(source) {
+    if (!source) {
+      return "";
+    }
+    if (source.mode === "copy-here" && source.copyRoot) {
+      return source.path || "";
+    }
+    return source.path || "";
+  }
+
+  function syncMoveConfirm() {
+    const n = pendingMoveIds.length;
+    const path = moveFolderPath ? (moveFolderPath.value || "").trim() : "";
+    if (moveFolderConfirm) {
+      moveFolderConfirm.textContent = n && path ? t("moveConfirm", { n: n, path: path }) : "";
+    }
+    if (moveFolderOk) {
+      moveFolderOk.disabled = !(n && path);
+    }
+  }
+
+  function paintMoveSources() {
+    if (!moveFolderSources) {
+      return;
+    }
+    moveFolderSources.innerHTML = "";
+    (lastSources || []).forEach(function (source) {
+      if (!source || !source.available) {
+        return;
+      }
+      const path = sourceDestPath(source);
+      if (!path) {
+        return;
+      }
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("data-source-id", source.id);
+      btn.setAttribute("aria-pressed", source.id === pendingMoveSourceId ? "true" : "false");
+      btn.textContent = path;
+      btn.addEventListener("click", function () {
+        pendingMoveSourceId = source.id;
+        if (moveFolderPath) {
+          moveFolderPath.value = path;
+        }
+        paintMoveSources();
+        syncMoveConfirm();
+      });
+      moveFolderSources.appendChild(btn);
+    });
+  }
+
+  function openMoveFolder(ids) {
+    pendingMoveIds = (ids || []).filter(Boolean);
+    pendingMoveSourceId = "";
+    if (moveFolderError) {
+      moveFolderError.hidden = true;
+      moveFolderError.textContent = "";
+    }
+    if (moveFolderReport) {
+      moveFolderReport.hidden = true;
+      moveFolderReport.textContent = "";
+    }
+    if (moveFolderPath) {
+      moveFolderPath.value = "";
+    }
+    paintMoveSources();
+    syncMoveConfirm();
+    if (moveFolder && moveFolder.showModal) {
+      moveFolder.showModal();
+    }
+  }
+
+  function browseMoveFolder() {
+    fetch("/api/pick-folder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(function (res) {
+      return res.json().catch(function () {
+        return {};
+      }).then(function (body) {
+        if (res.status === 404 && body && body.error === "picker-unavailable") {
+          return;
+        }
+        if (res.ok && body && body.path) {
+          pendingMoveSourceId = "";
+          if (moveFolderPath) {
+            moveFolderPath.value = body.path;
+          }
+          paintMoveSources();
+          syncMoveConfirm();
+        }
+      });
+    }).catch(function () {});
+  }
+
+  function performMove() {
+    const ids = pendingMoveIds.slice();
+    const path = moveFolderPath ? (moveFolderPath.value || "").trim() : "";
+    if (!ids.length || !path) {
+      return Promise.resolve();
+    }
+    const body = { itemIds: ids };
+    if (pendingMoveSourceId) {
+      const chosen = (lastSources || []).find(function (source) {
+        return source && source.id === pendingMoveSourceId;
+      });
+      if (chosen && sourceDestPath(chosen) === path) {
+        body.sourceId = pendingMoveSourceId;
+      } else {
+        body.destination = path;
+      }
+    } else {
+      body.destination = path;
+    }
+    if (moveFolderError) {
+      moveFolderError.hidden = true;
+      moveFolderError.textContent = "";
+    }
+    return fetch("/api/items/move", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(readJson).then(function (payload) {
+      const moved = (payload && payload.moved) || [];
+      const skipped = (payload && payload.skipped) || [];
+      let renamed = 0;
+      moved.forEach(function (row) {
+        (row.files || []).forEach(function (file) {
+          if (file && file.renamed) {
+            renamed += 1;
+          }
+        });
+      });
+      if (moveFolderReport) {
+        moveFolderReport.hidden = false;
+        moveFolderReport.textContent = t("moveReport", {
+          moved: moved.length,
+          renamed: renamed,
+          skipped: skipped.length,
+        });
+      }
+      renderKey = "";
+      return loadCatalog().then(function () {
+        closeMoveFolder();
+      });
+    }).catch(function (err) {
+      if (moveFolderError) {
+        moveFolderError.hidden = false;
+        moveFolderError.textContent = (err && err.body && err.body.error) || "invalid-argument";
+      }
+    });
+  }
+
+  if (selectionMoveBtn) {
+    selectionMoveBtn.addEventListener("click", function () {
+      const ids = selectedIds.slice();
+      if (ids.length) {
+        openMoveFolder(ids);
+      }
+    });
+  }
+  if (moveFolderCancel) {
+    moveFolderCancel.addEventListener("click", function () {
+      closeMoveFolder();
+    });
+  }
+  if (moveFolderOk) {
+    moveFolderOk.addEventListener("click", function () {
+      performMove();
+    });
+  }
+  if (moveFolderBrowse) {
+    moveFolderBrowse.addEventListener("click", function () {
+      browseMoveFolder();
+    });
+  }
+  if (moveFolderPath) {
+    moveFolderPath.addEventListener("input", function () {
+      pendingMoveSourceId = "";
+      paintMoveSources();
+      syncMoveConfirm();
+    });
+  }
   if (selectionRemoveBtn) {
     selectionRemoveBtn.addEventListener("click", function () {
       const ids = selectedIds.slice();
@@ -6286,6 +6494,11 @@
       return;
     }
     if (event.key === "Escape") {
+      if (moveFolder && moveFolder.open) {
+        event.preventDefault();
+        closeMoveFolder();
+        return;
+      }
       if (confirmRemove && confirmRemove.open) {
         event.preventDefault();
         confirmRemove.close();

@@ -38,12 +38,11 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
    artifacts. 16/22 remains until those run. No 23rd Check.
 
-**After Pull (duplicate compare):** Restart Library. Duplicates on
-the filter bar (or Compare on a 2+ selection, or Info Compare copies)
-opens the side-by-side dialog. Keep is the default; Remove uses the
-existing catalog-only confirm. Originals stay. Same-hash copies stay
-one item with Info **Also at** — nothing is deleted until you
-confirm Remove. Re-run Faces only if a wrongly joined cluster still
-needs a fresh detect.
+**After Pull (move to folder):** Restart Library. Select tiles, then
+**Move** on the selection bar. Pick a Settings folder or a subfolder,
+confirm the count and destination. Originals relocate; thumbs/proxies
+stay (no reprocess). Cancel moves nothing. Name collisions become
+`name_2.ext` and never overwrite. Re-run Faces only if a wrongly
+joined cluster still needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.

@@ -4,6 +4,32 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Multi-select Move to folder on
+  `cursor/move-to-folder-6d43` after duplicate-compare PR #40
+  (`72d9ab9`). `#selection-bar` **Move** opens `#move-folder`:
+  pick a registered Settings folder and/or browse to a subfolder;
+  confirm shows count + destination; cancel moves nothing.
+  `move --to` / `POST /api/items/move` relocates originals
+  (same-drive rename; cross-drive copy+verify+delete). Never
+  overwrites (`name_2.ext`). Mid-item failure rolls that item's
+  bytes back so the catalog matches disk. Thumbs/proxies stay
+  ready (no reprocess). Faces, favorites, tags, and people stay.
+  Reveal opens the new path. Rescan adds no duplicate items.
+  Chinese chrome included. ASCII launchers untouched. After Pull:
+  restart Library. Does not close a Check. 16/22 unchanged.
+  Plan: [taste-move](features/taste-move/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-MOVE](features/taste-move/Rev1.0/assets/verify-1/result.json)
+  **74/74** (move N to another folder; files at new path not old;
+  catalog paths updated; thumbs served without re-encode;
+  favorites/faces kept; collision `near_2.jpg` no overwrite;
+  cancel moves nothing; simulated failure stays consistent;
+  rescan no dupes; zh 移动 / 移动到文件夹 / 将 N 项移动到),
+  [selection](features/taste-move/Rev1.0/assets/verify-1/selection-move.png),
+  [chinese bar](features/taste-move/Rev1.0/assets/verify-1/selection-move-zh.png),
+  [chinese dialog](features/taste-move/Rev1.0/assets/verify-1/move-zh.png),
+  [confirm](features/taste-move/Rev1.0/assets/verify-1/move-confirm.png),
+  [after](features/taste-move/Rev1.0/assets/verify-1/after-move.png).
 - 2026-10-16 — Duplicate compare UI on
   `cursor/duplicate-compare-6d12` after batch-remove PR #39
   (`79daf9a`). `#filter-duplicates`, selection **Compare** (2+),

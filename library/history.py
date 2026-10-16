@@ -28,6 +28,7 @@ OPERATIONS = frozenset(
         "remove",
         "remove-source",
         "delete-file",
+        "move",
         "analyze-places",
         "faces-infer",
         "faces-cleanup",

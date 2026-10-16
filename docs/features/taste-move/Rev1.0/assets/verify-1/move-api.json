@@ -1,0 +1,63 @@
+{
+  "ids": {
+    "IMG_1042.jpg": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "near.jpg": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+    "no-exif.jpg": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+    "clip.mp4": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+  },
+  "cliMove": {
+    "ok": true,
+    "destination": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest",
+    "sourceId": "src_4b839941cfd4",
+    "moved": [
+      {
+        "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+        "files": [
+          {
+            "from": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/IMG_1042.jpg",
+            "to": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/IMG_1042.jpg",
+            "filename": "IMG_1042.jpg",
+            "renamed": false
+          }
+        ]
+      },
+      {
+        "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+        "files": [
+          {
+            "from": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/clip.mp4",
+            "to": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/clip.mp4",
+            "filename": "clip.mp4",
+            "renamed": false
+          }
+        ]
+      }
+    ],
+    "skipped": [],
+    "failed": []
+  },
+  "collision": {
+    "ok": true,
+    "destination": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest",
+    "sourceId": "src_4b839941cfd4",
+    "moved": [
+      {
+        "id": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a",
+        "files": [
+          {
+            "from": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-src/a/near.jpg",
+            "to": "/workspace/docs/features/taste-move/Rev1.0/assets/verify-1/api-dest/near_2.jpg",
+            "filename": "near_2.jpg",
+            "renamed": true
+          }
+        ]
+      }
+    ],
+    "skipped": [],
+    "failed": []
+  },
+  "barrier": {
+    "destHasA": true,
+    "srcHasB": true
+  }
+}
