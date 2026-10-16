@@ -70,6 +70,7 @@ or change expected counts in a slice to make a test pass.
 | settings/history | Port 8765 → 8770 → undo → redo, restart between steps; 501 changes caps 500; new edit clears redo; copy undo leaves every original byte |
 | annotation | Ada on first photo, mug on first+second; alias Cup → mug; second person id merged into Ada; rename place Kitchen; out-of-range boxes rejected |
 | local objects | `tests/fixtures/objects/still.jpg` is a supplied still with a COCO-class object (not part of the S00/S01 media tree). After `setup-ml objects` and `analyze`, the item has at least one Thing, Info/search show it, and a prior human `--thing mug` on the same or another still keeps that name and id. COCO `person` is ignored. |
+| local transcript | `tests/fixtures/transcript/spoken-en.mp4` and `spoken-zh.mp4` are short **spoken** clips (TTS; not silent or tone-only). After `setup-ml transcribe` and `transcribe`, English contains garden/fountain, Chinese contains 今天 and weather/garden, each has an extractive summary + keywords, search finds a spoken word with `saidInVideo`, and a second pass skips the same size+mtime. |
 | face-cluster | Synthetic stills with two beacon/identity “faces” (person A on two photos, person B on two, both on one, plus a no-face still). After `setup-ml faces` (fixture backend) and `infer-faces`, two unnamed people, boxes in range, same-person reuse, search by person after a human name, merge reassigns faces. Never a guessed name. |
 
 ## QA interface to build, not an existing command

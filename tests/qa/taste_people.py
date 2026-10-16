@@ -158,7 +158,7 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
     jobs_body = json.loads(jobs.stdout)
     record["jobs"] = jobs_body
     ids = [q.get("id") for q in jobs_body.get("queues") or []]
-    checks.check("jobs-queues", ids == ["renditions", "analyze", "infer-faces", "objects"], json.dumps(ids))
+    checks.check("jobs-queues", ids == ["renditions", "analyze", "infer-faces", "objects", "transcribe"], json.dumps(ids))
     checks.check("jobs-ok", jobs_body.get("ok") is True, json.dumps(jobs_body))
     paused = run_library(root, ["jobs", "pause"])
     checks.check("jobs-pause", paused.returncode == 0 and json.loads(paused.stdout).get("paused") is True)

@@ -1427,6 +1427,11 @@ main > p {
   color: #1a1408;
 }
 
+.said-badge {
+  background: #3d5a80;
+  color: #f2f4f8;
+}
+
 .burst-badge {
   background: #d8e4f8;
   color: #1b1b22;
@@ -1434,6 +1439,52 @@ main > p {
 
 .info-missing {
   color: #e8b84a;
+}
+
+#viewer-transcript-wrap {
+  margin: 0.5rem 0 0.35rem;
+  color: #c8c8d0;
+  font-size: 0.85rem;
+}
+
+#viewer-transcript-wrap summary {
+  cursor: pointer;
+  color: #c8c8d0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.transcript-summary,
+.transcript-keywords {
+  margin: 0.35rem 0;
+  color: #d8d8e0;
+  font-size: 0.82rem;
+}
+
+.transcript-lines {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  max-height: 10rem;
+  overflow: auto;
+}
+
+.transcript-line {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: #d0d4e0;
+  padding: 0.2rem 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.transcript-line:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 #viewer-fit-actions {

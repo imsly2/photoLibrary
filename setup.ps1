@@ -111,6 +111,7 @@ function Show-Help {
     Write-Host "  3. python -m library setup-geo"
     Write-Host "  4. python -m library setup-ml objects"
     Write-Host "  5. python -m library setup-ml faces"
+    Write-Host "  6. python -m library setup-ml transcribe"
     Write-Host ""
     Write-Host "First model download needs the internet. Models stay under library-data/."
     Write-Host "Re-run is safe (idempotent). No MSI. Does not start Library.bat."
@@ -404,7 +405,7 @@ function Write-MissingUpdate {
     Write-Host ""
     Write-Host "Run Update Library (or Update.bat) to git pull those modules,"
     Write-Host "then run Setup.bat again."
-    Write-Host "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)"
+    Write-Host "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)  +  setup-ml transcribe  (Whisper)"
 }
 
 function Install-Shortcuts {
@@ -434,7 +435,7 @@ try {
         Write-Host ""
     }
 
-    Write-Step -Number 1 -Total 7 -Text "Checking Python 3.12+, ffmpeg, and optional git (internet if they are missing)..."
+    Write-Step -Number 1 -Total 8 -Text "Checking Python 3.12+, ffmpeg, and optional git (internet if they are missing)..."
     $bootstrap = @(Ensure-PythonAndFfmpeg)
     if (-not $DryRun -and ($bootstrap.Count -lt 1 -or -not $bootstrap[0])) {
         Write-FailNext -Step "Python / ffmpeg" -Detail "Python 3.12+ is required."
@@ -449,19 +450,19 @@ try {
     }
     Ensure-Git
 
-    Write-Step -Number 2 -Total 7 -Text "Creating .venv (skipped if it already works)..."
+    Write-Step -Number 2 -Total 8 -Text "Creating .venv (skipped if it already works)..."
     $venvPython = Ensure-Venv -Bootstrap $bootstrap
     if (-not $venvPython) {
         if ($DryRun) {
             Write-Host "Dry-run: no Python 3.12+ to probe library commands."
-            Write-MissingUpdate -Missing @("setup-geo", "setup-ml objects", "setup-ml faces")
+            Write-MissingUpdate -Missing @("setup-geo", "setup-ml objects", "setup-ml faces", "setup-ml transcribe")
             exit 1
         }
         Write-FailNext -Step ".venv" -Detail "No Python interpreter for setup."
         Write-Error "No Python interpreter for setup."
         exit 1
     }
-    Write-Step -Number 3 -Total 7 -Text "Installing Library into .venv (pip)..."
+    Write-Step -Number 3 -Total 8 -Text "Installing Library into .venv (pip)..."
     if (-not $DryRun) {
         Install-App -VenvPython $venvPython
     } elseif (Test-Path -LiteralPath (Get-VenvPythonPath)) {
@@ -476,7 +477,8 @@ try {
     $wanted = @(
         @{ Name = "setup-geo"; Tokens = @("setup-geo"); Pull = "setup-geo (places / cities pack)" },
         @{ Name = "setup-ml objects"; Tokens = @("setup-ml", "objects"); Pull = "setup-ml objects (YOLO)" },
-        @{ Name = "setup-ml faces"; Tokens = @("setup-ml", "faces"); Pull = "setup-ml faces (InsightFace)" }
+        @{ Name = "setup-ml faces"; Tokens = @("setup-ml", "faces"); Pull = "setup-ml faces (InsightFace)" },
+        @{ Name = "setup-ml transcribe"; Tokens = @("setup-ml", "transcribe"); Pull = "setup-ml transcribe (Whisper)" }
     )
     $missing = @()
     $ran = @()
@@ -491,7 +493,7 @@ try {
             continue
         }
         $stepNumber = 4 + $ran.Count
-        Write-Step -Number $stepNumber -Total 7 -Text ("Downloading " + $item.Pull + " ...")
+        Write-Step -Number $stepNumber -Total 8 -Text ("Downloading " + $item.Pull + " ...")
         if ($DryRun) {
             Write-Host ("Dry-run: would run  python -m library " + $item.Name)
             $ran += $item.Name
@@ -513,12 +515,12 @@ try {
         exit 1
     }
 
-    Write-Step -Number 7 -Total 7 -Text "Creating Desktop and Start Menu shortcuts..."
+    Write-Step -Number 8 -Total 8 -Text "Creating Desktop and Start Menu shortcuts..."
     Install-Shortcuts
 
     Write-Host ""
     if ($DryRun) {
-        Write-Host "Dry-run ready -- all three setup commands are in this copy."
+        Write-Host "Dry-run ready -- all four setup commands are in this copy."
         Write-Host "Run Setup.bat (without -DryRun) to download packs. Then run Library.bat."
     } else {
         Write-Host "Ready -- run Library.bat"

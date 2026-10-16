@@ -322,9 +322,10 @@ a progress-ish line (queue label + pending count, not a fake
 percentage), and **Pause** / **Start** (Resume when paused).
 
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
-**objects**. When jobs are not paused, the serve drain runs real work:
+**objects**, **transcribe**. When jobs are not paused, the serve drain runs real work:
 previews, then unnamed GPS city names (geo pack), then face infer
-(models ready), then YOLO Things (model file). After **Re-run Faces**
+(models ready), then YOLO Things (model file), then Whisper on videos
+with audio (`transcribeVideos` on and model present). After **Re-run Faces**
 (`forceRescan`), the drain finishes the remaining face items first so
 the Faces pending count runs to zero; a failed item is marked scanned
 and the queue continues. Pause sets `paused` and
@@ -335,7 +336,9 @@ modal and never freezes the grid.
 ## Search and annotation
 
 Enter query or choose one entity-type chip; chips restrict name matching. Results
-use the same grid/open/sort behavior. Clicking a displayed entity label sets its
+use the same grid/open/sort behavior. Words from a video transcript or summary
+match in the main search box; those tiles show a **Said in video** badge, and
+clicking one opens the viewer at that timestamp. Clicking a displayed entity label sets its
 id filter and inspector; inspector count and filenames come from matching unique
 item ids, never the number of locations. Search matching multiple entities shows
 the grid until a specific entity is selected, avoiding an invented entity chooser.
@@ -458,7 +461,10 @@ size, path, GPS, hash from the item record. Extra current locations
 list as **Also at** with **Compare copies**. Missing camera/EXIF: “No camera
 info for this file.” Then people / places / things already on the record
 (a GPS place may already show a local city/region name from the offline
-geo pack; unnamed face clusters show **Unnamed**); clicking a named
+geo pack; unnamed face clusters show **Unnamed**); a collapsible
+**Transcript** (`#viewer-transcript-wrap`) shows the extractive summary,
+keywords, and timestamped lines — clicking a line seeks the open video.
+Clicking a named
 entity filters the grid and closes the viewer. Type-in fields stay
 below that and stay labeled Person, Place, and Thing. A typed Place
 name still writes through annotate and is never replaced by the geo
@@ -629,7 +635,7 @@ Check to hide it.
 | Prev / Next / slider / pan / rotate | Bottom bar; vertical side zoom; no zoom buttons | **This merge** (PR #2 72/72) + **this PR** keys | Ctrl+0 / Ctrl+1 / Ctrl+R / tooltips shipped |
 | Grid Size vs Dates | One `#size-slider`; `#date-group` Years/Months/Days/Off in `#library-chrome` bottom-left | This people-panel tip | Ctrl+wheel drives Size only; Off is one wall; not a right rail |
 | People panel | Right splitter `#library-side`; named always; unnamed if count ≥ 3; click / Ctrl-click AND; rename + square `which=face&box=` thumbnail (object-fit cover, pressed ring stays) | This people-panel tip | All-faces dump is Later |
-| Processing | `#jobs-panel` Pause / Start; renditions / analyze / infer-faces / objects | This people-panel tip | Does not block browse |
+| Processing | `#jobs-panel` Pause / Start; renditions / analyze / infer-faces / objects / transcribe | This people-panel tip | Does not block browse |
 | Viewer wheel | Plain wheel zooms still/video | This video/zoom tip | Ctrl+wheel stays; wheel does not seek |
 | Progressive video | Proxy first, then original or size-capped full-sound `playback`; same fit/time | This video/zoom tip | Catalog width/height is the layout box. `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable from the file that is playing |
 | Scrub | `#viewer-scrub` in `#viewer-bottom` + `.tile-scrub` | This chrome tip | Scrub is not over the picture; tile scrub does not open the viewer |

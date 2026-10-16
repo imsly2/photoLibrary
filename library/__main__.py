@@ -301,7 +301,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("analyze-places")
 
     setup_ml = sub.add_parser("setup-ml")
-    setup_ml.add_argument("target", choices=("objects", "faces"))
+    setup_ml.add_argument("target", choices=("objects", "faces", "transcribe"))
     setup_ml.add_argument("--backend")
 
     analyze = sub.add_parser("analyze")
@@ -310,6 +310,10 @@ def build_parser() -> argparse.ArgumentParser:
     infer_faces = sub.add_parser("infer-faces")
     infer_faces.add_argument("--force", action="store_true")
     infer_faces.add_argument("--cleanup", action="store_true")
+
+    transcribe_cmd = sub.add_parser("transcribe")
+    transcribe_cmd.add_argument("--item")
+    transcribe_cmd.add_argument("--force", action="store_true")
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -818,6 +822,10 @@ def main(argv: list[str] | None = None) -> int:
                 result = Library(root).setup_ml("objects")
                 _print_json(result)
                 return 0
+            if args.target == "transcribe":
+                result = Library(root).setup_ml("transcribe")
+                _print_json(result)
+                return 0
             if args.target != "faces":
                 _print_error("invalid-argument")
                 return 2
@@ -844,6 +852,22 @@ def main(argv: list[str] | None = None) -> int:
                 "POST",
                 "/api/analyze",
                 body,
+                timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "transcribe":
+            body = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            if getattr(args, "force", False):
+                body["force"] = True
+            result = _mutation(
+                root,
+                lambda: Library(root).transcribe(body or None),
+                "POST",
+                "/api/transcribe",
+                body or None,
                 timeout=600.0,
             )
             _print_json(result)

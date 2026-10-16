@@ -301,6 +301,14 @@
       faceMatchHelp: "Higher means fewer false merges and more Unnamed people. A face joins a person only when the score is above this value.",
       faceRerunNote: "Re-run Faces to apply this to existing assignments. Named people stay; clusters rebuild.",
       faceMinSidePx: "Minimum face side (px)",
+      transcribeVideos: "Transcribe videos",
+      transcribeVideosHelp: "Local speech-to-text for videos with sound. Off skips the Transcribe queue.",
+      transcribeOn: "On",
+      transcribeOff: "Off",
+      saidInVideo: "Said in video",
+      transcript: "Transcript",
+      summary: "Summary",
+      keywords: "Keywords",
     },
     "zh-Hans": {
       library: "图库",
@@ -603,6 +611,14 @@
       faceMatchHelp: "数值越高，误合并越少，未命名的人越多。只有分数高于这个值才会并入已有的人。",
       faceRerunNote: "对已有分组生效请再点一次“重新识别人脸”。已命名的人会保留，聚类会重建。",
       faceMinSidePx: "人脸最短边（像素）",
+      transcribeVideos: "转录视频",
+      transcribeVideosHelp: "给有声音的视频做本地语音转文字。关闭则跳过转录队列。",
+      transcribeOn: "开",
+      transcribeOff: "关",
+      saidInVideo: "视频里说到",
+      transcript: "逐字稿",
+      summary: "摘要",
+      keywords: "关键词",
     },
   };
 
@@ -611,6 +627,7 @@
     analyze: { en: "Analyze", "zh-Hans": "分析" },
     "infer-faces": { en: "Faces", "zh-Hans": "人脸" },
     objects: { en: "Objects", "zh-Hans": "物体" },
+    transcribe: { en: "Transcribe", "zh-Hans": "转录" },
   };
 
   let lang = "en";

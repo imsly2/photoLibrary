@@ -26,12 +26,14 @@ plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/P
 
 Optional local AI (2026-10-14) stacks on the People/Processing tip: offline
 GPS city names (`setup-geo` / `analyze-places`), YOLO Things (`setup-ml
-objects` / `analyze`; COCO person ignored), and InsightFace unnamed
-clusters (`setup-ml faces` / `infer-faces`). Serve-time drains honor
+objects` / `analyze`; COCO person ignored), InsightFace unnamed
+clusters (`setup-ml faces` / `infer-faces`), and Whisper video speech
+(`setup-ml transcribe` / `transcribe`; extractive summary). Serve-time drains honor
 `/api/jobs` Pause/Start. Models optional; browse does not crash when
 they are missing. Gates: `slice GEO`, `slice TASTE-OBJECTS`,
-`slice FACES`, plus `slice TASTE-PEOPLE`. No 23rd Check. `Setup.bat`
-composes `setup-geo` / `setup-ml objects` / `setup-ml faces`.
+`slice FACES`, `slice TASTE-TRANSCRIBE`, plus `slice TASTE-PEOPLE`. No 23rd Check. `Setup.bat`
+composes `setup-geo` / `setup-ml objects` / `setup-ml faces` /
+`setup-ml transcribe`.
 
 **Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
 is the North Star shell. Must items (fullscreen, slideshow, viewer keys,
@@ -45,7 +47,7 @@ No 23rd Check.
 
 Portable `Setup.bat` (2026-10-14) is a sibling of `Library.bat`: one-time
 Python/ffmpeg/`.venv` plus `setup-geo` / `setup-ml objects` / `setup-ml
-faces` when those CLIs exist. Missing modules tell Steve to Update
+faces` / `setup-ml transcribe` when those CLIs exist. Missing modules tell Steve to Update
 Library first. Gate: `python -m tests.qa slice TASTE-SETUP`. Does not
 change serve. No 23rd Check.
 
@@ -160,6 +162,7 @@ unbuilt features are explicitly pending, never replaced with fake successful dat
 | S12 — Pair still and motion as Live Photos | S11 | closes F19; re-run F5,F7,F10,F14,F16 | `slice S12`, `check F19`: embedded identifier pair, reversed arrival/restart/orphan/mismatch, still hash one item, two component locations, annotations/history preserved, LIVE badge, hover/explicit play, missing motion falls back to still | live-item.json, live.png, live-playback.json, regression.json | No |
 | GEO — Offline GPS city names | S02 | extends F6; no new F-id | `slice GEO` / `check GEO`: `setup-geo --from` fixture pack, Chicago-area GPS JPEGs named, search finds Chicago, human Kitchen name never overwritten, analyze-places backfill, missing pack leaves name null | result.json, info-chicago.png, search-chicago.png, named-places/ | No |
 | TASTE-OBJECTS — Optional local YOLO Things | S08 | extends F14; no new F-id | `slice TASTE-OBJECTS`: missing model is `model-unavailable`; `setup-ml objects` + `analyze --item` writes Things; human mug kept; COCO person ignored | result.json, analyze.json, info-things.png, search.json | No |
+| TASTE-TRANSCRIBE — Optional local video speech | S06 | extends F15; no new F-id | `slice TASTE-TRANSCRIBE`: spoken EN/ZH clips; Whisper `small`; skip same size+mtime; setting off skips the queue; search Said in video seeks | result.json, item-en.json, item-zh.json, search-said.png, info-transcript.png | No |
 | FACES — Optional local face inference | S08 | extends F14; no new F-id | `slice FACES`: `setup-ml faces` (fixture backend under `LIBRARY_TEST=1`), detect → embed → two unnamed people, reuse across photos, boxes in range, no guessed name, Info/annotate names one person, `person=` / `q=` search, merge reassigns faces + embeddings, missing models → `models-missing`. | result.json, people/, infer.json, search.json, merge.json | No |
 | S13 — Complete settings, history and keyboard across views | S12 | closes F17,F18,F21 | `slice S13`, `check F17`, `check F18`, `check F21`: all 16 settings validation+reload; host/port next launch; 500 history cap, branch, restart, merge/copy/relocate undo; original hashes preserved; focused input keys, clipboard available/lastKnownPath, log time/path, Esc priorities everywhere | settings-roundtrip.json, history.json, clipboard.txt, input-trace.json, server.log | No |
 | S14 — Audit the whole fixture library (M4) | S13 | closes F2,F3,F22; re-run F1–F22 | `slice S14`, `check F2`, `check F3`, `check F22`, then `all`: Windows default launch/install path, same-root reopen, explicit port conflict; macOS/Linux launch+volume identity with platform artifacts; CLI/HTTP parity/error matrix; five views/every UI state, no external browsing requests. All 22 complete Checks green on final revision | parity.json, errors.json, platform-results/, state-gallery/, all-checks.json | **Final taste at 100%** |

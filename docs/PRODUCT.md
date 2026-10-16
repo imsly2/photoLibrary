@@ -55,7 +55,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name). No cloud geocoder or cloud AI. Browse works with models missing. |
+| Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name), `setup-ml transcribe` (Whisper speech-to-text on videos with sound; extractive summary + keywords, no cloud LLM). No cloud geocoder or cloud AI. Browse works with models missing. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies (width ≤ `proxyWidth`, CRF 28, no audio). Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original when it is already browser-safe, otherwise to a size-capped `playback.mp4` (≤1280, CRF 23) without a fit/time jump. `#viewer-source` names the file that is playing. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
@@ -151,7 +151,7 @@ library-data/
   geo/                   # optional offline cities pack (setup-geo); not in git
     cities.csv
     ATTRIBUTION.txt
-  models/                # optional; created by setup-ml objects / faces
+  models/                # optional; created by setup-ml objects / faces / transcribe
     yolov8n.onnx
     objects.json
     objects-state.json
@@ -159,6 +159,7 @@ library-data/
       manifest.json
       index.json
       buffalo_s/
+    whisper/             # faster-whisper small; transcribe.json manifest
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
     preview.webp
@@ -189,8 +190,8 @@ command prompt. macOS/Linux launch stays `launch.sh` and is not graded here.
 On a new Windows PC, double-click `Setup.bat` once first. It installs
 Python 3.12+ and ffmpeg the same way as the launcher (winget
 `Python.Python.3.12`, `Gyan.FFmpeg`), creates `.venv`, installs the app,
-and runs `setup-geo` plus `setup-ml objects` and `setup-ml faces` when
-those commands exist. If a command is missing, it prints that Update
+and runs `setup-geo` plus `setup-ml objects`, `setup-ml faces`, and
+`setup-ml transcribe` when those commands exist. If a command is missing, it prints that Update
 Library must pull it and exits non-zero. Models stay under
 `library-data/`. No MSI. First run needs the internet. Daily use is
 `Library.bat` or the Desktop / Start Menu shortcut Setup writes
@@ -272,14 +273,16 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `tags` / `tags list` | `GET /api/tags` | Lists user tags (Things) with counts. Hiking / Singing / Painting are names. |
 | `tags create <name>` | `POST /api/tags` `{"name":"Hiking"}` | Creates a tag Thing without attaching it. Reuses a matching name. |
 | `tags apply --item <id> --add Hiking --remove Painting` | `POST /api/items/tags` `{"itemIds":["…"],"add":["Hiking"],"remove":["Painting"]}` | Applies or removes tags on one or many items. Human tags survive re-infer. |
-| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects. |
+| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects, transcribe. |
 | `jobs pause` / `jobs resume` | `POST /api/jobs` `{"action":"pause"\|"resume"}` | Pauses or resumes the serve-process drain. Does not block browse. |
 | `setup-geo` [--from \<dir\>] [--force] | (CLI setup; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
 | `analyze-places` | `POST /api/places/analyze` `{}` | Fills null GPS `place.name` from that pack. Never overwrites a set name. |
 | `setup-ml objects` | (CLI / `Setup.bat` / `launch.ps1 -SetupMl`; no HTTP) | Downloads a small local YOLO into `models/`. CPU. No cloud inference. |
 | `setup-ml faces` | `POST /api/faces/setup` | Installs InsightFace buffalo_s ONNX into `models/faces/`. Never uploads photos. |
+| `setup-ml transcribe` | (CLI / `Setup.bat`; no HTTP) | Downloads faster-whisper `small` into `models/whisper/`. GPU if CUDA is present, else CPU int8. No cloud inference. |
 | `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Runs local object detection and writes Things through `annotate`. |
 | `infer-faces` | `POST /api/faces/infer` | Detects faces, clusters unnamed people. Never guesses a name. |
+| `transcribe` / `transcribe --item <id>` / `--force` | `POST /api/transcribe` `{}` or `{"itemId":"<id>","force"?}` | Local speech-to-text on videos with audio. Skips same size+mtime. Off in Settings skips the queue. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
@@ -294,7 +297,10 @@ it from a successful update payload.
 `person=` (one id/name, or comma-separated ids meaning **all** faces),
 `place=`, `thing=` (one id/name, or comma-separated ids/names meaning
 **all** those tags), `kind=photo|video|live` or a comma list,
-`from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, or date.
+`from=`, `to=`, `unavailable=0|1`, `q=` for a name, filename, date, or
+words in a video transcript / summary. A transcript hit adds computed
+`saidInVideo` `{start,text,field}` so the grid can show **Said in video**
+and the viewer can seek to that time.
 `source=` keeps items that belong to that Settings folder. `recent=1`
 keeps items added by the last scan that wrote `library-data/recent.json`
 (session Recently added). Names match case-insensitively, including Chinese. `scope=people|places|things`
@@ -710,6 +716,13 @@ associations through the same catalog:
 - `setup-ml objects` / `analyze` looks at each still and writes Things
   through annotate. Name-only payloads reuse an existing thing id.
   Human tags stay. The COCO `person` class is ignored.
+- `setup-ml transcribe` / `transcribe` runs only on videos with an
+  audio stream. faster-whisper `small` detects language (Chinese and
+  English at least), stores timestamped segments/words on the item
+  `transcript`, and writes a one-or-two-sentence **extractive** summary
+  plus keywords (no local LLM, no cloud). Same size+mtime is skipped.
+  `transcribeVideos` (default true) turns the Transcribe queue off.
+  Search matches those words; results show **Said in video**.
 - `setup-ml faces` / `infer-faces` detects faces on the full frame
   fitted to 640×640, maps boxes back to the original, then
   landmark-aligns / crops **original** pixels to 112×112 for ArcFace.
@@ -770,8 +783,10 @@ Artifact: the people file, the thing file, and the search JSON.
 ## F15 — Search
 
 The search box lives on `#filter-bar` and matches a person, place, or
-thing name, a filename, or a capturedAt date (`YYYY`, `YYYY-MM`,
-`YYYY-MM-DD`). Chinese query text matches those same fields. A local
+thing name, a filename, a capturedAt date (`YYYY`, `YYYY-MM`,
+`YYYY-MM-DD`), or words in a video transcript / extractive summary /
+keywords. A transcript hit shows **Said in video** on the tile; opening
+it seeks the viewer to that timestamp. Chinese query text matches those same fields. A local
 city/region written on a GPS place is a place name. Built-in labels
 (Unnamed / 未命名, Unknown / 未知, No place / 无地点, Untagged /
 无标签) also match. `scope=people|places|things` remains on the API.
@@ -815,14 +830,15 @@ returns 404 `unavailable`. Set `hide` and the item disappears from
 
 `library-data/settings.json` holds the 17 browse settings (the earlier 16
 plus `language`) plus the internal `schemaVersion: 1` field (not a
-control) and two face-quality keys used by optional local InsightFace.
-The defaults below list those values. The header language switch writes
+control), two face-quality keys used by optional local InsightFace, and
+`transcribeVideos` (default true) which turns the Transcribe queue on or
+off. The defaults below list those values. The header language switch writes
 `language`. The command line edits this file, including
 `faceMatchThreshold` (default 0.80, Settings slider 0.35–0.95) and
 `faceMinSidePx`, so matching can be tuned without a rebuild. Higher
 threshold means fewer false merges and more Unnamed people. The browser
 does not keep a second copy. A pre-language file is filled with `en` on
-load.
+load. A pre-transcribe file is filled with `transcribeVideos: true`.
 
 The **Settings** page (`#settings-view`, Ctrl+, / header Settings) is
 the family chrome for this file. **Folders / sources come first:** every
@@ -855,7 +871,8 @@ where new renditions live. Language stays in the header.
   "zoomLevel": "years",
   "language": "en",
   "faceMatchThreshold": 0.8,
-  "faceMinSidePx": 80
+  "faceMinSidePx": 80,
+  "transcribeVideos": true
 }
 ```
 

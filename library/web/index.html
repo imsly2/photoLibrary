@@ -363,6 +363,20 @@
         <input type="number" id="set-faceMinSidePx" min="1" step="1">
       </label>
     </section>
+    <section class="settings-section">
+      <h2 data-i18n="transcribeVideos">Transcribe videos</h2>
+      <fieldset class="settings-fieldset">
+        <legend data-i18n="transcribeVideosHelp">Local speech-to-text for videos with sound. Off skips the Transcribe queue.</legend>
+        <label class="choice">
+          <input type="radio" name="set-transcribeVideos" value="true">
+          <span data-i18n="transcribeOn">On</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="set-transcribeVideos" value="false">
+          <span data-i18n="transcribeOff">Off</span>
+        </label>
+      </fieldset>
+    </section>
   </div>
   <dialog id="add-folder" aria-labelledby="add-folder-title">
     <h2 id="add-folder-title" data-i18n="addAFolder">Add a folder</h2>
@@ -417,6 +431,12 @@
             <div id="viewer-things" class="label-row"></div>
             <p class="info-heading" data-i18n="tags">Tags</p>
             <div id="viewer-tags" class="label-row"></div>
+            <details id="viewer-transcript-wrap" hidden>
+              <summary data-i18n="transcript">Transcript</summary>
+              <p id="viewer-summary" class="transcript-summary"></p>
+              <p id="viewer-keywords" class="transcript-keywords"></p>
+              <ol id="viewer-transcript-lines" class="transcript-lines"></ol>
+            </details>
             <div id="viewer-fields">
               <label class="annotate-field">
                 <span data-i18n="person">Person</span>
