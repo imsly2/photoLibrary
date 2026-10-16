@@ -1,0 +1,74 @@
+{
+  "policy": {
+    "proxy": "width <= proxyWidth (480), CRF 28, no audio, scrub-friendly",
+    "playback": "only when not browser-safe MP4; longest side <= 1280; CRF 23; remux only if already <=1280 and <=80MiB"
+  },
+  "fixtureProxy": {
+    "codec": "h264",
+    "width": 480,
+    "height": 360,
+    "duration": 2.0,
+    "audioStreamCount": 0,
+    "bytes": 3446,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "browserSafeMp4": {
+    "outcome": "not-applicable",
+    "exists": false
+  },
+  "synthSource": {
+    "movBytes": 146985,
+    "mp4Bytes": 146934
+  },
+  "policyPlayback": {
+    "outcome": "ready",
+    "probe": {
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "duration": 2.02,
+      "audioStreamCount": 1,
+      "bytes": 57560,
+      "returncode": 0,
+      "stderr": ""
+    }
+  },
+  "legacyCrf18": {
+    "ok": true,
+    "probe": {
+      "codec": "h264",
+      "width": 3840,
+      "height": 2160,
+      "duration": 2.02,
+      "audioStreamCount": 1,
+      "bytes": 224941,
+      "returncode": 0,
+      "stderr": ""
+    }
+  },
+  "beforeAfter": {
+    "legacyCrf18Full4kBytes": 224941,
+    "policy1280Crf23Bytes": 57560,
+    "note": "Same 2s 3840x2160 MOV. Old write_playback used CRF 18 at original pixels (or remuxed the whole file). New policy transcodes to <=1280 / CRF 23."
+  },
+  "wideProxy": {
+    "codec": "h264",
+    "width": 480,
+    "height": 270,
+    "duration": 2.0,
+    "audioStreamCount": 0,
+    "bytes": 10670,
+    "returncode": 0,
+    "stderr": ""
+  },
+  "wideMp4": {
+    "outcome": "not-applicable",
+    "exists": false,
+    "sourceBytes": 146934
+  },
+  "tmpCleanup": {
+    "siblings": 1,
+    "sweep": 1
+  }
+}

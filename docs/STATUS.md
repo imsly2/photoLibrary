@@ -15,7 +15,17 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   `playback.mp4` unless encode defaults change (they did not).
   Does not close a Check. 16/22 unchanged.
   Plan: [taste-video](features/taste-video/Rev1.0/PLAN.md).
-  Evidence: (verify run pending on this branch).
+  Evidence:
+  [TASTE-VIDEO](features/taste-video/Rev1.0/assets/verify-ux-3/result.json)
+  **132/132** (play stays centered; Size 72 hover-play + `.tile-scrub`;
+  Size ↔ Ctrl+wheel and zoom slider ↔ percent both ways; plain
+  wheel zoom keeps the picture center; garden proxy→original keeps
+  fit/time; Chinese `预览进度`),
+  [grid](features/taste-video/Rev1.0/assets/verify-ux-3/video-grid.png),
+  [viewer](features/taste-video/Rev1.0/assets/verify-ux-3/video-viewer.png),
+  [mov](features/taste-video/Rev1.0/assets/verify-ux-3/video-mov.png),
+  [zoom](features/taste-video/Rev1.0/assets/verify-ux-3/video-zoom.json),
+  [rendition-size](features/taste-video/Rev1.0/assets/verify-ux-3/rendition-size.json).
 - 2026-10-16 — Faces burn slice #1 on
   `cursor/faces-split-merge-together-ee3f` after Settings PR #36
   (`28cfd93`). **Not this person** / `people split` /
