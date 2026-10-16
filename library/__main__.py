@@ -197,6 +197,12 @@ def build_parser() -> argparse.ArgumentParser:
     copy_here = sub.add_parser("copy-here")
     copy_here.add_argument("source_id")
 
+    rescan = sub.add_parser("rescan")
+    rescan.add_argument("source_id")
+
+    remove_source_cmd = sub.add_parser("remove-source")
+    remove_source_cmd.add_argument("source_id")
+
     items = sub.add_parser("items")
     items.add_argument("--sort")
     items.add_argument("--dir")
@@ -378,6 +384,45 @@ def main(argv: list[str] | None = None) -> int:
                 f"/api/sources/{args.source_id}/copy-here",
                 {},
                 timeout=300.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "rescan":
+            url = _running_server_url(root)
+            if url is not None:
+                status, payload = _forward(
+                    url,
+                    "POST",
+                    f"/api/sources/{args.source_id}/rescan",
+                    {},
+                    timeout=300.0,
+                )
+                if status not in {200, 202}:
+                    if isinstance(payload, dict) and "error" in payload:
+                        raise AppError(payload["error"], status)
+                    raise fail_from_status(status)
+                source_id = payload.get("id") if isinstance(payload, dict) else None
+                state = (payload.get("scan") or {}).get("state") if isinstance(payload, dict) else None
+                if state == "running" and type(source_id) is str and source_id:
+                    payload = _wait_scan_complete(url, source_id)
+                _print_scan_summary(payload)
+                return _scan_exit(payload)
+            source = _with_lock(
+                root,
+                lambda: Library(root).rescan(
+                    args.source_id,
+                    on_progress=lambda kind, rel: print(f"{kind} {rel}", flush=True),
+                ),
+            )
+            _print_scan_summary(source)
+            return _scan_exit(source)
+        if args.command == "remove-source":
+            result = _mutation(
+                root,
+                lambda: Library(root).remove_source(args.source_id),
+                "POST",
+                f"/api/sources/{args.source_id}/remove",
+                {},
             )
             _print_json(result)
             return 0

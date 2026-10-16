@@ -182,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
             from tests.qa.taste_sidebar import run_slice as runner
         elif args.slice_id == "TASTE-INSTALL":
             from tests.qa.taste_install import run_slice as runner
+        elif args.slice_id == "TASTE-SETTINGS":
+            from tests.qa.taste_settings import run_slice as runner
         else:
             return _fail_unimplemented("slice", args.slice_id, Path(args.artifacts))
         return _run_logged(runner, Path(args.root), Path(args.artifacts))

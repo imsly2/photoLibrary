@@ -48,13 +48,20 @@ REMOVED_ONNX = (
 )
 BEACON = (255, 0, 170)
 FIXTURE_THRESHOLD = 0.85
-# buffalo_s ArcFace cosine. 0.35 is a demo-loose same-identity floor and was
-# joining tiny/blurry background faces to named people. 0.50 is the middle of
-# the 0.45–0.55 verification band: still matches a clear same-person crop,
-# rejects near-misses. Fixture clustering stays on FIXTURE_THRESHOLD.
-INSIGHT_THRESHOLD = 0.50
+# buffalo_s ArcFace cosine. Match only when score is strictly above this.
+# 0.80 is the family default: fewer false merges, more Unnamed people.
+# Fixture clustering stays on FIXTURE_THRESHOLD.
+INSIGHT_THRESHOLD = 0.80
 INSIGHT_DET_MIN = 0.65
 DEFAULT_MIN_SIDE_PX = 80
+NAMED_WEAK_SIDE_PX = 120
+NAMED_WEAK_DET = 0.75
+NAMED_WEAK_BUMP = 0.08
+DET_INPUT = 640
+TILE_SRC = 1280
+TILE_OVERLAP = 320
+TILE_TRIGGER = 1600
+TILE_MAX = 12
 BACKEND_INSIGHT = "insightface-buffalo_s"
 BACKEND_FIXTURE = "fixture"
 
@@ -519,6 +526,7 @@ def detect_fixture(
                 "box": box,
                 "embedding": _identity_embedding(width, height, rgb, (x, y, w, h)),
                 "detScore": 1.0,
+                "shortSidePx": box_short_side_px(box, width, height),
             }
         )
     faces.sort(key=lambda face: (face["box"][0], face["box"][1]))
@@ -682,80 +690,99 @@ def detect_insightface(
     sess_opts.intra_op_num_threads = 1
     det = ort.InferenceSession(str(det_path), sess_opts, providers=["CPUExecutionProvider"])
     rec = ort.InferenceSession(str(rec_path), sess_opts, providers=["CPUExecutionProvider"])
-    input_size = (640, 640)
-    im_ratio = height / width
-    model_ratio = input_size[1] / input_size[0]
-    if im_ratio > model_ratio:
-        new_height = input_size[1]
-        new_width = int(new_height / im_ratio)
-    else:
-        new_width = input_size[0]
-        new_height = int(new_width * im_ratio)
-    det_scale = new_height / float(height)
-    resized = _resize_rgb(image, new_width, new_height)
-    blob = np.zeros((1, 3, input_size[1], input_size[0]), dtype=np.float32)
-    blob[0, 0, :new_height, :new_width] = (resized[:, :, 2] - 127.5) / 128.0
-    blob[0, 1, :new_height, :new_width] = (resized[:, :, 1] - 127.5) / 128.0
-    blob[0, 2, :new_height, :new_width] = (resized[:, :, 0] - 127.5) / 128.0
+    input_size = (DET_INPUT, DET_INPUT)
     input_name = det.get_inputs()[0].name
-    net_outs = det.run(None, {input_name: blob})
-    scores_list = []
-    bboxes_list = []
-    kps_list = []
-    fmc = 3
-    feat_strides = [8, 16, 32]
-    num_anchors = 2
-    use_kps = len(net_outs) == 9
     center_cache: dict[tuple[int, int, int], Any] = {}
-    for idx, stride in enumerate(feat_strides):
-        scores = net_outs[idx]
-        bbox_preds = net_outs[idx + fmc] * stride
-        if use_kps:
-            kps_preds = net_outs[idx + fmc * 2] * stride
-        height_s = input_size[1] // stride
-        width_s = input_size[0] // stride
-        key = (height_s, width_s, stride)
-        if key in center_cache:
-            anchor_centers = center_cache[key]
-        else:
-            anchor_centers = np.stack(np.mgrid[:height_s, :width_s][::-1], axis=-1).astype(
-                np.float32
-            )
-            anchor_centers = (anchor_centers * stride).reshape((-1, 2))
-            if num_anchors > 1:
-                anchor_centers = np.stack([anchor_centers] * num_anchors, axis=1).reshape((-1, 2))
-            center_cache[key] = anchor_centers
-        pos_inds = np.where(scores.ravel() >= min_det)[0]
-        bboxes = _distance2bbox(anchor_centers, bbox_preds.reshape((-1, 4)))
-        pos_scores = scores.ravel()[pos_inds]
-        pos_bboxes = bboxes[pos_inds]
-        scores_list.append(pos_scores)
-        bboxes_list.append(pos_bboxes)
-        if use_kps:
-            kpss = _distance2kps(anchor_centers, kps_preds.reshape((-1, 10)))
-            kps_list.append(kpss[pos_inds])
-    if not scores_list:
+
+    def run_window(x0: int, y0: int, x1: int, y1: int) -> tuple[Any, Any] | tuple[None, None]:
+        crop = image[y0:y1, x0:x1]
+        ch, cw = crop.shape[:2]
+        if ch < 8 or cw < 8:
+            return None, None
+        new_width, new_height, det_scale = letterbox_size(cw, ch, input_size)
+        resized = _resize_rgb(crop, new_width, new_height)
+        blob = np.zeros((1, 3, input_size[1], input_size[0]), dtype=np.float32)
+        blob[0, 0, :new_height, :new_width] = (resized[:, :, 2] - 127.5) / 128.0
+        blob[0, 1, :new_height, :new_width] = (resized[:, :, 1] - 127.5) / 128.0
+        blob[0, 2, :new_height, :new_width] = (resized[:, :, 0] - 127.5) / 128.0
+        net_outs = det.run(None, {input_name: blob})
+        scores_list = []
+        bboxes_list = []
+        kps_list = []
+        fmc = 3
+        feat_strides = [8, 16, 32]
+        num_anchors = 2
+        use_kps = len(net_outs) == 9
+        for idx, stride in enumerate(feat_strides):
+            scores = net_outs[idx]
+            bbox_preds = net_outs[idx + fmc] * stride
+            if use_kps:
+                kps_preds = net_outs[idx + fmc * 2] * stride
+            height_s = input_size[1] // stride
+            width_s = input_size[0] // stride
+            key = (height_s, width_s, stride)
+            if key in center_cache:
+                anchor_centers = center_cache[key]
+            else:
+                anchor_centers = np.stack(np.mgrid[:height_s, :width_s][::-1], axis=-1).astype(
+                    np.float32
+                )
+                anchor_centers = (anchor_centers * stride).reshape((-1, 2))
+                if num_anchors > 1:
+                    anchor_centers = np.stack([anchor_centers] * num_anchors, axis=1).reshape((-1, 2))
+                center_cache[key] = anchor_centers
+            pos_inds = np.where(scores.ravel() >= min_det)[0]
+            bboxes = _distance2bbox(anchor_centers, bbox_preds.reshape((-1, 4)))
+            scores_list.append(scores.ravel()[pos_inds])
+            bboxes_list.append(bboxes[pos_inds])
+            if use_kps:
+                kps_list.append(_distance2kps(anchor_centers, kps_preds.reshape((-1, 10)))[pos_inds])
+        if not scores_list:
+            return None, None
+        scores_cat = np.concatenate(scores_list, axis=0)
+        if scores_cat.size == 0:
+            return None, None
+        pre = np.hstack([np.concatenate(bboxes_list, axis=0), scores_cat[:, None]])
+        pre[:, :4] /= det_scale
+        pre[:, 0] += x0
+        pre[:, 1] += y0
+        pre[:, 2] += x0
+        pre[:, 3] += y0
+        kps = None
+        if use_kps and kps_list:
+            kps = np.concatenate(kps_list, axis=0) / det_scale
+            kps[:, 0::2] += x0
+            kps[:, 1::2] += y0
+        return pre, kps
+
+    rows = []
+    kps_rows = []
+    for window in iter_detect_windows(width, height):
+        pre, kps = run_window(*window)
+        if pre is None:
+            continue
+        rows.append(pre)
+        kps_rows.append(kps)
+    if not rows:
         return []
-    scores_cat = np.concatenate(scores_list, axis=0)
-    bboxes_cat = np.concatenate(bboxes_list, axis=0)
-    if scores_cat.size == 0:
-        return []
-    pre = np.hstack([bboxes_cat, scores_cat[:, None]])
-    pre[:, :4] /= det_scale
+    pre = np.concatenate(rows, axis=0)
     keep = _nms(pre, 0.4)
-    if use_kps and kps_list:
-        kpss = np.concatenate(kps_list, axis=0) / det_scale
-        order = scores_cat.argsort()[::-1]
-        kpss = kpss[order]
-        # NMS keep indices are into the score-sorted? insightface nms is on concatenated order
-        # Recompute kps for kept rows by matching boxes.
-        kept_kps = []
-        for det_row in keep:
-            # find nearest original row
-            dists = np.abs(pre[:, 0] - det_row[0]) + np.abs(pre[:, 1] - det_row[1])
-            kept_kps.append(kpss[int(np.argmin(dists))] if len(kpss) else None)
-    else:
-        kept_kps = [None] * len(keep)
+    all_kps = None
+    if any(kps is not None for kps in kps_rows):
+        parts = []
+        for pre_part, kps in zip(rows, kps_rows):
+            if kps is None:
+                parts.append(np.zeros((len(pre_part), 10), dtype=np.float32))
+            else:
+                parts.append(kps)
+        all_kps = np.concatenate(parts, axis=0)
+    kept_kps = []
+    for det_row in keep:
+        if all_kps is None or len(all_kps) == 0:
+            kept_kps.append(None)
+            continue
+        dists = np.abs(pre[:, 0] - det_row[0]) + np.abs(pre[:, 1] - det_row[1])
+        kept_kps.append(all_kps[int(np.argmin(dists))])
     rec_input = rec.get_inputs()[0].name
     faces: list[dict[str, Any]] = []
     for det_row, kps in zip(keep, kept_kps):
@@ -773,17 +800,93 @@ def detect_insightface(
             aligned = _affine_112(image, np.asarray(kps).reshape((5, 2)))
         else:
             aligned = _crop_112(image, box)
-        blob = ((aligned.astype(np.float32) - 127.5) / 127.5).transpose(2, 0, 1)[None, ...]
-        emb = rec.run(None, {rec_input: blob})[0].reshape(-1)
+        rec_blob = ((aligned.astype(np.float32) - 127.5) / 127.5).transpose(2, 0, 1)[None, ...]
+        emb = rec.run(None, {rec_input: rec_blob})[0].reshape(-1)
         faces.append(
             {
                 "box": box,
                 "embedding": l2_normalize([float(x) for x in emb.tolist()]),
                 "detScore": score,
+                "shortSidePx": box_short_side_px(box, width, height),
             }
         )
     faces.sort(key=lambda face: (face["box"][0], face["box"][1]))
     return faces
+
+
+def letterbox_size(
+    width: int,
+    height: int,
+    input_size: tuple[int, int] = (DET_INPUT, DET_INPUT),
+) -> tuple[int, int, float]:
+    """Fit a window into the SCRFD 640 canvas. Returns (new_w, new_h, scale)."""
+    if width <= 0 or height <= 0:
+        return 1, 1, 1.0
+    im_ratio = height / width
+    model_ratio = input_size[1] / input_size[0]
+    if im_ratio > model_ratio:
+        new_height = input_size[1]
+        new_width = max(1, int(new_height / im_ratio))
+    else:
+        new_width = input_size[0]
+        new_height = max(1, int(new_width * im_ratio))
+    return new_width, new_height, new_height / float(height)
+
+
+def detect_px_on_canvas(
+    face_side_px: float,
+    image_w: int,
+    image_h: int,
+    window_w: int | None = None,
+    window_h: int | None = None,
+) -> float:
+    """How large a face becomes on the 640 detect canvas after letterbox."""
+    w = window_w if window_w is not None else image_w
+    h = window_h if window_h is not None else image_h
+    _, _, scale = letterbox_size(w, h)
+    return float(face_side_px) * scale
+
+
+def iter_detect_windows(width: int, height: int) -> list[tuple[int, int, int, int]]:
+    """Full-frame window plus overlapping 1280 tiles on large stills."""
+    windows = [(0, 0, width, height)]
+    if width <= 0 or height <= 0 or max(width, height) < TILE_TRIGGER:
+        return windows
+    tile = min(TILE_SRC, width, height)
+    if tile < 64:
+        return windows
+    step = max(1, tile - TILE_OVERLAP)
+    xs = list(range(0, max(1, width - tile + 1), step))
+    if xs[-1] + tile < width:
+        xs.append(width - tile)
+    ys = list(range(0, max(1, height - tile + 1), step))
+    if ys[-1] + tile < height:
+        ys.append(height - tile)
+    extras: list[tuple[int, int, int, int]] = []
+    for y in ys:
+        for x in xs:
+            win = (x, y, x + tile, y + tile)
+            if win == (0, 0, width, height):
+                continue
+            extras.append(win)
+    if len(extras) > TILE_MAX:
+        factor = max(1, math.ceil(len(extras) / TILE_MAX))
+        extras = extras[::factor][:TILE_MAX]
+    return windows + extras
+
+
+def named_assignment_threshold(base: float, det: dict[str, Any]) -> float:
+    """Named people need a clearer match when the box is small or det is weak."""
+    weak = False
+    side = det.get("shortSidePx")
+    if isinstance(side, (int, float)) and not isinstance(side, bool) and side < NAMED_WEAK_SIDE_PX:
+        weak = True
+    score = det.get("detScore")
+    if isinstance(score, (int, float)) and not isinstance(score, bool) and score < NAMED_WEAK_DET:
+        weak = True
+    if not weak:
+        return float(base)
+    return min(0.95, float(base) + NAMED_WEAK_BUMP)
 
 
 def _resize_rgb(image: Any, new_width: int, new_height: int) -> Any:
@@ -865,6 +968,18 @@ def _strip_items_from_index(index: dict[str, Any], item_ids: set[str]) -> dict[s
     return next_index
 
 
+def _named_person_ids(root: Path, person_ids: list[str]) -> set[str]:
+    named: set[str] = set()
+    for person_id in person_ids:
+        person = try_load_person(root, person_id)
+        if person is None:
+            continue
+        name = person.get("name")
+        if type(name) is str and name.strip():
+            named.add(person_id)
+    return named
+
+
 def cluster_detections(
     root: Path,
     detections: list[dict[str, Any]],
@@ -879,12 +994,29 @@ def cluster_detections(
         for person_id, rec in people.items()
         if isinstance(rec, dict)
     }
+    named_ids = _named_person_ids(root, list(centroids.keys()))
+    named_centroids = {pid: vec for pid, vec in centroids.items() if pid in named_ids}
+    unnamed_centroids = {pid: vec for pid, vec in centroids.items() if pid not in named_ids}
     created = 0
     reused = 0
     assigned: list[dict[str, Any]] = []
     pending: list[dict[str, Any]] = []
     for det in detections:
-        person_id, match_score = _nearest_person(det["embedding"], centroids, threshold)
+        needed_named = named_assignment_threshold(threshold, det)
+        named_id, named_score = _nearest_person(det["embedding"], named_centroids, needed_named)
+        unnamed_id, unnamed_score = _nearest_person(
+            det["embedding"], unnamed_centroids, threshold
+        )
+        person_id = None
+        match_score = None
+        candidates: list[tuple[float, str]] = []
+        if named_id is not None and named_score is not None:
+            candidates.append((float(named_score), named_id))
+        if unnamed_id is not None and unnamed_score is not None:
+            candidates.append((float(unnamed_score), unnamed_id))
+        if candidates:
+            candidates.sort(key=lambda pair: pair[0], reverse=True)
+            match_score, person_id = candidates[0]
         if person_id is not None:
             reused += 1
             assigned.append({**det, "personId": person_id, "matchScore": match_score})
@@ -1228,6 +1360,9 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
             }
             if "detScore" in face:
                 rec["detScore"] = face["detScore"]
+            side = face.get("shortSidePx")
+            if isinstance(side, (int, float)) and not isinstance(side, bool):
+                rec["shortSidePx"] = float(side)
             detections.append(rec)
     assigned, next_index, created, reused = cluster_detections(
         root,

@@ -99,6 +99,13 @@
   const confirmDeleteFile = document.getElementById("confirm-delete-file");
   const viewLibrary = document.getElementById("view-library");
   const viewGlobe = document.getElementById("view-globe");
+  const viewSettings = document.getElementById("view-settings");
+  const settingsView = document.getElementById("settings-view");
+  const settingsSources = document.getElementById("settings-sources");
+  const settingsSourcesEmpty = document.getElementById("settings-sources-empty");
+  const settingsAddFolder = document.getElementById("settings-add-folder");
+  const settingsRenditionNote = document.getElementById("settings-rendition-note");
+  const confirmRemoveSource = document.getElementById("confirm-remove-source");
   const workspace = document.querySelector(".workspace");
   const globeView = document.getElementById("globe-view");
   const librarySide = document.getElementById("library-side");
@@ -236,6 +243,10 @@
   let renderKey = "";
   let loadGen = 0;
   let currentView = "library";
+  let previousView = "library";
+  let pendingSourceId = "";
+  let settingsWired = false;
+  let facesRerunNeeded = false;
   let appFullscreen = false;
   let slideshowActive = false;
   let slideshowPaused = false;
@@ -642,11 +653,17 @@
   }
 
   function showView(name) {
-    if (name !== "library" && name !== "globe") {
+    if (name !== "library" && name !== "globe" && name !== "settings") {
       return;
     }
     if (name === "globe" && viewer && !viewer.hidden) {
       hideViewerChrome();
+    }
+    if (name === "settings" && viewer && !viewer.hidden) {
+      hideViewerChrome();
+    }
+    if (currentView !== name && currentView !== "settings") {
+      previousView = currentView;
     }
     currentView = name;
     document.body.dataset.view = name;
@@ -659,11 +676,17 @@
     if (globeView) {
       globeView.hidden = name !== "globe";
     }
+    if (settingsView) {
+      settingsView.hidden = name !== "settings";
+    }
     if (viewLibrary) {
       viewLibrary.setAttribute("aria-pressed", name === "library" ? "true" : "false");
     }
     if (viewGlobe) {
       viewGlobe.setAttribute("aria-pressed", name === "globe" ? "true" : "false");
+    }
+    if (viewSettings) {
+      viewSettings.setAttribute("aria-pressed", name === "settings" ? "true" : "false");
     }
     if (window.libraryGlobe && window.libraryGlobe.setActive) {
       window.libraryGlobe.setActive(name === "globe");
@@ -672,6 +695,23 @@
       renderKey = "";
       loadCatalog();
     }
+    if (name === "settings") {
+      renderSettingsSources(lastSources);
+      fillSettingsForm(settings);
+    }
+  }
+
+  function openSettings() {
+    hideSlideshowEmpty();
+    showView("settings");
+    fetch("/api/settings").then(readJson).then(function (data) {
+      applySettings(data);
+      fillSettingsForm(data);
+    }).catch(function () {});
+    fetch("/api/sources").then(readJson).then(function (sources) {
+      lastSources = Array.isArray(sources) ? sources : [];
+      renderSettingsSources(lastSources);
+    }).catch(function () {});
   }
 
   function openCluster(placeIds) {
@@ -766,6 +806,10 @@
       renderJobs(lastJobs);
     }
     render();
+    if (currentView === "settings") {
+      renderSettingsSources(lastSources);
+      fillSettingsForm(settings);
+    }
     if (persistChange && changed) {
       return persist({ language: lang });
     }
@@ -781,6 +825,19 @@
     settings.zoomLevel = data.zoomLevel || settings.zoomLevel;
     settings.addFolderDefault = data.addFolderDefault || settings.addFolderDefault;
     settings.playProxies = data.playProxies || settings.playProxies;
+    settings.previewStore = data.previewStore || settings.previewStore;
+    settings.unavailableItems = data.unavailableItems || settings.unavailableItems;
+    settings.listenHost = data.listenHost || settings.listenHost;
+    settings.port = data.port != null ? data.port : settings.port;
+    settings.thumbPx = data.thumbPx != null ? data.thumbPx : settings.thumbPx;
+    settings.previewPx = data.previewPx != null ? data.previewPx : settings.previewPx;
+    settings.proxyWidth = data.proxyWidth != null ? data.proxyWidth : settings.proxyWidth;
+    settings.placeMatchMeters = data.placeMatchMeters != null ? data.placeMatchMeters : settings.placeMatchMeters;
+    settings.tourOrbitSec = data.tourOrbitSec != null ? data.tourOrbitSec : settings.tourOrbitSec;
+    settings.tourPictures = data.tourPictures != null ? data.tourPictures : settings.tourPictures;
+    settings.tourPictureSec = data.tourPictureSec != null ? data.tourPictureSec : settings.tourPictureSec;
+    settings.faceMatchThreshold = data.faceMatchThreshold != null ? data.faceMatchThreshold : settings.faceMatchThreshold;
+    settings.faceMinSidePx = data.faceMinSidePx != null ? data.faceMinSidePx : settings.faceMinSidePx;
     if (data.language) {
       settings.language = I18N.normalize(data.language);
     }
@@ -791,6 +848,289 @@
     } else if (languageSelect && languageSelect.value !== language) {
       languageSelect.value = language;
     }
+    if (currentView === "settings") {
+      fillSettingsForm(data);
+    }
+  }
+
+  function setRadioGroup(name, value) {
+    document.querySelectorAll('input[name="' + name + '"]').forEach(function (node) {
+      node.checked = node.value === value;
+    });
+  }
+
+  function setFieldValue(id, value) {
+    const node = document.getElementById(id);
+    if (node && document.activeElement !== node) {
+      node.value = value == null ? "" : String(value);
+    }
+  }
+
+  function fillSettingsForm(data) {
+    if (!data || !settingsView) {
+      return;
+    }
+    setRadioGroup("set-previewStore", data.previewStore);
+    setRadioGroup("set-unavailableItems", data.unavailableItems);
+    setRadioGroup("set-addFolderDefault", data.addFolderDefault);
+    setRadioGroup("set-playProxies", data.playProxies);
+    setRadioGroup("set-listenHost", data.listenHost);
+    setFieldValue("set-thumbPx", data.thumbPx);
+    setFieldValue("set-previewPx", data.previewPx);
+    setFieldValue("set-proxyWidth", data.proxyWidth);
+    setFieldValue("set-port", data.port);
+    setFieldValue("set-placeMatchMeters", data.placeMatchMeters);
+    setFieldValue("set-tourOrbitSec", data.tourOrbitSec);
+    setFieldValue("set-tourPictures", data.tourPictures);
+    setFieldValue("set-tourPictureSec", data.tourPictureSec);
+    setFieldValue("set-sort", data.sort);
+    setFieldValue("set-dir", data.dir);
+    setFieldValue("set-zoomLevel", data.zoomLevel);
+    setFieldValue("set-faceMatchThreshold", data.faceMatchThreshold);
+    syncFaceThresholdOutput(data.faceMatchThreshold);
+    setFieldValue("set-faceMinSidePx", data.faceMinSidePx);
+    showFaceRerunNote(facesRerunNeeded);
+    if (settingsRenditionNote) {
+      settingsRenditionNote.textContent = data.previewStore === "with-source"
+        ? t("previewWithSourceNote")
+        : t("previewWithServerNote");
+    }
+  }
+
+  function formatFaceThreshold(value) {
+    const number = Number(value);
+    return isFinite(number) ? number.toFixed(2) : "0.80";
+  }
+
+  function syncFaceThresholdOutput(value) {
+    const out = document.getElementById("set-faceMatchThreshold-value");
+    if (out) {
+      out.textContent = formatFaceThreshold(value);
+    }
+  }
+
+  function showFaceRerunNote(show) {
+    const note = document.getElementById("settings-faces-rerun");
+    if (note) {
+      note.hidden = !show;
+    }
+  }
+
+  function commitSetting(key, value, revert) {
+    persist({ [key]: value }).then(function (next) {
+      if (key === "faceMatchThreshold") {
+        facesRerunNeeded = true;
+      }
+      fillSettingsForm(next);
+    }).catch(function () {
+      if (typeof revert === "function") {
+        revert();
+      } else {
+        fillSettingsForm(settings);
+      }
+    });
+  }
+
+  function parseSettingNumber(key, raw) {
+    if (raw === "" || raw == null) {
+      return null;
+    }
+    if (key === "placeMatchMeters" || key === "tourOrbitSec" || key === "tourPictureSec" || key === "faceMatchThreshold") {
+      const number = Number(raw);
+      if (!isFinite(number) || number <= 0) {
+        return null;
+      }
+      if (key === "faceMatchThreshold" && number > 1) {
+        return null;
+      }
+      return number;
+    }
+    const integer = Number(raw);
+    if (!Number.isInteger(integer) || integer <= 0) {
+      return null;
+    }
+    if (key === "port" && (integer < 1 || integer > 65535)) {
+      return null;
+    }
+    return integer;
+  }
+
+  function sourceModeLabel(mode) {
+    return mode === "copy-here" ? t("copyHereMode") : t("serveThereMode");
+  }
+
+  function sourceScanLabel(scan) {
+    const state = (scan && scan.state) || "idle";
+    if (state === "running") {
+      return t("scanRunning");
+    }
+    if (state === "error") {
+      return t("scanError");
+    }
+    if (state === "complete") {
+      return t("scanComplete");
+    }
+    return t("scanIdle");
+  }
+
+  function renderSettingsSources(sources) {
+    if (!settingsSources) {
+      return;
+    }
+    const list = Array.isArray(sources) ? sources : [];
+    settingsSources.innerHTML = "";
+    if (settingsSourcesEmpty) {
+      settingsSourcesEmpty.hidden = list.length > 0;
+    }
+    list.forEach(function (source) {
+      const li = document.createElement("li");
+      li.className = "settings-source" + (source.available ? "" : " is-away");
+      li.dataset.sourceId = source.id || "";
+      const path = document.createElement("p");
+      path.className = "source-path";
+      path.textContent = source.path || (source.origin && source.origin.lastKnownPath) || source.name || source.id || "";
+      const meta = document.createElement("p");
+      const stats = source.stats || {};
+      const counts = [
+        t("photosCount", { n: Number(stats.photos || 0) }),
+        t("videosCount", { n: Number(stats.videos || 0) }),
+      ].join(" · ");
+      meta.textContent = [
+        source.available ? t("available") : t("unavailable"),
+        sourceModeLabel(source.mode),
+        counts,
+        t("itemsCount", { n: Number(stats.total || 0) }),
+      ].join(" · ");
+      const process = document.createElement("p");
+      process.textContent = t("previewsDone", {
+        done: Number(stats.renditionsDone || 0),
+        queued: Number(stats.renditionsQueued || 0),
+        error: Number(stats.renditionsError || 0),
+      });
+      const scanLine = document.createElement("p");
+      const scan = source.scan || {};
+      const bits = [sourceScanLabel(scan)];
+      if (scan.state === "complete" || scan.state === "error" || scan.state === "running") {
+        bits.push(t("scanCounts", {
+          added: Number(scan.added || 0),
+          skipped: Number(scan.skipped || 0),
+        }));
+      }
+      scanLine.textContent = bits.join(" · ");
+      const actions = document.createElement("div");
+      actions.className = "source-actions";
+      const refresh = document.createElement("button");
+      refresh.type = "button";
+      refresh.className = "source-rescan";
+      refresh.textContent = t("refresh");
+      refresh.disabled = !!scanning || scan.state === "running";
+      refresh.addEventListener("click", function () {
+        rescanSource(source.id);
+      });
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "source-remove";
+      removeBtn.textContent = t("removeFolder");
+      removeBtn.addEventListener("click", function () {
+        askRemoveSource(source.id);
+      });
+      actions.appendChild(refresh);
+      actions.appendChild(removeBtn);
+      li.appendChild(path);
+      li.appendChild(meta);
+      li.appendChild(process);
+      li.appendChild(scanLine);
+      li.appendChild(actions);
+      settingsSources.appendChild(li);
+    });
+  }
+
+  function rescanSource(sourceId) {
+    if (!sourceId) {
+      return;
+    }
+    fetch("/api/sources/" + encodeURIComponent(sourceId) + "/rescan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).then(function () {
+      showStatus("Refreshing folder", true);
+      return loadCatalog();
+    }).catch(function (err) {
+      if (err && (err.status === 409 || (err.body && err.body.error === "busy"))) {
+        return loadCatalog();
+      }
+      return loadCatalog();
+    });
+  }
+
+  function askRemoveSource(sourceId) {
+    pendingSourceId = sourceId || "";
+    if (confirmRemoveSource && confirmRemoveSource.showModal) {
+      confirmRemoveSource.showModal();
+    }
+  }
+
+  function performRemoveSource(sourceId) {
+    if (!sourceId) {
+      return;
+    }
+    fetch("/api/sources/" + encodeURIComponent(sourceId) + "/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(readJson).then(function () {
+      return loadCatalog();
+    }).catch(function () {
+      return loadCatalog();
+    });
+  }
+
+  function wireSettingsForm() {
+    if (settingsWired || !settingsView) {
+      return;
+    }
+    settingsWired = true;
+    settingsView.querySelectorAll("input[type='radio']").forEach(function (node) {
+      node.addEventListener("change", function () {
+        if (!node.checked) {
+          return;
+        }
+        const key = (node.name || "").replace(/^set-/, "");
+        if (!key) {
+          return;
+        }
+        commitSetting(key, node.value);
+      });
+    });
+    ["thumbPx", "previewPx", "proxyWidth", "port", "placeMatchMeters", "tourOrbitSec", "tourPictures", "tourPictureSec", "faceMatchThreshold", "faceMinSidePx"].forEach(function (key) {
+      const node = document.getElementById("set-" + key);
+      if (!node) {
+        return;
+      }
+      if (key === "faceMatchThreshold") {
+        node.addEventListener("input", function () {
+          syncFaceThresholdOutput(node.value);
+        });
+      }
+      node.addEventListener("change", function () {
+        const parsed = parseSettingNumber(key, node.value);
+        if (parsed == null) {
+          fillSettingsForm(settings);
+          return;
+        }
+        commitSetting(key, parsed);
+      });
+    });
+    ["sort", "dir", "zoomLevel"].forEach(function (key) {
+      const node = document.getElementById("set-" + key);
+      if (!node) {
+        return;
+      }
+      node.addEventListener("change", function () {
+        commitSetting(key, node.value);
+      });
+    });
   }
 
   function selectedMode() {
@@ -3433,30 +3773,36 @@
     return t("unnamed");
   }
 
+  function faceBoxQuery(box) {
+    return box.map(function (value) {
+      return Number(value).toFixed(5);
+    }).join(",");
+  }
+
   function faceCrop(thumb) {
-    const out = { src: "", left: "0%", top: "0%", width: "100%", height: "100%" };
+    const out = { src: "", left: "0%", top: "0%", width: "100%", height: "100%", kind: "empty" };
     if (!thumb || !thumb.itemId) {
       return out;
     }
-    out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=thumb";
     const box = thumb.box;
-    if (!box || box.length !== 4 || !(box[2] > 0) || !(box[3] > 0)) {
+    if (box && box.length === 4 && box[2] > 0 && box[3] > 0) {
+      out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=face&box=" + faceBoxQuery(box);
+      out.kind = "face";
       return out;
     }
-    out.width = (100 / box[2]) + "%";
-    out.height = (100 / box[3]) + "%";
-    out.left = ((-box[0] / box[2]) * 100) + "%";
-    out.top = ((-box[1] / box[3]) * 100) + "%";
+    out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=thumb";
+    out.kind = "thumb";
     return out;
   }
 
   function applyFaceCrop(img, crop) {
     img.alt = "";
     img.draggable = false;
-    img.style.left = crop.left;
-    img.style.top = crop.top;
-    img.style.width = crop.width;
-    img.style.height = crop.height;
+    img.style.left = "0";
+    img.style.top = "0";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
   }
 
   function scheduleFaceRefresh(node, thumb) {
@@ -3473,14 +3819,16 @@
       if (!crop.src) {
         return;
       }
-      const faceItem = itemById(thumb.itemId);
-      const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
-      if (faceStatus && faceStatus !== "ready" && faceStatus !== "error") {
-        attempt += 1;
-        if (attempt < delays.length) {
-          window.setTimeout(retry, delays[attempt]);
+      if (crop.kind !== "face") {
+        const faceItem = itemById(thumb.itemId);
+        const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
+        if (faceStatus && faceStatus !== "ready" && faceStatus !== "error") {
+          attempt += 1;
+          if (attempt < delays.length) {
+            window.setTimeout(retry, delays[attempt]);
+          }
+          return;
         }
-        return;
       }
       const img = document.createElement("img");
       applyFaceCrop(img, crop);
@@ -3510,12 +3858,14 @@
       node.classList.add("person-face-empty");
       return;
     }
-    const faceItem = itemById(thumb.itemId);
-    const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
-    if (faceStatus !== "ready" && faceStatus !== "error") {
-      node.classList.add("person-face-pending");
-      scheduleFaceRefresh(node, thumb);
-      return;
+    if (crop.kind !== "face") {
+      const faceItem = itemById(thumb.itemId);
+      const faceStatus = faceItem ? ((faceItem.renditions || {}).status || {}).thumb : "";
+      if (faceStatus !== "ready" && faceStatus !== "error") {
+        node.classList.add("person-face-pending");
+        scheduleFaceRefresh(node, thumb);
+        return;
+      }
     }
     const img = document.createElement("img");
     applyFaceCrop(img, crop);
@@ -4152,6 +4502,9 @@
       const nextGroups = Array.isArray(parts[1]) ? parts[1] : [];
       const sources = Array.isArray(parts[2]) ? parts[2] : [];
       lastSources = sources;
+      if (currentView === "settings") {
+        renderSettingsSources(lastSources);
+      }
       if (parts[3]) {
         applySettings(parts[3]);
       }
@@ -4943,6 +5296,11 @@
       }
       return;
     }
+    if ((event.ctrlKey || event.metaKey) && event.key === ",") {
+      event.preventDefault();
+      openSettings();
+      return;
+    }
     if (event.key === "F5") {
       event.preventDefault();
       startSlideshow();
@@ -4957,6 +5315,11 @@
       if (confirmDeleteFile && confirmDeleteFile.open) {
         event.preventDefault();
         confirmDeleteFile.close();
+        return;
+      }
+      if (confirmRemoveSource && confirmRemoveSource.open) {
+        event.preventDefault();
+        confirmRemoveSource.close();
         return;
       }
       if (addDialog.open) {
@@ -4986,6 +5349,12 @@
       }
       if (!viewer.hidden) {
         closeViewer();
+        return;
+      }
+      if (currentView === "settings") {
+        event.preventDefault();
+        showView(previousView === "settings" ? "library" : previousView);
+        return;
       }
       return;
     }
@@ -5194,6 +5563,31 @@
       showView("globe");
     });
   }
+  if (viewSettings) {
+    viewSettings.addEventListener("click", function () {
+      openSettings();
+    });
+  }
+  if (settingsAddFolder) {
+    settingsAddFolder.addEventListener("click", openAddDialog);
+  }
+  if (confirmRemoveSource) {
+    const cancelSource = document.getElementById("confirm-remove-source-cancel");
+    const okSource = document.getElementById("confirm-remove-source-ok");
+    if (cancelSource) {
+      cancelSource.addEventListener("click", function () {
+        confirmRemoveSource.close();
+      });
+    }
+    if (okSource) {
+      okSource.addEventListener("click", function () {
+        const id = pendingSourceId;
+        confirmRemoveSource.close();
+        performRemoveSource(id);
+      });
+    }
+  }
+  wireSettingsForm();
 
   window.libraryApp = {
     openCluster: openCluster,
@@ -5622,6 +6016,10 @@
 
   window.libraryTest = {
     loadCatalog: loadCatalog,
+    openSettings: openSettings,
+    currentView: function () {
+      return currentView;
+    },
     itemCount: function () {
       return items.length;
     },
@@ -5649,7 +6047,7 @@
       }
       showDisconnected(false);
       return loadJobs().then(function () {
-        if (scanning || !items.length || catalogNeedsStills()) {
+        if (scanning || !items.length || catalogNeedsStills() || currentView === "settings") {
           return loadCatalog();
         }
       });

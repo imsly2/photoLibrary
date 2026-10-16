@@ -200,6 +200,66 @@ class Library:
         finally:
             self._scanning = False
 
+    def start_http_rescan(self, source_id: str) -> tuple[dict[str, Any], Path]:
+        from library.scan import start_rescan_source
+
+        self.recover()
+        self.ensure_settings()
+        if type(source_id) is not str or not source_id:
+            raise fail("invalid-argument")
+        self._assert_idle()
+        self._scanning = True
+        try:
+            source, path = start_rescan_source(self.root, source_id)
+            return source_read(source, self.root), path
+        except Exception:
+            self._scanning = False
+            raise
+
+    def finish_http_rescan(
+        self,
+        source: dict[str, Any],
+        path: Path,
+        on_progress=None,
+        between=None,
+    ) -> dict[str, Any]:
+        from library.catalog_io import try_load_source
+
+        try:
+            current = try_load_source(self.root, source["id"]) or source
+            mode = current.get("mode") or source.get("mode")
+            if mode == "copy-here":
+                finished = scan_copy_here(
+                    self.root,
+                    path,
+                    on_progress=on_progress,
+                    between=between,
+                    source=current,
+                )
+                return source_read(finished, self.root)
+            finished = scan_serve_from_there(
+                self.root,
+                path,
+                on_progress=on_progress,
+                between=between,
+                source=current,
+            )
+            return source_read(finished, self.root)
+        finally:
+            self._scanning = False
+
+    def rescan(self, source_id: str, on_progress=None, between=None) -> dict[str, Any]:
+        source, path = self.start_http_rescan(source_id)
+        return self.finish_http_rescan(source, path, on_progress=on_progress, between=between)
+
+    def remove_source(self, source_id: str) -> dict[str, Any]:
+        from library.sources import remove_source
+
+        self.recover()
+        self.ensure_settings()
+        self._assert_idle()
+        return remove_source(self.root, source_id)
+
     def start_http_scan(self, body: dict[str, Any]) -> dict[str, Any]:
         from library.scan import start_scan_source
 
@@ -451,12 +511,7 @@ class Library:
         if type(item_id) is not str or not item_id:
             raise fail("invalid-argument")
         item = load_item(self.root, item_id)
-        if item.get("kind") == "video":
-            component = "motion"
-        else:
-            component = "still"
-        raw = _readable_component_file(item, component, self.root)
-        path = existing_original(raw) if raw is not None else None
+        path = _reveal_original_path(item, self.root)
         if path is None:
             raise fail("unavailable")
         opened = open_containing_folder(path)
@@ -474,12 +529,7 @@ class Library:
         if type(item_id) is not str or not item_id:
             raise fail("invalid-argument")
         item = load_item(self.root, item_id)
-        if item.get("kind") == "video":
-            component = "motion"
-        else:
-            component = "still"
-        raw = _readable_component_file(item, component, self.root)
-        path = existing_original(raw) if raw is not None else None
+        path = _reveal_original_path(item, self.root)
         if path is None:
             raise fail("unavailable")
         opened = open_file(path)
@@ -668,11 +718,13 @@ class Library:
         return relocate_renditions(self.root)
 
     def media_resolve(self, item_id: str, query: dict[str, str]) -> dict[str, Any]:
-        extra = set(query) - {"which", "component"}
+        extra = set(query) - {"which", "component", "box"}
         if extra:
             raise fail("invalid-argument")
         which = query.get("which")
         if which not in MEDIA_WHICH:
+            raise fail("invalid-argument")
+        if "box" in query and which != "face":
             raise fail("invalid-argument")
         component = query.get("component")
         if component is not None and component not in {"still", "motion"}:
@@ -680,7 +732,36 @@ class Library:
         item = load_item(self.root, item_id)
         if which == "original":
             return self._resolve_original(item, component)
+        if which == "face":
+            return self._resolve_face(item, query.get("box"))
         return self._resolve_rendition(item, which)
+
+    def _resolve_face(self, item: dict[str, Any], box_raw: str | None) -> dict[str, Any]:
+        from library.face_crop import face_crop_cache_path, parse_face_box, write_face_crop
+
+        box = parse_face_box(box_raw)
+        source = _readable_component_file(item, "still", self.root)
+        if source is None or not source.is_file():
+            source = None
+            for which in ("preview", "thumb"):
+                try:
+                    path = rendition_abs(item, which, self.root)
+                except Exception:
+                    path = None
+                if path is not None and path.is_file() and path.stat().st_size > 0:
+                    source = path
+                    break
+        if source is None:
+            raise fail("preview-unavailable")
+        dest = face_crop_cache_path(self.root, str(item.get("id") or ""), box, source)
+        try:
+            fresh = dest.is_file() and dest.stat().st_mtime >= source.stat().st_mtime
+        except OSError:
+            fresh = False
+        if not fresh:
+            if not write_face_crop(source, dest, box):
+                raise fail("preview-unavailable")
+        return {"path": dest, "content_type": "image/webp"}
 
     def _resolve_original(self, item: dict[str, Any], component: str | None) -> dict[str, Any]:
         if component == "motion":
@@ -725,7 +806,7 @@ ITEM_QUERY_KEYS = frozenset(
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
-MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "playback", "original"})
+MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "playback", "original", "face"})
 
 
 def original_content_type(path: Path) -> str:
@@ -743,6 +824,48 @@ def original_content_type(path: Path) -> str:
     if suffix == ".mkv":
         return "video/x-matroska"
     return "application/octet-stream"
+
+
+def _item_component(item: dict[str, Any]) -> str:
+    if item.get("kind") == "video":
+        return "motion"
+    return "still"
+
+
+def _last_known_original(item: dict[str, Any], component: str) -> Path | None:
+    from library.favorites import existing_original
+
+    candidates = [
+        loc
+        for loc in item.get("locations") or []
+        if loc.get("current") is True and loc.get("component") == component
+    ]
+    candidates.sort(
+        key=lambda loc: (
+            0 if loc.get("role") == "primary" else 1,
+            loc.get("sourceId") or "",
+            loc.get("lastKnownPath") or "",
+        )
+    )
+    for loc in candidates:
+        last = loc.get("lastKnownPath")
+        if type(last) is not str or not last:
+            continue
+        found = existing_original(Path(last))
+        if found is not None:
+            return found
+    return None
+
+
+def _reveal_original_path(item: dict[str, Any], root: Path) -> Path | None:
+    from library.favorites import existing_original
+
+    component = _item_component(item)
+    raw = _readable_component_file(item, component, root)
+    path = existing_original(raw) if raw is not None else None
+    if path is not None:
+        return path
+    return _last_known_original(item, component)
 
 
 def _readable_component_file(item: dict[str, Any], component: str, root: Path) -> Path | None:

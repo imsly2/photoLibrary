@@ -12,6 +12,7 @@ from library.catalog_io import (
     ensure_catalog_dirs,
     find_source_by_origin,
     item_rel,
+    load_source,
     new_source_id,
     pair_live_items,
     place_rel,
@@ -226,6 +227,35 @@ def _start_source(
     entry = make_history_entry(root, "scan", changes)
     transact(root, plan_append(root, entry) + changes)
     return source
+
+
+def start_rescan_source(root: Path, source_id: str) -> tuple[dict[str, Any], Path]:
+    """Reset scan on an existing source. Does not create a second source."""
+    from library.sources import resolve_source_folder
+
+    source = load_source(root, source_id)
+    folder = resolve_source_folder(source, root)
+    if folder is None:
+        raise fail("unavailable")
+    folder = assert_scan_path_allowed(folder, root)
+    before = clone(source)
+    origin = dict(source.get("origin") or {})
+    origin["lastKnownPath"] = last_known_text(folder)
+    try:
+        serial, volume_root = volume_of_path(folder)
+        origin["volumeSerial"] = serial
+        origin["pathFromVolumeRoot"] = path_from_volume_root(folder, volume_root)
+    except Exception:
+        pass
+    source["origin"] = origin
+    source["scan"] = {"state": "running", "added": 0, "skipped": 0, "errors": []}
+    source = ordered_source(source)
+    changes = [
+        {"path": source_rel(source["id"]), "before": before, "after": source},
+    ]
+    entry = make_history_entry(root, "scan", changes)
+    transact(root, plan_append(root, entry) + changes)
+    return source, folder
 
 
 def _retry_error_renditions(root: Path, entry: dict[str, Any] | None, path: Path) -> None:

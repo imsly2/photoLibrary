@@ -36,7 +36,7 @@ an unlisted field, setting, route, or error requires a spec edit before code.
 | Platform promise | Windows is the primary acceptance platform. Keep the described macOS/Linux launchers; their launch and volume identity tests need those platforms before F2 can pass in full. Missing runners are recorded, never counted green. |
 | API completion | Exact responses, annotation payload, merge route, range requests, and error table below fill missing technical details, not new user features. |
 | Port conflict | Keep 8765 default. Reopen a healthy matching-root server; a different service/root produces `port-in-use`. Never kill it or silently choose a port. |
-| Settings scope | Keep the 17 browse settings (the earlier 16 plus `language` `en|zh-Hans`, default `en`). Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not extra settings beyond language. Optional local geo/objects/faces stay pack/model switches. Two face-quality keys (`faceMatchThreshold`, `faceMinSidePx`) also live in settings.json so InsightFace matching can be tuned without a rebuild; they are not F17 page chrome. Language is a header switch, not a settings-page control. |
+| Settings scope | Keep the 17 browse settings (the earlier 16 plus `language` `en|zh-Hans`, default `en`). Do not add a keybinding editor, authentication, accounts, remote hosting, or albums because a reference mentions them. A per-item favorite heart (`catalog/favorites.json`) and Windows Reveal in Explorer are named actions, not extra settings beyond language. Optional local geo/objects/faces stay pack/model switches. Two face-quality keys (`faceMatchThreshold` default 0.80, `faceMinSidePx`) also live in settings.json so InsightFace matching can be tuned without a rebuild; the Settings page exposes them (slider + minimum side) after Folders. Language is a header switch, not a settings-page control. |
 | Favorite | One catalog file, not an item field and not a setting. `{schemaVersion:1,itemIds:[…]}` unique ids sorted lexically. Missing file means none. Item reads add computed `favorite`. `PUT` or `POST /api/items/<id>/favorite` `{favorite:bool}` is one undoable `favorite` history operation. Viewer heart, tile hearts, and the Favorites section share this file. Pending-id hearts remap to the hash id on publication. Unknown id is `not-found`. `favorite=1` on items/groups keeps hearted items; omitted means all. |
 | Reveal in Explorer | Windows action that selects the current original path, or `lastKnownPath` when the original is away, in Explorer. No-op when no path exists. Does not copy, move, or upload. |
 | Globe drag | Horizontal drag: rightward motion increases yaw (0.25 deg/px). Vertical drag: upward motion increases pitch. Texture is the shipped local `earth.png`. |
@@ -210,7 +210,10 @@ library-relative for copied files, null for linked; state
 `pending|copied|indexed|error`. Copy-only internal temporary file is destination
 plus `.partial-<sourceId>`; exclude it from enumeration. Scan is
 `{state,added,skipped,errors}` with state `idle|running|complete|interrupted|error`;
-errors array `{path,error}` uses errors below. Source reads add `available`.
+errors array `{path,error}` uses errors below. Source reads add `available`, `path` (origin.lastKnownPath), and
+`stats` `{photos,videos,live,total,renditionsDone,renditionsQueued,renditionsError}`
+from catalog files plus each item's core rendition status (photo/live:
+thumb+preview; video: poster+proxy). Stats are computed, never persisted.
 An absent linked disk is not evidence to delete locations. Changed files mark
 only their old location current=false and create a current location on the new
 hash item. The old item retains its primary, lastKnownPath and annotations but
@@ -255,7 +258,7 @@ moves existing files. Listen settings take effect on next launch; other settings
 on the next request. Settings PUT is a validated partial object, atomically merged.
 
 History entry `{schemaVersion,id,operation,createdAt,changes}`; id random 12 hex,
-UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|delete-file|analyze-places|faces-infer|faces-cleanup|tags`.
+UTC createdAt; operation `scan|copy-here|annotate|favorite|people-merge|person-update|settings|relocate|remove|remove-source|delete-file|analyze-places|faces-infer|faces-cleanup|tags`.
 changes array `{path,before,after}` with library-relative canonical JSON path and
 full JSON object or null. Store at most 500 committed entries. State
 `{schemaVersion,entries,cursor}` lists oldest first and cursor counts applied
@@ -297,7 +300,9 @@ required. Both interfaces must produce equivalent resulting canonical records.
 | POST `/api/pick-folder` | `{}`; Windows native folder dialog; 200 `{path}` or `{path:null}`; otherwise 404 `picker-unavailable` |
 | GET `/api/update` | 200 `{ok,branch,revision,dirty,message,git_sha,git_branch,git_date}` for the app-folder git copy; `revision` is the short SHA |
 | POST `/api/update` | `{}`; 200 `{ok,updated,revision,git_sha,code,source,message,restarting?}` after anonymous HTTPS git of `main`, or a zip overlay that preserves `library-data/` |
-| sources / GET `/api/sources` | 200 array of sources |
+| sources / GET `/api/sources` | 200 array of sources (each with `available`, `path`, `stats`) |
+| rescan source-id / POST `/api/sources/<id>/rescan` | `{}`; 202 source record (`scan.state` running) then the same skip-unchanged walk as scan; re-queues error renditions; names/tags/faces stay. 404 `unavailable` if the folder is not here. 409 `busy` while another scan runs. CLI waits and prints the summary. |
+| remove-source source-id / POST `/api/sources/<id>/remove` | `{}`; 200 `{ok:true,id}`; drops the source JSON and items that only belonged to it; shared items lose those locations; originals stay. Undoable `remove-source`. Unknown id is `not-found`. |
 | copy-here source-id / POST `/api/sources/<id>/copy-here` | `{}`; 202 source record; already copied is successful no-op |
 | items / GET `/api/items` | 200 array of item read objects; CLI flags mirror query keys |
 | GET `/api/groups` | Date: `level=years|months|days|all` plus item filters/sort; array `{key,itemIds}`; year YYYY, month YYYY-MM, day YYYY-MM-DD. Entity: `by=people\|places\|tags` (level ignored); `{key,id?,itemIds}` with Unknown / No place / Untagged last. Same ids exactly once as item results; an item with several people/tags uses the first name A–Z then id. Groups ordered by first occurrence in sorted items for dates, by label then id for entities; contents retain item order. Flattening can differ from item sort when dates interleave; viewer arrows use item sort. No invented “best” photos. |
@@ -359,8 +364,10 @@ no-location groups in that category order regardless of dir; dir orders names/
 coordinates and dates within category. Compare capturedAt as stored normalized
 ISO components; floating dates remain floating, never guess a timezone.
 
-GET `/api/media/<id>?which=thumb|preview|poster|proxy|playback|original` returns bytes,
-correct Content-Type and length. Live original is still by default;
+GET `/api/media/<id>?which=thumb|preview|poster|proxy|playback|original|face` returns bytes,
+correct Content-Type and length. `which=face` requires `box=x,y,w,h`
+(normalized 0–1 on the oriented still) and returns a square WebP crop
+from the original (preview/thumb fallback). Live original is still by default;
 `component=motion` chooses the movie (ordinary video is already motion). Support
 single byte Range with 206/Content-Range and 416 invalid-range. Preview swaps and
 video seeking are verified in browser. No raw filesystem paths are accepted.

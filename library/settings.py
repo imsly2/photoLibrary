@@ -70,7 +70,7 @@ DEFAULTS: dict[str, Any] = {
     "dir": "desc",
     "zoomLevel": "years",
     "language": "en",
-    "faceMatchThreshold": 0.5,
+    "faceMatchThreshold": 0.8,
     "faceMinSidePx": 80,
 }
 

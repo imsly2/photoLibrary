@@ -122,19 +122,31 @@ def parse_favorite_body(body: Any) -> bool:
     return value
 
 
+def _strip_extended_prefix(text: str) -> str:
+    if text.startswith("\\\\?\\UNC\\"):
+        return "\\\\" + text[8:]
+    if text.startswith("\\\\?\\"):
+        return text[4:]
+    return text
+
+
 def existing_original(path: Path) -> Path | None:
-    """Absolute on-disk file, or None. Directories and missing paths are None."""
+    """Absolute on-disk file, or None. Never resolve a relative path against CWD."""
     try:
         candidate = Path(path).expanduser()
         if not candidate.is_absolute():
-            candidate = candidate.resolve()
-        elif candidate.exists():
-            candidate = candidate.resolve()
+            return None
+        text = _strip_extended_prefix(str(candidate))
+        candidate = Path(text)
+        if candidate.exists() and candidate.is_file():
+            resolved = candidate.resolve()
+            cleaned = Path(_strip_extended_prefix(str(resolved)))
+            if cleaned.is_file():
+                return cleaned
+            return candidate
     except OSError:
         return None
-    if not candidate.is_absolute() or not candidate.is_file():
-        return None
-    return candidate
+    return None
 
 
 def _windows() -> bool:
@@ -143,7 +155,7 @@ def _windows() -> bool:
 
 def windows_reveal_select_arg(path: Path) -> str:
     """Single Explorer switch: /select, glued to the path, no extra quotes."""
-    text = str(path)
+    text = _strip_extended_prefix(str(path))
     if _windows():
         text = os.path.normpath(text)
     return f"/select,{text}"
