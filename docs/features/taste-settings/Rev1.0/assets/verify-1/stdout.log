@@ -1,0 +1,31 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS html-settings-view
+PASS html-folders-first
+PASS html-face-slider
+PASS js-open-settings
+PASS js-rescan
+PASS js-remove-source
+PASS js-slider-live
+PASS js-face-crop
+PASS css-picker-cover
+PASS i18n-face-help
+PASS cli-rescan
+PASS cli-remove-source
+PASS http-rescan-route
+PASS product-folders
+PASS contracts-rescan
+PASS contracts-face-which
+PASS default-threshold-080
+PASS scan-exit
+PASS settings-http: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchT
+PASS settings-default-threshold: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchThreshold": 0.8, "faceMinSidePx": 80}
+PASS settings-slider-persist: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchThreshold": 0.85, "faceMinSidePx": 80}
+PASS sources-http: [{"schemaVersion": 1, "id": "src_8fb5d3a6a043", "name": "a", "mode": "serve-from-there", "origin": {"volumeSerial": "linux:/", "pathFromVolumeRoot": "workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a", "lastKnownPath": "/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a"}, "copyRoot": null, "previewStore": null, "files": {"IMG
+PASS source-has-path: {"schemaVersion": 1, "id": "src_8fb5d3a6a043", "name": "a", "mode": "serve-from-there", "origin": {"volumeSerial": "linux:/", "pathFromVolumeRoot": "workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a", "lastKnownPath": "/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a"}, "copyRoot": null, "previewStore": null, "files": {"IMG_
+PASS source-has-stats: {"photos": 2, "videos": 1, "live": 0, "total": 3, "renditionsDone": 0, "renditionsQueued": 3, "renditionsError": 0}
+PASS rescan-accepted: {"status": 202, "body": {"schemaVersion": 1, "id": "src_8fb5d3a6a043", "name": "a", "mode": "serve-from-there", "origin": {"volumeSerial": "linux:/", "pathFromVolumeRoot": "workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a", "lastKnownPath": "/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a"}, "copyRoot": null, "previewStore": null, "files": {"IMG_1042.jpg": {"destination": null, "itemId": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "component": "still", "sizeBytes": 15274, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0", "state": "indexed"}, "clip.mp4": {"destination": null, "itemId": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "component": "motion", "sizeBytes": 23631, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913", "state": "indexed"}, "near.jpg": {"destination": null, "itemId": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "component": "still", "sizeBytes": 12642, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a", "state": "indexed"}}, "scan": {"state": "running", "added": 0, "skipped": 0, "errors": []}, "available": true, "path": "/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a", "stats": {"photos": 2, "videos": 1, "live": 0, "total": 3, "renditionsDone": 0, "renditionsQueued": 3, "renditionsError": 0}}}
+PASS rescan-finished: src_8fb5d3a6a043
+PASS crop-item
+PASS face-crop-bytes: {"status": 200, "len": 368, "type": "image/webp"}
+PASS cli-rescan-runs

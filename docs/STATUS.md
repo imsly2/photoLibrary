@@ -4,6 +4,30 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Settings folders + face match on
+  `cursor/settings-sources-reveal-f272`. `#settings-view` (Ctrl+, /
+  header): Folders first with lastKnown path, available, mode, counts,
+  rendition done/queued/error, last scan; Add / Refresh (`rescan`,
+  skip unchanged) / catalog-only Remove. Remaining settings.json keys
+  as controls. `faceMatchThreshold` default **0.80** (slider 0.35–0.95)
+  plus Re-run Faces note; `faceMinSidePx` stays 80. Detect remains
+  full-frame 640 → original 112 ArcFace; large stills add overlapping
+  1280 tiles (NMS) so small faces in phone photos get a usable box.
+  Weak/small detections need a clearer score to join a **named**
+  person. People picker uses square `which=face&box=` crops. Reveal
+  argv + lastKnown fallback stay. Does not close F17. 16/22 unchanged.
+  Plans: [taste-settings](features/taste-settings/Rev1.0/PLAN.md),
+  [faces](features/faces/Rev1.0/PLAN.md).
+  Evidence:
+  [TASTE-SETTINGS](features/taste-settings/Rev1.0/assets/verify-1/result.json)
+  31/31,
+  [folders](features/taste-settings/Rev1.0/assets/verify-1/settings-folders.png),
+  [slider](features/taste-settings/Rev1.0/assets/verify-1/settings-faces-slider.png),
+  [FACES](features/faces/Rev1.0/assets/verify-3/result.json)
+  93/93 (200 px face on 4032×3024 is 32 px on the 640 canvas vs 100 px
+  on a 1280 tile; named-weak stays Unnamed),
+  [TASTE-REVEAL](features/taste-reveal/Rev1.0/assets/verify-6/result.json)
+  57/57 (spaces + lastKnown fallback).
 - 2026-10-14 — Lean deploy zip for USB / family PCs: double-click
   `PackDeploy.bat` (thin `pack-deploy.ps1` + `pack-deploy.py`). Writes
   `dist/photoLibrary-deploy.zip` and overwrites that file on re-run.

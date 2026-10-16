@@ -269,8 +269,14 @@ def relative_from_origin(source: dict[str, Any], path_from_volume_root: str) -> 
 
 
 def source_read(source: dict[str, Any], root: Path) -> dict[str, Any]:
+    from library.sources import source_stats
+
     out = ordered_source(source)
     out["available"] = source_available(source, root)
+    origin = out.get("origin") or {}
+    last = origin.get("lastKnownPath")
+    out["path"] = last if type(last) is str else ""
+    out["stats"] = source_stats(source, root)
     return out
 
 

@@ -6,8 +6,10 @@ YOLO / object inference is a parallel track and is out of scope.
 Read PRODUCT optional local face inference, F14, CONTRACTS faces routes /
 `faces-infer` history / `models-missing`, UI-SPEC unnamed Info naming,
 FIXTURES `face-cluster`, and this file. Face quality lives in
-`faceMatchThreshold` / `faceMinSidePx` (not F17 page chrome). Do not guess
-real names. Do not upload faces.
+`faceMatchThreshold` (default 0.80, Settings slider) / `faceMinSidePx`.
+Detect stays full-frame 640 → map boxes → original 112 crop. Large stills
+add overlapping 1280 tiles, NMS-merged, then the same 112 embed. Do not
+guess real names. Do not upload faces. Do not align-before-detect.
 
 ## In scope
 
@@ -19,10 +21,11 @@ real names. Do not upload faces.
   detector for synthetic beacon/identity stills. Production ignores fixture.
 - `infer-faces` / `POST /api/faces/infer` detects faces, embeds, clusters
   unnamed people (`name: null`), reuses the people catalog only when
-  cosine is strictly above `faceMatchThreshold` (InsightFace 0.50;
+  cosine is strictly above `faceMatchThreshold` (InsightFace **0.80**;
   fixture 0.85), writes boxes plus optional det/match scores, stores
   embeddings in `models/faces/index.json`. Tiny faces below
-  `faceMinSidePx` (default 80) are dropped.
+  `faceMinSidePx` (default 80) are dropped. Weak/small boxes need a
+  higher score before they join an already-named person.
 - After Update on an existing catalog: `python -m library infer-faces --force`
   or Processing **Re-run Faces**. That re-detects with the new gates and
   rebuilds centroids. Named people are kept. `--cleanup` drops stored
@@ -36,8 +39,9 @@ real names. Do not upload faces.
 ## Out of scope
 
 YOLO / things inference, auto real-name guess, cloud upload, a merge
-wizard, F23. Face-quality keys are settings.json tunables, not F17 page
-controls.
+wizard, F23. Align-before-detect is impossible without a box and stays
+out. Face-quality keys are Settings page controls (slider + min side)
+plus settings.json.
 
 ## Gate
 

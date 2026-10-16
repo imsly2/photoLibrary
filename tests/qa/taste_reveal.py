@@ -98,6 +98,7 @@ def prove_command_form(checks: Checks) -> None:
 
 
 def prove_existing_original(checks: Checks, workspace: Path) -> Path:
+    workspace = Path(workspace).resolve()
     if workspace.exists():
         shutil.rmtree(workspace)
     folder = workspace / "Iphone Backup"
@@ -332,11 +333,72 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     )
 
 
+def prove_last_known_fallback(checks: Checks, artifacts: Path, commands: list[str]) -> None:
+    from library.atomic import atomic_write_json
+    from library.catalog_io import load_item
+    from library.records import ordered_item
+
+    sandbox = artifacts / "fixture-sandbox" / "media" / "a"
+    src = sandbox / "IMG_1042.jpg"
+    if not src.is_file():
+        checks.check("last-known-source-photo", False, str(src))
+        return
+    folder = artifacts / "last-known-folder"
+    if folder.exists():
+        shutil.rmtree(folder)
+    folder.mkdir(parents=True)
+    photo = folder / "Keep Me.jpg"
+    shutil.copy2(src, photo)
+    pin_media_from_manifest(folder)
+    lib_root = fresh_root(artifacts / "last-known-root")
+    _scan_folder(lib_root, folder, commands, copy_here=False)
+    lib = Library(lib_root)
+    item = find_item(lib.items_list({}), "Keep Me.jpg")
+    checks.check("last-known-item", item is not None, "Keep Me.jpg")
+    if item is None:
+        return
+    rec = load_item(lib_root, item["id"])
+    for loc in rec.get("locations") or []:
+        loc["volumeSerial"] = "linux:/not-mounted-here"
+        loc["lastKnownPath"] = str(photo.resolve())
+    atomic_write_json(lib_root / "catalog" / "items" / f"{item['id']}.json", ordered_item(rec))
+    calls: list[Any] = []
+
+    def fake_popen(*args: Any, **kwargs: Any) -> object:
+        calls.append((args, kwargs))
+        return object()
+
+    with patch("library.favorites.subprocess.Popen", fake_popen):
+        with patch("library.favorites._windows", return_value=True):
+            body = lib.reveal(item["id"])
+    reveal_path = Path(body.get("path") or "")
+    checks.check("last-known-opened", body.get("opened") is True, json.dumps(body))
+    checks.check(
+        "last-known-selects-file",
+        reveal_path.is_file() and reveal_path.resolve() == photo.resolve(),
+        json.dumps(body),
+    )
+    command = calls[0][0][0] if calls and calls[0][0] else ""
+    selected = parse_select_path(command)
+    checks.check(
+        "last-known-explorer-select",
+        selected != "" and Path(selected).resolve() == photo.resolve(),
+        json.dumps(command, default=str),
+    )
+    checks.check(
+        "last-known-not-documents",
+        "Documents" not in selected and "Documents" not in json.dumps(body),
+        selected,
+    )
+
+
 def prove_static_source(checks: Checks) -> None:
     favorites = (PRODUCT_ROOT / "library" / "favorites.py").read_text(encoding="utf-8")
     page = (PRODUCT_ROOT / "library" / "web" / "assets" / "library.js").read_text(encoding="utf-8")
+    i18n = (PRODUCT_ROOT / "library" / "web" / "assets" / "i18n.js").read_text(encoding="utf-8")
     html = (PRODUCT_ROOT / "library" / "web" / "index.html").read_text(encoding="utf-8")
     spec = (PRODUCT_ROOT / "docs" / "UI-SPEC.md").read_text(encoding="utf-8")
+    page_text = page + "\n" + i18n
     checks.check(
         "source-uses-explorer-select-argv",
         '["explorer.exe"' in favorites
@@ -351,7 +413,7 @@ def prove_static_source(checks: Checks) -> None:
     )
     checks.check(
         "source-ui-shows-missing-error",
-        "showRevealFailed" in page and "Original is not on this computer" in page,
+        "showRevealFailed" in page and "Original is not on this computer" in page_text,
         "library.js reveal error",
     )
     checks.check(
@@ -385,9 +447,9 @@ def prove_static_source(checks: Checks) -> None:
         "source-viewer-source-chrome",
         'id="viewer-source"' in html
         and "setVideoSourceState" in page
-        and "Loading full…" in page
-        and 'full: "Full"' in page
-        and "Preview — full unavailable" in page
+        and "Loading full…" in page_text
+        and 'full: "Full"' in page_text
+        and "Preview — full unavailable" in page_text
         and "resumeHoverIfNeeded" in page,
         "viewer source + hover resume",
     )
@@ -418,6 +480,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
     photo = prove_existing_original(checks, artifacts / "unit-files")
     prove_open_containing(checks, photo)
     prove_library_reveal(checks, root, artifacts, commands)
+    prove_last_known_fallback(checks, artifacts, commands)
     prove_static_source(checks)
     extra = {
         "unit-files": str(artifacts / "unit-files"),

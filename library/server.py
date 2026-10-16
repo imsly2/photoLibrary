@@ -27,7 +27,7 @@ RUNTIME_NAME = "runtime.json"
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
     etag = '"%x-%x"' % (mtime_ns, size)
-    if which in {"thumb", "preview", "poster"}:
+    if which in {"thumb", "preview", "poster", "face"}:
         return "private, max-age=604800", etag
     if which in {"proxy", "playback"}:
         return "private, max-age=86400", etag
@@ -360,6 +360,57 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._read_json()
                 with self.lock:
                     self._send_json(202, self.library.copy_here(source_id))
+                return
+            if (
+                route.startswith("/api/sources/")
+                and route.endswith("/rescan")
+                and method == "POST"
+            ):
+                source_id = route[len("/api/sources/") : -len("/rescan")]
+                if not source_id or "/" in source_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._require_idle()
+                    source, scan_path = self.library.start_http_rescan(source_id)
+                lock = self.lock
+                library = self.library
+
+                def yield_rescan() -> None:
+                    lock.release()
+                    try:
+                        time.sleep(0.05)
+                    finally:
+                        lock.acquire()
+
+                def rescan_worker() -> None:
+                    lock.acquire()
+                    try:
+                        library.finish_http_rescan(
+                            source,
+                            scan_path,
+                            on_progress=_scan_progress,
+                            between=yield_rescan,
+                        )
+                    except Exception:
+                        library._scanning = False
+                    finally:
+                        lock.release()
+
+                threading.Thread(target=rescan_worker, name="library-rescan", daemon=True).start()
+                self._send_json(202, source)
+                return
+            if (
+                route.startswith("/api/sources/")
+                and route.endswith("/remove")
+                and method == "POST"
+            ):
+                source_id = route[len("/api/sources/") : -len("/remove")]
+                if not source_id or "/" in source_id:
+                    raise fail("not-found")
+                self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.remove_source(source_id))
                 return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)

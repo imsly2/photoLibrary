@@ -70,6 +70,11 @@ docs/features/**/ui-media/
 docs/features/**/objects-media/
 docs/features/faces/**/library-data/
 docs/features/faces/**/faces-media/
+docs/features/faces/**/quality-media/
+docs/features/taste-reveal/**/unit-files/
+docs/features/taste-reveal/**/last-known-folder/
+docs/features/taste-reveal/**/copy-media/
+docs/features/taste-reveal/**/Iphone Backup/
 
 # Zip-update stamp when this folder is not a git checkout.
 .library-revision.json

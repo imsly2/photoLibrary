@@ -248,7 +248,9 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `serve` | the process | Starts the server. |
 | `scan <path> --copy-here` | `POST /api/sources` `{"path":"<folder>","mode":"copy-here"}` | Copies, then indexes. |
 | `scan <path> --serve-from-there` | `POST /api/sources` `{"path":"<folder>","mode":"serve-from-there"}` | Indexes in place. |
-| `sources` | `GET /api/sources` | Lists folders and whether each is available. |
+| `sources` | `GET /api/sources` | Lists folders and whether each is available. Each row includes `path` (lastKnown), `stats` (photos/videos/live/total and rendition done/queued/error), and last `scan` state. |
+| `rescan <source-id>` | `POST /api/sources/<id>/rescan` `{}` | Re-walks that folder. Unchanged size+mtime files are skipped; names/tags/faces stay; error renditions are re-queued. Does not wipe the catalog. HTTP 202 while running. |
+| `remove-source <source-id>` | `POST /api/sources/<id>/remove` `{}` | Drops that folder from the catalog (and items that only belonged to it). Originals stay. Not Delete file. |
 | `copy-here <source-id>` | `POST /api/sources/<id>/copy-here` | Copies a linked folder onto this drive and makes the copy primary. |
 | `items` | `GET /api/items` | Lists records. Filters below. |
 | `annotate <id>` | `POST /api/items/<id>/annotations` | Writes people, places, things. |
@@ -301,8 +303,9 @@ for date groups, or `by=people|places|tags` for entity groups (Unknown /
 No place / Untagged buckets). Date `level` stays required when `by` is
 omitted or `date`.
 
-`GET /api/media/<id>?which=thumb|preview|poster|proxy|original` returns the
-file. `original` on a missing disk returns HTTP 404 and
+`GET /api/media/<id>?which=thumb|preview|poster|proxy|original|face` returns the
+file. `which=face&box=x,y,w,h` is the square People-picker crop.
+`original` on a missing disk returns HTTP 404 and
 `{"error":"unavailable"}`. The thumb still returns if that preview file is
 on this computer.
 
@@ -698,10 +701,16 @@ associations through the same catalog:
 - `setup-ml objects` / `analyze` looks at each still and writes Things
   through annotate. Name-only payloads reuse an existing thing id.
   Human tags stay. The COCO `person` class is ignored.
-- `setup-ml faces` / `infer-faces` detects faces, stores embeddings in
-  `models/faces/index.json`, and clusters unnamed people (`name: null`).
-  A human confirms every name in the People panel or Info. Faces never
-  leave the machine.
+- `setup-ml faces` / `infer-faces` detects faces on the full frame
+  fitted to 640×640, maps boxes back to the original, then
+  landmark-aligns / crops **original** pixels to 112×112 for ArcFace.
+  Large stills also run overlapping 1280 tiles (merged with NMS) so a
+  small face in a high-res phone photo is not crushed by the 640 pass.
+  Embeddings live in `models/faces/index.json`. Cosine must be strictly
+  above `faceMatchThreshold` (default **0.80**). Small or weak detections
+  need a clearer score before they join an already-named person. A human
+  confirms every name in the People panel or Info. Faces never leave
+  the machine. After changing the slider, Processing **Re-run Faces**.
 
 Browse stays up when models or the geo pack are missing (`models-missing`
 / idle queues). Processing Pause/Start on `/api/jobs` starts or stops
@@ -724,7 +733,8 @@ appear. An unnamed cluster appears only when that face is on at least
 clicking a selected person again removes that filter. Selecting several
 people keeps photos that contain all of them. Active people, places, and
 tags show as chips on `#filter-bar` with one-click remove and Clear all.
-The panel is where unknowns are named and a thumbnail face is chosen.
+The panel is where unknowns are named and a thumbnail face is chosen
+(square `which=face&box=` crops, not a CSS zoom of the whole thumb).
 Info still names a person on the open item.
 
 User tags (Hiking, Singing, Painting) are Things: create, apply or remove
@@ -792,9 +802,22 @@ plus `language`) plus the internal `schemaVersion: 1` field (not a
 control) and two face-quality keys used by optional local InsightFace.
 The defaults below list those values. The header language switch writes
 `language`. The command line edits this file, including
-`faceMatchThreshold` and `faceMinSidePx`, so matching can be tuned without a
-rebuild. The browser does not keep a second copy. A pre-language file is
-filled with `en` on load.
+`faceMatchThreshold` (default 0.80, Settings slider 0.35–0.95) and
+`faceMinSidePx`, so matching can be tuned without a rebuild. Higher
+threshold means fewer false merges and more Unnamed people. The browser
+does not keep a second copy. A pre-language file is filled with `en` on
+load.
+
+The **Settings** page (`#settings-view`, Ctrl+, / header Settings) is
+the family chrome for this file. **Folders / sources come first:** every
+catalog source with lastKnown path, available?, mode (copy-here vs
+serve-from-there), photo/video counts, how many items have finished core
+previews vs still queued or error, and last scan state (running /
+complete / error + added/skipped). **Add folder** uses the same dialog
+as the header. **Refresh** calls `rescan` on that source (skip unchanged;
+do not delete library-data). **Remove folder** is catalog-only. Other
+settings.json keys are controls on the same page; `previewStore` says
+where new renditions live. Language stays in the header.
 
 ```json
 {
@@ -815,7 +838,7 @@ filled with `en` on load.
   "dir": "desc",
   "zoomLevel": "years",
   "language": "en",
-  "faceMatchThreshold": 0.5,
+  "faceMatchThreshold": 0.8,
   "faceMinSidePx": 80
 }
 ```
@@ -919,7 +942,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
-| Settings | The settings file, as controls. |
+| Settings | Folders/sources first (path, available, mode, counts, preview progress, last scan, Add, Refresh, Remove), then the settings file as controls. |
 
 Add folder matches [library-add-folder.jpg](reference/library-add-folder.jpg).
 

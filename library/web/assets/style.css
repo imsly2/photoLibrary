@@ -695,12 +695,14 @@ button:disabled {
 
 .person-face img {
   position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   max-width: none;
   max-height: none;
-  object-fit: none;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
 }
 
@@ -774,8 +776,8 @@ button:disabled {
 .person-face-choice {
   position: relative;
   z-index: 1;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 3.6rem;
+  height: 3.6rem;
   padding: 0;
   border: 2px solid #3a3a46;
   border-radius: 6px;
@@ -1876,4 +1878,164 @@ dialog h2 {
 #play-preview {
   background: #2a2a32;
   min-width: 9rem;
+}
+
+#settings-view {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 1.1rem 1.5rem 2rem;
+  max-width: 52rem;
+}
+
+#settings-view[hidden] {
+  display: none;
+}
+
+.settings-section {
+  margin: 0 0 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid #2a2a32;
+}
+
+.settings-section:last-child {
+  border-bottom: 0;
+}
+
+.settings-section h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.settings-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+
+.settings-section-head h2 {
+  margin: 0;
+}
+
+.settings-help {
+  margin: 0 0 0.75rem;
+  color: #b8b8c2;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.settings-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-slider-row input[type="range"] {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.settings-slider-row output {
+  min-width: 3rem;
+  font-variant-numeric: tabular-nums;
+  color: #f2f2f4;
+}
+
+.settings-rerun {
+  color: #e6c07b;
+}
+
+.settings-field em.settings-help {
+  display: block;
+  font-style: normal;
+  margin: 0.35rem 0 0;
+}
+
+.settings-fieldset {
+  border: 0;
+  margin: 0 0 0.7rem;
+  padding: 0;
+}
+
+.settings-fieldset legend {
+  margin-bottom: 0.4rem;
+  color: #d0d0d8;
+  font-size: 0.9rem;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 0 0.65rem;
+  max-width: 22rem;
+  color: #d0d0d8;
+  font-size: 0.9rem;
+}
+
+.settings-field input,
+.settings-field select {
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.35rem 0.55rem;
+}
+
+#settings-add-folder,
+.settings-source button {
+  background: #1b1b22;
+  color: #f2f2f4;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+}
+
+#settings-add-folder:hover,
+.settings-source button:hover {
+  background: #2a2a36;
+  border-color: #6a6a7a;
+}
+
+#settings-sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-source {
+  background: #16161c;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+}
+
+.settings-source .source-path {
+  margin: 0 0 0.35rem;
+  word-break: break-all;
+  font-weight: 600;
+}
+
+.settings-source p {
+  margin: 0 0 0.25rem;
+  color: #c8c8d0;
+  font-size: 0.88rem;
+}
+
+.settings-source .source-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.settings-source.is-away .source-path {
+  color: #e0a0a0;
 }

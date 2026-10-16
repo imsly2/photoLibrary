@@ -20,7 +20,9 @@ Read PRODUCT F3 / F7 / F10 / F16, CONTRACTS reveal, UI-SPEC checklist
 2. Catalog-relative copy-here paths are resolved under the library
    folder before launch. The JSON `path` / `folder` are absolute.
 3. Missing originals return 404 `unavailable` and do **not** launch
-   Explorer (Windows would otherwise fall back to Documents).
+   Explorer (Windows would otherwise fall back to Documents). If the
+   volume serial does not resolve but `lastKnownPath` is still a
+   readable file, Reveal selects that path (never CWD / Documents).
 4. The viewer shows “Original is not on this computer” when Reveal
    fails. `#reveal-error` sits with the actions.
 5. Open uses the same resolved file; it does not launch a missing path.

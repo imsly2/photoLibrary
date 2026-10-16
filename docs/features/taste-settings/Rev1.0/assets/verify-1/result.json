@@ -1,0 +1,176 @@
+{
+  "slice": "TASTE-SETTINGS",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-settings-view",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-folders-first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-face-slider",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-open-settings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-rescan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-remove-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-slider-live",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-face-crop",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "css-picker-cover",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-face-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-rescan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-remove-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-rescan-route",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-folders",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-rescan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-face-which",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "default-threshold-080",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "settings-http",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchT"
+    },
+    {
+      "name": "settings-default-threshold",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "settings-slider-persist",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.85, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "sources-http",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"src_8fb5d3a6a043\", \"name\": \"a\", \"mode\": \"serve-from-there\", \"origin\": {\"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\", \"lastKnownPath\": \"/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\"}, \"copyRoot\": null, \"previewStore\": null, \"files\": {\"IMG"
+    },
+    {
+      "name": "source-has-path",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"src_8fb5d3a6a043\", \"name\": \"a\", \"mode\": \"serve-from-there\", \"origin\": {\"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\", \"lastKnownPath\": \"/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\"}, \"copyRoot\": null, \"previewStore\": null, \"files\": {\"IMG_"
+    },
+    {
+      "name": "source-has-stats",
+      "pass": true,
+      "detail": "{\"photos\": 2, \"videos\": 1, \"live\": 0, \"total\": 3, \"renditionsDone\": 0, \"renditionsQueued\": 3, \"renditionsError\": 0}"
+    },
+    {
+      "name": "rescan-accepted",
+      "pass": true,
+      "detail": "{\"status\": 202, \"body\": {\"schemaVersion\": 1, \"id\": \"src_8fb5d3a6a043\", \"name\": \"a\", \"mode\": \"serve-from-there\", \"origin\": {\"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\", \"lastKnownPath\": \"/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\"}, \"copyRoot\": null, \"previewStore\": null, \"files\": {\"IMG_1042.jpg\": {\"destination\": null, \"itemId\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"component\": \"still\", \"sizeBytes\": 15274, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\", \"state\": \"indexed\"}, \"clip.mp4\": {\"destination\": null, \"itemId\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"component\": \"motion\", \"sizeBytes\": 23631, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913\", \"state\": \"indexed\"}, \"near.jpg\": {\"destination\": null, \"itemId\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"component\": \"still\", \"sizeBytes\": 12642, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"b702912b70ba5e5e6d766b4add363906a551be3ea2919dd1c5d35cfd62d02e2a\", \"state\": \"indexed\"}}, \"scan\": {\"state\": \"running\", \"added\": 0, \"skipped\": 0, \"errors\": []}, \"available\": true, \"path\": \"/workspace/docs/features/taste-settings/Rev1.0/assets/verify-1/fixture-sandbox/media/a\", \"stats\": {\"photos\": 2, \"videos\": 1, \"live\": 0, \"total\": 3, \"renditionsDone\": 0, \"renditionsQueued\": 3, \"renditionsError\": 0}}}"
+    },
+    {
+      "name": "rescan-finished",
+      "pass": true,
+      "detail": "src_8fb5d3a6a043"
+    },
+    {
+      "name": "crop-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "face-crop-bytes",
+      "pass": true,
+      "detail": "{\"status\": 200, \"len\": 368, \"type\": \"image/webp\"}"
+    },
+    {
+      "name": "cli-rescan-runs",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "3ae1acbc59a79676c7e39eac0974c288ad7e0331",
+  "commands": [
+    "python -m library scan <folder> --serve-from-there",
+    "python -m library rescan <source-id>"
+  ],
+  "artifactPaths": {
+    "result.json": "docs/features/taste-settings/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "docs/features/taste-settings/Rev1.0/assets/verify-1/stdout.log"
+  }
+}

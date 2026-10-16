@@ -358,15 +358,18 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     from library.settings import DEFAULTS, KEY_ORDER
     from tests.qa.s08 import fresh_root
 
-    checks.check("insight-threshold-stricter", INSIGHT_THRESHOLD >= 0.45, str(INSIGHT_THRESHOLD))
-    checks.check("insight-threshold-cap", INSIGHT_THRESHOLD <= 0.55, str(INSIGHT_THRESHOLD))
+    checks.check("insight-threshold-family", abs(INSIGHT_THRESHOLD - 0.80) < 1e-9, str(INSIGHT_THRESHOLD))
     checks.check("min-side-default", DEFAULT_MIN_SIDE_PX >= 64, str(DEFAULT_MIN_SIDE_PX))
     checks.check(
         "settings-have-face-keys",
         "faceMatchThreshold" in KEY_ORDER and "faceMinSidePx" in KEY_ORDER,
         json.dumps(list(KEY_ORDER)),
     )
-    checks.check("settings-face-threshold", DEFAULTS.get("faceMatchThreshold") == 0.5, json.dumps(DEFAULTS))
+    checks.check(
+        "settings-face-threshold",
+        abs(float(DEFAULTS.get("faceMatchThreshold")) - 0.8) < 1e-9,
+        json.dumps(DEFAULTS),
+    )
     checks.check("settings-face-min-side", DEFAULTS.get("faceMinSidePx") == 80, json.dumps(DEFAULTS))
     from library.settings import fill_missing_defaults, validate_complete
 
@@ -374,9 +377,11 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     migrated = validate_complete(fill_missing_defaults(legacy))
     checks.check(
         "legacy-settings-migrate",
-        migrated.get("faceMatchThreshold") == 0.5 and migrated.get("faceMinSidePx") == 80,
+        abs(float(migrated.get("faceMatchThreshold")) - 0.8) < 1e-9 and migrated.get("faceMinSidePx") == 80,
         json.dumps(migrated),
     )
+    prove_tile_detect(checks)
+    prove_named_threshold(checks, artifacts)
 
     tiny = [0.01, 0.02, 20 / 640, 20 / 480]
     large = [0.125, 0.167, 140 / 640, 180 / 480]
@@ -427,11 +432,23 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
 
     css = Path("library/web/assets/style.css").read_text(encoding="utf-8")
     img_rule = css.split(".person-face img")[1].split("}")[0] if ".person-face img" in css else ""
-    checks.check("css-face-img-height", "height:" in img_rule and "width:" in img_rule, img_rule)
+    checks.check("css-face-img-cover", "object-fit: cover" in img_rule and "width:" in img_rule and "height:" in img_rule, img_rule)
+    checks.check("css-picker-tile-large", ".person-face-choice" in css and "3.6rem" in css, "picker tile size")
     js = Path("library/web/assets/library.js").read_text(encoding="utf-8")
-    checks.check("js-paint-sets-height", "img.style.height = crop.height" in js, "paintFace height")
+    checks.check("js-face-crop-url", "which=face&box=" in js, "dedicated face crop URL")
+    checks.check("js-paint-cover", 'img.style.objectFit = "cover"' in js, "picker object-fit cover")
     checks.check("js-choice-stop", "stopPropagation" in js and "person-face-choice" in js, "picker isolation")
     checks.check("js-choice-pointerdown", "pointerdown" in js and "choosePersonThumb" in js, "picker pointerdown")
+    html = Path("library/web/index.html").read_text(encoding="utf-8")
+    checks.check(
+        "html-threshold-slider",
+        'id="set-faceMatchThreshold"' in html
+        and 'type="range"' in html
+        and 'min="0.35"' in html
+        and 'max="0.95"' in html
+        and 'id="settings-faces-rerun"' in html,
+        "settings slider + rerun note",
+    )
     faces_src = Path("library/faces.py").read_text(encoding="utf-8")
     checks.check(
         "step-skips-already-when-force",
@@ -486,6 +503,132 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     people_after = load_people(quality_root)
     named_after = {rec["id"] for rec in people_after if rec.get("name") == "Ada"}
     checks.check("quality-force-keeps-ada", named_ids <= named_after and bool(named_ids), json.dumps(people_after))
+    prove_face_crop(checks, artifacts)
+
+
+def prove_tile_detect(checks: Checks) -> None:
+    from library.faces import TILE_SRC, TILE_TRIGGER, detect_px_on_canvas, iter_detect_windows
+
+    phone_w, phone_h = 4032, 3024
+    face_side = 200.0
+    full = detect_px_on_canvas(face_side, phone_w, phone_h)
+    tiled = detect_px_on_canvas(face_side, phone_w, phone_h, TILE_SRC, TILE_SRC)
+    checks.check(
+        "tile-full-frame-crushes-small-face",
+        full < 40,
+        json.dumps({"full": full, "face": face_side, "canvas": [phone_w, phone_h]}),
+    )
+    checks.check(
+        "tile-1280-window-keeps-face-usable",
+        tiled >= 80 and tiled > full * 2,
+        json.dumps({"tiled": tiled, "full": full, "tile": TILE_SRC}),
+    )
+    small = iter_detect_windows(800, 600)
+    checks.check("tile-skips-small-stills", small == [(0, 0, 800, 600)], json.dumps(small))
+    windows = iter_detect_windows(phone_w, phone_h)
+    extras = [win for win in windows if win != (0, 0, phone_w, phone_h)]
+    checks.check("tile-keeps-full-frame-first", windows[0] == (0, 0, phone_w, phone_h), json.dumps(windows[:2]))
+    checks.check("tile-adds-overlapping-windows", len(extras) >= 1, json.dumps({"count": len(windows), "extras": extras[:4]}))
+    checks.check("tile-trigger-is-large", TILE_TRIGGER >= 1600, str(TILE_TRIGGER))
+    faces_src = Path("library/faces.py").read_text(encoding="utf-8")
+    checks.check(
+        "tile-used-by-detect",
+        "for window in iter_detect_windows" in faces_src and "def detect_insightface" in faces_src,
+        "detect_insightface walks tiles then original 112 embed",
+    )
+    checks.check(
+        "tile-aligns-from-original",
+        "_affine_112" in faces_src and "_crop_112" in faces_src and "letterbox_size" in faces_src,
+        "112 crop still from original pixels",
+    )
+
+
+def prove_face_crop(checks: Checks, artifacts: Path) -> None:
+    from library.errors import AppError
+    from library.face_crop import parse_face_box, square_crop_px, write_face_crop
+
+    dest_dir = artifacts / "face-crop"
+    if dest_dir.exists():
+        shutil.rmtree(dest_dir)
+    dest_dir.mkdir(parents=True)
+    width, height = 200, 160
+    buf = bytearray(width * height * 3)
+    _fill(buf, width, 0, 0, width, height, BG)
+    paint_face(buf, width, height, 20, 20, 80, 100, FACE_A)
+    src = dest_dir / "face.png"
+    write_png(src, width, height, bytes(buf))
+    box = parse_face_box("0.10,0.125,0.40,0.625")
+    dest = dest_dir / "crop.webp"
+    ok = write_face_crop(src, dest, box)
+    checks.check("face-crop-writes-webp", ok is True and dest.is_file() and dest.stat().st_size > 0, str(dest))
+    x, y, side, same = square_crop_px(box, width, height)
+    checks.check("face-crop-square", side == same and side >= 2, json.dumps([x, y, side, same]))
+    invalid = None
+    try:
+        parse_face_box("1,2")
+    except AppError as exc:
+        invalid = exc.code
+    checks.check("face-crop-box-invalid", invalid == "invalid-argument", str(invalid))
+
+
+def prove_named_threshold(checks: Checks, artifacts: Path) -> None:
+    from library.faces import NAMED_WEAK_BUMP, named_assignment_threshold
+
+    base = 0.80
+    strong = named_assignment_threshold(base, {"shortSidePx": 200, "detScore": 0.90})
+    small = named_assignment_threshold(base, {"shortSidePx": 90, "detScore": 0.90})
+    weak = named_assignment_threshold(base, {"shortSidePx": 200, "detScore": 0.70})
+    checks.check("named-strong-keeps-base", abs(strong - base) < 1e-9, str(strong))
+    checks.check("named-small-raises", abs(small - (base + NAMED_WEAK_BUMP)) < 1e-9, str(small))
+    checks.check("named-weak-det-raises", abs(weak - (base + NAMED_WEAK_BUMP)) < 1e-9, str(weak))
+    from library.faces import _nearest_person, cluster_detections
+    from library.atomic import atomic_write_json
+    from library.records import ordered_person
+    from tests.qa.s08 import fresh_root
+
+    root = fresh_root(artifacts / "named-threshold-root")
+    people_dir = root / "catalog" / "people"
+    people_dir.mkdir(parents=True, exist_ok=True)
+    atomic_write_json(
+        people_dir / "person_namedada12.json",
+        ordered_person({"schemaVersion": 1, "id": "person_namedada12", "name": "Ada"}),
+    )
+    index = {
+        "schemaVersion": 1,
+        "backend": "fixture",
+        "matchThreshold": 0.80,
+        "people": {
+            "person_namedada12": {"centroid": [1.0, 0.0], "faces": []},
+        },
+    }
+    weak_det = {
+        "itemId": "item_weak",
+        "box": [0.1, 0.1, 0.05, 0.05],
+        "embedding": [0.86, 0.5107],
+        "detScore": 0.70,
+        "shortSidePx": 90,
+    }
+    assigned, _, created, reused = cluster_detections(root, [weak_det], index)
+    checks.check(
+        "named-weak-not-merged",
+        created == 1 and reused == 0 and assigned and assigned[0]["personId"] != "person_namedada12",
+        json.dumps({"created": created, "reused": reused, "assigned": assigned}),
+    )
+    strong_det = {
+        "itemId": "item_strong",
+        "box": [0.2, 0.2, 0.2, 0.25],
+        "embedding": [1.0, 0.0],
+        "detScore": 0.92,
+        "shortSidePx": 220,
+    }
+    assigned_s, _, created_s, reused_s = cluster_detections(root, [strong_det], index)
+    checks.check(
+        "named-strong-reused",
+        created_s == 0 and reused_s == 1 and assigned_s and assigned_s[0]["personId"] == "person_namedada12",
+        json.dumps({"created": created_s, "reused": reused_s, "assigned": assigned_s}),
+    )
+    near = _nearest_person([0.86, 0.5107], {"person_namedada12": [1.0, 0.0]}, 0.80)
+    checks.check("named-near-above-base", near[0] == "person_namedada12" and near[1] is not None and near[1] > 0.80, json.dumps(near))
 
 
 def clone_item_with_tiny_face(root: Path, item: dict[str, Any]) -> bool:
