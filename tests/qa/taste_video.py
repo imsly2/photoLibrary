@@ -845,9 +845,9 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks) -> dict[
             }""",
             timeout=15000,
         )
+        garden_proxy = video_state(page)
         garden_before = media_box(page, "#viewer-video")
         page.wait_for_timeout(500)
-        garden_proxy = video_state(page)
         page.wait_for_function(
             """() => {
               const video = document.getElementById('viewer-video');
