@@ -1,0 +1,74 @@
+{
+  "layout": {
+    "searchInHeader": false,
+    "searchInBar": true,
+    "filtersInBar": true,
+    "filtersInHeader": false,
+    "searchChips": false,
+    "arrange": "dates",
+    "arrangeOptions": [
+      "dates",
+      "people",
+      "places",
+      "tags"
+    ],
+    "arrangeLabels": [
+      "Date",
+      "People",
+      "Places",
+      "Tags"
+    ],
+    "clearHidden": true
+  },
+  "adaGrid": [
+    "near.jpg",
+    "IMG_1042.jpg",
+    "no-exif.jpg"
+  ],
+  "andGrid": [
+    "near.jpg",
+    "no-exif.jpg"
+  ],
+  "photosTogether": {
+    "present": true,
+    "label": "Photos together (2)",
+    "expanded": "true",
+    "files": [
+      "near.jpg",
+      "no-exif.jpg"
+    ],
+    "solos": [
+      {
+        "heading": "Ada (1)",
+        "files": [
+          "IMG_1042.jpg"
+        ]
+      },
+      {
+        "heading": "Bob (1)",
+        "files": [
+          "far.jpg"
+        ]
+      }
+    ]
+  },
+  "afterDeselectAda": {
+    "person": "person_3ef69208d65f",
+    "files": [
+      "near.jpg",
+      "far.jpg",
+      "no-exif.jpg"
+    ],
+    "chips": [
+      "Person: Bob x"
+    ]
+  },
+  "hikeGrid": [
+    "near.jpg",
+    "IMG_1042.jpg"
+  ],
+  "collapse": {
+    "before": 1,
+    "after": 1
+  }
+}

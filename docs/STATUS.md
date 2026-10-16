@@ -4,6 +4,25 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-16 — Faces burn slice #1 on
+  `cursor/faces-split-merge-together-ee3f` after Settings PR #36
+  (`28cfd93`). **Not this person** / `people split` /
+  `POST /api/people/split` takes one boxed face off a person into a new
+  Unnamed person (Ada stays). **Merge into…** confirm keeps the first
+  selected person (Ada←Bob). **Photos together (N)** is a Favorites-style
+  collapse of the AND set, then leftover per-person groups. Chinese
+  strings included. ASCII launchers untouched. After Pull: restart
+  Library; Re-run Faces only if a cluster still needs a fresh detect.
+  Does not close a Check. 16/22 unchanged.
+  Plan: [taste-faces-burn](features/taste-faces-burn/Rev1.0/PLAN.md).
+  Evidence:
+  [FACES](features/faces/Rev1.0/assets/verify-4/result.json)
+  118/118 (split CLI/HTTP; Ada remains),
+  [TASTE-PEOPLE](features/taste-people/Rev1.0/assets/verify-8/result.json)
+  63/63 (merge UI Ada←Bob),
+  [TASTE-FILTERS](features/taste-filters/Rev1.0/assets/verify-6/result.json)
+  50/50 (Photos together + Ada/Bob leftovers),
+  [photos-together](features/taste-filters/Rev1.0/assets/verify-6/photos-together.png).
 - 2026-10-16 — Settings folders + face match on
   `cursor/settings-sources-reveal-f272`. `#settings-view` (Ctrl+, /
   header): Folders first with lastKnown path, available, mode, counts,

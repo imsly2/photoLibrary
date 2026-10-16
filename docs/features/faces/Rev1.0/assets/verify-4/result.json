@@ -1,0 +1,623 @@
+{
+  "slice": "FACES",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "infer-without-models-exit",
+      "pass": true,
+      "detail": "{\"error\":\"models-missing\"}\n"
+    },
+    {
+      "name": "infer-without-models",
+      "pass": true,
+      "detail": "{\"error\": \"models-missing\"}"
+    },
+    {
+      "name": "fixture-backend-prod-rejected",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "setup-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ready",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"ready\": true,\n  \"backend\": \"fixture\",\n  \"modelsDir\": \"models/faces\"\n}\n"
+    },
+    {
+      "name": "setup-backend",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"ready\": true,\n  \"backend\": \"fixture\",\n  \"modelsDir\": \"models/faces\"\n}\n"
+    },
+    {
+      "name": "manifest-exists",
+      "pass": true,
+      "detail": "/tmp/qa-faces/models/faces/manifest.json"
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "infer-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "infer-ok",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"backend\": \"fixture\",\n  \"items\": 6,\n  \"faces\": 6,\n  \"peopleCreated\": 2,\n  \"peopleReused\": 0,\n  \"skipped\": 0\n}\n"
+    },
+    {
+      "name": "infer-backend",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"backend\": \"fixture\",\n  \"items\": 6,\n  \"faces\": 6,\n  \"peopleCreated\": 2,\n  \"peopleReused\": 0,\n  \"skipped\": 0\n}\n"
+    },
+    {
+      "name": "infer-faces-6",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"backend\": \"fixture\",\n  \"items\": 6,\n  \"faces\": 6,\n  \"peopleCreated\": 2,\n  \"peopleReused\": 0,\n  \"skipped\": 0\n}\n"
+    },
+    {
+      "name": "infer-people-created-2",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"backend\": \"fixture\",\n  \"items\": 6,\n  \"faces\": 6,\n  \"peopleCreated\": 2,\n  \"peopleReused\": 0,\n  \"skipped\": 0\n}\n"
+    },
+    {
+      "name": "people-count-2",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_271424e8b22e\", \"name\": null}, {\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": null}]"
+    },
+    {
+      "name": "people-unnamed",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_271424e8b22e\", \"name\": null}, {\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": null}]"
+    },
+    {
+      "name": "no-guessed-name",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "a1-one-face",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_7372ee3491a7\", \"box\": [0.125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]"
+    },
+    {
+      "name": "empty-no-faces",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "both-two-faces",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_7372ee3491a7\", \"box\": [0.09375, 0.1875, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}, {\"personId\": \"person_271424e8b22e\", \"box\": [0.625, 0.20833333333333334, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]"
+    },
+    {
+      "name": "a-cluster",
+      "pass": true,
+      "detail": "[[{\"personId\": \"person_7372ee3491a7\", \"box\": [0.125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}], [{\"personId\": \"person_7372ee3491a7\", \"box\": [0.34375, 0.22916666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]]"
+    },
+    {
+      "name": "b-cluster",
+      "pass": true,
+      "detail": "[[{\"personId\": \"person_271424e8b22e\", \"box\": [0.5625, 0.1875, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}], [{\"personId\": \"person_271424e8b22e\", \"box\": [0.1875, 0.3541666666666667, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]]"
+    },
+    {
+      "name": "a-ne-b",
+      "pass": true,
+      "detail": "person_7372ee3491a7 person_271424e8b22e"
+    },
+    {
+      "name": "both-has-a-and-b",
+      "pass": true,
+      "detail": "[\"person_271424e8b22e\", \"person_7372ee3491a7\"]"
+    },
+    {
+      "name": "boxes-in-range",
+      "pass": true,
+      "detail": "[[0.34375, 0.22916666666666666, 0.21875, 0.375], [0.125, 0.16666666666666666, 0.21875, 0.375], [0.09375, 0.1875, 0.21875, 0.375], [0.625, 0.20833333333333334, 0.21875, 0.375], [0.1875, 0.3541666666666667, 0.21875, 0.375], [0.5625, 0.1875, 0.21875, 0.375]]"
+    },
+    {
+      "name": "http-faces-status",
+      "pass": true,
+      "detail": "{\"ok\": true, \"ready\": true, \"backend\": \"fixture\", \"modelsDir\": \"models/faces\"}"
+    },
+    {
+      "name": "http-infer-skip",
+      "pass": true,
+      "detail": "{\"ok\": true, \"backend\": \"fixture\", \"items\": 1, \"faces\": 0, \"peopleCreated\": 0, \"peopleReused\": 0, \"skipped\": 5}"
+    },
+    {
+      "name": "name-ada-http",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\", \"kind\": \"photo\", \"filename\": \"a1.png\", \"capturedAt\": \"2026-10-16T03:38:46Z\", \"capturedAtSource\": \"mtime\", \"placeId\": null, \"metadata\": {\"width\": 640, \"height\": 480, \"orientation\": null, \"camera\": null, \"lens\": null, \"durationSec\": null, \"latitude\": null, \"longitude\": null}, \"contentIdentifier\": null, \"locations\": [{\"sourceId\": \"src_9dd44793c54f\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"linux:/\", \"pathFromVolumeRoot\": \"workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png\", \"lastKnownPath\": \"/workspace/docs/features/faces/Rev1.0/assets/verify-4/faces-media/a1.png\", \"sizeBytes\": 2105, \"modifiedAt\": \"2026-10-16T03:38:46.366898Z\", \"sha256\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\"}], \"renditions\": {\"store\": \"with-server\", \"sourceId\": \"src_9dd44793c54f\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"queued\", \"preview\": \"queued\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}, \"faces\": [{\"personId\": \"person_7372ee3491a7\", \"box\": [0.125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}, {\"personId\": \"person_7372ee3491a7\"}], \"things\": [], \"available\": true, \"motionAvailable\": false, \"favorite\": false, \"entities\": {\"people\": [{\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": \"Ada\"}], \"places\": [], \"things\": []}}"
+    },
+    {
+      "name": "ada-name",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "b-still-unnamed",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_271424e8b22e\", \"name\": null}"
+    },
+    {
+      "name": "search-person-ada",
+      "pass": true,
+      "detail": "[\"a1.png\", \"a2.png\", \"both.png\"]"
+    },
+    {
+      "name": "search-q-ada",
+      "pass": true,
+      "detail": "[\"a1.png\", \"a2.png\", \"both.png\"]"
+    },
+    {
+      "name": "merge-http",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "merge-one-person",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "merge-keep-ada",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_7372ee3491a7\", \"name\": \"Ada\"}]"
+    },
+    {
+      "name": "drop-gone",
+      "pass": true,
+      "detail": "person_271424e8b22e"
+    },
+    {
+      "name": "all-faces-keep",
+      "pass": true,
+      "detail": "[\"person_7372ee3491a7\"]"
+    },
+    {
+      "name": "index-keep-only",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"backend\": \"fixture\", \"matchThreshold\": 0.85, \"people\": {\"person_7372ee3491a7\": {\"centroid\": [0.0961978707636033, 0.4891586841331973, 0.5398749272086185, -0.392960813369594, -0.05071624307542135, 0.4436770564450153, 0.010104763087694715, 0.325673209767962], \"faces\": [{\"itemId\": \"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed\", \"box\": [0.34375, 0.22916666666666666, 0.21875, 0.375]}, {\"itemId\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\", \"box\": [0.125, 0.16666666666666666, 0.21875, 0.375]}, {\"itemId\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"box\": [0.09375, 0.1875, 0.21875, 0.375]}, {\"itemId\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"box\": [0.625, 0.20833333333333334, 0.21875, 0.375]}, {\"itemId\": \"74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6\", \"box\": [0.1875, 0.3541666666666667, 0.21875, 0.375]}, {\"itemId\": \"77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81\", \"box\": [0.5625, 0.1875, 0.21875, 0.375]}]}}, \"scanned\": {\"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed\": true, \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\": true, \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\": true, \"74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6\": true, \"77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81\": true, \"93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077\": true}}"
+    },
+    {
+      "name": "split-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-infer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-two-people",
+      "pass": true,
+      "detail": "person_ccb9aa964442 person_f67410b7c96a"
+    },
+    {
+      "name": "split-name-ada",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-wrong-join",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-b1-on-ada",
+      "pass": true,
+      "detail": "{\"personId\": \"person_ccb9aa964442\", \"box\": [0.5625, 0.1875, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}"
+    },
+    {
+      "name": "split-cli",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "split-new-id",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_1ce52d4f9608\", \"name\": null}"
+    },
+    {
+      "name": "split-ada-remains",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_ccb9aa964442\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "split-unnamed",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_1ce52d4f9608\", \"name\": null}"
+    },
+    {
+      "name": "split-a1-still-ada",
+      "pass": true,
+      "detail": "[\"person_ccb9aa964442\"]"
+    },
+    {
+      "name": "split-b1-left",
+      "pass": true,
+      "detail": "[\"person_1ce52d4f9608\"]"
+    },
+    {
+      "name": "split-ada-file",
+      "pass": true,
+      "detail": "{\"person_1ce52d4f9608\": null, \"person_ccb9aa964442\": \"Ada\"}"
+    },
+    {
+      "name": "split-bob-person-gone",
+      "pass": true,
+      "detail": "{\"person_1ce52d4f9608\": null, \"person_ccb9aa964442\": \"Ada\"}"
+    },
+    {
+      "name": "split-index-both",
+      "pass": true,
+      "detail": "[\"person_1ce52d4f9608\", \"person_ccb9aa964442\"]"
+    },
+    {
+      "name": "split-index-moved",
+      "pass": true,
+      "detail": "{\"src\": [{\"itemId\": \"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed\", \"box\": [0.34375, 0.22916666666666666, 0.21875, 0.375]}, {\"itemId\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\", \"box\": [0.125, 0.16666666666666666, 0.21875, 0.375]}, {\"itemId\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"box\": [0.09375, 0.1875, 0.21875, 0.375]}, {\"itemId\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"box\": [0.625, 0.20833333333333334, 0.21875, 0.375]}, {\"itemId\": \"74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6\", \"box\": [0.1875, 0.3541666666666667, 0.21875, 0.375]}], \"new\": [{\"itemId\": \"77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81\", \"box\": [0.5625, 0.1875, 0.21875, 0.375]}]}"
+    },
+    {
+      "name": "split-missing-person",
+      "pass": true,
+      "detail": "{\"error\": \"not-found\"}"
+    },
+    {
+      "name": "split-http",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_d301a8d7f7b3\", \"name\": null}"
+    },
+    {
+      "name": "split-http-ada-stays",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"id\": \"person_ccb9aa964442\", \"name\": \"Ada\"}"
+    },
+    {
+      "name": "original-hashes",
+      "pass": true,
+      "detail": "{\"before\": {\"a1.png\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\", \"a2.png\": \"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed\", \"b1.png\": \"77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81\", \"b2.png\": \"74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6\", \"both.png\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"empty.png\": \"93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077\"}, \"after\": {\"a1.png\": \"5cae7d0f0939260cb05cf0ea9cccd82290c6023c5df39d46f93330182de80c0a\", \"a2.png\": \"1ea5b40d1a7b245a1f070cde2e86d4a9dd074cccfc00d2c6469f9b02a992a9ed\", \"b1.png\": \"77d8af020b573cda4e99ef2e727660c1c4ad40654af3453be8e31f7576652f81\", \"b2.png\": \"74f4878bc4389caa195c4d057bb1cd2ad1f31f49a8d424e8a8f3e7cbf69605d6\", \"both.png\": \"6e4798173852018df3f6542197817e6724b853e69f9b36375586b7a83fc25b92\", \"empty.png\": \"93b0c09a1cbe6a31ce4f48cf5d2cb86f199f476f97c917acee2ff0ed67689077\"}}"
+    },
+    {
+      "name": "history-faces-infer",
+      "pass": true,
+      "detail": "[\"settings\", \"scan\", \"faces-infer\", \"annotate\", \"people-merge\"]"
+    },
+    {
+      "name": "no-genderage",
+      "pass": true,
+      "detail": "/tmp/qa-faces/models/faces/buffalo_s/genderage.onnx"
+    },
+    {
+      "name": "insight-threshold-family",
+      "pass": true,
+      "detail": "0.8"
+    },
+    {
+      "name": "min-side-default",
+      "pass": true,
+      "detail": "80"
+    },
+    {
+      "name": "settings-have-face-keys",
+      "pass": true,
+      "detail": "[\"schemaVersion\", \"previewStore\", \"unavailableItems\", \"addFolderDefault\", \"playProxies\", \"listenHost\", \"port\", \"thumbPx\", \"previewPx\", \"proxyWidth\", \"placeMatchMeters\", \"tourOrbitSec\", \"tourPictures\", \"tourPictureSec\", \"sort\", \"dir\", \"zoomLevel\", \"language\", \"faceMatchThreshold\", \"faceMinSidePx\"]"
+    },
+    {
+      "name": "settings-face-threshold",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 8765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "settings-face-min-side",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 8765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "legacy-settings-migrate",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 8765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80}"
+    },
+    {
+      "name": "tile-full-frame-crushes-small-face",
+      "pass": true,
+      "detail": "{\"full\": 31.746031746031743, \"face\": 200.0, \"canvas\": [4032, 3024]}"
+    },
+    {
+      "name": "tile-1280-window-keeps-face-usable",
+      "pass": true,
+      "detail": "{\"tiled\": 100.0, \"full\": 31.746031746031743, \"tile\": 1280}"
+    },
+    {
+      "name": "tile-skips-small-stills",
+      "pass": true,
+      "detail": "[[0, 0, 800, 600]]"
+    },
+    {
+      "name": "tile-keeps-full-frame-first",
+      "pass": true,
+      "detail": "[[0, 0, 4032, 3024], [0, 0, 1280, 1280]]"
+    },
+    {
+      "name": "tile-adds-overlapping-windows",
+      "pass": true,
+      "detail": "{\"count\": 13, \"extras\": [[0, 0, 1280, 1280], [960, 0, 2240, 1280], [1920, 0, 3200, 1280], [2752, 0, 4032, 1280]]}"
+    },
+    {
+      "name": "tile-trigger-is-large",
+      "pass": true,
+      "detail": "1600"
+    },
+    {
+      "name": "tile-used-by-detect",
+      "pass": true,
+      "detail": "detect_insightface walks tiles then original 112 embed"
+    },
+    {
+      "name": "tile-aligns-from-original",
+      "pass": true,
+      "detail": "112 crop still from original pixels"
+    },
+    {
+      "name": "named-strong-keeps-base",
+      "pass": true,
+      "detail": "0.8"
+    },
+    {
+      "name": "named-small-raises",
+      "pass": true,
+      "detail": "0.88"
+    },
+    {
+      "name": "named-weak-det-raises",
+      "pass": true,
+      "detail": "0.88"
+    },
+    {
+      "name": "named-weak-not-merged",
+      "pass": true,
+      "detail": "{\"created\": 1, \"reused\": 0, \"assigned\": [{\"itemId\": \"item_weak\", \"box\": [0.1, 0.1, 0.05, 0.05], \"embedding\": [0.86, 0.5107], \"detScore\": 0.7, \"shortSidePx\": 90, \"personId\": \"person_65d21e759d5c\", \"matchScore\": 1.0}]}"
+    },
+    {
+      "name": "named-strong-reused",
+      "pass": true,
+      "detail": "{\"created\": 0, \"reused\": 1, \"assigned\": [{\"itemId\": \"item_strong\", \"box\": [0.2, 0.2, 0.2, 0.25], \"embedding\": [1.0, 0.0], \"detScore\": 0.92, \"shortSidePx\": 220, \"personId\": \"person_namedada12\", \"matchScore\": 1.0}]}"
+    },
+    {
+      "name": "named-near-above-base",
+      "pass": true,
+      "detail": "[\"person_namedada12\", 0.86]"
+    },
+    {
+      "name": "reject-tiny-side",
+      "pass": true,
+      "detail": "[0.01, 0.02, 0.03125, 0.041666666666666664]"
+    },
+    {
+      "name": "keep-large-side",
+      "pass": true,
+      "detail": "[0.125, 0.167, 0.21875, 0.375]"
+    },
+    {
+      "name": "cleanup-drops-tiny",
+      "pass": true,
+      "detail": "[0.01, 0.02, 0.03125, 0.041666666666666664]"
+    },
+    {
+      "name": "cleanup-keeps-large",
+      "pass": true,
+      "detail": "[0.125, 0.167, 0.21875, 0.375]"
+    },
+    {
+      "name": "near-miss-unmatched",
+      "pass": true,
+      "detail": "[null, null]"
+    },
+    {
+      "name": "solid-match-assigned",
+      "pass": true,
+      "detail": "[\"person_a\", 1.0]"
+    },
+    {
+      "name": "detect-skips-tiny",
+      "pass": true,
+      "detail": "[[0.3125, 0.16666666666666666, 0.21875, 0.375]]"
+    },
+    {
+      "name": "detect-kept-large",
+      "pass": true,
+      "detail": "[0.3125, 0.16666666666666666, 0.21875, 0.375]"
+    },
+    {
+      "name": "css-face-img-cover",
+      "pass": true,
+      "detail": " {\n  position: absolute;\n  inset: 0;\n  display: block;\n  width: 100%;\n  height: 100%;\n  max-width: none;\n  max-height: none;\n  object-fit: cover;\n  object-position: center;\n  pointer-events: none;\n"
+    },
+    {
+      "name": "css-picker-tile-large",
+      "pass": true,
+      "detail": "picker tile size"
+    },
+    {
+      "name": "js-face-crop-url",
+      "pass": true,
+      "detail": "dedicated face crop URL"
+    },
+    {
+      "name": "js-paint-cover",
+      "pass": true,
+      "detail": "picker object-fit cover"
+    },
+    {
+      "name": "js-choice-stop",
+      "pass": true,
+      "detail": "picker isolation"
+    },
+    {
+      "name": "js-choice-pointerdown",
+      "pass": true,
+      "detail": "picker pointerdown"
+    },
+    {
+      "name": "html-merge-dialog",
+      "pass": true,
+      "detail": "merge confirm"
+    },
+    {
+      "name": "html-split-info-crops",
+      "pass": true,
+      "detail": "info face crops"
+    },
+    {
+      "name": "js-split-route",
+      "pass": true,
+      "detail": "split HTTP"
+    },
+    {
+      "name": "js-photos-together",
+      "pass": true,
+      "detail": "photos together"
+    },
+    {
+      "name": "i18n-split-merge-together",
+      "pass": true,
+      "detail": "zh split/merge/together"
+    },
+    {
+      "name": "html-threshold-slider",
+      "pass": true,
+      "detail": "settings slider + rerun note"
+    },
+    {
+      "name": "step-skips-already-when-force",
+      "pass": true,
+      "detail": "skip already-scanned during force rescan"
+    },
+    {
+      "name": "step-marks-failed-scanned",
+      "pass": true,
+      "detail": "failed item advances"
+    },
+    {
+      "name": "quality-setup",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-scan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-infer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-one-face",
+      "pass": true,
+      "detail": "{\n  \"ok\": true,\n  \"backend\": \"fixture\",\n  \"items\": 1,\n  \"faces\": 1,\n  \"peopleCreated\": 1,\n  \"peopleReused\": 0,\n  \"skipped\": 0\n}\n"
+    },
+    {
+      "name": "quality-item-one-face",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_37d4c3636a7d\", \"box\": [0.3125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]"
+    },
+    {
+      "name": "quality-item-large-box",
+      "pass": true,
+      "detail": "{\"personId\": \"person_37d4c3636a7d\", \"box\": [0.3125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}"
+    },
+    {
+      "name": "quality-has-scores",
+      "pass": true,
+      "detail": "{\"personId\": \"person_37d4c3636a7d\", \"box\": [0.3125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}"
+    },
+    {
+      "name": "quality-planted-tiny",
+      "pass": true,
+      "detail": "plant tiny face"
+    },
+    {
+      "name": "quality-cleanup-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-cleanup-dropped-tiny",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_37d4c3636a7d\", \"box\": [0.3125, 0.16666666666666666, 0.21875, 0.375], \"detScore\": 1.0, \"matchScore\": 1.0}]"
+    },
+    {
+      "name": "quality-name-ada",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-force-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "quality-force-keeps-ada",
+      "pass": true,
+      "detail": "[{\"schemaVersion\": 1, \"id\": \"person_2102949b24c1\", \"name\": \"Ada\"}, {\"schemaVersion\": 1, \"id\": \"person_37d4c3636a7d\", \"name\": null}]"
+    },
+    {
+      "name": "face-crop-writes-webp",
+      "pass": true,
+      "detail": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/face-crop/crop.webp"
+    },
+    {
+      "name": "face-crop-square",
+      "pass": true,
+      "detail": "[0, 6, 128, 128]"
+    },
+    {
+      "name": "face-crop-box-invalid",
+      "pass": true,
+      "detail": "invalid-argument"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "6e81dca1dd89b1ba288b13ef8f990c8322e76498",
+  "commands": [
+    "setup-ml faces --backend fixture",
+    "GET /api/faces",
+    "scan <faces> --serve-from-there",
+    "infer-faces",
+    "POST /api/items/<id>/annotations {id,name}",
+    "GET /api/items?person=Ada",
+    "people merge",
+    "people split",
+    "infer-faces without models"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/result.json",
+    "stdout.log": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/stdout.log",
+    "infer.json": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/infer.json",
+    "search.json": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/search.json",
+    "merge.json": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/merge.json",
+    "split.json": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/split.json",
+    "people": "/workspace/docs/features/faces/Rev1.0/assets/verify-4/people"
+  }
+}
