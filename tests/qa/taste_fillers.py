@@ -105,7 +105,7 @@ def prove_api(checks: Checks, artifacts: Path, media_src: Path) -> dict[str, Any
     checks.check("recent-invalid", bad_recent.returncode != 0, bad_recent.stderr[-200:])
 
     extra = folder_a / "a" / "late.jpg"
-    shutil.copy2(folder_a / "a" / "near.jpg", extra)
+    shutil.copy2(media_src / "b" / "created.jpg", extra)
     rescan = run_library(root, ["rescan", record["sourceA"]], timeout=180)
     checks.check("rescan-a-ok", rescan.returncode == 0, rescan.stderr[-200:])
     recent_late = json.loads(run_library(root, ["items", "--recent", "1"]).stdout)
@@ -196,7 +196,11 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, source_a
 
     page.locator("#filter-recent").click()
     page.wait_for_function(
-        "() => document.getElementById('grid').dataset.recent === '1'",
+        """() => {
+          const recent = document.getElementById('grid').dataset.recent;
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
+          return recent === '1' && names.length > 0 && names.indexOf('IMG_1042.jpg') < 0 && names.indexOf('near.jpg') < 0;
+        }""",
         timeout=8000,
     )
     recent_names = page.evaluate(
@@ -206,7 +210,7 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, source_a
     checks.check("click-recent", True)
     checks.check(
         "recent-grid-not-all",
-        "far.jpg" in (recent_names or []) or "no-exif.jpg" in (recent_names or []) or "late.jpg" in (recent_names or []),
+        set(recent_names or []) <= {"far.jpg", "no-exif.jpg"} and bool(recent_names),
         json.dumps(recent_names),
     )
     page.screenshot(path=str(artifacts / "recently-added.png"))
@@ -218,7 +222,11 @@ def prove_browser(page: Any, url: str, artifacts: Path, checks: Checks, source_a
     )
     page.locator("#filter-folder").select_option(source_a)
     page.wait_for_function(
-        "() => document.getElementById('grid').dataset.source && document.getElementById('grid').dataset.source.indexOf('src_') === 0",
+        """() => {
+          const source = document.getElementById('grid').dataset.source || '';
+          const names = Array.from(document.querySelectorAll('#grid .cell[data-slot=\"grid\"]')).map(el => el.getAttribute('data-filename'));
+          return source.indexOf('src_') === 0 && names.length > 0 && names.indexOf('far.jpg') < 0 && names.indexOf('no-exif.jpg') < 0;
+        }""",
         timeout=8000,
     )
     folder_names = page.evaluate(

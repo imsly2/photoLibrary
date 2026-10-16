@@ -12,7 +12,17 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   No auto-delete. Chinese strings included. ASCII launchers untouched.
   After Pull: restart Library. Does not close a Check. 16/22 unchanged.
   Plan: [taste-fillers](features/taste-fillers/Rev1.0/PLAN.md).
-  Evidence: pending verify-1 on this branch.
+  Evidence:
+  [TASTE-FILLERS](features/taste-fillers/Rev1.0/assets/verify-1/result.json)
+  **75/75** (two-folder `source=` CLI/HTTP; session `recent=1` after
+  scan A then B then late.jpg; invalid recent 400; missing original
+  stays in catalog; locate mode+folder; `?` sheet; `V` Fit/Fill; I
+  Info; tile Missing badge; zh 最近添加 / 定位 / 适合窗口 / 铺满),
+  [recently added](features/taste-fillers/Rev1.0/assets/verify-1/recently-added.png),
+  [folder](features/taste-fillers/Rev1.0/assets/verify-1/folder-filter.png),
+  [keyboard](features/taste-fillers/Rev1.0/assets/verify-1/keyboard-help.png),
+  [missing](features/taste-fillers/Rev1.0/assets/verify-1/missing-original.png),
+  [chinese](features/taste-fillers/Rev1.0/assets/verify-1/chinese-fillers.png).
 - 2026-10-16 — Multi-select Move to folder on
   `cursor/move-to-folder-6d43` after duplicate-compare PR #40
   (`72d9ab9`). `#selection-bar` **Move** opens `#move-folder`:

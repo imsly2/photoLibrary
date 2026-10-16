@@ -1,0 +1,41 @@
+{
+  "chrome": {
+    "recent": true,
+    "folder": true,
+    "help": true,
+    "fit": true,
+    "fill": true,
+    "locate": true,
+    "folderOptions": [
+      "",
+      "src_1be41d7bfad9",
+      "src_d904e078f382"
+    ]
+  },
+  "recentGrid": [
+    "far.jpg",
+    "no-exif.jpg"
+  ],
+  "folderGrid": [
+    "near.jpg",
+    "IMG_1042.jpg"
+  ],
+  "help": {
+    "open": true,
+    "title": "Keyboard shortcuts"
+  },
+  "missing": {
+    "tileMissing": true,
+    "badge": "Missing",
+    "locateHidden": false,
+    "locateDisabled": false,
+    "bannerHidden": false
+  },
+  "zh": {
+    "recent": "\u6700\u8fd1\u6dfb\u52a0",
+    "locate": "\u5b9a\u4f4d",
+    "fit": "\u9002\u5408\u7a97\u53e3",
+    "fill": "\u94fa\u6ee1",
+    "show": "Show photos"
+  }
+}

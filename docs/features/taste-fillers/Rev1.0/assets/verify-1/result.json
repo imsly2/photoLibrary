@@ -1,0 +1,404 @@
+{
+  "slice": "TASTE-FILLERS",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "html-recent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-folder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-fit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-locate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-recent-query",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-source-query",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-missing-badge",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-fit-fill",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "js-help-key",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-recent-en",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-recent-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-locate-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-missing-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-help-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-fill-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-show-zh",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-auto-delete-js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scan-a-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "recent-after-a",
+      "pass": true,
+      "detail": "[\"IMG_1042.jpg\", \"near.jpg\"]"
+    },
+    {
+      "name": "scan-b-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "recent-after-b",
+      "pass": true,
+      "detail": "[\"far.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "two-sources",
+      "pass": true,
+      "detail": "[\"src_1c68313b465c\", \"src_9dba220f1228\"]"
+    },
+    {
+      "name": "source-ids",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "source-a-names",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "source-b-names",
+      "pass": true,
+      "detail": "[\"far.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "recent-invalid",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "rescan-a-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "recent-rescan-late",
+      "pass": true,
+      "detail": "[\"late.jpg\"]"
+    },
+    {
+      "name": "missing-target-exists",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a/IMG_1042.jpg"
+    },
+    {
+      "name": "original-unlinked",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-source-200",
+      "pass": true,
+      "detail": "[\"late.jpg\", \"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "http-source-a",
+      "pass": true,
+      "detail": "[\"late.jpg\", \"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "http-recent-200",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-recent-has-ids",
+      "pass": true,
+      "detail": "[\"late.jpg\"]"
+    },
+    {
+      "name": "http-recent-invalid",
+      "pass": true,
+      "detail": "{\"error\": \"invalid-argument\"}"
+    },
+    {
+      "name": "missing-still-listed",
+      "pass": true,
+      "detail": "\"IMG_1042.jpg\""
+    },
+    {
+      "name": "missing-available-false",
+      "pass": true,
+      "detail": "false"
+    },
+    {
+      "name": "missing-last-known",
+      "pass": true,
+      "detail": "\"/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a/IMG_1042.jpg\""
+    },
+    {
+      "name": "missing-folder-exists",
+      "pass": true,
+      "detail": "\"/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a\""
+    },
+    {
+      "name": "no-auto-delete-catalog",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "locate-200",
+      "pass": true,
+      "detail": "{\"path\": null, \"folder\": \"/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a\", \"opened\": true, \"mode\": \"locate\"}"
+    },
+    {
+      "name": "locate-mode",
+      "pass": true,
+      "detail": "{\"path\": null, \"folder\": \"/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a\", \"opened\": true, \"mode\": \"locate\"}"
+    },
+    {
+      "name": "locate-folder",
+      "pass": true,
+      "detail": "{\"path\": null, \"folder\": \"/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/api-a/a\", \"opened\": true, \"mode\": \"locate\"}"
+    },
+    {
+      "name": "locate-no-delete",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "folder-b-bytes-stay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-recent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-folder",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-help",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-fit-fill",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-locate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-folder-options",
+      "pass": true,
+      "detail": "[\"\", \"src_1be41d7bfad9\", \"src_d904e078f382\"]"
+    },
+    {
+      "name": "click-recent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "recent-grid-not-all",
+      "pass": true,
+      "detail": "[\"far.jpg\", \"no-exif.jpg\"]"
+    },
+    {
+      "name": "folder-filter-a",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "folder-filter-has-a",
+      "pass": true,
+      "detail": "[\"near.jpg\", \"IMG_1042.jpg\"]"
+    },
+    {
+      "name": "settings-show-photos",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "help-open",
+      "pass": true,
+      "detail": "{\"open\": true, \"title\": \"Keyboard shortcuts\"}"
+    },
+    {
+      "name": "help-title",
+      "pass": true,
+      "detail": "\"Keyboard shortcuts\""
+    },
+    {
+      "name": "help-esc",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "fill-key",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "fit-button",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "info-key",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tile-missing",
+      "pass": true,
+      "detail": "{\"tileMissing\": true, \"badge\": \"Missing\", \"locateHidden\": false, \"locateDisabled\": false, \"bannerHidden\": false}"
+    },
+    {
+      "name": "tile-badge-text",
+      "pass": true,
+      "detail": "\"Missing\""
+    },
+    {
+      "name": "locate-offered",
+      "pass": true,
+      "detail": "{\"tileMissing\": true, \"badge\": \"Missing\", \"locateHidden\": false, \"locateDisabled\": false, \"bannerHidden\": false}"
+    },
+    {
+      "name": "info-missing",
+      "pass": true,
+      "detail": "Missing original"
+    },
+    {
+      "name": "zh-recent",
+      "pass": true,
+      "detail": "{\"recent\": \"\\u6700\\u8fd1\\u6dfb\\u52a0\", \"locate\": \"\\u5b9a\\u4f4d\", \"fit\": \"\\u9002\\u5408\\u7a97\\u53e3\", \"fill\": \"\\u94fa\\u6ee1\", \"show\": \"Show photos\"}"
+    },
+    {
+      "name": "zh-fit",
+      "pass": true,
+      "detail": "{\"recent\": \"\\u6700\\u8fd1\\u6dfb\\u52a0\", \"locate\": \"\\u5b9a\\u4f4d\", \"fit\": \"\\u9002\\u5408\\u7a97\\u53e3\", \"fill\": \"\\u94fa\\u6ee1\", \"show\": \"Show photos\"}"
+    },
+    {
+      "name": "zh-fill",
+      "pass": true,
+      "detail": "{\"recent\": \"\\u6700\\u8fd1\\u6dfb\\u52a0\", \"locate\": \"\\u5b9a\\u4f4d\", \"fit\": \"\\u9002\\u5408\\u7a97\\u53e3\", \"fill\": \"\\u94fa\\u6ee1\", \"show\": \"Show photos\"}"
+    },
+    {
+      "name": "no-console-errors",
+      "pass": true,
+      "detail": "[\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+    },
+    {
+      "name": "original-fixture-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "53b81063c8c48b0ff2a557cc42b9c858e4e306bc",
+  "commands": [
+    "python -m library items --source <id>",
+    "python -m library items --recent 1",
+    "python -m library locate <id>"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/stdout.log",
+    "fillers-api.json": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/fillers-api.json",
+    "fillers-browser.json": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/fillers-browser.json",
+    "recently-added.png": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/recently-added.png",
+    "folder-filter.png": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/folder-filter.png",
+    "keyboard-help.png": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/keyboard-help.png",
+    "missing-original.png": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/missing-original.png",
+    "chinese-fillers.png": "/workspace/docs/features/taste-fillers/Rev1.0/assets/verify-1/chinese-fillers.png"
+  }
+}
