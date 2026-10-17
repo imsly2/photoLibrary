@@ -138,7 +138,7 @@ def write_rating_media(folder: Path) -> dict[str, Path]:
             str(burst3),
         ]
     )
-    now = time.time()
+    now = time.time() + 30
     for offset, path in enumerate((burst1, burst2, burst3)):
         os.utime(path, (now + offset, now + offset))
     return {

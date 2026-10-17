@@ -955,11 +955,27 @@ def _smart_tensor(still: Path, session: Any, np_mod: Any) -> Any:
         raise fail("decode-error")
     arr = np_mod.frombuffer(proc.stdout, dtype=np_mod.uint8).reshape(1, height, width, 3)
     arr = arr.astype("float32") / 255.0
+    if _compact_model(session):
+        return np_mod.transpose(arr, (0, 3, 1, 2))
     mean = np_mod.array([0.485, 0.456, 0.406], dtype="float32").reshape(1, 1, 1, 3)
     std = np_mod.array([0.229, 0.224, 0.225], dtype="float32").reshape(1, 1, 1, 3)
     arr = (arr - mean) / std
     arr = np_mod.transpose(arr, (0, 3, 1, 2))
     return arr
+
+
+def _compact_model(session: Any) -> bool:
+    try:
+        meta = session.get_modelmeta()
+        if getattr(meta, "graph_name", "") == "library-aesthetic":
+            return True
+    except Exception:
+        pass
+    try:
+        path = session._model_path  # type: ignore[attr-defined]
+        return bool(path) and Path(str(path)).stat().st_size < 10_000
+    except Exception:
+        return False
 
 
 def _nima_mean(raw: Any, np_mod: Any) -> float:
@@ -1170,29 +1186,30 @@ def _write_compact_onnx(dest: Path) -> None:
 
     x = helper.make_tensor_value_info("input", TensorProto.FLOAT, [1, 3, SMART_SIDE, SMART_SIDE])
     y = helper.make_tensor_value_info("output", TensorProto.FLOAT, [1, 10])
-    perm = numpy_helper.from_array(
-        np.array([[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]], dtype=np.float32),
-        name="perm",
-    )
     scale = numpy_helper.from_array(
-        np.array([[0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 3.0, 1.0]], dtype=np.float32),
+        np.array([[0.0, 0.4, 0.8, 1.2, 1.8, 2.6, 3.4, 4.2, 3.0, 1.5]], dtype=np.float32),
         name="scale",
     )
     bias = numpy_helper.from_array(
-        np.array([[2.0, 3.0, 4.2, 5.0, 3.6, 2.0, 1.0, 0.2, 0.0, 0.0]], dtype=np.float32),
+        np.array([[3.5, 4.0, 3.2, 2.0, 1.0, 0.4, 0.1, 0.0, 0.0, 0.0]], dtype=np.float32),
         name="bias",
     )
     nodes = [
-        helper.make_node("ReduceMean", ["input"], ["cm"], axes=[2, 3], keepdims=0),
-        helper.make_node("MatMul", ["cm", "perm"], ["shifted"]),
-        helper.make_node("Sub", ["cm", "shifted"], ["diff"]),
-        helper.make_node("Mul", ["diff", "diff"], ["sq"]),
-        helper.make_node("ReduceSum", ["sq"], ["color"], axes=[1], keepdims=1),
+        helper.make_node("Split", ["input"], ["r", "g", "b"], axis=1, split=[1, 1, 1]),
+        helper.make_node("Sub", ["r", "g"], ["rg"]),
+        helper.make_node("Sub", ["g", "b"], ["gb"]),
+        helper.make_node("Sub", ["b", "r"], ["br"]),
+        helper.make_node("Abs", ["rg"], ["arg"]),
+        helper.make_node("Abs", ["gb"], ["agb"]),
+        helper.make_node("Abs", ["br"], ["abr"]),
+        helper.make_node("Add", ["arg", "agb"], ["ab1"]),
+        helper.make_node("Add", ["ab1", "abr"], ["sat"]),
+        helper.make_node("ReduceMean", ["sat"], ["color"], axes=[2, 3], keepdims=0),
         helper.make_node("MatMul", ["color", "scale"], ["scaled"]),
         helper.make_node("Add", ["scaled", "bias"], ["output"]),
     ]
-    graph = helper.make_graph(nodes, "library-aesthetic", [x], [y], [perm, scale, bias])
-    model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", 13)], ir_version=8)
+    graph = helper.make_graph(nodes, "library-aesthetic", [x], [y], [scale, bias])
+    model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", 11)], ir_version=7)
     dest.parent.mkdir(parents=True, exist_ok=True)
     save(model, str(dest))
 
