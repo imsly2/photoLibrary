@@ -1437,6 +1437,54 @@ main > p {
   color: #1b1b22;
 }
 
+.tile-stars {
+  background: #1b1b22;
+  color: #f4d35e;
+  letter-spacing: 0.04em;
+}
+
+.best-badge {
+  background: #2f6f4e;
+  color: #f2f4f8;
+}
+
+.cell[data-reject="1"] {
+  opacity: 0.55;
+}
+
+#viewer-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+#viewer-rating[hidden] {
+  display: none;
+}
+
+.viewer-star {
+  border: 0;
+  background: transparent;
+  color: #6d6d78;
+  font-size: 1.15rem;
+  line-height: 1;
+  padding: 0 0.05rem;
+  cursor: pointer;
+}
+
+.viewer-star[aria-pressed="true"] {
+  color: #f4d35e;
+}
+
+.viewer-star.suggested {
+  color: #b8a24a;
+}
+
+#viewer-pick[aria-pressed="true"],
+#viewer-reject[aria-pressed="true"] {
+  font-weight: 700;
+}
+
 .info-missing {
   color: #e8b84a;
 }

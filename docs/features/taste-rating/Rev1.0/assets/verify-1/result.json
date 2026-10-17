@@ -1,0 +1,440 @@
+{
+  "slice": "TASTE-RATING",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-setup-ml-aesthetic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rate-photos",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rate-cmd",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rating-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-rate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-hide-rejects",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-rating-chips",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-settings-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-aesthetic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-zh-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "default-rating-basic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "default-rating-learn-off",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "settings-key-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "legacy-fills-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "media-sharp",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/sharp.jpg"
+    },
+    {
+      "name": "media-blur",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/blur.jpg"
+    },
+    {
+      "name": "media-dark",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/dark.jpg"
+    },
+    {
+      "name": "media-bright",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/bright.jpg"
+    },
+    {
+      "name": "media-colorful",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/colorful.jpg"
+    },
+    {
+      "name": "media-gray",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/graysharp.jpg"
+    },
+    {
+      "name": "media-burst1",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_001.jpg"
+    },
+    {
+      "name": "media-burst2",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_002.jpg"
+    },
+    {
+      "name": "media-burst3",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_003.jpg"
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scanned-9",
+      "pass": true,
+      "detail": "9"
+    },
+    {
+      "name": "setup-ml-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ml-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"kind\": \"rate\", \"model\": \"nima-mobilenet.onnx\", \"engine\": \"nima-mobilenet\", \"backend\": \"fixture\", \"path\": \"models/aesthetic/nima-mobilenet.onnx\", \"sha256\": \"f54497e1ec0b32feb6d10b6b4a4d08d654523d2f8c0a9f7522379411ff691ccb\", \"bytes\": 522, \"device\": \"cpu\"}"
+    },
+    {
+      "name": "fixture-model-file",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-root/models/aesthetic/nima-mobilenet.onnx"
+    },
+    {
+      "name": "rate-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rate-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082\", \"suggested\": 3, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db\", \"suggested\": 3, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "rated-at-least-8",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082\", \"suggested\": 3, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db\", \"suggested\": 3, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "blur-below-sharp",
+      "pass": true,
+      "detail": "blur=3 sharp=5"
+    },
+    {
+      "name": "dark-flagged",
+      "pass": true,
+      "detail": "[\"too-dark\"]"
+    },
+    {
+      "name": "bright-flagged",
+      "pass": true,
+      "detail": "[\"too-bright\"]"
+    },
+    {
+      "name": "blur-flagged",
+      "pass": true,
+      "detail": "[\"blurry\"]"
+    },
+    {
+      "name": "burst3-best",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": null, \"stars\": 5, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": true, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "burst-not-all-best",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "burst-stack",
+      "pass": true,
+      "detail": "{\"id\": \"burst:8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"kind\": \"burst\", \"itemIds\": [\"8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830\", \"f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\"], \"count\": 3, \"index\": 2, \"representative\": true}"
+    },
+    {
+      "name": "burst-rep-sharpest",
+      "pass": true,
+      "detail": "{\"id\": \"burst:8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"kind\": \"burst\", \"itemIds\": [\"8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830\", \"f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\"], \"count\": 3, \"index\": 2, \"representative\": true}"
+    },
+    {
+      "name": "face-quality-used",
+      "pass": true,
+      "detail": "0.999882756325697"
+    },
+    {
+      "name": "rescan-rated-0",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 9, \"errors\": 0, \"items\": [], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "rescan-skipped",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 9, \"errors\": 0, \"items\": [], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "user-stars-5",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-pick",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-reject",
+      "pass": true,
+      "detail": "{\"suggested\": 3, \"yours\": null, \"stars\": 3, \"pick\": false, \"reject\": true, \"flags\": [\"blurry\"], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": true}"
+    },
+    {
+      "name": "reject-file-stays",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/blur.jpg"
+    },
+    {
+      "name": "stars-persist-restart",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-overrides-suggested",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "hide-rejects-hides-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"burst_002.jpg\", \"burst_001.jpg\", \"bright.jpg\", \"graysharp.jpg\", \"colorful.jpg\", \"dark.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "show-rejects-keeps-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"burst_002.jpg\", \"burst_001.jpg\", \"bright.jpg\", \"graysharp.jpg\", \"colorful.jpg\", \"dark.jpg\", \"blur.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "min-stars-has-sharp",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "min-stars-skips-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "picks-filter",
+      "pass": true,
+      "detail": "[\"sharp.jpg\"]"
+    },
+    {
+      "name": "blurry-filter",
+      "pass": true,
+      "detail": "[\"burst_002.jpg\", \"burst_001.jpg\", \"blur.jpg\"]"
+    },
+    {
+      "name": "sort-rating-first-high",
+      "pass": true,
+      "detail": "[\"sharp.jpg\", \"burst_003.jpg\", \"graysharp.jpg\", \"burst_002.jpg\", \"burst_001.jpg\"]"
+    },
+    {
+      "name": "setting-off-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-off-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80, \"transcribeVideos\": true, \"ratingMode\": \"off\", \"ratingLearn\": false}"
+    },
+    {
+      "name": "jobs-has-rate",
+      "pass": true,
+      "detail": "{\"ok\": true, \"paused\": false, \"processing\": true, \"queues\": [{\"id\": \"renditions\", \"label\": \"Previews\", \"pending\": 18, \"done\": 0, \"error\": 0, \"state\": \"running\", \"available\": true}, {\"id\": \"analyze\", \"label\": \"Analyze\", \"pending\": 0, \"done\": 0, \"error\": 0, \"state\": \"idle\", \"available\": false}, {\"id\": \"infer-faces\", \"label\": \"Faces\", \"pending\": 8, \"done\": 1, \"error\": 0, \"state\": \"idle\", \"available\":"
+    },
+    {
+      "name": "setting-off-unavailable",
+      "pass": true,
+      "detail": "{\"id\": \"rate\", \"label\": \"Rating\", \"pending\": 0, \"done\": 9, \"error\": 0, \"state\": \"idle\", \"available\": false}"
+    },
+    {
+      "name": "setting-off-skips-step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-off-rated-0",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 0, \"errors\": 0, \"items\": [], \"mode\": \"off\"}"
+    },
+    {
+      "name": "setting-smart-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-smart-available",
+      "pass": true,
+      "detail": "{\"id\": \"rate\", \"label\": \"Rating\", \"pending\": 0, \"done\": 9, \"error\": 0, \"state\": \"idle\", \"available\": true}"
+    },
+    {
+      "name": "smart-rated",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830\", \"suggested\": 2, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5\", \"suggested\": 2, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082\", \"suggested\": 2, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db\", \"suggested\": 2, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": true}], \"mode\": \"smart\"}"
+    },
+    {
+      "name": "smart-loads-aesthetic",
+      "pass": true,
+      "detail": "{\"basicColor\": 3.0, \"basicGray\": 5.0, \"smartColor\": 3.0, \"smartGray\": 4.0, \"colorAesthetic\": 0.41031212276882595, \"grayAesthetic\": 0.15178934733072916}"
+    },
+    {
+      "name": "smart-changes-order",
+      "pass": true,
+      "detail": "{\"basicColor\": 3.0, \"basicGray\": 5.0, \"smartColor\": 3.0, \"smartGray\": 4.0, \"colorAesthetic\": 0.41031212276882595, \"grayAesthetic\": 0.15178934733072916}"
+    },
+    {
+      "name": "learn-on",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "learn-pick-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "learn-writes-weights",
+      "pass": true,
+      "detail": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-root/catalog/rating-weights.json"
+    },
+    {
+      "name": "clear-stars",
+      "pass": true,
+      "detail": "{\"suggested\": 4, \"yours\": null, \"stars\": 4, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"smart\", \"blurry\": false}"
+    },
+    {
+      "name": "health",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "rate-get",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-rate-stars",
+      "pass": true,
+      "detail": "{\"suggested\": 4, \"yours\": 4, \"stars\": 4, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"smart\", \"blurry\": false}"
+    },
+    {
+      "name": "http-min-stars",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "grid-png",
+      "pass": true,
+      "detail": "1280x720"
+    },
+    {
+      "name": "tile-stars-visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "info-has-stars",
+      "pass": true,
+      "detail": "FILE\n\nDate taken\n2026-10-17 01:04:24\nCamera\nNo camera info for this file.\nDimensions\n1280 \u00d7 720\nSize\n31.1 KB\nPath\n/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_003.jpg\nHash\nf556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238\nSuggested\n\u2605\u2605\u2605\u2605\u2606\nBest of group\nBest of group"
+    },
+    {
+      "name": "zh-filter-chips",
+      "pass": true,
+      "detail": "\u5168\u90e8\n\u7167\u7247\n\u89c6\u9891\n\u6536\u85cf\n\u6700\u8fd1\u6dfb\u52a0\n\u91cd\u590d\u9879\n\u56db\u661f\u53ca\u4ee5\u4e0a\n\u7cbe\u9009\n\u9690\u85cf\u6392\u9664\n\u6a21\u7cca\n\u6587\u4ef6\u5939\n\u5168\u90e8\u6587\u4ef6\u5939\nrating-media\n\u5206\u7ec4\n\u65e5\u671f\n\u4eba\u7269\n\u5730\u70b9\n\u6807\u7b7e\n\u521b\u5efa\n\u6807\u7b7e\n\u5e94\u7528\n\u79fb\u51fa\u56fe\u5e93"
+    },
+    {
+      "name": "zh-settings-rating",
+      "pass": true,
+      "detail": "\u6587\u4ef6\u5939\n\u6dfb\u52a0\u6587\u4ef6\u5939\n\n\u8fd9\u4e2a\u56fe\u5e93\u8bfb\u53d6\u7684\u6bcf\u4e00\u4e2a\u6587\u4ef6\u5939\u3002\u5237\u65b0\u4f1a\u518d\u626b\u4e00\u904d\uff0c\u6ca1\u6539\u8fc7\u7684\u6587\u4ef6\u4f1a\u8df3\u8fc7\u3002\n\n/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media\n\n\u53ef\u7528 \u00b7 \u5728\u539f\u4f4d\u7f6e\u6253\u5f00 \u00b7 9 \u5f20\u7167\u7247 \u00b7 0 \u4e2a\u89c6\u9891 \u00b7 9 \u9879\n\n\u9884\u89c8\uff1a\u5b8c\u6210 2\uff0c\u6392\u961f 7\uff0c\u51fa\u9519 0\n\n\u4e0a\u6b21\u626b\u63cf\u5b8c\u6210 \u00b7 \u65b0\u589e 9\uff0c\u8df3\u8fc7 0\n\n\u663e\u793a\u7167\u7247\n\u5237\u65b0\n\u79fb\u51fa\u6587\u4ef6\u5939\n\u9884\u89c8\n\u9884\u89c8\u6587\u4ef6\u653e\u5728\u54ea\u91cc\n\u8ddf\u7740\u670d\u52a1\u5668\nlibrary-data/renditions \u2014 \u548c\u8fd9\u4e2a\u56fe\u5e93\u6587\u4ef6\u5939\u4e00\u8d77\u8d70\u3002\n\u8ddf\u7740\u6e90\u6587\u4ef6\u5939\n\u9009\u4e2d\u6587\u4ef6\u5939\u91cc\u7684 .library/renditions\u3002\u62d4\u6389\u90a3\u4e2a\u76d8\uff0c\u7f29\u7565\u56fe\u4e5f\u4e00\u8d77\u8d70\u3002\n\n\u65b0\u7684\u7f29\u7565\u56fe\u5199\u5230 library-data/renditions\u3002\u5df2\u6709\u6587\u4ef6\u8981\u7b49 relocate \u624d\u4f1a\u642c\u3002\n\n\u7f29\u7565\u56fe\u957f\u8fb9\n\u9884\u89c8\u56fe\u957f\u8fb9\n\u89c6\u9891\u9884\u89c8\u5bbd\u5ea6\n\u627e\u4e0d\u5230\u539f\u6587\u4ef6\n\u6587\u4ef6\u4e0d\u5728\u8fd9\u53f0\u7535\u8111\u4e0a\u65f6\n\u4ecd\u663e\u793a\u8fd9\u4e00\u9879\uff08\u6709\u7f29\u7565\u56fe\u5c31\u7528\u7f29\u7565\u56fe\uff09\n\u4ece\u7f51\u683c\u91cc\u85cf\u8d77\u6765\n\u6dfb\u52a0\u6587\u4ef6\u5939\u9ed8\u8ba4\u65b9\u5f0f\n\u6dfb\u52a0\u6587\u4ef6\u5939\u5bf9\u8bdd\u6846\u4e00\u5f00\u59cb\u7684\u9009\u62e9\n\u6bcf\u6b21\u90fd\u95ee\n\u590d\u5236\u5230\u6b64\u78c1\u76d8\n\u5728\u539f\u6587\u4ef6\u5939\u6253\u5f00\n\u60ac\u505c\u64ad\u653e\n\u7f51\u683c\u4e0a\u7684\u89c6\u9891\u60ac\u505c\n\u6bcf\u4e00\u79cd\u65e5\u671f\u5206\u7ec4\u90fd"
+    }
+  ],
+  "platform": {
+    "system": "Linux",
+    "release": "6.12.94+",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "fixtureManifestHash": "37ab09142ce4fe57538ca60dc5e6e8b5ce8355b427b67f5203424734c6477a4c",
+  "revision": "2f59365a2765469198a3d55a1f5320125bb08750",
+  "commands": [
+    "python -m library setup-ml aesthetic --backend fixture",
+    "python -m library rate-photos",
+    "python -m library rate <id> --stars 5",
+    "python -m library items --min-stars 4 --hide-rejects 1",
+    "GET /api/rate",
+    "POST /api/items/<id>/rating"
+  ],
+  "artifactPaths": {
+    "result.json": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/result.json",
+    "stdout.log": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/stdout.log",
+    "rate.json": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rate.json",
+    "rating-grid.png": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-grid.png",
+    "rating-info.png": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-info.png",
+    "chinese-rating.png": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/chinese-rating.png",
+    "settings-rating-zh.png": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/settings-rating-zh.png"
+  }
+}

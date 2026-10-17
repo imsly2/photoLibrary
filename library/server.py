@@ -534,6 +534,20 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.transcribe(body))
                 return
+            if route == "/api/rate" and method in {"GET", "HEAD"}:
+                with self.lock:
+                    self._send_json(200, self.library.rate_status())
+                return
+            if route == "/api/rate" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.rate_photos(body))
+                return
+            if route == "/api/rate/weights" and method == "POST":
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.reset_rating_weights(body))
+                return
             if route == "/api/faces" and method in {"GET", "HEAD"}:
                 self._send_json(200, self.library.faces_status())
                 return
@@ -629,6 +643,18 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 body = self._read_json()
                 with self.lock:
                     self._send_json(200, self.library.favorite(item_id, body))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/rating")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/rating")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                with self.lock:
+                    self._send_json(200, self.library.set_rating(item_id, body))
                 return
             if (
                 route.startswith("/api/items/")

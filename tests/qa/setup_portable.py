@@ -18,6 +18,7 @@ WANTED = (
     ("setup-ml objects", ["setup-ml", "objects"]),
     ("setup-ml faces", ["setup-ml", "faces"]),
     ("setup-ml transcribe", ["setup-ml", "transcribe"]),
+    ("setup-ml aesthetic", ["setup-ml", "aesthetic"]),
 )
 
 
@@ -439,6 +440,8 @@ def static_source_checks(
                 and "setup-ml" in setup
                 and "objects" in setup
                 and "faces" in setup
+                and "transcribe" in setup
+                and "aesthetic" in setup
             ),
         },
         {
@@ -475,7 +478,7 @@ def static_source_checks(
         },
         {
             "name": "setup-ps1-progress-steps",
-            "pass": "Write-Step" in setup and "Total 8" in setup,
+            "pass": "Write-Step" in setup and "Total 9" in setup,
         },
         {
             "name": "setup-ps1-fail-next",
@@ -598,18 +601,18 @@ def prove_probe(checks: Checks) -> dict[str, Any]:
             + "".join(f"  - python -m library {name}\n" for name in missing)
             + "\nRun Update Library (or Update.bat) to git pull those modules,\n"
             + "then run Setup.bat again.\n"
-            + "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)  +  setup-ml transcribe  (Whisper)\n"
+            + "Need: setup-geo  (PR places)  +  setup-ml objects  (PR objects)  +  setup-ml faces  (PR faces)  +  setup-ml transcribe  (Whisper)  +  setup-ml aesthetic  (NIMA)\n"
         )
     else:
         message = (
             "Dry-run: this copy has the local AI setup commands.\n"
             + "".join(f"  - python -m library {name}\n" for name, _tokens in WANTED)
-            + "\nA real Setup.bat would run those four, then: Ready -- run Library.bat\n"
+            + "\nA real Setup.bat would run those five, then: Ready -- run Library.bat\n"
         )
     record["missingMessage"] = message
     record["networkNote"] = (
         "First real Setup.bat needs the internet for Python/ffmpeg (if missing) "
-        "and the cities / YOLO / InsightFace / Whisper packs. Models stay under library-data/. "
+        "and the cities / YOLO / InsightFace / Whisper / NIMA packs. Models stay under library-data/. "
         "Dry-run / -Help do not download."
     )
     if missing:
@@ -625,7 +628,7 @@ def prove_probe(checks: Checks) -> dict[str, Any]:
             message,
         )
     else:
-        checks.check("all-four-clis-present", missing == [], str(missing))
+        checks.check("all-five-clis-present", missing == [], str(missing))
     checks.check("probe-does-not-serve", "Serving" not in help_text and "8765" not in help_text, "")
     return record
 
@@ -665,6 +668,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
             f"{sys.executable} -m library setup-ml objects --help",
             f"{sys.executable} -m library setup-ml faces --help",
             f"{sys.executable} -m library setup-ml transcribe --help",
+            f"{sys.executable} -m library setup-ml aesthetic --help",
         ],
         extra,
     )

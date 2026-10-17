@@ -337,6 +337,9 @@ def item_read(
             seen_things.add(thing_id)
     things.sort(key=lambda rec: rec["id"])
     out["entities"] = {"people": people, "places": places, "things": things}
+    from library.rating import quality_view
+
+    out["rating"] = quality_view(item)
     return out
 
 
