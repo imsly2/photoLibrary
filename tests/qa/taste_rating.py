@@ -125,7 +125,19 @@ def write_rating_media(folder: Path) -> dict[str, Path]:
     burst3 = folder / "burst_003.jpg"
     _ffmpeg(["-i", str(sharp), "-vf", "gblur=sigma=3", "-frames:v", "1", "-q:v", "3", str(burst1)])
     _ffmpeg(["-i", str(sharp), "-vf", "gblur=sigma=10", "-frames:v", "1", "-q:v", "4", str(burst2)])
-    shutil.copy2(sharp, burst3)
+    _ffmpeg(
+        [
+            "-i",
+            str(sharp),
+            "-vf",
+            "drawbox=x=0:y=0:w=2:h=2:color=white:t=fill",
+            "-frames:v",
+            "1",
+            "-q:v",
+            "2",
+            str(burst3),
+        ]
+    )
     now = time.time()
     for offset, path in enumerate((burst1, burst2, burst3)):
         os.utime(path, (now + offset, now + offset))
