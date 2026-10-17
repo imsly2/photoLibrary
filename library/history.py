@@ -33,6 +33,7 @@ OPERATIONS = frozenset(
         "faces-infer",
         "faces-cleanup",
         "tags",
+        "rate",
     }
 )
 

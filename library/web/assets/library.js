@@ -114,6 +114,14 @@
   const moveFolderReport = document.getElementById("move-folder-report");
   const moveFolderCancel = document.getElementById("move-folder-cancel");
   const moveFolderOk = document.getElementById("move-folder-ok");
+  const filterStars = document.getElementById("filter-stars");
+  const filterPicks = document.getElementById("filter-picks");
+  const filterHideRejects = document.getElementById("filter-hide-rejects");
+  const filterBlurry = document.getElementById("filter-blurry");
+  const viewerRating = document.getElementById("viewer-rating");
+  const viewerPick = document.getElementById("viewer-pick");
+  const viewerReject = document.getElementById("viewer-reject");
+  const ratingWeightsReset = document.getElementById("rating-weights-reset");
   const filterDuplicatesBtn = document.getElementById("filter-duplicates");
   const duplicateCompare = document.getElementById("duplicate-compare");
   const duplicateCompareSides = document.getElementById("duplicate-compare-sides");
@@ -209,6 +217,8 @@
     addFolderDefault: "ask",
     playProxies: "days-and-all",
     language: "en",
+    ratingMode: "basic",
+    ratingLearn: false,
   };
   let language = "en";
   let catalogInFlight = null;
@@ -222,9 +232,9 @@
   let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
-  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
   let savedSearch = "";
-  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
+  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
   let fitMode = "fit";
   let selectedId = null;
   let pendingRemoveId = null;
@@ -362,6 +372,18 @@
     if (filter.recent) {
       merged.recent = filter.recent;
     }
+    if (filter.minStars) {
+      merged.minStars = filter.minStars;
+    }
+    if (filter.pick) {
+      merged.pick = filter.pick;
+    }
+    if (filter.hideRejects) {
+      merged.hideRejects = filter.hideRejects;
+    }
+    if (filter.flag) {
+      merged.flag = filter.flag;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
         merged[key] = extra[key];
@@ -388,7 +410,7 @@
   }
 
   function hasActiveFilter() {
-    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite || filter.source || filter.recent);
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite || filter.source || filter.recent || filter.minStars || filter.pick || filter.flag);
   }
 
   function emptySearchText() {
@@ -410,7 +432,7 @@
   }
 
   function emptyFilter() {
-    return { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "" };
+    return { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
   }
 
   function copyFilter(src) {
@@ -422,7 +444,7 @@
   }
 
   function filtersEqual(a, b) {
-    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite && a.source === b.source && a.recent === b.recent;
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite && a.source === b.source && a.recent === b.recent && a.minStars === b.minStars && a.pick === b.pick && a.hideRejects === b.hideRejects && a.flag === b.flag;
   }
 
   function selectedPeople() {
@@ -617,6 +639,10 @@
     main.dataset.favorite = filter.favorite;
     main.dataset.source = filter.source;
     main.dataset.recent = filter.recent;
+    main.dataset.minStars = filter.minStars;
+    main.dataset.pick = filter.pick;
+    main.dataset.hideRejects = filter.hideRejects;
+    main.dataset.flag = filter.flag;
     const allOn = !filter.kind && !filter.favorite && !filter.recent;
     if (filterAll) {
       filterAll.setAttribute("aria-pressed", allOn ? "true" : "false");
@@ -636,6 +662,18 @@
     if (filterFolder && filterFolder.value !== (filter.source || "")) {
       filterFolder.value = filter.source || "";
     }
+    if (filterStars) {
+      filterStars.setAttribute("aria-pressed", filter.minStars === "4" ? "true" : "false");
+    }
+    if (filterPicks) {
+      filterPicks.setAttribute("aria-pressed", filter.pick === "1" ? "true" : "false");
+    }
+    if (filterHideRejects) {
+      filterHideRejects.setAttribute("aria-pressed", filter.hideRejects === "1" ? "true" : "false");
+    }
+    if (filterBlurry) {
+      filterBlurry.setAttribute("aria-pressed", filter.flag === "blurry" ? "true" : "false");
+    }
     renderActiveFilters();
   }
 
@@ -645,6 +683,9 @@
     }
     if (settings.sort === "location") {
       return "location";
+    }
+    if (settings.sort === "rating") {
+      return "rating";
     }
     return settings.dir === "asc" ? "oldest" : "newest";
   }
@@ -670,6 +711,9 @@
       settings.dir = "asc";
     } else if (value === "location") {
       settings.sort = "location";
+    } else if (value === "rating") {
+      settings.sort = "rating";
+      settings.dir = "desc";
     } else {
       settings.sort = "date";
       settings.dir = "desc";
@@ -1047,6 +1091,8 @@
     settings.faceMatchThreshold = data.faceMatchThreshold != null ? data.faceMatchThreshold : settings.faceMatchThreshold;
     settings.faceMinSidePx = data.faceMinSidePx != null ? data.faceMinSidePx : settings.faceMinSidePx;
     settings.transcribeVideos = data.transcribeVideos !== false;
+    settings.ratingMode = data.ratingMode || "basic";
+    settings.ratingLearn = data.ratingLearn === true;
     if (data.language) {
       settings.language = I18N.normalize(data.language);
     }
@@ -1099,6 +1145,8 @@
     syncFaceThresholdOutput(data.faceMatchThreshold);
     setFieldValue("set-faceMinSidePx", data.faceMinSidePx);
     setRadioGroup("set-transcribeVideos", data.transcribeVideos === false ? "false" : "true");
+    setRadioGroup("set-ratingMode", data.ratingMode || "basic");
+    setRadioGroup("set-ratingLearn", data.ratingLearn === true ? "true" : "false");
     showFaceRerunNote(facesRerunNeeded);
     if (settingsRenditionNote) {
       settingsRenditionNote.textContent = data.previewStore === "with-source"
@@ -1327,7 +1375,7 @@
         if (!key) {
           return;
         }
-        if (key === "transcribeVideos") {
+        if (key === "transcribeVideos" || key === "ratingLearn") {
           commitSetting(key, node.value === "true");
           return;
         }
@@ -2257,6 +2305,7 @@
     viewerPrev.disabled = viewerIndex <= 0;
     viewerNext.disabled = viewerIndex < 0 || viewerIndex >= items.length - 1;
     syncFavoriteChrome(item);
+    syncRatingChrome(item);
     syncViewerSourceChrome();
   }
 
@@ -2578,6 +2627,24 @@
       const hash = loc.sha256 || "";
       if (hash) {
         appendFact(list, t("fileHash"), hash);
+      }
+    }
+    const rating = itemRating(item);
+    if (typeInt(rating.suggested) || typeInt(rating.yours) || rating.pick || rating.reject || (rating.flags || []).length || rating.bestOfGroup) {
+      appendFact(list, t("suggested"), typeInt(rating.suggested) ? starText(rating.suggested) : "");
+      appendFact(list, t("yours"), typeInt(rating.yours) ? starText(rating.yours) : "");
+      if (rating.pick) {
+        appendFact(list, t("pick"), t("pick"));
+      }
+      if (rating.reject) {
+        appendFact(list, t("reject"), t("reject"));
+      }
+      if (rating.bestOfGroup) {
+        appendFact(list, t("bestOfGroup"), t("bestOfGroup"));
+      }
+      const flags = (rating.flags || []).map(flagLabel).filter(Boolean);
+      if (flags.length) {
+        appendFact(list, t("rating"), flags.join(" · "));
       }
     }
     appendFact(list, t("gps"), formatGps(meta.latitude, meta.longitude));
@@ -2927,6 +2994,90 @@
     viewerFavorite.textContent = on ? "♥" : "♡";
     viewerFavorite.setAttribute("aria-pressed", on ? "true" : "false");
     viewerFavorite.setAttribute("aria-label", on ? t("unfavorite") : t("favorite"));
+  }
+
+  function itemRating(item) {
+    return (item && item.rating) || {};
+  }
+
+  function starText(count) {
+    const n = Number(count) || 0;
+    let out = "";
+    for (let i = 1; i <= 5; i += 1) {
+      out += i <= n ? "★" : "☆";
+    }
+    return out;
+  }
+
+  function flagLabel(flag) {
+    if (flag === "blurry") {
+      return t("blurry");
+    }
+    if (flag === "too-dark") {
+      return t("tooDark");
+    }
+    if (flag === "too-bright") {
+      return t("tooBright");
+    }
+    return flag;
+  }
+
+  function syncRatingChrome(item) {
+    const rating = itemRating(item);
+    if (viewerRating) {
+      viewerRating.hidden = !item || item.kind === "video";
+    }
+    const yours = rating.yours;
+    const suggested = rating.suggested;
+    const shown = typeInt(yours) ? yours : suggested;
+    document.querySelectorAll(".viewer-star").forEach(function (btn) {
+      const n = Number(btn.getAttribute("data-stars"));
+      const on = typeInt(shown) && n <= shown;
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.classList.toggle("suggested", !typeInt(yours) && typeInt(suggested) && n <= suggested);
+    });
+    if (viewerPick) {
+      viewerPick.setAttribute("aria-pressed", rating.pick ? "true" : "false");
+    }
+    if (viewerReject) {
+      viewerReject.setAttribute("aria-pressed", rating.reject ? "true" : "false");
+    }
+  }
+
+  function typeInt(value) {
+    return typeof value === "number" && isFinite(value);
+  }
+
+  function postItemRating(id, body) {
+    return fetch("/api/items/" + encodeURIComponent(id) + "/rating", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(readJson).then(function (updated) {
+      if (!updated || !updated.id) {
+        return updated;
+      }
+      items.forEach(function (item, index) {
+        if (item.id === updated.id) {
+          items[index] = updated;
+        }
+      });
+      if (extraById[updated.id]) {
+        extraById[updated.id] = updated;
+      }
+      syncRatingChrome(updated);
+      renderKey = "";
+      render();
+      return updated;
+    });
+  }
+
+  function rateViewer(patch) {
+    const item = syncViewerIndex();
+    if (!item) {
+      return;
+    }
+    postItemRating(item.id, patch).catch(function () {});
   }
 
   function infoOpen() {
@@ -4307,6 +4458,23 @@
       said.className = "said-badge tile-badge";
       said.textContent = t("saidInVideo");
       badges.appendChild(said);
+    }
+    const rating = itemRating(item);
+    if (rating.reject) {
+      cell.dataset.reject = "1";
+    }
+    if (rating.bestOfGroup) {
+      const best = document.createElement("span");
+      best.className = "best-badge tile-badge";
+      best.textContent = t("bestOfGroup");
+      badges.appendChild(best);
+    }
+    const shownStars = typeInt(rating.yours) ? rating.yours : rating.suggested;
+    if (typeInt(shownStars)) {
+      const stars = document.createElement("span");
+      stars.className = "tile-stars tile-badge";
+      stars.textContent = starText(shownStars);
+      badges.appendChild(stars);
     }
     const heart = document.createElement("span");
     heart.className = "heart";
@@ -6936,6 +7104,33 @@
       setRecentFilter(filter.recent !== "1");
     });
   }
+  function toggleRatingFilter(key, onValue) {
+    const next = copyFilter(filter);
+    next[key] = filter[key] === onValue ? (key === "hideRejects" ? "0" : "") : onValue;
+    applyFilterState(next, next.q);
+    renderKey = "";
+    loadCatalog();
+  }
+  if (filterStars) {
+    filterStars.addEventListener("click", function () {
+      toggleRatingFilter("minStars", "4");
+    });
+  }
+  if (filterPicks) {
+    filterPicks.addEventListener("click", function () {
+      toggleRatingFilter("pick", "1");
+    });
+  }
+  if (filterHideRejects) {
+    filterHideRejects.addEventListener("click", function () {
+      toggleRatingFilter("hideRejects", "1");
+    });
+  }
+  if (filterBlurry) {
+    filterBlurry.addEventListener("click", function () {
+      toggleRatingFilter("flag", "blurry");
+    });
+  }
   if (filterFolder) {
     filterFolder.addEventListener("change", function () {
       setSourceFilter(filterFolder.value || "");
@@ -7356,6 +7551,26 @@
       toggleFitFill();
       return;
     }
+    if (!accel && !event.altKey && (event.key === "p" || event.key === "P")) {
+      event.preventDefault();
+      rateViewer({ pick: true });
+      return;
+    }
+    if (!accel && !event.altKey && (event.key === "x" || event.key === "X")) {
+      event.preventDefault();
+      rateViewer({ reject: true });
+      return;
+    }
+    if (!accel && !event.altKey && event.key === "0") {
+      event.preventDefault();
+      rateViewer({ clear: true });
+      return;
+    }
+    if (!accel && !event.altKey && event.key >= "1" && event.key <= "5") {
+      event.preventDefault();
+      rateViewer({ stars: Number(event.key) });
+      return;
+    }
     if (event.key === " " || event.key === "Spacebar") {
       event.preventDefault();
       if (slideshowActive) {
@@ -7606,6 +7821,34 @@
     }
     syncFullscreenChrome();
   });
+  document.querySelectorAll(".viewer-star").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      rateViewer({ stars: Number(btn.getAttribute("data-stars")) });
+    });
+  });
+  if (viewerPick) {
+    viewerPick.addEventListener("click", function () {
+      const item = syncViewerIndex();
+      const on = !(item && item.rating && item.rating.pick);
+      rateViewer({ pick: on });
+    });
+  }
+  if (viewerReject) {
+    viewerReject.addEventListener("click", function () {
+      const item = syncViewerIndex();
+      const on = !(item && item.rating && item.rating.reject);
+      rateViewer({ reject: on });
+    });
+  }
+  if (ratingWeightsReset) {
+    ratingWeightsReset.addEventListener("click", function () {
+      fetch("/api/rate/weights", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reset: true }),
+      }).catch(function () {});
+    });
+  }
   viewerFavorite.addEventListener("click", function () {
     const item = syncViewerIndex();
     if (!item) {

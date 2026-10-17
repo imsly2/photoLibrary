@@ -719,6 +719,12 @@ class Library:
             self.root.mkdir(parents=True, exist_ok=True)
             self.ensure_settings()
             return setup_transcribe(self.root)
+        if kind == "aesthetic":
+            from library.rating import setup_aesthetic
+
+            self.root.mkdir(parents=True, exist_ok=True)
+            self.ensure_settings()
+            return setup_aesthetic(self.root, payload)
         raise fail("invalid-argument")
 
     def setup_faces(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -779,6 +785,36 @@ class Library:
         self.ensure_settings()
         return transcribe_status(self.root)
 
+    def rate_photos(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.rating import rate_photos, read_rate_payload
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        parsed = read_rate_payload(payload)
+        return rate_photos(self.root, parsed.get("itemId"), force=bool(parsed.get("force")))
+
+    def rate_status(self) -> dict[str, Any]:
+        from library.rating import rate_status
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return rate_status(self.root)
+
+    def set_rating(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        from library.rating import apply_user_rating, read_user_rating_body
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        return apply_user_rating(self.root, item_id, read_user_rating_body(payload))
+
+    def reset_rating_weights(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        from library.rating import read_weights_body, reset_rating_weights
+
+        self.recover(finish_pending=False)
+        self.ensure_settings()
+        read_weights_body(payload)
+        return reset_rating_weights(self.root)
+
     def drain_step(self) -> bool:
         if getattr(self, "_jobs_paused", False):
             return False
@@ -828,6 +864,13 @@ class Library:
             from library.transcribe import transcribe_step
 
             if transcribe_step(self.root):
+                return True
+        except Exception:
+            pass
+        try:
+            from library.rating import rate_step
+
+            if rate_step(self.root):
                 return True
         except Exception:
             pass
@@ -927,6 +970,10 @@ ITEM_QUERY_KEYS = frozenset(
         "scope",
         "source",
         "recent",
+        "minStars",
+        "pick",
+        "hideRejects",
+        "flag",
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
@@ -1216,6 +1263,38 @@ def _item_matches(item: dict[str, Any], query: dict[str, str]) -> bool:
         locs = item.get("locations") or []
         if not any(isinstance(loc, dict) and loc.get("sourceId") == source for loc in locs):
             return False
+    from library.rating import quality_view
+
+    rating = item.get("rating") if isinstance(item.get("rating"), dict) else quality_view(item)
+    raw_min = query.get("minStars")
+    if raw_min is not None:
+        if type(raw_min) is not str or not raw_min.isdigit():
+            raise fail("invalid-argument")
+        minimum = int(raw_min, 10)
+        if minimum < 1 or minimum > 5:
+            raise fail("invalid-argument")
+        stars = rating.get("stars")
+        if type(stars) is not int or stars < minimum:
+            return False
+    raw_pick = query.get("pick")
+    if raw_pick is not None:
+        if raw_pick != "1":
+            raise fail("invalid-argument")
+        if rating.get("pick") is not True:
+            return False
+    raw_hide = query.get("hideRejects")
+    if raw_hide is not None:
+        if raw_hide not in {"0", "1"}:
+            raise fail("invalid-argument")
+        if raw_hide == "1" and rating.get("reject") is True:
+            return False
+    raw_flag = query.get("flag")
+    if raw_flag is not None:
+        if raw_flag not in {"blurry", "too-dark", "too-bright"}:
+            raise fail("invalid-argument")
+        flags = rating.get("flags") or []
+        if raw_flag not in flags:
+            return False
     return True
 
 
@@ -1310,7 +1389,7 @@ def _sort_items(
 ) -> list[dict[str, Any]]:
     sort = query.get("sort") or settings["sort"]
     direction = query.get("dir") or settings["dir"]
-    if sort not in {"date", "location", "name"} or direction not in {"asc", "desc"}:
+    if sort not in {"date", "location", "name", "rating"} or direction not in {"asc", "desc"}:
         raise fail("invalid-argument")
     reverse = direction == "desc"
 
@@ -1323,6 +1402,18 @@ def _sort_items(
     def key(item: dict[str, Any]) -> tuple:
         if sort == "name":
             return (item.get("filename") or "", item.get("capturedAt") or "", item["id"])
+        if sort == "rating":
+            rating = item.get("rating") if isinstance(item.get("rating"), dict) else {}
+            stars = rating.get("stars")
+            pick = 1 if rating.get("pick") is True else 0
+            suggested = rating.get("suggested")
+            return (
+                stars if type(stars) is int else 0,
+                pick,
+                suggested if type(suggested) is int else 0,
+                item.get("capturedAt") or "",
+                item["id"],
+            )
         return (item.get("capturedAt") or "", item["id"])
 
     items = sorted(items, key=key, reverse=reverse)

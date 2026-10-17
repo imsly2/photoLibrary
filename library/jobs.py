@@ -8,13 +8,14 @@ from typing import Any
 from library.catalog_io import iter_item_ids, load_item
 from library.errors import fail
 
-QUEUE_ORDER = ("renditions", "analyze", "infer-faces", "objects", "transcribe")
+QUEUE_ORDER = ("renditions", "analyze", "infer-faces", "objects", "transcribe", "rate")
 QUEUE_LABELS = {
     "renditions": "Previews",
     "analyze": "Analyze",
     "infer-faces": "Faces",
     "objects": "Objects",
     "transcribe": "Transcribe",
+    "rate": "Rating",
 }
 
 
@@ -126,6 +127,15 @@ def _transcribe_counts(root: Path) -> tuple[int, int, int]:
         return 0, 0, 0
 
 
+def _rate_counts(root: Path) -> tuple[int, int, int]:
+    try:
+        from library.rating import rate_counts
+
+        return rate_counts(root)
+    except Exception:
+        return 0, 0, 0
+
+
 def _queue_available(root: Path, queue_id: str) -> bool:
     if queue_id == "renditions":
         return True
@@ -165,6 +175,15 @@ def _queue_available(root: Path, queue_id: str) -> bool:
             return bool(model_installed(root) and transcribe_enabled(root))
         except Exception:
             return False
+    if queue_id == "rate":
+        if not _module_available("library.rating"):
+            return False
+        try:
+            from library.rating import rating_enabled
+
+            return bool(rating_enabled(root))
+        except Exception:
+            return False
     return False
 
 
@@ -177,6 +196,8 @@ def _queue_counts(root: Path, queue_id: str) -> tuple[int, int, int]:
         return _objects_counts(root)
     if queue_id == "transcribe":
         return _transcribe_counts(root)
+    if queue_id == "rate":
+        return _rate_counts(root)
     return _analyze_counts(root)
 
 

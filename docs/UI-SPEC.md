@@ -49,7 +49,7 @@ fill. They must read as clickable toggles, not heading text.
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
 | Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts, readable error text, and **Retry**; never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
-| Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
+| Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, 4 stars and up / Picks / Hide rejects / Blurry, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location/Rating stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local`). Click runs `POST /api/update`, which always tracks `main` over anonymous HTTPS git, or a zip of `main` if git is missing. No `gh`, no GitHub login. `library-data/` is never replaced. While the pull runs, `#update-status` says Updating… Then one i18n sentence: updated / already current / pull failed / diverged / need-public / update-unavailable. A successful Update refreshes `#library-version`. When the pull writes a newer `main` and this Library serve is running, stop only that process on the settings port and relaunch; the page says Restarting… then reloads. If Library was not running, Update finishes without launching. No command prompt. Launcher `Update.bat` uses the same pull and relaunch. |
 | Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS, hash; extra current paths as **Also at**; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes `#duplicate-compare`, then Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
@@ -125,9 +125,11 @@ on the tile and do not crop the media.
 The All / Photos / Videos / Favorites controls live on `#filter-bar`
 (not in the header) and are mutually exclusive. All clears kind and
 favorite. Photos sends `kind=photo,live`. Videos sends `kind=video`.
-Favorites sends `favorite=1`. Combined with the presentable sort
+Favorites sends `favorite=1`. Rating chips on the same row: **4 stars
+and up** (`minStars=4`), **Picks** (`pick=1`), **Hide rejects**
+(`hideRejects=1`, default on), **Blurry** (`flag=blurry`). Combined with the presentable sort
 (Newest / Oldest / Name) and the active-filter chips, this is how the
-library is filtered. Location sort remains available.
+library is filtered. Location and Rating sort remain available.
 
 Hearts: `#grid` `data-hearts=on` when `--cell` is 144 or larger, `off` at
 72 and 104. The heart is a button `.heart` in the badge corner (top-left
@@ -322,10 +324,11 @@ a progress-ish line (queue label + pending count, not a fake
 percentage), and **Pause** / **Start** (Resume when paused).
 
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
-**objects**, **transcribe**. When jobs are not paused, the serve drain runs real work:
+**objects**, **transcribe**, **rate**. When jobs are not paused, the serve drain runs real work:
 previews, then unnamed GPS city names (geo pack), then face infer
 (models ready), then YOLO Things (model file), then Whisper on videos
-with audio (`transcribeVideos` on and model present). After **Re-run Faces**
+with audio (`transcribeVideos` on and model present), then Rating on
+photo/Live stills (`ratingMode` not `off`). After **Re-run Faces**
 (`forceRescan`), the drain finishes the remaining face items first so
 the Faces pending count runs to zero; a failed item is marked scanned
 and the queue continues. Pause sets `paused` and
@@ -385,7 +388,8 @@ the innermost active interaction: confirm dialog, Info, slideshow, fullscreen,
 tour/gesture, Add dialog, Viewer, Settings, then selection. There is no modal
 on top of a tour. Ctrl+F focuses search, Ctrl+, opens Settings. Ctrl+C copies
 the primary path, with missing-path notice when needed. F is fullscreen, not
-favorite. F5 starts the slideshow (5 s, no 17th setting). `?` cheat-sheet is
+favorite. F5 starts the slideshow (5 s, no 17th setting). In the viewer,
+1–5 rates, P picks, X rejects (hide only), 0 clears. `?` cheat-sheet is
 Soon. Do not add cut/paste filesystem mutations
 
 Each browser gate must drive actual controls, assert resulting data/state, inspect
@@ -464,6 +468,10 @@ info for this file.” Then people / places / things already on the record
 geo pack; unnamed face clusters show **Unnamed**); a collapsible
 **Transcript** (`#viewer-transcript-wrap`) shows the extractive summary,
 keywords, and timestamped lines — clicking a line seeks the open video.
+Stars on tiles show yours if set, else the suggestion. Info lists
+**Suggested** vs **Yours**, pick / reject, flags, and **Best of group**.
+`#viewer-rating` 1–5 / Pick / Reject writes the user rating. Reject
+hides from default views and never deletes.
 Clicking a named
 entity filters the grid and closes the viewer. Type-in fields stay
 below that and stay labeled Person, Place, and Thing. A typed Place
@@ -496,10 +504,12 @@ default. Commands: CONTRACTS `remove` and `delete-file`.
 
 **8. Sort + filters.** Presentable sort labels: Newest, Oldest, Name
 (`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
-stays available so F11 is not weakened. Search lives on `#filter-bar`.
+stays available so F11 is not weakened. Rating sort (`sort=rating`)
+orders by effective stars. Search lives on `#filter-bar`.
 Filters on that row: mutually exclusive All (no kind, no
 favorite), Photos (`kind=photo,live`), Videos (`kind=video`), Favorites
-(`favorite=1`), plus removable Person / Place / Tag chips and Clear all.
+(`favorite=1`), plus **4 stars and up**, **Picks**, **Hide rejects**
+(default on), **Blurry**, removable Person / Place / Tag chips and Clear all.
 The Favorites strip still appears when All is selected and any current
 result is hearted. Group Date / People / Places / Tags is session-only
 (default Date) and does not duplicate Sort.
@@ -525,8 +535,8 @@ copy.
 **Portable install (Setup once → shortcut → Library; later Update).**
 On a new Windows PC, Steve double-clicks `Setup.bat` once. It installs
 Python 3.12+ and ffmpeg (same winget ids as `launch.ps1`), creates
-`.venv`, installs the app, fetches the local cities / objects / faces
-packs into `library-data/` when those CLIs exist, and writes a Desktop
+`.venv`, installs the app, fetches the local cities / objects / faces /
+whisper / aesthetic packs into `library-data/` when those CLIs exist, and writes a Desktop
 / Start Menu **Library** shortcut (`CreateShortcut.bat` can recreate
 it). First run needs the internet. Progress and failure text name the
 step and what to try next. Re-run is safe. No MSI. Daily use is that
@@ -635,7 +645,7 @@ Check to hide it.
 | Prev / Next / slider / pan / rotate | Bottom bar; vertical side zoom; no zoom buttons | **This merge** (PR #2 72/72) + **this PR** keys | Ctrl+0 / Ctrl+1 / Ctrl+R / tooltips shipped |
 | Grid Size vs Dates | One `#size-slider`; `#date-group` Years/Months/Days/Off in `#library-chrome` bottom-left | This people-panel tip | Ctrl+wheel drives Size only; Off is one wall; not a right rail |
 | People panel | Right splitter `#library-side`; named always; unnamed if count ≥ 3; click / Ctrl-click AND; rename + square `which=face&box=` thumbnail (object-fit cover, pressed ring stays) | This people-panel tip | All-faces dump is Later |
-| Processing | `#jobs-panel` Pause / Start; renditions / analyze / infer-faces / objects / transcribe | This people-panel tip | Does not block browse |
+| Processing | `#jobs-panel` Pause / Start; renditions / analyze / infer-faces / objects / transcribe / rate | This people-panel tip | Does not block browse |
 | Viewer wheel | Plain wheel zooms still/video | This video/zoom tip | Ctrl+wheel stays; wheel does not seek |
 | Progressive video | Proxy first, then original or size-capped full-sound `playback`; same fit/time | This video/zoom tip | Catalog width/height is the layout box. `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable from the file that is playing |
 | Scrub | `#viewer-scrub` in `#viewer-bottom` + `.tile-scrub` | This chrome tip | Scrub is not over the picture; tile scrub does not open the viewer |

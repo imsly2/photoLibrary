@@ -82,11 +82,22 @@ def _stack_payload(
 def _apply_stack(by_id: dict[str, dict[str, Any]], kind: str, item_ids: list[str]) -> None:
     if len(item_ids) < 1:
         return
+    best = 0
+    for index, item_id in enumerate(item_ids):
+        item = by_id.get(item_id)
+        if item is None:
+            continue
+        quality = item.get("quality") if isinstance(item.get("quality"), dict) else {}
+        if quality.get("bestOfGroup") is True:
+            best = index
+            break
     for index, item_id in enumerate(item_ids):
         item = by_id.get(item_id)
         if item is None or item.get("stack"):
             continue
-        item["stack"] = _stack_payload(kind, item_ids, index)
+        payload = _stack_payload(kind, item_ids, index)
+        payload["representative"] = index == best
+        item["stack"] = payload
 
 
 def _short_video(item: dict[str, Any]) -> bool:

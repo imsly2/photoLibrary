@@ -24,8 +24,9 @@ ITEM_KEYS = (
     "faces",
     "things",
     "transcript",
+    "quality",
 )
-ITEM_REQUIRED_KEYS = tuple(key for key in ITEM_KEYS if key != "transcript")
+ITEM_REQUIRED_KEYS = tuple(key for key in ITEM_KEYS if key not in {"transcript", "quality"})
 METADATA_KEYS = (
     "width",
     "height",
@@ -387,6 +388,12 @@ def read_transcript_word(value: Any) -> dict[str, Any]:
     }
 
 
+def _read_quality_field(value: Any) -> dict[str, Any] | None:
+    from library.rating import read_quality
+
+    return read_quality(value)
+
+
 def read_transcript(value: Any) -> dict[str, Any] | None:
     if value is None:
         return None
@@ -461,6 +468,7 @@ def read_item(value: Any) -> dict[str, Any]:
         "faces": [read_face(item) for item in faces],
         "things": [read_thing_ref(item) for item in things],
         "transcript": read_transcript(data.get("transcript")),
+        "quality": _read_quality_field(data.get("quality")),
     }
 
 
@@ -469,6 +477,8 @@ def ordered_item(item: dict[str, Any]) -> dict[str, Any]:
     out = {key: item[key] for key in ITEM_KEYS}
     if out.get("transcript") is None:
         del out["transcript"]
+    if out.get("quality") is None:
+        del out["quality"]
     return out
 
 
@@ -770,6 +780,7 @@ def make_item(
     faces: list[dict[str, Any]] | None = None,
     things: list[dict[str, Any]] | None = None,
     transcript: dict[str, Any] | None = None,
+    quality: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return ordered_item(
         {
@@ -787,6 +798,7 @@ def make_item(
             "faces": faces or [],
             "things": things or [],
             "transcript": transcript,
+            "quality": quality,
         }
     )
 

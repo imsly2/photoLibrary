@@ -4,6 +4,23 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-17 — Photo rating after PR #44 (`a82e556`) on
+  `cursor/photo-rating-e3e7`. Settings **Rating** = Off / Basic /
+  Smart (default Basic). Queue stage **Rating** after transcribe.
+  Basic: Laplacian sharpness (normalized per resolution), histogram
+  exposure, face size/sharpness from existing detections → suggested
+  1–5 plus flags (blurry, too dark, too bright). Smart: local NIMA
+  MobileNet ONNX via onnxruntime (CPU; GPU if present), blended with
+  Basic. User 1–5 / P pick / X reject / 0 clear always wins. Reject
+  hides from default views and never deletes. Filter chips: 4 stars
+  and up, Picks, Hide rejects, Blurry. Sort by rating. Rescan skips
+  same size+mtime. Optional reversible `ratingLearn`. Chinese strings
+  included. ASCII launchers untouched. After Pull: rerun Setup.bat
+  once for the aesthetic ONNX, restart Library, Start Processing.
+  Does not close a Check. 16/22 unchanged.
+  Plan:
+  [taste-rating](features/taste-rating/Rev1.0/PLAN.md).
+  Evidence: TASTE-RATING (pending this run).
 - 2026-10-16 — Local video transcription after PR #43 (`cba0ce3`) on
   `cursor/transcribe-videos-557d`. Queue stage **Transcribe** runs on
   videos with audio (faster-whisper `small`; CUDA float16 when

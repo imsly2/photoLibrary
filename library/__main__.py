@@ -220,6 +220,10 @@ def build_parser() -> argparse.ArgumentParser:
     items.add_argument("--favorite")
     items.add_argument("--source")
     items.add_argument("--recent")
+    items.add_argument("--min-stars", dest="min_stars")
+    items.add_argument("--pick")
+    items.add_argument("--hide-rejects", dest="hide_rejects")
+    items.add_argument("--flag")
 
     annotate = sub.add_parser("annotate")
     annotate.add_argument("id")
@@ -301,7 +305,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("analyze-places")
 
     setup_ml = sub.add_parser("setup-ml")
-    setup_ml.add_argument("target", choices=("objects", "faces", "transcribe"))
+    setup_ml.add_argument("target", choices=("objects", "faces", "transcribe", "aesthetic"))
     setup_ml.add_argument("--backend")
 
     analyze = sub.add_parser("analyze")
@@ -314,6 +318,17 @@ def build_parser() -> argparse.ArgumentParser:
     transcribe_cmd = sub.add_parser("transcribe")
     transcribe_cmd.add_argument("--item")
     transcribe_cmd.add_argument("--force", action="store_true")
+
+    rate_photos = sub.add_parser("rate-photos")
+    rate_photos.add_argument("--item")
+    rate_photos.add_argument("--force", action="store_true")
+
+    rate_cmd = sub.add_parser("rate")
+    rate_cmd.add_argument("id")
+    rate_cmd.add_argument("--stars", type=int)
+    rate_cmd.add_argument("--pick", action="store_true")
+    rate_cmd.add_argument("--reject", action="store_true")
+    rate_cmd.add_argument("--clear", action="store_true")
 
     sub.add_parser("rebuild-index")
     renditions = sub.add_parser("renditions")
@@ -494,6 +509,14 @@ def main(argv: list[str] | None = None) -> int:
                 query["source"] = args.source
             if getattr(args, "recent", None) is not None:
                 query["recent"] = args.recent
+            if getattr(args, "min_stars", None) is not None:
+                query["minStars"] = args.min_stars
+            if getattr(args, "pick", None) is not None:
+                query["pick"] = args.pick
+            if getattr(args, "hide_rejects", None) is not None:
+                query["hideRejects"] = args.hide_rejects
+            if getattr(args, "flag", None) is not None:
+                query["flag"] = args.flag
             url = _running_server_url(root)
             if url is not None:
                 qs = "&".join(f"{key}={value}" for key, value in query.items())
@@ -826,6 +849,13 @@ def main(argv: list[str] | None = None) -> int:
                 result = Library(root).setup_ml("transcribe")
                 _print_json(result)
                 return 0
+            if args.target == "aesthetic":
+                body: dict[str, Any] = {}
+                if getattr(args, "backend", None):
+                    body["backend"] = args.backend
+                result = Library(root).setup_ml("aesthetic", body or None)
+                _print_json(result)
+                return 0
             if args.target != "faces":
                 _print_error("invalid-argument")
                 return 2
@@ -869,6 +899,46 @@ def main(argv: list[str] | None = None) -> int:
                 "/api/transcribe",
                 body or None,
                 timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "rate-photos":
+            body = {}
+            if getattr(args, "item", None):
+                body["itemId"] = args.item
+            if getattr(args, "force", False):
+                body["force"] = True
+            result = _mutation(
+                root,
+                lambda: Library(root).rate_photos(body or None),
+                "POST",
+                "/api/rate",
+                body or None,
+                timeout=600.0,
+            )
+            _print_json(result)
+            return 0
+        if args.command == "rate":
+            body = {}
+            if getattr(args, "clear", False):
+                body["clear"] = True
+            else:
+                if getattr(args, "stars", None) is not None:
+                    body["stars"] = args.stars
+                if getattr(args, "pick", False):
+                    body["pick"] = True
+                if getattr(args, "reject", False):
+                    body["reject"] = True
+                if not body:
+                    _print_error("invalid-argument")
+                    return 2
+            item_id = args.id
+            result = _mutation(
+                root,
+                lambda: Library(root).set_rating(item_id, body),
+                "POST",
+                f"/api/items/{item_id}/rating",
+                body,
             )
             _print_json(result)
             return 0

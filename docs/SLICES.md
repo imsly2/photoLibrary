@@ -27,13 +27,15 @@ plus re-run `check F4`. See [taste-windows PLAN](features/taste-windows/Rev1.0/P
 Optional local AI (2026-10-14) stacks on the People/Processing tip: offline
 GPS city names (`setup-geo` / `analyze-places`), YOLO Things (`setup-ml
 objects` / `analyze`; COCO person ignored), InsightFace unnamed
-clusters (`setup-ml faces` / `infer-faces`), and Whisper video speech
-(`setup-ml transcribe` / `transcribe`; extractive summary). Serve-time drains honor
+clusters (`setup-ml faces` / `infer-faces`), Whisper video speech
+(`setup-ml transcribe` / `transcribe`; extractive summary), and local
+photo rating (`setup-ml aesthetic` / `rate-photos`; Basic or Smart).
+Serve-time drains honor
 `/api/jobs` Pause/Start. Models optional; browse does not crash when
 they are missing. Gates: `slice GEO`, `slice TASTE-OBJECTS`,
-`slice FACES`, `slice TASTE-TRANSCRIBE`, plus `slice TASTE-PEOPLE`. No 23rd Check. `Setup.bat`
+`slice FACES`, `slice TASTE-TRANSCRIBE`, `slice TASTE-RATING`, plus `slice TASTE-PEOPLE`. No 23rd Check. `Setup.bat`
 composes `setup-geo` / `setup-ml objects` / `setup-ml faces` /
-`setup-ml transcribe`.
+`setup-ml transcribe` / `setup-ml aesthetic`.
 
 **Presentable for family PC** (2026-10-13): [UI-SPEC](UI-SPEC.md#windows-presentable-shell)
 is the North Star shell. Must items (fullscreen, slideshow, viewer keys,
@@ -47,7 +49,7 @@ No 23rd Check.
 
 Portable `Setup.bat` (2026-10-14) is a sibling of `Library.bat`: one-time
 Python/ffmpeg/`.venv` plus `setup-geo` / `setup-ml objects` / `setup-ml
-faces` / `setup-ml transcribe` when those CLIs exist. Missing modules tell Steve to Update
+faces` / `setup-ml transcribe` / `setup-ml aesthetic` when those CLIs exist. Missing modules tell Steve to Update
 Library first. Gate: `python -m tests.qa slice TASTE-SETUP`. Does not
 change serve. No 23rd Check.
 

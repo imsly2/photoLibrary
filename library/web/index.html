@@ -22,6 +22,7 @@
           <option value="oldest" data-i18n="oldest">Oldest</option>
           <option value="name" data-i18n="name">Name</option>
           <option value="location" data-i18n="location">Location</option>
+          <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
       </label>
       <label class="toolbar-field legacy-sort">
@@ -30,6 +31,7 @@
           <option value="date" data-i18n="date">Date</option>
           <option value="location" data-i18n="location">Location</option>
           <option value="name" data-i18n="name">Name</option>
+          <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
       </label>
       <label class="toolbar-field legacy-sort">
@@ -64,6 +66,10 @@
       <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false" data-i18n="favorites">Favorites</button>
       <button type="button" id="filter-recent" class="toolbar-toggle" aria-pressed="false" data-i18n="recentlyAdded">Recently added</button>
       <button type="button" id="filter-duplicates" data-i18n="duplicates">Duplicates</button>
+      <button type="button" id="filter-stars" class="toolbar-toggle" aria-pressed="false" data-i18n="fourStarsUp">4 stars and up</button>
+      <button type="button" id="filter-picks" class="toolbar-toggle" aria-pressed="false" data-i18n="picks">Picks</button>
+      <button type="button" id="filter-hide-rejects" class="toolbar-toggle" aria-pressed="true" data-i18n="hideRejects">Hide rejects</button>
+      <button type="button" id="filter-blurry" class="toolbar-toggle" aria-pressed="false" data-i18n="blurry">Blurry</button>
     </div>
     <label class="toolbar-field">
       <span data-i18n="folder">Folder</span>
@@ -328,6 +334,7 @@
           <option value="date" data-i18n="date">Date</option>
           <option value="location" data-i18n="location">Location</option>
           <option value="name" data-i18n="name">Name</option>
+          <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
       </label>
       <label class="settings-field">
@@ -377,6 +384,36 @@
         </label>
       </fieldset>
     </section>
+    <section class="settings-section">
+      <h2 data-i18n="rating">Rating</h2>
+      <fieldset class="settings-fieldset">
+        <legend data-i18n="ratingModeHelp">Suggested stars from sharpness, exposure, and faces. Smart adds a local aesthetic model. Off skips the Rating queue.</legend>
+        <label class="choice">
+          <input type="radio" name="set-ratingMode" value="off">
+          <span data-i18n="ratingOff">Off</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="set-ratingMode" value="basic">
+          <span data-i18n="ratingBasic">Basic</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="set-ratingMode" value="smart">
+          <span data-i18n="ratingSmart">Smart</span>
+        </label>
+      </fieldset>
+      <fieldset class="settings-fieldset">
+        <legend data-i18n="ratingLearnHelp">Nudge suggestion weights from your picks and rejects. Local and reversible.</legend>
+        <label class="choice">
+          <input type="radio" name="set-ratingLearn" value="true">
+          <span data-i18n="ratingLearnOn">On</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="set-ratingLearn" value="false">
+          <span data-i18n="ratingLearnOff">Off</span>
+        </label>
+      </fieldset>
+      <button type="button" id="rating-weights-reset" data-i18n="resetRatingWeights">Reset suggestion weights</button>
+    </section>
   </div>
   <dialog id="add-folder" aria-labelledby="add-folder-title">
     <h2 id="add-folder-title" data-i18n="addAFolder">Add a folder</h2>
@@ -415,6 +452,15 @@
       <p id="viewer-crumb"></p>
       <span id="viewer-source" hidden></span>
       <div id="viewer-tools">
+        <div id="viewer-rating" hidden>
+          <button type="button" id="viewer-star-1" class="viewer-star" data-stars="1" aria-label="1 star">★</button>
+          <button type="button" id="viewer-star-2" class="viewer-star" data-stars="2" aria-label="2 stars">★</button>
+          <button type="button" id="viewer-star-3" class="viewer-star" data-stars="3" aria-label="3 stars">★</button>
+          <button type="button" id="viewer-star-4" class="viewer-star" data-stars="4" aria-label="4 stars">★</button>
+          <button type="button" id="viewer-star-5" class="viewer-star" data-stars="5" aria-label="5 stars">★</button>
+          <button type="button" id="viewer-pick" aria-pressed="false" data-i18n="pick">Pick</button>
+          <button type="button" id="viewer-reject" aria-pressed="false" data-i18n="reject">Reject</button>
+        </div>
         <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite" data-i18n-aria="favorite">♡</button>
         <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5" data-i18n="slideshow" data-i18n-title="slideshowTitle">Slideshow</button>
         <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11" data-i18n="fullscreen" data-i18n-title="fullscreenTitle">Fullscreen</button>
@@ -598,6 +644,10 @@
       <div><dt>Ctrl+,</dt><dd data-i18n="helpSettings">Settings</dd></div>
       <div><dt>Ctrl+Z</dt><dd data-i18n="helpUndo">Undo</dd></div>
       <div><dt>Ctrl+P</dt><dd data-i18n="helpPrint">Print this picture</dd></div>
+      <div><dt>1–5</dt><dd data-i18n="helpStars">Rate 1 to 5 stars</dd></div>
+      <div><dt>P</dt><dd data-i18n="helpPick">Pick</dd></div>
+      <div><dt>X</dt><dd data-i18n="helpReject">Reject (hide, never delete)</dd></div>
+      <div><dt>0</dt><dd data-i18n="helpClearRating">Clear rating</dd></div>
     </dl>
     <div class="dialog-actions">
       <button type="button" id="keyboard-help-close" data-i18n="cancel">Cancel</button>

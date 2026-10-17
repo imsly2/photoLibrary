@@ -55,7 +55,7 @@ alone cannot close a screen feature. No partial credit. Current passes: STATUS.
 | Original safety | Explicit copy or link; ask by default. Never overwrite or reorganize originals. Copy undo leaves bytes. |
 | Previews | With-server by default, optional source override; relocation affects only generated previews. |
 | Offline | Show cached previews and unavailable banner by default; hide is a setting. Resolve individual files, including unplug-after-launch. |
-| Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name), `setup-ml transcribe` (Whisper speech-to-text on videos with sound; extractive summary + keywords, no cloud LLM). No cloud geocoder or cloud AI. Browse works with models missing. |
+| Naming | External agent/person writes entity JSON through annotate. Optional **one-time local** installs may fill names on this computer: `setup-geo` (GPS city/region, never overwrite a human name), `setup-ml objects` (YOLO Things; ignore COCO person), `setup-ml faces` (InsightFace unnamed clusters; never guess a real name), `setup-ml transcribe` (Whisper speech-to-text on videos with sound; extractive summary + keywords, no cloud LLM), `setup-ml aesthetic` (local NIMA/MobileNet ONNX for Smart rating; CPU, GPU if present). No cloud geocoder or cloud AI. Browse works with models missing. |
 | Globe | Shipped realistic local Earth texture, no network; drag right yaws east (inverted from the first grab); up/down unchanged; cluster opens filtered items; orbit/place/media/orbit tour. |
 | Pending/live identity | Bounded pending path digest, transactional hash merge; Live Photo still hash with explicit still/motion components. Earlier shapes could not safely express either. |
 | Playback clarification | Full-length silent video proxies (width ≤ `proxyWidth`, CRF 28, no audio). Hover plays the muted proxy on the cell under the pointer at every Dates grouping (Years / Months / Days / Off) and every Size. `playProxies=off` disables hover play. Video poster precedes playback. Viewer play starts on the proxy, then swaps to the original when it is already browser-safe, otherwise to a size-capped `playback.mp4` (≤1280, CRF 23) without a fit/time jump. `#viewer-source` names the file that is playing. `#viewer-scrub` (bottom chrome, not over the picture) and `.tile-scrub` seek. |
@@ -151,7 +151,7 @@ library-data/
   geo/                   # optional offline cities pack (setup-geo); not in git
     cities.csv
     ATTRIBUTION.txt
-  models/                # optional; created by setup-ml objects / faces / transcribe
+  models/                # optional; created by setup-ml objects / faces / transcribe / aesthetic
     yolov8n.onnx
     objects.json
     objects-state.json
@@ -160,6 +160,7 @@ library-data/
       index.json
       buffalo_s/
     whisper/             # faster-whisper small; transcribe.json manifest
+    aesthetic/           # NIMA MobileNet ONNX; aesthetic.json manifest
   renditions/<id>/       # used when previews are stored with the server
     thumb.webp
     preview.webp
@@ -190,8 +191,8 @@ command prompt. macOS/Linux launch stays `launch.sh` and is not graded here.
 On a new Windows PC, double-click `Setup.bat` once first. It installs
 Python 3.12+ and ffmpeg the same way as the launcher (winget
 `Python.Python.3.12`, `Gyan.FFmpeg`), creates `.venv`, installs the app,
-and runs `setup-geo` plus `setup-ml objects`, `setup-ml faces`, and
-`setup-ml transcribe` when those commands exist. If a command is missing, it prints that Update
+and runs `setup-geo` plus `setup-ml objects`, `setup-ml faces`,
+`setup-ml transcribe`, and `setup-ml aesthetic` when those commands exist. If a command is missing, it prints that Update
 Library must pull it and exits non-zero. Models stay under
 `library-data/`. No MSI. First run needs the internet. Daily use is
 `Library.bat` or the Desktop / Start Menu shortcut Setup writes
@@ -273,16 +274,19 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `tags` / `tags list` | `GET /api/tags` | Lists user tags (Things) with counts. Hiking / Singing / Painting are names. |
 | `tags create <name>` | `POST /api/tags` `{"name":"Hiking"}` | Creates a tag Thing without attaching it. Reuses a matching name. |
 | `tags apply --item <id> --add Hiking --remove Painting` | `POST /api/items/tags` `{"itemIds":["…"],"add":["Hiking"],"remove":["Painting"]}` | Applies or removes tags on one or many items. Human tags survive re-infer. |
-| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects, transcribe. |
+| `jobs` | `GET /api/jobs` | Background queue status: renditions, analyze, infer-faces, objects, transcribe, rate. |
 | `jobs pause` / `jobs resume` | `POST /api/jobs` `{"action":"pause"\|"resume"}` | Pauses or resumes the serve-process drain. Does not block browse. |
 | `setup-geo` [--from \<dir\>] [--force] | (CLI setup; no catalog write) | Fetches or copies the offline cities pack into `library-data/geo/`. |
 | `analyze-places` | `POST /api/places/analyze` `{}` | Fills null GPS `place.name` from that pack. Never overwrites a set name. |
 | `setup-ml objects` | (CLI / `Setup.bat` / `launch.ps1 -SetupMl`; no HTTP) | Downloads a small local YOLO into `models/`. CPU. No cloud inference. |
 | `setup-ml faces` | `POST /api/faces/setup` | Installs InsightFace buffalo_s ONNX into `models/faces/`. Never uploads photos. |
 | `setup-ml transcribe` | (CLI / `Setup.bat`; no HTTP) | Downloads faster-whisper `small` into `models/whisper/`. GPU if CUDA is present, else CPU int8. No cloud inference. |
+| `setup-ml aesthetic` | (CLI / `Setup.bat`; no HTTP) | Downloads a local NIMA/MobileNet ONNX (~13 MB) into `models/aesthetic/`. CPU via onnxruntime; CUDA when the provider is present. No cloud inference. |
 | `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Runs local object detection and writes Things through `annotate`. |
 | `infer-faces` | `POST /api/faces/infer` | Detects faces, clusters unnamed people. Never guesses a name. |
 | `transcribe` / `transcribe --item <id>` / `--force` | `POST /api/transcribe` `{}` or `{"itemId":"<id>","force"?}` | Local speech-to-text on videos with audio. Skips same size+mtime. Off in Settings skips the queue. |
+| `rate-photos` / `rate-photos --item <id>` / `--force` | `POST /api/rate` `{}` or `{"itemId":"<id>","force"?}` | Suggested 1–5 stars from sharpness, exposure, and faces. Smart blends a local aesthetic score. Skips same size+mtime. Off skips the queue. Never deletes or auto-rejects. |
+| `rate <id> --stars N` / `--pick` / `--reject` / `--clear` | `POST /api/items/<id>/rating` `{stars?,pick?,reject?,clear?}` | User rating always wins. Reject hides from default views; the file stays. 0 / `--clear` clears yours. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
 | `renditions relocate` | `POST /api/renditions/relocate` | Moves preview files to match current settings. |
@@ -293,7 +297,7 @@ install can pull a newer app folder without opening a command prompt.
 The header shows the checkout SHA from `GET /api/version` and refreshes
 it from a successful update payload.
 
-`GET /api/items` accepts `sort=date|location|name`, `dir=asc|desc`,
+`GET /api/items` accepts `sort=date|location|name|rating`, `dir=asc|desc`,
 `person=` (one id/name, or comma-separated ids meaning **all** faces),
 `place=`, `thing=` (one id/name, or comma-separated ids/names meaning
 **all** those tags), `kind=photo|video|live` or a comma list,
@@ -310,8 +314,14 @@ Favorites / Recently added controls send no kind, `kind=photo,live`, `kind=video
 `favorite=1`, or `recent=1`. Kind, favorite, recent, and source are transient
 filters, not settings.
 `favorite=1` keeps only hearted items. Item reads include computed
-`favorite` (not stored on the item JSON). `q` also matches a capturedAt
-date (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`).
+`favorite` (not stored on the item JSON) and computed `rating`
+(`suggested`, `yours`, effective `stars`, `pick`, `reject`, `flags`,
+`bestOfGroup`). `minStars=4` keeps effective stars ≥ 4 (yours wins).
+`pick=1` keeps picks. `hideRejects=1` hides rejects from that list
+(never deletes). `flag=blurry|too-dark|too-bright` keeps flagged
+items. `sort=rating` orders by effective stars, then pick, then
+suggested. `q` also matches a capturedAt date (`YYYY`, `YYYY-MM`,
+`YYYY-MM-DD`).
 
 `GET /api/groups` accepts the same item filters plus `level=years|months|days|all`
 for date groups, or `by=people|places|tags` for entity groups (Unknown /
@@ -723,6 +733,18 @@ associations through the same catalog:
   plus keywords (no local LLM, no cloud). Same size+mtime is skipped.
   `transcribeVideos` (default true) turns the Transcribe queue off.
   Search matches those words; results show **Said in video**.
+- `setup-ml aesthetic` / `rate-photos` scores photo and Live stills.
+  Basic (default) combines Laplacian sharpness (normalized per
+  resolution), histogram exposure, and face size/sharpness from
+  existing detections into a suggested 1–5 plus flags (`blurry`,
+  `too-dark`, `too-bright`). Smart blends that with a local NIMA
+  ONNX score. `ratingMode` `off|basic|smart` (default `basic`) turns
+  the Rating queue off or picks the stage. Same size+mtime is
+  skipped. User stars / pick / reject always win. Reject only hides
+  from default views; the file stays. Never auto-deletes or
+  auto-rejects. Live/burst stacks and duplicate groups mark a
+  suggested best-of-group. `ratingLearn` (default false) may nudge
+  local suggestion weights from picks and rejects; reversible.
 - `setup-ml faces` / `infer-faces` detects faces on the full frame
   fitted to 640×640, maps boxes back to the original, then
   landmark-aligns / crops **original** pixels to 112×112 for ArcFace.
@@ -830,15 +852,20 @@ returns 404 `unavailable`. Set `hide` and the item disappears from
 
 `library-data/settings.json` holds the 17 browse settings (the earlier 16
 plus `language`) plus the internal `schemaVersion: 1` field (not a
-control), two face-quality keys used by optional local InsightFace, and
+control), two face-quality keys used by optional local InsightFace,
 `transcribeVideos` (default true) which turns the Transcribe queue on or
-off. The defaults below list those values. The header language switch writes
+off, `ratingMode` (`off|basic|smart`, default `basic`) which turns the
+Rating queue on or off, and `ratingLearn` (bool, default false) which
+optionally nudges local suggestion weights. `sort` also accepts
+`rating`. The defaults below list those values. The header language switch writes
 `language`. The command line edits this file, including
 `faceMatchThreshold` (default 0.80, Settings slider 0.35–0.95) and
 `faceMinSidePx`, so matching can be tuned without a rebuild. Higher
 threshold means fewer false merges and more Unnamed people. The browser
 does not keep a second copy. A pre-language file is filled with `en` on
 load. A pre-transcribe file is filled with `transcribeVideos: true`.
+A pre-rating file is filled with `ratingMode: "basic"` and
+`ratingLearn: false`.
 
 The **Settings** page (`#settings-view`, Ctrl+, / header Settings) is
 the family chrome for this file. **Folders / sources come first:** every
@@ -872,7 +899,9 @@ where new renditions live. Language stays in the header.
   "language": "en",
   "faceMatchThreshold": 0.8,
   "faceMinSidePx": 80,
-  "transcribeVideos": true
+  "transcribeVideos": true,
+  "ratingMode": "basic",
+  "ratingLearn": false
 }
 ```
 
@@ -953,6 +982,10 @@ search the thing, get the same item id. Artifact: the search JSON.
 | Click a cell | Open it |
 | Click or Space in the viewer | Play or pause video (Space pauses a slideshow if one is running) |
 | Arrows | Previous and next open item |
+| 1–5 | Rate the open picture (user stars always win) |
+| P | Pick |
+| X | Reject (hide from default views; never deletes) |
+| 0 | Clear your rating / pick / reject |
 | F11 or F | Toggle viewer fullscreen |
 | F5 | Start slideshow of the current set |
 | Delete | Remove from library (confirm; originals stay) |

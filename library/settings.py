@@ -34,6 +34,8 @@ KEY_ORDER = (
     "faceMatchThreshold",
     "faceMinSidePx",
     "transcribeVideos",
+    "ratingMode",
+    "ratingLearn",
 )
 
 ENUMS: dict[str, frozenset[str]] = {
@@ -42,15 +44,16 @@ ENUMS: dict[str, frozenset[str]] = {
     "addFolderDefault": frozenset({"ask", "copy-here", "serve-from-there"}),
     "playProxies": frozenset({"days-and-all", "always", "off"}),
     "listenHost": frozenset({"127.0.0.1", "0.0.0.0"}),
-    "sort": frozenset({"date", "location", "name"}),
+    "sort": frozenset({"date", "location", "name", "rating"}),
     "dir": frozenset({"asc", "desc"}),
     "zoomLevel": frozenset({"years", "months", "days", "all"}),
     "language": frozenset({"en", "zh-Hans"}),
+    "ratingMode": frozenset({"off", "basic", "smart"}),
 }
 
 INT_KEYS = frozenset({"port", "thumbPx", "previewPx", "proxyWidth", "tourPictures", "faceMinSidePx"})
 NUMBER_KEYS = frozenset({"placeMatchMeters", "tourOrbitSec", "tourPictureSec", "faceMatchThreshold"})
-BOOL_KEYS = frozenset({"transcribeVideos"})
+BOOL_KEYS = frozenset({"transcribeVideos", "ratingLearn"})
 SETTING_KEYS = frozenset(KEY_ORDER[1:])
 
 DEFAULTS: dict[str, Any] = {
@@ -75,6 +78,8 @@ DEFAULTS: dict[str, Any] = {
     "faceMatchThreshold": 0.8,
     "faceMinSidePx": 80,
     "transcribeVideos": True,
+    "ratingMode": "basic",
+    "ratingLearn": False,
 }
 
 
@@ -210,7 +215,7 @@ def settings_path(root: Path) -> Path:
 
 
 def fill_missing_defaults(data: dict[str, Any]) -> dict[str, Any]:
-    """Accept a pre-language, pre-face-quality, or pre-transcribe file by filling new keys from defaults."""
+    """Accept a pre-language, pre-face-quality, pre-transcribe, or pre-rating file by filling new keys from defaults."""
     if not isinstance(data, dict):
         raise fail("invalid-catalog")
     extra = [key for key in data if key not in KEY_ORDER]
