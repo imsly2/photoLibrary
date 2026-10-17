@@ -20,7 +20,18 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
   Does not close a Check. 16/22 unchanged.
   Plan:
   [taste-rating](features/taste-rating/Rev1.0/PLAN.md).
-  Evidence: TASTE-RATING (pending this run).
+  Evidence:
+  [TASTE-RATING](features/taste-rating/Rev1.0/assets/verify-1/result.json)
+  **82/82** (blur 3 < sharp 5; dark/bright/blurry flagged;
+  burst_003 `bestOfGroup` on a BURST 3 stack; stars persist and
+  override; reject hides, file stays; minStars/picks/hideRejects/
+  blurry/sort=rating; rescan rated 0 skipped 9; Off `available`
+  false; Smart CPU aesthetic colorful 0.41 > gray 0.15; zh 评分 /
+  四星及以上 / 精选 / 隐藏排除 / 模糊),
+  [grid](features/taste-rating/Rev1.0/assets/verify-1/rating-grid.png),
+  [info](features/taste-rating/Rev1.0/assets/verify-1/rating-info.png),
+  [chinese](features/taste-rating/Rev1.0/assets/verify-1/chinese-rating.png),
+  [settings](features/taste-rating/Rev1.0/assets/verify-1/settings-rating-zh.png).
 - 2026-10-16 — Local video transcription after PR #43 (`cba0ce3`) on
   `cursor/transcribe-videos-557d`. Queue stage **Transcribe** runs on
   videos with audio (faster-whisper `small`; CUDA float16 when

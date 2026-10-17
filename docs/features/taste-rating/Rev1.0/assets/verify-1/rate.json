@@ -1,0 +1,366 @@
+{
+  "cli": {
+    "media": {
+      "sharp": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/sharp.jpg",
+      "blur": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/blur.jpg",
+      "dark": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/dark.jpg",
+      "bright": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/bright.jpg",
+      "colorful": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/colorful.jpg",
+      "gray": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/graysharp.jpg",
+      "burst1": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_001.jpg",
+      "burst2": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_002.jpg",
+      "burst3": "/workspace/docs/features/taste-rating/Rev1.0/assets/verify-1/rating-media/burst_003.jpg"
+    },
+    "setup": {
+      "ok": true,
+      "kind": "rate",
+      "model": "nima-mobilenet.onnx",
+      "engine": "nima-mobilenet",
+      "backend": "fixture",
+      "path": "models/aesthetic/nima-mobilenet.onnx",
+      "sha256": "f54497e1ec0b32feb6d10b6b4a4d08d654523d2f8c0a9f7522379411ff691ccb",
+      "bytes": 522,
+      "device": "cpu"
+    },
+    "rate": {
+      "ok": true,
+      "rated": 9,
+      "skipped": 0,
+      "errors": 0,
+      "items": [
+        {
+          "id": "13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082",
+          "suggested": 3,
+          "flags": [
+            "too-dark"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4",
+          "suggested": 3,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db",
+          "suggested": 3,
+          "flags": [
+            "too-bright"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        }
+      ],
+      "mode": "basic"
+    },
+    "basicScores": {
+      "sharp": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "blur": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "dark": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "too-dark"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "bright": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "too-bright"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "colorful": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "gray": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "burst1": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "burst2": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "burst3": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": true,
+        "mode": "basic",
+        "blurry": false
+      }
+    },
+    "rescan": {
+      "ok": true,
+      "rated": 0,
+      "skipped": 9,
+      "errors": 0,
+      "items": [],
+      "mode": "basic"
+    },
+    "smart": {
+      "ok": true,
+      "rated": 9,
+      "skipped": 0,
+      "errors": 0,
+      "items": [
+        {
+          "id": "13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "47b174cedaaccf8671119566eb60e4741e23a1b3f579e7870206707a6f492830",
+          "suggested": 2,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5",
+          "suggested": 2,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "8c361072748ac00445f02e1a10a049a654349e815b7dee9ea8b25791d74f7d20",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082",
+          "suggested": 2,
+          "flags": [
+            "too-dark"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4",
+          "suggested": 3,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db",
+          "suggested": 2,
+          "flags": [
+            "too-bright"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": true
+        }
+      ],
+      "mode": "smart"
+    },
+    "smartOrder": {
+      "basicColor": 3.0,
+      "basicGray": 5.0,
+      "smartColor": 3.0,
+      "smartGray": 4.0,
+      "colorAesthetic": 0.41031212276882595,
+      "grayAesthetic": 0.15178934733072916
+    },
+    "ids": {
+      "sharp": "13f21ce26a360b7552b2cf283f3cc8e2f06a52504b1ebe157a630af9baf3040b",
+      "blur": "6252e673d78094bff3bb6e3372eae0c596f1d935fa3f5886215c74412c0cb2c5",
+      "dark": "acf969fd0c2bc3957e0c3674a3c0b66ab16d8059d343130f69cd6b41c2426082",
+      "bright": "e8ba941860d4ad9aaabe65e02b89bf9b92ff2104eb57e35ca5b0df23ae3810db",
+      "colorful": "e1ec5d991db8f111a23e7edc277658c0bea0d3a7177bd2c9e0d7f12fc3dabbf4",
+      "gray": "e411e5202027614033b370c82a4ad83057fa44a30f88047dd9158e6cdb155434",
+      "burst3": "f556077211021c61f42e89781aae5f61deb5c651c42def3553e113ab06c84238"
+    }
+  },
+  "http": {
+    "url": "http://127.0.0.1:18765/",
+    "rateGet": {
+      "ok": true,
+      "installed": true,
+      "enabled": true,
+      "mode": "smart",
+      "learn": true,
+      "model": "nima-mobilenet.onnx",
+      "engine": "nima-mobilenet",
+      "pending": 0,
+      "done": 9,
+      "error": 0
+    },
+    "console": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  }
+}
