@@ -13,12 +13,13 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
 from library.atomic import atomic_write_bytes, atomic_write_json, load_json, transact
 from library.catalog_io import item_rel, iter_item_ids, load_item
-from library.errors import fail
+from library.errors import AppError, fail
 from library.history import make_history_entry, plan_append
 from library.media import mtime_iso
 from library.paths import library_path
@@ -493,7 +494,13 @@ def rate_photos(root: Path, item_id: str | None = None, *, force: bool = False) 
     }
 
 
-def rate_step(root: Path) -> bool:
+def rate_step(root: Path, *, io_context=nullcontext) -> bool:
+    """Rate one photo. Decode and scoring run inside io_context (lock released).
+
+    Best-of-group flags are recomputed once the queue is empty, not per photo.
+    """
+    from library.item_index import iter_items, root_key
+
     if not rating_enabled(root):
         return False
     mode = rating_mode(root)
@@ -502,25 +509,70 @@ def rate_step(root: Path) -> bool:
             _ensure_runtime()
         except Exception:
             pass
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
-        if not _photo_like(item):
+    for item in iter_items(root):
+        if not _photo_like(item) or _scored_per_catalog(item):
             continue
         still = _current_still_file(item, root)
-        if still is None:
-            continue
-        if _already_scored(item, still):
+        if still is None or _already_scored(item, still):
             continue
         from library.activity import note_item
 
+        item_id = item["id"]
         note_item("rate", "Rating", item)
+        signature = _still_signature(still)
         try:
-            _rate_one(root, item_id, still)
+            with io_context():
+                record = _score(root, item, still, mode)
         except Exception:
-            _publish_quality(root, item_id, _error_record(item, still, mode))
-        refresh_best_of_groups(root)
+            record = _error_record(item, still, mode)
+        current = _try_load_item(root, item_id)
+        if current is None or _current_still_file(current, root) != still or _still_signature(still) != signature:
+            return True
+        _publish_quality(root, item_id, record)
+        _best_of_current.discard(root_key(root))
         return True
+    key = root_key(root)
+    if key not in _best_of_current:
+        _best_of_current.add(key)
+        refresh_best_of_groups(root)
     return False
+
+
+_best_of_current: set[str] = set()
+
+
+def _scored_per_catalog(item: dict[str, Any]) -> bool:
+    """True when the score matches a current location's recorded file version.
+
+    _current_still_file only returns files whose disk stat equals that record,
+    so this skips the per-item disk stat for photos that are already rated.
+    """
+    rec = item.get("quality")
+    if not isinstance(rec, dict) or rec.get("status") not in {"ready", "error"}:
+        return False
+    size = rec.get("sourceSizeBytes")
+    modified = rec.get("sourceModifiedAt")
+    if type(modified) is not str or modified == "":
+        return False
+    return any(
+        loc.get("current") is True and loc.get("sizeBytes") == size and loc.get("modifiedAt") == modified
+        for loc in item.get("locations") or []
+    )
+
+
+def _still_signature(still: Path) -> tuple[int, int] | None:
+    try:
+        stat = still.stat()
+    except OSError:
+        return None
+    return stat.st_size, stat.st_mtime_ns
+
+
+def _try_load_item(root: Path, item_id: str) -> dict[str, Any] | None:
+    try:
+        return load_item(root, item_id)
+    except AppError:
+        return None
 
 
 def apply_user_rating(root: Path, item_id: str, patch: dict[str, Any]) -> dict[str, Any]:
@@ -624,8 +676,13 @@ def _current_still_file(item: dict[str, Any], root: Path) -> Path | None:
 
 
 def _rate_one(root: Path, item_id: str, still: Path) -> dict[str, Any]:
-    item = load_item(root, item_id)
-    mode = rating_mode(root)
+    record = _score(root, load_item(root, item_id), still, rating_mode(root))
+    _publish_quality(root, item_id, record)
+    return record
+
+
+def _score(root: Path, item: dict[str, Any], still: Path, mode: str) -> dict[str, Any]:
+    """Decode and score one still; reads only, no catalog writes."""
     rgb, width, height = decode_rgb(still, WORKING_SIDE)
     metrics = compute_basic(rgb, width, height, item.get("faces") or [])
     aesthetic = None
@@ -651,7 +708,6 @@ def _rate_one(root: Path, item_id: str, still: Path) -> dict[str, Any]:
     record["sourceModifiedAt"] = mtime_iso(still)
     record["model"] = model_name
     record["device"] = device
-    _publish_quality(root, item_id, record)
     return record
 
 
@@ -783,23 +839,83 @@ def sharpness_score(variance: float, width: int, height: int) -> tuple[float, fl
     return max(0.0, min(1.0, score)), norm
 
 
+def _numpy() -> Any:
+    try:
+        import numpy
+
+        return numpy
+    except ImportError:
+        return None
+
+
+class _PyLuma:
+    """Integer BT.601 luma with Laplacian variance over any crop (pure Python)."""
+
+    def __init__(self, rgb: bytes, width: int, height: int) -> None:
+        self.gray = _gray_luma(rgb, width, height)
+        self.width = width
+
+    def laplacian(self, x: int, y: int, w: int, h: int) -> float:
+        if x == 0 and y == 0 and w == self.width and h * w == len(self.gray):
+            return laplacian_var(self.gray, w, h)
+        crop: list[int] = []
+        for row in range(y, y + h):
+            start = row * self.width + x
+            crop.extend(self.gray[start : start + w])
+        return laplacian_var(crop, w, h) if len(crop) >= 9 else -1.0
+
+    def totals(self) -> tuple[list[int], float, float, int]:
+        hist = [0] * 256
+        total = 0.0
+        total2 = 0.0
+        for value in self.gray:
+            hist[value] += 1
+            total += value
+            total2 += value * value
+        return hist, total, total2, len(self.gray)
+
+
+class _NpLuma:
+    """Same integer math as _PyLuma, vectorized; results are identical."""
+
+    def __init__(self, np_mod: Any, rgb: bytes, width: int, height: int) -> None:
+        self.np = np_mod
+        pixels = np_mod.frombuffer(rgb, dtype=np_mod.uint8).reshape(height, width, 3).astype(np_mod.int64)
+        self.gray = (pixels[..., 0] * 299 + pixels[..., 1] * 587 + pixels[..., 2] * 114) // 1000
+
+    def laplacian(self, x: int, y: int, w: int, h: int) -> float:
+        g = self.gray[y : y + h, x : x + w]
+        if g.size < 9:
+            return -1.0
+        if g.shape[0] < 3 or g.shape[1] < 3:
+            return 0.0
+        v = g[:-2, 1:-1] + g[2:, 1:-1] + g[1:-1, :-2] + g[1:-1, 2:] - 4 * g[1:-1, 1:-1]
+        n = v.size
+        mean = float(v.sum()) / n
+        return max(0.0, float((v * v).sum()) / n - mean * mean)
+
+    def totals(self) -> tuple[list[int], float, float, int]:
+        flat = self.gray.ravel()
+        hist = self.np.bincount(flat, minlength=256).tolist()
+        return hist, float(flat.sum()), float((flat * flat).sum()), int(flat.size)
+
+
+def _luma(rgb: bytes, width: int, height: int) -> _PyLuma | _NpLuma:
+    np_mod = _numpy()
+    return _PyLuma(rgb, width, height) if np_mod is None else _NpLuma(np_mod, rgb, width, height)
+
+
 def compute_basic(
     rgb: bytes,
     width: int,
     height: int,
     faces: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    gray = _gray_luma(rgb, width, height)
-    variance = laplacian_var(gray, width, height)
+    luma = _luma(rgb, width, height)
+    variance = luma.laplacian(0, 0, width, height) if width >= 3 and height >= 3 else 0.0
     sharp, sharp_norm = sharpness_score(variance, width, height)
-    hist = [0] * 256
-    total = 0.0
-    total2 = 0.0
-    for value in gray:
-        hist[value] += 1
-        total += value
-        total2 += value * value
-    count = max(1, len(gray))
+    hist, total, total2, count = luma.totals()
+    count = max(1, count)
     mean = total / count / 255.0
     second = total2 / count
     contrast = math.sqrt(max(0.0, second - (total / count) ** 2)) / 128.0
@@ -807,7 +923,7 @@ def compute_basic(
     clip_dark = sum(hist[:8]) / count
     clip_bright = sum(hist[248:]) / count
     exposure = _exposure_score(mean, contrast, clip_dark, clip_bright)
-    face_q, face_count, face_sharp = _face_quality(rgb, gray, width, height, faces)
+    face_q, face_count, face_sharp = _face_quality(luma, width, height, faces)
     metrics = empty_metrics()
     metrics.update(
         {
@@ -838,8 +954,7 @@ def _exposure_score(mean: float, contrast: float, clip_dark: float, clip_bright:
 
 
 def _face_quality(
-    rgb: bytes,
-    gray: list[int],
+    luma: _PyLuma | _NpLuma,
     width: int,
     height: int,
     faces: list[dict[str, Any]],
@@ -862,13 +977,9 @@ def _face_quality(
         py = max(0, min(height - 1, int(y * height)))
         pw = max(1, min(width - px, int(w * width)))
         ph = max(1, min(height - py, int(h * height)))
-        crop: list[int] = []
-        for row in range(py, py + ph):
-            start = row * width + px
-            crop.extend(gray[start : start + pw])
-        if len(crop) < 9:
+        var = luma.laplacian(px, py, pw, ph)
+        if var < 0:
             continue
-        var = laplacian_var(crop, pw, ph)
         face_sharp, _ = sharpness_score(var, pw, ph)
         short = min(pw, ph)
         size_score = max(0.0, min(1.0, short / 160.0))
@@ -1045,7 +1156,9 @@ def refresh_best_of_groups(root: Path) -> None:
     from library.duplicates import list_duplicate_groups
     from library.stacks import annotate_stacks
 
-    items = [load_item(root, item_id) for item_id in iter_item_ids(root)]
+    from library.item_index import iter_items
+
+    items = [clone(item) for item in iter_items(root)]
     annotate_stacks(items)
     groups: list[list[str]] = []
     seen: set[str] = set()

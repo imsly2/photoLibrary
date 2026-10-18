@@ -29,8 +29,9 @@ Rating does not inherently starve portable mirroring: rendition idle settlement 
 
 - Paired still generation: **shipped** (Cursor, see "Paired stills + faster encoder" below).
 - Faster WebP encode (bilinear scale, libwebp method 2): **shipped** in the same slice.
-- Growing per-job overhead (bookkeeping samples rise ~150 -> ~290 ms over 68 jobs at 80 photos): **next**; some per-publication work still scales with item count.
-- Rating lock: pending, after the overhead lead.
+- Growing per-job overhead lead: **closed, bench artifact**. Serial stage profile at 80 photos measures 28.5 ms bookkeeping/job (assets/perf-1/paired-80-profile.json); the bench estimate subtracts a single-encode FFmpeg cost from paired jobs.
+- Rating: **shipped** (see "Rating off the lock" below).
+- Faces: **next**. `faces.infer_faces_step` has the same shape as old Rating: `iter_item_ids` + uncached `load_item` per step, `infer_faces` (decode + ONNX) called with no `io_context`, so it holds the server lock.
 - Worker pool: deferred.
 - Storage naming/layout: separate open proposal, no migration.
 - Live server: leave running; fixes require a later deliberate restart to take effect.
@@ -68,3 +69,18 @@ Same 80 JPEG + 1 MOV bench, ui load, back to back:
 Net: all previews ~1.9x sooner; the grid finishes ~6 s later than unpaired because each thumb now waits for its preview (still inside the 30 s budget). 7/9 pass. `readingTenthRatio` (796374) is a bench bug, a near-zero first-tenth denominator; `bookkeeping` 207 ms is an estimate that assumes single encodes, but its samples climb steadily with item count, which is a real lead.
 
 Exact next action: profile one post-scan drain step at 80 vs 400 items (`assets/perf-1/stage_profile.py --all-queues`) to find what per-publication work grows with N; then the Rating lock.
+
+## Rating off the lock (Cursor, 2026-10-18 08:15)
+
+Cause: `compute_basic` ran three pure-Python per-pixel loops over a 1024 px working image, about 1.17 s/photo, inside the server lock; each `rate_step` also re-read every item from disk and rebuilt best-of groups across the whole catalog.
+
+Change (`library/rating.py`, `library/service.py`):
+- `_NpLuma` does the same integer luma / Laplacian / histogram math with numpy; `_PyLuma` is the fallback. Metrics are bit-identical on 4 real photos either way (`assets/rating-speed/before.json` vs `after.json` / `after-py.json`). Compute 1170 -> 47 ms/photo.
+- `rate_step(root, io_context=...)`: picks from the cached item index, skips photos whose score matches a current location's recorded size+mtime without a disk stat, decodes + scores inside `io_context` (lock released), then revalidates the item, still path and file signature before publishing.
+- Best-of groups are recomputed once when the queue empties (and once per process), from cached items, instead of after every photo.
+
+Evidence: serial drain of 40 real photos with all queues, Rating step mean 1.10 s -> 0.27 s (`assets/perf-1/rating-old-40.json` vs `rating-new-40.json`); whole drain 65.8 s -> 24.1 s including paired stills. `python -m tests.qa slice TASTE-RATING`: every behavior check PASS (scores, flags, best-of, rescan skip, stars/pick/reject, filters, smart mode, learn, HTTP); only `playwright-import` FAIL because no local Python has playwright, so the rating UI screenshot was not re-taken (UI untouched). Unit tests (17) OK.
+
+Live server still runs old code until Steve restarts it.
+
+Exact next action: apply the Rating pattern to `faces.infer_faces_step` (cached pick, decode + ONNX inside `io_context`, revalidate then publish), verify with the faces slice, then consider two image workers.

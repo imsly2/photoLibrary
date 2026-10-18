@@ -957,7 +957,7 @@ class Library:
         try:
             from library.rating import rate_step
 
-            if rate_step(self.root):
+            if rate_step(self.root, io_context=io_context):
                 return True
         except Exception as exc:
             log_drain_error("rating", exc)

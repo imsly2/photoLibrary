@@ -1,0 +1,61 @@
+{
+  "label": "rating-old-40",
+  "fixture": {
+    "jpg": 40,
+    "mov": 1,
+    "source": "J:\\Pictures\\1. Favorites Pictures",
+    "copy": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench-head\\.qa\\perf-rating-old\\pictures"
+  },
+  "scan": {
+    "files": 41,
+    "seconds": 3.32,
+    "filesPerSecond": 12.36,
+    "perFileMeanFirstTenth": 0.0906,
+    "perFileMeanLastTenth": 0.0618,
+    "lastToFirst": 0.682,
+    "jsonFilesWritten": 159,
+    "jsonMBWritten": 1.7,
+    "jsonKBPerFile": 41.4,
+    "profiled": false,
+    "stages": {}
+  },
+  "drain": {
+    "steps": 123,
+    "seconds": 65.83,
+    "perSlotMeanSeconds": {
+      "thumb": 0.136,
+      "poster": 0.183,
+      "preview": 0.31,
+      "proxy": 0.529,
+      "playback": 1.065,
+      "None": 1.1
+    },
+    "perSlotCount": {
+      "thumb": 40,
+      "poster": 1,
+      "preview": 40,
+      "proxy": 1,
+      "playback": 1,
+      "None": 40
+    },
+    "jsonFilesWritten": 394,
+    "jsonMBWritten": 1.23,
+    "stages": {},
+    "counters": {
+      "pickCalls": 124,
+      "pickSeconds": 0.108,
+      "pickMeanSeconds": 0.0009,
+      "encodeCalls": 83,
+      "encodeSeconds": 18.553,
+      "driveScans": 0,
+      "driveScanSeconds": 0,
+      "catalogResyncs": 124,
+      "catalogParses": 87,
+      "catalogScandirs": 51,
+      "bookkeepingMsPerFile": 1126.0
+    }
+  },
+  "undoEntryBytes": [
+    102761
+  ]
+}

@@ -1,0 +1,78 @@
+{
+ "IMG_0023.JPG": {
+  "decodeMs": 132,
+  "computeMs": 158,
+  "metrics": {
+   "sharpness": 0.9919830316673658,
+   "laplacianVar": 340.258326275762,
+   "sharpnessNorm": 434.3575447760442,
+   "exposure": 0.9101447759433805,
+   "meanBrightness": 0.4218449885060233,
+   "contrast": 0.6370780800376561,
+   "clipDark": 0.010264756944444444,
+   "clipBright": 0.03195210375816993,
+   "faceQuality": 0.9999999974583552,
+   "faceCount": 2.0,
+   "faceSharpness": 0.9999999995732912,
+   "aesthetic": null,
+   "basic": null
+  }
+ },
+ "IMG_0074.JPG": {
+  "decodeMs": 139,
+  "computeMs": 48,
+  "metrics": {
+   "sharpness": 0.9999999912270859,
+   "laplacianVar": 1307.9320990457973,
+   "sharpnessNorm": 1669.6437130384463,
+   "exposure": 0.727901039382757,
+   "meanBrightness": 0.2897198693611432,
+   "contrast": 0.4402640032026968,
+   "clipDark": 0.0007059334150326797,
+   "clipBright": 0.025049785539215687,
+   "faceQuality": 0.9999999999998028,
+   "faceCount": 2.0,
+   "faceSharpness": 1.0,
+   "aesthetic": null,
+   "basic": null
+  }
+ },
+ "IMG_0165.JPG": {
+  "decodeMs": 132,
+  "computeMs": 45,
+  "metrics": {
+   "sharpness": 0.960576873046536,
+   "laplacianVar": 227.96264744035025,
+   "sharpnessNorm": 291.0062390731596,
+   "exposure": 0.9282139510080198,
+   "meanBrightness": 0.46013772247052415,
+   "contrast": 0.5232876234084899,
+   "clipDark": 0.0,
+   "clipBright": 0.07147926879084968,
+   "faceQuality": 0.9999186623103054,
+   "faceCount": 2.0,
+   "faceSharpness": 0.9998373246206106,
+   "aesthetic": null,
+   "basic": null
+  }
+ },
+ "IMG_0222.JPG": {
+  "decodeMs": 136,
+  "computeMs": 47,
+  "metrics": {
+   "sharpness": 0.9995879792002884,
+   "laplacianVar": 549.5264957713772,
+   "sharpnessNorm": 701.4993052637067,
+   "exposure": 0.9113840280823149,
+   "meanBrightness": 0.5023565705898372,
+   "contrast": 0.5796419041860249,
+   "clipDark": 0.0,
+   "clipBright": 0.1145437602124183,
+   "faceQuality": 0.9999925644550032,
+   "faceCount": 2.0,
+   "faceSharpness": 0.9999851289100062,
+   "aesthetic": null,
+   "basic": null
+  }
+ }
+}
