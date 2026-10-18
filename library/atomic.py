@@ -14,6 +14,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
+from library.folder_library import SourceUnavailable
 from library.paths import library_path
 
 
@@ -278,7 +279,10 @@ def checkpoint_transactions(root: Path) -> None:
             if type(relative) is not str or change.get("after") is None or relative in seen:
                 continue
             seen.add(relative)
-            fsync_file(library_path(root, relative))
+            try:
+                fsync_file(library_path(root, relative))
+            except SourceUnavailable:
+                pass
     for tdir in dirs:
         shutil.rmtree(tdir, ignore_errors=False)
     base = _transaction_root(root)
@@ -316,13 +320,14 @@ def recover_transactions(root: Path) -> dict[str, Any]:
         changes = manifest.get("changes") or []
         if state == "committed" and _leave_scan_transactions(root):
             continue
-        if state == "prepared":
+        if state not in {"prepared", "committed"}:
+            continue
+        side = "before" if state == "prepared" else "after"
+        try:
             for change in changes:
-                apply_payload(root, change["path"], change["before"])
-        elif state == "committed":
-            for change in changes:
-                apply_payload(root, change["path"], change["after"])
-        else:
+                apply_payload(root, change["path"], change[side])
+        except SourceUnavailable:
+            # Replays are idempotent; retry once that folder is reachable again.
             continue
         shutil.rmtree(tdir, ignore_errors=False)
         recovered.append({"id": manifest.get("id"), "state": state})

@@ -32,7 +32,14 @@ def default_root() -> Path:
 
 
 def library_path(root: Path, relative: str) -> Path:
-    """Resolve a library-relative path using `/` separators."""
+    """Resolve a library-relative path using `/` separators.
+
+    ``source:<id>/<name>`` addresses a file in that source's folder library.
+    """
+    if relative.startswith("source:"):
+        from library.folder_library import resolve_logical
+
+        return resolve_logical(root, relative)
     rel = relative.replace("\\", "/")
     if rel.startswith("/") or ".." in Path(rel).parts:
         raise PathError("path-outside-root")
