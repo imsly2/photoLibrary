@@ -1,0 +1,167 @@
+{
+  "noPreview": [
+    {
+      "file": "IMG_0023.JPG",
+      "stage": {
+        "w": 1330,
+        "h": 742
+      },
+      "original": {
+        "hidden": false,
+        "loaded": true,
+        "which": "original",
+        "x": 168,
+        "y": 0,
+        "w": 993,
+        "h": 742
+      },
+      "preview": {
+        "hidden": true,
+        "loaded": false,
+        "which": null,
+        "x": 0,
+        "y": -63,
+        "w": 0,
+        "h": 0
+      },
+      "placeholder": null,
+      "check": {
+        "aspect": 1.338,
+        "expected": 1.339,
+        "aspectOk": true,
+        "centered": true,
+        "inside": true,
+        "touches": true
+      },
+      "screenshot": "no-preview-IMG_0023.JPG.png"
+    },
+    {
+      "file": "IMG_0240.JPG",
+      "stage": {
+        "w": 1330,
+        "h": 742
+      },
+      "original": {
+        "hidden": false,
+        "loaded": true,
+        "which": "original",
+        "x": 388,
+        "y": 0,
+        "w": 554,
+        "h": 742
+      },
+      "preview": {
+        "hidden": true,
+        "loaded": false,
+        "which": null,
+        "x": 0,
+        "y": -63,
+        "w": 0,
+        "h": 0
+      },
+      "placeholder": null,
+      "check": {
+        "aspect": 0.747,
+        "expected": 0.747,
+        "aspectOk": true,
+        "centered": true,
+        "inside": true,
+        "touches": true
+      },
+      "screenshot": "no-preview-IMG_0240.JPG.png"
+    },
+    {
+      "file": "IMG_2518.JPG",
+      "stage": {
+        "w": 1330,
+        "h": 742
+      },
+      "original": {
+        "hidden": false,
+        "loaded": true,
+        "which": "original",
+        "x": 387,
+        "y": 0,
+        "w": 557,
+        "h": 742
+      },
+      "preview": {
+        "hidden": true,
+        "loaded": false,
+        "which": null,
+        "x": 0,
+        "y": -63,
+        "w": 0,
+        "h": 0
+      },
+      "placeholder": null,
+      "check": {
+        "aspect": 0.751,
+        "expected": 0.75,
+        "aspectOk": true,
+        "centered": true,
+        "inside": true,
+        "touches": true
+      },
+      "screenshot": "no-preview-IMG_2518.JPG.png"
+    }
+  ],
+  "previewArrives": {
+    "file": "IMG_0240.JPG",
+    "before": {
+      "stage": {
+        "w": 1330,
+        "h": 742
+      },
+      "original": {
+        "hidden": false,
+        "loaded": true,
+        "which": "original",
+        "x": 388,
+        "y": 0,
+        "w": 554,
+        "h": 742
+      },
+      "preview": {
+        "hidden": true,
+        "loaded": false,
+        "which": null,
+        "x": 0,
+        "y": -63,
+        "w": 0,
+        "h": 0
+      },
+      "placeholder": null
+    },
+    "after": {
+      "stage": {
+        "w": 1330,
+        "h": 742
+      },
+      "original": {
+        "hidden": false,
+        "loaded": true,
+        "which": "original",
+        "x": 388,
+        "y": 0,
+        "w": 554,
+        "h": 742
+      },
+      "preview": {
+        "hidden": false,
+        "loaded": true,
+        "which": "preview",
+        "x": 388,
+        "y": 0,
+        "w": 554,
+        "h": 742
+      },
+      "placeholder": null
+    },
+    "previewShown": true,
+    "previewSameBoxAsOriginalBefore": true,
+    "originalDidNotMove": true,
+    "screenshot": "preview-arrived-IMG_0240.JPG.png"
+  },
+  "pass": true
+}

@@ -13,7 +13,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
-from library import folder_library
+from library import folder_library, processing_log
 from library.atomic import transact
 from library.catalog_io import (
     item_rel,
@@ -776,16 +776,16 @@ def _job_if_ready(
     return item_id, slot, source, caps[slot]
 
 
-def next_rendition_job(root: Path, *, grid_only: bool = False) -> tuple[str, str, Path, int] | None:
+def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
     profile_counters["pick_calls"] += 1
     started = time.perf_counter()
     try:
-        return _next_rendition_job(root, grid_only=grid_only)
+        return _next_rendition_job(root)
     finally:
         profile_counters["pick_seconds"] += time.perf_counter() - started
 
 
-def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path, int] | None:
+def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
     from library.item_index import resync, root_key, wanted_ids
 
     thumb_px, preview_px, proxy_width = _settings_caps(root)
@@ -814,7 +814,7 @@ def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path,
         if item is None:
             continue
         if item.get("kind") == "video":
-            slots = ("poster",) if grid_only else ("poster", "proxy", "playback")
+            slots = ("poster", "proxy", "playback")
         else:
             slots = ("preview",)
         for slot in slots:
@@ -827,8 +827,6 @@ def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path,
             job = take(item_id, slot)
             if job is not None:
                 return job
-    if grid_only:
-        return None
 
     video_waiting = bool(cache.queued["proxy"] or cache.queued["playback"])
     if video_waiting and cache.since_video >= _VIDEO_EVERY_PREVIEWS:
@@ -1031,9 +1029,7 @@ def _source_signature(path: Path) -> tuple[int, int, int]:
     return stat.st_size, stat.st_mtime_ns, stat.st_ino
 
 
-def drain_step(
-    root: Path, *, io_context=nullcontext, grid_only: bool = False, sweep: bool = True
-) -> bool:
+def drain_step(root: Path, *, io_context=nullcontext, sweep: bool = True) -> bool:
     """Encode one queued file. Caller holds the catalog lock; encoding releases it.
 
     Several threads may call this at once (``encoder_count``); each claims its
@@ -1043,7 +1039,7 @@ def drain_step(
     global last_published_slot
     last_published_slot = None
     sweep_library_rendition_tmps(root)
-    job = next_rendition_job(root, grid_only=grid_only)
+    job = next_rendition_job(root)
     if job is None:
         if not sweep or encoding(root):
             return False
@@ -1084,6 +1080,7 @@ def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_
     owner = try_load_source(root, owner_id)
     owner_origin = clone(owner.get("origin")) if owner else None
     outcome = "error"
+    encode_sec = None
     signature = None
     try:
         with io_context():
@@ -1105,7 +1102,9 @@ def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_
                         sibling = _ready_preview_sibling(dest)
                         if sibling is not None:
                             encode_source = sibling
+                    started = time.perf_counter()
                     outcome = "ready" if writer(encode_source, stage, cap) else "error"
+                    encode_sec = time.perf_counter() - started
             except OSError:
                 outcome = "error"
         current = try_load_item(root, item_id)
@@ -1138,6 +1137,7 @@ def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_
             publish_not_applicable(root, item_id, slot)
         else:
             publish_error(root, item_id, slot)
+        processing_log.note_slot(slot, outcome, encode_sec)
         return True
     finally:
         try:

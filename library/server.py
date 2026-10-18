@@ -21,6 +21,7 @@ from library.httpjson import encode, request_json
 from library.lock import FairLock, WriteLock
 from library.log import append_error
 from library.paths import normalize_root, root_text, roots_equal
+from library import processing_log
 from library.service import Library
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
@@ -34,7 +35,9 @@ def unlocked_io(lock):
     try:
         yield
     finally:
+        waited = time.perf_counter()
         lock.acquire()
+        processing_log.note_lock_wait(time.perf_counter() - waited)
 
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
@@ -103,6 +106,7 @@ def _is_client_disconnect(exc: BaseException) -> bool:
 
 
 def _scan_progress(kind: str, rel: str) -> None:
+    processing_log.note_read(kind)
     print(f"{kind} {rel}", flush=True)
 
 
@@ -113,13 +117,14 @@ def start_rescan_worker(lock: threading.Lock, library: Library, source_id: str) 
     def rescan_worker() -> None:
         lock.acquire()
         try:
-            library.finish_http_rescan(
-                source,
-                scan_path,
-                on_progress=_scan_progress,
-                between=lambda: _pause_for_readers(lock),
-                io_context=lambda: unlocked_io(lock),
-            )
+            with processing_log.scan(library.root, str(scan_path)):
+                library.finish_http_rescan(
+                    source,
+                    scan_path,
+                    on_progress=_scan_progress,
+                    between=lambda: _pause_for_readers(lock),
+                    io_context=lambda: unlocked_io(lock),
+                )
         except Exception as exc:
             traceback.print_exc()
             append_error(library.root, f"/api/sources/{source_id}/rescan", f"rescan-worker:{type(exc).__name__}")
@@ -138,9 +143,10 @@ def _pause_for_readers(lock: threading.Lock) -> None:
     lock.release()
     try:
         time.sleep(0)
-        slept = time.perf_counter() if profile else 0.0
+        slept = time.perf_counter()
     finally:
         lock.acquire()
+        processing_log.note_lock_wait(time.perf_counter() - slept)
         if profile:
             from library.scan import note_scan_yield
 
@@ -374,13 +380,14 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 def scan_worker() -> None:
                     lock.acquire()
                     try:
-                        library.finish_http_scan(
-                            body,
-                            source,
-                            on_progress=_scan_progress,
-                            between=yield_scan,
-                            io_context=lambda: unlocked_io(lock),
-                        )
+                        with processing_log.scan(library.root, str(body.get("path") or source.get("name") or "")):
+                            library.finish_http_scan(
+                                body,
+                                source,
+                                on_progress=_scan_progress,
+                                between=yield_scan,
+                                io_context=lambda: unlocked_io(lock),
+                            )
                     except Exception as exc:
                         traceback.print_exc()
                         append_error(library.root, "/api/sources", f"scan-worker:{type(exc).__name__}")
@@ -1052,6 +1059,7 @@ def serve(root: Path) -> int:
 
         def drain_once() -> bool:
             worked = library.drain_step(io_context=io_unlocked)
+            processing_log.tick(library.root)
             reset = None if worked else library.take_folder_reset()
             if reset is not None:
                 start_rescan_worker(handler.lock, library, reset)

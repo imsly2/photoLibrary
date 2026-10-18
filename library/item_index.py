@@ -198,6 +198,13 @@ def remember_write(root: Path, item_id: str, item: dict[str, Any]) -> None:
         cache.dir_token = _token(root)
 
 
+def queued_counts(root: Path) -> dict[str, int]:
+    """Waiting work per slot as of the last resync. Never touches the disk."""
+    with _guard:
+        cache = _caches.get(root_key(root))
+        return {slot: len(ids) for slot, ids in cache.queued.items()} if cache else {}
+
+
 def iter_item_ids(root: Path) -> list[str]:
     if _in_batch(root):
         cache = _caches.get(root_key(root))

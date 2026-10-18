@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from library.folder_library import SourceUnavailable
-from library.paths import library_path
+from library.paths import library_path, normalize_root
 
 
 def dumps_canonical(obj: Any) -> str:
@@ -29,6 +29,9 @@ _tx_seq = 0
 _tx_seq_lock = threading.Lock()
 _open_tx_roots: dict[str, int] = {}
 _open_tx_lock = threading.Lock()
+# A committed manifest never changes again, so a read during a long scan only
+# opens each one once instead of once per status request.
+_committed_seen: dict[str, set[str]] = {}
 _TX_PREFIX = re.compile(r"^(\d{20})-(\d{08})-")
 
 
@@ -53,7 +56,7 @@ def holding_open_transactions(root: Path):
     Other threads may call `recover` while a scan is appending. They must not
     replay or delete those manifests.
     """
-    key = str(root.resolve())
+    key = str(normalize_root(root))
     with _open_tx_lock:
         _open_tx_roots[key] = _open_tx_roots.get(key, 0) + 1
     try:
@@ -68,7 +71,7 @@ def holding_open_transactions(root: Path):
 
 
 def transactions_held(root: Path) -> bool:
-    key = str(root.resolve())
+    key = str(normalize_root(root))
     with _open_tx_lock:
         return _open_tx_roots.get(key, 0) > 0
 
@@ -248,9 +251,11 @@ def purge_orphan_undo_files(root: Path) -> None:
 
 def _transaction_dirs(root: Path) -> list[Path]:
     base = _transaction_root(root)
-    if not base.exists():
+    try:
+        with os.scandir(base) as entries:
+            dirs = [Path(entry.path) for entry in entries if entry.is_dir()]
+    except FileNotFoundError:
         return []
-    dirs = [path for path in base.iterdir() if path.is_dir()]
     dirs.sort(key=_transaction_sort_key)
     return dirs
 
@@ -316,15 +321,25 @@ def recover_transactions(root: Path) -> dict[str, Any]:
             fold_open_journals(root)
             seal_open_entries(root)
         return {"recovered": recovered}
-    for tdir in _transaction_dirs(root):
+    leave_committed = _leave_scan_transactions(root)
+    dirs = _transaction_dirs(root)
+    with _open_tx_lock:
+        seen = _committed_seen.setdefault(str(normalize_root(root)), set())
+        seen.intersection_update(tdir.name for tdir in dirs)
+    for tdir in dirs:
+        if leave_committed and tdir.name in seen:
+            continue
         manifest_path = tdir / "manifest.json"
-        if not manifest_path.exists():
+        try:
+            manifest = load_json(manifest_path)
+        except FileNotFoundError:
             shutil.rmtree(tdir, ignore_errors=True)
             continue
-        manifest = load_json(manifest_path)
         state = manifest.get("state")
         changes = manifest.get("changes") or []
-        if state == "committed" and _leave_scan_transactions(root):
+        if state == "committed" and leave_committed:
+            with _open_tx_lock:
+                seen.add(tdir.name)
             continue
         if state not in {"prepared", "committed"}:
             continue

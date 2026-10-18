@@ -1968,8 +1968,8 @@
     }, STILL_STALL_MS);
   }
 
-  function stillPlaceholder(item) {
-    const status = ((item && item.renditions || {}).status || {})[stillWhich(item)];
+  function stillPlaceholder(item, which) {
+    const status = ((item && item.renditions || {}).status || {})[which || stillWhich(item)];
     return t(status === "queued" || (item && String(item.id).indexOf("pending-") === 0)
       ? "creatingPreview" : "previewUnavailable");
   }
@@ -2195,29 +2195,10 @@
     const w = Number(meta.width) || 0;
     const h = Number(meta.height) || 0;
     if (w > 0 && h > 0) {
-      return { w: w, h: h };
+      // EXIF orientation 5-8 stores the picture a quarter turn off; browsers and previews show it upright.
+      return Number(meta.orientation) >= 5 ? { w: h, h: w } : { w: w, h: h };
     }
     return null;
-  }
-
-  function adoptMediaSize(item, el) {
-    const meta = itemPixelSize(item);
-    if (meta) {
-      naturalW = meta.w;
-      naturalH = meta.h;
-      return true;
-    }
-    if (el && el.videoWidth > 0 && el.videoHeight > 0) {
-      naturalW = el.videoWidth;
-      naturalH = el.videoHeight;
-      return true;
-    }
-    if (el && el.naturalWidth > 0 && el.naturalHeight > 0) {
-      naturalW = el.naturalWidth;
-      naturalH = el.naturalHeight;
-      return true;
-    }
-    return false;
   }
 
   function resetViewTransform() {
@@ -3283,9 +3264,16 @@
         if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId || viewer.hidden) {
           return;
         }
+        const fresh = !naturalW;
+        lockLayoutSize(item, viewerOriginal);
         viewerOriginal.hidden = false;
+        viewerPlaceholder.hidden = true;
         showingOriginal = true;
-        applyTransform();
+        if (fresh) {
+          applyFitMode();
+        } else {
+          applyTransform();
+        }
         syncOriginalChrome();
       };
       viewerOriginal.onerror = function () {
@@ -3331,6 +3319,9 @@
       return;
     }
     if (!stillPreviewReady(item)) {
+      if (!viewerPlaceholder.hidden) {
+        viewerPlaceholder.textContent = stillPlaceholder(item, "preview");
+      }
       return;
     }
     const url = mediaUrl(item.id, "preview");
@@ -3346,11 +3337,12 @@
       }
       showViewerPlaceholder(false);
       viewerImage.hidden = false;
-      naturalW = viewerImage.naturalWidth;
-      naturalH = viewerImage.naturalHeight;
+      lockLayoutSize(item, viewerImage);
       if (fitOnLoad) {
         applyFitMode();
         fitOnLoad = false;
+      } else {
+        applyTransform();
       }
       loadViewerOriginal(item);
     };
@@ -3359,7 +3351,7 @@
         return;
       }
       viewerImage.removeAttribute("src");
-      showViewerPlaceholder(true);
+      showViewerPlaceholder(true, item);
     };
     viewerImage.src = url;
     viewerImage.setAttribute("data-which", "preview");
@@ -3506,9 +3498,10 @@
     });
   }
 
-  function showViewerPlaceholder(show) {
+  function showViewerPlaceholder(show, item) {
     viewerPlaceholder.hidden = !show;
     if (show) {
+      viewerPlaceholder.textContent = stillPlaceholder(item, item && item.kind === "video" ? "poster" : "preview");
       viewerImage.hidden = true;
       resetViewerOriginal();
     }
@@ -4300,8 +4293,11 @@
     if (!stillPreviewReady(item)) {
       hintWanted(item.id);
       viewerImage.removeAttribute("src");
-      showViewerPlaceholder(true);
+      showViewerPlaceholder(true, item);
       watchViewerStill(item.id);
+      if (lockLayoutSize(item)) {
+        applyFitMode();
+      }
       if (item.available !== false) {
         loadViewerOriginal(item);
       }
@@ -4317,8 +4313,7 @@
     viewerImage.onload = function () {
       showViewerPlaceholder(false);
       viewerImage.hidden = false;
-      naturalW = viewerImage.naturalWidth;
-      naturalH = viewerImage.naturalHeight;
+      lockLayoutSize(item, viewerImage);
       if (fitOnLoad) {
         applyFitMode();
         fitOnLoad = false;
@@ -4327,7 +4322,7 @@
     };
     viewerImage.onerror = function () {
       viewerImage.removeAttribute("src");
-      showViewerPlaceholder(true);
+      showViewerPlaceholder(true, item);
     };
     viewerImage.src = url;
     viewerImage.setAttribute("data-which", "preview");
@@ -4363,7 +4358,7 @@
     rotation = 0;
     hintWanted(item.id);
     if (!stillPreviewReady(item)) {
-      showViewerPlaceholder(true);
+      showViewerPlaceholder(true, item);
       viewerVideo.hidden = true;
       return;
     }

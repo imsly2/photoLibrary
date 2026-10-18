@@ -531,11 +531,15 @@ The grid shows a placeholder until the thumb exists, then the thumb.
 Queued thumbnails say “Creating preview…”; a failed or missing preview has
 the unavailable message instead, so waiting work is distinguishable from failure.
 Grid thumbnails and video posters take priority across the folder, ahead of
-viewer previews and full-length video encodes: every picture gets its thumb
-before any background preview starts, so the grid fills first and browsing
-can begin while the bigger previews are still being made. They begin while
-the folder is still being scanned. A picture opened in the viewer jumps the
-line: its preview is made next, and its thumb is scaled from that preview.
+viewer previews and full-length video encodes: a waiting thumb always goes
+before a background preview, so the grid fills first and browsing can begin
+while the bigger previews are still being made. All of it begins while the
+folder is still being scanned — whenever no thumb is waiting, even mid-scan,
+the encoders make previews instead of sitting idle. A picture opened in the
+viewer jumps the line: its preview is made next, and its thumb is scaled
+from that preview. Status reads never get slower as a scan goes on: the
+catalog lock is held for a fixed-size snapshot, not for work that grows with
+the number of files already read.
 Several files encode at once — half the computer's processor threads, at most
 6 — at below-normal priority so browsing stays responsive. Reading original
 bytes and encoding previews leave catalog and media requests free to respond;
@@ -570,9 +574,22 @@ original, writing the record, undo history, and the folder copy of the
 records. It must not re-read the whole catalog or rewrite growing files
 for every picture.
 
+**Processing log.** Every Add folder and rescan writes one plain-text
+timeline to `library-data/logs/processing/<date>-<time> <folder>.log`, so a
+slow run can be read afterwards instead of guessed at. Every 2 s it writes a
+line with seconds since the start, pictures read, thumbs / previews / video
+files finished in that stretch, how many are still waiting, and the longest
+wait for the catalog lock. Then it writes the milestones (first thumb, every
+picture read, every thumb, first preview, everything done) with their times,
+plus the average encode time per kind. The log closes when nothing is
+waiting, or after 10 minutes.
+
 **Check (speed):** `python -m tests.perf.bench` starts a scratch server on
 a copy of the fixture, adds the folder through HTTP, opens one picture
 mid-run, and prints each budget with its measured value and PASS/FAIL.
+While processing, its page stand-in sends the same requests the real page
+does each second (jobs, people, tags, items, groups, sources, settings), in
+parallel. It copies the scratch server's processing log next to its JSON.
 Exit code is nonzero when any budget fails. `--count N` changes the
 fixture size; `--count 400` is the scaling run. Artifact: the bench JSON
 under `docs/features/processing-feedback/Rev1.0/assets/perf-bench/`.
@@ -720,7 +737,16 @@ A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
 
 For a photo the viewer shows `preview.webp` first, then the original if
-available, with no “Showing original” button or notification. Reveal in
+available, with no “Showing original” button or notification. Before the
+preview exists the viewer still knows the picture's shape: it lays out from
+the catalog's width and height (swapped for a camera-rotated photo, EXIF
+orientation 5–8), fitted and centered, never at the original's raw pixel
+size from the corner. If the original loads first it shows in that box;
+when the preview arrives it takes the same box, so nothing jumps, resizes,
+or moves. Until either one shows, the stage says “Creating preview…” while
+the preview is queued, and “Preview is not available” only when it failed
+or the picture is missing. The viewer keeps watching for a queued preview
+for as long as it stays open. Reveal in
 Explorer and Open sit side by side. Reveal opens the original's containing
 folder on this computer whenever the file is here (`explorer.exe` argv
 `/select,fullpath` on Windows — comma glued, no extra quotes, so paths

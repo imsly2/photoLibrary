@@ -1,0 +1,37 @@
+Library processing log - J:\slyOS\projects\photoLibrary\.qa\bench\run-_oiuri51\pictures-300
+Started 2026-10-18 10:45:46, 6 encoders at once
+
+   sec   read  +thumb +preview +video  waiting thumb/preview/video  lock wait max
+   2.0     48      27        1      0  13 / 39 / 0                      125 ms
+   4.4     87      43        3      0  17 / 83 / 0                      223 ms
+   6.6    116      35        4      0  6 / 103 / 0                      154 ms
+   8.7    142      23       14      0  14 / 120 / 0                     143 ms
+  10.9    170      32        0      0  4 / 142 / 0                      142 ms
+  14.8    213      27        9      0  18 / 174 / 0                     138 ms
+  17.1    236      28        0      0  18 / 202 / 3                     198 ms
+  19.2    259      29        0      0  5 / 218 / 3                       93 ms
+  21.2    281      22        5      1  14 / 244 / 2                     205 ms
+  25.4    301      19        3      0  15 / 261 / 2                    2393 ms
+  27.4    301      15        8      1  0 / 253 / 1                     2311 ms
+  29.8    301       0       25      1  0 / 228 / 0                       22 ms
+  31.9    301       0       29      0  0 / 199 / 0                       77 ms
+  34.2    301       0       27      0  0 / 172 / 0                       24 ms
+  36.2    301       0       27      0  0 / 145 / 0                       30 ms
+  38.8    301       0       37      0  0 / 108 / 0                       49 ms
+  41.1    301       0       27      0  0 / 81 / 0                        58 ms
+  43.2    301       0       31      0  0 / 50 / 0                        46 ms
+  45.5    301       0       30      0  0 / 20 / 0                        44 ms
+  48.1    301       0       20      0  0 / 0 / 0                         59 ms
+
+Milestones (seconds from start)
+  first thumb              0.4
+  first preview            0.6
+  every picture read      25.3  (301 files, 12/s; 0 unchanged)
+  every thumb             26.6
+  everything done         48.2
+
+Average encode (ffmpeg, per file)
+  poster       278 ms  x1
+  preview      404 ms  x300
+  proxy       1202 ms  x1
+  thumb        261 ms  x300

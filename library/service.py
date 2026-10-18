@@ -916,7 +916,7 @@ class Library:
         encoder threads. Never runs faces, objects, rating or transcripts."""
         if self._jobs_paused or self._inferring:
             return False
-        return drain_queued_jpegs(self.root, io_context=io_context, grid_only=self._scanning, sweep=False)
+        return drain_queued_jpegs(self.root, io_context=io_context, sweep=False)
 
     def drain_step(self, *, io_context=nullcontext) -> bool:
         if getattr(self, "_jobs_paused", False):
@@ -924,7 +924,7 @@ class Library:
         if getattr(self, "_inferring", False):
             return False
         self.ensure_settings()
-        if drain_queued_jpegs(self.root, io_context=io_context, grid_only=self._scanning):
+        if drain_queued_jpegs(self.root, io_context=io_context):
             return True
         if getattr(self, "_scanning", False) or rendition_encoding(self.root):
             return False

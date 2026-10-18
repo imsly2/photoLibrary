@@ -1332,8 +1332,10 @@ def _ui_emulator_loop(
                 _poll_lock_trace(state, now)
                 if state.milestones.everything is None:
                     route = "/api/items"
-                    elapsed, status, _ = _http_json(base, "/api/items", timeout=120.0)
-                    _note_api(state, "/api/items", status)
+                    results = _catalog_refresh(base)
+                    for path, (elapsed, status) in results.items():
+                        _note_api(state, path.split("?")[0], status)
+                    elapsed, status = results["/api/items"]
                     if status == 200:
                         state.items_latency_samples.append(
                             {
@@ -1348,6 +1350,36 @@ def _ui_emulator_loop(
                 state.poll_in_flight = False
 
         time.sleep(0.05)
+
+
+PAGE_CATALOG_ROUTES = (
+    "/api/jobs",
+    "/api/people",
+    "/api/tags",
+    "/api/items",
+    "/api/groups?level=days",
+    "/api/sources",
+    "/api/settings",
+)
+
+
+def _catalog_refresh(base: str) -> dict[str, tuple[float, int | None]]:
+    """library.js loadCatalog: these requests leave together, once a second while processing."""
+    out: dict[str, tuple[float, int | None]] = {}
+
+    def one(path: str) -> None:
+        try:
+            elapsed, status, _ = _http_json(base, path, timeout=120.0)
+            out[path] = (elapsed, status)
+        except (urllib.error.URLError, TimeoutError, OSError):
+            out[path] = (0.0, None)
+
+    threads = [threading.Thread(target=one, args=(path,)) for path in PAGE_CATALOG_ROUTES]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    return out
 
 
 def _heavy_items_loop(base: str, stop: threading.Event, state: RunState) -> None:
@@ -1747,6 +1779,21 @@ def _build_results(
     return rows, bk
 
 
+def _copy_processing_log(lib_root: Path, dest: Path, wait_sec: float = 6.0) -> Path | None:
+    """The server closes its log on the first idle tick after processing ends."""
+    deadline = time.monotonic() + wait_sec
+    while True:
+        logs = sorted((lib_root / "logs" / "processing").glob("*.log"))
+        text = logs[-1].read_text(encoding="utf-8") if logs else ""
+        if "Milestones" in text or time.monotonic() > deadline:
+            break
+        time.sleep(0.25)
+    if not text:
+        return None
+    dest.write_text(text, encoding="utf-8")
+    return dest
+
+
 def _print_info_rows(info: dict[str, Any]) -> None:
     lag = info.get("portableMirrorLagSec")
     if lag is None and info.get("portableMirrorChecked"):
@@ -1961,6 +2008,9 @@ def run_bench(
         artifact.write_text(text, encoding="utf-8")
         latest.write_text(text, encoding="utf-8")
         print(f"Artifact: {artifact}")
+        processing_log = _copy_processing_log(lib_root, artifact.with_suffix(".log"))
+        if processing_log is not None:
+            print(f"Processing log: {processing_log}")
 
         exit_code = 0 if all(r.get("result") == "PASS" for r in rows) else 1
     except HarnessError as exc:
