@@ -1066,6 +1066,7 @@ def serve(root: Path) -> int:
             return worked
 
         def work_loop(step) -> None:
+            FairLock.mark_background()
             while not drain_stop.is_set():
                 worked = False
                 try:

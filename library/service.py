@@ -1517,25 +1517,9 @@ def _sort_items(
         items = sorted(items, key=_location_category)
         return items
 
-    def key(item: dict[str, Any]) -> tuple:
-        if sort == "name":
-            return (item.get("filename") or "", item.get("capturedAt") or "", item["id"])
-        if sort == "rating":
-            rating = item.get("rating") if isinstance(item.get("rating"), dict) else {}
-            stars = rating.get("stars")
-            pick = 1 if rating.get("pick") is True else 0
-            suggested = rating.get("suggested")
-            return (
-                stars if type(stars) is int else 0,
-                pick,
-                suggested if type(suggested) is int else 0,
-                item.get("capturedAt") or "",
-                item["id"],
-            )
-        return (item.get("capturedAt") or "", item["id"])
+    from library.grid_order import item_key
 
-    items = sorted(items, key=key, reverse=reverse)
-    return items
+    return sorted(items, key=item_key(sort), reverse=reverse)
 
 
 def _read_relative_json(root: Path, relative: str) -> Any:

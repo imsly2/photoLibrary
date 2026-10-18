@@ -90,12 +90,11 @@ def encoding(root: Path) -> bool:
     return any(claim[0] == key for claim in _in_flight)
 
 
-def _settings_caps(root: Path) -> tuple[int, int, int]:
-    path = settings_path(root)
-    if not path.exists():
-        data = defaults()
-    else:
-        data = load_settings_file(root)
+def _settings(root: Path) -> dict[str, Any]:
+    return load_settings_file(root) if settings_path(root).exists() else defaults()
+
+
+def _settings_caps(data: dict[str, Any]) -> tuple[int, int, int]:
     return int(data["thumbPx"]), int(data["previewPx"]), int(data["proxyWidth"])
 
 
@@ -786,9 +785,11 @@ def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
 
 
 def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
-    from library.item_index import resync, root_key, wanted_ids
+    from library.grid_order import descending
+    from library.item_index import resync, root_key, set_grid_order, wanted_ids
 
-    thumb_px, preview_px, proxy_width = _settings_caps(root)
+    settings = _settings(root)
+    thumb_px, preview_px, proxy_width = _settings_caps(settings)
     caps = {
         "thumb": thumb_px,
         "poster": thumb_px,
@@ -797,6 +798,7 @@ def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
         "playback": 0,
     }
     cache = resync(root)
+    set_grid_order(root, settings["sort"], descending(settings))
     key = root_key(root)
 
     def take(item_id: str, slot: str) -> tuple[str, str, Path, int] | None:
@@ -823,7 +825,7 @@ def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
                 return job
 
     for slot in ("thumb", "poster"):
-        for item_id in list(cache.queued[slot]):
+        for item_id in cache.in_grid_order(slot):
             job = take(item_id, slot)
             if job is not None:
                 return job
@@ -831,13 +833,13 @@ def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
     video_waiting = bool(cache.queued["proxy"] or cache.queued["playback"])
     if video_waiting and cache.since_video >= _VIDEO_EVERY_PREVIEWS:
         for slot in ("proxy", "playback"):
-            for item_id in list(cache.queued[slot]):
+            for item_id in cache.in_grid_order(slot):
                 job = take(item_id, slot)
                 if job is not None:
                     return job
 
     for slot in ("preview", "proxy", "playback"):
-        for item_id in list(cache.queued[slot]):
+        for item_id in cache.in_grid_order(slot):
             job = take(item_id, slot)
             if job is not None:
                 return job

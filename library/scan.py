@@ -146,6 +146,29 @@ def iter_media_files(scan_path: Path, library_root: Path) -> list[tuple[str, Pat
     return found
 
 
+def _in_grid_order(
+    root: Path, source: dict[str, Any], files: list[tuple[str, Path]]
+) -> list[tuple[str, Path]]:
+    """Unchanged files first (they are skipped), then new ones in grid order,
+    so each new tile lands below the ones already showing."""
+    from library.grid_order import descending
+    from library.metadata import quick_captured_at
+
+    settings = load_settings_file(root) if settings_path(root).exists() else defaults()
+    known = source.get("files") or {}
+    unchanged = [row for row in files if _unchanged(known.get(row[0]), row[1], root)]
+    if len(unchanged) == len(files):
+        return files
+    seen = {rel for rel, _ in unchanged}
+    fresh = [row for row in files if row[0] not in seen]
+    if settings["sort"] == "name":
+        fresh.sort(key=lambda row: (Path(row[0]).name, row[0]), reverse=descending(settings))
+    else:
+        dates = {rel: quick_captured_at(path) for rel, path in fresh}
+        fresh.sort(key=lambda row: (dates[row[0]], row[0]), reverse=descending(settings))
+    return unchanged + fresh
+
+
 def _place_match_meters(root: Path) -> float:
     path = settings_path(root)
     if not path.exists():
@@ -839,7 +862,7 @@ def scan_serve_from_there(
     from library.activity import note as note_activity
     note_activity("scan", detail="Discovering pictures")
     with io_context():
-        files = iter_media_files(scan_path, root)
+        files = _in_grid_order(root, source, iter_media_files(scan_path, root))
     total = len(files)
     from library.activity import note as note_activity
 
@@ -942,7 +965,7 @@ def scan_copy_here(
     from library.activity import note as note_activity
     note_activity("scan", detail="Discovering pictures")
     with io_context():
-        files = iter_media_files(scan_path, root)
+        files = _in_grid_order(root, source, iter_media_files(scan_path, root))
     source = copy_media_files(root, source, scan_path, files, between=between)
     added = 0
     skipped = 0

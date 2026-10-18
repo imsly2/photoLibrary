@@ -530,6 +530,18 @@ Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
 Queued thumbnails say “Creating preview…”; a failed or missing preview has
 the unavailable message instead, so waiting work is distinguishable from failure.
+A new folder fills the grid from the top down and never pushes tiles that
+are already showing. Before reading, the scan takes each new file's capture
+date from the first 128 KB (the EXIF block; the filename or modified time
+when a file has none) and reads the files in the order the grid shows them
+— newest first by default, oldest first for Date ascending, by filename
+for Name. Each new tile therefore lands below the ones already on screen.
+Thumbnails and previews are made in that same grid order, so the first
+screenful is pictures within seconds and browsing can start at the top.
+Reading the folder and page requests go ahead of the encoders for the
+catalog lock: an encoder takes it only when no request or scan step is
+waiting, so six encoders never slow the reading that puts new tiles on
+screen.
 Grid thumbnails and video posters take priority across the folder, ahead of
 viewer previews and full-length video encodes: a waiting thumb always goes
 before a background preview, so the grid fills first and browsing can begin

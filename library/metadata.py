@@ -337,6 +337,36 @@ def _still_from_jpeg(path: Path) -> dict[str, Any]:
     return {"metadata": meta, "exifCapturedAt": captured}
 
 
+_HEAD_BYTES = 128 * 1024
+
+
+def quick_captured_at(path: Path) -> str:
+    """Capture time cheap enough to order a whole folder before reading it.
+
+    JPEG EXIF sits in the first few KB; other files fall back to the filename
+    or modified time. ``read_capture`` still decides the recorded value.
+    """
+    if file_suffix(path) in {".jpg", ".jpeg"}:
+        try:
+            with open(path, "rb") as handle:
+                head = handle.read(_HEAD_BYTES)
+            _, _, tiff = _jpeg_size_and_exif(head)
+            exif = (_parse_tiff(tiff) if tiff else {}).get("exif") or {}
+            captured = parse_exif_datetime(
+                _text(exif.get(TAG_DATETIME_ORIGINAL)), _text(exif.get(TAG_OFFSET_ORIGINAL))
+            ) or parse_exif_datetime(
+                _text(exif.get(TAG_DATETIME_DIGITIZED)), _text(exif.get(TAG_OFFSET_DIGITIZED))
+            )
+            if captured:
+                return captured
+        except (OSError, ValueError, IndexError):
+            pass
+    try:
+        return filename_captured_at(path.name) or mtime_captured_at(path)
+    except OSError:
+        return ""
+
+
 def _size_from_ffprobe(path: Path) -> dict[str, Any]:
     meta = empty_metadata()
     payload = ffprobe_json(path)

@@ -1,0 +1,12 @@
+Library processing log - J:\slyOS\projects\photoLibrary\.qa\grid-order\run-before-111904\media
+Started 2026-10-18 11:19:17, 6 encoders at once
+
+   sec   read  +thumb +preview +video  waiting thumb/preview/video  lock wait max
+   2.1     17      10        6      0  6 / 10 / 0                       142 ms
+   4.3     29      15       19      0  5 / 5 / 0                        173 ms
+   6.3     40      10        9      0  4 / 5 / 0                        157 ms
+   8.9     54      16       12      0  1 / 6 / 0                        251 ms
+  11.5     68      11       13      0  4 / 7 / 0                        106 ms
+  13.7     81      14       14      0  0 / 3 / 0                        165 ms
+  15.8    108      12       14      0  15 / 16 / 0                      186 ms
+  17.8    120      25        0      0  7 / 33 / 0                      1071 ms

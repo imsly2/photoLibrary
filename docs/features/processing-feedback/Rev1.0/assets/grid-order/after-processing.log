@@ -1,0 +1,13 @@
+Library processing log - J:\slyOS\projects\photoLibrary\.qa\grid-order\run-after-lanes-112139\media
+Started 2026-10-18 11:22:03, 6 encoders at once
+
+   sec   read  +thumb +preview +video  waiting thumb/preview/video  lock wait max
+   2.1     12       2        1      0  7 / 8 / 0                        130 ms
+   4.2     27      13        5      0  10 / 19 / 0                      303 ms
+   6.3     41      18        0      0  2 / 29 / 0                       341 ms
+   8.4     56      18        4      0  1 / 42 / 0                       285 ms
+  10.7     73       9       10      0  10 / 50 / 0                      493 ms
+  12.9     87      14        2      0  13 / 65 / 0                      423 ms
+  15.0    101      14        0      0  6 / 72 / 0                       680 ms
+  17.0    117      14        1      0  11 / 90 / 0                      609 ms
+  19.0    120       6        0      0  12 / 97 / 0                     1770 ms

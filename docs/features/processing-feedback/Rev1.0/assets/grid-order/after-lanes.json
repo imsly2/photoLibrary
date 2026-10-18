@@ -1,0 +1,367 @@
+{
+  "label": "after-lanes",
+  "app": "J:\\slyOS\\projects\\photoLibrary",
+  "pictures": 120,
+  "pollsWithTilesPushedDown": 0,
+  "tilesPushedDown": 0,
+  "polls": 59,
+  "firstScreenfulOfPicturesSec": 5.1,
+  "finalTop20ThumbsSec": 19.13,
+  "allThumbsSec": 19.73,
+  "timeline": [
+    {
+      "t": 0.08,
+      "tiles": 0,
+      "thumbs": 0,
+      "topThumbs": 0
+    },
+    {
+      "t": 0.36,
+      "tiles": 0,
+      "thumbs": 0,
+      "topThumbs": 0
+    },
+    {
+      "t": 0.64,
+      "tiles": 1,
+      "thumbs": 0,
+      "topThumbs": 0
+    },
+    {
+      "t": 0.89,
+      "tiles": 1,
+      "thumbs": 0,
+      "topThumbs": 0
+    },
+    {
+      "t": 1.15,
+      "tiles": 1,
+      "thumbs": 1,
+      "topThumbs": 1
+    },
+    {
+      "t": 1.46,
+      "tiles": 8,
+      "thumbs": 1,
+      "topThumbs": 1
+    },
+    {
+      "t": 1.71,
+      "tiles": 8,
+      "thumbs": 1,
+      "topThumbs": 1
+    },
+    {
+      "t": 1.98,
+      "tiles": 9,
+      "thumbs": 1,
+      "topThumbs": 1
+    },
+    {
+      "t": 2.24,
+      "tiles": 9,
+      "thumbs": 3,
+      "topThumbs": 3
+    },
+    {
+      "t": 2.51,
+      "tiles": 13,
+      "thumbs": 7,
+      "topThumbs": 7
+    },
+    {
+      "t": 2.77,
+      "tiles": 13,
+      "thumbs": 7,
+      "topThumbs": 7
+    },
+    {
+      "t": 3.08,
+      "tiles": 13,
+      "thumbs": 9,
+      "topThumbs": 9
+    },
+    {
+      "t": 3.49,
+      "tiles": 19,
+      "thumbs": 10,
+      "topThumbs": 10
+    },
+    {
+      "t": 3.77,
+      "tiles": 19,
+      "thumbs": 13,
+      "topThumbs": 13
+    },
+    {
+      "t": 4.12,
+      "tiles": 25,
+      "thumbs": 14,
+      "topThumbs": 14
+    },
+    {
+      "t": 4.41,
+      "tiles": 25,
+      "thumbs": 16,
+      "topThumbs": 16
+    },
+    {
+      "t": 4.77,
+      "tiles": 29,
+      "thumbs": 19,
+      "topThumbs": 19
+    },
+    {
+      "t": 5.1,
+      "tiles": 29,
+      "thumbs": 21,
+      "topThumbs": 20
+    },
+    {
+      "t": 5.41,
+      "tiles": 34,
+      "thumbs": 23,
+      "topThumbs": 20
+    },
+    {
+      "t": 5.75,
+      "tiles": 35,
+      "thumbs": 27,
+      "topThumbs": 20
+    },
+    {
+      "t": 6.14,
+      "tiles": 35,
+      "thumbs": 30,
+      "topThumbs": 20
+    },
+    {
+      "t": 6.47,
+      "tiles": 35,
+      "thumbs": 34,
+      "topThumbs": 20
+    },
+    {
+      "t": 6.75,
+      "tiles": 41,
+      "thumbs": 35,
+      "topThumbs": 20
+    },
+    {
+      "t": 7.08,
+      "tiles": 41,
+      "thumbs": 37,
+      "topThumbs": 20
+    },
+    {
+      "t": 7.37,
+      "tiles": 46,
+      "thumbs": 37,
+      "topThumbs": 20
+    },
+    {
+      "t": 7.64,
+      "tiles": 47,
+      "thumbs": 41,
+      "topThumbs": 20
+    },
+    {
+      "t": 7.96,
+      "tiles": 52,
+      "thumbs": 44,
+      "topThumbs": 20
+    },
+    {
+      "t": 8.24,
+      "tiles": 52,
+      "thumbs": 48,
+      "topThumbs": 20
+    },
+    {
+      "t": 8.56,
+      "tiles": 52,
+      "thumbs": 52,
+      "topThumbs": 20
+    },
+    {
+      "t": 8.85,
+      "tiles": 58,
+      "thumbs": 52,
+      "topThumbs": 20
+    },
+    {
+      "t": 9.15,
+      "tiles": 59,
+      "thumbs": 52,
+      "topThumbs": 20
+    },
+    {
+      "t": 9.44,
+      "tiles": 59,
+      "thumbs": 53,
+      "topThumbs": 20
+    },
+    {
+      "t": 9.81,
+      "tiles": 59,
+      "thumbs": 55,
+      "topThumbs": 20
+    },
+    {
+      "t": 10.13,
+      "tiles": 59,
+      "thumbs": 59,
+      "topThumbs": 20
+    },
+    {
+      "t": 10.52,
+      "tiles": 70,
+      "thumbs": 59,
+      "topThumbs": 20
+    },
+    {
+      "t": 10.83,
+      "tiles": 70,
+      "thumbs": 60,
+      "topThumbs": 20
+    },
+    {
+      "t": 11.11,
+      "tiles": 71,
+      "thumbs": 60,
+      "topThumbs": 20
+    },
+    {
+      "t": 11.43,
+      "tiles": 71,
+      "thumbs": 61,
+      "topThumbs": 20
+    },
+    {
+      "t": 11.72,
+      "tiles": 77,
+      "thumbs": 66,
+      "topThumbs": 20
+    },
+    {
+      "t": 12.01,
+      "tiles": 77,
+      "thumbs": 66,
+      "topThumbs": 20
+    },
+    {
+      "t": 12.33,
+      "tiles": 77,
+      "thumbs": 69,
+      "topThumbs": 20
+    },
+    {
+      "t": 12.62,
+      "tiles": 83,
+      "thumbs": 71,
+      "topThumbs": 20
+    },
+    {
+      "t": 12.98,
+      "tiles": 87,
+      "thumbs": 73,
+      "topThumbs": 20
+    },
+    {
+      "t": 13.26,
+      "tiles": 87,
+      "thumbs": 77,
+      "topThumbs": 20
+    },
+    {
+      "t": 13.58,
+      "tiles": 88,
+      "thumbs": 78,
+      "topThumbs": 20
+    },
+    {
+      "t": 13.93,
+      "tiles": 94,
+      "thumbs": 80,
+      "topThumbs": 20
+    },
+    {
+      "t": 14.23,
+      "tiles": 94,
+      "thumbs": 83,
+      "topThumbs": 20
+    },
+    {
+      "t": 14.61,
+      "tiles": 94,
+      "thumbs": 84,
+      "topThumbs": 20
+    },
+    {
+      "t": 14.92,
+      "tiles": 94,
+      "thumbs": 86,
+      "topThumbs": 20
+    },
+    {
+      "t": 15.23,
+      "tiles": 100,
+      "thumbs": 89,
+      "topThumbs": 20
+    },
+    {
+      "t": 15.66,
+      "tiles": 105,
+      "thumbs": 91,
+      "topThumbs": 20
+    },
+    {
+      "t": 15.98,
+      "tiles": 105,
+      "thumbs": 94,
+      "topThumbs": 20
+    },
+    {
+      "t": 16.43,
+      "tiles": 112,
+      "thumbs": 96,
+      "topThumbs": 20
+    },
+    {
+      "t": 16.76,
+      "tiles": 113,
+      "thumbs": 99,
+      "topThumbs": 20
+    },
+    {
+      "t": 17.09,
+      "tiles": 113,
+      "thumbs": 102,
+      "topThumbs": 20
+    },
+    {
+      "t": 17.4,
+      "tiles": 119,
+      "thumbs": 103,
+      "topThumbs": 20
+    },
+    {
+      "t": 19.13,
+      "tiles": 120,
+      "thumbs": 104,
+      "topThumbs": 20
+    },
+    {
+      "t": 19.45,
+      "tiles": 120,
+      "thumbs": 115,
+      "topThumbs": 20
+    },
+    {
+      "t": 19.73,
+      "tiles": 120,
+      "thumbs": 120,
+      "topThumbs": 20
+    }
+  ]
+}

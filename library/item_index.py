@@ -7,6 +7,7 @@ reads. Callers must not mutate the dicts it returns.
 
 from __future__ import annotations
 
+import bisect
 import json
 import os
 import threading
@@ -17,6 +18,7 @@ from library import item_store
 from library.atomic import load_json
 from library.catalog_io import items_dir
 from library.errors import AppError, fail
+from library.grid_order import item_key
 from library.records import read_item
 
 SLOTS = ("thumb", "poster", "preview", "proxy", "playback")
@@ -40,10 +42,29 @@ class _Cache:
         self.since_video = 0
         self.dir_token: tuple[int, int] | None = None
         self.since_full = 0
+        self.sort = "date"
+        self.descending = True
+
+    def rank(self, item_id: str) -> tuple:
+        return item_key(self.sort)(self.items.get(item_id) or {"id": item_id})
 
     def sort_queues(self) -> None:
         for ids in self.queued.values():
-            ids.sort()
+            ids.sort(key=self.rank)
+
+    def in_grid_order(self, slot: str) -> list[str]:
+        """Queued ids top-of-grid first. Lists are kept ascending by rank."""
+        ids = self.queued[slot]
+        return ids[::-1] if self.descending else list(ids)
+
+
+def set_grid_order(root: Path, sort: str, descending: bool) -> None:
+    with _guard:
+        cache = _caches.get(root_key(root))
+        if cache is None or (cache.sort, cache.descending) == (sort, descending):
+            return
+        cache.sort, cache.descending = sort, descending
+        cache.sort_queues()
 
 
 def root_key(root: Path) -> str:
@@ -288,7 +309,7 @@ def _requeue(cache: _Cache, item_id: str, item: dict[str, Any]) -> None:
         want = (not pending) and status.get(slot) == "queued"
         present = item_id in ids
         if want and not present:
-            ids.append(item_id)
+            bisect.insort(ids, item_id, key=cache.rank)
         elif present and not want:
             ids.remove(item_id)
 

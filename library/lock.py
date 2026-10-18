@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import threading
+from collections import deque
 from pathlib import Path
 
 from library.errors import fail
@@ -71,30 +72,45 @@ class WriteLock:
 
 
 class FairLock:
-    """In-process mutex handed over in arrival order.
+    """In-process mutex handed over in arrival order, foreground first.
 
     ``threading.Lock`` lets the thread that just released it take it straight
     back, so with several encoder threads a status request could wait through
-    many holds. Here every ``acquire`` takes a ticket and waits its turn.
-    Blocking acquire only.
+    many holds. Here waiters queue in arrival order, and threads marked
+    background (the encoders) get the lock only when no request or scan step
+    is waiting. Blocking acquire only.
     """
+
+    _thread = threading.local()
+
+    @classmethod
+    def mark_background(cls) -> None:
+        """Every later acquire from this thread waits behind foreground ones."""
+        cls._thread.background = True
 
     def __init__(self) -> None:
         self._turn = threading.Condition(threading.Lock())
-        self._next_ticket = 0
-        self._serving = 0
+        self._held = False
+        self._lanes: tuple[deque, deque] = (deque(), deque())
+
+    def _first(self) -> object | None:
+        foreground, background = self._lanes
+        return foreground[0] if foreground else (background[0] if background else None)
 
     def acquire(self) -> bool:
+        lane = self._lanes[1 if getattr(self._thread, "background", False) else 0]
+        ticket = object()
         with self._turn:
-            ticket = self._next_ticket
-            self._next_ticket += 1
-            while self._serving != ticket:
+            lane.append(ticket)
+            while self._held or self._first() is not ticket:
                 self._turn.wait()
+            lane.popleft()
+            self._held = True
         return True
 
     def release(self) -> None:
         with self._turn:
-            self._serving += 1
+            self._held = False
             self._turn.notify_all()
 
     def __enter__(self) -> FairLock:
