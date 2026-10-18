@@ -13,6 +13,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
+from library import folder_library
 from library.atomic import transact
 from library.catalog_io import (
     item_rel,
@@ -20,6 +21,7 @@ from library.catalog_io import (
     load_item,
     try_load_item,
     try_load_source,
+    try_load_source_head,
 )
 from library.errors import fail
 from library.media import PHOTO_SUFFIXES, VIDEO_SUFFIXES, ffprobe_json, file_suffix
@@ -534,27 +536,34 @@ def _usable_file(path: Path | None) -> Path | None:
     return None
 
 
-FOLDER_STORE = "folder"
+FOLDER_STORES = folder_library.STORES
 
 
-def _folder_target(root: Path, item: dict[str, Any], slot: str) -> tuple[Path | None, str | None]:
-    """F23 path and recorded name for this slot, or (None, None) when unreachable."""
-    from library import folder_library
+def _folder_target(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path | None, str | None]:
+    """F23 (store, path, recorded name) for this slot; path None when unreachable.
 
-    source = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
-    library = folder_library.for_source(root, source)
-    rel = folder_library.item_rel(source, item) if source is not None else None
+    An F23 item keeps its recorded folder library so its files stay together;
+    any other item goes where the settings send new files now.
+    """
+    rend = item.get("renditions") or {}
+    source = try_load_source_head(root, rend.get("sourceId") or "")
+    if source is None:
+        return folder_library.FOLDER_SERVER, None, None
+    recorded = rend.get("store")
+    store = recorded if recorded in FOLDER_STORES else folder_library.current_store(root, source)
+    library = folder_library.for_source(root, source, store)
+    rel = folder_library.item_rel(source, item)
     if library is None or rel is None:
-        return None, None
+        return store, None, None
     name = folder_library.derived_name(rel, slot)
-    return library.path(name), name
+    return store, library.path(name), name
 
 
 def slot_target(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path | None, str | None]:
     """Where a new file for this slot goes: (store, path, recorded relative).
 
     Items with ready files in an old layout keep it until migration moves them;
-    everything else is written to the F23 folder library.
+    everything else is written to an F23 folder library.
     """
     rend = item.get("renditions") or {}
     recorded = rend.get("store")
@@ -563,14 +572,11 @@ def slot_target(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path 
         folder = store_dir(recorded, owner, root, item["id"])
         dest = None if folder is None else folder / slot_filename(slot)
         return recorded, dest, slot_relative(recorded, item["id"], slot)
-    path, name = _folder_target(root, item, slot)
-    return FOLDER_STORE, path, name
+    return _folder_target(root, item, slot)
 
 
-def _folder_file(root: Path, source_id: str, relative: str) -> Path | None:
-    from library import folder_library
-
-    library = folder_library.for_source_id(root, source_id)
+def _folder_file(root: Path, rend: dict[str, Any], relative: str) -> Path | None:
+    library = folder_library.for_source_id(root, str(rend.get("sourceId") or ""), rend.get("store"))
     if library is None:
         return None
     try:
@@ -584,8 +590,8 @@ def rendition_abs(item: dict[str, Any], slot: str, library_root: Path) -> Path |
     relative = rend.get(slot)
     if type(relative) is str and relative:
         store = rend.get("store")
-        if store == FOLDER_STORE:
-            found = _usable_file(_folder_file(library_root, rend.get("sourceId") or "", relative))
+        if store in FOLDER_STORES:
+            found = _usable_file(_folder_file(library_root, rend, relative))
             if found is not None:
                 return found
         elif store == "with-server":
@@ -610,7 +616,7 @@ def find_existing_rendition(item: dict[str, Any], slot: str, library_root: Path)
     item_id = item.get("id")
     if type(item_id) is not str or not item_id:
         return None
-    found = _usable_file(_folder_target(library_root, item, slot)[0])
+    found = _usable_file(_folder_target(library_root, item, slot)[1])
     if found is not None:
         return found
     rend = item.get("renditions") or {}
@@ -717,17 +723,15 @@ def requeue_missing_renditions(root: Path, *, io_context=nullcontext) -> bool:
             relative = rend.get(slot)
             if status.get(slot) != "ready" or type(relative) is not str or not relative:
                 continue
-            if rend.get("store") == FOLDER_STORE:
-                from library import folder_library
-
+            if rend.get("store") in FOLDER_STORES:
                 source_id = rend.get("sourceId") or ""
-                lib_key = "folder:" + source_id
+                lib_key = f"{rend['store']}:{source_id}"
                 if lib_key not in folders:
-                    library = folder_library.for_source_id(root, source_id)
+                    library = folder_library.for_source_id(root, source_id, rend["store"])
                     folders[lib_key] = None if library is None else library.dir
                 if folders[lib_key] is None:
                     continue
-                path = _folder_file(root, source_id, relative)
+                path = _folder_file(root, rend, relative)
                 if path is None:
                     continue
             elif rend.get("store") == "with-server":
@@ -916,12 +920,13 @@ def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) 
 
 def _adopt_folder_files(root: Path, source: dict[str, Any], item: dict[str, Any]) -> dict[str, Any] | None:
     """Mark waiting slots ready when the F23 file is already in the folder library."""
-    from library import folder_library
-
     rend = clone(item.get("renditions") or {})
     if rend.get("store") in PREVIEW_STORES and ready_slots(item):
         return None
-    library = folder_library.for_source(root, source)
+    store = rend.get("store")
+    if store not in FOLDER_STORES:
+        store = folder_library.current_store(root, source)
+    library = folder_library.for_source(root, source, store)
     rel = folder_library.item_rel(source, item)
     if library is None or rel is None:
         return None
@@ -938,7 +943,7 @@ def _adopt_folder_files(root: Path, source: dict[str, Any], item: dict[str, Any]
         changed = True
     if not changed:
         return None
-    rend["store"] = FOLDER_STORE
+    rend["store"] = store
     rend["sourceId"] = source.get("id") or rend.get("sourceId")
     rend["status"] = status
     updated = clone(item)
@@ -1004,13 +1009,14 @@ def _publish_change(root: Path, relative: str, before: dict[str, Any], after: di
     publication site reads as a before/after edit.
     """
     del before
-    from library.atomic import atomic_write_json
+    from library import item_store
     from library.item_index import remember_write, root_key
 
-    atomic_write_json(library_path(root, relative), after, sync=True)
-    item_id = after.get("id")
-    if type(item_id) is str:
-        remember_write(root, item_id, after)
+    item_id = item_store.item_id_of(relative)
+    if item_id is None:
+        raise ValueError(f"not an item record: {relative}")
+    item_store.write(root, item_id, after, sync=True)
+    remember_write(root, item_id, after)
     _pending_mirrors.setdefault(root_key(root), []).append(after)
 
 
@@ -1261,7 +1267,9 @@ def restore_relocate_files(root: Path, entry_id: str) -> None:
             relative = rend.get(slot)
             if type(relative) is not str or not relative:
                 continue
-            if rend.get("store") == "with-server":
+            if rend.get("store") in FOLDER_STORES:
+                dest = _folder_file(root, rend, relative)
+            elif rend.get("store") == "with-server":
                 dest = library_path(root, relative)
             else:
                 owner = try_load_source(root, rend.get("sourceId") or "")
@@ -1287,13 +1295,19 @@ def relocate(root: Path) -> dict[str, bool]:
         if item is None:
             continue
         slots = ready_slots(item)
-        if not slots or (item.get("renditions") or {}).get("store") == FOLDER_STORE:
+        if not slots:
             continue
-        owner_id = (item.get("renditions") or {}).get("sourceId")
-        owner = try_load_source(root, owner_id or "")
+        rend = item.get("renditions") or {}
+        owner = try_load_source(root, rend.get("sourceId") or "")
         dest_store = effective_preview_store(owner, settings)
-        dest_folder = store_dir(dest_store, owner, root, item_id)
-        if dest_folder is None:
+        if rend.get("store") in FOLDER_STORES:
+            dest_store = folder_library.store_for(dest_store)
+            library = folder_library.for_source(root, owner, dest_store)
+            dests = None if library is None else {slot: library.path(rend[slot]) for slot in slots}
+        else:
+            dest_folder = store_dir(dest_store, owner, root, item_id)
+            dests = None if dest_folder is None else {slot: dest_folder / slot_filename(slot) for slot in slots}
+        if dests is None:
             failures.append("unavailable")
             continue
         old_files: dict[str, Path] = {}
@@ -1307,11 +1321,11 @@ def relocate(root: Path) -> dict[str, bool]:
         if unreadable:
             failures.append("unavailable")
             continue
-        already = dest_store == (item.get("renditions") or {}).get("store")
+        already = dest_store == rend.get("store")
         if already:
             all_there = True
             for slot, src in old_files.items():
-                dest = dest_folder / slot_filename(slot)
+                dest = dests[slot]
                 if src.resolve() != dest.resolve() or not dest.is_file() or dest.stat().st_size <= 0:
                     all_there = False
                     break
@@ -1320,7 +1334,7 @@ def relocate(root: Path) -> dict[str, bool]:
         written: list[Path] = []
         try:
             for slot, src in old_files.items():
-                dest = dest_folder / slot_filename(slot)
+                dest = dests[slot]
                 if src.resolve() == dest.resolve():
                     continue
                 copy_verified(src, dest)
@@ -1336,8 +1350,9 @@ def relocate(root: Path) -> dict[str, bool]:
             continue
         after = clone(item)
         after["renditions"]["store"] = dest_store
-        for slot in slots:
-            after["renditions"][slot] = slot_relative(dest_store, item_id, slot)
+        if dest_store not in FOLDER_STORES:
+            for slot in slots:
+                after["renditions"][slot] = slot_relative(dest_store, item_id, slot)
         after = ordered_item(after)
         successful.append(
             {
@@ -1346,13 +1361,7 @@ def relocate(root: Path) -> dict[str, bool]:
                 "after": after,
             }
         )
-        pending_copies.append(
-            {
-                "item_id": item_id,
-                "old_files": old_files,
-                "dest_folder": dest_folder,
-            }
-        )
+        pending_copies.append({"item_id": item_id, "old_files": old_files, "dests": dests})
 
     if successful:
         entry = make_history_entry(root, "relocate", successful)
@@ -1370,9 +1379,8 @@ def relocate(root: Path) -> dict[str, bool]:
             raise fail("io-error") from exc
         transact(root, plan_append(root, entry) + successful)
         for move in pending_copies:
-            dest_folder = move["dest_folder"]
             for slot, src in move["old_files"].items():
-                dest = dest_folder / slot_filename(slot)
+                dest = move["dests"][slot]
                 try:
                     if src.exists() and src.resolve() != dest.resolve():
                         src.unlink()
@@ -1380,7 +1388,7 @@ def relocate(root: Path) -> dict[str, bool]:
                     pass
                 parent = src.parent
                 try:
-                    if parent.exists() and parent != dest_folder and not any(parent.iterdir()):
+                    if parent.exists() and parent != dest.parent and not any(parent.iterdir()):
                         parent.rmdir()
                 except OSError:
                     pass

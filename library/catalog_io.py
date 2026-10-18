@@ -8,6 +8,7 @@ from contextvars import ContextVar
 from pathlib import Path
 from typing import Any
 
+from library import item_store
 from library.atomic import load_json, transact
 from library.errors import fail
 from library.records import (
@@ -90,14 +91,11 @@ def iter_source_ids(root: Path) -> list[str]:
 
 
 def iter_item_ids(root: Path) -> list[str]:
-    folder = items_dir(root)
-    if not folder.exists():
-        return []
-    return sorted(path.stem for path in folder.glob("*.json"))
+    return item_store.iter_ids(root)
 
 
 def load_item(root: Path, item_id: str) -> dict[str, Any]:
-    path = items_dir(root) / f"{item_id}.json"
+    path = item_store.path_for(root, item_id)
     try:
         return read_item(load_json(path))
     except FileNotFoundError as exc:
@@ -160,7 +158,7 @@ def successor_item_id(root: Path, item_id: str) -> str | None:
     """
     if type(item_id) is not str or not item_id.startswith("pending-"):
         return None
-    if (items_dir(root) / f"{item_id}.json").is_file():
+    if item_store.path_for(root, item_id).is_file():
         return None
     source_id, _, digest = item_id[len("pending-") :].partition("-")
     if not source_id.startswith("src_") or len(digest) != 64:
@@ -178,7 +176,7 @@ def successor_item_id(root: Path, item_id: str) -> str | None:
         or successor.startswith("pending-")
     ):
         return None
-    if not (items_dir(root) / f"{successor}.json").is_file():
+    if not item_store.path_for(root, successor).is_file():
         return None
     return successor
 
@@ -211,13 +209,29 @@ def try_load_item(root: Path, item_id: str) -> dict[str, Any] | None:
     overlaid = _overlay_payload(relative)
     if overlaid is not _MISSING:
         return None if overlaid is None else read_item(clone(overlaid))
-    path = items_dir(root) / f"{item_id}.json"
+    path = item_store.path_for(root, item_id)
     if not path.exists():
         return None
     return read_item(load_json(path))
 
 
 def try_load_source(root: Path, source_id: str) -> dict[str, Any] | None:
+    source = _merged_source(root, source_id)
+    return None if source is None else _source_view(source)
+
+
+def try_load_source_head(root: Path, source_id: str) -> dict[str, Any] | None:
+    """The source record with an empty ``files`` map: cheap, for path decisions."""
+    source = _merged_source(root, source_id)
+    if source is None:
+        return None
+    out = dict(source)
+    out["origin"] = dict(source.get("origin") or {})
+    out["files"] = {}
+    return out
+
+
+def _merged_source(root: Path, source_id: str) -> dict[str, Any] | None:
     path = sources_dir(root) / f"{source_id}.json"
     if not path.exists():
         return None
@@ -228,7 +242,7 @@ def try_load_source(root: Path, source_id: str) -> dict[str, Any] | None:
     key = _source_cache_key(root, source_id)
     slot = _SOURCE_CACHE.get(key)
     if slot is not None and slot["mtime"] == mtime:
-        return _source_view(slot["source"])
+        return slot["source"]
     source = read_source(load_json(path))
     journals = _read_journals(root, source_id)
     files = dict(source["files"])
@@ -241,7 +255,7 @@ def try_load_source(root: Path, source_id: str) -> dict[str, Any] | None:
     source = dict(source)
     source["files"] = files
     _SOURCE_CACHE[key] = {"mtime": mtime, "source": source, "journals": journals}
-    return _source_view(source)
+    return source
 
 
 _SOURCE_CACHE: dict[tuple[str, str], dict[str, Any]] = {}

@@ -1,0 +1,45 @@
+cur F1 exit=0 s=5 fails=
+cur F2 exit=1 s=0 NOT-IMPLEMENTED fails=
+cur F3 exit=1 s=0 NOT-IMPLEMENTED fails=
+cur F4 exit=1 s=13 fails=playwright-import
+cur F5 exit=0 s=9 fails=
+cur F6 exit=1 s=13 fails=capturedAt
+cur F7 exit=1 s=7 fails=
+cur F8 exit=1 s=29 fails=denied-exit-1,denied-existing-error,denied-old-store,denied-old-bytes,f8-runner
+cur F9 exit=1 s=7 fails=playwright-import
+cur F10 exit=1 s=12 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+cur F11 exit=1 s=7 fails=playwright-import
+cur F12 exit=1 s=37 fails=playwright-import
+cur F13 exit=1 s=8 fails=ineligible-preview-file,ineligible-omits-missing-preview,playwright-import
+cur F14 exit=0 s=20 fails=
+cur F15 exit=1 s=5 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+cur F16 exit=1 s=5 fails=hide-omits-unavailable,wrong-serial-not-resolve,playwright-import
+cur F17 exit=1 s=0 NOT-IMPLEMENTED fails=
+cur F18 exit=1 s=0 NOT-IMPLEMENTED fails=
+cur F19 exit=1 s=17 fails=playwright-import,f19-runner
+cur F20 exit=0 s=13 fails=
+cur F21 exit=1 s=0 NOT-IMPLEMENTED fails=
+cur F22 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F1 exit=0 s=14 fails=
+pre F2 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F3 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F4 exit=1 s=14 fails=playwright-import
+pre F5 exit=0 s=14 fails=
+pre F6 exit=1 s=14 fails=capturedAt
+pre F7 exit=1 s=12 fails=
+pre F8 exit=1 s=30 fails=denied-exit-1,denied-existing-error,denied-old-store,denied-old-bytes,f8-runner
+pre F9 exit=1 s=7 fails=playwright-import
+pre F10 exit=1 s=7 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+pre F11 exit=1 s=12 fails=playwright-import
+pre F12 exit=1 s=9 fails=playwright-import
+pre F13 exit=1 s=16 fails=playwright-import
+pre F14 exit=0 s=19 fails=
+pre F15 exit=1 s=7 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+pre F16 exit=1 s=7 fails=hide-omits-unavailable,wrong-serial-not-resolve,playwright-import
+pre F17 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F18 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F19 exit=1 s=17 fails=playwright-import,f19-runner
+pre F20 exit=0 s=9 fails=
+pre F21 exit=1 s=0 NOT-IMPLEMENTED fails=
+pre F22 exit=1 s=0 NOT-IMPLEMENTED fails=
+DONE

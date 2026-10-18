@@ -1,0 +1,35 @@
+F23 slice 3a (records in the folder library) + slice 5 core (delete .library = reset)
+2026-10-18, scratch roots under .qa/ only
+
+Unit tests
+  python -m unittest tests.test_item_store tests.test_folder_library tests.test_folder_index
+  26 tests OK (includes deleting-the-folder-library-resets-that-folder)
+
+missing_previews --count 12 (deletes .library mid-run, expects a full rebuild)
+  PASS every-ready-slot-has-file: ready 27, missingFiles 0
+  docs/features/processing-feedback/Rev1.0/assets/missing-previews/20261018-093038/result.json
+
+processing_feedback
+  diagnostics completed -> processing-feedback-result.json
+
+TASTE-RATING
+  every behavior check PASS; only playwright-import FAIL (same at d376b3a)
+  -> taste-rating-result.json
+
+F-check sweep, current tree vs pre-F23 (9c7e5b6)
+  f-checks-current.txt vs f-checks-pre-f23-baseline.txt (pre rows)
+  Same or fewer failures everywhere. Remaining fails are pre-existing:
+  playwright-import, F6 capturedAt, F8 denied-exit-1/f8-runner (Windows chmod),
+  F10/F15 ada/mug-on-jpeg, F16 wrong-serial-not-resolve, F19 f19-runner.
+  F7 core-ready in the sweep was the test still reading renditions/<id>/;
+  after porting tests/qa/s06.py to the folder layout F7 fails only
+  playwright-import (.qa/f23-3a/f7b). F4/F5/F8/F13 re-run after the test
+  helper refactor: unchanged (.qa/f23-3a/post-094839).
+
+bench 80 (back-to-back pairs, same machine state)
+  d376b3a : reading 50.5 / 49.6 pic/s, everything 27.7 / 27.1 s
+  current : reading 48.2 / 50.1 pic/s, everything 27.2 / 27.7 s
+  docs/features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-094744-f23-3a-fixedbench-1.json
+  docs/features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-094825-f23-3a-fixedbench-2.json
+  (bench now polls folder-library records too; before that it reported a
+  false 25 pic/s because it only watched library-data/catalog/items)

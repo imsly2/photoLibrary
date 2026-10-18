@@ -191,7 +191,8 @@ def export_source(root: Path, source_id: str) -> bool:
         item = try_load_item(root, item_id)
         if item is None:
             continue
-        _write_json(catalog / "items" / f"{item_id}.json", ordered_item(item))
+        if not in_folder_library(item):
+            _write_json(catalog / "items" / f"{item_id}.json", ordered_item(item))
         _mirror_related(root, catalog, item)
     _write_favorites(root, source, folder)
     _write_faces(root, source, folder)
@@ -377,12 +378,21 @@ def _mirror_item(root: Path, item: dict[str, Any], *, deleted: bool) -> None:
             continue
         catalog = bundle_dir(folder)
         dest = catalog / "items" / f"{item['id']}.json"
-        if deleted or item["id"].startswith("pending-"):
+        if deleted or item["id"].startswith("pending-") or in_folder_library(item):
             if dest.is_file():
                 dest.unlink()
+            if not deleted and in_folder_library(item):
+                _mirror_related(root, catalog, item)
             continue
         _write_json(dest, item)
         _mirror_related(root, catalog, item)
+
+
+def in_folder_library(item: dict[str, Any]) -> bool:
+    """F23 items keep their record beside their previews; no bundle copy."""
+    from library.folder_library import STORES
+
+    return (item.get("renditions") or {}).get("store") in STORES
 
 
 def _write_source(root: Path, source: dict[str, Any] | None) -> None:

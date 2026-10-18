@@ -609,18 +609,25 @@ file sizes.
 
 Setting `previewStore`:
 
-| Value | Files land in |
+| Value | Files land in (F23 folder library) |
 |-------|----------------|
-| `with-server` (default) | `library-data/renditions/<id>/` |
-| `with-source` | `<selected-folder>/.library/renditions/<id>/` |
+| `with-server` (default) | `library-data/folders/<folder-name>-<source-id>/` |
+| `with-source` | `<selected-folder>/.library/` |
 
 A source JSON field `previewStore` overrides the global setting when it is
 not null. Choosing **Serve from that folder** sets that source to
-`with-source`. **Copy onto this drive** still follows this setting.
+`with-source`. **Copy onto this drive** keeps its folder library inside the
+copy's `.library/` either way (the copy is already on this drive).
 
-`renditions relocate` moves existing preview files to match the current
-settings and updates each item's `renditions` object. Originals are not moved
-by this command.
+Each item records which folder library holds its files
+(`renditions.store`: `folder-source` or `folder-server`). Changing the
+setting sends new files to the new place; files already made stay where
+they are and keep working. `renditions relocate` moves existing preview
+files and the item's `<name>.json` to match the current settings, and undo
+moves them back. Originals are not moved by this command. Items still in the
+old layout (`with-server`: `library-data/renditions/<id>/`, `with-source`:
+`.library/renditions/<id>/`) are read and relocated as before until
+migration (F23) renames them.
 
 If previews were stored with the source and that disk is absent, the item
 record remains and the media call for the thumb returns
@@ -628,9 +635,10 @@ record remains and the media call for the thumb returns
 
 **Check:** `python -m tests.qa check F8` (planned runner; common root/artifact
 arguments and full assertions in SLICES). set `previewStore` to `with-source`, scan a folder, and see the
-thumb under that folder's `.library/renditions/`. Run `renditions relocate`
-after setting `with-server`. The thumb is beside the server and gone from the
-source tree. Artifact: both directory listings, before and after.
+thumb as `<name>.thumb.webp` in that folder's `.library/`. Run `renditions relocate`
+after setting `with-server`. The thumb and `<name>.json` are under
+`library-data/folders/` and gone from the source tree; undo puts them back.
+Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 

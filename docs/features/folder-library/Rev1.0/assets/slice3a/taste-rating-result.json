@@ -1,0 +1,415 @@
+{
+  "slice": "TASTE-RATING",
+  "pass": false,
+  "assertions": [
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-setup-ml-aesthetic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rate-photos",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rate-cmd",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "product-rating-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-rate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts-hide-rejects",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ui-rating-chips",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "html-settings-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ps1-aesthetic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "i18n-zh-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "default-rating-basic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "default-rating-learn-off",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "settings-key-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "legacy-fills-rating",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "media-sharp",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\sharp.jpg"
+    },
+    {
+      "name": "media-blur",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\blur.jpg"
+    },
+    {
+      "name": "media-dark",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\dark.jpg"
+    },
+    {
+      "name": "media-bright",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\bright.jpg"
+    },
+    {
+      "name": "media-colorful",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\colorful.jpg"
+    },
+    {
+      "name": "media-gray",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\graysharp.jpg"
+    },
+    {
+      "name": "media-burst1",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\burst_001.jpg"
+    },
+    {
+      "name": "media-burst2",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\burst_002.jpg"
+    },
+    {
+      "name": "media-burst3",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-media\\burst_003.jpg"
+    },
+    {
+      "name": "scan-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "scanned-9",
+      "pass": true,
+      "detail": "9"
+    },
+    {
+      "name": "setup-ml-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setup-ml-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"kind\": \"rate\", \"model\": \"nima-mobilenet.onnx\", \"engine\": \"nima-mobilenet\", \"backend\": \"fixture\", \"path\": \"models/aesthetic/nima-mobilenet.onnx\", \"sha256\": \"f54497e1ec0b32feb6d10b6b4a4d08d654523d2f8c0a9f7522379411ff691ccb\", \"bytes\": 522, \"device\": \"cpu\"}"
+    },
+    {
+      "name": "fixture-model-file",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-root\\models\\aesthetic\\nima-mobilenet.onnx"
+    },
+    {
+      "name": "rate-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rate-ok",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92\", \"suggested\": 3, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a\", \"suggested\": 3, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "rated-at-least-8",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92\", \"suggested\": 3, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a\", \"suggested\": 3, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15\", \"suggested\": 5, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "blur-below-sharp",
+      "pass": true,
+      "detail": "blur=3 sharp=5"
+    },
+    {
+      "name": "dark-flagged",
+      "pass": true,
+      "detail": "[\"too-dark\"]"
+    },
+    {
+      "name": "bright-flagged",
+      "pass": true,
+      "detail": "[\"too-bright\"]"
+    },
+    {
+      "name": "blur-flagged",
+      "pass": true,
+      "detail": "[\"blurry\"]"
+    },
+    {
+      "name": "burst3-best",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": null, \"stars\": 5, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": true, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "burst-not-all-best",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "burst-stack",
+      "pass": true,
+      "detail": "{\"id\": \"burst:89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"kind\": \"burst\", \"itemIds\": [\"89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b\", \"c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15\"], \"count\": 3, \"index\": 2, \"representative\": true}"
+    },
+    {
+      "name": "burst-rep-sharpest",
+      "pass": true,
+      "detail": "{\"id\": \"burst:89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"kind\": \"burst\", \"itemIds\": [\"89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b\", \"c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15\"], \"count\": 3, \"index\": 2, \"representative\": true}"
+    },
+    {
+      "name": "face-quality-used",
+      "pass": true,
+      "detail": "0.9999553329432256"
+    },
+    {
+      "name": "rescan-rated-0",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 9, \"errors\": 0, \"items\": [], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "rescan-skipped",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 9, \"errors\": 0, \"items\": [], \"mode\": \"basic\"}"
+    },
+    {
+      "name": "user-stars-5",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-pick",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-reject",
+      "pass": true,
+      "detail": "{\"suggested\": 3, \"yours\": null, \"stars\": 3, \"pick\": false, \"reject\": true, \"flags\": [\"blurry\"], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": true}"
+    },
+    {
+      "name": "reject-file-stays",
+      "pass": true,
+      "detail": "J:\\slyOS\\projects\\photoLibrary\\.qa\\f23-3a\\rating-095001\\art\\rating-media\\blur.jpg"
+    },
+    {
+      "name": "stars-persist-restart",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "user-overrides-suggested",
+      "pass": true,
+      "detail": "{\"suggested\": 5, \"yours\": 5, \"stars\": 5, \"pick\": true, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"basic\", \"blurry\": false}"
+    },
+    {
+      "name": "hide-rejects-hides-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"burst_002.jpg\", \"burst_001.jpg\", \"colorful.jpg\", \"dark.jpg\", \"graysharp.jpg\", \"bright.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "show-rejects-keeps-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"burst_002.jpg\", \"burst_001.jpg\", \"colorful.jpg\", \"dark.jpg\", \"graysharp.jpg\", \"bright.jpg\", \"blur.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "min-stars-has-sharp",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "min-stars-skips-blur",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "picks-filter",
+      "pass": true,
+      "detail": "[\"sharp.jpg\"]"
+    },
+    {
+      "name": "blurry-filter",
+      "pass": true,
+      "detail": "[\"burst_002.jpg\", \"burst_001.jpg\", \"blur.jpg\"]"
+    },
+    {
+      "name": "sort-rating-first-high",
+      "pass": true,
+      "detail": "[\"sharp.jpg\", \"burst_003.jpg\", \"graysharp.jpg\", \"burst_002.jpg\", \"burst_001.jpg\"]"
+    },
+    {
+      "name": "setting-off-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-off-persists",
+      "pass": true,
+      "detail": "{\"schemaVersion\": 1, \"previewStore\": \"with-server\", \"unavailableItems\": \"show\", \"addFolderDefault\": \"ask\", \"playProxies\": \"days-and-all\", \"listenHost\": \"127.0.0.1\", \"port\": 18765, \"thumbPx\": 320, \"previewPx\": 1600, \"proxyWidth\": 480, \"placeMatchMeters\": 100, \"tourOrbitSec\": 8, \"tourPictures\": 5, \"tourPictureSec\": 3, \"sort\": \"date\", \"dir\": \"desc\", \"zoomLevel\": \"years\", \"language\": \"en\", \"faceMatchThreshold\": 0.8, \"faceMinSidePx\": 80, \"transcribeVideos\": true, \"ratingMode\": \"off\", \"ratingLearn\": false}"
+    },
+    {
+      "name": "jobs-has-rate",
+      "pass": true,
+      "detail": "{\"ok\": true, \"paused\": false, \"processing\": true, \"queues\": [{\"id\": \"renditions\", \"label\": \"Previews\", \"pending\": 18, \"done\": 0, \"error\": 0, \"state\": \"running\", \"available\": true}, {\"id\": \"analyze\", \"label\": \"Analyze\", \"pending\": 0, \"done\": 0, \"error\": 0, \"state\": \"idle\", \"available\": false}, {\"id\": \"infer-faces\", \"label\": \"Faces\", \"pending\": 8, \"done\": 1, \"error\": 0, \"state\": \"unavailable\", \"avai"
+    },
+    {
+      "name": "setting-off-unavailable",
+      "pass": true,
+      "detail": "{\"id\": \"rate\", \"label\": \"Rating\", \"pending\": 0, \"done\": 9, \"error\": 0, \"state\": \"idle\", \"available\": false}"
+    },
+    {
+      "name": "setting-off-skips-step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-off-rated-0",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 0, \"skipped\": 0, \"errors\": 0, \"items\": [], \"mode\": \"off\"}"
+    },
+    {
+      "name": "setting-smart-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-smart-available",
+      "pass": true,
+      "detail": "{\"id\": \"rate\", \"label\": \"Rating\", \"pending\": 0, \"done\": 9, \"error\": 0, \"state\": \"idle\", \"available\": true}"
+    },
+    {
+      "name": "smart-rated",
+      "pass": true,
+      "detail": "{\"ok\": true, \"rated\": 9, \"skipped\": 0, \"errors\": 0, \"items\": [{\"id\": \"73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e\", \"suggested\": 2, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37\", \"suggested\": 3, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92\", \"suggested\": 3, \"flags\": [\"too-bright\"], \"bestOfGroup\": false}, {\"id\": \"9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": false}, {\"id\": \"aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a\", \"suggested\": 2, \"flags\": [\"too-dark\"], \"bestOfGroup\": false}, {\"id\": \"c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15\", \"suggested\": 4, \"flags\": [], \"bestOfGroup\": true}, {\"id\": \"d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b\", \"suggested\": 2, \"flags\": [\"blurry\"], \"bestOfGroup\": false}, {\"id\": \"d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03\", \"suggested\": 3, \"flags\": [], \"bestOfGroup\": false}], \"mode\": \"smart\"}"
+    },
+    {
+      "name": "smart-loads-aesthetic",
+      "pass": true,
+      "detail": "{\"basicColor\": 3.0, \"basicGray\": 5.0, \"smartColor\": 3.0, \"smartGray\": 4.0, \"colorAesthetic\": 0.41185686323377824, \"grayAesthetic\": 0.15178934733072916}"
+    },
+    {
+      "name": "smart-changes-order",
+      "pass": true,
+      "detail": "{\"basicColor\": 3.0, \"basicGray\": 5.0, \"smartColor\": 3.0, \"smartGray\": 4.0, \"colorAesthetic\": 0.41185686323377824, \"grayAesthetic\": 0.15178934733072916}"
+    },
+    {
+      "name": "learn-on",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "learn-pick-ok",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "learn-writes-weights",
+      "pass": true,
+      "detail": ".qa\\f23-3a\\rating-095001\\art\\rating-root\\catalog\\rating-weights.json"
+    },
+    {
+      "name": "clear-stars",
+      "pass": true,
+      "detail": "{\"suggested\": 4, \"yours\": null, \"stars\": 4, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"smart\", \"blurry\": false}"
+    },
+    {
+      "name": "health",
+      "pass": true,
+      "detail": "{'ok': True}"
+    },
+    {
+      "name": "rate-get",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "http-rate-stars",
+      "pass": true,
+      "detail": "{\"suggested\": 4, \"yours\": 4, \"stars\": 4, \"pick\": false, \"reject\": false, \"flags\": [], \"bestOfGroup\": false, \"mode\": \"smart\", \"blurry\": false}"
+    },
+    {
+      "name": "http-min-stars",
+      "pass": true,
+      "detail": "[\"burst_003.jpg\", \"graysharp.jpg\", \"sharp.jpg\"]"
+    },
+    {
+      "name": "playwright-import",
+      "pass": false,
+      "detail": "No module named 'playwright'"
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "d376b3a862f3cb0f6bfec14391b5e8774f8d5df9",
+  "commands": [
+    "python -m library setup-ml aesthetic --backend fixture",
+    "python -m library rate-photos",
+    "python -m library rate <id> --stars 5",
+    "python -m library items --min-stars 4 --hide-rejects 1",
+    "GET /api/rate",
+    "POST /api/items/<id>/rating"
+  ],
+  "artifactPaths": {
+    "result.json": ".qa\\f23-3a\\rating-095001\\art\\result.json",
+    "stdout.log": ".qa\\f23-3a\\rating-095001\\art\\stdout.log",
+    "rate.json": ".qa\\f23-3a\\rating-095001\\art\\rate.json",
+    "rating-grid.png": ".qa\\f23-3a\\rating-095001\\art\\rating-grid.png",
+    "rating-info.png": ".qa\\f23-3a\\rating-095001\\art\\rating-info.png",
+    "chinese-rating.png": ".qa\\f23-3a\\rating-095001\\art\\chinese-rating.png",
+    "settings-rating-zh.png": ".qa\\f23-3a\\rating-095001\\art\\settings-rating-zh.png"
+  }
+}

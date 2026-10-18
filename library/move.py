@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+from library import folder_library
 from library.atomic import maybe_test_barrier, transact
 from library.catalog_io import (
     item_rel,
@@ -294,7 +295,7 @@ def _transfer_renditions(
     rend = clone(item.get("renditions") or {})
     store = rend.get("store")
     ops: list[tuple[Path, Path, str]] = []
-    if store == "folder":
+    if store in folder_library.STORES:
         # Folder-library names follow the new location; regenerate there.
         # TODO(F23 slice 4): move the files by fingerprint instead of re-encoding.
         status = rend.get("status") or {}
@@ -303,6 +304,7 @@ def _transfer_renditions(
                 status[slot] = "queued"
                 rend[slot] = None
         rend["sourceId"] = dest_source["id"]
+        rend["store"] = folder_library.current_store(root, dest_source)
         after = clone(item)
         after["renditions"] = rend
         return after, ops

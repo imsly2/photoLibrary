@@ -91,8 +91,9 @@ LOCATION_KINDS = frozenset({"library-relative", "volume"})
 FILE_STATES = frozenset({"pending", "copied", "indexed", "error"})
 SCAN_STATES = frozenset({"idle", "running", "complete", "interrupted", "error"})
 PREVIEW_STORES = frozenset({"with-server", "with-source"})
-# "folder": F23 folder library, slot paths are names inside it (IMG_1.JPG.thumb.webp).
-RENDITION_STORES = PREVIEW_STORES | {"folder"}
+# F23 folder library (the folder's own .library/, or library-data/folders/);
+# slot paths are names inside it (IMG_1.JPG.thumb.webp).
+RENDITION_STORES = PREVIEW_STORES | {"folder-source", "folder-server"}
 RENDITION_STATUSES = frozenset({"not-applicable", "queued", "ready", "error"})
 TRANSCRIPT_STATUSES = frozenset({"ready", "skipped", "error"})
 TRANSCRIPT_KEYS = (

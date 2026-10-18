@@ -124,6 +124,12 @@ def load_json(path: Path) -> Any:
 
 
 def apply_payload(root: Path, relative: str, payload: Any, *, sync: bool = True) -> None:
+    from library import item_store
+
+    item_id = item_store.item_id_of(relative)
+    if item_id is not None:
+        item_store.write(root, item_id, payload, sync=sync)
+        return
     path = library_path(root, relative)
     if payload is None:
         if path.exists():

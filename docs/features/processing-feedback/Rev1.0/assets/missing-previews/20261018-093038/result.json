@@ -1,0 +1,99 @@
+{
+  "scratch": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\run-8b4qtlsl",
+  "count": 12,
+  "video": true,
+  "checks": [
+    {
+      "name": "add-folder",
+      "pass": true,
+      "detail": 202
+    },
+    {
+      "name": "first-pass-idle",
+      "pass": true,
+      "detail": 6.34
+    },
+    {
+      "name": "thumb-served",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "bytes": 10892,
+        "cacheControl": "private, no-cache",
+        "etag": "\"18dfa61959c910b0-2a8c\""
+      }
+    },
+    {
+      "name": "media-revalidates",
+      "pass": true,
+      "detail": "private, no-cache"
+    },
+    {
+      "name": "unchanged-is-304",
+      "pass": true,
+      "detail": 304
+    },
+    {
+      "name": "deleted-not-304",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "name": "processing-shows-waiting",
+      "pass": true,
+      "detail": {
+        "sec": 0.01,
+        "queue": {
+          "id": "renditions",
+          "label": "Previews",
+          "pending": 0,
+          "done": 0,
+          "error": 0,
+          "state": "idle",
+          "available": true
+        }
+      }
+    },
+    {
+      "name": "every-ready-slot-has-file",
+      "pass": true,
+      "detail": {
+        "sec": 27.56,
+        "ready": 27,
+        "missingFiles": 0,
+        "queue": {
+          "id": "renditions",
+          "label": "Previews",
+          "pending": 0,
+          "done": 27,
+          "error": 0,
+          "state": "idle",
+          "available": true
+        }
+      }
+    },
+    {
+      "name": "ready-serves-200",
+      "pass": true,
+      "detail": {
+        "200": 24,
+        "other": []
+      }
+    }
+  ],
+  "readyBefore": 27,
+  "thumbBefore": {
+    "status": 200,
+    "bytes": 10892,
+    "cacheControl": "private, no-cache",
+    "etag": "\"18dfa61959c910b0-2a8c\""
+  },
+  "thumbRightAfterDelete": {
+    "status": 404,
+    "bytes": 0,
+    "cacheControl": "no-store",
+    "etag": null
+  },
+  "restoreSec": 27.56,
+  "result": "PASS"
+}

@@ -120,14 +120,116 @@ def id_matches_primary_file_bytes(media: Path, source: dict[str, Any], item: dic
     return item_id == sha256_file(path)
 
 
+def item_records(root: Path) -> dict[str, Path]:
+    """Every item record on disk, id -> file.
+
+    Old layout and pending items: ``catalog/items/<id>.json``. F23 items:
+    ``<folder library>/<picture>.json``; a folder record wins over a stale
+    library-data copy, as in the app.
+    """
+    from library import folder_library
+
+    found: dict[str, Path] = {}
+    legacy = root / "catalog" / "items"
+    if legacy.is_dir():
+        for path in sorted(legacy.glob("*.json")):
+            found[path.stem] = path
+    for path, slot in _folder_files(root):
+        if slot != folder_library.RECORD:
+            continue
+        try:
+            body = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(body, dict) and type(body.get("id")) is str:
+            found[body["id"]] = path
+    return found
+
+
+def record_files(root: Path) -> list[Path]:
+    """Every item record file, both layouts, without reading them."""
+    from library import folder_library
+
+    legacy = root / "catalog" / "items"
+    found = sorted(legacy.glob("*.json")) if legacy.is_dir() else []
+    return found + [path for path, slot in _folder_files(root) if slot == folder_library.RECORD]
+
+
+def derived_files(root: Path) -> list[Path]:
+    """Every preview/proxy file on disk: old ``renditions/`` plus folder libraries."""
+    from library import folder_library
+
+    old = root / "renditions"
+    found = [path for path in old.rglob("*") if path.is_file()] if old.is_dir() else []
+    return found + [path for path, slot in _folder_files(root) if slot != folder_library.RECORD]
+
+
+def _folder_files(root: Path) -> list[tuple[Path, str]]:
+    """(file, slot) for every per-picture file in any source's folder library."""
+    from library import folder_library
+
+    dirs: list[Path] = []
+    for source in load_sources(root):
+        try:
+            dirs += [d for d in folder_library.candidate_dirs(root, source) if d.is_dir() and d not in dirs]
+        except Exception:
+            continue
+    out: list[tuple[Path, str]] = []
+    for base in dirs:
+        for path in sorted(base.rglob("*")):
+            rel = path.relative_to(base).as_posix()
+            if rel.startswith(".") or not path.is_file():
+                continue
+            parsed = folder_library.parse_name(rel)
+            if parsed is not None:
+                out.append((path, parsed[1]))
+    return out
+
+
+def rendition_file(root: Path, item: dict[str, Any], slot: str) -> Path | None:
+    """Where an item's derived file for ``slot`` is, for any preview store."""
+    from library import folder_library
+
+    rend = item.get("renditions") or {}
+    rel = rend.get(slot)
+    if type(rel) is not str or not rel:
+        return None
+    store = rend.get("store")
+    if store == "with-server":
+        return root / rel
+    source = next((s for s in load_sources(root) if s.get("id") == rend.get("sourceId")), None)
+    if source is None:
+        return None
+    if store in folder_library.STORES:
+        lib = folder_library.for_source(root, source, store)
+        return None if lib is None else lib.path(rel)
+    lib = folder_library.for_source(root, source, folder_library.FOLDER_SOURCE)
+    return None if lib is None else lib.dir.parent / rel
+
+
+def slot_path(root: Path, item: dict[str, Any], slot: str) -> Path:
+    """rendition_file, or where the app will write ``slot`` while it has none yet."""
+    from library import folder_library
+
+    found = rendition_file(root, item, slot)
+    if found is not None:
+        return found
+    rend = item.get("renditions") or {}
+    lib = folder_library.for_item(root, item)
+    source = next((s for s in load_sources(root) if s.get("id") == rend.get("sourceId")), None)
+    rel = None if source is None else folder_library.item_rel(source, item)
+    if lib is not None and rel is not None:
+        return lib.derived_path(rel, slot)
+    return root / "renditions" / str(item.get("id")) / f"{slot}{Path(folder_library.SUFFIXES[slot]).suffix}"
+
+
+def item_file(root: Path, item_id: str) -> Path:
+    return item_records(root).get(item_id) or root / "catalog" / "items" / f"{item_id}.json"
+
+
 def load_items(root: Path) -> list[dict[str, Any]]:
-    folder = root / "catalog" / "items"
-    if not folder.exists():
-        return []
-    items = []
-    for path in sorted(folder.glob("*.json")):
-        items.append(json.loads(path.read_text(encoding="utf-8")))
-    return items
+    records = item_records(root)
+    return [json.loads(records[item_id].read_text(encoding="utf-8")) for item_id in sorted(records)]
 
 
 def load_sources(root: Path) -> list[dict[str, Any]]:

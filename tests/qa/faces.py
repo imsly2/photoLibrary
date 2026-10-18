@@ -19,7 +19,7 @@ from tests.qa.s00 import (
     run_library,
     stop_owned,
 )
-from tests.qa.s01 import load_items
+from tests.qa.s01 import item_file, load_items
 from tests.qa.s08 import fresh_root, load_people, start_owned, write_result
 
 FACE_A = (16, 200, 48)
@@ -737,7 +737,7 @@ def prove_named_threshold(checks: Checks, artifacts: Path) -> None:
 def clone_item_with_tiny_face(root: Path, item: dict[str, Any]) -> bool:
     if not item or not item.get("id"):
         return False
-    path = root / "catalog" / "items" / (item["id"] + ".json")
+    path = item_file(root, item["id"])
     if not path.is_file():
         return False
     data = json.loads(path.read_text(encoding="utf-8"))

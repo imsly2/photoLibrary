@@ -40,12 +40,46 @@ relaxed durability keep working for files outside `library-data/`.
    (place name, people names) written beside ids. `library-data/catalog/items`
    no longer written for folder sources. Gate: TASTE-RATING, faces/places
    slices, annotate-during-scan (S08).
+
+   Sub-steps:
+   - **3a — record placement.** `catalog/items/<id>.json` stays the app's
+     *logical* address (history, undo, overlays, transact all keep it).
+     `library/item_store.py` maps it to the physical file: an item whose
+     `renditions.store` is `folder-source` (the folder's own `.library/`) or
+     `folder-server` (`library-data/folders/<name>-<id>/`) lives at
+     `<that folder library>/<name>.json`. The store is recorded per item
+     (like the old `with-source`/`with-server`) so a setting change never
+     strands files and relocate + undo are plain before/after payloads;
+     pending items and old-layout items stay in `library-data/catalog/items/`
+     until migration (slice 6) moves their previews and record together.
+     New scans create items in the store the F8 setting picks now. The id → file map is built
+     from every reachable folder library's `*.json` records and kept current
+     on each write. Writing a folder record removes any stale
+     `library-data` copy. `item_index` reads both places. The old
+     `.library/catalog/items` mirror skips folder-store items.
+     Gate: unit tests, missing_previews, processing_feedback, TASTE-RATING,
+     bench 80 (no slowdown). **Done** — [gates](assets/slice3a/gates.txt).
+     Open: moving an item to another source re-queues its previews instead
+     of moving them (slice 4).
+   - **3b — readable fields.** `path`, `placeName`, `people[{id,name}]`
+     written beside the ids, stripped on read; refreshed when a person or
+     place is renamed.
+   - **3c — folder files.** `folder.json` replaces `.library/source.json`;
+     `people.json` / `places.json` / `favorites.json` per folder; the old
+     `.library/catalog` mirror stops.
 4. **Rename/move by fingerprint.** Scan matches a vanished name + new name
    with the same SHA-256 and renames generated files in one transaction.
    Gate: byte-identical rename test.
 5. **Delete = reset.** Missing `.library/` (folder still reachable) drops that
    folder's items from the index and rescans it as new. Duplicates in other
    folders keep their own records. Gate: F23 Check reset part.
+   Core landed with 3a (records in the folder made it necessary):
+   `item_store.vanished_sources` notices a folder library that held records
+   is gone while its parent folder exists; the server's idle drain loop starts
+   the same background rescan as `POST /api/sources/<id>/rescan`; scan's
+   "unchanged" test also requires the item record to exist, so every picture
+   is read again. Gate: `tests.qa.missing_previews`. Still open: hearts in
+   `favorites.json` and person links in `library-data` outlive the reset.
 6. **Migration.** Old `.library/catalog` + `.library/renditions/<id>/` and
    `library-data/catalog/items` → new layout, rename-only, manifest-driven,
    resumable, verify-then-delete. Gate: old-layout fixture, hashes identical,

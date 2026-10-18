@@ -118,14 +118,13 @@ def run_diagnostics(folder: Path):
     try:
         for action, photo in zip(("annotate", "remove"), photos):
             # Queue one fresh viewer preview while preserving a ready grid thumb.
-            path = priority.root / "catalog" / "items" / f'{photo["id"]}.json'
+            from library import item_store
             current = load_item(priority.root, photo["id"])
             current["renditions"]["status"]["preview"] = "queued"
             old = renditions.rendition_abs(current, "preview", priority.root)
             if old is not None:
                 old.unlink(missing_ok=True)
-            from library.atomic import atomic_write_json
-            atomic_write_json(path, current)
+            item_store.write(priority.root, photo["id"], current, sync=False)
             entered, release = threading.Event(), threading.Event()
             failure = []
 

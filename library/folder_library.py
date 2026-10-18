@@ -22,6 +22,9 @@ from typing import Any
 
 DIR_NAME = ".library"
 LOGICAL_PREFIX = "source:"
+FOLDER_SOURCE = "folder-source"
+FOLDER_SERVER = "folder-server"
+STORES = frozenset({FOLDER_SOURCE, FOLDER_SERVER})
 RECORD = "record"
 SUFFIXES: dict[str, str] = {
     RECORD: ".json",
@@ -103,8 +106,20 @@ def _safe_component(name: str) -> str:
     return cleaned or "folder"
 
 
-def library_dir(root: Path, source: dict[str, Any]) -> Path | None:
-    """Where this source's folder library lives. None when its folder is unreachable."""
+def store_for(preview_store: str | None) -> str:
+    """F8 ``previewStore`` value -> the folder-library store new files use."""
+    return FOLDER_SOURCE if preview_store == "with-source" else FOLDER_SERVER
+
+
+def current_store(root: Path, source: dict[str, Any]) -> str:
+    from library.renditions import _current_settings, effective_preview_store
+
+    return store_for(effective_preview_store(source, _current_settings(root)))
+
+
+def library_dir(root: Path, source: dict[str, Any], store: str | None = None) -> Path | None:
+    """Where this source's folder library for ``store`` lives (default: the
+    one the settings choose now). None when that folder is unreachable."""
     from library.paths import library_path
 
     source_id = str(source.get("id") or "")
@@ -113,7 +128,7 @@ def library_dir(root: Path, source: dict[str, Any]) -> Path | None:
         if type(copy_root) is not str or not copy_root:
             return None
         return library_path(root, copy_root) / DIR_NAME
-    if source.get("previewStore") == "with-source":
+    if (store or current_store(root, source)) == FOLDER_SOURCE:
         from library.portable import folder_for_source
 
         folder = folder_for_source(root, source)
@@ -122,17 +137,44 @@ def library_dir(root: Path, source: dict[str, Any]) -> Path | None:
     return library_path(root, f"folders/{name}-{source_id}")
 
 
-def for_source(root: Path, source: dict[str, Any] | None) -> FolderLibrary | None:
+def candidate_dirs(root: Path, source: dict[str, Any]) -> list[Path]:
+    """Every place this source's records may be, whatever its mode now: the
+    copy's ``.library/``, the original folder's ``.library/``, and
+    ``library-data/folders/``. A setting change without relocate, or turning a
+    served folder into a copy, leaves earlier records in one of the others."""
+    served = {**source, "mode": "serve-from-there"}
+    found = [
+        library_dir(root, source, FOLDER_SOURCE),
+        library_dir(root, served, FOLDER_SOURCE),
+        library_dir(root, served, FOLDER_SERVER),
+    ]
+    out: list[Path] = []
+    for path in found:
+        if path is not None and path not in out:
+            out.append(path)
+    return out
+
+
+def for_source(root: Path, source: dict[str, Any] | None, store: str | None = None) -> FolderLibrary | None:
     if not isinstance(source, dict) or type(source.get("id")) is not str:
         return None
-    found = library_dir(root, source)
+    found = library_dir(root, source, store)
     return None if found is None else FolderLibrary(source["id"], found)
 
 
-def for_source_id(root: Path, source_id: str) -> FolderLibrary | None:
-    from library.catalog_io import try_load_source
+def for_source_id(root: Path, source_id: str, store: str | None = None) -> FolderLibrary | None:
+    from library.catalog_io import try_load_source_head
 
-    return for_source(root, try_load_source(root, source_id))
+    return for_source(root, try_load_source_head(root, source_id), store)
+
+
+def for_item(root: Path, item: dict[str, Any]) -> FolderLibrary | None:
+    """The folder library an F23 item's files are in (its recorded store)."""
+    rend = item.get("renditions") or {}
+    store = rend.get("store")
+    if store not in STORES:
+        return None
+    return for_source_id(root, str(rend.get("sourceId") or ""), store)
 
 
 def is_logical(relative: str) -> bool:
@@ -153,16 +195,37 @@ def resolve_logical(root: Path, relative: str) -> Path:
     return library.path(name)
 
 
-def picture_rel(source: dict[str, Any], item: dict[str, Any], location: dict[str, Any]) -> str | None:
-    """The picture's path inside its source folder (the key in source.files)."""
-    from library.catalog_io import file_key_for_location
+def _rel_from_location(source: dict[str, Any], location: dict[str, Any]) -> str | None:
+    if location.get("kind") == "library-relative":
+        dest = location.get("libraryRelativePath")
+        base = source.get("copyRoot")
+    else:
+        dest = location.get("pathFromVolumeRoot")
+        base = (source.get("origin") or {}).get("pathFromVolumeRoot")
+    if type(dest) is not str or not dest or type(base) is not str:
+        return None
+    if base == "":
+        return dest
+    prefix = base.rstrip("/") + "/"
+    return dest[len(prefix):] if dest.startswith(prefix) else None
 
-    item_id = str(item.get("id") or "")
-    key = next(
-        (k for k, entry in (source.get("files") or {}).items()
-         if entry.get("itemId") == item_id and entry.get("component") == location.get("component")),
-        None,
-    ) or file_key_for_location(source, item_id, location)
+
+def picture_rel(source: dict[str, Any], item: dict[str, Any], location: dict[str, Any]) -> str | None:
+    """The picture's path inside the folder its library sits in.
+
+    Read straight from the location (no walk over ``source.files``); the
+    files map is only a fallback for locations outside the folder.
+    """
+    key = _rel_from_location(source, location)
+    if key is None:
+        from library.catalog_io import file_key_for_location
+
+        item_id = str(item.get("id") or "")
+        key = next(
+            (k for k, entry in (source.get("files") or {}).items()
+             if entry.get("itemId") == item_id and entry.get("component") == location.get("component")),
+            None,
+        ) or file_key_for_location(source, item_id, location)
     if type(key) is not str or not key:
         return None
     try:

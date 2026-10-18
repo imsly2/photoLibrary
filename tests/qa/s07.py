@@ -30,7 +30,7 @@ from tests.qa.s00 import (
     wait_health,
     write_isolated_port,
 )
-from tests.qa.s01 import hash_tree, load_items, load_sources, parse_summary
+from tests.qa.s01 import item_file, hash_tree, load_items, load_sources, parse_summary
 from tests.qa.s03 import find_item, png_size, request_raw
 from tests.qa.s05 import pin_media_from_manifest, start_isolated
 
@@ -166,12 +166,25 @@ def list_files(folder: Path) -> list[str]:
     )
 
 
-def source_rendition_dir(folder: Path, item_id: str) -> Path:
-    return folder / ".library" / "renditions" / item_id
+def picture_rel(item: dict[str, Any], folder: Path) -> str:
+    """The picture's path inside its folder: the F23 name stem."""
+    last = item.get("lastKnownPath")
+    if not last:
+        locs = [loc for loc in item.get("locations") or [] if loc.get("current", True)]
+        locs.sort(key=lambda loc: (loc.get("component") != "still", loc.get("role") != "primary"))
+        last = locs[0]["lastKnownPath"] if locs else ""
+    return os.path.relpath(str(last), str(folder.resolve())).replace("\\", "/")
 
 
-def server_rendition_dir(root: Path, item_id: str) -> Path:
-    return root / "renditions" / item_id
+def source_file(folder: Path, item: dict[str, Any], suffix: str = ".thumb.webp") -> Path:
+    """F23 ``folder-source``: ``<folder>/.library/<picture><suffix>``."""
+    return folder / ".library" / Path(picture_rel(item, folder) + suffix)
+
+
+def server_file(root: Path, folder: Path, item: dict[str, Any], suffix: str = ".thumb.webp") -> Path:
+    """F23 ``folder-server``: ``library-data/folders/<name>-<source-id>/<picture><suffix>``."""
+    source_id = (item.get("renditions") or {}).get("sourceId")
+    return root / "folders" / f"{folder.name}-{source_id}" / Path(picture_rel(item, folder) + suffix)
 
 
 def wait_ready(
@@ -269,14 +282,17 @@ def prove_store_and_relocate(
         if item is None:
             return record
         item_id = item["id"]
-        source_thumb = source_rendition_dir(folder, item_id) / "thumb.webp"
-        server_thumb = server_rendition_dir(isolated, item_id) / "thumb.webp"
+        source_thumb = source_file(folder, item)
+        server_thumb = server_file(isolated, folder, item)
+        source_record = source_file(folder, item, ".json")
+        server_record = server_file(isolated, folder, item, ".json")
         checks.check("thumb-under-source", source_thumb.is_file() and source_thumb.stat().st_size > 0, str(source_thumb))
+        checks.check("record-under-source", source_record.is_file(), str(source_record))
         checks.check("thumb-not-on-server-yet", not server_thumb.exists(), str(server_thumb))
-        checks.check("item-store-with-source", (item.get("renditions") or {}).get("store") == "with-source")
+        checks.check("item-store-with-source", (item.get("renditions") or {}).get("store") == "folder-source")
         record["before"] = {
             "source": list_files(folder / ".library"),
-            "server": list_files(isolated / "renditions"),
+            "server": list_files(isolated / "folders"),
         }
 
         set_setting(url, "previewStore", "with-server")
@@ -296,11 +312,12 @@ def prove_store_and_relocate(
         checks.check("relocate-to-server-ok", body == {"ok": True}, relocated.stdout)
         checks.check("thumb-on-server", server_thumb.is_file() and server_thumb.stat().st_size > 0)
         checks.check("thumb-gone-from-source", not source_thumb.exists())
-        disk = json.loads((isolated / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
-        checks.check("item-store-with-server", (disk.get("renditions") or {}).get("store") == "with-server")
+        checks.check("record-moved-to-server", server_record.is_file() and not source_record.exists())
+        disk = json.loads(item_file(isolated, item_id).read_text(encoding="utf-8"))
+        checks.check("item-store-with-server", (disk.get("renditions") or {}).get("store") == "folder-server")
         record["after"] = {
             "source": list_files(folder / ".library"),
-            "server": list_files(isolated / "renditions"),
+            "server": list_files(isolated / "folders"),
         }
 
         set_setting(url, "previewStore", "with-source")
@@ -309,19 +326,21 @@ def prove_store_and_relocate(
         checks.check("relocate-to-source-exit", reverse.returncode == 0, reverse.stderr)
         checks.check("reverse-thumb-under-source", source_thumb.is_file() and source_thumb.stat().st_size > 0)
         checks.check("reverse-thumb-gone-from-server", not server_thumb.exists())
-        disk = json.loads((isolated / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
-        checks.check("reverse-store-with-source", (disk.get("renditions") or {}).get("store") == "with-source")
+        disk = json.loads(item_file(isolated, item_id).read_text(encoding="utf-8"))
+        checks.check("reverse-store-with-source", (disk.get("renditions") or {}).get("store") == "folder-source")
+        checks.check("reverse-record-under-source", source_record.is_file() and not server_record.exists())
         record["reverse"] = {
             "source": list_files(folder / ".library"),
-            "server": list_files(isolated / "renditions"),
+            "server": list_files(isolated / "folders"),
         }
 
         undo = run_library(isolated, ["undo"])
         commands.append("undo relocate")
         checks.check("relocate-undo-exit", undo.returncode == 0, undo.stderr)
-        disk = json.loads((isolated / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
-        checks.check("undo-store-with-server", (disk.get("renditions") or {}).get("store") == "with-server")
+        disk = json.loads(item_file(isolated, item_id).read_text(encoding="utf-8"))
+        checks.check("undo-store-with-server", (disk.get("renditions") or {}).get("store") == "folder-server")
         checks.check("undo-bytes-on-server", server_thumb.is_file() and server_thumb.stat().st_size > 0)
+        checks.check("undo-record-on-server", server_record.is_file() and not source_record.exists())
         media_status, _, media_body = request_raw(f"{url.rstrip('/')}/api/media/{item_id}?which=thumb")
         checks.check("undo-media-serves", media_status == 200 and len(media_body) > 0)
         entries = list((isolated / "undo" / "entries").glob("*.json"))
@@ -364,14 +383,8 @@ def prove_override_and_dedup(
         if item is None:
             return
         item_id = item["id"]
-        checks.check(
-            "override-wins-source",
-            (source_rendition_dir(folder, item_id) / "thumb.webp").is_file(),
-        )
-        checks.check(
-            "override-not-server",
-            not (server_rendition_dir(root, item_id) / "thumb.webp").exists(),
-        )
+        checks.check("override-wins-source", source_file(folder, item).is_file())
+        checks.check("override-not-server", not server_file(root, folder, item).exists())
         sources = load_sources(root)
         checks.check(
             "override-source-field",
@@ -408,10 +421,11 @@ def prove_override_and_dedup(
         checks.check("dedup-one-primary", len(primaries) == 1)
         if primaries:
             checks.check("dedup-owner-is-primary-source", owner == primaries[0].get("sourceId"))
-        first_dir = source_rendition_dir(first, item["id"])
-        other_dir = source_rendition_dir(other, item["id"])
-        checks.check("dedup-one-rendition-dir", first_dir.is_dir() and (first_dir / "thumb.webp").is_file())
-        checks.check("dedup-second-has-no-copy", not other_dir.exists() or not any(other_dir.rglob("*")))
+        by_source = {loc.get("sourceId"): loc for loc in item.get("locations") or []}
+        first_loc = by_source.get(owner) or {}
+        first_item = {**item, "lastKnownPath": first_loc.get("lastKnownPath") or item.get("lastKnownPath")}
+        checks.check("dedup-one-rendition-dir", source_file(first, first_item).is_file())
+        checks.check("dedup-second-has-no-copy", not list((other / ".library").rglob("*.thumb.webp")))
         checks.check("dedup-owner-first", owner == first_source or owner == primaries[0].get("sourceId") if primaries else False)
     finally:
         stop_owned(server, extra_pids=pids)
@@ -433,12 +447,10 @@ def prove_override_and_dedup(
             return
         copy_root = sources[0].get("copyRoot")
         checks.check("copy-here-copyRoot", type(copy_root) is str and bool(copy_root), str(copy_root))
-        dest = root / Path(*(str(copy_root).split("/"))) / ".library" / "renditions" / item["id"] / "thumb.webp"
-        checks.check("copy-here-writes-under-copyRoot", dest.is_file() and dest.stat().st_size > 0, str(dest))
-        checks.check(
-            "copy-here-not-old-disk",
-            not (source_rendition_dir(copy_folder, item["id"]) / "thumb.webp").exists(),
-        )
+        copy_lib = root / Path(*(str(copy_root).split("/"))) / ".library"
+        thumbs = [path for path in copy_lib.rglob("*.thumb.webp") if path.stat().st_size > 0]
+        checks.check("copy-here-writes-under-copyRoot", len(thumbs) == 1, str(copy_lib))
+        checks.check("copy-here-not-old-disk", not list((copy_folder / ".library").rglob("*.thumb.webp")))
     finally:
         stop_owned(server, extra_pids=pids)
 
@@ -465,12 +477,12 @@ def prove_relocate_failures(
         if item is None:
             return
         item_id = item["id"]
-        source_thumb = source_rendition_dir(folder, item_id) / "thumb.webp"
+        source_thumb = source_file(folder, item)
         set_setting(url, "previewStore", "with-server")
     finally:
         stop_owned(server, extra_pids=pids)
 
-    renditions = root / "renditions"
+    renditions = root / "folders"
     renditions.mkdir(parents=True, exist_ok=True)
     os.chmod(renditions, 0o555)
     try:
@@ -486,8 +498,8 @@ def prove_relocate_failures(
             err.get("error") in {"io-error", "unavailable"},
             denied.stderr,
         )
-        disk = json.loads((root / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
-        checks.check("denied-old-store", (disk.get("renditions") or {}).get("store") == "with-source")
+        disk = json.loads(item_file(root, item_id).read_text(encoding="utf-8"))
+        checks.check("denied-old-store", (disk.get("renditions") or {}).get("store") == "folder-source")
         checks.check("denied-old-bytes", source_thumb.is_file() and source_thumb.stat().st_size > 0)
     finally:
         os.chmod(renditions, 0o755)
@@ -506,13 +518,13 @@ def prove_relocate_failures(
         if item is None:
             return
         item_id = item["id"]
-        source_thumb = source_rendition_dir(fat, item_id) / "thumb.webp"
-        source_preview = source_rendition_dir(fat, item_id) / "preview.webp"
+        source_thumb = source_file(fat, item)
+        source_preview = source_file(fat, item, ".preview.webp")
         blob = source_thumb.read_bytes() + (os.urandom(48 * 1024 * 1024))
         source_thumb.write_bytes(blob)
         if source_preview.is_file():
             source_preview.write_bytes(blob)
-        before_item = json.loads((root / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
+        before_item = json.loads(item_file(root, item_id).read_text(encoding="utf-8"))
         set_setting(url, "previewStore", "with-server")
     finally:
         stop_owned(server, extra_pids=pids)
@@ -527,7 +539,7 @@ def prove_relocate_failures(
         env=env,
     )
     commands.append("kill during renditions relocate")
-    dest_tmp = root / "renditions"
+    dest_tmp = root / "folders"
     deadline = time.time() + 2.0
     while time.time() < deadline and proc.poll() is None:
         tmps = list(dest_tmp.rglob("*.tmp")) if dest_tmp.exists() else []
@@ -537,7 +549,7 @@ def prove_relocate_failures(
     if proc.poll() is None:
         proc.kill()
         proc.wait(timeout=5)
-    after_item = json.loads((root / "catalog" / "items" / f"{item_id}.json").read_text(encoding="utf-8"))
+    after_item = json.loads(item_file(root, item_id).read_text(encoding="utf-8"))
     checks.check("interrupt-old-refs", after_item.get("renditions") == before_item.get("renditions"))
     checks.check("interrupt-old-bytes", source_thumb.is_file() and source_thumb.stat().st_size > 0)
 
@@ -564,7 +576,7 @@ def prove_relocate_failures(
         checks.check("unavail-relocate-items", gone is not None and kept is not None)
         if gone is None or kept is None:
             return
-        gone_thumb = source_rendition_dir(off, gone["id"]) / "thumb.webp"
+        gone_thumb = source_file(off, gone)
         set_setting(url, "previewStore", "with-server")
         atomic_write_json(volumes_path, {SERIAL_A: None, SERIAL_B: str(stay)})
         relocated = run_library(root, ["renditions", "relocate"], env=env)
@@ -575,14 +587,14 @@ def prove_relocate_failures(
         except Exception:
             err = {}
         checks.check("unavail-relocate-error", err.get("error") == "unavailable", relocated.stderr)
-        gone_disk = json.loads((root / "catalog" / "items" / f"{gone['id']}.json").read_text(encoding="utf-8"))
-        kept_disk = json.loads((root / "catalog" / "items" / f"{kept['id']}.json").read_text(encoding="utf-8"))
-        checks.check("unavail-keeps-old-refs", (gone_disk.get("renditions") or {}).get("store") == "with-source")
+        gone_disk = json.loads(item_file(root, gone['id']).read_text(encoding="utf-8"))
+        kept_disk = json.loads(item_file(root, kept['id']).read_text(encoding="utf-8"))
+        checks.check("unavail-keeps-old-refs", (gone_disk.get("renditions") or {}).get("store") == "folder-source")
         checks.check("unavail-keeps-old-files", gone_thumb.is_file())
         checks.check(
             "unavail-continues-others",
-            (kept_disk.get("renditions") or {}).get("store") == "with-server"
-            and (server_rendition_dir(root, kept["id"]) / "thumb.webp").is_file(),
+            (kept_disk.get("renditions") or {}).get("store") == "folder-server"
+            and server_file(root, stay, kept).is_file(),
         )
     finally:
         stop_owned(server, extra_pids=pids)

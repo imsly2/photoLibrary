@@ -33,7 +33,7 @@ from tests.qa.s00 import (
     wait_health,
     write_isolated_port,
 )
-from tests.qa.s01 import hash_tree, load_items, load_sources, parse_summary
+from tests.qa.s01 import hash_tree, item_file, item_records, load_items, load_sources, parse_summary
 
 
 def pin_mtime(path: Path, iso: str) -> None:
@@ -156,6 +156,8 @@ def originals_files(root: Path) -> list[Path]:
         return []
     out: list[Path] = []
     for path in sorted(folder.rglob("*")):
+        if ".library" in path.relative_to(folder).parts:
+            continue
         if path.is_file() and not is_partial_name(path.name):
             out.append(path)
     return out
@@ -243,9 +245,8 @@ def dump_copied_items(root: Path, dest: Path) -> None:
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
-    items = root / "catalog" / "items"
-    if items.exists():
-        shutil.copytree(items, dest, dirs_exist_ok=True)
+    for item_id, path in item_records(root).items():
+        shutil.copy2(path, dest / f"{item_id}.json")
 
 
 def prove_choice_and_override(
@@ -546,7 +547,7 @@ def prove_convert(
     before_id = items[0]["id"] if items else None
     if items:
         if not item_has_ada_mug(items[0]):
-            seed_entities(root, root / "catalog" / "items" / f"{items[0]['id']}.json")
+            seed_entities(root, item_file(root, items[0]['id']))
             items = load_items(root)
         checks.check("convert-final-seeded", item_has_ada_mug(items[0]))
     source = load_sources(root)[0]

@@ -106,6 +106,31 @@ def _scan_progress(kind: str, rel: str) -> None:
     print(f"{kind} {rel}", flush=True)
 
 
+def start_rescan_worker(lock: threading.Lock, library: Library, source_id: str) -> dict[str, Any]:
+    """Start one background rescan. The caller holds ``lock``; returns the source."""
+    source, scan_path = library.start_http_rescan(source_id)
+
+    def rescan_worker() -> None:
+        lock.acquire()
+        try:
+            library.finish_http_rescan(
+                source,
+                scan_path,
+                on_progress=_scan_progress,
+                between=lambda: _pause_for_readers(lock),
+                io_context=lambda: unlocked_io(lock),
+            )
+        except Exception as exc:
+            traceback.print_exc()
+            append_error(library.root, f"/api/sources/{source_id}/rescan", f"rescan-worker:{type(exc).__name__}")
+            library._scanning = False
+        finally:
+            lock.release()
+
+    threading.Thread(target=rescan_worker, name="library-rescan", daemon=True).start()
+    return source
+
+
 def _pause_for_readers(lock: threading.Lock) -> None:
     """Let other requests and the drain thread take the catalog lock."""
     profile = bool(os.environ.get("LIBRARY_PROFILE_SCAN", "").strip())
@@ -409,31 +434,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._read_json()
                 with self.lock:
                     self._require_idle()
-                    source, scan_path = self.library.start_http_rescan(source_id)
-                lock = self.lock
-                library = self.library
-
-                def yield_rescan() -> None:
-                    _pause_for_readers(lock)
-
-                def rescan_worker() -> None:
-                    lock.acquire()
-                    try:
-                        library.finish_http_rescan(
-                            source,
-                            scan_path,
-                            on_progress=_scan_progress,
-                            between=yield_rescan,
-                            io_context=lambda: unlocked_io(lock),
-                        )
-                    except Exception as exc:
-                        traceback.print_exc()
-                        append_error(library.root, f"/api/sources/{source_id}/rescan", f"rescan-worker:{type(exc).__name__}")
-                        library._scanning = False
-                    finally:
-                        lock.release()
-
-                threading.Thread(target=rescan_worker, name="library-rescan", daemon=True).start()
+                    source = start_rescan_worker(self.lock, self.library, source_id)
                 self._send_json(202, source)
                 return
             if (
@@ -1052,6 +1053,9 @@ def serve(root: Path) -> int:
                 try:
                     with handler.lock:
                         worked = library.drain_step(io_context=lambda: unlocked_io(handler.lock))
+                        reset = None if worked else library.take_folder_reset()
+                        if reset is not None:
+                            start_rescan_worker(handler.lock, library, reset)
                 except Exception as exc:
                     traceback.print_exc()
                     append_error(library.root, "/api/jobs", f"processing-drain:outer:{type(exc).__name__}")

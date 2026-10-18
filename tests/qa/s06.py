@@ -32,12 +32,14 @@ from tests.qa.s00 import (
     write_isolated_port,
 )
 from tests.qa.s01 import (
+    derived_files,
     hash_tree,
     id_matches_primary_file_bytes,
     load_items,
     load_sources,
     parse_summary,
     primary_byte_path,
+    slot_path,
 )
 from tests.qa.s03 import find_item, ffprobe_wh, png_size
 from tests.qa.s05 import (
@@ -154,17 +156,8 @@ def start_owned(root: Path) -> tuple[subprocess.Popen[str], str, list[int]]:
     return server, url, owned_pids
 
 
-def slot_file(root: Path, item_id: str, slot: str) -> Path:
-    if slot in {"proxy", "playback"}:
-        return root / "renditions" / item_id / f"{slot}.mp4"
-    return root / "renditions" / item_id / f"{slot}.webp"
-
-
-def rendition_files(root: Path) -> list[Path]:
-    folder = root / "renditions"
-    if not folder.exists():
-        return []
-    return [path for path in folder.rglob("*") if path.is_file()]
+slot_file = slot_path
+rendition_files = derived_files
 
 
 def photo_queued(item: dict[str, Any]) -> bool:
@@ -267,10 +260,10 @@ def wait_core_ready(root: Path, timeout: float = 180) -> dict[str, Any]:
             continue
         o_status = (oriented.get("renditions") or {}).get("status") or {}
         c_status = (clip.get("renditions") or {}).get("status") or {}
-        thumb = slot_file(root, oriented["id"], "thumb")
-        preview = slot_file(root, oriented["id"], "preview")
-        poster = slot_file(root, clip["id"], "poster")
-        proxy = slot_file(root, clip["id"], "proxy")
+        thumb = slot_file(root, oriented, "thumb")
+        preview = slot_file(root, oriented, "preview")
+        poster = slot_file(root, clip, "poster")
+        proxy = slot_file(root, clip, "proxy")
         if (
             o_status.get("thumb") == "ready"
             and o_status.get("preview") == "ready"
@@ -346,7 +339,7 @@ def build_format_matrix(root: Path, media: Path, rels: list[str]) -> list[dict[s
         status = rend.get("status") or {}
         slots: dict[str, Any] = {}
         for slot in ("thumb", "preview", "poster", "proxy", "playback"):
-            dest = slot_file(root, item["id"], slot)
+            dest = slot_file(root, item, slot)
             ready_file = (
                 status.get(slot) == "ready"
                 and dest.is_file()
@@ -622,8 +615,8 @@ def prove_queued_scan(checks: Checks, root: Path, media: Path, commands: list[st
             checks.check("broken-error", broken_error(item), json.dumps(item.get("renditions")))
             checks.check(
                 "broken-no-webp",
-                not slot_file(root, item["id"], "thumb").exists()
-                and not slot_file(root, item["id"], "preview").exists(),
+                not slot_file(root, item, "thumb").exists()
+                and not slot_file(root, item, "preview").exists(),
             )
             continue
         if suffix in PHOTO_SUFFIXES:
@@ -644,10 +637,10 @@ def prove_ffprobe(checks: Checks, root: Path, artifacts: Path) -> dict[str, Any]
     if oriented is None or clip is None:
         checks.check("ffprobe-items", False, "missing oriented.jpg or clip.mp4")
         return payload
-    thumb = slot_file(root, oriented["id"], "thumb")
-    preview = slot_file(root, oriented["id"], "preview")
-    poster = slot_file(root, clip["id"], "poster")
-    proxy = slot_file(root, clip["id"], "proxy")
+    thumb = slot_file(root, oriented, "thumb")
+    preview = slot_file(root, oriented, "preview")
+    poster = slot_file(root, clip, "poster")
+    proxy = slot_file(root, clip, "proxy")
     payload = {
         "thumb": ffprobe_media(thumb),
         "preview": ffprobe_media(preview),
@@ -672,7 +665,7 @@ def prove_ffprobe(checks: Checks, root: Path, artifacts: Path) -> dict[str, Any]
         type(proxy_bytes) is int and 0 < proxy_bytes <= 500_000,
         json.dumps(payload["proxy"]),
     )
-    playback = slot_file(root, clip["id"], "playback")
+    playback = slot_file(root, clip, "playback")
     clip_status = (clip.get("renditions") or {}).get("status") or {}
     deadline = time.time() + 30
     while time.time() < deadline and clip_status.get("playback") == "queued":
@@ -909,13 +902,13 @@ def run_check_f5(root: Path, artifacts: Path) -> int:
                     id_matches_primary_file_bytes(media, source, item),
                     f"id={item.get('id')!r} expected={expected!r}",
                 )
-        checks.check("unicode-indexed", "旅行 photo.jpg" in by_name)
+        checks.check("unicode-indexed", "æ—…è¡Œ photo.jpg" in by_name)
         checks.check("long-path-indexed", LONG_NAME in by_name)
-        if "旅行 photo.jpg" in by_name:
+        if "æ—…è¡Œ photo.jpg" in by_name:
             pending_would = isolated / "catalog" / "items"
             checks.check(
                 "unicode-hash-id",
-                not str(by_name["旅行 photo.jpg"]["id"]).startswith("pending-"),
+                not str(by_name["æ—…è¡Œ photo.jpg"]["id"]).startswith("pending-"),
             )
         img_hash = sha256_file(media / "a" / "IMG_1042.jpg")
         dup_items = [item for item in items if item.get("id") == img_hash]
@@ -1060,8 +1053,8 @@ def run_check_f5(root: Path, artifacts: Path) -> int:
             checks.check("heic-broken-error", broken_error(broken), json.dumps(broken.get("renditions")))
             checks.check(
                 "heic-broken-no-webp",
-                not slot_file(hroot, broken["id"], "thumb").exists()
-                and not slot_file(hroot, broken["id"], "preview").exists(),
+                not slot_file(hroot, broken, "thumb").exists()
+                and not slot_file(hroot, broken, "preview").exists(),
             )
         error_paths = [err.get("path") for err in (heic_summary.get("errors") or [])]
         checks.check("heic-decode-error", "formats/broken.heic" in error_paths or "broken.heic" in error_paths, str(heic_summary))

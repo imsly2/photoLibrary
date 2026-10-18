@@ -502,8 +502,13 @@ def _rendition_file_nonempty(
     rel_path = Path(rel.replace("\\", "/"))
     if rel_path.is_absolute() or ".." in rel_path.parts:
         return False
-    if rend.get("store") == "folder":
+    if rend.get("store") == "folder-source":
         root = fixture_dir / ".library"
+    elif rend.get("store") == "folder-server":
+        found = sorted((lib_root / "folders").glob(f"*-{rend.get('sourceId')}"))
+        if not found:
+            return False
+        root = found[0]
     elif rel.startswith(".library/"):
         root = fixture_dir
     elif rel.startswith("renditions/"):
@@ -691,10 +696,6 @@ def _note_api(state: RunState, route: str, status: int | None) -> None:
     counts["statuses"][key] = counts["statuses"].get(key, 0) + 1
 
 
-def _server_items_dir(lib_root: Path) -> Path:
-    return lib_root / "catalog" / "items"
-
-
 def _server_journal_dirs(lib_root: Path) -> list[Path]:
     dirs: list[Path] = []
     base = lib_root / "catalog" / "sources"
@@ -759,8 +760,20 @@ def _collect_items_from_dir(items_dir: Path) -> list[dict[str, Any]]:
     return out
 
 
+def _collect_record_files(paths: list[Path]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for path in paths:
+        item = _try_load_json_file(path)
+        if item is not None and type(item.get("id")) is str and item["id"]:
+            out.append(item)
+    return out
+
+
 def _collect_server_catalog_items(lib_root: Path) -> list[dict[str, Any]]:
-    return _dedupe_catalog_items(_collect_items_from_dir(_server_items_dir(lib_root)))
+    """Every item record, both layouts (library-data and F23 folder libraries)."""
+    from tests.qa.s01 import item_records
+
+    return _dedupe_catalog_items(_collect_record_files(list(item_records(lib_root).values())))
 
 
 def _rendition_status_sig(item: dict[str, Any]) -> tuple[Any, ...]:
@@ -775,7 +788,15 @@ def _portable_mirror_report(
         _item_catalog_key(item): _rendition_status_sig(item)
         for item in _collect_server_catalog_items(lib_root)
     }
-    mirror_items = _dedupe_catalog_items(_collect_items_from_dir(_mirror_items_dir(fixture_dir)))
+    from tests.qa.s01 import item_records
+
+    in_folder = [
+        path for path in item_records(lib_root).values()
+        if os.path.normcase(str(path)).startswith(os.path.normcase(str(fixture_dir / ".library")))
+    ]
+    mirror_items = _dedupe_catalog_items(
+        _collect_items_from_dir(_mirror_items_dir(fixture_dir)) + _collect_record_files(in_folder)
+    )
     mirror = {_item_catalog_key(item): _rendition_status_sig(item) for item in mirror_items}
     matched = 0
     for key, sig in server.items():
@@ -967,19 +988,19 @@ def _scan_disk_reading(state: RunState, lib_root: Path, now: float) -> None:
                     size = raw
             _note_file_read(state, rel, now, size)
 
-    items_dir = _server_items_dir(lib_root)
-    if items_dir.is_dir():
-        for path in items_dir.glob("*.json"):
-            key = str(path)
-            if key in state.seen_item_paths:
-                continue
-            item = _try_load_json_file(path)
-            if item is None:
-                continue
-            state.seen_item_paths.add(key)
-            rel = _item_rel_key(item)
-            if rel:
-                _note_file_read(state, rel, now, _size_from_item(item))
+    from tests.qa.s01 import record_files
+
+    for path in record_files(lib_root):
+        key = str(path)
+        if key in state.seen_item_paths:
+            continue
+        item = _try_load_json_file(path)
+        if item is None:
+            continue
+        state.seen_item_paths.add(key)
+        rel = _item_rel_key(item)
+        if rel:
+            _note_file_read(state, rel, now, _size_from_item(item))
 
 
 def _sorted_catalog_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:

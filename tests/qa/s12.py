@@ -16,7 +16,7 @@ from tests.qa.s00 import (
     assert_no_pillow_in_server,
     copy_committed_fixtures,
 )
-from tests.qa.s01 import hash_tree, load_items
+from tests.qa.s01 import item_file, hash_tree, load_items
 from tests.qa.s03 import find_item, png_size
 from tests.qa.s05 import pin_media_from_manifest, pin_mtime
 from tests.qa.s06 import playing_cell_videos, set_settings, wait_level, wait_play_proxies
@@ -280,7 +280,7 @@ def prove_honesty(checks: Checks, artifacts: Path, src: Path, commands: list[str
         )
         checks.check(
             "absorb-motion-file-gone",
-            not (absorb_root / "catalog" / "items" / f"{motion_id}.json").is_file(),
+            not item_file(absorb_root, motion_id).is_file(),
         )
         stay = run_library(absorb_root, ["annotate", live["id"], "--place", "Kitchen"])
         commands.append("python -m library annotate <live-id> --place Kitchen")

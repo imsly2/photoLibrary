@@ -1,0 +1,18 @@
+
+cur F1 exit=0 s=7 fails=
+cur F4 exit=1 s=20 fails=playwright-import
+cur F5 exit=0 s=15 fails=
+cur F6 exit=1 s=13 fails=capturedAt:b/no-exif.jpg
+cur F7 exit=1 s=190 fails=core-ready
+cur F8 exit=1 s=28 fails=denied-exit-1,f8-runner
+cur F9 exit=1 s=7 fails=playwright-import
+cur F10 exit=1 s=7 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+cur F11 exit=1 s=8 fails=playwright-import
+cur F12 exit=1 s=6 fails=playwright-import
+cur F13 exit=1 s=13 fails=playwright-import
+cur F14 exit=0 s=22 fails=
+cur F15 exit=1 s=7 fails=playwright-import,ada-on-jpeg,mug-on-jpeg
+cur F16 exit=1 s=12 fails=wrong-serial-not-resolve,playwright-import
+cur F19 exit=1 s=23 fails=playwright-import,f19-runner
+cur F20 exit=0 s=13 fails=
+DONE

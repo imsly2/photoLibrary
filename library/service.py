@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
@@ -54,6 +55,21 @@ class Library:
         self._scanning = False
         self._jobs_paused = False
         self._inferring = False
+        self._resets: set[str] = set()
+        self._reset_checked = 0.0
+
+    def take_folder_reset(self) -> str | None:
+        """One source whose folder library was deleted while its folder is still
+        there (F23: that folder starts over), or None. Checked every 2 s."""
+        if self._scanning or self._inferring:
+            return None
+        now = time.monotonic()
+        if now - self._reset_checked >= 2.0:
+            self._reset_checked = now
+            from library.item_store import vanished_sources
+
+            self._resets.update(vanished_sources(self.root))
+        return self._resets.pop() if self._resets else None
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications

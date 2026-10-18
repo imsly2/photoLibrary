@@ -11,7 +11,7 @@ from typing import Any, Callable
 
 from library.httpjson import request_json
 from tests.qa.s00 import PRODUCT_ROOT, Checks, assert_no_pillow_in_server
-from tests.qa.s01 import hash_tree
+from tests.qa.s01 import hash_tree, rendition_file
 from tests.qa.s03 import find_item, png_size
 from tests.qa.s04 import collect_console
 from tests.qa.s06 import set_settings
@@ -358,7 +358,7 @@ def prove_ineligible(
         near = find_item(items, "near.jpg") or {}
         clip = find_item(items, "clip.mp4") or {}
         preview = (photo.get("renditions") or {}).get("preview")
-        preview_path = root / preview if type(preview) is str else None
+        preview_path = rendition_file(root, photo, "preview")
         checks.check("ineligible-preview-file", bool(preview_path and preview_path.is_file()), str(preview))
         if preview_path and preview_path.is_file():
             preview_path.unlink()

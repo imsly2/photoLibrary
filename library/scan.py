@@ -13,6 +13,7 @@ import unicodedata
 from pathlib import Path
 from typing import Any, Callable
 
+from library import item_store
 from library.atomic import maybe_test_barrier, transact
 from library.catalog_io import (
     catalog_overlay,
@@ -168,11 +169,17 @@ def _unchanged(entry: dict[str, Any] | None, path: Path, root: Path | None = Non
         stat = check.stat()
     except OSError:
         return False
-    return (
+    if not (
         entry.get("state") == "indexed"
         and entry.get("sizeBytes") == stat.st_size
         and entry.get("modifiedAt") == mtime_iso(check)
-    )
+    ):
+        return False
+    item_id = entry.get("itemId")
+    if root is not None and type(item_id) is str and not item_id.startswith("pending-"):
+        # A deleted folder library took this record with it: read the picture again.
+        return item_store.path_for(root, item_id).is_file()
+    return True
 
 
 _SCAN_BATCH: ContextVar[list[dict[str, Any]] | None] = ContextVar("scan_batch", default=None)
@@ -444,6 +451,7 @@ def _start_source(
         ]
         entry = make_history_entry(root, "scan", changes)
         transact(root, plan_append(root, entry) + changes)
+        item_store.invalidate(root)
         return source
     before = clone(existing)
     existing["origin"] = origin
@@ -460,6 +468,7 @@ def _start_source(
     ]
     entry = make_history_entry(root, "scan", changes)
     transact(root, plan_append(root, entry) + changes)
+    item_store.invalidate(root)
     return source
 
 
@@ -630,10 +639,9 @@ def _index_file(
     if existing_pending is not None and existing_pending.get("placeId"):
         place_id = existing_pending["placeId"]
         new_place = named_place_update(root, place_id)
-    settings = load_settings_file(root) if settings_path(root).exists() else defaults()
-    from library.renditions import effective_preview_store
+    from library.folder_library import current_store
 
-    store = effective_preview_store(source, settings)
+    store = current_store(root, source)
     item = make_item(
         item_id=pending,
         kind=kind,

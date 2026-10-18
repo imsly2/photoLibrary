@@ -35,11 +35,20 @@ def library_path(root: Path, relative: str) -> Path:
     """Resolve a library-relative path using `/` separators.
 
     ``source:<id>/<name>`` addresses a file in that source's folder library.
+    ``catalog/items/<id>.json`` is wherever that item's record is stored.
     """
     if relative.startswith("source:"):
         from library.folder_library import resolve_logical
 
         return resolve_logical(root, relative)
+    if relative.startswith("catalog/items/"):
+        from library import item_store
+
+        item_id = item_store.item_id_of(relative)
+        if item_id is not None:
+            stored = item_store.stored_path(root, item_id)
+            if stored is not None:
+                return stored
     rel = relative.replace("\\", "/")
     if rel.startswith("/") or ".." in Path(rel).parts:
         raise PathError("path-outside-root")

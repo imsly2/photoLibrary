@@ -59,8 +59,10 @@ def _queue(base: str) -> dict[str, Any]:
 
 
 def _items(lib_root: Path) -> list[dict[str, Any]]:
+    from tests.qa.s01 import item_records
+
     out = []
-    for path in sorted((lib_root / "catalog" / "items").glob("*.json")):
+    for path in item_records(lib_root).values():
         try:
             item = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -74,8 +76,11 @@ def _slot_file(rend: dict[str, Any], rel: Any, folder: Path, lib_root: Path) -> 
     if not isinstance(rel, str) or not rel:
         return None
     store = rend.get("store")
-    if store == "folder":
+    if store == "folder-source":
         return folder / ".library" / rel
+    if store == "folder-server":
+        found = sorted((lib_root / "folders").glob(f"*-{rend.get('sourceId')}"))
+        return found[0] / rel if found else None
     if store == "with-server":
         return lib_root / rel
     return folder / rel
