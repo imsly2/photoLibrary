@@ -4,6 +4,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Serve from that folder keeps generated tiles, previews,
+  and proxy videos in `<folder>/.library/renditions/<id>/`. The add
+  dialog sends `previewStore: with-source`. A preview file already in
+  that folder is served and not encoded again. Copy onto this drive
+  still follows the global preview setting.
 - 2026-10-18 — Processing names the file in hand. `GET /api/activity`
   is the current phase, filename, done/total for the folder read, and
   the time that file started. The panel ticks seconds on that file and

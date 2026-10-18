@@ -6416,10 +6416,14 @@
       return;
     }
     addError.hidden = true;
+    const body = { path: path, mode: mode };
+    if (mode === "serve-from-there") {
+      body.previewStore = "with-source";
+    }
     fetch("/api/sources", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: path, mode: mode }),
+      body: JSON.stringify(body),
     }).then(readJson).then(function () {
       return afterAddAccepted();
     }).catch(function (err) {
@@ -6944,10 +6948,14 @@
         return;
       }
       scanRetry.disabled = true;
+      const body = { path: path, mode: mode };
+      if (mode === "serve-from-there") {
+        body.previewStore = "with-source";
+      }
       fetch("/api/sources", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: path, mode: mode }),
+        body: JSON.stringify(body),
       }).then(readJson).then(function () {
         scanRetry.disabled = false;
         showStatus("Retrying scan", true);

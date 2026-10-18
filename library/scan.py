@@ -447,6 +447,9 @@ def _index_file(
 
     current = try_load_item(root, pending) or item
     published = publish_pending(root, current)
+    from library.renditions import adopt_ready_files
+
+    published = adopt_ready_files(root, source, published)
     digest = published["id"]
     existing = try_load_item(root, digest)
     before_source = clone(try_load_source(root, source_id) or source)

@@ -369,7 +369,13 @@ the library. The scan then runs on the copies.
 **Serve from that folder.** Nothing is copied. The source remembers the volume
 serial and the path from that volume's root. On this computer the server
 opens those files. On another computer, if that volume is not mounted, the
-source is unavailable.
+source is unavailable. This choice stores the generated tiles, previews, and
+proxy videos inside that folder, at `<folder>/.library/renditions/<id>/`, and
+sets the source's `previewStore` to `with-source`. Moving the folder moves
+those files with it. A later add of a folder that already has those files
+reuses a non-empty preview instead of making it again. The picture list
+itself still lives with this Library. A standalone HTML page in that folder
+comes later.
 
 The dialog's starting choice is the setting `addFolderDefault`: `ask` (default),
 `copy-here`, or `serve-from-there`. The web dialog always confirms the path and
@@ -527,7 +533,8 @@ Setting `previewStore`:
 | `with-source` | `<selected-folder>/.library/renditions/<id>/` |
 
 A source JSON field `previewStore` overrides the global setting when it is
-not null.
+not null. Choosing **Serve from that folder** sets that source to
+`with-source`. **Copy onto this drive** still follows this setting.
 
 `renditions relocate` moves existing preview files to match the current
 settings and updates each item's `renditions` object. Originals are not moved

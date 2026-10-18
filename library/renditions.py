@@ -573,6 +573,43 @@ def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
     return None
 
 
+def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
+    """Mark with-source slots ready when the preview file is already in the folder."""
+    item_id = item.get("id")
+    if type(item_id) is not str or not item_id or item_id.startswith("pending-"):
+        return item
+    store = effective_preview_store(source, _current_settings(root))
+    if store != "with-source":
+        return item
+    rend = clone(item.get("renditions") or {})
+    status = dict(rend.get("status") or {})
+    changed = False
+    for slot, state in list(status.items()):
+        if state not in {"queued", "error"}:
+            continue
+        folder = store_dir("with-source", source, root, item_id)
+        if folder is None:
+            continue
+        dest = folder / slot_filename(slot)
+        try:
+            present = dest.is_file() and dest.stat().st_size > 0
+        except OSError:
+            present = False
+        if not present:
+            continue
+        rend[slot] = slot_relative("with-source", item_id, slot)
+        status[slot] = "ready"
+        changed = True
+    if not changed:
+        return item
+    rend["store"] = "with-source"
+    rend["sourceId"] = source.get("id") or rend.get("sourceId")
+    rend["status"] = status
+    updated = clone(item)
+    updated["renditions"] = rend
+    return ordered_item(updated)
+
+
 def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str) -> None:
     before = try_load_item(root, item_id)
     if before is None:
