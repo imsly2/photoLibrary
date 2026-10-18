@@ -129,6 +129,9 @@ def analyze_places_step(root: Path) -> bool:
     if not pack_ready(root):
         return False
     for place in load_places(root):
+        from library.activity import note_item
+
+        note_item("analyze", "Places", place)
         updated = apply_local_name(root, place)
         if updated is None:
             continue

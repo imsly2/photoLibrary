@@ -507,6 +507,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.people_not_same(body["a"], body["b"]))
                 return
+            if route == "/api/activity" and method in {"GET", "HEAD"}:
+                from library.activity import snapshot
+
+                self._send_json(200, snapshot())
+                return
             if route == "/api/jobs" and method in {"GET", "HEAD"}:
                 with self.lock:
                     self._send_json(200, self.library.jobs_get())

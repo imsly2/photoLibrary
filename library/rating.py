@@ -502,6 +502,9 @@ def rate_step(root: Path) -> bool:
             continue
         if _already_scored(item, still):
             continue
+        from library.activity import note_item
+
+        note_item("rate", "Rating", item)
         try:
             _rate_one(root, item_id, still)
         except Exception:

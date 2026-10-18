@@ -4,6 +4,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Processing names the file in hand. `GET /api/activity`
+  is the current phase, filename, done/total for the folder read, and
+  the time that file started. The panel ticks seconds on that file and
+  shows this computer's listen address. Queue counts stay on
+  `GET /api/jobs`.
 - 2026-10-18 — Library and Photon Arena can both stay open. Factory
   listen port stays 8765. When another program already holds
   8765–8774, serve stores port 8785 (not an undo step) and the

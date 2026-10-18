@@ -1075,6 +1075,16 @@ button:disabled {
   color: #c8c8d0;
 }
 
+#jobs-status[data-state="running"] {
+  color: #e7eefc;
+}
+
+#jobs-serve {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  color: #8e8e9a;
+}
+
 #jobs-queues {
   list-style: none;
   margin: 0 0 0.55rem;

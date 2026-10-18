@@ -180,6 +180,8 @@
   const printImage = document.getElementById("print-image");
   const viewerFaceCrops = document.getElementById("viewer-face-crops");
   const jobsStatus = document.getElementById("jobs-status");
+  const jobsServe = document.getElementById("jobs-serve");
+  let lastActivity = null;
   const jobsQueues = document.getElementById("jobs-queues");
   const jobsPause = document.getElementById("jobs-pause");
   const jobsResume = document.getElementById("jobs-resume");
@@ -1043,6 +1045,7 @@
     renderPeople();
     renderTags();
     applySectionLayout();
+    paintServeLine();
     if (lastJobs) {
       renderJobs(lastJobs);
     }
@@ -5917,7 +5920,41 @@
     applySideLayout();
   }
 
+  function activitySentence(activity) {
+    if (!activity || !activity.phase || activity.phase === "idle" || activity.phase === "paused") {
+      return "";
+    }
+    const label = activity.phase === "scan"
+      ? t("readingPictures")
+      : I18N.queueLabel(activity.phase, activity.detail || activity.phase);
+    const parts = [label];
+    if (activity.file) {
+      parts.push(activity.file);
+    }
+    if (activity.total) {
+      parts.push(t("progressCount", { done: activity.done || 0, total: activity.total }));
+    }
+    if (activity.at) {
+      const secs = Math.max(0, Math.round(Date.now() / 1000 - Number(activity.at)));
+      parts.push(t("activitySeconds", { n: secs }));
+    }
+    return parts.join(" · ");
+  }
+
+  function paintServeLine() {
+    if (!jobsServe) {
+      return;
+    }
+    jobsServe.textContent = t("servedHere", { host: window.location.host });
+  }
+
   function jobsLine(body) {
+    if (!(body && body.paused)) {
+      const live = activitySentence(lastActivity);
+      if (live) {
+        return live;
+      }
+    }
     if (!body || body.paused) {
       const pending = ((body && body.queues) || []).reduce(function (sum, q) {
         return sum + (q.pending || 0);
@@ -5939,8 +5976,10 @@
     if (!jobsStatus || !jobsQueues) {
       return;
     }
-    jobsStatus.textContent = jobsLine(body);
-    jobsStatus.dataset.state = body && body.paused ? "paused" : (body && body.processing ? "running" : "idle");
+    const line = jobsLine(body);
+    jobsStatus.textContent = line;
+    const live = !(body && body.paused) && activitySentence(lastActivity);
+    jobsStatus.dataset.state = body && body.paused ? "paused" : (live || (body && body.processing) ? "running" : "idle");
     jobsQueues.innerHTML = "";
     ((body && body.queues) || []).forEach(function (queue) {
       const li = document.createElement("li");
@@ -5961,6 +6000,22 @@
         jobsResume.textContent = t("start");
       }
     }
+  }
+
+  function loadActivity() {
+    return fetch("/api/activity").then(readJson).then(function (body) {
+      lastActivity = body;
+      const live = !(lastJobs && lastJobs.paused) && activitySentence(body);
+      if (live && jobsStatus) {
+        jobsStatus.textContent = live;
+        jobsStatus.dataset.state = "running";
+      } else if (lastJobs) {
+        renderJobs(lastJobs);
+      }
+      return body;
+    }).catch(function () {
+      return null;
+    });
   }
 
   function loadJobs() {
@@ -8251,7 +8306,15 @@
     },
   };
 
+  paintServeLine();
   pollTimer = window.setInterval(function () {
+    if (!(lastJobs && lastJobs.paused)) {
+      const live = activitySentence(lastActivity);
+      if (live && jobsStatus) {
+        jobsStatus.textContent = live;
+        jobsStatus.dataset.state = "running";
+      }
+    }
     recoverStills();
     fetch("/api/health").then(function (res) {
       if (!res.ok) {
@@ -8259,7 +8322,9 @@
         return;
       }
       showDisconnected(false);
-      return loadJobs().then(function () {
+      return loadActivity().then(function () {
+        return loadJobs();
+      }).then(function () {
         if (scanning || !items.length || catalogNeedsStills() || currentView === "settings") {
           return loadCatalog();
         }

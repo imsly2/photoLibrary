@@ -629,6 +629,9 @@ def drain_step(root: Path) -> bool:
     item = try_load_item(root, item_id)
     if item is None:
         return False
+    from library.activity import note_item
+
+    note_item("renditions", "Previews", item)
     owner = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
     settings = _current_settings(root)
     if ready_slots(item):

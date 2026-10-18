@@ -874,6 +874,9 @@ class Library:
                 return True
         except Exception:
             pass
+        from library.activity import clear as clear_activity
+
+        clear_activity()
         return False
 
     def relocate(self) -> dict[str, bool]:

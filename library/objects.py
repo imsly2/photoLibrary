@@ -267,6 +267,9 @@ def analyze_step(root: Path) -> bool:
         digest = sha256_file(still)
         if _already_analyzed(state, item_id, digest):
             continue
+        from library.activity import note_item
+
+        note_item("objects", "Objects", item)
         try:
             _analyze_one(root, item_id, still, digest, state)
         except Exception:

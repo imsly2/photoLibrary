@@ -533,7 +533,17 @@ def scan_serve_from_there(
     added_ids: list[str] = []
     match_meters = _place_match_meters(root)
     files = iter_media_files(scan_path, root)
-    for rel, path in files:
+    total = len(files)
+    from library.activity import note as note_activity
+
+    for index, (rel, path) in enumerate(files, start=1):
+        note_activity(
+            "scan",
+            detail="Reading pictures",
+            file=Path(rel).name,
+            done=index,
+            total=total,
+        )
         source = try_load_source(root, source["id"]) or source
         entry = source["files"].get(rel)
         if _unchanged(entry, path, root):
@@ -587,6 +597,9 @@ def scan_serve_from_there(
 
     rebuild_sqlite(root, use_barrier=True)
     source = try_load_source(root, source["id"]) or source
+    from library.activity import clear as clear_activity
+
+    clear_activity()
     return source
 
 
@@ -621,7 +634,17 @@ def scan_copy_here(
     errors: list[dict[str, str]] = []
     added_ids: list[str] = []
     match_meters = _place_match_meters(root)
-    for rel, path in files:
+    total = len(files)
+    from library.activity import note as note_activity
+
+    for index, (rel, path) in enumerate(files, start=1):
+        note_activity(
+            "scan",
+            detail="Reading pictures",
+            file=Path(rel).name,
+            done=index,
+            total=total,
+        )
         source = try_load_source(root, source["id"]) or source
         entry = source["files"].get(rel)
         if not entry or type(entry.get("destination")) is not str:
@@ -692,4 +715,7 @@ def scan_copy_here(
 
     rebuild_sqlite(root, use_barrier=True)
     source = try_load_source(root, source["id"]) or source
+    from library.activity import clear as clear_activity
+
+    clear_activity()
     return source

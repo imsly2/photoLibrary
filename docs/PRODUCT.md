@@ -769,7 +769,11 @@ associations through the same catalog:
 
 Browse stays up when models or the geo pack are missing (`models-missing`
 / idle queues). Processing Pause/Start on `/api/jobs` starts or stops
-the real serve-time drains.
+the real serve-time drains. Processing also shows the file in progress
+(`GET /api/activity`: phase, filename, done/total, and seconds on that
+file) and the listen address of this Library server. The folder read
+names each picture as it is hashed. Later queues name the picture
+whose preview, place, face, objects, transcript, or rating is running.
 
 Exact person, place, thing, item and annotation payloads are in
 [CONTRACTS](CONTRACTS.md#source-entity-settings-and-history-records). Names can be

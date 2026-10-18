@@ -360,6 +360,9 @@ def transcribe_step(root: Path) -> bool:
             return True
         if _already_done(item, video):
             continue
+        from library.activity import note_item
+
+        note_item("transcribe", "Transcribe", item)
         try:
             _transcribe_one(root, item_id, video)
         except Exception:

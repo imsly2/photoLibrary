@@ -1567,6 +1567,9 @@ def infer_faces_step(root: Path) -> bool:
                 _mark_faces_scanned(root, item_id)
                 return True
             continue
+        from library.activity import note_item
+
+        note_item("infer-faces", "Faces", item)
         try:
             infer_faces(root, {"itemIds": [item_id], "force": force})
         except Exception:

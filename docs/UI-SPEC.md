@@ -323,6 +323,15 @@ orphan list.
 a progress-ish line (queue label + pending count, not a fake
 percentage), and **Pause** / **Start** (Resume when paused).
 
+Also poll `GET /api/activity` about once a second. That reply is the
+file the server is on right now (`phase`, `file`, `done`, `total`,
+`at`), and it does not wait for the catalog walk. While a phase is
+running, `#jobs-status` names it: `Reading pictures · IMG_0123.JPG ·
+101 of 550 · 4s`. The seconds count up on that same file so a long
+read does not look frozen. Queue rows stay the pending counts.
+`#jobs-serve` stays visible: `This computer · 127.0.0.1:8785` (the
+page's own host). That is the Library server. No console.
+
 Queues, in order: **renditions** (previews), **analyze**, **infer-faces**,
 **objects**, **transcribe**, **rate**. When jobs are not paused, the serve drain runs real work:
 previews, then unnamed GPS city names (geo pack), then face infer
