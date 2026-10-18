@@ -24,7 +24,14 @@ from library.catalog_io import (
     try_load_source_head,
 )
 from library.errors import fail
-from library.media import PHOTO_SUFFIXES, VIDEO_SUFFIXES, ffprobe_json, file_suffix
+from library.media import (
+    PHOTO_SUFFIXES,
+    VIDEO_SUFFIXES,
+    VIDEO_TIMEOUT_S,
+    ffprobe_json,
+    file_suffix,
+    run_ffmpeg,
+)
 from library.paths import library_path
 from library.records import PREVIEW_STORES, clone, ordered_item
 from library.settings import defaults, load_settings_file, settings_path
@@ -167,7 +174,7 @@ def _write_webp(source: Path, dest: Path, cap: int) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
-        proc = subprocess.run(
+        proc = run_ffmpeg(
             [
                 "ffmpeg",
                 "-y",
@@ -180,8 +187,6 @@ def _write_webp(source: Path, dest: Path, cap: int) -> bool:
                 *WEBP_ENCODE,
                 str(tmp),
             ],
-            capture_output=True,
-            check=False,
             **_FFMPEG_PRIORITY,
         )
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
@@ -291,7 +296,7 @@ def _run_ffmpeg(args: list[str], dest: Path) -> bool:
     cleanup_tmp_siblings(dest)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
-        proc = subprocess.run(args + [str(tmp)], capture_output=True, check=False, **_FFMPEG_PRIORITY)
+        proc = run_ffmpeg(args + [str(tmp)], timeout=VIDEO_TIMEOUT_S, **_FFMPEG_PRIORITY)
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
             if tmp.exists():
                 tmp.unlink()

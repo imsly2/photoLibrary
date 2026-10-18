@@ -7,6 +7,7 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -15,7 +16,7 @@ from library.atomic import atomic_write_bytes, atomic_write_json, load_json
 from library.catalog_io import try_load_thing
 from library.item_index import iter_item_ids, load_item
 from library.errors import fail
-from library.media import ffprobe_json, sha256_file
+from library.media import ffprobe_json, run_ffmpeg, sha256_file
 from library.renditions import rendition_abs
 from library.volumes import location_file, location_matches_stat
 
@@ -259,32 +260,123 @@ def analyze_objects(root: Path, item_id: str | None = None) -> dict[str, Any]:
     }
 
 
-def analyze_step(root: Path) -> bool:
+# Legacy state records carry only the digest. Each step verifies at most this
+# many of them (one hash each) and stores the file signature so the next
+# step compares a stat, not the bytes.
+_BACKFILL_PER_STEP = 10
+# root key -> item id -> catalog key of the item when its record last matched
+# the file on disk. Settled items then cost no disk access per tick; a rescan
+# or edit changes the catalog key and the next tick stats the file again.
+_settled: dict[str, dict[str, tuple]] = {}
+
+
+def _file_signature(path: Path) -> list[int] | None:
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    return [int(st.st_size), int(st.st_mtime_ns)]
+
+
+def _catalog_key(item: dict[str, Any]) -> tuple:
+    """Everything in the record that decides which file we would read."""
+    rend = item.get("renditions") or {}
+    status = rend.get("status") if isinstance(rend, dict) else None
+    return (
+        tuple(
+            (loc.get("sizeBytes"), loc.get("modifiedAt"), loc.get("component"))
+            for loc in item.get("locations") or []
+            if isinstance(loc, dict) and loc.get("current") is True
+        ),
+        tuple(sorted(status.items())) if isinstance(status, dict) else (),
+    )
+
+
+def analyze_step(root: Path, *, io_context=nullcontext) -> bool:
+    """Detect objects in one photo. Decode and inference run inside io_context
+    (the server releases its lock there); the result is revalidated and
+    published under the lock.
+
+    Already-analyzed photos cost one stat each: the state records the still's
+    size and mtime next to its digest, so an idle tick no longer re-hashes
+    every original in the library.
+    """
     if not model_installed(root):
         return False
     try:
         _ensure_runtime()
     except Exception:
         return False
+    from library.item_index import iter_items, root_key
+
     state = _load_state(root)
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
+    records = state.setdefault("items", {})
+    settled = _settled.setdefault(root_key(root), {})
+    backfilled = 0
+    for item in iter_items(root):
+        item_id = item.get("id")
+        if type(item_id) is not str or not item_id:
+            continue
+        rec = records.get(item_id)
+        catalog_key = _catalog_key(item)
+        if isinstance(rec, dict) and rec.get("sha256") and settled.get(item_id) == catalog_key:
+            continue
         still = _still_for_detect(item, root)
         if still is None:
             continue
-        digest = sha256_file(still)
-        if _already_analyzed(state, item_id, digest):
-            continue
+        signature = _file_signature(still)
+        digest = None
+        if isinstance(rec, dict) and rec.get("sha256"):
+            if signature is not None and rec.get("source") == signature:
+                settled[item_id] = catalog_key
+                continue
+            if backfilled >= _BACKFILL_PER_STEP:
+                break
+            backfilled += 1
+            digest = sha256_file(still)
+            if rec["sha256"] == digest:
+                rec["source"] = signature
+                settled[item_id] = catalog_key
+                continue
+        if digest is None:
+            digest = sha256_file(still)
         from library.activity import note_item
 
         note_item("objects", "Objects", item)
+        detections: list[dict[str, Any]] | None
         try:
-            _analyze_one(root, item_id, still, digest, state)
+            with io_context():
+                detections = detect_objects(still, model_path(root))
         except Exception:
-            state.setdefault("items", {})[item_id] = {"sha256": digest, "names": []}
+            detections = None
+        current = _try_load_item(root, item_id)
+        if (
+            current is None
+            or _still_for_detect(current, root) != still
+            or _file_signature(still) != signature
+        ):
+            if backfilled:
+                _save_state(root, state)
+            return True
+        if detections is None:
+            names: list[str] = []
+        else:
+            names = _publish_detections(root, item_id, detections)
+        records[item_id] = {"sha256": digest, "names": names, "source": signature}
+        settled[item_id] = _catalog_key(current)
+        _save_state(root, state)
+        return True
+    if backfilled:
         _save_state(root, state)
         return True
     return False
+
+
+def _try_load_item(root: Path, item_id: str) -> dict[str, Any] | None:
+    try:
+        return load_item(root, item_id)
+    except Exception:
+        return None
 
 
 def detections_to_things(
@@ -344,6 +436,17 @@ def _analyze_one(
     state: dict[str, Any],
 ) -> list[str]:
     detections = detect_objects(still, model_path(root))
+    names = _publish_detections(root, item_id, detections)
+    state.setdefault("items", {})[item_id] = {
+        "sha256": digest,
+        "names": names,
+        "source": _file_signature(still),
+    }
+    return names
+
+
+def _publish_detections(root: Path, item_id: str, detections: list[dict[str, Any]]) -> list[str]:
+    """Write detections as Things through annotate; returns the item's thing names."""
     item = load_item(root, item_id)
     payload_things = detections_to_things(detections, item, root)
     names = []
@@ -360,7 +463,6 @@ def _analyze_one(
             thing = try_load_thing(root, ref.get("thingId") or "")
             if thing and thing.get("name") and thing["name"] not in names:
                 names.append(thing["name"])
-    state.setdefault("items", {})[item_id] = {"sha256": digest, "names": names}
     return names
 
 
@@ -430,7 +532,7 @@ def _letterbox_tensor(path: Path, np: Any) -> tuple[Any, float, float, float, fl
         f"scale={INPUT_SIZE}:{INPUT_SIZE}:force_original_aspect_ratio=decrease,"
         f"pad={INPUT_SIZE}:{INPUT_SIZE}:(ow-iw)/2:(oh-ih)/2:color=black"
     )
-    proc = subprocess.run(
+    proc = run_ffmpeg(
         [
             "ffmpeg",
             "-v",
@@ -446,9 +548,7 @@ def _letterbox_tensor(path: Path, np: Any) -> tuple[Any, float, float, float, fl
             "-f",
             "rawvideo",
             "pipe:1",
-        ],
-        capture_output=True,
-        check=False,
+        ]
     )
     expected = INPUT_SIZE * INPUT_SIZE * 3
     if proc.returncode != 0 or len(proc.stdout) != expected:
@@ -587,13 +687,27 @@ def _iou(a: list[float], b: list[float]) -> float:
     return inter / union
 
 
+_sessions: dict[tuple[str, int, int], Any] = {}
+
+
 def _session(onnx_path: Path) -> tuple[Any, Any]:
+    """One InferenceSession per model file for the life of the process.
+    Creating it per photo cost 0.33 s each and churned memory."""
     try:
         import numpy as np
         import onnxruntime as ort
     except ImportError as exc:
         raise fail("dependency-missing") from exc
-    session = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
+    try:
+        st = onnx_path.stat()
+    except OSError as exc:
+        raise fail("model-unavailable") from exc
+    key = (str(onnx_path), int(st.st_size), int(st.st_mtime_ns))
+    session = _sessions.get(key)
+    if session is None:
+        _sessions.clear()
+        session = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
+        _sessions[key] = session
     return session, np
 
 

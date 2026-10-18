@@ -16,7 +16,7 @@ from typing import Any
 from library.atomic import atomic_write_json, transact
 from library.catalog_io import item_rel, iter_item_ids, load_item
 from library.errors import fail
-from library.media import ffprobe_json, mtime_iso
+from library.media import VIDEO_TIMEOUT_S, ffprobe_json, mtime_iso, run_ffmpeg
 from library.records import clone, ordered_item
 from library.volumes import location_file, location_matches_stat
 
@@ -611,7 +611,7 @@ def _extract_wav(video: Path) -> Any:
     tmp = tempfile.NamedTemporaryFile(prefix="library-asr-", suffix=".wav", delete=False)
     tmp.close()
     dest = Path(tmp.name)
-    proc = subprocess.run(
+    proc = run_ffmpeg(
         [
             "ffmpeg",
             "-v",
@@ -627,8 +627,7 @@ def _extract_wav(video: Path) -> Any:
             "pcm_s16le",
             str(dest),
         ],
-        capture_output=True,
-        check=False,
+        timeout=VIDEO_TIMEOUT_S,
     )
     if proc.returncode != 0 or not dest.is_file() or dest.stat().st_size <= 44:
         dest.unlink(missing_ok=True)

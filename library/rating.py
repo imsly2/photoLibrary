@@ -21,7 +21,7 @@ from library.atomic import atomic_write_bytes, atomic_write_json, load_json, tra
 from library.catalog_io import item_rel, iter_item_ids, load_item
 from library.errors import AppError, fail
 from library.history import make_history_entry, plan_append
-from library.media import mtime_iso
+from library.media import mtime_iso, run_ffmpeg
 from library.paths import library_path
 from library.records import clone, ordered_item
 from library.volumes import location_file, location_matches_stat
@@ -745,7 +745,7 @@ def decode_rgb(path: Path, max_side: int) -> tuple[bytes, int, int]:
     if width is None or height is None or width <= 0 or height <= 0:
         raise fail("decode-error")
     work_w, work_h = _working_size(width, height, max_side)
-    proc = subprocess.run(
+    proc = run_ffmpeg(
         [
             "ffmpeg",
             "-v",
@@ -761,9 +761,7 @@ def decode_rgb(path: Path, max_side: int) -> tuple[bytes, int, int]:
             "-f",
             "rawvideo",
             "pipe:1",
-        ],
-        capture_output=True,
-        check=False,
+        ]
     )
     expected = work_w * work_h * 3
     if proc.returncode != 0 or len(proc.stdout) != expected:
@@ -1050,7 +1048,7 @@ def _smart_tensor(still: Path, session: Any, np_mod: Any) -> Any:
                 width = int(shape[2])
     except Exception:
         pass
-    proc = subprocess.run(
+    proc = run_ffmpeg(
         [
             "ffmpeg",
             "-v",
@@ -1069,9 +1067,7 @@ def _smart_tensor(still: Path, session: Any, np_mod: Any) -> Any:
             "-f",
             "rawvideo",
             "pipe:1",
-        ],
-        capture_output=True,
-        check=False,
+        ]
     )
     expected = width * height * 3
     if proc.returncode != 0 or len(proc.stdout) != expected:

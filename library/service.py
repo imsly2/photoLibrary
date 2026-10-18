@@ -945,7 +945,7 @@ class Library:
             try:
                 from library.faces import infer_faces_step
 
-                if infer_faces_step(self.root):
+                if infer_faces_step(self.root, io_context=io_context):
                     return True
             except Exception as exc:
                 log_drain_error("faces-force-step", exc)
@@ -960,14 +960,14 @@ class Library:
             try:
                 from library.faces import infer_faces_step
 
-                if infer_faces_step(self.root):
+                if infer_faces_step(self.root, io_context=io_context):
                     return True
             except Exception as exc:
                 log_drain_error("faces", exc)
         try:
             from library.objects import analyze_step as run_analyze_step
 
-            if run_analyze_step(self.root):
+            if run_analyze_step(self.root, io_context=io_context):
                 return True
         except Exception as exc:
             log_drain_error("objects", exc)

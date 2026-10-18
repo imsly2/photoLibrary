@@ -9,7 +9,7 @@ import uuid
 from pathlib import Path
 
 from library.errors import fail
-from library.media import ffprobe_json
+from library.media import ffprobe_json, run_ffmpeg
 from library.paths import library_path
 
 FACE_CROP_PX = 256
@@ -106,7 +106,7 @@ def write_face_crop(
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
-        proc = subprocess.run(
+        proc = run_ffmpeg(
             [
                 "ffmpeg",
                 "-y",
@@ -121,9 +121,7 @@ def write_face_crop(
                 "-f",
                 "webp",
                 str(tmp),
-            ],
-            capture_output=True,
-            check=False,
+            ]
         )
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
             if tmp.exists():

@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -25,9 +26,9 @@ from library.catalog_io import (
     person_rel,
     try_load_person,
 )
-from library.errors import fail
+from library.errors import AppError, fail
 from library.history import make_history_entry, plan_append
-from library.media import ffprobe_json
+from library.media import ffprobe_json, run_ffmpeg
 from library.paths import library_path
 from library.records import clone, ordered_item, ordered_person
 from library.volumes import location_file, location_matches_stat
@@ -177,6 +178,27 @@ def load_index(root: Path) -> dict[str, Any] | None:
         raise fail("invalid-catalog") from exc
     if not isinstance(data, dict) or data.get("schemaVersion") != 1:
         raise fail("invalid-catalog")
+    return data
+
+
+_index_cache: dict[str, tuple[tuple[int, int], dict[str, Any] | None]] = {}
+
+
+def _index_readonly(root: Path) -> dict[str, Any] | None:
+    """load_index for callers that only read: parsed again only when the file
+    changes. The index holds every embedding, so each idle tick re-parsing it
+    three times added up. Never mutate the returned dict."""
+    path = index_path(root)
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    sig = (int(st.st_mtime_ns), int(st.st_size))
+    hit = _index_cache.get(str(path))
+    if hit is not None and hit[0] == sig:
+        return hit[1]
+    data = load_index(root)
+    _index_cache[str(path)] = (sig, data)
     return data
 
 
@@ -362,7 +384,7 @@ def decode_rgb(path: Path) -> tuple[int, int, bytes]:
     if width <= 0 or height <= 0:
         raise fail("decode-error")
     try:
-        proc = subprocess.run(
+        proc = run_ffmpeg(
             [
                 "ffmpeg",
                 "-v",
@@ -376,9 +398,7 @@ def decode_rgb(path: Path) -> tuple[int, int, bytes]:
                 "-pix_fmt",
                 "rgb24",
                 "pipe:1",
-            ],
-            capture_output=True,
-            check=False,
+            ]
         )
     except OSError as exc:
         raise fail("dependency-missing") from exc
@@ -669,6 +689,35 @@ def _distance2kps(points: Any, distance: Any) -> Any:
     return np.stack(preds, axis=-1)
 
 
+_insight_cache: dict[tuple, tuple[Any, Any]] = {}
+
+
+def _insight_sessions(root: Path, ort: Any) -> tuple[Any, Any]:
+    """Detector and recognizer sessions, created once per model file version.
+    Building both per photo cost 0.44 s each and churned memory."""
+    det_path = buffalo_dir(root) / DET_NAME
+    rec_path = buffalo_dir(root) / REC_NAME
+    if not det_path.is_file() or not rec_path.is_file():
+        raise fail("models-missing")
+    key = tuple(
+        (str(path), int(st.st_size), int(st.st_mtime_ns))
+        for path, st in ((det_path, det_path.stat()), (rec_path, rec_path.stat()))
+    )
+    hit = _insight_cache.get(key)
+    if hit is not None:
+        return hit
+    sess_opts = ort.SessionOptions()
+    sess_opts.inter_op_num_threads = 1
+    # Inference runs with the server lock released, so it may use half the
+    # cores; the other half stay free for requests and the encoders.
+    sess_opts.intra_op_num_threads = max(1, (os.cpu_count() or 2) // 2)
+    det = ort.InferenceSession(str(det_path), sess_opts, providers=["CPUExecutionProvider"])
+    rec = ort.InferenceSession(str(rec_path), sess_opts, providers=["CPUExecutionProvider"])
+    _insight_cache.clear()
+    _insight_cache[key] = (det, rec)
+    return det, rec
+
+
 def detect_insightface(
     root: Path,
     width: int,
@@ -681,15 +730,7 @@ def detect_insightface(
     np = _numpy()
     ort = _ort()
     image = np.frombuffer(rgb, dtype=np.uint8).reshape((height, width, 3))
-    det_path = buffalo_dir(root) / DET_NAME
-    rec_path = buffalo_dir(root) / REC_NAME
-    if not det_path.is_file() or not rec_path.is_file():
-        raise fail("models-missing")
-    sess_opts = ort.SessionOptions()
-    sess_opts.inter_op_num_threads = 1
-    sess_opts.intra_op_num_threads = 1
-    det = ort.InferenceSession(str(det_path), sess_opts, providers=["CPUExecutionProvider"])
-    rec = ort.InferenceSession(str(rec_path), sess_opts, providers=["CPUExecutionProvider"])
+    det, rec = _insight_sessions(root, ort)
     input_size = (DET_INPUT, DET_INPUT)
     input_name = det.get_inputs()[0].name
     center_cache: dict[tuple[int, int, int], Any] = {}
@@ -1375,7 +1416,17 @@ def request_faces_rescan(root: Path) -> dict[str, Any]:
     return {"ok": True, "queued": True, "backend": status["backend"]}
 
 
-def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+def infer_faces(
+    root: Path,
+    payload: dict[str, Any] | None = None,
+    *,
+    detected: dict[str, list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
+    """Detect, cluster and publish faces for the wanted items (all when none).
+
+    ``detected`` maps item id -> faces already found by detect_faces_on_still;
+    the drain computes those with the server lock released and passes them in.
+    """
     parsed = read_infer_payload(payload)
     if parsed["cleanup"] and not parsed["force"]:
         return cleanup_faces(root, parsed)
@@ -1411,13 +1462,16 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
             continue
         scanned += 1
         scanned_ids.append(item_id)
-        for face in detect_faces_on_still(
-            root,
-            path,
-            backend,
-            min_side_px=int(quality["minSidePx"]),
-            min_det=float(quality["minDetScore"]),
-        ):
+        found = detected.get(item_id) if detected else None
+        if found is None:
+            found = detect_faces_on_still(
+                root,
+                path,
+                backend,
+                min_side_px=int(quality["minSidePx"]),
+                min_det=float(quality["minDetScore"]),
+            )
+        for face in found:
             rec = {
                 "itemId": item_id,
                 "box": _clamp_box(face["box"]),
@@ -1508,7 +1562,7 @@ def infer_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, 
 
 
 def scanned_item_ids(root: Path) -> set[str]:
-    index = load_index(root)
+    index = _index_readonly(root)
     if index is None:
         return set()
     scanned = index.get("scanned") or {}
@@ -1518,7 +1572,7 @@ def scanned_item_ids(root: Path) -> set[str]:
 
 
 def faces_force_rescan(root: Path) -> bool:
-    index = load_index(root)
+    index = _index_readonly(root)
     return bool(index and index.get("forceRescan"))
 
 
@@ -1548,21 +1602,37 @@ def _mark_faces_scanned(root: Path, item_id: str) -> None:
     atomic_write_json(index_path(root), after)
 
 
-def infer_faces_step(root: Path) -> bool:
+def _file_signature(path: Path) -> tuple[int, int] | None:
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    return int(st.st_size), int(st.st_mtime_ns)
+
+
+def infer_faces_step(root: Path, *, io_context=nullcontext) -> bool:
+    """Find faces in one photo. Decode and ONNX run inside io_context (the
+    server releases its lock there); clustering and publication happen under
+    the lock after checking the file did not change meanwhile."""
     status = faces_status(root)
     if not status.get("ready"):
         return False
     force = faces_force_rescan(root)
     already = scanned_item_ids(root)
-    for item_id in iter_item_ids(root):
+    from library.item_index import iter_items
+
+    for item in iter_items(root):
+        item_id = item.get("id")
+        if type(item_id) is not str:
+            continue
         if item_id in already:
             continue
-        item = load_item(root, item_id)
         if item.get("kind") not in {"photo", "live"}:
             continue
         if not force and item.get("faces"):
             continue
-        if _still_path(item, root) is None:
+        path = _still_path(item, root)
+        if path is None:
             if force:
                 _mark_faces_scanned(root, item_id)
                 return True
@@ -1570,8 +1640,29 @@ def infer_faces_step(root: Path) -> bool:
         from library.activity import note_item
 
         note_item("infer-faces", "Faces", item)
+        backend = status["backend"]
+        quality = face_quality_settings(root, backend)
+        signature = _file_signature(path)
         try:
-            infer_faces(root, {"itemIds": [item_id], "force": force})
+            with io_context():
+                found = detect_faces_on_still(
+                    root,
+                    path,
+                    backend,
+                    min_side_px=int(quality["minSidePx"]),
+                    min_det=float(quality["minDetScore"]),
+                )
+        except Exception:
+            _mark_faces_scanned(root, item_id)
+            return True
+        try:
+            current = load_item(root, item_id)
+        except AppError:
+            return True
+        if _still_path(current, root) != path or _file_signature(path) != signature:
+            return True
+        try:
+            infer_faces(root, {"itemIds": [item_id], "force": force}, detected={item_id: found})
         except Exception:
             _mark_faces_scanned(root, item_id)
             return True

@@ -35,6 +35,63 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+# One still decode, probe or WebP encode. A hung decoder (ffmpeg blocked on a
+# pipe nobody reads, a stuck USB drive) must fail, not stall the only
+# processing thread forever, which is what happened to the live server.
+STILL_TIMEOUT_S = 120.0
+# Proxy / playback encodes of long phone clips.
+VIDEO_TIMEOUT_S = 1800.0
+TIMEOUT_RETURNCODE = -9
+profile_counters = {"ffmpeg_runs": 0, "ffmpeg_timeouts": 0}
+
+
+def run_ffmpeg(
+    cmd: list[str],
+    *,
+    timeout: float = STILL_TIMEOUT_S,
+    text: bool = False,
+    **popen_kwargs: Any,
+) -> subprocess.CompletedProcess:
+    """Run ffmpeg/ffprobe with stdin closed, output captured and a hard timeout.
+
+    ffmpeg gets ``-nostdin`` so it never polls the server's inherited stdin.
+    On timeout, or if the Python side fails while collecting output (the
+    MemoryError case), the child is killed and a CompletedProcess with
+    ``TIMEOUT_RETURNCODE`` comes back; callers already treat nonzero as failure.
+    """
+    cmd = [str(part) for part in cmd]
+    if cmd and Path(cmd[0]).stem.lower() == "ffmpeg" and "-nostdin" not in cmd:
+        cmd.insert(1, "-nostdin")
+    profile_counters["ffmpeg_runs"] += 1
+    proc = subprocess.Popen(
+        cmd,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=text,
+        **popen_kwargs,
+    )
+    try:
+        out, err = proc.communicate(timeout=timeout)
+    except Exception as exc:
+        profile_counters["ffmpeg_timeouts"] += 1
+        proc.kill()
+        try:
+            proc.communicate(timeout=10)
+        except Exception:
+            pass
+        import sys
+
+        print(
+            f"ffmpeg gave up ({type(exc).__name__}) after {timeout:.0f}s: {' '.join(cmd)[:300]}",
+            file=sys.stderr,
+            flush=True,
+        )
+        empty = "" if text else b""
+        return subprocess.CompletedProcess(cmd, TIMEOUT_RETURNCODE, empty, empty)
+    return subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+
+
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
@@ -109,7 +166,7 @@ def heif_has_valid_brand(path: Path) -> bool:
 
 
 def ffprobe_json(path: Path) -> dict[str, Any] | None:
-    proc = subprocess.run(
+    proc = run_ffmpeg(
         [
             "ffprobe",
             "-v",
@@ -120,9 +177,7 @@ def ffprobe_json(path: Path) -> dict[str, Any] | None:
             "-show_streams",
             str(path),
         ],
-        capture_output=True,
         text=True,
-        check=False,
     )
     if proc.returncode != 0:
         return None

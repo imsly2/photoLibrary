@@ -1,0 +1,772 @@
+{
+  "label": "after-40-idle",
+  "repo": "J:\\slyOS\\projects\\photoLibrary",
+  "pictures": 40,
+  "scanSeconds": 2.69,
+  "previewsSeconds": 6.55,
+  "aiDrainSeconds": 55.28,
+  "idleTickSeconds": {
+    "mean": 0.0173,
+    "max": 0.018
+  },
+  "byQueue": {
+    "infer-faces": {
+      "steps": 40,
+      "seconds": 32.074,
+      "unlockedSeconds": 27.398,
+      "processes": 80,
+      "meanSeconds": 0.802,
+      "lockHeldSeconds": 4.677
+    },
+    "objects": {
+      "steps": 40,
+      "seconds": 12.006,
+      "unlockedSeconds": 9.53,
+      "processes": 80,
+      "meanSeconds": 0.3,
+      "lockHeldSeconds": 2.475
+    },
+    "rate": {
+      "steps": 40,
+      "seconds": 11.166,
+      "unlockedSeconds": 9.16,
+      "processes": 80,
+      "meanSeconds": 0.279,
+      "lockHeldSeconds": 2.006
+    }
+  },
+  "processesByName": {
+    "ffmpeg": 160,
+    "ffprobe": 120
+  },
+  "peakRssMB": null,
+  "outcome": {
+    "faces": 38,
+    "itemsWithFaces": 28,
+    "itemsWithThings": 11,
+    "rated": 40,
+    "ratingErrors": 0
+  },
+  "steps": [
+    {
+      "queue": "infer-faces",
+      "seconds": 1.5554,
+      "unlockedSeconds": 1.5043,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.6814,
+      "unlockedSeconds": 0.63,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.9565,
+      "unlockedSeconds": 0.6373,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7376,
+      "unlockedSeconds": 0.6175,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.4238,
+      "unlockedSeconds": 0.3402,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7282,
+      "unlockedSeconds": 0.6477,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8674,
+      "unlockedSeconds": 0.773,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8544,
+      "unlockedSeconds": 0.7686,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.9998,
+      "unlockedSeconds": 0.8625,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.5193,
+      "unlockedSeconds": 0.3758,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.9588,
+      "unlockedSeconds": 0.825,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7641,
+      "unlockedSeconds": 0.6827,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8914,
+      "unlockedSeconds": 0.7556,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8151,
+      "unlockedSeconds": 0.7267,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7898,
+      "unlockedSeconds": 0.6954,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7204,
+      "unlockedSeconds": 0.6152,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.6934,
+      "unlockedSeconds": 0.5913,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.6299,
+      "unlockedSeconds": 0.5315,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7106,
+      "unlockedSeconds": 0.5879,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.9397,
+      "unlockedSeconds": 0.8089,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8304,
+      "unlockedSeconds": 0.7425,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7719,
+      "unlockedSeconds": 0.6389,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8344,
+      "unlockedSeconds": 0.7105,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8232,
+      "unlockedSeconds": 0.7138,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8298,
+      "unlockedSeconds": 0.7325,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.802,
+      "unlockedSeconds": 0.6873,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8802,
+      "unlockedSeconds": 0.7776,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7157,
+      "unlockedSeconds": 0.5909,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7217,
+      "unlockedSeconds": 0.5586,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7551,
+      "unlockedSeconds": 0.6372,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7302,
+      "unlockedSeconds": 0.6115,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.9304,
+      "unlockedSeconds": 0.7985,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.897,
+      "unlockedSeconds": 0.7977,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.8559,
+      "unlockedSeconds": 0.7348,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7277,
+      "unlockedSeconds": 0.6316,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.766,
+      "unlockedSeconds": 0.634,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7776,
+      "unlockedSeconds": 0.6299,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7274,
+      "unlockedSeconds": 0.5902,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7262,
+      "unlockedSeconds": 0.5923,
+      "processes": 2
+    },
+    {
+      "queue": "infer-faces",
+      "seconds": 0.7346,
+      "unlockedSeconds": 0.6104,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.5935,
+      "unlockedSeconds": 0.5629,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3376,
+      "unlockedSeconds": 0.2266,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2533,
+      "unlockedSeconds": 0.2237,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2518,
+      "unlockedSeconds": 0.2222,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3194,
+      "unlockedSeconds": 0.1635,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2648,
+      "unlockedSeconds": 0.231,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2749,
+      "unlockedSeconds": 0.2438,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2738,
+      "unlockedSeconds": 0.2421,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2755,
+      "unlockedSeconds": 0.2337,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.321,
+      "unlockedSeconds": 0.1765,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3406,
+      "unlockedSeconds": 0.2987,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2655,
+      "unlockedSeconds": 0.2294,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2335,
+      "unlockedSeconds": 0.201,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2608,
+      "unlockedSeconds": 0.2315,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.256,
+      "unlockedSeconds": 0.2224,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2431,
+      "unlockedSeconds": 0.2122,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2216,
+      "unlockedSeconds": 0.1937,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.295,
+      "unlockedSeconds": 0.1981,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2405,
+      "unlockedSeconds": 0.2041,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3561,
+      "unlockedSeconds": 0.2534,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3158,
+      "unlockedSeconds": 0.2701,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.276,
+      "unlockedSeconds": 0.2437,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2786,
+      "unlockedSeconds": 0.2334,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2943,
+      "unlockedSeconds": 0.2512,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3202,
+      "unlockedSeconds": 0.2805,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3383,
+      "unlockedSeconds": 0.2137,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3219,
+      "unlockedSeconds": 0.2181,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2411,
+      "unlockedSeconds": 0.2022,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2966,
+      "unlockedSeconds": 0.1926,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3345,
+      "unlockedSeconds": 0.2871,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3144,
+      "unlockedSeconds": 0.2004,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.4011,
+      "unlockedSeconds": 0.2739,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.42,
+      "unlockedSeconds": 0.2982,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3028,
+      "unlockedSeconds": 0.2567,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2839,
+      "unlockedSeconds": 0.2362,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2644,
+      "unlockedSeconds": 0.2174,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.3122,
+      "unlockedSeconds": 0.2126,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2733,
+      "unlockedSeconds": 0.228,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2552,
+      "unlockedSeconds": 0.2128,
+      "processes": 2
+    },
+    {
+      "queue": "objects",
+      "seconds": 0.2827,
+      "unlockedSeconds": 0.2312,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2301,
+      "unlockedSeconds": 0.1822,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2782,
+      "unlockedSeconds": 0.2314,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2897,
+      "unlockedSeconds": 0.2356,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2694,
+      "unlockedSeconds": 0.2186,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2172,
+      "unlockedSeconds": 0.1701,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2952,
+      "unlockedSeconds": 0.2464,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3084,
+      "unlockedSeconds": 0.257,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2936,
+      "unlockedSeconds": 0.2427,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2835,
+      "unlockedSeconds": 0.2335,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2281,
+      "unlockedSeconds": 0.1753,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3336,
+      "unlockedSeconds": 0.283,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2872,
+      "unlockedSeconds": 0.2399,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2838,
+      "unlockedSeconds": 0.2322,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3008,
+      "unlockedSeconds": 0.2544,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2719,
+      "unlockedSeconds": 0.2203,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2931,
+      "unlockedSeconds": 0.242,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2534,
+      "unlockedSeconds": 0.2014,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2482,
+      "unlockedSeconds": 0.1978,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2672,
+      "unlockedSeconds": 0.2157,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3286,
+      "unlockedSeconds": 0.2757,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3382,
+      "unlockedSeconds": 0.2849,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2785,
+      "unlockedSeconds": 0.228,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.301,
+      "unlockedSeconds": 0.2506,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3231,
+      "unlockedSeconds": 0.2714,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3246,
+      "unlockedSeconds": 0.2772,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2594,
+      "unlockedSeconds": 0.2083,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.251,
+      "unlockedSeconds": 0.2052,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2509,
+      "unlockedSeconds": 0.1991,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.235,
+      "unlockedSeconds": 0.1863,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2467,
+      "unlockedSeconds": 0.199,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2493,
+      "unlockedSeconds": 0.1973,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3205,
+      "unlockedSeconds": 0.2703,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3446,
+      "unlockedSeconds": 0.2991,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.3104,
+      "unlockedSeconds": 0.2606,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2978,
+      "unlockedSeconds": 0.2412,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2614,
+      "unlockedSeconds": 0.2128,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2545,
+      "unlockedSeconds": 0.2038,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2389,
+      "unlockedSeconds": 0.1899,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.253,
+      "unlockedSeconds": 0.2031,
+      "processes": 2
+    },
+    {
+      "queue": "rate",
+      "seconds": 0.2658,
+      "unlockedSeconds": 0.2169,
+      "processes": 2
+    }
+  ]
+}
