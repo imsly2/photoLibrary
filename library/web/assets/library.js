@@ -55,6 +55,11 @@
   function t(key, vars) {
     return I18N.t(key, vars);
   }
+  // Servers before F23 let the browser keep media a week under the bare URL.
+  const MEDIA_CACHE_KEY = "2";
+  function mediaUrl(itemId, which, extra) {
+    return "/api/media/" + encodeURIComponent(itemId) + "?which=" + which + (extra || "") + "&v=" + MEDIA_CACHE_KEY;
+  }
   const inspector = document.getElementById("inspector");
   const inspectorName = document.getElementById("inspector-name");
   const inspectorCount = document.getElementById("inspector-count");
@@ -1666,7 +1671,7 @@
       stopHover();
       return;
     }
-    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    const proxyUrl = mediaUrl(item.id, "proxy");
     if (hoverVideo && hoverCell === cell && hoverCell.isConnected) {
       const src = hoverVideo.getAttribute("src") || hoverVideo.currentSrc || "";
       if (src.indexOf(item.id) !== -1) {
@@ -1764,7 +1769,7 @@
   }
 
   function stillUrlFor(id) {
-    return "/api/media/" + encodeURIComponent(id) + "?which=" + stillWhich(itemById(id));
+    return mediaUrl(id, stillWhich(itemById(id)));
   }
 
   function stillSlotStatus(id) {
@@ -2457,7 +2462,7 @@
     if (!item || (item.kind !== "video" && item.kind !== "live") || !proxyReady(item)) {
       return;
     }
-    const proxyUrl = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+    const proxyUrl = mediaUrl(item.id, "proxy");
     resetViewerVideo();
     showViewerPlaceholder(false);
     viewerImage.hidden = true;
@@ -2800,7 +2805,7 @@
   function compareMediaUrl(side) {
     const kind = side && side.kind;
     const which = kind === "video" ? "poster" : "preview";
-    return "/api/media/" + encodeURIComponent(side.itemId) + "?which=" + which;
+    return mediaUrl(side.itemId, which);
   }
 
   function paintCompare() {
@@ -3268,7 +3273,7 @@
       return;
     }
     const itemId = item.id;
-    const url = "/api/media/" + encodeURIComponent(itemId) + "?which=original";
+    const url = mediaUrl(itemId, "original");
     const probe = new Image();
     probe.onload = function () {
       if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId || viewer.hidden) {
@@ -3328,7 +3333,7 @@
     if (!stillPreviewReady(item)) {
       return;
     }
-    const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
+    const url = mediaUrl(item.id, "preview");
     if (viewerImage.getAttribute("src") === url && viewerImage.complete && viewerImage.naturalWidth > 0) {
       return;
     }
@@ -3445,7 +3450,7 @@
       btn.setAttribute("aria-current", id === item.id ? "true" : "false");
       const img = document.createElement("img");
       img.alt = "";
-      img.src = "/api/media/" + encodeURIComponent(id) + "?which=thumb";
+      img.src = mediaUrl(id, "thumb");
       btn.appendChild(img);
       const label = document.createElement("span");
       if (stack.kind === "live") {
@@ -3488,7 +3493,7 @@
       return;
     }
     const itemId = item.id;
-    fetch("/api/media/" + encodeURIComponent(itemId) + "?which=proxy", { method: "HEAD" }).then(function (res) {
+    fetch(mediaUrl(itemId, "proxy"), { method: "HEAD" }).then(function (res) {
       if (viewerIndex < 0 || !items[viewerIndex] || items[viewerIndex].id !== itemId) {
         return;
       }
@@ -3650,7 +3655,7 @@
   }
 
   function mediaWhichUrl(item, which) {
-    return "/api/media/" + encodeURIComponent(item.id) + "?which=" + which;
+    return mediaUrl(item.id, which);
   }
 
   function usingProxy() {
@@ -4285,7 +4290,7 @@
     viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
-    const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
+    const url = mediaUrl(item.id, "preview");
     const same = viewerItemId === item.id && !viewer.hidden && viewerImage.getAttribute("src") === url;
     viewerIndex = index;
     viewerItemId = item.id;
@@ -4364,7 +4369,7 @@
     }
     showViewerPlaceholder(false);
     viewerVideo.hidden = false;
-    viewerVideo.poster = "/api/media/" + encodeURIComponent(item.id) + "?which=poster";
+    viewerVideo.poster = mediaUrl(item.id, "poster");
     viewerVideo.onloadedmetadata = function () {
       if (viewerItemId !== item.id || viewer.hidden) {
         return;
@@ -5137,11 +5142,11 @@
     }
     const box = thumb.box;
     if (box && box.length === 4 && box[2] > 0 && box[3] > 0) {
-      out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=face&box=" + faceBoxQuery(box);
+      out.src = mediaUrl(thumb.itemId, "face", "&box=" + faceBoxQuery(box));
       out.kind = "face";
       return out;
     }
-    out.src = "/api/media/" + encodeURIComponent(thumb.itemId) + "?which=thumb";
+    out.src = mediaUrl(thumb.itemId, "thumb");
     out.kind = "thumb";
     return out;
   }
@@ -5917,7 +5922,7 @@
       return viewerImage.getAttribute("src");
     }
     if (viewerItemId) {
-      return "/api/media/" + encodeURIComponent(viewerItemId) + "?which=preview";
+      return mediaUrl(viewerItemId, "preview");
     }
     return "";
   }
@@ -7938,6 +7943,7 @@
   wireSettingsForm();
 
   window.libraryApp = {
+    mediaUrl: mediaUrl,
     openCluster: openCluster,
     currentView: function () {
       return currentView;

@@ -989,7 +989,7 @@ class Library:
         return relocate_renditions(self.root)
 
     def media_resolve(self, item_id: str, query: dict[str, str]) -> dict[str, Any]:
-        extra = set(query) - {"which", "component", "box"}
+        extra = set(query) - {"which", "component", "box", "v"}
         if extra:
             raise fail("invalid-argument")
         which = query.get("which")

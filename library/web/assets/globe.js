@@ -1037,7 +1037,7 @@
       tourVideo.onerror = function () {
         skipCurrentMedia();
       };
-      tourVideo.src = "/api/media/" + encodeURIComponent(item.id) + "?which=proxy";
+      tourVideo.src = window.libraryApp.mediaUrl(item.id, "proxy");
       return;
     }
     if ((item.kind === "photo" || item.kind === "live") && tourImage && tourMedia) {
@@ -1055,7 +1055,7 @@
       tourImage.onerror = function () {
         skipCurrentMedia();
       };
-      tourImage.src = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
+      tourImage.src = window.libraryApp.mediaUrl(item.id, "preview");
       return;
     }
     skipCurrentMedia();

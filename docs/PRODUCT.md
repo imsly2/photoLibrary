@@ -353,7 +353,11 @@ No place / Untagged buckets). Date `level` stays required when `by` is
 omitted or `date`.
 
 `GET /api/media/<id>?which=thumb|preview|poster|proxy|original|face` returns the
-file. `which=face&box=x,y,w,h` is the square People-picker crop.
+file. `which=face&box=x,y,w,h` is the square People-picker crop. An
+optional `v=` is ignored by the server; the page adds it so images cached by
+an older server (which let the browser keep them a week) are never reused.
+Generated files are sent `no-cache` with an ETag, so the browser checks
+each time and a deleted file shows as missing on the next load.
 `original` on a missing disk returns HTTP 404 and
 `{"error":"unavailable"}`. The thumb still returns if that preview file is
 on this computer.
