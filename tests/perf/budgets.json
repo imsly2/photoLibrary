@@ -1,0 +1,13 @@
+{
+  "countBaseline": 80,
+  "readingRateMinPicturesPerSec": 15,
+  "readingTenthRatioMax": 1.25,
+  "firstThumbMaxSec": 3,
+  "allThumbsPosterMaxSec": 30,
+  "viewerPreviewMaxSec": 2,
+  "everythingDoneMaxSec": 90,
+  "bookkeepingMaxMs": 50,
+  "apiJobsP95MaxMs": 300,
+  "apiItemsP95MaxMs": 1000,
+  "scaleLinearWithCount": ["allThumbsPosterMaxSec", "everythingDoneMaxSec"]
+}
