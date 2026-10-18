@@ -5286,6 +5286,38 @@
     node.appendChild(img);
   }
 
+  // The People picker lists every face of the chosen person. Each crop is a
+  // server-side decode of the original, so a person with hundreds of faces
+  // used to fire hundreds of requests the moment they were selected, ahead of
+  // the grid's own /api/items call. Crops now paint as they scroll into view.
+  const pendingFaceCrops = typeof WeakMap === "function" ? new WeakMap() : null;
+  const faceCropObserver = pendingFaceCrops && typeof IntersectionObserver === "function"
+    ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) {
+          return;
+        }
+        const node = entry.target;
+        faceCropObserver.unobserve(node);
+        const thumb = pendingFaceCrops.get(node);
+        pendingFaceCrops.delete(node);
+        if (thumb && node.isConnected) {
+          paintFace(node, thumb);
+        }
+      });
+    }, { rootMargin: "320px" })
+    : null;
+
+  function paintFaceWhenVisible(node, thumb) {
+    if (!faceCropObserver) {
+      paintFace(node, thumb);
+      return;
+    }
+    node.classList.add("person-face-pending");
+    pendingFaceCrops.set(node, thumb);
+    faceCropObserver.observe(node);
+  }
+
   function visiblePeople() {
     const selected = {};
     selectedPeople().forEach(function (id) {
@@ -5375,7 +5407,7 @@
       crop.className = "person-face";
       crop.style.width = "100%";
       crop.style.height = "100%";
-      paintFace(crop, thumb);
+      paintFaceWhenVisible(crop, thumb);
       btn.appendChild(crop);
       function pick(event) {
         if (event.button != null && event.button !== 0) {
@@ -8511,7 +8543,10 @@
         return;
       }
       showDisconnected(false);
-      const refresh = scanning || (lastActivity && lastActivity.scan && lastActivity.scan.phase === "scan") || !items.length || catalogNeedsStills() || currentView === "settings";
+      // An empty library keeps refreshing until pictures arrive; an empty
+      // *filter result* (nobody has 4 stars yet) does not re-download the catalog.
+      const emptyLibrary = !items.length && !hasActiveFilter() && leftoverCount() === 0;
+      const refresh = scanning || (lastActivity && lastActivity.scan && lastActivity.scan.phase === "scan") || emptyLibrary || catalogNeedsStills() || currentView === "settings";
       return Promise.all([loadJobs(), refresh ? loadCatalog() : refreshIdleSettings()]);
     }).catch(function () {
       showDisconnected(true);

@@ -8,8 +8,6 @@ from typing import Any
 from library.annotate import clone
 from library.atomic import transact
 from library.catalog_io import (
-    iter_item_ids,
-    load_item,
     load_people,
     load_person,
     person_rel,
@@ -77,10 +75,14 @@ def _thumbnail_for(
 
 
 def people_index(root: Path) -> dict[str, Any]:
+    from library.item_index import iter_items
+
     faces_by_person: dict[str, list[dict[str, Any]]] = {}
     item_ids_by_person: dict[str, set[str]] = {}
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
+    # The page asks for this on every catalog refresh; read the stat-validated
+    # in-memory records rather than every item file on disk.
+    for item in iter_items(root):
+        item_id = item["id"]
         seen: set[str] = set()
         for face in item.get("faces") or []:
             person_id = face.get("personId")

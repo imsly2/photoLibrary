@@ -1,0 +1,629 @@
+{
+  "label": "head",
+  "app": "J:\\slyOS\\projects\\photoLibrary\\.qa\\wt-before",
+  "fixture": "J:\\slyOS\\projects\\photoLibrary\\.qa\\ui-400",
+  "run": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\head",
+  "idle": [
+    {
+      "name": "first-load",
+      "settleMs": 11826,
+      "domContentLoadedMs": 247,
+      "firstTileMs": 9334,
+      "cells": 347,
+      "visibleTiles": 140,
+      "people": 7,
+      "longTaskMs": 80,
+      "longTasks": 1,
+      "timedOut": false,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\head\\idle-first-load.png"
+    },
+    {
+      "name": "filter-person-1",
+      "settleMs": 16700,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 176,
+      "longTaskMsDuring": 219,
+      "longTasksDuring": 3,
+      "apiRequests": 16,
+      "mediaRequests": {
+        "thumb": 55,
+        "face": 294,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/settings",
+          "ms": 6352.6
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 5951.8
+        },
+        {
+          "path": "/api/settings",
+          "ms": 5887.3
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1-off",
+      "settleMs": 5816,
+      "timedOut": false,
+      "cellsBefore": 176,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 73,
+      "longTasksDuring": 1,
+      "apiRequests": 9,
+      "mediaRequests": {
+        "thumb": 17,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 5713.6
+        },
+        {
+          "path": "/api/items?sort=date&dir=desc&hideRejects=1",
+          "ms": 5669.5
+        },
+        {
+          "path": "/api/tags",
+          "ms": 5267.5
+        }
+      ]
+    },
+    {
+      "name": "filter-person-2",
+      "settleMs": 10441,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 60,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 12,
+      "mediaRequests": {
+        "thumb": 5,
+        "face": 83,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/settings",
+          "ms": 8976.7
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 5018
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 4899.9
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1+2 (ctrl)",
+      "settleMs": 10,
+      "timedOut": false,
+      "cellsBefore": 60,
+      "cellsAfter": 60,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "filter-clear-people",
+      "settleMs": 14082,
+      "timedOut": false,
+      "cellsBefore": 60,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 75,
+      "longTasksDuring": 1,
+      "apiRequests": 26,
+      "mediaRequests": {
+        "thumb": 216,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 8351.7
+        },
+        {
+          "path": "/api/settings",
+          "ms": 8154.9
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 4686.3
+        }
+      ]
+    },
+    {
+      "name": "chip-favorites",
+      "settleMs": 80,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 2,
+      "mediaRequests": {
+        "thumb": 46,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&hideRejects=1",
+          "ms": 1599.3
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 1559.9
+        }
+      ]
+    },
+    {
+      "name": "chip-all",
+      "settleMs": 7,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 2,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-4-stars",
+      "settleMs": 19,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-4-stars-off",
+      "settleMs": 19,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-photos",
+      "settleMs": 21,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-all-2",
+      "settleMs": 20,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "open-picture",
+      "standInMs": 50,
+      "originalMs": 3268,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\head\\idle-viewer.png"
+    },
+    {
+      "name": "viewer-back",
+      "settleMs": 35,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "api-min-of-3-ms",
+      "/api/items": 4683.1,
+      "/api/items?person=person_6ef2ec85842d": 4504.3,
+      "/api/groups?level=years": 24,
+      "/api/people": 119.7,
+      "/api/tags": 155.9,
+      "/api/jobs": 34.3
+    }
+  ],
+  "processing": [
+    {
+      "name": "first-load",
+      "settleMs": 6556,
+      "domContentLoadedMs": 167,
+      "firstTileMs": 3291,
+      "cells": 347,
+      "visibleTiles": 140,
+      "people": 7,
+      "longTaskMs": 76,
+      "longTasks": 1,
+      "timedOut": false,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\head\\processing-first-load.png"
+    },
+    {
+      "name": "filter-person-1",
+      "settleMs": 4185,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 174,
+      "longTaskMsDuring": 353,
+      "longTasksDuring": 3,
+      "apiRequests": 11,
+      "mediaRequests": {
+        "thumb": 87,
+        "face": 294,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/settings",
+          "ms": 3679.5
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1&level=years",
+          "ms": 2953.8
+        },
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1",
+          "ms": 2940.9
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1-off",
+      "settleMs": 2706,
+      "timedOut": false,
+      "cellsBefore": 174,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 90,
+      "longTasksDuring": 1,
+      "apiRequests": 7,
+      "mediaRequests": {
+        "thumb": 30,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&hideRejects=1",
+          "ms": 2578.9
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 2540
+        },
+        {
+          "path": "/api/sources",
+          "ms": 2123
+        }
+      ]
+    },
+    {
+      "name": "filter-person-2",
+      "settleMs": 2268,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 59,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 11,
+      "mediaRequests": {
+        "thumb": 27,
+        "face": 85,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/settings",
+          "ms": 2299.7
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 1969.6
+        },
+        {
+          "path": "/api/settings",
+          "ms": 1860.1
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1+2 (ctrl)",
+      "settleMs": 15,
+      "timedOut": false,
+      "cellsBefore": 59,
+      "cellsAfter": 59,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 1,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/people/suggestions",
+          "ms": 1499.4
+        }
+      ]
+    },
+    {
+      "name": "filter-clear-people",
+      "settleMs": 5978,
+      "timedOut": false,
+      "cellsBefore": 59,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 53,
+      "longTasksDuring": 1,
+      "apiRequests": 21,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 3439.5
+        },
+        {
+          "path": "/api/settings",
+          "ms": 3198.1
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_90395f0491ae%2Cperson_6ef2ec85842d&hideReject",
+          "ms": 3194.1
+        }
+      ]
+    },
+    {
+      "name": "chip-favorites",
+      "settleMs": 11,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-all",
+      "settleMs": 17,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-4-stars",
+      "settleMs": 17,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-4-stars-off",
+      "settleMs": 18,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-photos",
+      "settleMs": 13,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-all-2",
+      "settleMs": 19,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "open-picture",
+      "standInMs": 32,
+      "originalMs": 395,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\head\\processing-viewer.png"
+    },
+    {
+      "name": "viewer-back",
+      "settleMs": 40,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "api-min-of-3-ms",
+      "/api/items": 130,
+      "/api/items?person=person_6ef2ec85842d": 1136.2,
+      "/api/groups?level=years": 29,
+      "/api/people": 251.7,
+      "/api/tags": 1439.2,
+      "/api/jobs": 1306.8
+    }
+  ],
+  "jobsAfter": {
+    "ok": true,
+    "paused": false,
+    "processing": true,
+    "queues": [
+      {
+        "id": "renditions",
+        "label": "Previews",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze",
+        "pending": 94,
+        "done": 0,
+        "error": 0,
+        "state": "unavailable",
+        "available": false
+      },
+      {
+        "id": "infer-faces",
+        "label": "Faces",
+        "pending": 370,
+        "done": 30,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "objects",
+        "label": "Objects",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "transcribe",
+        "label": "Transcribe",
+        "pending": 0,
+        "done": 0,
+        "error": 0,
+        "state": "idle",
+        "available": false
+      },
+      {
+        "id": "rate",
+        "label": "Rating",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      }
+    ]
+  }
+}

@@ -44,11 +44,13 @@ def _thing_ids_on_item(item: dict[str, Any]) -> set[str]:
 
 
 def tags_index(root: Path) -> dict[str, Any]:
+    from library.item_index import iter_items
+
     counts: dict[str, set[str]] = {}
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
+    # Called on every catalog refresh: use the in-memory records, not the disk.
+    for item in iter_items(root):
         for thing_id in _thing_ids_on_item(item):
-            counts.setdefault(thing_id, set()).add(item_id)
+            counts.setdefault(thing_id, set()).add(item["id"])
     rows: list[dict[str, Any]] = []
     for thing in load_things(root):
         rows.append(tag_row(thing, len(counts.get(thing["id"]) or [])))

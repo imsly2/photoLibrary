@@ -1,0 +1,27 @@
+{
+  "label": "head",
+  "repo": "J:\\slyOS\\projects\\photoLibrary\\.qa\\wt-before",
+  "items": 400,
+  "medianMs": {
+    "/api/items": 24.4,
+    "/api/items?person": 11.8,
+    "/api/groups?level=years": 15.5,
+    "/api/sources": 103.2,
+    "/api/settings": 1.6,
+    "/api/jobs": 28.3,
+    "/api/people": 108.2,
+    "/api/tags": 105.4,
+    "snapshot_catalog (under lock)": 2.4
+  },
+  "payloadKB": {
+    "/api/items": 1187.7,
+    "/api/items?person": 630.5,
+    "/api/groups?level=years": 26.8,
+    "/api/sources": 116.7,
+    "/api/settings": 0.5,
+    "/api/jobs": 0.7,
+    "/api/people": 2.1,
+    "/api/tags": 3.0
+  },
+  "pageLoadSumMs": 386.6
+}

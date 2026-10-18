@@ -61,15 +61,18 @@ def source_stats(source: dict[str, Any], root: Path) -> dict[str, int]:
         item_id = entry.get("itemId")
         if type(item_id) is str and item_id:
             item_ids.add(item_id)
+    from library.item_index import iter_items
+
     photos = 0
     videos = 0
     live = 0
     done = 0
     queued = 0
     error = 0
-    for item_id in item_ids:
-        item = try_load_item(root, item_id)
-        if item is None:
+    # /api/sources runs on every catalog refresh: count from the in-memory
+    # records instead of reading each item file.
+    for item in iter_items(root):
+        if item.get("id") not in item_ids:
             continue
         kind = item.get("kind")
         if kind == "video":

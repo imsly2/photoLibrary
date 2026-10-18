@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -36,8 +37,14 @@ def _parent_key(item: dict[str, Any]) -> tuple[str, str]:
         or item.get("filename")
         or ""
     )
-    parent = str(Path(str(path)).parent).replace("\\", "/").casefold()
-    return source, parent
+    return source, _parent_folder(str(path))
+
+
+# The page asks for the item list every couple of seconds while processing,
+# and these pathlib splits were most of the server's time per request.
+@lru_cache(maxsize=32768)
+def _parent_folder(path: str) -> str:
+    return str(Path(path).parent).replace("\\", "/").casefold()
 
 
 def _filename(item: dict[str, Any]) -> str:
@@ -45,6 +52,7 @@ def _filename(item: dict[str, Any]) -> str:
     return name if type(name) is str else ""
 
 
+@lru_cache(maxsize=32768)
 def _bare_stem(filename: str) -> str:
     return Path(filename).stem.casefold()
 

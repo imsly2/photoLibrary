@@ -1,0 +1,776 @@
+{
+  "label": "after",
+  "app": "J:\\slyOS\\projects\\photoLibrary",
+  "fixture": "J:\\slyOS\\projects\\photoLibrary\\.qa\\ui-400",
+  "run": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\after",
+  "idle": [
+    {
+      "name": "first-load",
+      "settleMs": 3758,
+      "domContentLoadedMs": 255,
+      "firstTileMs": 2128,
+      "cells": 347,
+      "visibleTiles": 140,
+      "people": 7,
+      "longTaskMs": 108,
+      "longTasks": 1,
+      "timedOut": false,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\after\\idle-first-load.png"
+    },
+    {
+      "name": "filter-person-1",
+      "settleMs": 1195,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 176,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 11,
+      "mediaRequests": {
+        "thumb": 123,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1",
+          "ms": 1088.2
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1&level=years",
+          "ms": 1069.6
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 167.5
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1-off",
+      "settleMs": 190,
+      "timedOut": false,
+      "cellsBefore": 176,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 64,
+      "longTasksDuring": 1,
+      "apiRequests": 8,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 138.9
+        },
+        {
+          "path": "/api/sources",
+          "ms": 108.6
+        },
+        {
+          "path": "/api/settings",
+          "ms": 94.7
+        }
+      ]
+    },
+    {
+      "name": "filter-person-2",
+      "settleMs": 128,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 55,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 8,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 133.5
+        },
+        {
+          "path": "/api/tags",
+          "ms": 98.3
+        },
+        {
+          "path": "/api/sources",
+          "ms": 87.1
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1+2 (ctrl)",
+      "settleMs": 17,
+      "timedOut": false,
+      "cellsBefore": 55,
+      "cellsAfter": 55,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 7,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 156.5
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 135.7
+        },
+        {
+          "path": "/api/settings",
+          "ms": 124.5
+        }
+      ]
+    },
+    {
+      "name": "filter-clear-people",
+      "settleMs": 535,
+      "timedOut": false,
+      "cellsBefore": 55,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 56,
+      "longTasksDuring": 1,
+      "apiRequests": 12,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_90395f0491ae%2Cperson_6ef2ec85842d&hideRejects",
+          "ms": 346.5
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_90395f0491ae%2Cperson_6ef2ec85842d&hideReject",
+          "ms": 340.3
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 303.6
+        }
+      ]
+    },
+    {
+      "name": "chip-favorites",
+      "settleMs": 21,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 6,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 111.6
+        },
+        {
+          "path": "/api/sources",
+          "ms": 88.7
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 81.6
+        }
+      ]
+    },
+    {
+      "name": "chip-all",
+      "settleMs": 16,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 2,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 72.2
+        },
+        {
+          "path": "/api/settings",
+          "ms": 23.9
+        }
+      ]
+    },
+    {
+      "name": "chip-4-stars",
+      "settleMs": 332,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 80,
+      "longTasksDuring": 1,
+      "apiRequests": 10,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&favorite=1&hideRejects=1",
+          "ms": 422.9
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&favorite=1&hideRejects=1&level=years",
+          "ms": 421.4
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 163.9
+        }
+      ]
+    },
+    {
+      "name": "chip-4-stars-off",
+      "settleMs": 62,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 7,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 143.2
+        },
+        {
+          "path": "/api/settings",
+          "ms": 103.7
+        },
+        {
+          "path": "/api/tags",
+          "ms": 100.5
+        }
+      ]
+    },
+    {
+      "name": "chip-photos",
+      "settleMs": 23,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 9,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 170.2
+        },
+        {
+          "path": "/api/sources",
+          "ms": 169.8
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 163.1
+        }
+      ]
+    },
+    {
+      "name": "chip-all-2",
+      "settleMs": 27,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 50,
+      "longTasksDuring": 1,
+      "apiRequests": 5,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/groups?sort=date&dir=desc&kind=photo%2Clive&hideRejects=1&level=years",
+          "ms": 218.3
+        },
+        {
+          "path": "/api/sources",
+          "ms": 78.2
+        },
+        {
+          "path": "/api/tags",
+          "ms": 65.5
+        }
+      ]
+    },
+    {
+      "name": "open-picture",
+      "standInMs": 50,
+      "originalMs": 108,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\after\\idle-viewer.png"
+    },
+    {
+      "name": "viewer-back",
+      "settleMs": 42,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "api-min-of-3-ms",
+      "/api/items": 44.3,
+      "/api/items?person=person_6ef2ec85842d": 25.6,
+      "/api/groups?level=years": 13.6,
+      "/api/people": 7.4,
+      "/api/tags": 10.2,
+      "/api/jobs": 24.8
+    }
+  ],
+  "processing": [
+    {
+      "name": "first-load",
+      "settleMs": 3121,
+      "domContentLoadedMs": 162,
+      "firstTileMs": 1617,
+      "cells": 347,
+      "visibleTiles": 140,
+      "people": 7,
+      "longTaskMs": 87,
+      "longTasks": 1,
+      "timedOut": false,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\after\\processing-first-load.png"
+    },
+    {
+      "name": "filter-person-1",
+      "settleMs": 1521,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 175,
+      "longTaskMsDuring": 75,
+      "longTasksDuring": 1,
+      "apiRequests": 11,
+      "mediaRequests": {
+        "thumb": 136,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1",
+          "ms": 1399.4
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1&level=years",
+          "ms": 1384.1
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 666.3
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1-off",
+      "settleMs": 276,
+      "timedOut": false,
+      "cellsBefore": 175,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 59,
+      "longTasksDuring": 1,
+      "apiRequests": 9,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 283.1
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 196.2
+        },
+        {
+          "path": "/api/settings",
+          "ms": 185.3
+        }
+      ]
+    },
+    {
+      "name": "filter-person-2",
+      "settleMs": 268,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 56,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 8,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_90395f0491ae&hideRejects=1&level=years",
+          "ms": 233
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 214.3
+        },
+        {
+          "path": "/api/sources",
+          "ms": 155.1
+        }
+      ]
+    },
+    {
+      "name": "filter-person-1+2 (ctrl)",
+      "settleMs": 13,
+      "timedOut": false,
+      "cellsBefore": 56,
+      "cellsAfter": 56,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 5,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 124.8
+        },
+        {
+          "path": "/api/settings",
+          "ms": 111.2
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 86.4
+        }
+      ]
+    },
+    {
+      "name": "filter-clear-people",
+      "settleMs": 1278,
+      "timedOut": false,
+      "cellsBefore": 56,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 72,
+      "longTasksDuring": 1,
+      "apiRequests": 15,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_6ef2ec85842d&hideRejects=1",
+          "ms": 1256.6
+        },
+        {
+          "path": "/api/items?sort=date&dir=desc&person=person_90395f0491ae&hideRejects=1",
+          "ms": 1255.4
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&person=person_90395f0491ae%2Cperson_6ef2ec85842d&hideReject",
+          "ms": 1247.5
+        }
+      ]
+    },
+    {
+      "name": "chip-favorites",
+      "settleMs": 116,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 0,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 8,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 100.9
+        },
+        {
+          "path": "/api/sources",
+          "ms": 97.5
+        },
+        {
+          "path": "/api/settings",
+          "ms": 72.5
+        }
+      ]
+    },
+    {
+      "name": "chip-all",
+      "settleMs": 272,
+      "timedOut": false,
+      "cellsBefore": 0,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 52,
+      "longTasksDuring": 1,
+      "apiRequests": 8,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/items?sort=date&dir=desc&hideRejects=1",
+          "ms": 179.1
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 176.7
+        },
+        {
+          "path": "/api/jobs",
+          "ms": 117.7
+        }
+      ]
+    },
+    {
+      "name": "chip-4-stars",
+      "settleMs": 14,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 4,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/sources",
+          "ms": 340.1
+        },
+        {
+          "path": "/api/settings",
+          "ms": 333.2
+        },
+        {
+          "path": "/api/tags",
+          "ms": 333
+        }
+      ]
+    },
+    {
+      "name": "chip-4-stars-off",
+      "settleMs": 13,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 2,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 454.4
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 77.8
+        }
+      ]
+    },
+    {
+      "name": "chip-photos",
+      "settleMs": 13,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "chip-all-2",
+      "settleMs": 13,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 0,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": []
+    },
+    {
+      "name": "open-picture",
+      "standInMs": 29,
+      "originalMs": 144,
+      "screenshot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\perf-next\\ui-runs\\after\\processing-viewer.png"
+    },
+    {
+      "name": "viewer-back",
+      "settleMs": 40,
+      "timedOut": false,
+      "cellsBefore": 347,
+      "cellsAfter": 347,
+      "longTaskMsDuring": 0,
+      "longTasksDuring": 0,
+      "apiRequests": 3,
+      "mediaRequests": {
+        "thumb": 0,
+        "face": 0,
+        "other": 0
+      },
+      "slowestApi": [
+        {
+          "path": "/api/jobs",
+          "ms": 389.5
+        },
+        {
+          "path": "/api/groups?sort=date&dir=desc&hideRejects=1&level=years",
+          "ms": 340.1
+        },
+        {
+          "path": "/api/people/suggestions",
+          "ms": 101.5
+        }
+      ]
+    },
+    {
+      "name": "api-min-of-3-ms",
+      "/api/items": 48,
+      "/api/items?person=person_6ef2ec85842d": 29,
+      "/api/groups?level=years": 15,
+      "/api/people": 8.1,
+      "/api/tags": 13.3,
+      "/api/jobs": 35.8
+    }
+  ],
+  "jobsAfter": {
+    "ok": true,
+    "paused": false,
+    "processing": true,
+    "queues": [
+      {
+        "id": "renditions",
+        "label": "Previews",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze",
+        "pending": 94,
+        "done": 0,
+        "error": 0,
+        "state": "unavailable",
+        "available": false
+      },
+      {
+        "id": "infer-faces",
+        "label": "Faces",
+        "pending": 392,
+        "done": 8,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "objects",
+        "label": "Objects",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "transcribe",
+        "label": "Transcribe",
+        "pending": 0,
+        "done": 0,
+        "error": 0,
+        "state": "idle",
+        "available": false
+      },
+      {
+        "id": "rate",
+        "label": "Rating",
+        "pending": 0,
+        "done": 400,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      }
+    ]
+  }
+}
