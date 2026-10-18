@@ -12,6 +12,7 @@ from library.catalog_io import (
     item_rel,
     iter_item_ids,
     load_item,
+    successor_item_id,
     load_people,
     load_person,
     load_places,
@@ -472,6 +473,9 @@ def _resolve_place(
 def apply_annotate(root: Path, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     if type(item_id) is not str or not item_id:
         raise fail("invalid-argument")
+    successor = successor_item_id(root, item_id)
+    if successor is not None:
+        item_id = successor
     parsed = read_annotate_payload(payload)
     item = load_item(root, item_id)
     before_item = clone(item)

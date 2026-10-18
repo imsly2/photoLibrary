@@ -17,7 +17,7 @@ from library.catalog_io import (
     try_load_source,
 )
 from library.errors import fail
-from library.history import latest_entry_id, load_entry, make_history_entry, plan_append, plan_extend_entry
+from library.history import extend_current_operation, make_history_entry, plan_append, seal_latest
 from library.media import default_component, media_kind, mtime_iso, sha256_file
 from library.paths import library_path, normalize_root
 from library.records import (
@@ -116,30 +116,33 @@ def make_library_location(
 
 
 def _extend_current(root: Path, changes: list[dict[str, Any]]) -> None:
-    entry_id = latest_entry_id(root)
-    if entry_id is None:
-        transact(root, changes)
-        return
-    entry = load_entry(root, entry_id)
-    if entry.get("operation") in {"scan", "copy-here"}:
-        transact(root, plan_extend_entry(root, entry_id, changes))
-        return
-    transact(root, changes)
+    transact(root, extend_current_operation(root, changes))
+
+
+def _same_source_meta(before: dict[str, Any], after: dict[str, Any]) -> bool:
+    for key in ("schemaVersion", "id", "name", "mode", "origin", "copyRoot", "previewStore", "scan"):
+        if before.get(key) != after.get(key):
+            return False
+    return True
 
 
 def persist_source(root: Path, source: dict[str, Any], before: dict[str, Any]) -> dict[str, Any]:
+    from library.catalog_io import fold_source_changes, plan_source_file
+
     after = ordered_source(source)
-    _extend_current(
-        root,
-        [
-            {
-                "path": source_rel(after["id"]),
-                "before": before,
-                "after": after,
-            }
-        ],
-    )
-    return after
+    before_ordered = ordered_source(before)
+    if _same_source_meta(before_ordered, after):
+        changes = []
+        old_files = before_ordered["files"]
+        new_files = after["files"]
+        for rel in sorted(set(old_files) | set(new_files)):
+            if old_files.get(rel) != new_files.get(rel):
+                changes.append(plan_source_file(root, after["id"], rel, new_files.get(rel)))
+        if changes:
+            _extend_current(root, changes)
+        return try_load_source(root, after["id"]) or after
+    _extend_current(root, fold_source_changes(root, after))
+    return try_load_source(root, after["id"]) or after
 
 
 def dest_matches_hash(root: Path, dest_rel: str, digest: str) -> bool:
@@ -462,6 +465,10 @@ def convert_linked_source(root: Path, source_id: str) -> dict[str, Any]:
                 raise
             errors.append({"path": rel, "error": "io-error"})
 
+    from library.catalog_io import pair_live_items
+    from library.index import rebuild_sqlite
+
+    pair_live_items(root, source_id)
     source = try_load_source(root, source_id) or source
     before = clone(source)
     source["scan"] = {
@@ -471,10 +478,7 @@ def convert_linked_source(root: Path, source_id: str) -> dict[str, Any]:
         "errors": errors,
     }
     persist_source(root, source, before)
-    from library.catalog_io import pair_live_items
-    from library.index import rebuild_sqlite
-
-    pair_live_items(root, source_id)
+    seal_latest(root)
     rebuild_sqlite(root, use_barrier=True)
     return load_source(root, source_id)
 

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import secrets
+from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +19,7 @@ from library.records import (
     ordered_place,
     ordered_source,
     ordered_thing,
+    read_file_entry,
     read_item,
     read_person,
     read_place,
@@ -104,16 +107,110 @@ def load_item(root: Path, item_id: str) -> dict[str, Any]:
 
 
 def load_source(root: Path, source_id: str) -> dict[str, Any]:
-    path = sources_dir(root) / f"{source_id}.json"
+    found = try_load_source(root, source_id)
+    if found is None:
+        raise fail("not-found")
+    return found
+
+
+_CATALOG_OVERLAY: ContextVar[dict[str, Any] | None] = ContextVar("catalog_overlay", default=None)
+
+
+@contextmanager
+def catalog_overlay():
+    token = _CATALOG_OVERLAY.set({})
     try:
-        return read_source(load_json(path))
-    except FileNotFoundError as exc:
-        raise fail("not-found") from exc
-    except OSError as exc:
-        raise fail("io-error") from exc
+        yield
+    finally:
+        _CATALOG_OVERLAY.reset(token)
+
+
+def note_catalog_overlay(relative: str, payload: Any) -> None:
+    overlay = _CATALOG_OVERLAY.get()
+    if overlay is not None:
+        overlay[relative] = payload
+
+
+def drop_catalog_overlay(relative: str) -> None:
+    overlay = _CATALOG_OVERLAY.get()
+    if overlay is not None:
+        overlay.pop(relative, None)
+
+
+def _overlay_payload(relative: str) -> Any:
+    overlay = _CATALOG_OVERLAY.get()
+    if overlay is None or relative not in overlay:
+        return _MISSING
+    return overlay[relative]
+
+
+class _Missing:
+    pass
+
+
+_MISSING = _Missing()
+
+
+def successor_item_id(root: Path, item_id: str) -> str | None:
+    """Hash id for a pending record that was already published and removed.
+
+    The pending file is the record while it exists. After hash publication
+    deletes it, a caller that still holds the pending id follows the source
+    file row to the hash item. A pending id with no published item stays unresolved.
+    """
+    if type(item_id) is not str or not item_id.startswith("pending-"):
+        return None
+    if (items_dir(root) / f"{item_id}.json").is_file():
+        return None
+    source_id, _, digest = item_id[len("pending-") :].partition("-")
+    if not source_id.startswith("src_") or len(digest) != 64:
+        return None
+    entry = _journal_entry(root, source_id, digest)
+    if entry is None:
+        entry = _folded_entry(root, source_id, digest)
+    if not isinstance(entry, dict):
+        return None
+    successor = entry.get("itemId")
+    if (
+        type(successor) is not str
+        or not successor
+        or successor == item_id
+        or successor.startswith("pending-")
+    ):
+        return None
+    if not (items_dir(root) / f"{successor}.json").is_file():
+        return None
+    return successor
+
+
+def _journal_entry(root: Path, source_id: str, digest: str) -> dict[str, Any] | None:
+    path = _journal_dir(root, source_id) / f"{digest}.json"
+    if not path.is_file():
+        return None
+    body = load_json(path)
+    if not isinstance(body, dict):
+        return None
+    entry = body.get("entry")
+    return entry if isinstance(entry, dict) else None
+
+
+def _folded_entry(root: Path, source_id: str, digest: str) -> dict[str, Any] | None:
+    from library.media import sha256_text
+
+    source = try_load_source(root, source_id)
+    if source is None:
+        return None
+    for rel, entry in (source.get("files") or {}).items():
+        if sha256_text(str(rel).replace("\\", "/")) == digest:
+            return entry
+    return None
 
 
 def try_load_item(root: Path, item_id: str) -> dict[str, Any] | None:
+    relative = item_rel(item_id)
+    overlaid = _overlay_payload(relative)
+    if overlaid is not _MISSING:
+        return None if overlaid is None else read_item(clone(overlaid))
     path = items_dir(root) / f"{item_id}.json"
     if not path.exists():
         return None
@@ -124,7 +221,155 @@ def try_load_source(root: Path, source_id: str) -> dict[str, Any] | None:
     path = sources_dir(root) / f"{source_id}.json"
     if not path.exists():
         return None
-    return read_source(load_json(path))
+    try:
+        mtime = path.stat().st_mtime_ns
+    except OSError as exc:
+        raise fail("io-error") from exc
+    key = _source_cache_key(root, source_id)
+    slot = _SOURCE_CACHE.get(key)
+    if slot is not None and slot["mtime"] == mtime:
+        return _source_view(slot["source"])
+    source = read_source(load_json(path))
+    journals = _read_journals(root, source_id)
+    files = dict(source["files"])
+    for rel, body in journals.items():
+        entry = body.get("entry")
+        if entry is None:
+            files.pop(rel, None)
+        else:
+            files[rel] = read_file_entry(entry)
+    source = dict(source)
+    source["files"] = files
+    _SOURCE_CACHE[key] = {"mtime": mtime, "source": source, "journals": journals}
+    return _source_view(source)
+
+
+_SOURCE_CACHE: dict[tuple[str, str], dict[str, Any]] = {}
+
+
+def _source_cache_key(root: Path, source_id: str) -> tuple[str, str]:
+    return (str(root.resolve()), source_id)
+
+
+def _source_view(source: dict[str, Any]) -> dict[str, Any]:
+    out = dict(source)
+    out["origin"] = dict(source.get("origin") or {})
+    scan = dict(source.get("scan") or {})
+    if isinstance(scan.get("errors"), list):
+        scan["errors"] = list(scan["errors"])
+    out["scan"] = scan
+    out["files"] = {rel: dict(entry) for rel, entry in (source.get("files") or {}).items()}
+    return out
+
+
+def _journal_dir(root: Path, source_id: str) -> Path:
+    return sources_dir(root) / f"{source_id}.files"
+
+
+def source_file_rel(source_id: str, rel: str) -> str:
+    from library.media import sha256_text
+
+    digest = sha256_text(rel.replace("\\", "/"))
+    return f"catalog/sources/{source_id}.files/{digest}.json"
+
+
+def _read_journals(root: Path, source_id: str) -> dict[str, dict[str, Any]]:
+    folder = _journal_dir(root, source_id)
+    found: dict[str, dict[str, Any]] = {}
+    if not folder.is_dir():
+        return found
+    for path in sorted(folder.glob("*.json")):
+        body = load_json(path)
+        if not isinstance(body, dict) or type(body.get("rel")) is not str:
+            raise fail("invalid-catalog")
+        found[body["rel"]] = body
+    return found
+
+
+def _copy_journal(body: dict[str, Any] | None) -> dict[str, Any] | None:
+    if body is None:
+        return None
+    entry = body.get("entry")
+    return {"rel": body.get("rel"), "entry": None if entry is None else dict(entry)}
+
+
+def note_source_write(root: Path, relative: str, payload: Any) -> None:
+    """Keep the merged-source cache aligned with a transaction that just landed."""
+    prefix = "catalog/sources/"
+    if not relative.startswith(prefix) or not relative.endswith(".json"):
+        return
+    rest = relative[len(prefix) :]
+    if ".files/" in rest:
+        source_id, _, _name = rest.partition(".files/")
+        slot = _SOURCE_CACHE.get(_source_cache_key(root, source_id))
+        if slot is None:
+            return
+        if not isinstance(payload, dict) or type(payload.get("rel")) is not str:
+            _SOURCE_CACHE.pop(_source_cache_key(root, source_id), None)
+            return
+        rel = payload["rel"]
+        entry = payload.get("entry")
+        if entry is None:
+            slot["source"]["files"].pop(rel, None)
+        else:
+            slot["source"]["files"][rel] = dict(entry)
+        slot["journals"][rel] = payload
+        return
+    source_id = rest[: -len(".json")]
+    if source_id and "/" not in source_id:
+        _SOURCE_CACHE.pop(_source_cache_key(root, source_id), None)
+
+
+def plan_source_file(root: Path, source_id: str, rel: str, entry: dict[str, Any] | None) -> dict[str, Any]:
+    """One file-row write. Constant size, independent of how many files the source already has."""
+    path = source_file_rel(source_id, rel)
+    key = _source_cache_key(root, source_id)
+    slot = _SOURCE_CACHE.get(key)
+    if slot is not None and rel in slot["journals"]:
+        before = _copy_journal(slot["journals"].get(rel))
+    else:
+        file_path = _journal_dir(root, source_id) / Path(path).name
+        before = load_json(file_path) if file_path.is_file() else None
+    after_entry = None if entry is None else dict(entry)
+    return {"path": path, "before": before, "after": {"rel": rel, "entry": after_entry}}
+
+
+def fold_source_changes(root: Path, source: dict[str, Any]) -> list[dict[str, Any]]:
+    """Write the merged source once and delete the per-file journals."""
+    source_id = source["id"]
+    raw_path = sources_dir(root) / f"{source_id}.json"
+    raw = load_json(raw_path) if raw_path.is_file() else None
+    changes: list[dict[str, Any]] = [
+        {"path": source_rel(source_id), "before": raw, "after": ordered_source(source)}
+    ]
+    folder = _journal_dir(root, source_id)
+    if folder.is_dir():
+        for path in sorted(folder.glob("*.json")):
+            changes.append(
+                {
+                    "path": f"catalog/sources/{source_id}.files/{path.name}",
+                    "before": load_json(path),
+                    "after": None,
+                }
+            )
+    return changes
+
+
+def fold_open_journals(root: Path) -> None:
+    """Merge leftover per-file journals into each source file."""
+    from library.history import extend_current_operation
+
+    base = sources_dir(root)
+    if not base.is_dir():
+        return
+    for journal_dir in sorted(path for path in base.glob("*.files") if path.is_dir()):
+        if not any(journal_dir.glob("*.json")):
+            continue
+        source_id = journal_dir.name[: -len(".files")]
+        source = try_load_source(root, source_id)
+        if source is None:
+            continue
+        transact(root, extend_current_operation(root, fold_source_changes(root, source)))
 
 
 def iter_place_ids(root: Path) -> list[str]:
@@ -145,6 +390,10 @@ def load_place(root: Path, place_id: str) -> dict[str, Any]:
 
 
 def try_load_place(root: Path, place_id: str) -> dict[str, Any] | None:
+    relative = place_rel(place_id)
+    overlaid = _overlay_payload(relative)
+    if overlaid is not _MISSING:
+        return None if overlaid is None else read_place(clone(overlaid))
     path = places_dir(root) / f"{place_id}.json"
     if not path.exists():
         return None
@@ -152,11 +401,30 @@ def try_load_place(root: Path, place_id: str) -> dict[str, Any] | None:
 
 
 def load_places(root: Path) -> list[dict[str, Any]]:
-    return [load_place(root, place_id) for place_id in iter_place_ids(root)]
+    places = {place["id"]: place for place in (load_place(root, place_id) for place_id in iter_place_ids(root))}
+    overlay = _CATALOG_OVERLAY.get()
+    if overlay is None:
+        return list(places.values())
+    prefix = "catalog/places/"
+    for relative, payload in overlay.items():
+        if not relative.startswith(prefix) or not relative.endswith(".json"):
+            continue
+        place_id = relative[len(prefix) : -len(".json")]
+        if payload is None:
+            places.pop(place_id, None)
+        else:
+            places[place_id] = read_place(clone(payload))
+    return list(places.values())
 
 
 def new_place_id(root: Path) -> str:
     existing = set(iter_place_ids(root))
+    overlay = _CATALOG_OVERLAY.get()
+    if overlay is not None:
+        prefix = "catalog/places/"
+        for relative, payload in overlay.items():
+            if payload is not None and relative.startswith(prefix) and relative.endswith(".json"):
+                existing.add(relative[len(prefix) : -len(".json")])
     for _ in range(32):
         candidate = "place_" + secrets.token_hex(6)
         if candidate not in existing:
@@ -438,8 +706,26 @@ def publish_pending(root: Path, pending: dict[str, Any]) -> dict[str, Any]:
     return ordered_item(merged)
 
 
+_NO_PENDING: dict[str, int] = {}
+
+
 def pending_item_ids(root: Path) -> list[str]:
-    return [item_id for item_id in iter_item_ids(root) if item_id.startswith("pending-")]
+    folder = items_dir(root)
+    if not folder.is_dir():
+        return []
+    try:
+        token = folder.stat().st_mtime_ns
+    except OSError:
+        return []
+    key = str(folder)
+    if _NO_PENDING.get(key) == token:
+        return []
+    found = sorted(path.stem for path in folder.glob("pending-*.json") if path.is_file())
+    if found:
+        _NO_PENDING.pop(key, None)
+    else:
+        _NO_PENDING[key] = token
+    return found
 
 
 def finish_pending_publications(root: Path) -> list[str]:
@@ -458,7 +744,6 @@ def finish_pending_publications(root: Path) -> list[str]:
         if source is None:
             continue
         published = publish_pending(root, pending)
-        before_source = clone(source)
         rel = file_key_for_location(source, pending["id"], pending["locations"][0])
         entry = source["files"].get(rel) if rel is not None else None
         if entry is not None:
@@ -481,12 +766,13 @@ def finish_pending_publications(root: Path) -> list[str]:
                 "after": published,
             },
             {"path": item_rel(pending["id"]), "before": pending, "after": None},
-            {
-                "path": source_rel(source_id),
-                "before": before_source,
-                "after": ordered_source(source),
-            },
         ]
+        from library.history import history_batching
+
+        if history_batching() and rel is not None and source["files"].get(rel) is not None:
+            changes.append(plan_source_file(root, source_id, rel, source["files"][rel]))
+        else:
+            changes.extend(fold_source_changes(root, source))
         from library.annotate import plan_rebase_pending
 
         changes.extend(plan_rebase_pending(root, pending["id"], published))
@@ -495,6 +781,11 @@ def finish_pending_publications(root: Path) -> list[str]:
         changes.extend(plan_remap_favorite(root, pending["id"], published["id"]))
         transact(root, extend_current_operation(root, changes))
         finished.append(published["id"])
+    from library.atomic import transactions_held
+    from library.history import history_batching, seal_latest
+
+    if finished and not history_batching() and not transactions_held(root):
+        seal_latest(root)
     return finished
 
 
@@ -559,7 +850,7 @@ def pair_live_items(root: Path, source_id: str) -> None:
         live["renditions"] = _live_renditions_from_still(still_item)
         live = ordered_item(live)
         source = load_source(root, source_id)
-        before_source = clone(source)
+        changed: list[str] = []
         for rel, entry in list(source["files"].items()):
             if entry["itemId"] == motion_item["id"] and entry.get("component") == "motion":
                 entry["itemId"] = live["id"]
@@ -573,6 +864,7 @@ def pair_live_items(root: Path, source_id: str) -> None:
                     state=entry["state"],
                     destination=entry["destination"],
                 )
+                changed.append(rel)
         changes = [
             {"path": item_rel(live["id"]), "before": before_still, "after": live},
         ]
@@ -580,13 +872,13 @@ def pair_live_items(root: Path, source_id: str) -> None:
             changes.append(
                 {"path": item_rel(motion_item["id"]), "before": before_motion, "after": None}
             )
-        changes.append(
-            {
-                "path": source_rel(source_id),
-                "before": before_source,
-                "after": ordered_source(source),
-            }
-        )
+        from library.history import history_batching
+
+        if history_batching():
+            for rel in changed:
+                changes.append(plan_source_file(root, source_id, rel, source["files"][rel]))
+        elif changed:
+            changes.extend(fold_source_changes(root, source))
         changes.extend(
             plan_absorb_item_refs(
                 root,

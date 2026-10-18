@@ -4,19 +4,26 @@ from __future__ import annotations
 
 import os
 from contextlib import nullcontext
+from contextvars import ContextVar
 import unicodedata
 from pathlib import Path
 from typing import Any, Callable
 
 from library.atomic import maybe_test_barrier, transact
 from library.catalog_io import (
+    catalog_overlay,
+    drop_catalog_overlay,
     ensure_catalog_dirs,
     find_source_by_origin,
+    fold_source_changes,
     item_rel,
     load_source,
     new_source_id,
     pair_live_items,
     place_rel,
+    note_catalog_overlay,
+    note_source_write,
+    plan_source_file,
     relative_from_origin,
     source_rel,
     try_load_item,
@@ -24,7 +31,7 @@ from library.catalog_io import (
     try_load_source,
 )
 from library.errors import fail
-from library.history import latest_entry_id, load_entry, make_history_entry, plan_append, plan_extend_entry
+from library.history import extend_current_operation, make_history_entry, plan_append
 from library.media import (
     HEIF_SUFFIXES,
     default_component,
@@ -50,7 +57,6 @@ from library.records import (
     make_source,
     ordered_item,
     ordered_source,
-    read_source,
     renditions_for,
 )
 from library.settings import defaults, load_settings_file, settings_path
@@ -165,16 +171,103 @@ def _unchanged(entry: dict[str, Any] | None, path: Path, root: Path | None = Non
     )
 
 
+_SCAN_BATCH: ContextVar[list[dict[str, Any]] | None] = ContextVar("scan_batch", default=None)
+_BATCH_LIMIT = 48
+
+
+def _flush_scan_batch(root: Path) -> None:
+    batch = _SCAN_BATCH.get()
+    if not batch:
+        return
+    changes = list(batch)
+    transact(root, extend_current_operation(root, changes))
+    batch.clear()
+    for change in changes:
+        path = change.get("path")
+        if type(path) is str:
+            drop_catalog_overlay(path)
+
+
 def _extend(root: Path, changes: list[dict[str, Any]]) -> None:
-    entry_id = latest_entry_id(root)
-    if entry_id is None:
-        transact(root, changes)
+    batch = _SCAN_BATCH.get()
+    if batch is None:
+        transact(root, extend_current_operation(root, changes))
         return
-    entry = load_entry(root, entry_id)
-    if entry.get("operation") in {"scan", "copy-here"}:
-        transact(root, plan_extend_entry(root, entry_id, changes))
-        return
-    transact(root, changes)
+    for change in changes:
+        path = change.get("path")
+        if type(path) is not str:
+            continue
+        note_catalog_overlay(path, change.get("after"))
+        if ".files/" in path:
+            note_source_write(root, path, change.get("after"))
+    batch.extend(changes)
+    if len(batch) >= _BATCH_LIMIT:
+        _flush_scan_batch(root)
+
+
+def _fold_scan_source(
+    root: Path,
+    source: dict[str, Any],
+    *,
+    added: int,
+    skipped: int,
+    errors: list[dict[str, str]],
+) -> dict[str, Any]:
+    current = try_load_source(root, source["id"]) or source
+    current["scan"] = {
+        "state": "error" if errors else "complete",
+        "added": added,
+        "skipped": skipped,
+        "errors": errors,
+    }
+    _extend(root, fold_source_changes(root, current))
+    return try_load_source(root, source["id"]) or current
+
+
+def _hash_barrier_armed() -> bool:
+    return os.environ.get("LIBRARY_TEST") == "1" and os.environ.get("LIBRARY_TEST_BARRIER") == "hash-publication"
+
+
+def _run_scoped_scan(
+    root: Path,
+    body: Callable[[], dict[str, Any]],
+    *,
+    batch: bool,
+) -> dict[str, Any]:
+    from library.atomic import checkpoint_transactions, holding_open_transactions, relaxed_durability
+    from library.history import batching_history, seal_latest
+    from library.portable import sync_bundles
+    from library.volumes import volume_lookup_scope
+
+    batch_token = _SCAN_BATCH.set([] if batch else None)
+    try:
+        with holding_open_transactions(root):
+            try:
+                with batching_history(), volume_lookup_scope(), relaxed_durability(), catalog_overlay():
+                    try:
+                        source = body()
+                    finally:
+                        _flush_scan_batch(root)
+                        from library.catalog_io import fold_open_journals
+
+                        fold_open_journals(root)
+                        checkpoint_transactions(root)
+            finally:
+                seal_latest(root)
+    finally:
+        _SCAN_BATCH.reset(batch_token)
+        sync_bundles(root)
+    maybe_test_barrier("catalog-committed")
+    from library.index import rebuild_sqlite
+
+    rebuild_sqlite(root, use_barrier=True)
+    from library.activity import clear as clear_activity
+
+    clear_activity("scan")
+    source_id = source.get("id") if isinstance(source, dict) else None
+    if type(source_id) is str:
+        source = try_load_source(root, source_id) or source
+    return source
 
 
 def _start_source(
@@ -420,8 +513,48 @@ def _index_file(
         faces=(existing_pending.get("faces") if existing_pending else None),
         things=(existing_pending.get("things") if existing_pending else None),
     )
-    before_source = clone(source)
-    source["files"][rel] = make_file_entry(
+    if between is None and not _hash_barrier_armed():
+        from library.annotate import plan_rebase_pending
+        from library.catalog_io import publish_pending
+        from library.renditions import adopt_ready_files
+
+        published = adopt_ready_files(root, source, publish_pending(root, item))
+        changes = [
+            {
+                "path": item_rel(published["id"]),
+                "before": try_load_item(root, published["id"]),
+                "after": published,
+            },
+            plan_source_file(
+                root,
+                source_id,
+                rel,
+                make_file_entry(
+                    item_id=published["id"],
+                    component=component,
+                    size_bytes=size,
+                    modified_at=modified,
+                    sha256=published["id"],
+                    state="indexed",
+                    destination=dest_rel if type(dest_rel) is str else None,
+                ),
+            ),
+            *_retire_replaced_location(root, prev_item_id, published["id"], location),
+            *plan_rebase_pending(root, pending, published),
+        ]
+        if existing_pending is not None:
+            changes.append({"path": item_rel(pending), "before": existing_pending, "after": None})
+        if new_place is not None:
+            existing_place = try_load_place(root, new_place["id"])
+            if existing_place != new_place:
+                changes.append(
+                    {"path": place_rel(new_place["id"]), "before": existing_place, "after": new_place}
+                )
+        _extend(root, changes)
+        if decode_error:
+            raise fail("decode-error")
+        return published["id"]
+    pending_entry = make_file_entry(
         item_id=pending,
         component=component,
         size_bytes=size,
@@ -432,11 +565,7 @@ def _index_file(
     )
     changes: list[dict[str, Any]] = [
         {"path": item_rel(pending), "before": existing_pending, "after": item},
-        {
-            "path": source_rel(source_id),
-            "before": before_source,
-            "after": ordered_source(source),
-        },
+        plan_source_file(root, source_id, rel, pending_entry),
     ]
     if new_place is not None:
         existing_place = try_load_place(root, new_place["id"])
@@ -462,9 +591,7 @@ def _index_file(
     published = adopt_ready_files(root, source, published)
     digest = published["id"]
     existing = try_load_item(root, digest)
-    before_source = clone(try_load_source(root, source_id) or source)
-    source = read_source(before_source)
-    source["files"][rel] = make_file_entry(
+    indexed_entry = make_file_entry(
         item_id=published["id"],
         component=component,
         size_bytes=size,
@@ -482,11 +609,7 @@ def _index_file(
                 "after": published,
             },
             {"path": item_rel(pending), "before": current, "after": None},
-            {
-                "path": source_rel(source_id),
-                "before": before_source,
-                "after": ordered_source(source),
-            },
+            plan_source_file(root, source_id, rel, indexed_entry),
             *_retire_replaced_location(root, prev_item_id, published["id"], location),
             *plan_rebase_pending(root, pending, published),
         ],
@@ -534,6 +657,26 @@ def scan_serve_from_there(
     io_context=nullcontext,
     source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if not getattr(scan_serve_from_there, "_inner", False):
+
+        def run() -> dict[str, Any]:
+            scan_serve_from_there._inner = True
+            try:
+                return scan_serve_from_there(
+                    root,
+                    scan_path,
+                    preview_store=preview_store,
+                    on_progress=on_progress,
+                    between=between,
+                    io_context=io_context,
+                    source=source,
+                )
+            finally:
+                scan_serve_from_there._inner = False
+
+        return _run_scoped_scan(
+            root, run, batch=between is None and not _hash_barrier_armed()
+        )
     scan_path = assert_scan_path_allowed(scan_path, root)
     if on_progress is None:
         on_progress = _default_progress
@@ -591,35 +734,10 @@ def scan_serve_from_there(
                 errors.append({"path": rel, "error": code})
                 continue
             errors.append({"path": rel, "error": "io-error"})
+    _flush_scan_batch(root)
     pair_live_items(root, source["id"])
     remember_recent(root, added_ids)
-    source = try_load_source(root, source["id"]) or source
-    before = clone(source)
-    source["scan"] = {
-        "state": "error" if errors else "complete",
-        "added": added,
-        "skipped": skipped,
-        "errors": errors,
-    }
-    _extend(
-        root,
-        [
-            {
-                "path": source_rel(source["id"]),
-                "before": before,
-                "after": ordered_source(source),
-            }
-        ],
-    )
-    maybe_test_barrier("catalog-committed")
-    from library.index import rebuild_sqlite
-
-    rebuild_sqlite(root, use_barrier=True)
-    source = try_load_source(root, source["id"]) or source
-    from library.activity import clear as clear_activity
-
-    clear_activity("scan")
-    return source
+    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors)
 
 
 def scan_copy_here(
@@ -632,6 +750,26 @@ def scan_copy_here(
     io_context=nullcontext,
     source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if not getattr(scan_copy_here, "_inner", False):
+
+        def run() -> dict[str, Any]:
+            scan_copy_here._inner = True
+            try:
+                return scan_copy_here(
+                    root,
+                    scan_path,
+                    preview_store=preview_store,
+                    on_progress=on_progress,
+                    between=between,
+                    io_context=io_context,
+                    source=source,
+                )
+            finally:
+                scan_copy_here._inner = False
+
+        return _run_scoped_scan(
+            root, run, batch=between is None and not _hash_barrier_armed()
+        )
     from library.copy import convert_linked_source, copy_media_files
     from library.paths import library_path
 
@@ -716,32 +854,7 @@ def scan_copy_here(
                 errors.append({"path": rel, "error": code})
                 continue
             errors.append({"path": rel, "error": "io-error"})
+    _flush_scan_batch(root)
     pair_live_items(root, source["id"])
     remember_recent(root, added_ids)
-    source = try_load_source(root, source["id"]) or source
-    before = clone(source)
-    source["scan"] = {
-        "state": "error" if errors else "complete",
-        "added": added,
-        "skipped": skipped,
-        "errors": errors,
-    }
-    _extend(
-        root,
-        [
-            {
-                "path": source_rel(source["id"]),
-                "before": before,
-                "after": ordered_source(source),
-            }
-        ],
-    )
-    maybe_test_barrier("catalog-committed")
-    from library.index import rebuild_sqlite
-
-    rebuild_sqlite(root, use_barrier=True)
-    source = try_load_source(root, source["id"]) or source
-    from library.activity import clear as clear_activity
-
-    clear_activity("scan")
-    return source
+    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors)

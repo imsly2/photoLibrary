@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from library.atomic import atomic_write_json, load_json, transact
+from library.atomic import atomic_write_json, dumps_canonical, load_json, transact
 from library.catalog_io import (
     iter_source_ids,
     source_rel,
@@ -48,9 +48,52 @@ def bundle_dir(folder: Path) -> Path:
     return folder / ".library" / "catalog"
 
 
+_FOLDER_CACHE: dict[tuple[Any, ...], Path] = {}
+_MIRROR_TEXT: dict[str, str] = {}
+
+
+def _folder_key(root: Path, source: dict[str, Any]) -> tuple[Any, ...]:
+    origin = source.get("origin") or {}
+    return (
+        str(root),
+        source.get("id"),
+        source.get("mode"),
+        source.get("copyRoot"),
+        origin.get("volumeSerial"),
+        origin.get("pathFromVolumeRoot"),
+        origin.get("lastKnownPath"),
+    )
+
+
 def folder_for_source(root: Path, source: dict[str, Any]) -> Path | None:
+    key = _folder_key(root, source)
+    cached = _FOLDER_CACHE.get(key)
+    if cached is not None and cached.is_dir():
+        return cached
+    found = _folder_uncached(root, source)
+    if found is not None:
+        _FOLDER_CACHE[key] = found
+    return found
+
+
+def _folder_uncached(root: Path, source: dict[str, Any]) -> Path | None:
     from library.renditions import source_preview_root
 
+    if source.get("mode") != "copy-here":
+        origin = source.get("origin") or {}
+        last = origin.get("lastKnownPath")
+        serial = origin.get("volumeSerial")
+        if type(last) is str and last.strip() and type(serial) is str:
+            path = Path(last)
+            if path.is_dir():
+                try:
+                    from library.volumes import volume_of_path
+
+                    found_serial, _volume_root = volume_of_path(path)
+                except Exception:
+                    found_serial = None
+                if found_serial == serial:
+                    return path
     found = source_preview_root(source, root)
     if found is not None and found.is_dir():
         return found
@@ -60,6 +103,27 @@ def folder_for_source(root: Path, source: dict[str, Any]) -> Path | None:
         if path.is_dir():
             return path
     return None
+
+
+def _write_json(path: Path, obj: Any) -> None:
+    text = dumps_canonical(obj)
+    key = str(path)
+    if _MIRROR_TEXT.get(key) == text:
+        return
+    atomic_write_json(path, obj)
+    _MIRROR_TEXT[key] = text
+
+
+def flush(root: Path) -> None:
+    """Write each portable folder's source snapshot. Call when a scan ends or the drain goes idle."""
+    for source in _portable_sources(root):
+        _write_source(root, source)
+
+
+def sync_bundles(root: Path) -> None:
+    """Copy source, items, and related records into each portable folder."""
+    for source in _portable_sources(root):
+        export_source(root, source["id"])
 
 
 def mirror_changes(root: Path, changes: list[dict[str, Any]]) -> None:
@@ -77,7 +141,7 @@ def mirror_changes(root: Path, changes: list[dict[str, Any]]) -> None:
         if path == "models/faces/index.json":
             faces = True
             continue
-        if path.startswith("catalog/sources/") and path.endswith(".json"):
+        if path.startswith("catalog/sources/") and path.endswith(".json") and ".files/" not in path:
             body = change.get("after") if change.get("after") is not None else change.get("before")
             if isinstance(body, dict) and type(body.get("id")) is str:
                 source_ids.add(body["id"])
@@ -127,7 +191,7 @@ def export_source(root: Path, source_id: str) -> bool:
         item = try_load_item(root, item_id)
         if item is None:
             continue
-        atomic_write_json(catalog / "items" / f"{item_id}.json", ordered_item(item))
+        _write_json(catalog / "items" / f"{item_id}.json", ordered_item(item))
         _mirror_related(root, catalog, item)
     _write_favorites(root, source, folder)
     _write_faces(root, source, folder)
@@ -317,7 +381,7 @@ def _mirror_item(root: Path, item: dict[str, Any], *, deleted: bool) -> None:
             if dest.is_file():
                 dest.unlink()
             continue
-        atomic_write_json(dest, item)
+        _write_json(dest, item)
         _mirror_related(root, catalog, item)
 
 
@@ -327,7 +391,7 @@ def _write_source(root: Path, source: dict[str, Any] | None) -> None:
     folder = folder_for_source(root, source)
     if folder is None:
         return
-    atomic_write_json(bundle_dir(folder) / "source.json", ordered_source(source))
+    _write_json(bundle_dir(folder) / "source.json", ordered_source(source))
 
 
 def _mirror_related(root: Path, catalog: Path, item: dict[str, Any]) -> None:
@@ -335,21 +399,21 @@ def _mirror_related(root: Path, catalog: Path, item: dict[str, Any]) -> None:
     if type(place_id) is str:
         place = try_load_place(root, place_id)
         if place is not None:
-            atomic_write_json(catalog / "places" / f"{place_id}.json", ordered_place(place))
+            _write_json(catalog / "places" / f"{place_id}.json", ordered_place(place))
     for face in item.get("faces") or []:
         person_id = face.get("personId") if isinstance(face, dict) else None
         if type(person_id) is not str:
             continue
         person = try_load_person(root, person_id)
         if person is not None:
-            atomic_write_json(catalog / "people" / f"{person_id}.json", ordered_person(person))
+            _write_json(catalog / "people" / f"{person_id}.json", ordered_person(person))
     for ref in item.get("things") or []:
         thing_id = ref.get("thingId") if isinstance(ref, dict) else None
         if type(thing_id) is not str:
             continue
         thing = try_load_thing(root, thing_id)
         if thing is not None:
-            atomic_write_json(catalog / "things" / f"{thing_id}.json", ordered_thing(thing))
+            _write_json(catalog / "things" / f"{thing_id}.json", ordered_thing(thing))
 
 
 def _refresh_entity(root: Path, kind: str, entity: dict[str, Any], *, deleted: bool) -> None:
@@ -372,12 +436,12 @@ def _refresh_entity(root: Path, kind: str, entity: dict[str, Any], *, deleted: b
                 dest.unlink()
             continue
         if dest.is_file() or _source_uses(root, source, kind, entity_id):
-            atomic_write_json(dest, entity)
+            _write_json(dest, entity)
 
 
 def _write_favorites(root: Path, source: dict[str, Any], folder: Path) -> None:
     hearts = favorite_ids_for(root, source)
-    atomic_write_json(
+    _write_json(
         bundle_dir(folder) / "favorites.json",
         {"schemaVersion": 1, "itemIds": hearts},
     )
@@ -409,7 +473,7 @@ def _write_faces(root: Path, source: dict[str, Any], folder: Path) -> None:
         people[str(person_id)] = {"centroid": list(rec.get("centroid") or []), "faces": faces}
     if not people:
         return
-    atomic_write_json(
+    _write_json(
         bundle_dir(folder) / "faces.json",
         {
             "schemaVersion": 1,
@@ -432,7 +496,7 @@ def _write_objects(root: Path, source: dict[str, Any], folder: Path) -> None:
     }
     if not mine:
         return
-    atomic_write_json(
+    _write_json(
         bundle_dir(folder) / "objects.json",
         {"schemaVersion": 1, "items": mine},
     )

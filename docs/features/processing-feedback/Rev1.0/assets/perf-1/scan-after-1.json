@@ -1,0 +1,47 @@
+{
+  "label": "scan-after-1",
+  "fixture": {
+    "jpg": 80,
+    "mov": 1,
+    "source": "J:\\Pictures\\1. Favorites Pictures",
+    "copy": "J:\\slyOS\\projects\\photoLibrary\\.qa\\agent-scan\\pictures"
+  },
+  "scan": {
+    "files": 81,
+    "seconds": 3.81,
+    "filesPerSecond": 21.26,
+    "perFileMeanFirstTenth": 0.0282,
+    "perFileMeanLastTenth": 0.0366,
+    "lastToFirst": 1.297,
+    "jsonFilesWritten": 301,
+    "jsonMBWritten": 3.3,
+    "jsonKBPerFile": 40.7,
+    "profiled": false,
+    "stages": {}
+  },
+  "drain": {
+    "steps": 0,
+    "seconds": 0.0,
+    "perSlotMeanSeconds": {},
+    "perSlotCount": {},
+    "jsonFilesWritten": 0,
+    "jsonMBWritten": 0.0,
+    "stages": {},
+    "counters": {
+      "pickCalls": 0,
+      "pickSeconds": 0,
+      "pickMeanSeconds": 0.0,
+      "encodeCalls": 0,
+      "encodeSeconds": 0.0,
+      "driveScans": 0,
+      "driveScanSeconds": 0,
+      "catalogResyncs": 0,
+      "catalogParses": 0,
+      "catalogScandirs": 0,
+      "bookkeepingMsPerFile": 0.0
+    }
+  },
+  "undoEntryBytes": [
+    199767
+  ]
+}
