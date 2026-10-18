@@ -1,0 +1,248 @@
+{
+  "label": "after",
+  "app": "J:\\slyOS\\projects\\photoLibrary",
+  "pictures": 120,
+  "top20AllPicturesSec": 3.33,
+  "tilesBlanked": 0,
+  "firstCameraTileSec": 3.33,
+  "tilesWithoutPictureWhileScanning": {
+    "average": 1.3,
+    "worst": 3,
+    "polls": 10
+  },
+  "everythingDoneSec": 16.86,
+  "previewsMade": 0,
+  "previewsNotApplicable": 120,
+  "viewer": [
+    {
+      "item": "62a29b4e6abb9ea0d4c3d422654f7098ea45bebc0396404f5524b5660df18fa9",
+      "why": "early tile",
+      "openedAtSec": 3.67,
+      "standIn": "thumb",
+      "standInMs": 31,
+      "originalMs": 528,
+      "firstPlaceholder": null,
+      "sameBox": true,
+      "originalRequests": 1,
+      "screenshot": "viewer-1.png"
+    },
+    {
+      "item": "f6787d13e0f07842cdfea938fd806801b4bcb7e621f976f532955935b1340918",
+      "why": "largest (5712x4284)",
+      "openedAtSec": 5.15,
+      "standIn": "thumb",
+      "standInMs": 20,
+      "originalMs": 80,
+      "firstPlaceholder": null,
+      "sameBox": true,
+      "originalRequests": 1,
+      "screenshot": "viewer-2.png"
+    }
+  ],
+  "screenshots": {
+    "topFull": "grid-top-full.png",
+    "early": "grid-3s.png"
+  },
+  "processingLog": [
+    "J:\\slyOS\\projects\\photoLibrary\\.qa\\camera-tiles\\run-after-115943\\library-data\\logs\\processing\\20261018-120009 media.log"
+  ],
+  "timeline": [
+    {
+      "t": 0.08,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 0.38,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 0.64,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 0.91,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 1.17,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 1.47,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 1.75,
+      "tiles": 0,
+      "shown": 0,
+      "camera": 0,
+      "topShown": 0
+    },
+    {
+      "t": 2.35,
+      "tiles": 1,
+      "shown": 1,
+      "camera": 0,
+      "topShown": 1
+    },
+    {
+      "t": 2.63,
+      "tiles": 1,
+      "shown": 1,
+      "camera": 0,
+      "topShown": 1
+    },
+    {
+      "t": 3.33,
+      "tiles": 21,
+      "shown": 21,
+      "camera": 14,
+      "topShown": 20
+    },
+    {
+      "t": 6.45,
+      "tiles": 71,
+      "shown": 69,
+      "camera": 32,
+      "topShown": 20
+    },
+    {
+      "t": 6.73,
+      "tiles": 71,
+      "shown": 69,
+      "camera": 32,
+      "topShown": 20
+    },
+    {
+      "t": 7.27,
+      "tiles": 84,
+      "shown": 83,
+      "camera": 34,
+      "topShown": 20
+    },
+    {
+      "t": 7.57,
+      "tiles": 84,
+      "shown": 83,
+      "camera": 34,
+      "topShown": 20
+    },
+    {
+      "t": 9.7,
+      "tiles": 106,
+      "shown": 105,
+      "camera": 38,
+      "topShown": 20
+    },
+    {
+      "t": 10.82,
+      "tiles": 118,
+      "shown": 115,
+      "camera": 41,
+      "topShown": 20
+    },
+    {
+      "t": 12.86,
+      "tiles": 118,
+      "shown": 115,
+      "camera": 41,
+      "topShown": 20
+    },
+    {
+      "t": 13.16,
+      "tiles": 120,
+      "shown": 115,
+      "camera": 39,
+      "topShown": 20
+    },
+    {
+      "t": 13.61,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 40,
+      "topShown": 20
+    },
+    {
+      "t": 13.92,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 36,
+      "topShown": 20
+    },
+    {
+      "t": 14.3,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 32,
+      "topShown": 20
+    },
+    {
+      "t": 14.62,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 30,
+      "topShown": 20
+    },
+    {
+      "t": 15,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 30,
+      "topShown": 20
+    },
+    {
+      "t": 15.4,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 21,
+      "topShown": 20
+    },
+    {
+      "t": 15.71,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 18,
+      "topShown": 20
+    },
+    {
+      "t": 16,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 18,
+      "topShown": 20
+    },
+    {
+      "t": 16.38,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 10,
+      "topShown": 20
+    },
+    {
+      "t": 16.69,
+      "tiles": 120,
+      "shown": 116,
+      "camera": 10,
+      "topShown": 20,
+      "renditionsDone": 120
+    }
+  ]
+}

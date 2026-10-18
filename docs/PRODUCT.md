@@ -501,7 +501,13 @@ Every picture gets:
 
 - `thumb.webp`, longest side `thumbPx` (default 320), for the grid.
 - `preview.webp`, longest side `previewPx` (default 1600), for the viewer
-  before the original loads.
+  before the original loads — only when the browser cannot show the
+  original quickly. A JPEG, PNG, WebP, or GIF of at most 26 megapixels (a
+  24 MP phone photo is 5712×4284, 24.5 MP) is
+  `not-applicable`, like `playback.mp4` for a browser-safe MP4: no preview
+  is made or stored, the viewer shows the original itself, and object
+  detection reads the original. Everything else (HEIC, RAW, TIFF, larger
+  pictures, unknown size) gets a preview.
 
 Every video gets:
 
@@ -527,8 +533,16 @@ and fit. `#viewer-source` says Preview, Loading full…, Original, Full
 (library H.264/AAC), or Preview — full unavailable.
 
 Renditions are queued by the scan and continue while the server is running.
-The grid shows a placeholder until the thumb exists, then the thumb.
-Queued thumbnails say “Creating preview…”; a failed or missing preview has
+Until the thumb exists, a JPEG tile shows the small picture the camera
+stored inside the file's EXIF block (most cameras and phones write one,
+about 160×120), served straight from the original's first 128 KB and
+turned upright with the photo's EXIF orientation. A tile therefore shows a
+picture as soon as its file is read, not when an encoder gets to it. The
+sharp thumb replaces it in place: the tile keeps showing the camera picture
+until the thumb has loaded, so it never blanks. A file without one, or
+whose camera picture differs from the photo's shape by more than 3%
+(letterboxed, it would show bars), shows the placeholder until its thumb.
+Tiles without any picture yet say “Creating preview…”; a failed or missing preview has
 the unavailable message instead, so waiting work is distinguishable from failure.
 A new folder fills the grid from the top down and never pushes tiles that
 are already showing. Before reading, the scan takes each new file's capture
@@ -576,7 +590,7 @@ is. Budgets, from the moment Add folder starts:
 | Reading the folder (hash + metadata + record) | at least 15 pictures/s; the last tenth of files no slower than 1.25× the first tenth |
 | First grid thumbnail visible | within 3 s |
 | Every grid thumbnail and the video poster | within 10 s |
-| A picture opened in the viewer | its 1600 px preview within 2 s of opening, even while thumbnails are still queued |
+| A picture opened in the viewer | the original (browser-ready photos) or its 1600 px preview within 2 s of opening, even while thumbnails are still queued |
 | Everything done (thumbs, previews, video proxy/playback) | within 40 s |
 | Bookkeeping per finished file (all work except ffmpeg) | at most 50 ms |
 | Catalog and status requests while processing | `GET /api/jobs` p95 ≤ 300 ms, `GET /api/items` p95 ≤ 1 s |
@@ -605,6 +619,19 @@ parallel. It copies the scratch server's processing log next to its JSON.
 Exit code is nonzero when any budget fails. `--count N` changes the
 fixture size; `--count 400` is the scaling run. Artifact: the bench JSON
 under `docs/features/processing-feedback/Rev1.0/assets/perf-bench/`.
+
+**Check (first screenful):** `node docs/features/processing-feedback/Rev1.0/assets/camera-tiles/check.mjs <app-dir> <label> <port>`
+copies 120 of Steve's JPEGs, starts a scratch server, opens the page in
+headless Edge, adds the folder, and every 250 ms records how many of the
+top 20 tiles show a picture and whether it is the camera's or the thumb.
+After the top 20 fill it opens an early tile and the largest photo in the
+viewer and records the stand-in, the time to the original, that both use
+the same box, and how many times the original was downloaded. Passes when
+the top 20 all show pictures within 5 s, no tile that showed a picture
+ever blanks, no preview is made for these JPEGs, and each viewer original
+arrives within 2 s with one download. Artifact: `result.json`, PNGs, and
+the processing log under
+`docs/features/processing-feedback/Rev1.0/assets/camera-tiles/<label>/`.
 
 **Missing previews.** A preview file can disappear while its record still
 says ready — most often because someone deleted a folder's `.library/`.
@@ -749,7 +776,10 @@ A heart in the viewer favorites or unfavorites that item. The mark is
 stored in `catalog/favorites.json` and is visible on the heart.
 
 For a photo the viewer shows `preview.webp` first, then the original if
-available, with no “Showing original” button or notification. Before the
+available, with no “Showing original” button or notification. A photo whose
+preview is `not-applicable` shows its thumb instantly instead (or, before
+the thumb exists, the camera's embedded picture), scaled into the photo's
+box, and the original replaces it in that same box. Before the
 preview exists the viewer still knows the picture's shape: it lays out from
 the catalog's width and height (swapped for a camera-rotated photo, EXIF
 orientation 5–8), fitted and centered, never at the original's raw pixel

@@ -1013,7 +1013,17 @@ class Library:
             return self._resolve_original(item, component)
         if which == "face":
             return self._resolve_face(item, query.get("box"))
+        if which == "camera":
+            return self._resolve_camera(item)
         return self._resolve_rendition(item, which)
+
+    def _resolve_camera(self, item: dict[str, Any]) -> dict[str, Any]:
+        from library.metadata import camera_thumbnail
+
+        path = None if item.get("kind") == "video" else _readable_component_file(item, "still", self.root)
+        if path is None:
+            raise fail("preview-unavailable")
+        return {"path": path, "content_type": "image/jpeg", "read": camera_thumbnail}
 
     def _resolve_face(self, item: dict[str, Any], box_raw: str | None) -> dict[str, Any]:
         from library.face_crop import face_crop_cache_path, parse_face_box, write_face_crop
@@ -1095,7 +1105,7 @@ ITEM_QUERY_KEYS = frozenset(
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
-MEDIA_WHICH = frozenset({"thumb", "preview", "poster", "proxy", "playback", "original", "face"})
+MEDIA_WHICH = frozenset({"thumb", "camera", "preview", "poster", "proxy", "playback", "original", "face"})
 
 
 def original_content_type(path: Path) -> str:
@@ -1215,6 +1225,8 @@ def _item_tour_eligible(item: dict[str, Any], root: Path) -> bool:
         return False
     rend = item.get("renditions") or {}
     status = (rend.get("status") or {}).get(which)
+    if which == "preview" and status == "not-applicable":
+        return _readable_component_file(item, "still", root) is not None
     relative = rend.get(which)
     if relative is None or status != "ready":
         return False

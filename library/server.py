@@ -42,7 +42,7 @@ def unlocked_io(lock):
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
     etag = '"%x-%x"' % (mtime_ns, size)
-    if which in {"thumb", "preview", "poster", "face", "proxy", "playback"}:
+    if which in {"thumb", "camera", "preview", "poster", "face", "proxy", "playback"}:
         return "private, no-cache", etag
     return "no-store", None
 
@@ -899,7 +899,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
             if etag and (self.headers.get("If-None-Match") or "") == etag:
                 self._send(304, b"", content_type, cache_control=cache_control, etag=etag)
                 return
-            data = path.read_bytes()
+            data = resolved.get("read", Path.read_bytes)(path)
         except OSError as exc:
             if which in {"preview", "poster", "proxy", "playback"}:
                 from library.renditions import note_wanted

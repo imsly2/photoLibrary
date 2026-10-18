@@ -1768,8 +1768,18 @@
     return !url || shown === url;
   }
 
+  // Files whose camera thumbnail the server could not use; they wait for the real thumb.
+  const cameraMissing = Object.create(null);
+
+  function cameraStandIn(item) {
+    const thumb = ((item && item.renditions || {}).status || {}).thumb;
+    return !!item && item.kind !== "video" && String(item.id).indexOf("pending-") !== 0 && !cameraMissing[item.id]
+      && (thumb === "queued" || thumb === "error");
+  }
+
   function stillUrlFor(id) {
-    return mediaUrl(id, stillWhich(itemById(id)));
+    const item = itemById(id);
+    return mediaUrl(id, cameraStandIn(item) ? "camera" : stillWhich(item));
   }
 
   function stillSlotStatus(id) {
@@ -1906,11 +1916,16 @@
     }
     const item = itemById(id);
     const slotStatus = ((item.renditions || {}).status || {})[stillWhich(item)];
+    const camera = url === mediaUrl(id, "camera");
+    // A tile already showing a picture keeps it until the next one has loaded.
+    const showing = !img.hidden && img.complete && img.naturalWidth > 0 ? img : null;
     const next = document.createElement("img");
     next.alt = "";
     next.hidden = true;
     next.setAttribute("data-still", url);
-    img.parentNode.replaceChild(next, img);
+    if (!showing) {
+      img.parentNode.replaceChild(next, img);
+    }
     const gen = (Number(cell.dataset.stillGen) || 0) + 1;
     cell.dataset.stillGen = String(gen);
     cell.dataset.stillStarted = String(Date.now());
@@ -1923,6 +1938,9 @@
         return;
       }
       if (cell.dataset.stillGen === String(gen) && cell.dataset.id === id) {
+        if (showing && showing.parentNode) {
+          showing.parentNode.replaceChild(next, showing);
+        }
         delete cell.dataset.stillErrorTried;
         stillOk[id] = url;
         placeholder.hidden = true;
@@ -1934,9 +1952,14 @@
       if (job.settled) {
         return;
       }
+      if (camera) {
+        cameraMissing[id] = true;
+      }
       if (cell.dataset.stillGen === String(gen) && cell.dataset.id === id) {
-        next.hidden = true;
-        placeholder.hidden = false;
+        if (!showing) {
+          next.hidden = true;
+          placeholder.hidden = false;
+        }
         if (slotStatus === "error") {
           cell.dataset.stillErrorTried = url;
           releaseStill(job);
@@ -1970,6 +1993,9 @@
 
   function stillPlaceholder(item, which) {
     const status = ((item && item.renditions || {}).status || {})[which || stillWhich(item)];
+    if (which === "preview" && status === "not-applicable") {
+      return t(item.available === false ? "previewUnavailable" : "loadingPicture");
+    }
     return t(status === "queued" || (item && String(item.id).indexOf("pending-") === 0)
       ? "creatingPreview" : "previewUnavailable");
   }
@@ -1998,7 +2024,7 @@
     }
     const slotStatus = stillSlotStatus(id);
     placeholder.textContent = stillPlaceholder(itemById(id));
-    if (slotStatus === "queued") {
+    if (slotStatus === "queued" && !cameraStandIn(itemById(id))) {
       placeholder.hidden = false;
       img.hidden = true;
       return;
@@ -2784,9 +2810,11 @@
   }
 
   function compareMediaUrl(side) {
-    const kind = side && side.kind;
-    const which = kind === "video" ? "poster" : "preview";
-    return mediaUrl(side.itemId, which);
+    if (side && side.kind === "video") {
+      return mediaUrl(side.itemId, "poster");
+    }
+    const status = (((itemById(side.itemId) || {}).renditions) || {}).status || {};
+    return mediaUrl(side.itemId, status.preview === "not-applicable" ? "original" : "preview");
   }
 
   function paintCompare() {
@@ -3292,15 +3320,30 @@
     return !!item && ((item.renditions || {}).status || {}).proxy === "ready";
   }
 
-  function stillPreviewReady(item) {
+  // What the viewer shows before the original: the preview, or for a photo
+  // without one its thumb or the camera thumbnail its tile already loaded.
+  function viewerStillWhich(item) {
     if (!item) {
-      return false;
+      return "";
     }
     const status = (item.renditions || {}).status || {};
     if (item.kind === "video") {
-      return status.poster === "ready";
+      return status.poster === "ready" ? "poster" : "";
     }
-    return status.preview === "ready";
+    if (status.preview === "ready") {
+      return "preview";
+    }
+    if (status.preview !== "not-applicable") {
+      return "";
+    }
+    if (status.thumb === "ready") {
+      return "thumb";
+    }
+    return stillOk[item.id] === mediaUrl(item.id, "camera") ? "camera" : "";
+  }
+
+  function stillPreviewReady(item) {
+    return !!viewerStillWhich(item);
   }
 
   function hintWanted(itemId) {
@@ -3318,14 +3361,15 @@
     if (!item || viewer.hidden || viewerItemId !== item.id || item.kind === "video") {
       return;
     }
-    if (!stillPreviewReady(item)) {
+    const which = viewerStillWhich(item);
+    if (!which) {
       if (!viewerPlaceholder.hidden) {
         viewerPlaceholder.textContent = stillPlaceholder(item, "preview");
       }
       return;
     }
-    const url = mediaUrl(item.id, "preview");
-    if (viewerImage.getAttribute("src") === url && viewerImage.complete && viewerImage.naturalWidth > 0) {
+    const url = mediaUrl(item.id, which);
+    if (showingOriginal || (viewerImage.getAttribute("src") === url && viewerImage.complete && viewerImage.naturalWidth > 0)) {
       return;
     }
     showViewerPlaceholder(false);
@@ -3352,9 +3396,12 @@
       }
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true, item);
+      if (item.available !== false) {
+        loadViewerOriginal(item);
+      }
     };
     viewerImage.src = url;
-    viewerImage.setAttribute("data-which", "preview");
+    viewerImage.setAttribute("data-which", which);
   }
 
   function watchViewerStill(itemId) {
@@ -4283,7 +4330,8 @@
     viewerItemId = item.id;
     syncViewerChrome(item);
     renderViewerLabels(item);
-    const url = mediaUrl(item.id, "preview");
+    const which = viewerStillWhich(item);
+    const url = which ? mediaUrl(item.id, which) : "";
     const same = viewerItemId === item.id && !viewer.hidden && viewerImage.getAttribute("src") === url;
     viewerIndex = index;
     viewerItemId = item.id;
@@ -4323,9 +4371,12 @@
     viewerImage.onerror = function () {
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true, item);
+      if (item.available !== false) {
+        loadViewerOriginal(item);
+      }
     };
     viewerImage.src = url;
-    viewerImage.setAttribute("data-which", "preview");
+    viewerImage.setAttribute("data-which", which);
   }
 
   function layoutVideo(item, forceFit) {
@@ -5917,7 +5968,7 @@
       return viewerImage.getAttribute("src");
     }
     if (viewerItemId) {
-      return mediaUrl(viewerItemId, "preview");
+      return mediaUrl(viewerItemId, viewerStillWhich(itemById(viewerItemId)) === "preview" ? "preview" : "original");
     }
     return "";
   }

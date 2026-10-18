@@ -695,19 +695,33 @@ def empty_metadata() -> dict[str, Any]:
     return {key: None for key in METADATA_KEYS}
 
 
+BROWSER_STILL_SUFFIXES = frozenset({".jpg", ".jpeg", ".png", ".webp", ".gif"})
+BROWSER_STILL_MAX_PIXELS = 26_000_000
+
+
+def browser_ready_still(suffix: str, metadata: dict[str, Any] | None) -> bool:
+    """The browser shows this original about as fast as a preview, so none is made."""
+    meta = metadata or {}
+    width, height = meta.get("width"), meta.get("height")
+    if suffix.lower() not in BROWSER_STILL_SUFFIXES or type(width) is not int or type(height) is not int:
+        return False
+    return 0 < width * height <= BROWSER_STILL_MAX_PIXELS
+
+
 def renditions_for(
     kind: str,
     source_id: str,
     *,
     decode_error: bool = False,
     store: str = "with-server",
+    browser_still: bool = False,
 ) -> dict[str, Any]:
     if store not in RENDITION_STORES:
         raise fail("invalid-catalog")
     if kind == "photo":
         status = {
             "thumb": "error" if decode_error else "queued",
-            "preview": "error" if decode_error else "queued",
+            "preview": "error" if decode_error else "not-applicable" if browser_still else "queued",
             "poster": "not-applicable",
             "proxy": "not-applicable",
             "playback": "not-applicable",

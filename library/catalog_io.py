@@ -813,7 +813,7 @@ def _live_renditions_from_still(still_item: dict[str, Any]) -> dict[str, Any]:
     status = rend.get("status") or {}
     for slot in ("thumb", "preview"):
         slot_status = status.get(slot)
-        if slot_status in {"ready", "error"}:
+        if slot_status in {"ready", "error", "not-applicable"}:
             out[slot] = rend.get(slot)
             out["status"][slot] = slot_status
     return out

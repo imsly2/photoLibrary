@@ -4,6 +4,25 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Fresh folders show pictures on every tile right away: JPEG tiles
+  use the camera's embedded EXIF thumbnail (served from the original's first
+  128 KB, turned upright) until the real thumb exists, and browser-ready JPEG/PNG/
+  WebP/GIF up to 26 MP no longer get a 1600 px preview (the viewer shows the thumb,
+  then the original). Same 120 of Steve's JPEGs, page open in headless Edge,
+  before (24fa69b) → after: top 20 tiles all pictures 8.2 s → 3.3 s; tiles without
+  a picture during the scan 19.8 → 1.3 on average; all processing 51.9 s → 16.9 s;
+  previews made 120 → 0; viewer stand-in for a photo opened early 2.7 s → 31 ms,
+  24 MP original in 80 ms with one download; no tile ever went blank. On Steve's
+  550 JPEGs 454 carry a usable camera thumbnail (73 have none, 23 are letterboxed).
+  Evidence: [after](features/processing-feedback/Rev1.0/assets/camera-tiles/after/result.json),
+  [before](features/processing-feedback/Rev1.0/assets/camera-tiles/before/result.json).
+  Perf bench at 80 ([after](features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-120246-camera-tiles.json)):
+  everything done 12.0 s → 7.8 s; reading-tenth ratio and `/api/jobs` p95 fail
+  before and after alike; "bookkeeping" rose 42 → 196 ms because it is the gap
+  between finished stills, which now includes encoders idling for the scan
+  (all thumbs end 1.4 s after the last file is read) — the metric needs a
+  server-side measure. No full F7 Check closed.
+
 - 2026-10-18 — Larger preview baseline: 400 JPEGs + 1 MOV completed in 285.953 s (grid109.625 s),803 nonempty outputs,0 rendition errors. Bookkeeping target failed; portable records were still stale after10 s. Eight focused harness checks passed independently and in lead rerun. No feature Check closed. See [active big-wins handoff](features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md) and [baseline artifact](features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-073207-rev1-scale-400-22850.json).
 
 

@@ -1,0 +1,22 @@
+Library processing log - J:\slyOS\projects\photoLibrary\.qa\camera-tiles\run-before-115823\media
+Started 2026-10-18 11:58:50, 6 encoders at once
+
+   sec   read  +thumb +preview +video  waiting thumb/preview/video  lock wait max
+   2.1      0       0        0      0  0 / 0 / 0                          0 ms
+   4.1      9       5        1      0  0 / 4 / 0                         81 ms
+   6.6     24      13        5      0  2 / 14 / 0                       419 ms
+   9.3     39      10        5      0  7 / 24 / 0                       473 ms
+  13.2     58      14        0      0  15 / 46 / 0                      511 ms
+  17.2     78      11        2      0  24 / 64 / 0                      430 ms
+  21.6     95      11        0      0  30 / 81 / 0                     1777 ms
+  24.4    107      11        0      0  29 / 91 / 0                     1918 ms
+  31.2    120      13        0      0  32 / 107 / 0                    4545 ms
+  33.4    120      19        0      0  13 / 107 / 0                    4475 ms
+  36.3    120      13        7      0  0 / 100 / 0                      371 ms
+  39.0    120       0       18      0  0 / 82 / 0                       362 ms
+  41.3    120       0       15      0  0 / 67 / 0                       459 ms
+  43.6    120       0       14      0  0 / 53 / 0                       536 ms
+  45.8    120       0       14      0  0 / 39 / 0                       368 ms
+  48.3    120       0       17      0  0 / 22 / 0                       480 ms
+  50.5    120       0       14      0  0 / 8 / 0                        552 ms
+

@@ -62,6 +62,7 @@ from library.records import (
     make_source,
     ordered_item,
     ordered_source,
+    browser_ready_still,
     renditions_for,
 )
 from library.settings import defaults, load_settings_file, settings_path
@@ -673,7 +674,10 @@ def _index_file(
         captured_at_source=captured_source,
         content_identifier=content_id,
         locations=[location],
-        renditions=renditions_for(kind, source_id, decode_error=decode_error, store=store),
+        renditions=renditions_for(
+            kind, source_id, decode_error=decode_error, store=store,
+            browser_still=browser_ready_still(file_suffix(path), metadata),
+        ),
         place_id=place_id,
         metadata=metadata,
         faces=(existing_pending.get("faces") if existing_pending else None),

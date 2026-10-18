@@ -551,9 +551,9 @@ def _rendition_completion(
     unexpected_ready: list[dict[str, str]] = []
     invalid_kinds: list[dict[str, str]] = []
     policies = {
-        "photo": ({"thumb", "preview"}, {"poster", "proxy", "playback"}, set()),
+        "photo": ({"thumb"}, {"poster", "proxy", "playback"}, {"preview"}),
         "video": ({"poster", "proxy"}, {"thumb", "preview"}, {"playback"}),
-        "live": ({"thumb", "preview", "poster", "proxy"}, set(), {"playback"}),
+        "live": ({"thumb", "poster", "proxy"}, set(), {"playback", "preview"}),
     }
     for item in items:
         item_id = str(item.get("id") or "")
@@ -672,6 +672,7 @@ class RunState:
     scan_running: bool = False
     timeline: list[dict[str, Any]] = field(default_factory=list)
     viewer_item_id: str | None = None
+    viewer_which: str = "preview"
     viewer_triggered: bool = False
     viewer_want_sent: bool = False
     last_preview_probe: float = 0.0
@@ -1416,9 +1417,16 @@ def _confirm_first_thumb_media(base: str, state: RunState, now: float) -> None:
         state.milestones.first_thumb = now
 
 
-def _open_viewer(base: str, state: RunState, item_id: str, now: float) -> None:
+def _viewer_still(item: dict[str, Any]) -> str:
+    """What the viewer shows for this photo: its preview, or the original when it has none by design."""
+    status = (item.get("renditions") or {}).get("status") or {}
+    return "original" if status.get("preview") == "not-applicable" else "preview"
+
+
+def _open_viewer(base: str, state: RunState, item_id: str, now: float, which: str = "preview") -> None:
     state.viewer_triggered = True
     state.viewer_item_id = item_id
+    state.viewer_which = which
     state.milestones.viewer_open = now
     if not state.viewer_want_sent:
         state.viewer_want_sent = True
@@ -1441,7 +1449,7 @@ def _probe_viewer_preview(base: str, state: RunState, now: float) -> None:
         return
     _, ok = _http_body_ok(
         base,
-        f"/api/media/{urllib.parse.quote(state.viewer_item_id, safe='')}?which=preview",
+        f"/api/media/{urllib.parse.quote(state.viewer_item_id, safe='')}?which={state.viewer_which}",
     )
     if ok:
         state.milestones.viewer_preview = now
@@ -1493,7 +1501,7 @@ def _disk_poll_loop(
                             pick = item
                             break
                 if pick and isinstance(pick.get("id"), str):
-                    _open_viewer(base, state, pick["id"], now)
+                    _open_viewer(base, state, pick["id"], now, _viewer_still(pick))
 
         if state.rendition_terminal is None and len(items) >= expected_items:
             completion = _rendition_completion(items, expected_items, lib_root, fixture_dir)

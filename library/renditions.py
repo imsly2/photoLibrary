@@ -809,8 +809,8 @@ def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
             return None
         return _job_if_ready(root, item, slot, caps)
 
-    # A picture opened in the viewer gets its 1600px preview on the next step,
-    # including while thumbs are queued and while a scan is still running.
+    # A picture opened in the viewer gets its preview and thumb on the next steps,
+    # including while other thumbs are queued and while a scan is still running.
     for item_id in wanted_ids(root):
         item = cache.items.get(item_id)
         if item is None:
@@ -818,7 +818,7 @@ def _next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
         if item.get("kind") == "video":
             slots = ("poster", "proxy", "playback")
         else:
-            slots = ("preview",)
+            slots = ("preview", "thumb")
         for slot in slots:
             job = take(item_id, slot)
             if job is not None:

@@ -367,6 +367,71 @@ def quick_captured_at(path: Path) -> str:
         return ""
 
 
+def exif_orientation(path: Path) -> int:
+    """EXIF orientation 1-8 from a JPEG's first 128 KB; 1 for anything else."""
+    if file_suffix(path) not in {".jpg", ".jpeg"}:
+        return 1
+    try:
+        with open(path, "rb") as handle:
+            _, _, tiff = _jpeg_size_and_exif(handle.read(_HEAD_BYTES))
+        ifd0 = (_parse_tiff(tiff) if tiff else {}).get("ifd0") or {}
+    except (OSError, ValueError, IndexError):
+        return 1
+    return _int_in_range(ifd0.get(TAG_ORIENTATION), 1, 8) or 1
+
+
+TAG_THUMB_OFFSET = 0x0201
+TAG_THUMB_LENGTH = 0x0202
+_SHAPE_TOLERANCE = 0.03
+
+
+def _upright_exif(orientation: int) -> bytes:
+    """APP1 segment holding only an orientation, so the browser turns the picture upright."""
+    tiff = b"MM\x00\x2a\x00\x00\x00\x08" + b"\x00\x01"
+    tiff += TAG_ORIENTATION.to_bytes(2, "big") + b"\x00\x03\x00\x00\x00\x01"
+    tiff += orientation.to_bytes(2, "big") + b"\x00\x00" + b"\x00\x00\x00\x00"
+    payload = b"Exif\x00\x00" + tiff
+    return b"\xff\xe1" + (len(payload) + 2).to_bytes(2, "big") + payload
+
+
+def camera_thumbnail(path: Path) -> bytes:
+    """The small JPEG a camera stores in EXIF, turned upright; b"" when unusable.
+
+    Unusable means not a JPEG, no embedded picture, or a shape more than 3%
+    off the photo's (a letterboxed one would show bars).
+    """
+    if file_suffix(path) not in {".jpg", ".jpeg"}:
+        return b""
+    try:
+        with open(path, "rb") as handle:
+            head = handle.read(_HEAD_BYTES)
+        width, height, tiff = _jpeg_size_and_exif(head)
+        if not tiff or len(tiff) < 8 or tiff[:2] not in {b"II", b"MM"}:
+            return b""
+        endian = "little" if tiff[:2] == b"II" else "big"
+        ifd0_off = _u32(tiff, 4, endian)
+        ifd0 = _read_ifd(tiff, ifd0_off, endian)
+        ifd1_off = _u32(tiff, ifd0_off + 2 + _u16(tiff, ifd0_off, endian) * 12, endian)
+        if not ifd1_off:
+            return b""
+        ifd1 = _read_ifd(tiff, ifd1_off, endian)
+        start, length = ifd1.get(TAG_THUMB_OFFSET), ifd1.get(TAG_THUMB_LENGTH)
+        if type(start) is not int or type(length) is not int or length <= 0:
+            return b""
+        thumb = tiff[start : start + length]
+    except (OSError, ValueError, IndexError):
+        return b""
+    if len(thumb) != length or not thumb.startswith(b"\xff\xd8"):
+        return b""
+    t_width, t_height, _ = _jpeg_size_and_exif(thumb)
+    if not (width and height and t_width and t_height):
+        return b""
+    if abs(t_width * height / (t_height * width) - 1) > _SHAPE_TOLERANCE:
+        return b""
+    orientation = _int_in_range(ifd0.get(TAG_ORIENTATION), 1, 8) or 1
+    return thumb[:2] + _upright_exif(orientation) + thumb[2:]
+
+
 def _size_from_ffprobe(path: Path) -> dict[str, Any]:
     meta = empty_metadata()
     payload = ffprobe_json(path)

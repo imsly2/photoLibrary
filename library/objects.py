@@ -377,6 +377,8 @@ def detect_objects(image_path: Path, onnx_path: Path) -> list[dict[str, Any]]:
 def _still_for_detect(item: dict[str, Any], root: Path) -> Path | None:
     rend = item.get("renditions") or {}
     status = rend.get("status") or {}
+    if item.get("kind") != "video" and status.get("preview") == "not-applicable":
+        return _current_still_file(item, root)
     for slot in ("preview", "thumb", "poster"):
         if status.get(slot) != "ready":
             continue
@@ -458,6 +460,9 @@ def _letterbox_tensor(path: Path, np: Any) -> tuple[Any, float, float, float, fl
 
 
 def _probe_size(path: Path) -> tuple[int | None, int | None]:
+    """Size of the frame ffmpeg decodes, which turns a camera-rotated JPEG upright."""
+    from library.metadata import exif_orientation
+
     payload = ffprobe_json(path)
     if not isinstance(payload, dict):
         return None, None
@@ -467,7 +472,7 @@ def _probe_size(path: Path) -> tuple[int | None, int | None]:
         width = stream.get("width")
         height = stream.get("height")
         if isinstance(width, int) and isinstance(height, int) and width > 0 and height > 0:
-            return width, height
+            return (height, width) if exif_orientation(path) >= 5 else (width, height)
     return None, None
 
 

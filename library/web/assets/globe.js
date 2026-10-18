@@ -978,9 +978,18 @@
       return status.proxy === "ready";
     }
     if (item.kind === "photo" || item.kind === "live") {
-      return status.preview === "ready";
+      return !!tourStillWhich(item);
     }
     return false;
+  }
+
+  // A photo without a preview by design shows its original.
+  function tourStillWhich(item) {
+    const status = ((item.renditions || {}).status || {});
+    if (status.preview === "ready") {
+      return "preview";
+    }
+    return status.preview === "not-applicable" && item.available !== false ? "original" : "";
   }
 
   function armMedia() {
@@ -1055,7 +1064,7 @@
       tourImage.onerror = function () {
         skipCurrentMedia();
       };
-      tourImage.src = window.libraryApp.mediaUrl(item.id, "preview");
+      tourImage.src = window.libraryApp.mediaUrl(item.id, tourStillWhich(item));
       return;
     }
     skipCurrentMedia();
