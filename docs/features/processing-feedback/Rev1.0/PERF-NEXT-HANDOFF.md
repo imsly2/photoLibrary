@@ -1,5 +1,35 @@
 # Handoff — make processing, AI checks, filtering and first load fast
 
+## Result (2026-10-18, commits `5a1279f` `06fcb49` `46a2206`)
+
+Ranked by what Steve feels. Every row is before → after on the same fixture;
+artifacts live in `assets/perf-next/`.
+
+| # | Area | Fixture | Before → after | Where the time went | Evidence |
+|---|------|---------|----------------|---------------------|----------|
+| 1 | People filter, clicks, first load | 400 JPEGs, 7 named people, headless Edge, idle | person click 16.7 s → 1.2 s; 2nd person 10.4 s → 0.13 s; clear 14.1 s → 0.5 s; first picture 9.3 s → 2.1 s; settled 11.8 s → 3.8 s; open original 3.3 s → 0.1 s | picker painted 294 face crops (ffmpeg decode of each original) ahead of `/api/items`; people/tags/sources read every record file per load (387 ms server work → 81 ms); empty filter re-fetched the catalog every 2 s | `ui-head.json`, `ui-after.json`, `api-cost-{head,after}.json` |
+| 1b | Same, while faces re-run | same | person 4.2 s → 1.5 s; first picture 3.3 s → 1.6 s; server `/api/tags` 1.4 s → 13 ms | lock held by models (see 2) | `ui-{head,after}.json` → `processing` |
+| 2 | AI queues (faces, objects, rating) | 40 JPEGs | drain 98.5 s → 55.3 s; lock held 88 s → 9 s; idle tick 433 → 17 ms | objects re-hashed every original each tick and built a new ONNX session per photo; faces/objects inferred under the lock; no ffmpeg timeout | `head-40-idle.json`, `after-40-idle.json`, `*-profile.profile.txt` |
+| 3 | Scan a fresh folder | 40 JPEGs, 154 MB | 3.03× → 1.03× bytes per file; 107.6 → 79.7 ms/file warm; 238 → 158 opens | hash, content id, EXIF each re-read the file | `scan-head.json`, `scan-after.json` |
+| 4 | Thumb/preview encode | 40 JPEGs, `-lowres 1` | 216.4 → 214.8 ms median (no gain) | process start ~40 ms + WebP encode ~100 ms; decode is not the cost | `lowres-1600-l1.json` |
+
+Not done, in order of likely payoff: one shared decode for faces/objects/rating;
+smaller `/api/items` (~3.4 KB/item: face floats, quality metrics); face crops
+from the preview instead of the original (~2× faster); WebP compression level
+0 for thumbs (~55 ms vs ~100 ms, +21 % bytes — taste call).
+
+Harness: `ui_fixture.py` builds `.qa/ui-400` (copies 400 of Steve's JPEGs,
+names the top clusters), `ui_timing.mjs <app-dir> <label> <port> <fixture-dir>`
+times the page idle and during `rerun-faces`, `ui_compare.py a.json b.json`
+prints the table. `ai_drain.py`, `scan_bench.py`, `lowres_probe.py`,
+`api_cost.py` are the server-side benches. `.qa\wt-before` is a worktree at
+`5cd481a` for before runs.
+
+Live server (8785) still runs the pre-pass code and has a hung ffmpeg
+(pid 39640). Restarting it needs Steve's OK.
+
+---
+
 You are picking up performance work on Library (Steve's photo library:
 Python stdlib server + ffmpeg on Windows, `J:\slyOS\projects\photoLibrary`).
 Start at `AGENTS.md` → `docs/PICKUP.md`; north star `docs/PRODUCT.md`;

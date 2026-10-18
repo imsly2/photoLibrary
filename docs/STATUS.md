@@ -4,6 +4,63 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Performance pass (perf-next): four areas measured, three fixed,
+  all local commits `5a1279f`, `06fcb49`, `46a2206`. Ranked by what Steve feels,
+  with before → after on the same fixture each time:
+  1. **People filter and clicking around** (400 of Steve's JPEGs, 7 named people,
+     headless Edge, idle server): click a person 16.7 s → 1.2 s; click a second
+     person 10.4 s → 0.13 s; clear people 14.1 s → 0.5 s; first picture on screen
+     9.3 s → 2.1 s; first load settled 11.8 s → 3.8 s; open original 3.3 s → 0.1 s.
+     While faces re-run: person 4.2 s → 1.5 s, first picture 3.3 s → 1.6 s.
+     Where the time went: a person click painted every face crop in the picker
+     (294 crop requests, each a full-size ffmpeg decode of the original) ahead of
+     `/api/items`; `/api/people`, `/api/tags` and `/api/sources` each read every
+     item record from disk on every page load (7 calls serialised to 387 ms of
+     server work, now 81 ms); an empty filter result re-fetched the whole catalog
+     every 2 s. Fix: crops paint only when scrolled into view, the three lists
+     read the in-memory item index, stack keys are memoised.
+     Evidence: [ui-head](features/processing-feedback/Rev1.0/assets/perf-next/ui-head.json),
+     [ui-after](features/processing-feedback/Rev1.0/assets/perf-next/ui-after.json),
+     [api-cost-head](features/processing-feedback/Rev1.0/assets/perf-next/api-cost-head.json),
+     [api-cost-after](features/processing-feedback/Rev1.0/assets/perf-next/api-cost-after.json);
+     harness `ui_fixture.py` + `ui_timing.mjs` + `ui_compare.py` in the same folder.
+  2. **AI queues** (40 JPEGs, faces + objects + rating): drain 98.5 s → 55.3 s;
+     catalog lock held 88 s → 9 s (requests no longer wait behind models); idle
+     drain tick 433 ms → 17 ms. Where the time went: the objects step re-hashed
+     every original on every tick and built a fresh ONNX session per photo (the
+     most likely source of the live `MemoryError`s — one session per model now,
+     not reproduced on the fixture so not claimed fixed); faces and objects
+     decoded and inferred while holding the lock. Every ffmpeg/ffprobe call now
+     goes through one runner with `-nostdin`, a closed stdin and a hard timeout,
+     so a hung decode (the live server has one, pid 39640) fails that item
+     instead of stalling the whole drain — which matches the live "rating 0 done
+     / 546 pending / running" symptom; rating itself completes 40/40 on the
+     fixture at 0.28 s each.
+     Evidence: [head-40-idle](features/processing-feedback/Rev1.0/assets/perf-next/head-40-idle.json),
+     [after-40-idle](features/processing-feedback/Rev1.0/assets/perf-next/after-40-idle.json),
+     py-spy [head](features/processing-feedback/Rev1.0/assets/perf-next/head-40-profile.profile.txt) /
+     [after](features/processing-feedback/Rev1.0/assets/perf-next/after-ai-40-profile.profile.txt);
+     tests `test_ffmpeg_runner.py`, `test_objects_step.py`.
+  3. **Scan of a fresh folder** (40 JPEGs, 154 MB): bytes read per file 3.03× →
+     1.03× the file size, 107.6 → 79.7 ms per file warm, binary opens 238 → 158.
+     Hash, EXIF, content id and HEIF brand check now share one read; ffprobe is
+     memoised per unchanged file. Evidence: [scan-head](features/processing-feedback/Rev1.0/assets/perf-next/scan-head.json),
+     [scan-after](features/processing-feedback/Rev1.0/assets/perf-next/scan-after.json);
+     test `test_scan_one_read.py`. On the USB-2-speed drive the cold read still
+     dominates; the fix removes the two warm re-reads.
+  4. **Thumb/preview encode — measured, not changed.** ffmpeg `-lowres 1` on 40
+     JPEGs: median 216.4 → 214.8 ms, 37/40 same output size, SSIM min 0.95 — no
+     gain, because the time is process start (~40 ms) + WebP encode (~100 ms at
+     compression level 2), not the decode. Level 0 would be ~55 ms at +21 % bytes
+     (taste call, left as is). Evidence: [lowres-1600-l1](features/processing-feedback/Rev1.0/assets/perf-next/lowres-1600-l1.json).
+  Not done: shared decode across faces/objects/rating (each still decodes its own
+  frame); `/api/items` is ~3.4 KB per item (face floats, quality metrics); face
+  crops decode the original where the preview would be ~2× faster. The live 8785
+  server still runs the old code. Unit suite 59 OK; FACES 117/1, TASTE-PEOPLE
+  34/1, TASTE-FILTERS 25/1, TASTE-SIDEBAR 2/1 — the four FAILs are a missing
+  `playwright` module and a `which=face&box=` literal check that went away in
+  `470f11b`, both identical on the pre-pass worktree. No feature Check closed.
+
 - 2026-10-18 — Fresh folders show pictures on every tile right away: JPEG tiles
   use the camera's embedded EXIF thumbnail (served from the original's first
   128 KB, turned upright) until the real thumb exists, and browser-ready JPEG/PNG/
