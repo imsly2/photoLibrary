@@ -4,6 +4,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Larger preview baseline: 400 JPEGs + 1 MOV completed in 285.953 s (grid109.625 s),803 nonempty outputs,0 rendition errors. Bookkeeping target failed; portable records were still stale after10 s. Eight focused harness checks passed independently and in lead rerun. No feature Check closed. See [active big-wins handoff](features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md) and [baseline artifact](features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-073207-rev1-scale-400-22850.json).
+
+
 - 2026-10-18 — Live recovery after the follow-up report: backed up the existing
   catalog/undo/settings under `library-data/recovery/2026-10-18-processing-*`,
   replaced the old background server, and resumed the same 551-file source
@@ -1007,3 +1010,4 @@ environments must be supplied by the build or F2 remains pending; do not claim
 - 2026-10-14 — Rendition size policy (proxy CRF 28; playback ≤1280 /
   CRF 23; no playback for browser-safe MP4; tmp sweep). TASTE-VIDEO
   114/114. No new Check. 16/22 unchanged.
+

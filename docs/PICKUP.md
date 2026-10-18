@@ -3,6 +3,10 @@
 Current build doorway. North star: [PRODUCT.md](PRODUCT.md). Screen
 contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 
+## Active performance work
+
+Continue [BIG-WINS-HANDOFF](features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md): small-agent implementation of high-impact preview and responsiveness fixes. This supersedes the older measurement-first task; no broad test expansion.
+
 ## Do this next
 
 1. Read **[Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell)**
@@ -64,3 +68,4 @@ missing-original badge stay from #42. Re-run Faces only if a cluster
 still needs a fresh detect.
 
 Forbidden: accounts, cloud sync, cloud AI, in-app edit, albums.
+

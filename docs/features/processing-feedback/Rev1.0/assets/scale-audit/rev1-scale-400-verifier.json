@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "label": "rev1-scale-400",
+  "run": {
+    "serverHealth": "HTTP 200",
+    "load": "ui",
+    "appDirty": true,
+    "workload": "400 JPEG + 1 MOV",
+    "measurementTimedOut": false,
+    "diffSha256": "0589c702535eb3e0cfff34ee86d7af0d1db19043317602d72f28a8495b1496e8",
+    "port": 22850,
+    "statusSha256": "cc9c19b0f841c8b316e7f9c88f1583859da922d8e3cd97ee9799ab313db7e7e9",
+    "setupSecApprox": 126,
+    "appCommit": "1121b35a96afcc3da490a46ad51d561dadb44299"
+  },
+  "artifacts": {
+    "originalResult": "docs/features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-073207-rev1-scale-400.json",
+    "consoleLog": "docs/features/processing-feedback/Rev1.0/assets/scale-audit/rev1-scale-400-22850.log",
+    "serverStderr": "J:/slyOS/projects/photoLibrary/.qa/bench/run-3rg5no4d/server.stderr.log",
+    "serverStdout": "J:/slyOS/projects/photoLibrary/.qa/bench/run-3rg5no4d/server.stdout.log",
+    "scratchRoot": "J:/slyOS/projects/photoLibrary/.qa/bench/run-3rg5no4d",
+    "fixtureManifest": "J:/slyOS/projects/photoLibrary/.qa/bench/run-3rg5no4d/fixture-manifest.json",
+    "result": "docs/features/processing-feedback/Rev1.0/assets/perf-bench/bench-20261018-073207-rev1-scale-400-22850.json"
+  },
+  "metrics": {
+    "bookkeepingMsPerJob": {
+      "target": 50,
+      "measured": 259.704,
+      "result": "FAIL"
+    },
+    "readingRate": {
+      "target": 15,
+      "measured": 33.924,
+      "result": "PASS"
+    },
+    "viewerPreviewSec": {
+      "target": 2,
+      "measured": 0.844,
+      "result": "PASS"
+    },
+    "firstThumbSec": {
+      "target": 3,
+      "measured": 0.391,
+      "result": "PASS"
+    },
+    "jobsP95Ms": {
+      "target": 300,
+      "measured": 128.377,
+      "result": "PASS"
+    },
+    "readingTenthRatio": {
+      "target": 1.25,
+      "measured": 0.753,
+      "result": "PASS"
+    },
+    "allGridSec": {
+      "scaledTarget": 150,
+      "measured": 109.625,
+      "result": "PASS"
+    },
+    "everythingSec": {
+      "scaledTarget": 450,
+      "measured": 285.953,
+      "result": "PASS"
+    },
+    "itemsP95Ms": {
+      "target": 1000,
+      "measured": 340.272,
+      "result": "PASS"
+    }
+  },
+  "renditionCompletion": {
+    "ready": 803,
+    "successful": true,
+    "queued": 0,
+    "slots": "2005/2005",
+    "nonemptyFileFailures": 0,
+    "items": "401/401",
+    "errors": 0,
+    "notApplicable": 1202,
+    "missingOrUnknown": 0,
+    "terminal": true
+  },
+  "api": {
+    "jobsP95MaxMs": 5624.61,
+    "jobsSamples": 282,
+    "itemsP95MaxMs": 571.66,
+    "healthSamples": 282,
+    "failures": 0,
+    "activitySamples": 282,
+    "itemsSamples": 276
+  },
+  "portableMirror": {
+    "serverItems": 401,
+    "mirrorItems": 400,
+    "complete": false,
+    "timedOut": true,
+    "expectedItems": 401,
+    "matchedItemsAtTimeout": 228,
+    "lagSec": null
+  },
+  "aiQueues": {
+    "objects": "unavailable, pending 400",
+    "analyze": "unavailable, pending 93",
+    "rate": "running, pending 394, done 6",
+    "inferFaces": "unavailable, pending 400",
+    "transcribe": "idle/unavailable",
+    "excludedFromCompletion": true
+  },
+  "comparison": {
+    "baselineCount": 80,
+    "jobsP95MsBaseline": 1195.94,
+    "baseline": "latest-combined-3.json",
+    "baselineCommit": "06ddcef84d8ba1eceaaf89259ca7fc03c7a1326d",
+    "everythingScaleFactor": 4.956,
+    "allGridScaleFactor": 4.714,
+    "itemsP95MsBaseline": 99.091,
+    "caveat": "Different revision and git dirty state; this is one run each and the 80-item artifact lacks current manifest/API error/mirror completion fields.",
+    "bookkeepingMsPerJobBaseline": 148.905,
+    "readingRateScaleFactor": 4.315
+  },
+  "interpretation": "Most timed processing budgets pass at 400 stills + one video. Bookkeeping remains above budget. The portable mirror did not reach full matching within 10 s, so portability is incomplete. AI completion remains excluded.",
+  "failedAttempts": [
+    "rev1-scale-400.log: port 8799 was occupied by unrelated node static server; health check failed.",
+    "rev1-scale-400-21165.log: interrupted at 191 items after strong evidence of unread subprocess pipe backpressure; not a measurement."
+  ]
+}

@@ -1,0 +1,13 @@
+test_error_is_terminal_but_never_success (tests.perf.test_bench_measurements.BenchMeasurementTests.test_error_is_terminal_but_never_success) ... ok
+test_item_read_identity_keeps_same_named_files_distinct (tests.perf.test_bench_measurements.BenchMeasurementTests.test_item_read_identity_keeps_same_named_files_distinct) ... ok
+test_logged_child_can_write_beyond_pipe_capacity (tests.perf.test_bench_measurements.BenchMeasurementTests.test_logged_child_can_write_beyond_pipe_capacity) ... ok
+test_measurement_schema_serializes_latency_and_reading_fields (tests.perf.test_bench_measurements.BenchMeasurementTests.test_measurement_schema_serializes_latency_and_reading_fields) ... ok
+test_ready_completion_requires_nonempty_files (tests.perf.test_bench_measurements.BenchMeasurementTests.test_ready_completion_requires_nonempty_files) ... ok
+test_required_photo_slot_cannot_be_not_applicable (tests.perf.test_bench_measurements.BenchMeasurementTests.test_required_photo_slot_cannot_be_not_applicable) ... ok
+test_tcp_listener_rejected_before_fixture_copy_without_http_check (tests.perf.test_bench_measurements.BenchMeasurementTests.test_tcp_listener_rejected_before_fixture_copy_without_http_check) ... ok
+test_video_playback_not_applicable_is_supported (tests.perf.test_bench_measurements.BenchMeasurementTests.test_video_playback_not_applicable_is_supported) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.074s
+
+OK
