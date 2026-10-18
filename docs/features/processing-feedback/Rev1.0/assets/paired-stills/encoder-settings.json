@@ -1,0 +1,33 @@
+{
+ "default": {
+  "perPhotoMs": 346,
+  "previewKB": 1467,
+  "preview0": "1600,1196"
+ },
+ "comp2": {
+  "perPhotoMs": 229,
+  "previewKB": 1537,
+  "preview0": "1600,1196"
+ },
+ "comp0": {
+  "perPhotoMs": 195,
+  "previewKB": 1733,
+  "preview0": "1600,1196"
+ },
+ "lowres1": {
+  "perPhotoMs": 248,
+  "previewKB": 1102,
+  "preview0": "1296,968"
+ },
+ "lowres1_comp2": {
+  "perPhotoMs": 171,
+  "previewKB": 1145,
+  "preview0": "1296,968"
+ },
+ "bilinear_comp2": {
+  "perPhotoMs": 198,
+  "previewKB": 1267,
+  "preview0": "1600,1196"
+ },
+ "_source0": "2592,1936"
+}

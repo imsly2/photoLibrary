@@ -1,0 +1,306 @@
+{
+  "inputs": [
+    {
+      "name": "created.jpg",
+      "bytes": 13587
+    },
+    {
+      "name": "far.jpg",
+      "bytes": 12289
+    },
+    {
+      "name": "holiday_2020-01-03.jpg",
+      "bytes": 16822
+    },
+    {
+      "name": "holiday_20200102.jpg",
+      "bytes": 17123
+    },
+    {
+      "name": "IMG_1042.jpg",
+      "bytes": 15274
+    },
+    {
+      "name": "LIVE_0001.jpg",
+      "bytes": 13828
+    },
+    {
+      "name": "near.jpg",
+      "bytes": 12642
+    },
+    {
+      "name": "no-exif.jpg",
+      "bytes": 13170
+    },
+    {
+      "name": "oriented.jpg",
+      "bytes": 21251
+    },
+    {
+      "name": "raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
+      "bytes": 22746
+    },
+    {
+      "name": "\u65c5\u884c photo.jpg",
+      "bytes": 14277
+    }
+  ],
+  "inputCount": 11,
+  "caps": {
+    "thumbPx": 320,
+    "previewPx": 1600
+  },
+  "timesSeconds": {
+    "two_process": [
+      1.4142099000000599,
+      1.3721381999994264,
+      1.4486130000004778
+    ],
+    "one_process_pair": [
+      0.9431797000006554,
+      0.8578566000005594,
+      0.910061599999608
+    ]
+  },
+  "medianSeconds": {
+    "two_process": 1.4142099000000599,
+    "one_process_pair": 0.910061599999608
+  },
+  "speedup": 1.554,
+  "firstItemThumbMedianSeconds": {
+    "thumb_only": 0.055909499999870604,
+    "paired_thumb_and_preview": 0.08090420000007725
+  },
+  "outputBytes": {
+    "two_process": {
+      "preview-created.webp": 2330,
+      "preview-far.webp": 1790,
+      "preview-holiday_2020-01-03.webp": 3184,
+      "preview-holiday_20200102.webp": 3328,
+      "preview-IMG_1042.webp": 2698,
+      "preview-LIVE_0001.webp": 2210,
+      "preview-near.webp": 1932,
+      "preview-no-exif.webp": 2144,
+      "preview-oriented.webp": 4154,
+      "preview-raw_relative_path_would_make_a_bad_pending_json_filename.webp": 5076,
+      "preview-\u65c5\u884c photo.webp": 2234,
+      "thumb-created.webp": 890,
+      "thumb-far.webp": 660,
+      "thumb-holiday_2020-01-03.webp": 1198,
+      "thumb-holiday_20200102.webp": 1276,
+      "thumb-IMG_1042.webp": 1020,
+      "thumb-LIVE_0001.webp": 866,
+      "thumb-near.webp": 724,
+      "thumb-no-exif.webp": 854,
+      "thumb-oriented.webp": 1740,
+      "thumb-raw_relative_path_would_make_a_bad_pending_json_filename.webp": 1914,
+      "thumb-\u65c5\u884c photo.webp": 916
+    },
+    "one_process_pair": {
+      "preview-created.webp": 2330,
+      "preview-far.webp": 1790,
+      "preview-holiday_2020-01-03.webp": 3184,
+      "preview-holiday_20200102.webp": 3328,
+      "preview-IMG_1042.webp": 2698,
+      "preview-LIVE_0001.webp": 2210,
+      "preview-near.webp": 1932,
+      "preview-no-exif.webp": 2144,
+      "preview-oriented.webp": 4154,
+      "preview-raw_relative_path_would_make_a_bad_pending_json_filename.webp": 5076,
+      "preview-\u65c5\u884c photo.webp": 2234,
+      "thumb-created.webp": 890,
+      "thumb-far.webp": 660,
+      "thumb-holiday_2020-01-03.webp": 1198,
+      "thumb-holiday_20200102.webp": 1276,
+      "thumb-IMG_1042.webp": 1020,
+      "thumb-LIVE_0001.webp": 866,
+      "thumb-near.webp": 724,
+      "thumb-no-exif.webp": 854,
+      "thumb-oriented.webp": 1740,
+      "thumb-raw_relative_path_would_make_a_bad_pending_json_filename.webp": 1914,
+      "thumb-\u65c5\u884c photo.webp": 916
+    }
+  },
+  "dimensions": {
+    "two_process": {
+      "preview-created.webp": [
+        640,
+        480
+      ],
+      "preview-far.webp": [
+        640,
+        480
+      ],
+      "preview-holiday_2020-01-03.webp": [
+        640,
+        480
+      ],
+      "preview-holiday_20200102.webp": [
+        640,
+        480
+      ],
+      "preview-IMG_1042.webp": [
+        640,
+        480
+      ],
+      "preview-LIVE_0001.webp": [
+        640,
+        480
+      ],
+      "preview-near.webp": [
+        640,
+        480
+      ],
+      "preview-no-exif.webp": [
+        640,
+        480
+      ],
+      "preview-oriented.webp": [
+        480,
+        640
+      ],
+      "preview-raw_relative_path_would_make_a_bad_pending_json_filename.webp": [
+        640,
+        480
+      ],
+      "preview-\u65c5\u884c photo.webp": [
+        640,
+        480
+      ],
+      "thumb-created.webp": [
+        320,
+        240
+      ],
+      "thumb-far.webp": [
+        320,
+        240
+      ],
+      "thumb-holiday_2020-01-03.webp": [
+        320,
+        240
+      ],
+      "thumb-holiday_20200102.webp": [
+        320,
+        240
+      ],
+      "thumb-IMG_1042.webp": [
+        320,
+        240
+      ],
+      "thumb-LIVE_0001.webp": [
+        320,
+        240
+      ],
+      "thumb-near.webp": [
+        320,
+        240
+      ],
+      "thumb-no-exif.webp": [
+        320,
+        240
+      ],
+      "thumb-oriented.webp": [
+        240,
+        320
+      ],
+      "thumb-raw_relative_path_would_make_a_bad_pending_json_filename.webp": [
+        320,
+        240
+      ],
+      "thumb-\u65c5\u884c photo.webp": [
+        320,
+        240
+      ]
+    },
+    "one_process_pair": {
+      "preview-created.webp": [
+        640,
+        480
+      ],
+      "preview-far.webp": [
+        640,
+        480
+      ],
+      "preview-holiday_2020-01-03.webp": [
+        640,
+        480
+      ],
+      "preview-holiday_20200102.webp": [
+        640,
+        480
+      ],
+      "preview-IMG_1042.webp": [
+        640,
+        480
+      ],
+      "preview-LIVE_0001.webp": [
+        640,
+        480
+      ],
+      "preview-near.webp": [
+        640,
+        480
+      ],
+      "preview-no-exif.webp": [
+        640,
+        480
+      ],
+      "preview-oriented.webp": [
+        480,
+        640
+      ],
+      "preview-raw_relative_path_would_make_a_bad_pending_json_filename.webp": [
+        640,
+        480
+      ],
+      "preview-\u65c5\u884c photo.webp": [
+        640,
+        480
+      ],
+      "thumb-created.webp": [
+        320,
+        240
+      ],
+      "thumb-far.webp": [
+        320,
+        240
+      ],
+      "thumb-holiday_2020-01-03.webp": [
+        320,
+        240
+      ],
+      "thumb-holiday_20200102.webp": [
+        320,
+        240
+      ],
+      "thumb-IMG_1042.webp": [
+        320,
+        240
+      ],
+      "thumb-LIVE_0001.webp": [
+        320,
+        240
+      ],
+      "thumb-near.webp": [
+        320,
+        240
+      ],
+      "thumb-no-exif.webp": [
+        320,
+        240
+      ],
+      "thumb-oriented.webp": [
+        240,
+        320
+      ],
+      "thumb-raw_relative_path_would_make_a_bad_pending_json_filename.webp": [
+        320,
+        240
+      ],
+      "thumb-\u65c5\u884c photo.webp": [
+        320,
+        240
+      ]
+    }
+  }
+}

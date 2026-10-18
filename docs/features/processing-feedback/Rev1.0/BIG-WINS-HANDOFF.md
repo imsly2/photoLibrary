@@ -27,8 +27,10 @@ Rating does not inherently starve portable mirroring: rendition idle settlement 
 
 ## Continuation ledger
 
-- Paired still generation: implementer being assigned; no product change yet.
-- Rating lock: pending.
+- Paired still generation: **shipped** (Cursor, see "Paired stills + faster encoder" below).
+- Faster WebP encode (bilinear scale, libwebp method 2): **shipped** in the same slice.
+- Growing per-job overhead (bookkeeping samples rise ~150 -> ~290 ms over 68 jobs at 80 photos): **next**; some per-publication work still scales with item count.
+- Rating lock: pending, after the overhead lead.
 - Worker pool: deferred.
 - Storage naming/layout: separate open proposal, no migration.
 - Live server: leave running; fixes require a later deliberate restart to take effect.
@@ -40,3 +42,29 @@ Read this file, git status/log, then the implementation/verification evidence ap
 ## Larger baseline now completed
 
 The valid400 JPEG+1 MOV run finished before product edits: first thumbnail0.391s, scanDone29.422s, all grid109.625s, selected preview0.844s, all rendition files285.953s. 803 outputs nonempty, no rendition errors, no API failures. Eight of nine printed budgets passed; bookkeeping estimate259.704ms/job failed50ms. This estimate subtracts sampled FFmpeg costs from observed publication intervals; it is not direct stage profiling. Portable mirror failed to catch up in10s (400 records, final diagnostic228/401 matching); AI still unfinished/unavailable in scratch. Do not equate previews done with Processing done or portable data complete. Artifact: assets/perf-bench/bench-20261018-073207-rev1-scale-400-22850.json. Relative to the earlier80 run, 5x items took4.96x preview time: no clear superlinear preview collapse in this test, but the absolute cost is still substantial. Different revision/harness and filesystem caches limit that comparison.
+
+## Copy-paste prompt for Cursor
+
+Work in J:\slyOS\projects\photoLibrary. Pick up from docs/features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md and docs/PICKUP.md, then inspect git status and recent commits before changing anything. The handoff's latest ledger/evidence is authoritative about what actually finished; do not assume every planned opportunity shipped.
+
+My priority is large practical speed improvements with low agent usage. Use one smaller implementing agent at a time. Finish or verify any in-progress paired thumbnail+preview generation, then tackle Rating's expensive work under the browsing lock; Faces follows, and only then consider two concurrent image workers. Measure a small identical photo sample before/after each substantial change. Include first-thumbnail/large-preview timing and output size where relevant. Use focused checks for the changed path, not repeated whole suites or benchmark-infrastructure rewrites. Keep fixes reversible and commit useful verified slices locally; never push.
+
+The old400-photo harness stalled because unread output pipes filled; that was a test bug, since fixed. The valid400 JPEG+1MOV baseline was109.625s for grid thumbnails and285.953s for all preview files. AI work was excluded and portable records were still stale afterward. Do not treat that as total Processing completion or claim the earlier known-good speed has been restored. Read the new small-sample results in the handoff before choosing the next fix. Do not overwrite originals, migrate storage, or restart my live server casually. Preserve unrelated dirty files. Keep this handoff up to date with changes, measured gains/tradeoffs, commit IDs, pending work, and the exact next action so another agent can continue cheaply.
+
+## Paired stills + faster encoder (Cursor, 2026-10-18 07:50)
+
+Codex's uncommitted paired thumb+preview change in `library/renditions.py` was reviewed and re-verified: `tests.qa.processing_feedback` completed, 17 unit tests passed (relaxed recovery, objects status, volume lookup, bench measurements), and `assets/paired-stills/measure.py` reproduced 1.55x on the 11 small fixtures with identical output bytes and dimensions.
+
+Encoder probe on 8 real 2592x1936 photos (`assets/paired-stills/encoder-probe.py`, `encoder-settings.json`): paired default 346 ms/photo; `flags=bilinear` + `-compression_level 2` 198 ms/photo, same dimensions, previews 14% smaller. `-lowres` rejected (would undershoot the 1600 px cap on these sources). Applied to every `_scale_filter`/WebP encode via `WEBP_ENCODE`.
+
+Same 80 JPEG + 1 MOV bench, ui load, back to back:
+
+| Run | first thumb | all thumbs | viewer preview | everything | artifact |
+|---|---|---|---|---|---|
+| HEAD 436a78e (unpaired) | 0.49 s | 21.0 s | 2.54 s | 56.6 s | perf-bench/bench-20261018-074231-head-unpaired-80.json |
+| paired, default encoder | 0.74 s | 39.6 s | 1.13 s | 41.6 s | perf-bench/bench-20261018-074341-paired-80.json |
+| paired + fast encoder | 0.48 s | 27.5 s | 1.62 s | **29.6 s** | perf-bench/bench-20261018-074616-paired-fastenc-80.json |
+
+Net: all previews ~1.9x sooner; the grid finishes ~6 s later than unpaired because each thumb now waits for its preview (still inside the 30 s budget). 7/9 pass. `readingTenthRatio` (796374) is a bench bug, a near-zero first-tenth denominator; `bookkeeping` 207 ms is an estimate that assumes single encodes, but its samples climb steadily with item count, which is a real lead.
+
+Exact next action: profile one post-scan drain step at 80 vs 400 items (`assets/perf-1/stage_profile.py --all-queues`) to find what per-publication work grows with N; then the Rating lock.
