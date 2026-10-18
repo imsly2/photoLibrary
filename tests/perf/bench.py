@@ -502,7 +502,9 @@ def _rendition_file_nonempty(
     rel_path = Path(rel.replace("\\", "/"))
     if rel_path.is_absolute() or ".." in rel_path.parts:
         return False
-    if rel.startswith(".library/"):
+    if rend.get("store") == "folder":
+        root = fixture_dir / ".library"
+    elif rel.startswith(".library/"):
         root = fixture_dir
     elif rel.startswith("renditions/"):
         root = lib_root

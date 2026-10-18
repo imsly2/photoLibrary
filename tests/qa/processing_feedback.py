@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import stat
 import threading
@@ -78,7 +79,7 @@ def run_diagnostics(folder: Path):
     progressive = []
 
     def writer(source, dest, cap):
-        order.append(dest.name.split(".")[0])
+        order.append(re.search(r"(thumb|preview|poster|proxy|playback)\.(webp|mp4)", dest.name).group(1))
         return fake_still(source, dest, cap)
 
     def between():

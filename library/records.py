@@ -91,6 +91,8 @@ LOCATION_KINDS = frozenset({"library-relative", "volume"})
 FILE_STATES = frozenset({"pending", "copied", "indexed", "error"})
 SCAN_STATES = frozenset({"idle", "running", "complete", "interrupted", "error"})
 PREVIEW_STORES = frozenset({"with-server", "with-source"})
+# "folder": F23 folder library, slot paths are names inside it (IMG_1.JPG.thumb.webp).
+RENDITION_STORES = PREVIEW_STORES | {"folder"}
 RENDITION_STATUSES = frozenset({"not-applicable", "queued", "ready", "error"})
 TRANSCRIPT_STATUSES = frozenset({"ready", "skipped", "error"})
 TRANSCRIPT_KEYS = (
@@ -288,7 +290,7 @@ def read_renditions(value: Any) -> dict[str, Any]:
     if extra or missing:
         raise fail("invalid-catalog")
     store = _str(data["store"])
-    if store not in PREVIEW_STORES:
+    if store not in RENDITION_STORES:
         raise fail("invalid-catalog")
     return {
         "store": store,
@@ -699,7 +701,7 @@ def renditions_for(
     decode_error: bool = False,
     store: str = "with-server",
 ) -> dict[str, Any]:
-    if store not in PREVIEW_STORES:
+    if store not in RENDITION_STORES:
         raise fail("invalid-catalog")
     if kind == "photo":
         status = {

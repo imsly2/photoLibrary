@@ -294,6 +294,18 @@ def _transfer_renditions(
     rend = clone(item.get("renditions") or {})
     store = rend.get("store")
     ops: list[tuple[Path, Path, str]] = []
+    if store == "folder":
+        # Folder-library names follow the new location; regenerate there.
+        # TODO(F23 slice 4): move the files by fingerprint instead of re-encoding.
+        status = rend.get("status") or {}
+        for slot, state in list(status.items()):
+            if state == "ready":
+                status[slot] = "queued"
+                rend[slot] = None
+        rend["sourceId"] = dest_source["id"]
+        after = clone(item)
+        after["renditions"] = rend
+        return after, ops
     if store != "with-source":
         rend["sourceId"] = dest_source["id"]
         after = clone(item)

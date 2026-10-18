@@ -70,7 +70,18 @@ def _items(lib_root: Path) -> list[dict[str, Any]]:
     return out
 
 
-def _ready_slots(items: list[dict[str, Any]], folder: Path) -> list[dict[str, Any]]:
+def _slot_file(rend: dict[str, Any], rel: Any, folder: Path, lib_root: Path) -> Path | None:
+    if not isinstance(rel, str) or not rel:
+        return None
+    store = rend.get("store")
+    if store == "folder":
+        return folder / ".library" / rel
+    if store == "with-server":
+        return lib_root / rel
+    return folder / rel
+
+
+def _ready_slots(items: list[dict[str, Any]], folder: Path, lib_root: Path) -> list[dict[str, Any]]:
     """Every slot the catalog calls ready, and whether its file is really there."""
     rows = []
     for item in items:
@@ -78,8 +89,7 @@ def _ready_slots(items: list[dict[str, Any]], folder: Path) -> list[dict[str, An
         for slot, status in (rend.get("status") or {}).items():
             if slot not in FILE_SLOTS or status != "ready":
                 continue
-            rel = rend.get(slot)
-            path = folder / rel if isinstance(rel, str) and rel else None
+            path = _slot_file(rend, rend.get(slot), folder, lib_root)
             present = path is not None and path.is_file() and path.stat().st_size > 0
             rows.append({"id": item["id"], "slot": slot, "present": present})
     return rows
@@ -126,10 +136,10 @@ def run(count: int, keep: bool) -> int:
         check("add-folder", status in (200, 202), status)
         expected = count + (1 if mov else 0)
         idle = _wait(lambda: len(_items(lib_root)) >= expected and (_queue(base).get("pending") == 0)
-                     and all(r["present"] for r in _ready_slots(_items(lib_root), folder))
-                     and len(_ready_slots(_items(lib_root), folder)) >= 2 * count, 240)
+                     and all(r["present"] for r in _ready_slots(_items(lib_root), folder, lib_root))
+                     and len(_ready_slots(_items(lib_root), folder, lib_root)) >= 2 * count, 240)
         check("first-pass-idle", idle is not None, idle)
-        before = _ready_slots(_items(lib_root), folder)
+        before = _ready_slots(_items(lib_root), folder, lib_root)
         record["readyBefore"] = len(before)
         photo = next(r["id"] for r in before if r["slot"] == "thumb")
         first = _media(base, photo, "thumb")
@@ -150,7 +160,7 @@ def run(count: int, keep: bool) -> int:
         check("deleted-not-304", stale["status"] != 304, stale["status"])
 
         def noticed() -> bool:
-            rows = _ready_slots(_items(lib_root), folder)
+            rows = _ready_slots(_items(lib_root), folder, lib_root)
             regenerated = len(rows) >= len(before) and all(r["present"] for r in rows)
             return int(_queue(base).get("pending") or 0) > 0 or len(rows) < len(before) or regenerated
 
@@ -158,11 +168,11 @@ def run(count: int, keep: bool) -> int:
         check("processing-shows-waiting", requeued is not None, {"sec": requeued, "queue": _queue(base)})
 
         def restored() -> bool:
-            rows = _ready_slots(_items(lib_root), folder)
+            rows = _ready_slots(_items(lib_root), folder, lib_root)
             return len(rows) >= len(before) and all(r["present"] for r in rows) and _queue(base).get("pending") == 0
 
         back = _wait(restored, RESTORE_WITHIN_SEC)
-        after = _ready_slots(_items(lib_root), folder)
+        after = _ready_slots(_items(lib_root), folder, lib_root)
         missing = [r for r in after if not r["present"]]
         record["restoreSec"] = None if back is None else round(time.monotonic() - deleted_at, 2)
         check("every-ready-slot-has-file", back is not None and not missing,

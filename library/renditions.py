@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import glob
 import json
 import os
 import shutil
@@ -256,7 +257,7 @@ def cleanup_tmp_siblings(dest: Path) -> int:
     if not parent.is_dir():
         return 0
     removed = 0
-    for path in parent.glob(f"{dest.name}.*.tmp"):
+    for path in parent.glob(f"{glob.escape(dest.name)}.*.tmp"):
         try:
             path.unlink()
             removed += 1
@@ -533,12 +534,61 @@ def _usable_file(path: Path | None) -> Path | None:
     return None
 
 
+FOLDER_STORE = "folder"
+
+
+def _folder_target(root: Path, item: dict[str, Any], slot: str) -> tuple[Path | None, str | None]:
+    """F23 path and recorded name for this slot, or (None, None) when unreachable."""
+    from library import folder_library
+
+    source = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
+    library = folder_library.for_source(root, source)
+    rel = folder_library.item_rel(source, item) if source is not None else None
+    if library is None or rel is None:
+        return None, None
+    name = folder_library.derived_name(rel, slot)
+    return library.path(name), name
+
+
+def slot_target(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path | None, str | None]:
+    """Where a new file for this slot goes: (store, path, recorded relative).
+
+    Items with ready files in an old layout keep it until migration moves them;
+    everything else is written to the F23 folder library.
+    """
+    rend = item.get("renditions") or {}
+    recorded = rend.get("store")
+    if recorded in PREVIEW_STORES and ready_slots(item):
+        owner = try_load_source(root, rend.get("sourceId") or "")
+        folder = store_dir(recorded, owner, root, item["id"])
+        dest = None if folder is None else folder / slot_filename(slot)
+        return recorded, dest, slot_relative(recorded, item["id"], slot)
+    path, name = _folder_target(root, item, slot)
+    return FOLDER_STORE, path, name
+
+
+def _folder_file(root: Path, source_id: str, relative: str) -> Path | None:
+    from library import folder_library
+
+    library = folder_library.for_source_id(root, source_id)
+    if library is None:
+        return None
+    try:
+        return library.path(relative)
+    except ValueError:
+        return None
+
+
 def rendition_abs(item: dict[str, Any], slot: str, library_root: Path) -> Path | None:
     rend = item.get("renditions") or {}
     relative = rend.get(slot)
     if type(relative) is str and relative:
         store = rend.get("store")
-        if store == "with-server":
+        if store == FOLDER_STORE:
+            found = _usable_file(_folder_file(library_root, rend.get("sourceId") or "", relative))
+            if found is not None:
+                return found
+        elif store == "with-server":
             try:
                 found = _usable_file(library_path(library_root, relative))
                 if found is not None:
@@ -560,6 +610,9 @@ def find_existing_rendition(item: dict[str, Any], slot: str, library_root: Path)
     item_id = item.get("id")
     if type(item_id) is not str or not item_id:
         return None
+    found = _usable_file(_folder_target(library_root, item, slot)[0])
+    if found is not None:
+        return found
     rend = item.get("renditions") or {}
     source = try_load_source(library_root, rend.get("sourceId") or "")
     stores: list[str] = []
@@ -664,7 +717,20 @@ def requeue_missing_renditions(root: Path, *, io_context=nullcontext) -> bool:
             relative = rend.get(slot)
             if status.get(slot) != "ready" or type(relative) is not str or not relative:
                 continue
-            if rend.get("store") == "with-server":
+            if rend.get("store") == FOLDER_STORE:
+                from library import folder_library
+
+                source_id = rend.get("sourceId") or ""
+                lib_key = "folder:" + source_id
+                if lib_key not in folders:
+                    library = folder_library.for_source_id(root, source_id)
+                    folders[lib_key] = None if library is None else library.dir
+                if folders[lib_key] is None:
+                    continue
+                path = _folder_file(root, source_id, relative)
+                if path is None:
+                    continue
+            elif rend.get("store") == "with-server":
                 try:
                     path = library_path(root, relative)
                 except Exception:
@@ -696,9 +762,9 @@ def requeue_missing_renditions(root: Path, *, io_context=nullcontext) -> bool:
 
 def _ready_preview_sibling(dest: Path) -> Path | None:
     """Thumb can be a downscale of a preview ffmpeg already oriented."""
-    if dest.name != "thumb.webp":
+    if not dest.name.endswith("thumb.webp"):
         return None
-    preview = dest.with_name("preview.webp")
+    preview = dest.with_name(dest.name[: -len("thumb.webp")] + "preview.webp")
     try:
         if preview.is_file() and preview.stat().st_size > 0:
             return preview
@@ -813,6 +879,9 @@ def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) 
     item_id = item.get("id")
     if type(item_id) is not str or not item_id or item_id.startswith("pending-"):
         return item
+    adopted = _adopt_folder_files(root, source, item)
+    if adopted is not None:
+        return adopted
     store = effective_preview_store(source, _current_settings(root))
     if store != "with-source":
         return item
@@ -845,6 +914,38 @@ def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) 
     return ordered_item(updated)
 
 
+def _adopt_folder_files(root: Path, source: dict[str, Any], item: dict[str, Any]) -> dict[str, Any] | None:
+    """Mark waiting slots ready when the F23 file is already in the folder library."""
+    from library import folder_library
+
+    rend = clone(item.get("renditions") or {})
+    if rend.get("store") in PREVIEW_STORES and ready_slots(item):
+        return None
+    library = folder_library.for_source(root, source)
+    rel = folder_library.item_rel(source, item)
+    if library is None or rel is None:
+        return None
+    status = dict(rend.get("status") or {})
+    changed = False
+    for slot, state in list(status.items()):
+        if state not in {"queued", "error"} or slot not in folder_library.SUFFIXES:
+            continue
+        name = folder_library.derived_name(rel, slot)
+        if _usable_file(library.path(name)) is None:
+            continue
+        rend[slot] = name
+        status[slot] = "ready"
+        changed = True
+    if not changed:
+        return None
+    rend["store"] = FOLDER_STORE
+    rend["sourceId"] = source.get("id") or rend.get("sourceId")
+    rend["status"] = status
+    updated = clone(item)
+    updated["renditions"] = rend
+    return ordered_item(updated)
+
+
 def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str) -> None:
     before = try_load_item(root, item_id)
     if before is None:
@@ -858,14 +959,14 @@ def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str
     _publish_change(root, item_rel(item_id), before, after)
 
 
-def publish_ready_slots(root: Path, item_id: str, slots: tuple[str, ...], store: str) -> None:
+def publish_ready_slots(root: Path, item_id: str, relatives: dict[str, str], store: str) -> None:
     """Record a staged photo pair with one item-record publication."""
     before = try_load_item(root, item_id)
     if before is None:
         return
     after = clone(before)
-    for slot in slots:
-        after["renditions"][slot] = slot_relative(store, item_id, slot)
+    for slot, relative in relatives.items():
+        after["renditions"][slot] = relative
         after["renditions"]["status"][slot] = "ready"
     after["renditions"]["store"] = store
     after = ordered_item(after)
@@ -949,10 +1050,8 @@ def _clear_empty(path: Path) -> None:
 
 
 def _job_destination(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path | None]:
-    owner = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
-    store = ((item.get("renditions") or {}).get("store") or "with-server") if ready_slots(item) else effective_preview_store(owner, _current_settings(root))
-    folder = store_dir(store, owner, root, item["id"])
-    return store, None if folder is None else folder / slot_filename(slot)
+    store, dest, _relative = slot_target(root, item, slot)
+    return store, dest
 
 
 def _source_signature(path: Path) -> tuple[int, int, int]:
@@ -1098,13 +1197,17 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
                         pass
                 outcomes = {paired_slot: "error" for paired_slot in pair_slots}
             else:
-                publish_ready_slots(root, item_id, pair_slots, store)
+                publish_ready_slots(
+                    root, item_id,
+                    {paired_slot: slot_target(root, current, paired_slot)[2] for paired_slot in pair_slots},
+                    store,
+                )
         elif len(pair_slots) == 1:
             outcome = outcomes[slot]
             if outcome == "ready":
                 os.replace(stages[slot], dest)
             if outcome in {"ready", "existing"}:
-                publish_ready(root, item_id, slot, slot_relative(store, item_id, slot), store)
+                publish_ready(root, item_id, slot, slot_target(root, current, slot)[2], store)
             elif outcome == "not-applicable":
                 dest.unlink(missing_ok=True)
                 publish_not_applicable(root, item_id, slot)
@@ -1184,7 +1287,7 @@ def relocate(root: Path) -> dict[str, bool]:
         if item is None:
             continue
         slots = ready_slots(item)
-        if not slots:
+        if not slots or (item.get("renditions") or {}).get("store") == FOLDER_STORE:
             continue
         owner_id = (item.get("renditions") or {}).get("sourceId")
         owner = try_load_source(root, owner_id or "")
