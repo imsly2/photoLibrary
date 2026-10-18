@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
+import time
 import uuid
 from contextlib import nullcontext
 from pathlib import Path
@@ -42,6 +44,28 @@ PLAYBACK_MAXRATE = "2M"
 PLAYBACK_BUFSIZE = "4M"
 PLAYBACK_REMUX_MAX_BYTES = 80 * 1024 * 1024
 _swept_tmp_roots: set[str] = set()
+# One video encode (proxy, else playback) after this many viewer previews,
+# so a long preview backlog cannot postpone the single clip forever.
+_VIDEO_EVERY_PREVIEWS = 6
+last_published_slot: str | None = None
+profile_counters = {
+    "pick_calls": 0,
+    "pick_seconds": 0.0,
+    "encode_calls": 0,
+    "encode_seconds": 0.0,
+}
+
+
+def reset_profile_counters() -> None:
+    global last_published_slot
+    last_published_slot = None
+    for key in profile_counters:
+        profile_counters[key] = 0
+
+
+def _account_encode(started: float) -> None:
+    profile_counters["encode_calls"] += 1
+    profile_counters["encode_seconds"] += time.perf_counter() - started
 
 
 def _settings_caps(root: Path) -> tuple[int, int, int]:
@@ -106,6 +130,14 @@ def _scale_filter(cap: int) -> str:
 
 
 def write_webp(source: Path, dest: Path, cap: int) -> bool:
+    started = time.perf_counter()
+    try:
+        return _write_webp(source, dest, cap)
+    finally:
+        _account_encode(started)
+
+
+def _write_webp(source: Path, dest: Path, cap: int) -> bool:
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
@@ -264,6 +296,14 @@ def should_remux_playback(source: Path) -> bool:
 
 def write_playback(source: Path, dest: Path) -> str:
     """Write size-capped H.264+AAC MP4. Returns ready|not-applicable|error."""
+    started = time.perf_counter()
+    try:
+        return _write_playback(source, dest)
+    finally:
+        _account_encode(started)
+
+
+def _write_playback(source: Path, dest: Path) -> str:
     dest.parent.mkdir(parents=True, exist_ok=True)
     cleanup_tmp_siblings(dest)
     if browser_safe_mp4(source):
@@ -326,6 +366,14 @@ def write_playback(source: Path, dest: Path) -> str:
 
 
 def write_proxy(source: Path, dest: Path, cap: int) -> bool:
+    started = time.perf_counter()
+    try:
+        return _write_proxy(source, dest, cap)
+    finally:
+        _account_encode(started)
+
+
+def _write_proxy(source: Path, dest: Path, cap: int) -> bool:
     args = [
         "ffmpeg",
         "-y",
@@ -529,31 +577,125 @@ def copy_verified(src: Path, dest: Path) -> None:
         raise fail("io-error") from exc
 
 
+def note_wanted(root: Path, item_id: str) -> None:
+    """Viewer opened this item. The next drain step does its preview first."""
+    from library.item_index import note_wanted as remember
+
+    remember(root, item_id)
+
+
+def _ready_preview_sibling(dest: Path) -> Path | None:
+    """Thumb can be a downscale of a preview ffmpeg already oriented."""
+    if dest.name != "thumb.webp":
+        return None
+    preview = dest.with_name("preview.webp")
+    try:
+        if preview.is_file() and preview.stat().st_size > 0:
+            return preview
+    except OSError:
+        return None
+    return None
+
+
+def _job_if_ready(
+    root: Path,
+    item: dict[str, Any],
+    slot: str,
+    caps: dict[str, int],
+) -> tuple[str, str, Path, int] | None:
+    item_id = item.get("id")
+    if type(item_id) is not str or not item_id or item_id.startswith("pending-"):
+        return None
+    source = (
+        _primary_still_path(item, root)
+        if slot in STILL_SLOTS
+        else _primary_motion_path(item, root)
+    )
+    suffixes = PHOTO_SUFFIXES if slot in STILL_SLOTS else VIDEO_SUFFIXES
+    if source is None or file_suffix(source) not in suffixes:
+        return None
+    return item_id, slot, source, caps[slot]
+
+
 def next_rendition_job(root: Path, *, grid_only: bool = False) -> tuple[str, str, Path, int] | None:
+    profile_counters["pick_calls"] += 1
+    started = time.perf_counter()
+    try:
+        return _next_rendition_job(root, grid_only=grid_only)
+    finally:
+        profile_counters["pick_seconds"] += time.perf_counter() - started
+
+
+def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path, int] | None:
+    from library.item_index import resync, wanted_ids
+
     thumb_px, preview_px, proxy_width = _settings_caps(root)
-    caps = {"thumb": thumb_px, "poster": thumb_px, "preview": preview_px,
-            "proxy": proxy_width, "playback": 0}
-    # Rank across the whole catalog: every grid still precedes long video work.
-    later = None
-    for item_id in iter_item_ids(root):
-        if item_id.startswith("pending-"):
+    caps = {
+        "thumb": thumb_px,
+        "poster": thumb_px,
+        "preview": preview_px,
+        "proxy": proxy_width,
+        "playback": 0,
+    }
+    cache = resync(root)
+
+    def take(item_id: str, slot: str) -> tuple[str, str, Path, int] | None:
+        if item_id not in cache.queued.get(slot, ()):
+            return None
+        item = cache.items.get(item_id)
+        if item is None:
+            return None
+        return _job_if_ready(root, item, slot, caps)
+
+    # A picture opened in the viewer gets its 1600px preview on the next step,
+    # including while thumbs are queued and while a scan is still running.
+    for item_id in wanted_ids(root):
+        item = cache.items.get(item_id)
+        if item is None:
             continue
-        item = load_item(root, item_id)
-        status = (item.get("renditions") or {}).get("status") or {}
-        for slot in ("thumb", "poster", "preview", "proxy", "playback"):
-            if status.get(slot) != "queued":
-                continue
-            source = (_primary_still_path(item, root) if slot in STILL_SLOTS
-                      else _primary_motion_path(item, root))
-            suffixes = PHOTO_SUFFIXES if slot in STILL_SLOTS else VIDEO_SUFFIXES
-            if source is None or file_suffix(source) not in suffixes:
-                continue
-            job = item_id, slot, source, caps[slot]
-            if slot in {"thumb", "poster"}:
+        if item.get("kind") == "video":
+            slots = ("poster",) if grid_only else ("poster", "proxy", "playback")
+        else:
+            slots = ("preview",)
+        for slot in slots:
+            job = take(item_id, slot)
+            if job is not None:
                 return job
-            if later is None or (slot == "preview" and later[1] != "preview"):
-                later = job
-    return None if grid_only else later
+
+    for slot in ("thumb", "poster"):
+        for item_id in list(cache.queued[slot]):
+            job = take(item_id, slot)
+            if job is not None:
+                return job
+    if grid_only:
+        return None
+
+    video_waiting = bool(cache.queued["proxy"] or cache.queued["playback"])
+    if video_waiting and cache.since_video >= _VIDEO_EVERY_PREVIEWS:
+        for slot in ("proxy", "playback"):
+            for item_id in list(cache.queued[slot]):
+                job = take(item_id, slot)
+                if job is not None:
+                    return job
+
+    for slot in ("preview", "proxy", "playback"):
+        for item_id in list(cache.queued[slot]):
+            job = take(item_id, slot)
+            if job is not None:
+                return job
+    return None
+
+
+def _note_fairness(root: Path, slot: str) -> None:
+    from library.item_index import _caches, root_key
+
+    cache = _caches.get(root_key(root))
+    if cache is None:
+        return
+    if slot == "preview":
+        cache.since_video += 1
+    elif slot in {"proxy", "playback"}:
+        cache.since_video = 0
 
 
 def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
@@ -603,10 +745,7 @@ def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str
     rend["status"][slot] = "ready"
     rend["store"] = store
     after = ordered_item(after)
-    transact(
-        root,
-        [{"path": item_rel(item_id), "before": before, "after": after}],
-    )
+    _publish_change(root, item_rel(item_id), before, after)
 
 
 def publish_error(root: Path, item_id: str, slot: str) -> None:
@@ -626,10 +765,55 @@ def publish_slot_status(root: Path, item_id: str, slot: str, status: str, relati
     rend[slot] = relative
     rend["status"][slot] = status
     after = ordered_item(after)
-    transact(
-        root,
-        [{"path": item_rel(item_id), "before": before, "after": after}],
-    )
+    _publish_change(root, item_rel(item_id), before, after)
+
+
+_pending_mirrors: dict[str, list[dict[str, Any]]] = {}
+
+
+def _publish_change(root: Path, relative: str, before: dict[str, Any], after: dict[str, Any]) -> None:
+    """Replace one item file. The temp is fsynced before the replace.
+
+    One file, no transaction manifest. The portable copy waits until the
+    rendition queue is idle. `before` is unused; callers still pass it so the
+    publication site reads as a before/after edit.
+    """
+    del before
+    from library.atomic import atomic_write_json
+    from library.item_index import remember_write, root_key
+
+    atomic_write_json(library_path(root, relative), after, sync=True)
+    item_id = after.get("id")
+    if type(item_id) is str:
+        remember_write(root, item_id, after)
+    _pending_mirrors.setdefault(root_key(root), []).append(after)
+
+
+def settle_rendition_publications(root: Path) -> None:
+    """Copy published items into portable folders once the rendition queue is idle.
+
+    Item bytes are already durable. This uses portable.mirror_changes for the
+    records written since the last idle point, then portable.flush for each
+    folder's source snapshot.
+    """
+    from library.item_index import root_key
+    from library.portable import flush, mirror_changes
+
+    remembered = _pending_mirrors.pop(root_key(root), [])
+    changes: list[dict[str, Any]] = []
+    for item in remembered:
+        item_id = item.get("id")
+        if type(item_id) is str:
+            changes.append({"path": item_rel(item_id), "before": None, "after": item})
+    if changes:
+        try:
+            mirror_changes(root, changes)
+        except Exception:
+            pass
+    try:
+        flush(root)
+    except Exception:
+        pass
 
 
 def _clear_empty(path: Path) -> None:
@@ -654,11 +838,16 @@ def _source_signature(path: Path) -> tuple[int, int, int]:
 
 def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -> bool:
     """Caller serializes catalog access; only detached encoding releases its lock."""
+    global last_published_slot
+    last_published_slot = None
     sweep_library_rendition_tmps(root)
     job = next_rendition_job(root, grid_only=grid_only)
     if job is None:
+        settle_rendition_publications(root)
         return False
     item_id, slot, source, cap = job
+    last_published_slot = slot
+    _note_fairness(root, slot)
     item = try_load_item(root, item_id)
     if item is None:
         return False
@@ -693,7 +882,14 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
                     outcome = write_playback(source, stage)
                 else:
                     writer = write_proxy if slot == "proxy" else write_webp
-                    outcome = "ready" if writer(source, stage, cap) else "error"
+                    encode_source = source
+                    # A viewer preview is already oriented. Scaling that webp
+                    # avoids a second full decode of the original JPEG.
+                    if slot == "thumb" and writer is write_webp:
+                        sibling = _ready_preview_sibling(dest)
+                        if sibling is not None:
+                            encode_source = sibling
+                    outcome = "ready" if writer(encode_source, stage, cap) else "error"
             except OSError:
                 outcome = "error"
         current = try_load_item(root, item_id)

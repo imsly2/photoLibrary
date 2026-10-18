@@ -339,43 +339,78 @@ class Library:
         source = convert_linked_source(self.root, source_id)
         return source_read(source, self.root)
 
-    def sources_list(self) -> list[dict[str, Any]]:
+    def read_ready(self, *, finish_pending: bool = True) -> None:
+        """Catalog recovery that writers also need. Call this under the server lock."""
+        if finish_pending:
+            self.recover()
+        else:
+            self.recover(finish_pending=False)
+        self.ensure_settings()
+
+    def snapshot_catalog(self) -> dict[str, Any]:
+        """Cheap consistent view. Call under the server lock, then build outside it."""
+        from library.favorites import favorite_ids
+        from library.item_index import iter_items
+        from library.recent import load_recent_ids
+        from library.read_cache import install_path_checks
+
+        install_path_checks()
+        self.recover()
+        settings = dict(self.ensure_settings())
+        return {
+            "settings": settings,
+            "items": list(iter_items(self.root)),
+            "marked": favorite_ids(self.root),
+            "recent": list(load_recent_ids(self.root)),
+            "paused": bool(getattr(self, "_jobs_paused", False)),
+        }
+
+    def snapshot_sources(self) -> list[dict[str, Any]]:
         self.recover()
         self.ensure_settings()
-        return [source_read(load_source(self.root, source_id), self.root) for source_id in iter_source_ids(self.root)]
+        return [load_source(self.root, source_id) for source_id in iter_source_ids(self.root)]
 
-    def items_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
-        self.recover()
-        settings = self.ensure_settings()
+    def sources_from_snapshot(self, sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [source_read(source, self.root) for source in sources]
+
+    def sources_list(self) -> list[dict[str, Any]]:
+        return self.sources_from_snapshot(self.snapshot_sources())
+
+    def items_from_snapshot(
+        self,
+        snap: dict[str, Any],
+        query: dict[str, str] | None = None,
+    ) -> list[dict[str, Any]]:
+        from library.read_cache import cached_item_read
+        from library.stacks import annotate_stacks
+
         query = query or {}
         extra = set(query) - ITEM_QUERY_KEYS
         if extra:
             raise fail("invalid-argument")
-        from library.favorites import favorite_ids
-        from library.recent import load_recent_ids
-
-        marked = favorite_ids(self.root)
-        items = [
-            item_read(load_item(self.root, item_id), self.root, marked)
-            for item_id in iter_item_ids(self.root)
-        ]
+        settings = snap["settings"]
+        marked = snap["marked"]
+        items = [cached_item_read(item, self.root, marked) for item in snap["items"]]
         items = [item for item in items if _item_visible(item, settings, query)]
         items = [item for item in items if _item_matches(item, query)]
         items = [_attach_search_hint(item, query) for item in items]
         if "recent" in query:
             if query.get("recent") != "1":
                 raise fail("invalid-argument")
-            allowed = set(load_recent_ids(self.root))
+            allowed = set(snap["recent"])
             items = [item for item in items if item.get("id") in allowed]
-        from library.stacks import annotate_stacks
-
         return annotate_stacks(_sort_items(items, query, settings))
 
-    def duplicates_list(self) -> dict[str, Any]:
+    def items_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        return self.items_from_snapshot(self.snapshot_catalog(), query)
+
+    def duplicates_from_snapshot(self, snap: dict[str, Any]) -> dict[str, Any]:
         from library.duplicates import list_duplicate_groups
 
-        items = self.items_list({})
-        return {"groups": list_duplicate_groups(items)}
+        return {"groups": list_duplicate_groups(self.items_from_snapshot(snap, {}))}
+
+    def duplicates_list(self) -> dict[str, Any]:
+        return self.duplicates_from_snapshot(self.snapshot_catalog())
 
     def set_favorite(self, item_id: str, favorite: bool) -> dict[str, Any]:
         from library.favorites import set_item_favorite
@@ -391,14 +426,21 @@ class Library:
         self.ensure_settings()
         return set_items_favorite(self.root, item_ids, favorite)
 
-    def places_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
-        self.recover()
-        settings = self.ensure_settings()
+    def places_list(
+        self,
+        query: dict[str, str] | None = None,
+        snap: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
+        from library.read_cache import cached_item_read
+
+        if snap is None:
+            snap = self.snapshot_catalog()
+        settings = snap["settings"]
         query = query or {}
         extra = set(query) - {"unavailable"}
         if extra:
             raise fail("invalid-argument")
-        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        items = [cached_item_read(item, self.root, snap["marked"]) for item in snap["items"]]
         items = [item for item in items if _item_visible(item, settings, query)]
         by_place: dict[str, list[dict[str, Any]]] = {}
         for item in items:
@@ -432,15 +474,22 @@ class Library:
         out.sort(key=lambda rec: rec["id"])
         return out
 
-    def globe_tour(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
-        self.recover()
-        settings = self.ensure_settings()
+    def globe_tour(
+        self,
+        query: dict[str, str] | None = None,
+        snap: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
+        from library.read_cache import cached_item_read
+
+        if snap is None:
+            snap = self.snapshot_catalog()
+        settings = snap["settings"]
         query = query or {}
         extra = set(query) - {"unavailable"}
         if extra:
             raise fail("invalid-argument")
         cap = settings["tourPictures"]
-        items = [item_read(load_item(self.root, item_id), self.root) for item_id in iter_item_ids(self.root)]
+        items = [cached_item_read(item, self.root, snap["marked"]) for item in snap["items"]]
         items = [item for item in items if _item_visible(item, settings, query)]
         places_by_id = {place["id"]: place for place in load_places(self.root)}
         by_place: dict[str, list[dict[str, Any]]] = {}
@@ -478,7 +527,11 @@ class Library:
         decorated.sort(key=lambda row: row[0], reverse=True)
         return [row[2] for row in decorated]
 
-    def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+    def groups_from_snapshot(
+        self,
+        snap: dict[str, Any],
+        query: dict[str, str] | None = None,
+    ) -> list[dict[str, Any]]:
         query = dict(query or {})
         extra = set(query) - ITEM_QUERY_KEYS - {"level", "by"}
         if extra:
@@ -488,19 +541,23 @@ class Library:
             raise fail("invalid-argument")
         if by != "date":
             query.pop("level", None)
-            return groups_from_entities(self.items_list(query), by)
+            return groups_from_entities(self.items_from_snapshot(snap, query), by)
         level = query.pop("level", None)
         if level not in LEVELS:
             raise fail("invalid-argument")
-        items = self.items_list(query)
-        return groups_from_items(items, level)
+        return groups_from_items(self.items_from_snapshot(snap, query), level)
 
-    def tags_list(self) -> dict[str, Any]:
+    def groups_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
+        return self.groups_from_snapshot(self.snapshot_catalog(), query)
+
+    def tags_built(self, _snap: Any = None) -> dict[str, Any]:
         from library.tags import tags_index
 
-        self.recover()
-        self.ensure_settings()
         return tags_index(self.root)
+
+    def tags_list(self) -> dict[str, Any]:
+        self.read_ready()
+        return self.tags_built()
 
     def tags_create(self, payload: Any) -> dict[str, Any]:
         from library.tags import create_tag
@@ -657,19 +714,23 @@ class Library:
         self._assert_idle()
         return apply_people_split(self.root, person_id, item_id, box)
 
-    def people_list(self) -> dict[str, Any]:
+    def people_built(self, _snap: Any = None) -> dict[str, Any]:
         from library.people_panel import people_index
 
-        self.recover()
-        self.ensure_settings()
         return people_index(self.root)
 
-    def people_suggestions(self) -> dict[str, Any]:
+    def people_list(self) -> dict[str, Any]:
+        self.read_ready()
+        return self.people_built()
+
+    def suggestions_built(self, _snap: Any = None) -> dict[str, Any]:
         from library.people_suggest import people_suggestions
 
-        self.recover()
-        self.ensure_settings()
         return people_suggestions(self.root)
+
+    def people_suggestions(self) -> dict[str, Any]:
+        self.read_ready()
+        return self.suggestions_built()
 
     def people_not_same(self, a: str, b: str) -> dict[str, Any]:
         from library.people_suggest import remember_not_same
@@ -685,12 +746,13 @@ class Library:
         self.ensure_settings()
         return apply_person_update(self.root, person_id, payload)
 
-    def jobs_get(self) -> dict[str, Any]:
+    def jobs_from_snapshot(self, snap: dict[str, Any]) -> dict[str, Any]:
         from library.jobs import jobs_status
 
-        self.recover()
-        self.ensure_settings()
-        return jobs_status(self.root, getattr(self, "_jobs_paused", False))
+        return jobs_status(self.root, bool(snap.get("paused")), snap.get("items"))
+
+    def jobs_get(self) -> dict[str, Any]:
+        return self.jobs_from_snapshot(self.snapshot_catalog())
 
     def jobs_set(self, payload: dict[str, Any]) -> dict[str, Any]:
         from library.jobs import jobs_status, read_jobs_action
@@ -773,12 +835,15 @@ class Library:
         item_id = parsed["itemId"] if parsed else None
         return analyze_objects(self.root, item_id)
 
-    def analyze_status(self) -> dict[str, Any]:
+    def analyze_built(self, snap: dict[str, Any] | None = None) -> dict[str, Any]:
         from library.objects import analyze_status
 
-        self.recover(finish_pending=False)
-        self.ensure_settings()
-        return analyze_status(self.root)
+        items = None if snap is None else snap.get("items")
+        return analyze_status(self.root, items)
+
+    def analyze_status(self) -> dict[str, Any]:
+        self.read_ready(finish_pending=False)
+        return self.analyze_built()
 
     def transcribe(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         from library.transcribe import read_transcribe_payload, transcribe_videos
@@ -788,12 +853,14 @@ class Library:
         parsed = read_transcribe_payload(payload)
         return transcribe_videos(self.root, parsed.get("itemId"), force=bool(parsed.get("force")))
 
-    def transcribe_status(self) -> dict[str, Any]:
+    def transcribe_built(self, _snap: Any = None) -> dict[str, Any]:
         from library.transcribe import transcribe_status
 
-        self.recover(finish_pending=False)
-        self.ensure_settings()
         return transcribe_status(self.root)
+
+    def transcribe_status(self) -> dict[str, Any]:
+        self.read_ready(finish_pending=False)
+        return self.transcribe_built()
 
     def rate_photos(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         from library.rating import rate_photos, read_rate_payload
@@ -803,12 +870,14 @@ class Library:
         parsed = read_rate_payload(payload)
         return rate_photos(self.root, parsed.get("itemId"), force=bool(parsed.get("force")))
 
-    def rate_status(self) -> dict[str, Any]:
+    def rate_built(self, _snap: Any = None) -> dict[str, Any]:
         from library.rating import rate_status
 
-        self.recover(finish_pending=False)
-        self.ensure_settings()
         return rate_status(self.root)
+
+    def rate_status(self) -> dict[str, Any]:
+        self.read_ready(finish_pending=False)
+        return self.rate_built()
 
     def set_rating(self, item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         from library.rating import apply_user_rating, read_user_rating_body

@@ -1,0 +1,59 @@
+{
+  "label": "drain-after-400",
+  "fixture": {
+    "jpg": 400,
+    "mov": 1,
+    "source": "J:\\Pictures\\1. Favorites Pictures",
+    "copy": "J:\\slyOS\\projects\\photoLibrary\\.qa\\agent-drain\\pictures"
+  },
+  "scan": {
+    "files": 401,
+    "seconds": 64.04,
+    "filesPerSecond": 6.26,
+    "perFileMeanFirstTenth": 0.0934,
+    "perFileMeanLastTenth": 0.1393,
+    "lastToFirst": 1.492,
+    "jsonFilesWritten": 1462,
+    "jsonMBWritten": 16.39,
+    "jsonKBPerFile": 40.9,
+    "profiled": false,
+    "stages": {}
+  },
+  "drain": {
+    "steps": 803,
+    "seconds": 259.91,
+    "perSlotMeanSeconds": {
+      "thumb": 0.19,
+      "poster": 0.203,
+      "preview": 0.437,
+      "proxy": 0.551,
+      "playback": 1.405
+    },
+    "perSlotCount": {
+      "thumb": 400,
+      "poster": 1,
+      "preview": 400,
+      "proxy": 1,
+      "playback": 1
+    },
+    "jsonFilesWritten": 1606,
+    "jsonMBWritten": 2.72,
+    "stages": {},
+    "counters": {
+      "pickCalls": 804,
+      "pickSeconds": 0.899,
+      "pickMeanSeconds": 0.0011,
+      "encodeCalls": 803,
+      "encodeSeconds": 239.927,
+      "driveScans": 0,
+      "driveScanSeconds": 0,
+      "catalogResyncs": 804,
+      "catalogParses": 401,
+      "catalogScandirs": 101,
+      "bookkeepingMsPerFile": 32.0
+    }
+  },
+  "undoEntryBytes": [
+    998822
+  ]
+}

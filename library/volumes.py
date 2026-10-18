@@ -6,6 +6,7 @@ import json
 import os
 import sys
 import threading
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,18 @@ from library.errors import fail
 from library.paths import normalize_root
 
 _volume_lookup_context = threading.local()
+_process_lock = threading.Lock()
+# serial -> (mount or None, monotonic time). Positive hits stay until a
+# cheap revalidation fails. Negative hits expire so a newly attached drive
+# is noticed without scanning every lookup.
+_process_mounts: dict[str, tuple[Path | None, float]] = {}
+_NEGATIVE_TTL_S = 2.0
+profile_counters = {"drive_scans": 0, "drive_scan_seconds": 0.0}
+
+
+def reset_profile_counters() -> None:
+    for key in profile_counters:
+        profile_counters[key] = 0
 
 
 @contextmanager
@@ -128,11 +141,12 @@ def resolve_volume_mount(serial: str) -> Path | None:
         return normalize_root(mount)
     if serial.startswith("windows:") and os.name == "nt":
         cache = getattr(_volume_lookup_context, "mounts", None)
-        if cache is None:
-            return _windows_mount_for_serial(serial)
-        if serial not in cache:
-            cache[serial] = _windows_mount_for_serial(serial)
-        return cache[serial]
+        if cache is not None:
+            if serial not in cache:
+                cache[serial] = _windows_mount_for_serial(serial)
+                _remember_process_mount(serial, cache[serial])
+            return cache[serial]
+        return _process_mount(serial)
     if serial.startswith("linux:") and os.name != "nt":
         mount = Path(serial[len("linux:") :])
         if mount.exists():
@@ -146,7 +160,65 @@ def resolve_volume_mount(serial: str) -> Path | None:
     return None
 
 
+def _remember_process_mount(serial: str, mount: Path | None) -> None:
+    with _process_lock:
+        _process_mounts[serial] = (mount, time.monotonic())
+
+
+def _process_mount(serial: str) -> Path | None:
+    now = time.monotonic()
+    with _process_lock:
+        row = _process_mounts.get(serial)
+    if row is not None:
+        mount, seen = row
+        if mount is not None or now - seen < _NEGATIVE_TTL_S:
+            return mount
+    found = _windows_mount_for_serial(serial)
+    _remember_process_mount(serial, found)
+    return found
+
+
+def _mount_reports_serial(mount: Path, serial: str) -> bool:
+    try:
+        found, _mount = windows_volume(mount)
+    except Exception:
+        return False
+    return found == serial
+
+
+def _refresh_stale_mount(serial: str) -> bool:
+    """Full drive scan only when the cached letter no longer has this serial."""
+    if load_test_volumes() is not None:
+        return False
+    if not serial.startswith("windows:") or os.name != "nt":
+        return False
+    with _process_lock:
+        row = _process_mounts.get(serial)
+    if row is None or row[0] is None:
+        return False
+    if _mount_reports_serial(row[0], serial):
+        return False
+    with _process_lock:
+        _process_mounts.pop(serial, None)
+    scope = getattr(_volume_lookup_context, "mounts", None)
+    if scope is not None:
+        scope.pop(serial, None)
+    return True
+
+
 def _windows_mount_for_serial(serial: str) -> Path | None:
+    import ctypes
+    import string
+
+    started = time.perf_counter()
+    profile_counters["drive_scans"] += 1
+    try:
+        return _windows_mount_for_serial_uncounted(serial)
+    finally:
+        profile_counters["drive_scan_seconds"] += time.perf_counter() - started
+
+
+def _windows_mount_for_serial_uncounted(serial: str) -> Path | None:
     import ctypes
     import string
 
@@ -178,6 +250,22 @@ def volume_file_path(serial: str, path_from_volume_root: str) -> Path | None:
 
 
 def location_file(location: dict[str, Any], library_root: Path) -> Path | None:
+    path = _location_file_once(location, library_root)
+    if path is None or location.get("kind") == "library-relative":
+        return path
+    try:
+        present = path.is_file()
+    except OSError:
+        present = False
+    if present:
+        return path
+    serial = location.get("volumeSerial")
+    if type(serial) is not str or not _refresh_stale_mount(serial):
+        return path
+    return _location_file_once(location, library_root)
+
+
+def _location_file_once(location: dict[str, Any], library_root: Path) -> Path | None:
     if location.get("kind") == "library-relative":
         rel = location.get("libraryRelativePath")
         if type(rel) is not str:
@@ -228,7 +316,49 @@ def source_available(source: dict[str, Any], library_root: Path) -> bool:
     return path is not None and path.exists()
 
 
+_AVAIL_TTL_S = 2.0
+_avail_cache: dict[tuple[Any, ...], tuple[float, bool]] = {}
+
+
+def _availability_key(item: dict[str, Any], component: str) -> tuple[Any, ...]:
+    locs = []
+    for loc in item.get("locations") or []:
+        if loc.get("current") is not True or loc.get("component") != component:
+            continue
+        locs.append(
+            (
+                loc.get("sourceId"),
+                loc.get("role"),
+                loc.get("pathFromVolumeRoot"),
+                loc.get("libraryRelativePath"),
+                loc.get("sizeBytes"),
+                loc.get("mtimeNs"),
+            )
+        )
+    return (item.get("id"), component, tuple(locs))
+
+
 def item_component_available(
+    item: dict[str, Any],
+    component: str,
+    library_root: Path,
+) -> bool:
+    key = _availability_key(item, component)
+    now = time.monotonic()
+    hit = _avail_cache.get(key)
+    if hit is not None and now - hit[0] < _AVAIL_TTL_S:
+        return hit[1]
+    result = _item_component_available(item, component, library_root)
+    _avail_cache[key] = (now, result)
+    if len(_avail_cache) > 8000:
+        cutoff = now - _AVAIL_TTL_S
+        for old, (seen, _value) in list(_avail_cache.items()):
+            if seen < cutoff:
+                _avail_cache.pop(old, None)
+    return result
+
+
+def _item_component_available(
     item: dict[str, Any],
     component: str,
     library_root: Path,

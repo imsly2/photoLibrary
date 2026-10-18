@@ -345,23 +345,32 @@ def rate_status(root: Path) -> dict[str, Any]:
     }
 
 
-def rate_counts(root: Path) -> tuple[int, int, int]:
+def rate_counts(root: Path, items: list[dict[str, Any]] | None = None) -> tuple[int, int, int]:
+    """Count from quality records. The worker still checks the original file."""
+    from library.item_index import iter_item_ids as cached_ids
+    from library.item_index import load_item as cached_item
+
     pending = 0
     done = 0
     error = 0
     enabled = rating_enabled(root)
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
+    if items is None:
+        rows = [cached_item(root, item_id) for item_id in cached_ids(root)]
+    else:
+        rows = items
+    for item in rows:
         if not _photo_like(item):
             continue
-        still = _current_still_file(item, root)
-        if still is None:
+        if not any(
+            loc.get("current") is True and loc.get("component") == "still"
+            for loc in item.get("locations") or []
+        ):
             continue
         rec = item.get("quality")
         if isinstance(rec, dict) and rec.get("status") == "error":
             error += 1
             continue
-        if _already_scored(item, still):
+        if isinstance(rec, dict) and rec.get("status") == "ready":
             done += 1
         elif enabled:
             pending += 1

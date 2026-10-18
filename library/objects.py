@@ -12,7 +12,8 @@ from typing import Any
 
 from library.annotate import apply_annotate, normalize_name
 from library.atomic import atomic_write_bytes, atomic_write_json, load_json
-from library.catalog_io import iter_item_ids, load_item, try_load_thing
+from library.catalog_io import try_load_thing
+from library.item_index import iter_item_ids, load_item
 from library.errors import fail
 from library.media import ffprobe_json, sha256_file
 from library.renditions import rendition_abs
@@ -159,20 +160,23 @@ def read_analyze_payload(value: Any) -> dict[str, str] | None:
     return {"itemId": item_id}
 
 
-def analyze_status(root: Path) -> dict[str, Any]:
+def analyze_status(root: Path, items: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     installed = model_installed(root)
     state = _load_state(root)
     pending = 0
     if installed:
-        for item_id in iter_item_ids(root):
-            item = load_item(root, item_id)
-            still = _still_for_detect(item, root)
-            if still is None:
+        recorded = state.get("items") or {}
+        if items is None:
+            rows = [(item_id, load_item(root, item_id)) for item_id in iter_item_ids(root)]
+        else:
+            rows = [(item.get("id"), item) for item in items]
+        for item_id, item in rows:
+            if item.get("kind") not in {"photo", "live"}:
                 continue
             # Catalog IDs are immutable content hashes. Status only needs to
             # know whether this ID has a recorded analysis; the worker keeps
             # verifying source bytes before deciding whether to re-analyze.
-            record = (state.get("items") or {}).get(item_id)
+            record = recorded.get(item_id) if isinstance(recorded, dict) else None
             if not isinstance(record, dict) or not record.get("sha256"):
                 pending += 1
     return {

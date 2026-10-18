@@ -3310,6 +3310,75 @@
     return status.preview === "ready";
   }
 
+  function hintWanted(itemId) {
+    if (!itemId) {
+      return;
+    }
+    fetch("/api/items/" + encodeURIComponent(itemId) + "/want", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).catch(function () {});
+  }
+
+  function adoptReadyViewerStill(item) {
+    if (!item || viewer.hidden || viewerItemId !== item.id || item.kind === "video") {
+      return;
+    }
+    if (!stillPreviewReady(item)) {
+      return;
+    }
+    const url = "/api/media/" + encodeURIComponent(item.id) + "?which=preview";
+    if (viewerImage.getAttribute("src") === url && viewerImage.complete && viewerImage.naturalWidth > 0) {
+      return;
+    }
+    showViewerPlaceholder(false);
+    viewerImage.hidden = false;
+    fitOnLoad = !naturalW;
+    viewerImage.onload = function () {
+      if (viewerItemId !== item.id || viewer.hidden) {
+        return;
+      }
+      showViewerPlaceholder(false);
+      viewerImage.hidden = false;
+      naturalW = viewerImage.naturalWidth;
+      naturalH = viewerImage.naturalHeight;
+      if (fitOnLoad) {
+        applyFitMode();
+        fitOnLoad = false;
+      }
+      loadViewerOriginal(item);
+    };
+    viewerImage.onerror = function () {
+      if (viewerItemId !== item.id) {
+        return;
+      }
+      viewerImage.removeAttribute("src");
+      showViewerPlaceholder(true);
+    };
+    viewerImage.src = url;
+    viewerImage.setAttribute("data-which", "preview");
+  }
+
+  function watchViewerStill(itemId) {
+    let tries = 0;
+    function tick() {
+      if (viewer.hidden || viewerItemId !== itemId) {
+        return;
+      }
+      const item = findItemById(itemId);
+      if (item && stillPreviewReady(item)) {
+        adoptReadyViewerStill(item);
+        return;
+      }
+      tries += 1;
+      if (tries < 12) {
+        window.setTimeout(tick, 200);
+      }
+    }
+    window.setTimeout(tick, 200);
+  }
+
   function showRevealFailed() {
     unavailableBanner.hidden = false;
     if (revealError) {
@@ -4224,8 +4293,10 @@
     viewerImage.draggable = false;
     rotation = 0;
     if (!stillPreviewReady(item)) {
+      hintWanted(item.id);
       viewerImage.removeAttribute("src");
       showViewerPlaceholder(true);
+      watchViewerStill(item.id);
       if (item.available !== false) {
         loadViewerOriginal(item);
       }
@@ -4285,6 +4356,7 @@
     viewerItemId = item.id;
     viewer.hidden = false;
     rotation = 0;
+    hintWanted(item.id);
     if (!stillPreviewReady(item)) {
       showViewerPlaceholder(true);
       viewerVideo.hidden = true;
@@ -6210,6 +6282,8 @@
         syncViewerChrome(open);
         if (open.kind === "video" || open.kind === "live") {
           maybePromoteFullSource(open);
+        } else {
+          adoptReadyViewerStill(open);
         }
       } else if (!viewer.hidden) {
         syncNavChrome();

@@ -194,6 +194,14 @@ class LibraryHandler(BaseHTTPRequestHandler):
         ):
             raise fail("busy")
 
+    def _catalog_read(self, route: str, snapshot, build) -> None:
+        """Take a consistent snapshot under the catalog lock, then build outside it."""
+        from library.lock_trace import Hold
+
+        with Hold(self.lock, route):
+            snap = snapshot()
+        self._send_json(200, build(snap))
+
     def _yield_scan(self) -> None:
         self.lock.release()
         try:
@@ -291,8 +299,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 )
                 return
             if route == "/api/settings" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.settings_get())
+                self._catalog_read("/api/settings", self.library.settings_get, lambda body: body)
                 return
             if route == "/api/settings" and method == "PUT":
                 patch = self._read_json()
@@ -312,8 +319,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.redo())
                 return
             if route == "/api/sources" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.sources_list())
+                self._catalog_read(
+                    "/api/sources",
+                    self.library.snapshot_sources,
+                    self.library.sources_from_snapshot,
+                )
                 return
             if route == "/api/sources" and method == "POST":
                 body = self._read_json()
@@ -438,12 +448,18 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
-                with self.lock:
-                    self._send_json(200, self.library.items_list(query))
+                self._catalog_read(
+                    "/api/items",
+                    self.library.snapshot_catalog,
+                    lambda snap: self.library.items_from_snapshot(snap, query),
+                )
                 return
             if route == "/api/duplicates" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.duplicates_list())
+                self._catalog_read(
+                    "/api/duplicates",
+                    self.library.snapshot_catalog,
+                    self.library.duplicates_from_snapshot,
+                )
                 return
             if route == "/api/items/tags" and method == "POST":
                 body = self._read_json()
@@ -475,8 +491,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.move_items(body))
                 return
             if route == "/api/tags" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.tags_list())
+                self._catalog_read(
+                    "/api/tags",
+                    self.library.read_ready,
+                    self.library.tags_built,
+                )
                 return
             if route == "/api/tags" and method == "POST":
                 body = self._read_json()
@@ -491,18 +510,27 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/places" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
-                with self.lock:
-                    self._send_json(200, self.library.places_list(query))
+                self._catalog_read(
+                    "/api/places",
+                    self.library.snapshot_catalog,
+                    lambda snap: self.library.places_list(query, snap),
+                )
                 return
             if route == "/api/globe/tour" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
-                with self.lock:
-                    self._send_json(200, self.library.globe_tour(query))
+                self._catalog_read(
+                    "/api/globe/tour",
+                    self.library.snapshot_catalog,
+                    lambda snap: self.library.globe_tour(query, snap),
+                )
                 return
             if route == "/api/groups" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
-                with self.lock:
-                    self._send_json(200, self.library.groups_list(query))
+                self._catalog_read(
+                    "/api/groups",
+                    self.library.snapshot_catalog,
+                    lambda snap: self.library.groups_from_snapshot(snap, query),
+                )
                 return
             if route == "/api/rebuild-index" and method == "POST":
                 self._read_json()
@@ -517,12 +545,18 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.relocate())
                 return
             if route == "/api/people" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.people_list())
+                self._catalog_read(
+                    "/api/people",
+                    self.library.read_ready,
+                    self.library.people_built,
+                )
                 return
             if route == "/api/people/suggestions" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.people_suggestions())
+                self._catalog_read(
+                    "/api/people/suggestions",
+                    self.library.read_ready,
+                    self.library.suggestions_built,
+                )
                 return
             if route == "/api/people/not-same" and method == "POST":
                 from library.people_suggest import read_not_same_payload
@@ -537,8 +571,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._send_json(200, snapshot())
                 return
             if route == "/api/jobs" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.jobs_get())
+                self._catalog_read(
+                    "/api/jobs",
+                    self.library.snapshot_catalog,
+                    self.library.jobs_from_snapshot,
+                )
                 return
             if route == "/api/jobs" and method == "POST":
                 body = self._read_json()
@@ -546,8 +583,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.jobs_set(body))
                 return
             if route == "/api/analyze" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.analyze_status())
+                self._catalog_read(
+                    "/api/analyze",
+                    lambda: self.library.read_ready(finish_pending=False),
+                    self.library.analyze_built,
+                )
                 return
             if route == "/api/analyze" and method == "POST":
                 body = self._read_json()
@@ -555,8 +595,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.analyze(body))
                 return
             if route == "/api/transcribe" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.transcribe_status())
+                self._catalog_read(
+                    "/api/transcribe",
+                    lambda: self.library.read_ready(finish_pending=False),
+                    self.library.transcribe_built,
+                )
                 return
             if route == "/api/transcribe" and method == "POST":
                 body = self._read_json()
@@ -564,8 +607,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     self._send_json(200, self.library.transcribe(body))
                 return
             if route == "/api/rate" and method in {"GET", "HEAD"}:
-                with self.lock:
-                    self._send_json(200, self.library.rate_status())
+                self._catalog_read(
+                    "/api/rate",
+                    lambda: self.library.read_ready(finish_pending=False),
+                    self.library.rate_built,
+                )
                 return
             if route == "/api/rate" and method == "POST":
                 body = self._read_json()
@@ -747,6 +793,22 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.delete_file(item_id))
                 return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/want")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/want")]
+                if not item_id or "/" in item_id:
+                    raise fail("not-found")
+                body = self._read_json()
+                if not isinstance(body, dict):
+                    raise fail("invalid-argument")
+                from library.renditions import note_wanted
+
+                note_wanted(self.library.root, item_id)
+                self._send_json(200, {"ok": True})
+                return
             if route.startswith("/api/media/") and method in {"GET", "HEAD"}:
                 self._send_media(route, parsed.query)
                 return
@@ -804,16 +866,36 @@ class LibraryHandler(BaseHTTPRequestHandler):
         if not item_id or "/" in item_id:
             raise fail("not-found")
         params = _query_map(query)
-        resolved = self.library.media_resolve(item_id, params)
+        which = params.get("which")
+        try:
+            resolved = self.library.media_resolve(item_id, params)
+        except AppError as exc:
+            if exc.code == "preview-unavailable" and which in {
+                "preview",
+                "poster",
+                "proxy",
+                "playback",
+            }:
+                from library.renditions import note_wanted
+
+                note_wanted(self.library.root, item_id)
+            raise
         path = resolved["path"]
         content_type = resolved["content_type"]
-        which = params.get("which")
         try:
             data = path.read_bytes()
             stat = path.stat()
         except OSError as exc:
+            if which in {"preview", "poster", "proxy", "playback"}:
+                from library.renditions import note_wanted
+
+                note_wanted(self.library.root, item_id)
             raise fail("unavailable" if which == "original" else "preview-unavailable") from exc
         if not data:
+            if which in {"preview", "poster", "proxy", "playback"}:
+                from library.renditions import note_wanted
+
+                note_wanted(self.library.root, item_id)
             raise fail("unavailable" if which == "original" else "preview-unavailable")
         cache_control, etag = _media_cache(which, stat.st_mtime_ns, stat.st_size)
         spec = parse_byte_range(self.headers.get("Range"), len(data))
