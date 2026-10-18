@@ -169,6 +169,10 @@ library-data/
   originals/<source>/    # used when a folder was copied onto this drive
 ```
 
+[F23 — Folder library](#f23--folder-library) replaces the per-folder layout
+described in the rest of this paragraph and in F8 once it ships; until then
+this is what the code does.
+
 When a folder is served from where it is, with previews stored in that
 folder, everything generated for those pictures lives in
 `<that-folder>/.library/`. Renditions are
@@ -571,9 +575,10 @@ unchanged file answers 304 without sending bytes), so a deleted file stops
 showing on the next load instead of living on in the browser cache. Within
 a few seconds Library notices a ready slot whose file is gone, puts it back
 in the queue, Processing counts it as waiting, and the grid shows
-“Creating preview…” until the new file exists. Deleting `.library/` does not
-forget names, faces, places, or ratings on this computer — those live in
-`library-data/catalog/`; the folder copy of those records is written again.
+“Creating preview…” until the new file exists. Until F23 ships, deleting
+`.library/` does not forget names, faces, places, or ratings on this
+computer — those live in `library-data/catalog/` and the folder copy is
+written again. With F23, deleting `.library/` resets that folder (see F23).
 
 **Check (missing previews):** `python -m tests.qa.missing_previews` adds a
 scratch copy of the fixture as serve-from-folder through HTTP, waits until
@@ -1121,6 +1126,91 @@ Add folder matches [library-add-folder.jpg](reference/library-add-folder.jpg).
 
 **Check:** `python -m tests.qa check F22` (planned runner; common root/artifact
 arguments and full assertions in SLICES). Visit all five views and every state in UI-SPEC, including empty/scanning/ready/missing original/missing preview and recoverable errors. Reference extras must be absent. Artifact: inspected screenshots, console and offline network logs.
+
+## F23 — Folder library
+
+Every folder Library knows has one **folder library**: a flat folder whose
+file names say which picture they belong to. For a folder served from where
+it is, it is `<folder>/.library/`. For a folder copied onto this drive it is
+the `.library/` inside the copy under `library-data/originals/`. For a folder
+that cannot be written to (or `previewStore` `with-server`) it is
+`library-data/folders/<folder-name>-<source-id>/`. Same layout everywhere.
+
+```text
+J:\Pictures\Favorites\
+  IMG_0456.JPG
+  IMG_0457.MOV
+  2023\IMG_0001.JPG
+  .library\
+    index.html                  # open in any browser, no app needed
+    index.js                    # the data index.html reads
+    folder.json                 # this folder: id, name, last scan
+    people.json                 # people used in this folder (names, ids)
+    places.json                 # places used in this folder
+    things.json                 # tags/objects used in this folder
+    IMG_0456.JPG.json           # everything known about IMG_0456.JPG
+    IMG_0456.JPG.thumb.webp
+    IMG_0456.JPG.preview.webp
+    IMG_0457.MOV.json
+    IMG_0457.MOV.poster.webp
+    IMG_0457.MOV.proxy.mp4
+    IMG_0457.MOV.playback.mp4   # only when the original will not play in a browser
+    2023\IMG_0001.JPG.json
+    2023\IMG_0001.JPG.thumb.webp
+    2023\IMG_0001.JPG.preview.webp
+```
+
+**Names.** Each generated file is the picture's path inside the folder, with
+its extension, plus a suffix: `.json`, `.thumb.webp`, `.preview.webp`,
+`.poster.webp`, `.proxy.mp4`, `.playback.mp4`. Subfolders are mirrored. A
+Live Photo is named after its still (`IMG_0456.JPG.*`); its `.json` lists
+both files. Folder-level files never end in a picture extension plus suffix,
+so they cannot clash with a picture's files.
+
+**`<name>.json`** is the record for that picture, readable by a person:
+file name, size, modified time, content fingerprint (SHA-256), date taken,
+camera facts, the place by name and coordinates, the people by name with
+face boxes, tags, rating and stars, heart, and processing status. Ids for
+places and people are kept beside the names so the app can link them.
+
+**Where the truth lives.** For its pictures, the folder library is the only
+record. `library-data/` keeps settings, undo, models, logs, the library-wide
+people list (one person across many folders), and `catalog.sqlite`, a speed
+index rebuilt from the folder libraries. Delete a folder's `.library/` and
+that folder starts over: its pictures are read and processed again, and its
+names, faces, places, and ratings are gone. Move the folder, or open it on
+another computer, and everything comes with it.
+
+**Identity.** The fingerprint inside each `.json` is how Library knows a
+picture. Rename or move a picture inside the folder and the next scan finds
+it by fingerprint and renames its generated files to match; nothing is made
+again. The same picture in two folders has a folder library entry in each;
+stars, hearts, and names written to it are written to every copy.
+
+**Migration.** A folder in the old layout (`.library/catalog/` and
+`.library/renditions/<id>/`, or `library-data/catalog/items/`) is moved to
+this layout on first launch after the update, folder by folder: files are
+renamed into place, never regenerated, and the old folders are removed only
+after every file is verified. A crash mid-migration resumes; undo history
+from before the migration stays readable.
+
+**`index.html`.** Opening it from Explorer shows that folder's pictures as a
+grid of thumbs; clicking one shows its preview, date, place, people, and
+rating. It works from `file://`, offline, with no server. It is rewritten
+when processing is idle.
+
+**Check:** `python -m tests.qa.folder_library` on a scratch copy of the
+fixture with a subfolder, a Live Photo pair, a video, and a duplicate in a
+second folder. It asserts: every picture has `<name>.json` and its derived
+files under the names above; no fingerprint-named file or folder exists;
+renaming a picture renames its files without re-encoding (byte-identical);
+deleting `.library/` resets that folder (Processing re-queues it, names and
+ratings for it are gone, the other folder keeps its own); an old-layout
+fixture migrates with every rendition byte-identical and nothing
+regenerated; `index.html` opened through `file://` in a browser shows the
+grid and one picture's info. Artifact: before/after directory listings,
+hashes, and an `index.html` screenshot under
+`docs/features/folder-library/Rev1.0/assets/`.
 
 ## What the first build includes
 

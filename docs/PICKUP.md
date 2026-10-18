@@ -7,6 +7,13 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 
 Continue [BIG-WINS-HANDOFF](features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md): small-agent implementation of high-impact preview and responsiveness fixes. This supersedes the older measurement-first task; no broad test expansion.
 
+## Next milestone: folder library (F23)
+
+Steve chose the layout on 2026-10-18: each folder's `.library/` is the only
+record for its pictures, flat, named `IMG_0456.JPG.json` / `.thumb.webp` /
+`.preview.webp`. Spec [PRODUCT.md F23](PRODUCT.md#f23--folder-library), slices
+[folder-library PLAN](features/folder-library/Rev1.0/PLAN.md). Nothing built yet.
+
 ## Do this next
 
 1. Read **[Windows Presentable Shell](UI-SPEC.md#windows-presentable-shell)**
