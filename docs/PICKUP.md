@@ -42,7 +42,9 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
    0.35–0.95) and `faceMinSidePx` (default 80). Large stills use overlapping
    1280 detect tiles, then the same original→112 ArcFace crop. No 23rd Check.
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)
-   artifacts. 16/22 remains until those run. No 23rd Check.
+   artifacts. Current processing-feedback handoff reopens F4/F7/F8: 13/22
+   recorded passed. Continue [HANDOFF](features/processing-feedback/Rev1.0/HANDOFF.md)
+   before broader work. No 23rd Check.
 
 **After Pull (rating / transcript / merge wizard / Live-burst / Print):**
 Rerun `Setup.bat` once so `setup-ml transcribe` can download Whisper

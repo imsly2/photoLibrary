@@ -328,7 +328,13 @@ file the server is on right now (`phase`, `file`, `done`, `total`,
 `at`), and it does not wait for the catalog walk. While a phase is
 running, `#jobs-status` names it: `Reading pictures · IMG_0123.JPG ·
 101 of 550 · 4s`. The seconds count up on that same file so a long
-read does not look frozen. Queue rows stay the pending counts.
+read does not look frozen. Queue rows show completed, waiting, and failed
+work; unavailable optional queues say setup is needed. Rendition activity
+names Thumbnail / Poster / Preview / Video proxy / Video playback as well
+as the file. A separate scan line stays visible when the folder is being
+read alongside rendition work. Thumbnail/poster work precedes full encodes
+across the folder. Poll activity independently; keep at most one request
+per status endpoint in flight and one catalog polling cycle in flight.
 `#jobs-serve` stays visible: `This computer · 127.0.0.1:8785` (the
 page's own host). That is the Library server. No console.
 

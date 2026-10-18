@@ -1,0 +1,166 @@
+{
+  "label": "baseline",
+  "fixture": {
+    "jpg": 80,
+    "mov": 1,
+    "source": "J:\\Pictures\\1. Favorites Pictures",
+    "copy": "J:\\slyOS\\projects\\photoLibrary\\docs\\.qa\\perf-1\\pictures"
+  },
+  "scan": {
+    "files": 81,
+    "seconds": 21.05,
+    "perFileMeanFirstTenth": 0.2199,
+    "perFileMeanLastTenth": 0.3364,
+    "jsonFilesWritten": 1150,
+    "jsonMBWritten": 118.18,
+    "stages": {
+      "transaction total": {
+        "calls": 164,
+        "seconds": 15.382
+      },
+      "portable mirror": {
+        "calls": 164,
+        "seconds": 5.837
+      },
+      "transaction manifests": {
+        "calls": 328,
+        "seconds": 4.526
+      },
+      "drive-letter scan": {
+        "calls": 586,
+        "seconds": 4.205
+      },
+      "transaction payloads": {
+        "calls": 587,
+        "seconds": 3.837
+      },
+      "json dumps": {
+        "calls": 1475,
+        "seconds": 1.264
+      },
+      "history extend (plan)": {
+        "calls": 163,
+        "seconds": 0.786
+      },
+      "hash original": {
+        "calls": 81,
+        "seconds": 0.765
+      },
+      "history load": {
+        "calls": 407,
+        "seconds": 0.729
+      },
+      "json loads": {
+        "calls": 3329,
+        "seconds": 0.675
+      },
+      "json load": {
+        "calls": 3001,
+        "seconds": 0.632
+      },
+      "EXIF/metadata": {
+        "calls": 81,
+        "seconds": 0.281
+      },
+      "content id": {
+        "calls": 81,
+        "seconds": 0.27
+      },
+      "sqlite rebuild": {
+        "calls": 1,
+        "seconds": 0.063
+      },
+      "live pairing": {
+        "calls": 1,
+        "seconds": 0.033
+      },
+      "undo purge": {
+        "calls": 164,
+        "seconds": 0.027
+      }
+    }
+  },
+  "drain": {
+    "steps": 243,
+    "seconds": 276.52,
+    "perSlotMeanSeconds": {
+      "thumb": 0.578,
+      "poster": 0.715,
+      "preview": 0.777,
+      "proxy": 0.71,
+      "playback": 1.377,
+      "None": 1.932
+    },
+    "perSlotCount": {
+      "thumb": 80,
+      "poster": 1,
+      "preview": 80,
+      "proxy": 1,
+      "playback": 1,
+      "None": 80
+    },
+    "jsonFilesWritten": 1293,
+    "jsonMBWritten": 3.61,
+    "stages": {
+      "drive-letter scan": {
+        "calls": 10818,
+        "seconds": 73.076
+      },
+      "pick next job": {
+        "calls": 244,
+        "seconds": 55.174
+      },
+      "ffmpeg webp": {
+        "calls": 161,
+        "seconds": 43.183
+      },
+      "transaction total": {
+        "calls": 266,
+        "seconds": 11.806
+      },
+      "publish ready": {
+        "calls": 163,
+        "seconds": 7.391
+      },
+      "portable mirror": {
+        "calls": 266,
+        "seconds": 5.837
+      },
+      "json load": {
+        "calls": 29460,
+        "seconds": 2.794
+      },
+      "transaction manifests": {
+        "calls": 532,
+        "seconds": 2.68
+      },
+      "transaction payloads": {
+        "calls": 266,
+        "seconds": 1.64
+      },
+      "json loads": {
+        "calls": 29542,
+        "seconds": 1.275
+      },
+      "ffmpeg playback": {
+        "calls": 1,
+        "seconds": 1.273
+      },
+      "ffmpeg proxy": {
+        "calls": 1,
+        "seconds": 0.603
+      },
+      "json dumps": {
+        "calls": 1293,
+        "seconds": 0.1
+      },
+      "undo purge": {
+        "calls": 266,
+        "seconds": 0.044
+      }
+    }
+  },
+  "undoEntryBytes": [
+    214674
+  ]
+}

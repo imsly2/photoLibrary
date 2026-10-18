@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from contextlib import nullcontext
 import unicodedata
 from pathlib import Path
 from typing import Any, Callable
@@ -330,28 +331,37 @@ def _index_file(
     *,
     original_name: str | None = None,
     between: BetweenFn | None = None,
+    io_context=nullcontext,
 ) -> str:
     from library.copy import make_library_location
 
+    with io_context():
+        kind = media_kind(path)
+        component = default_component(kind)
+        try:
+            size = path.stat().st_size
+            modified = mtime_iso(path)
+            digest = sha256_file(path)
+            later = path.stat()
+            if later.st_size != size or mtime_iso(path) != modified:
+                raise fail("io-error")
+        except OSError as exc:
+            raise fail("io-error") from exc
+        decode_error = file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path)
+        content_id = None
+        try:
+            content_id = read_content_identifier(path)
+        except OSError:
+            content_id = None
+        try:
+            captured_at, captured_source, metadata = read_capture(path)
+        except OSError:
+            captured_at, captured_source, metadata = modified, "mtime", None
+        if path.stat().st_size != size or mtime_iso(path) != modified:
+            raise fail("io-error")
+    source = try_load_source(root, source["id"]) or source
     prev_entry = (source.get("files") or {}).get(rel)
     prev_item_id = prev_entry.get("itemId") if prev_entry else None
-    kind = media_kind(path)
-    component = default_component(kind)
-    try:
-        size = path.stat().st_size
-        modified = mtime_iso(path)
-        digest = sha256_file(path)
-        later = path.stat()
-        if later.st_size != size or mtime_iso(path) != modified:
-            raise fail("io-error")
-    except OSError as exc:
-        raise fail("io-error") from exc
-    decode_error = file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path)
-    content_id = None
-    try:
-        content_id = read_content_identifier(path)
-    except OSError:
-        content_id = None
     source_id = source["id"]
     pending = pending_id(source_id, rel)
     dest_rel = (source.get("files") or {}).get(rel, {}).get("destination")
@@ -380,10 +390,6 @@ def _index_file(
             modified_at=modified,
             sha256=digest,
         )
-    try:
-        captured_at, captured_source, metadata = read_capture(path)
-    except OSError:
-        captured_at, captured_source, metadata = modified, "mtime", None
     latitude = None if metadata is None else metadata.get("latitude")
     longitude = None if metadata is None else metadata.get("longitude")
     place_id = None
@@ -525,6 +531,7 @@ def scan_serve_from_there(
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
     between: BetweenFn | None = None,
+    io_context=nullcontext,
     source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     scan_path = assert_scan_path_allowed(scan_path, root)
@@ -539,16 +546,21 @@ def scan_serve_from_there(
     errors: list[dict[str, str]] = []
     added_ids: list[str] = []
     match_meters = _place_match_meters(root)
-    files = iter_media_files(scan_path, root)
+    from library.activity import note as note_activity
+    note_activity("scan", detail="Discovering pictures")
+    with io_context():
+        files = iter_media_files(scan_path, root)
     total = len(files)
     from library.activity import note as note_activity
 
     for index, (rel, path) in enumerate(files, start=1):
+        if between is not None:
+            between()
         note_activity(
             "scan",
             detail="Reading pictures",
             file=Path(rel).name,
-            done=index,
+            done=index - 1,
             total=total,
         )
         source = try_load_source(root, source["id"]) or source
@@ -560,7 +572,7 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            item_id = _index_file(root, source, rel, path, match_meters, between=between)
+            item_id = _index_file(root, source, rel, path, match_meters, between=between, io_context=io_context)
             added += 1
             _record_added_id(added_ids, item_id)
             if on_progress is not None:
@@ -606,7 +618,7 @@ def scan_serve_from_there(
     source = try_load_source(root, source["id"]) or source
     from library.activity import clear as clear_activity
 
-    clear_activity()
+    clear_activity("scan")
     return source
 
 
@@ -617,6 +629,7 @@ def scan_copy_here(
     preview_store: str | None = None,
     on_progress: ProgressFn | None = None,
     between: BetweenFn | None = None,
+    io_context=nullcontext,
     source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     from library.copy import convert_linked_source, copy_media_files
@@ -634,7 +647,10 @@ def scan_copy_here(
         source = _start_source(root, scan_path, preview_store, mode="copy-here")
     if between is not None:
         between()
-    files = iter_media_files(scan_path, root)
+    from library.activity import note as note_activity
+    note_activity("scan", detail="Discovering pictures")
+    with io_context():
+        files = iter_media_files(scan_path, root)
     source = copy_media_files(root, source, scan_path, files, between=between)
     added = 0
     skipped = 0
@@ -645,11 +661,13 @@ def scan_copy_here(
     from library.activity import note as note_activity
 
     for index, (rel, path) in enumerate(files, start=1):
+        if between is not None:
+            between()
         note_activity(
             "scan",
             detail="Reading pictures",
             file=Path(rel).name,
-            done=index,
+            done=index - 1,
             total=total,
         )
         source = try_load_source(root, source["id"]) or source
@@ -678,6 +696,7 @@ def scan_copy_here(
                 match_meters,
                 original_name=Path(rel).name,
                 between=between,
+                io_context=io_context,
             )
             added += 1
             _record_added_id(added_ids, item_id)
@@ -724,5 +743,5 @@ def scan_copy_here(
     source = try_load_source(root, source["id"]) or source
     from library.activity import clear as clear_activity
 
-    clear_activity()
+    clear_activity("scan")
     return source

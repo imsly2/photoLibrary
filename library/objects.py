@@ -169,7 +169,11 @@ def analyze_status(root: Path) -> dict[str, Any]:
             still = _still_for_detect(item, root)
             if still is None:
                 continue
-            if not _already_analyzed(state, item_id, sha256_file(still)):
+            # Catalog IDs are immutable content hashes. Status only needs to
+            # know whether this ID has a recorded analysis; the worker keeps
+            # verifying source bytes before deciding whether to re-analyze.
+            record = (state.get("items") or {}).get(item_id)
+            if not isinstance(record, dict) or not record.get("sha256"):
                 pending += 1
     return {
         "ok": True,

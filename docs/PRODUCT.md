@@ -423,6 +423,9 @@ that item once.
 
 The scan is resumable. Stop the process and run the same command again. Files
 already hashed and unchanged are left alone.
+The scan remains one undo step. Its history keeps the first previous value
+and latest new value for each catalog path, rather than every intermediate
+source snapshot, so adding more files does not inflate that step quadratically.
 
 Supported pictures: JPEG, PNG, GIF, WebP, HEIC, HEIF, TIFF, BMP.
 Supported videos: MP4, MOV, M4V, AVI, MKV, WEBM.
@@ -517,6 +520,48 @@ and fit. `#viewer-source` says Preview, Loading full…, Original, Full
 
 Renditions are queued by the scan and continue while the server is running.
 The grid shows a placeholder until the thumb exists, then the thumb.
+Queued thumbnails say “Creating preview…”; a failed or missing preview has
+the unavailable message instead, so waiting work is distinguishable from failure.
+Grid thumbnails and video posters take priority across the folder, ahead of
+viewer previews and full-length video encodes. They begin while the folder
+is still being scanned. Reading original bytes and encoding previews leave
+catalog and media requests free to respond; catalog publication stays serialized.
+Processing names the current derivative (thumbnail, poster, preview, proxy,
+or playback), and each queue shows completed, waiting, and failed work.
+Reading queue status does not hash or decode original pictures. Object counts
+use completed analysis records keyed by catalog item identity; the worker still
+checks its actual input when it runs. Optional queues never delay thumbnail work
+just to calculate their displayed counts.
+Status polling keeps at most one poll in flight so a slow response does not
+build up a backlog of requests.
+
+**Processing speed.** Measured on the family PC against a fixed fixture:
+80 of Steve's own JPEGs (about 3.5 MB each) plus one iPhone `.MOV`, added
+as serve-from-folder with previews kept in the folder (the real setup).
+The cost of one picture does not depend on how big the library already
+is. Budgets, from the moment Add folder starts:
+
+| What | Budget |
+|------|--------|
+| Reading the folder (hash + metadata + record) | at least 15 pictures/s; the last tenth of files no slower than 1.25× the first tenth |
+| First grid thumbnail visible | within 3 s |
+| Every grid thumbnail and the video poster | within 30 s |
+| A picture opened in the viewer | its 1600 px preview within 2 s of opening, even while thumbnails are still queued |
+| Everything done (thumbs, previews, video proxy/playback) | within 90 s |
+| Bookkeeping per finished file (all work except ffmpeg) | at most 50 ms |
+| Catalog and status requests while processing | `GET /api/jobs` p95 ≤ 300 ms, `GET /api/items` p95 ≤ 1 s |
+
+Bookkeeping is the per-file cost of picking the next job, finding the
+original, writing the record, undo history, and the folder copy of the
+records. It must not re-read the whole catalog or rewrite growing files
+for every picture.
+
+**Check (speed):** `python -m tests.perf.bench` starts a scratch server on
+a copy of the fixture, adds the folder through HTTP, opens one picture
+mid-run, and prints each budget with its measured value and PASS/FAIL.
+Exit code is nonzero when any budget fails. `--count N` changes the
+fixture size; `--count 400` is the scaling run. Artifact: the bench JSON
+under `docs/features/processing-feedback/Rev1.0/assets/perf-bench/`.
 
 Years, Months, Days, and a Dates-off wall play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:

@@ -5,12 +5,30 @@ from __future__ import annotations
 import json
 import os
 import sys
+import threading
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
 from library.atomic import load_json
 from library.errors import fail
 from library.paths import normalize_root
+
+_volume_lookup_context = threading.local()
+
+
+@contextmanager
+def volume_lookup_scope():
+    """Cache native Windows serial lookups for one caller-scoped operation."""
+    previous = getattr(_volume_lookup_context, "mounts", None)
+    _volume_lookup_context.mounts = {}
+    try:
+        yield
+    finally:
+        if previous is None:
+            del _volume_lookup_context.mounts
+        else:
+            _volume_lookup_context.mounts = previous
 
 
 def load_test_volumes() -> dict[str, str | None] | None:
@@ -109,7 +127,12 @@ def resolve_volume_mount(serial: str) -> Path | None:
             return None
         return normalize_root(mount)
     if serial.startswith("windows:") and os.name == "nt":
-        return _windows_mount_for_serial(serial)
+        cache = getattr(_volume_lookup_context, "mounts", None)
+        if cache is None:
+            return _windows_mount_for_serial(serial)
+        if serial not in cache:
+            cache[serial] = _windows_mount_for_serial(serial)
+        return cache[serial]
     if serial.startswith("linux:") and os.name != "nt":
         mount = Path(serial[len("linux:") :])
         if mount.exists():

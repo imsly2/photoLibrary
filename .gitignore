@@ -99,6 +99,11 @@ docs/features/taste-install/**/zip-incoming/
 docs/features/taste-install/**/zip-pull/
 docs/features/taste-install/**/main.zip
 
+# Processing feedback diagnostics keep summary evidence, not fixture catalogs/media.
+docs/features/processing-feedback/**/catalog/
+docs/features/processing-feedback/**/pictures/
+docs/features/processing-feedback/**/preflight/
+
 # Python
 __pycache__/
 *.py[cod]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -222,6 +223,7 @@ class Library:
         path: Path,
         on_progress=None,
         between=None,
+        io_context=nullcontext,
     ) -> dict[str, Any]:
         from library.catalog_io import try_load_source
 
@@ -234,6 +236,7 @@ class Library:
                     path,
                     on_progress=on_progress,
                     between=between,
+                    io_context=io_context,
                     source=current,
                 )
                 return source_read(finished, self.root)
@@ -242,11 +245,14 @@ class Library:
                 path,
                 on_progress=on_progress,
                 between=between,
+                io_context=io_context,
                 source=current,
             )
             return source_read(finished, self.root)
         finally:
             self._scanning = False
+            from library.activity import clear
+            clear("scan")
 
     def rescan(self, source_id: str, on_progress=None, between=None) -> dict[str, Any]:
         source, path = self.start_http_rescan(source_id)
@@ -285,7 +291,7 @@ class Library:
             self._scanning = False
             raise
 
-    def finish_http_scan(self, body: dict[str, Any], source: dict[str, Any], on_progress=None, between=None) -> dict[str, Any]:
+    def finish_http_scan(self, body: dict[str, Any], source: dict[str, Any], on_progress=None, between=None, io_context=nullcontext) -> dict[str, Any]:
         from library.catalog_io import try_load_source
 
         try:
@@ -299,6 +305,7 @@ class Library:
                     preview_store=req["previewStore"],
                     on_progress=on_progress,
                     between=between,
+                    io_context=io_context,
                     source=current,
                 )
                 return source_read(finished, self.root)
@@ -308,11 +315,14 @@ class Library:
                 preview_store=req["previewStore"],
                 on_progress=on_progress,
                 between=between,
+                io_context=io_context,
                 source=current,
             )
             return source_read(finished, self.root)
         finally:
             self._scanning = False
+            from library.activity import clear
+            clear("scan")
 
     def copy_here(self, source_id: str) -> dict[str, Any]:
         from library.copy import convert_linked_source
@@ -815,18 +825,28 @@ class Library:
         read_weights_body(payload)
         return reset_rating_weights(self.root)
 
-    def drain_step(self) -> bool:
+    def drain_step(self, *, io_context=nullcontext) -> bool:
         if getattr(self, "_jobs_paused", False):
             return False
-        if getattr(self, "_scanning", False) or getattr(self, "_inferring", False):
+        if getattr(self, "_inferring", False):
             return False
         self.ensure_settings()
+        if drain_queued_jpegs(self.root, io_context=io_context, grid_only=self._scanning):
+            return True
+        if getattr(self, "_scanning", False):
+            return False
+        def log_drain_error(stage: str, exc: Exception) -> None:
+            from library.log import append_error
+
+            append_error(self.root, "/api/jobs", f"processing-drain:{stage}:{type(exc).__name__}")
+
         force_faces = False
         try:
             from library.faces import faces_force_rescan
 
             force_faces = faces_force_rescan(self.root)
-        except Exception:
+        except Exception as exc:
+            log_drain_error("faces-force", exc)
             force_faces = False
         if force_faces:
             try:
@@ -834,46 +854,44 @@ class Library:
 
                 if infer_faces_step(self.root):
                     return True
-            except Exception:
-                pass
-        if drain_queued_jpegs(self.root):
-            return True
+            except Exception as exc:
+                log_drain_error("faces-force-step", exc)
         try:
             from library.places import analyze_places_step
 
             if analyze_places_step(self.root):
                 return True
-        except Exception:
-            pass
+        except Exception as exc:
+            log_drain_error("places", exc)
         if not force_faces:
             try:
                 from library.faces import infer_faces_step
 
                 if infer_faces_step(self.root):
                     return True
-            except Exception:
-                pass
+            except Exception as exc:
+                log_drain_error("faces", exc)
         try:
             from library.objects import analyze_step as run_analyze_step
 
             if run_analyze_step(self.root):
                 return True
-        except Exception:
-            pass
+        except Exception as exc:
+            log_drain_error("objects", exc)
         try:
             from library.transcribe import transcribe_step
 
             if transcribe_step(self.root):
                 return True
-        except Exception:
-            pass
+        except Exception as exc:
+            log_drain_error("transcribe", exc)
         try:
             from library.rating import rate_step
 
             if rate_step(self.root):
                 return True
-        except Exception:
-            pass
+        except Exception as exc:
+            log_drain_error("rating", exc)
         from library.activity import clear as clear_activity
 
         clear_activity()

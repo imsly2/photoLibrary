@@ -218,7 +218,7 @@ def jobs_status(root: Path, paused: bool) -> dict[str, Any]:
         pending, done, error = _queue_counts(root, queue_id)
         available = _queue_available(root, queue_id)
         live = available and not paused
-        state = _queue_state(pending, paused, live=live)
+        state = "unavailable" if pending > 0 and not available else _queue_state(pending, paused, live=live)
         if state == "running":
             processing = True
         queues.append(

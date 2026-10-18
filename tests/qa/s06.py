@@ -53,7 +53,7 @@ MATRIX_RELS = list(FORMAT_FILES) + ["a/clip.mp4", "b/oriented.jpg"]
 LONG_NAME = "raw_relative_path_would_make_a_bad_pending_json_filename.jpg"
 DUPLICATE_REL = "second/source/same.jpg"
 FRAME = 1.0 / 30.0
-HEIC_NOTE = "ffprobe cannot decode (moov atom not found); stays error + placeholder"
+HEIC_NOTE = "decoder capability is checked independently with installed ffmpeg"
 
 
 def write_result(
@@ -356,6 +356,8 @@ def build_format_matrix(root: Path, media: Path, rels: list[str]) -> list[dict[s
                 "status": status.get(slot),
                 "path": rend.get(slot),
                 "readyNonEmpty": ready_file,
+                "fileExists": dest.is_file(),
+                "fileBytes": dest.stat().st_size if dest.is_file() else 0,
             }
         note = None
         if name in {"quad.heic", "quad.heif"}:
@@ -707,28 +709,48 @@ def prove_ffprobe(checks: Checks, root: Path, artifacts: Path) -> dict[str, Any]
 def prove_matrix(checks: Checks, root: Path, media: Path, artifacts: Path) -> list[dict[str, Any]]:
     wait_matrix_settled(root, MATRIX_RELS)
     rows = build_format_matrix(root, media, MATRIX_RELS)
-    (artifacts / "format-matrix.json").write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
     by_path = {row["path"]: row for row in rows}
+    probes = artifacts / "heic-decode-probes"
+    probes.mkdir(exist_ok=True)
     for rel in MATRIX_RELS:
         row = by_path.get(rel)
         checks.check(f"matrix-row:{rel}", row is not None)
         if row is None:
             continue
         name = Path(rel).name
+        if name in {"quad.heic", "quad.heif", "broken.heic"}:
+            # Probe the installed decoder directly, independently of Library's
+            # scheduler/writer. New ffmpeg versions support formerly unsupported
+            # fixtures; successful decoding must require actual ready app bytes.
+            output = probes / f"{name}.webp"
+            command = ["ffmpeg", "-y", "-i", str(media / rel), "-frames:v", "1", "-f", "webp", str(output)]
+            proc = subprocess.run(command, capture_output=True, text=True, timeout=30)
+            output_bytes = output.stat().st_size if output.is_file() else 0
+            decoded = proc.returncode == 0 and output_bytes > 0
+            probe = {"command": command, "exitCode": proc.returncode, "bytes": output_bytes,
+                     "decoded": decoded, "stdout": proc.stdout, "stderr": proc.stderr}
+            (probes / f"{name}.json").write_text(json.dumps(probe, indent=2) + "\n", encoding="utf-8")
+            row["decodeProbe"] = {"decoded": decoded, "exitCode": proc.returncode, "bytes": output_bytes}
+            row["note"] = "installed ffmpeg decodes this fixture" if decoded else "installed ffmpeg cannot decode this fixture"
         if name == "broken.heic":
             checks.check(
                 "matrix-broken-error",
                 row["slots"].get("thumb", {}).get("status") == "error"
                 and row["slots"].get("preview", {}).get("status") == "error"
-                and row["slots"].get("thumb", {}).get("readyNonEmpty") is False,
+                and not decoded
+                and not row["slots"].get("thumb", {}).get("fileExists")
+                and not row["slots"].get("preview", {}).get("fileExists"),
                 json.dumps(row),
             )
             continue
         if name in {"quad.heic", "quad.heif"}:
+            expected = "ready" if decoded else "error"
             checks.check(
-                f"matrix-heic-not-ready:{name}",
-                row["slots"].get("thumb", {}).get("status") == "error"
-                and row["slots"].get("thumb", {}).get("readyNonEmpty") is False,
+                f"matrix-heic-decoder-capability:{name}",
+                all(row["slots"][slot]["status"] == expected
+                    and (row["slots"][slot]["readyNonEmpty"] if decoded
+                         else not row["slots"][slot]["fileExists"])
+                    for slot in ("thumb", "preview")),
                 json.dumps(row),
             )
             continue
@@ -751,6 +773,7 @@ def prove_matrix(checks: Checks, root: Path, media: Path, artifacts: Path) -> li
                 and row["slots"]["proxy"]["readyNonEmpty"] is True,
                 json.dumps(row),
             )
+    (artifacts / "format-matrix.json").write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
     return rows
 
 

@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import errno
+from contextlib import contextmanager
 import json
 import os
 import socket
 import threading
 import time
+import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -23,6 +25,16 @@ from library.service import Library
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
 RUNTIME_NAME = "runtime.json"
+
+
+@contextmanager
+def unlocked_io(lock):
+    """Use only around pure original reads or detached derivative computation."""
+    lock.release()
+    try:
+        yield
+    finally:
+        lock.acquire()
 
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
@@ -185,7 +197,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
     def _yield_scan(self) -> None:
         self.lock.release()
         try:
-            time.sleep(0.05)
+            time.sleep(0.001)
         finally:
             self.lock.acquire()
 
@@ -253,6 +265,12 @@ class LibraryHandler(BaseHTTPRequestHandler):
         self._dispatch("HEAD")
 
     def _dispatch(self, method: str) -> None:
+        from library.volumes import volume_lookup_scope
+
+        with volume_lookup_scope():
+            self._dispatch_request(method)
+
+    def _dispatch_request(self, method: str) -> None:
         parsed = urlparse(self.path)
         route = parsed.path
         try:
@@ -308,7 +326,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 def yield_scan() -> None:
                     lock.release()
                     try:
-                        time.sleep(0.05)
+                        time.sleep(0.001)
                     finally:
                         lock.acquire()
 
@@ -320,8 +338,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                             source,
                             on_progress=_scan_progress,
                             between=yield_scan,
+                            io_context=lambda: unlocked_io(lock),
                         )
-                    except Exception:
+                    except Exception as exc:
+                        traceback.print_exc()
+                        append_error(library.root, "/api/sources", f"scan-worker:{type(exc).__name__}")
                         library._scanning = False
                     finally:
                         lock.release()
@@ -379,7 +400,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 def yield_rescan() -> None:
                     lock.release()
                     try:
-                        time.sleep(0.05)
+                        time.sleep(0.001)
                     finally:
                         lock.acquire()
 
@@ -391,8 +412,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                             scan_path,
                             on_progress=_scan_progress,
                             between=yield_rescan,
+                            io_context=lambda: unlocked_io(lock),
                         )
-                    except Exception:
+                    except Exception as exc:
+                        traceback.print_exc()
+                        append_error(library.root, f"/api/sources/{source_id}/rescan", f"rescan-worker:{type(exc).__name__}")
                         library._scanning = False
                     finally:
                         lock.release()
@@ -939,8 +963,10 @@ def serve(root: Path) -> int:
                 worked = False
                 try:
                     with handler.lock:
-                        worked = library.drain_step()
-                except Exception:
+                        worked = library.drain_step(io_context=lambda: unlocked_io(handler.lock))
+                except Exception as exc:
+                    traceback.print_exc()
+                    append_error(library.root, "/api/jobs", f"processing-drain:outer:{type(exc).__name__}")
                     worked = False
                 drain_stop.wait(0.05 if worked else 0.25)
 

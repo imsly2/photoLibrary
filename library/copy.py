@@ -183,10 +183,15 @@ def write_via_partial(src: Path, dest: Path, source_id: str) -> None:
         except OSError as exc:
             raise fail("io-error") from exc
     try:
-        shutil.copy2(src, partial)
-        with open(partial, "rb") as handle:
+        # Copy read-only attributes after syncing, so read-only originals remain
+        # readable inputs without making the destination descriptor unwritable.
+        shutil.copyfile(src, partial)
+        # Windows requires a writable descriptor for FlushFileBuffers/fsync.
+        # r+b preserves every copied byte and does not truncate the partial.
+        with open(partial, "r+b") as handle:
             handle.flush()
             os.fsync(handle.fileno())
+        shutil.copystat(src, partial)
         maybe_test_barrier("copy-partial")
         if sha256_file(partial) != expected:
             raise fail("io-error")

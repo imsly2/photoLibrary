@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import uuid
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -528,49 +529,31 @@ def copy_verified(src: Path, dest: Path) -> None:
         raise fail("io-error") from exc
 
 
-def next_rendition_job(root: Path) -> tuple[str, str, Path, int] | None:
+def next_rendition_job(root: Path, *, grid_only: bool = False) -> tuple[str, str, Path, int] | None:
     thumb_px, preview_px, proxy_width = _settings_caps(root)
-    still_caps = {"thumb": thumb_px, "preview": preview_px}
+    caps = {"thumb": thumb_px, "poster": thumb_px, "preview": preview_px,
+            "proxy": proxy_width, "playback": 0}
+    # Rank across the whole catalog: every grid still precedes long video work.
+    later = None
     for item_id in iter_item_ids(root):
         if item_id.startswith("pending-"):
             continue
         item = load_item(root, item_id)
-        kind = item.get("kind")
         status = (item.get("renditions") or {}).get("status") or {}
-        if kind == "photo":
-            source = _primary_still_path(item, root)
-            if source is None or file_suffix(source) not in PHOTO_SUFFIXES:
+        for slot in ("thumb", "poster", "preview", "proxy", "playback"):
+            if status.get(slot) != "queued":
                 continue
-            for slot in STILL_SLOTS:
-                if status.get(slot) != "queued":
-                    continue
-                return item_id, slot, source, still_caps[slot]
-        elif kind == "video":
-            source = _primary_motion_path(item, root)
-            if source is None or file_suffix(source) not in VIDEO_SUFFIXES:
+            source = (_primary_still_path(item, root) if slot in STILL_SLOTS
+                      else _primary_motion_path(item, root))
+            suffixes = PHOTO_SUFFIXES if slot in STILL_SLOTS else VIDEO_SUFFIXES
+            if source is None or file_suffix(source) not in suffixes:
                 continue
-            if status.get("poster") == "queued":
-                return item_id, "poster", source, thumb_px
-            if status.get("proxy") == "queued":
-                return item_id, "proxy", source, proxy_width
-            if status.get("playback") == "queued":
-                return item_id, "playback", source, 0
-        elif kind == "live":
-            still_source = _primary_still_path(item, root)
-            if still_source is not None and file_suffix(still_source) in PHOTO_SUFFIXES:
-                for slot in STILL_SLOTS:
-                    if status.get(slot) != "queued":
-                        continue
-                    return item_id, slot, still_source, still_caps[slot]
-            motion_source = _primary_motion_path(item, root)
-            if motion_source is not None and file_suffix(motion_source) in VIDEO_SUFFIXES:
-                if status.get("poster") == "queued":
-                    return item_id, "poster", motion_source, thumb_px
-                if status.get("proxy") == "queued":
-                    return item_id, "proxy", motion_source, proxy_width
-                if status.get("playback") == "queued":
-                    return item_id, "playback", motion_source, 0
-    return None
+            job = item_id, slot, source, caps[slot]
+            if slot in {"thumb", "poster"}:
+                return job
+            if later is None or (slot == "preview" and later[1] != "preview"):
+                later = job
+    return None if grid_only else later
 
 
 def adopt_ready_files(root: Path, source: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
@@ -657,59 +640,100 @@ def _clear_empty(path: Path) -> None:
         pass
 
 
-def drain_step(root: Path) -> bool:
+def _job_destination(root: Path, item: dict[str, Any], slot: str) -> tuple[str, Path | None]:
+    owner = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
+    store = ((item.get("renditions") or {}).get("store") or "with-server") if ready_slots(item) else effective_preview_store(owner, _current_settings(root))
+    folder = store_dir(store, owner, root, item["id"])
+    return store, None if folder is None else folder / slot_filename(slot)
+
+
+def _source_signature(path: Path) -> tuple[int, int, int]:
+    stat = path.stat()
+    return stat.st_size, stat.st_mtime_ns, stat.st_ino
+
+
+def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -> bool:
+    """Caller serializes catalog access; only detached encoding releases its lock."""
     sweep_library_rendition_tmps(root)
-    job = next_rendition_job(root)
+    job = next_rendition_job(root, grid_only=grid_only)
     if job is None:
         return False
     item_id, slot, source, cap = job
     item = try_load_item(root, item_id)
     if item is None:
         return False
-    from library.activity import note_item
+    from library.activity import note_item, clear
 
-    note_item("renditions", "Previews", item)
-    owner = try_load_source(root, (item.get("renditions") or {}).get("sourceId") or "")
-    settings = _current_settings(root)
-    if ready_slots(item):
-        store = (item.get("renditions") or {}).get("store") or "with-server"
-    else:
-        store = effective_preview_store(owner, settings)
-    relative = slot_relative(store, item_id, slot)
-    dest_dir = store_dir(store, owner, root, item_id)
-    if dest_dir is None:
+    note_item("renditions", "Previews", item, derivative=slot)
+    store, dest = _job_destination(root, item, slot)
+    if dest is None:
         publish_error(root, item_id, slot)
+        clear()
         return True
-    dest = dest_dir / slot_filename(slot)
+    # Never expose or publish an unvalidated result. Existing ready files can be
+    # adopted, but playback must first be checked for browser compatibility.
     cleanup_tmp_siblings(dest)
-    if dest.is_file() and dest.stat().st_size > 0:
-        if slot == "playback" and browser_safe_mp4(source):
+    stage = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
+    before_renditions = clone(item.get("renditions") or {})
+    before_locations = clone(item.get("locations") or [])
+    owner_id = before_renditions.get("sourceId") or ""
+    owner = try_load_source(root, owner_id)
+    owner_origin = clone(owner.get("origin")) if owner else None
+    outcome = "error"
+    signature = None
+    try:
+        with io_context():
             try:
-                dest.unlink()
+                signature = _source_signature(source)
+                if slot == "playback" and browser_safe_mp4(source):
+                    outcome = "not-applicable"
+                elif dest.is_file() and dest.stat().st_size > 0:
+                    outcome = "existing"
+                elif slot == "playback":
+                    outcome = write_playback(source, stage)
+                else:
+                    writer = write_proxy if slot == "proxy" else write_webp
+                    outcome = "ready" if writer(source, stage, cap) else "error"
             except OSError:
-                pass
-            publish_not_applicable(root, item_id, slot)
+                outcome = "error"
+        current = try_load_item(root, item_id)
+        if current is None:
             return True
-        publish_ready(root, item_id, slot, relative, store)
-        return True
-    if slot == "playback":
-        outcome = write_playback(source, dest)
+        # Annotation changes survive: publish helpers clone the fresh record.
+        # A removed/replaced item, relocated store, or changed original invalidates
+        # this computation; leave current queue state for the next drain step.
+        current_renditions = current.get("renditions") or {}
+        if current_renditions != before_renditions or current.get("locations") != before_locations:
+            return True
+        current_owner = try_load_source(root, owner_id)
+        if (current_owner.get("origin") if current_owner else None) != owner_origin:
+            return True
+        current_source = (_primary_still_path(current, root) if slot in STILL_SLOTS
+                          else _primary_motion_path(current, root))
+        if current_source != source or _job_destination(root, current, slot) != (store, dest):
+            return True
+        try:
+            if signature is not None and _source_signature(source) != signature:
+                return True
+        except OSError:
+            outcome = "error"
         if outcome == "ready":
-            publish_ready(root, item_id, slot, relative, store)
+            os.replace(stage, dest)
+        if outcome in {"ready", "existing"}:
+            publish_ready(root, item_id, slot, slot_relative(store, item_id, slot), store)
         elif outcome == "not-applicable":
-            _clear_empty(dest)
+            dest.unlink(missing_ok=True)
             publish_not_applicable(root, item_id, slot)
         else:
-            _clear_empty(dest)
             publish_error(root, item_id, slot)
         return True
-    writer = write_proxy if slot == "proxy" else write_webp
-    if not writer(source, dest, cap):
-        _clear_empty(dest)
-        publish_error(root, item_id, slot)
-        return True
-    publish_ready(root, item_id, slot, relative, store)
-    return True
+    finally:
+        try:
+            stage.unlink(missing_ok=True)
+            cleanup_tmp_siblings(stage)
+        except OSError:
+            pass
+        clear()
 
 
 def _slot_from_name(name: str) -> str | None:
@@ -740,7 +764,18 @@ def restore_relocate_files(root: Path, entry_id: str) -> None:
             slot = _slot_from_name(file.name)
             if slot is None:
                 continue
-            dest = rendition_abs(item, slot, root)
+            # Restoration writes the location recorded by undo. Lookup fallback
+            # is for serving readable files and could select the relocated copy.
+            rend = item.get("renditions") or {}
+            relative = rend.get(slot)
+            if type(relative) is not str or not relative:
+                continue
+            if rend.get("store") == "with-server":
+                dest = library_path(root, relative)
+            else:
+                owner = try_load_source(root, rend.get("sourceId") or "")
+                source_root = source_preview_root(owner, root) if owner else None
+                dest = _safe_join(source_root, relative) if source_root else None
             if dest is None:
                 continue
             copy_verified(file, dest)

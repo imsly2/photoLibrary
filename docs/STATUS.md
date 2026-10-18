@@ -4,6 +4,24 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Live recovery after the follow-up report: backed up the existing
+  catalog/undo/settings under `library-data/recovery/2026-10-18-processing-*`,
+  replaced the old background server, and resumed the same 551-file source
+  (`src_acda5625dae4`) without resetting its catalog. The real Chrome grid was
+  observed with 135 cells / 15 painted thumbnails, then 29 completed preview
+  jobs and zero rendition errors; processing continues. A catalog request fell
+  from 33.50 s before the targeted fix to 1.76 s after it (live observations,
+  not a controlled benchmark). Objects status no longer hashes image inputs;
+  Windows mount lookup is cached only within each HTTP request, and worker
+  exceptions are logged. Two focused regression tests pass. Evidence:
+  [live recovery](features/processing-feedback/Rev1.0/assets/live-recovery-1/observations.json).
+  No full F4/F7/F8 Check was closed; the working tree remains uncommitted.
+
+- 2026-10-18 — Processing improvements are implemented but uncommitted; work
+  stopped expanding at Steve's request to conserve usage. F5 and focused/browser
+  checks pass; F4/F7/F8 remain unresolved. Exact evidence and a smaller-agent
+  continuation prompt: [HANDOFF](features/processing-feedback/Rev1.0/HANDOFF.md).
+
 - 2026-10-18 — Serve from that folder keeps the processed picture
   data in `<folder>/.library/`. Renditions stay under `renditions/`.
   The catalog copy is `catalog/` (items, people, places, things,
@@ -712,7 +730,7 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## Completion
 
-**16 / 22 Checks = 72.7% tested.** F1, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F19, and F20 have fresh-verifier artifacts.
+**13 / 22 Checks = 59.1% recorded passed.** The processing-feedback working tree reopens F4, F7, and F8 below. Earlier 16/22 claims are historical; this is not a full final-revision rerun.
 M1, M2, and M3 are recorded. Settings, keyboard, launch, and the full rerun remain pending.
 
 | Check | Feature | State | Verifier / revision / platform | Command / evidence |
@@ -720,11 +738,11 @@ M1, M2, and M3 are recorded. Settings, keyboard, launch, and the full rerun rema
 | F1 | Two folders | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d` | `python -m tests.qa check F1` [verify-1](features/S05/Rev1.0/assets/verify-1/f1/result.json); orchestrator rerun [f1](features/S05/Rev1.0/assets/orchestrator-rerun/f1/result.json) |
 | F2 | Launch | pending | — | Not run; no artifact |
 | F3 | CLI / HTTP | pending | — | Not run; no artifact |
-| F4 | Add folder | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `244771d`; Track A rerun `c4b953e` | `python -m tests.qa check F4` [verify-1](features/S05/Rev1.0/assets/verify-1/f4/result.json); orchestrator rerun [f4](features/S05/Rev1.0/assets/orchestrator-rerun/f4/result.json); Track A [f4](features/taste-windows/Rev1.0/assets/orchestrator-rerun/f4/result.json) |
-| F5 | Scan | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F5` [verify-1](features/S06/Rev1.0/assets/verify-1/f5/result.json); orchestrator rerun [f5](features/S06/Rev1.0/assets/orchestrator-rerun/f5/result.json) |
+| F4 | Add folder | pending | Fresh Codex verifier, Windows/Python 3.12.14, processing-feedback working tree | Conflicting runs: lead passed, fresh verifier 89/94 (HTTP busy/nonempty-source). Resolve possible test-port interference; no full credit. [Verifier](features/processing-feedback/Rev1.0/assets/verify-1/final-f4/result.json), [lead](features/processing-feedback/Rev1.0/assets/lead-f4-1/result.json) |
+| F5 | Scan | passed | Fresh Codex verifier, Windows/Python 3.12.14, processing-feedback working tree | `python -m tests.qa check F5`, 66/66. [Verifier](features/processing-feedback/Rev1.0/assets/verify-1/final-f5/result.json), [lead rerun](features/processing-feedback/Rev1.0/assets/lead-f5-1/result.json) |
 | F6 | Metadata | passed | Grok 4.7 verifier, Windows, Python 3.12.10 | `python -m tests.qa check F6` [verify-2](features/S02/Rev1.0/assets/verify-2/f6/result.json); orchestrator rerun [f6](features/S02/Rev1.0/assets/orchestrator-rerun/f6/result.json) |
-| F7 | Previews | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `d55a569` | `python -m tests.qa check F7` [verify-1](features/S06/Rev1.0/assets/verify-1/f7/result.json); orchestrator rerun [f7](features/S06/Rev1.0/assets/orchestrator-rerun/f7/result.json) |
-| F8 | Preview storage | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `a442e8f` | `python -m tests.qa check F8` [verify-1](features/S07/Rev1.0/assets/verify-1/f8/result.json); orchestrator rerun [f8](features/S07/Rev1.0/assets/orchestrator-rerun/f8/result.json) |
+| F7 | Previews | failed | Fresh Codex verifier, Windows/Python 3.12.14, processing-feedback working tree | 79/80; hover-browser timeout remains. HEIC codec probes and generated media pass. [Verifier](features/processing-feedback/Rev1.0/assets/verify-1/final-f7/result.json), [lead](features/processing-feedback/Rev1.0/assets/lead-f7-1/result.json) |
+| F8 | Preview storage | failed | Fresh Codex verifier, Windows/Python 3.12.14, processing-feedback working tree | 22/23 then fixture server port-in-use; lead additionally exposes permission-denial assumptions and busy 409. Undo destination correction passes; full Check unresolved. [Verifier](features/processing-feedback/Rev1.0/assets/verify-1/final-f8/result.json), [lead](features/processing-feedback/Rev1.0/assets/lead-f8-1/result.json) |
 | F9 | Zoom | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F9` [verify-1](features/S04/Rev1.0/assets/verify-1/f9/result.json); orchestrator rerun [f9](features/S04/Rev1.0/assets/orchestrator-rerun/f9/result.json) |
 | F10 | Viewer | passed | Grok 4.7 verifier, Linux, Python 3.12.3, `b8e2663` | `python -m tests.qa check F10` [verify-1](features/S09/Rev1.0/assets/verify-1/f10/result.json); orchestrator rerun [f10](features/S09/Rev1.0/assets/orchestrator-rerun/f10/result.json) |
 | F11 | Sort | passed | Grok 4.7 verifier, Linux, Python 3.12.3 | `python -m tests.qa check F11` [verify-1](features/S04/Rev1.0/assets/verify-1/f11/result.json); orchestrator rerun [f11](features/S04/Rev1.0/assets/orchestrator-rerun/f11/result.json) |

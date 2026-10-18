@@ -274,6 +274,11 @@
   let annotateBusy = false;
   let namingPersonId = "";
   let pollTimer = 0;
+  let activityTimer = 0;
+  let pollInFlight = false;
+  let activityInFlight = null;
+  let jobsInFlight = null;
+  let activityReceivedAt = 0;
   let scanning = false;
   let levelWheelLock = false;
   let panning = false;
@@ -1958,6 +1963,12 @@
     }, STILL_STALL_MS);
   }
 
+  function stillPlaceholder(item) {
+    const status = ((item && item.renditions || {}).status || {})[stillWhich(item)];
+    return t(status === "queued" || (item && String(item.id).indexOf("pending-") === 0)
+      ? "creatingPreview" : "previewUnavailable");
+  }
+
   function requestStill(cell, id, forceReload) {
     if (!cell || !id) {
       return;
@@ -1981,6 +1992,12 @@
       return;
     }
     const slotStatus = stillSlotStatus(id);
+    placeholder.textContent = stillPlaceholder(itemById(id));
+    if (slotStatus === "queued") {
+      placeholder.hidden = false;
+      img.hidden = true;
+      return;
+    }
     if (slotStatus === "not-applicable") {
       placeholder.hidden = false;
       img.hidden = true;
@@ -4418,7 +4435,7 @@
     }
     const placeholder = document.createElement("span");
     placeholder.className = "placeholder";
-    placeholder.textContent = t("previewUnavailable");
+    placeholder.textContent = stillPlaceholder(item);
     const img = document.createElement("img");
     img.alt = "";
     img.hidden = true;
@@ -4768,7 +4785,7 @@
       syncSaidBadge(cell, item);
       const placeholder = cell.querySelector(".placeholder");
       if (placeholder) {
-        placeholder.textContent = t("previewUnavailable");
+        placeholder.textContent = stillPlaceholder(item);
       }
       return cell;
     }
@@ -5928,6 +5945,12 @@
       ? t("readingPictures")
       : I18N.queueLabel(activity.phase, activity.detail || activity.phase);
     const parts = [label];
+    if (activity.phase === "scan" && activity.detail === "Discovering pictures") {
+      parts[0] = t("discoveringPictures");
+    }
+    if (activity.derivative) {
+      parts.push(t("derivative_" + activity.derivative));
+    }
     if (activity.file) {
       parts.push(activity.file);
     }
@@ -5935,7 +5958,7 @@
       parts.push(t("progressCount", { done: activity.done || 0, total: activity.total }));
     }
     if (activity.at) {
-      const secs = Math.max(0, Math.round(Date.now() / 1000 - Number(activity.at)));
+      const secs = Math.max(0, Math.round(Number(activity.elapsedSeconds || 0) + (performance.now() - activityReceivedAt) / 1000));
       parts.push(t("activitySeconds", { n: secs }));
     }
     return parts.join(" · ");
@@ -5948,12 +5971,15 @@
     jobsServe.textContent = t("servedHere", { host: window.location.host });
   }
 
+  function liveActivityLine() {
+    return [activitySentence(lastActivity), activitySentence(lastActivity && lastActivity.scan)]
+      .filter(Boolean).join(" • ");
+  }
+
   function jobsLine(body) {
-    if (!(body && body.paused)) {
-      const live = activitySentence(lastActivity);
-      if (live) {
-        return live;
-      }
+    const live = liveActivityLine();
+    if (live) {
+      return live + (body && body.paused ? " · " + t("pausingCurrent") : "");
     }
     if (!body || body.paused) {
       const pending = ((body && body.queues) || []).reduce(function (sum, q) {
@@ -5978,15 +6004,17 @@
     }
     const line = jobsLine(body);
     jobsStatus.textContent = line;
-    const live = !(body && body.paused) && activitySentence(lastActivity);
+    const live = liveActivityLine();
     jobsStatus.dataset.state = body && body.paused ? "paused" : (live || (body && body.processing) ? "running" : "idle");
     jobsQueues.innerHTML = "";
     ((body && body.queues) || []).forEach(function (queue) {
       const li = document.createElement("li");
       li.dataset.id = queue.id;
       li.dataset.state = queue.state || "idle";
-      const extra = queue.available ? "" : " (" + t("queued") + ")";
-      li.textContent = I18N.queueLabel(queue.id, queue.label) + " · " + (queue.pending || 0) + " " + t("left") + extra;
+      const extra = queue.available ? (queue.state === "paused" ? " · " + t("paused") : "") : " · " + t("setupNeeded");
+      li.textContent = I18N.queueLabel(queue.id, queue.label) + " · " + t("queueCounts", {
+        done: queue.done || 0, pending: queue.pending || 0, error: queue.error || 0,
+      }) + extra;
       jobsQueues.appendChild(li);
     });
     const pending = ((body && body.queues) || []).some(function (q) { return (q.pending || 0) > 0; });
@@ -6003,28 +6031,39 @@
   }
 
   function loadActivity() {
-    return fetch("/api/activity").then(readJson).then(function (body) {
+    if (activityInFlight) {
+      return activityInFlight;
+    }
+    activityInFlight = fetch("/api/activity").then(readJson).then(function (body) {
       lastActivity = body;
-      const live = !(lastJobs && lastJobs.paused) && activitySentence(body);
-      if (live && jobsStatus) {
-        jobsStatus.textContent = live;
-        jobsStatus.dataset.state = "running";
-      } else if (lastJobs) {
+      activityReceivedAt = performance.now();
+      if (lastJobs) {
         renderJobs(lastJobs);
+      } else if (jobsStatus) {
+        jobsStatus.textContent = liveActivityLine();
       }
       return body;
     }).catch(function () {
       return null;
+    }).finally(function () {
+      activityInFlight = null;
     });
+    return activityInFlight;
   }
 
   function loadJobs() {
-    return fetch("/api/jobs").then(readJson).then(function (body) {
+    if (jobsInFlight) {
+      return jobsInFlight;
+    }
+    jobsInFlight = fetch("/api/jobs").then(readJson).then(function (body) {
       renderJobs(body);
       return body;
     }).catch(function () {
       return null;
+    }).finally(function () {
+      jobsInFlight = null;
     });
+    return jobsInFlight;
   }
 
   function postJobs(action) {
@@ -6035,6 +6074,18 @@
     }).then(readJson).then(function (body) {
       renderJobs(body);
       return body;
+    });
+  }
+
+  function refreshIdleSettings() {
+    return fetch("/api/settings").then(readJson).then(function (data) {
+      const before = JSON.stringify(settings);
+      applySettings(data);
+      if (JSON.stringify(settings) !== before) {
+        renderKey = "";
+        return loadCatalog();
+      }
+      return null;
     });
   }
 
@@ -8302,6 +8353,7 @@
     language: function () {
       return language;
     },
+    polling: function () { return { catalog: pollInFlight, activity: !!activityInFlight }; },
     gridThumbs: gridThumbStats,
     paintGridStills: paintGridStills,
     recoverStills: recoverStills,
@@ -8315,33 +8367,34 @@
   };
 
   paintServeLine();
+  activityTimer = window.setInterval(function () {
+    loadActivity();
+  }, 1000);
   pollTimer = window.setInterval(function () {
-    if (!(lastJobs && lastJobs.paused)) {
-      const live = activitySentence(lastActivity);
-      if (live && jobsStatus) {
-        jobsStatus.textContent = live;
-        jobsStatus.dataset.state = "running";
-      }
-    }
     recoverStills();
+    if (jobsStatus && lastJobs) {
+      jobsStatus.textContent = jobsLine(lastJobs);
+    }
+    if (pollInFlight) {
+      return;
+    }
+    pollInFlight = true;
     fetch("/api/health").then(function (res) {
       if (!res.ok) {
         showDisconnected(true);
         return;
       }
       showDisconnected(false);
-      return loadActivity().then(function () {
-        return loadJobs();
-      }).then(function () {
-        if (scanning || !items.length || catalogNeedsStills() || currentView === "settings") {
-          return loadCatalog();
-        }
-      });
+      const refresh = scanning || (lastActivity && lastActivity.scan && lastActivity.scan.phase === "scan") || !items.length || catalogNeedsStills() || currentView === "settings";
+      return Promise.all([loadJobs(), refresh ? loadCatalog() : refreshIdleSettings()]);
     }).catch(function () {
       showDisconnected(true);
+    }).finally(function () {
+      pollInFlight = false;
     });
   }, 1000);
   window.addEventListener("beforeunload", function () {
     window.clearInterval(pollTimer);
+    window.clearInterval(activityTimer);
   });
 })();
