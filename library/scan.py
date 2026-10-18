@@ -188,6 +188,10 @@ def _start_source(
     serial, volume_root = volume_of_path(scan_path)
     origin_rel = path_from_volume_root(scan_path, volume_root)
     existing = find_source_by_origin(root, serial, origin_rel)
+    if existing is None and mode == "serve-from-there":
+        from library.portable import adopt_folder
+
+        existing = adopt_folder(root, scan_path)
     origin = {
         "volumeSerial": serial,
         "pathFromVolumeRoot": origin_rel,

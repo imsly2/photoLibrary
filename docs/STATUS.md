@@ -4,6 +4,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Serve from that folder keeps the processed picture
+  data in `<folder>/.library/`. Renditions stay under `renditions/`.
+  The catalog copy is `catalog/` (items, people, places, things,
+  hearts, face embeddings, object notes). Adding a folder that already
+  has that catalog loads it and shows the finished pictures.
 - 2026-10-18 — Serve from that folder keeps generated tiles, previews,
   and proxy videos in `<folder>/.library/renditions/<id>/`. The add
   dialog sends `previewStore: with-source`. A preview file already in

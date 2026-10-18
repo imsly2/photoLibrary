@@ -654,6 +654,12 @@ def _save_state(root: Path, state: dict[str, Any]) -> None:
         objects_state_path(root),
         {"schemaVersion": 1, "items": state.get("items") or {}},
     )
+    try:
+        from library.portable import mirror_objects
+
+        mirror_objects(root)
+    except Exception:
+        return
 
 
 def _already_analyzed(state: dict[str, Any], item_id: str, digest: str) -> bool:

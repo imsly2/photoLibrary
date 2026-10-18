@@ -169,9 +169,18 @@ library-data/
   originals/<source>/    # used when a folder was copied onto this drive
 ```
 
-When a source stores previews inside the selected folder, those files go in
-`<that-folder>/.library/renditions/<id>/` instead of `library-data/renditions/`.
-The JSON catalog still lives in `library-data/`.
+When a folder is served from where it is, with previews stored in that
+folder, everything generated for those pictures lives in
+`<that-folder>/.library/`. Renditions are
+`<that-folder>/.library/renditions/<id>/`. The processed records are
+`<that-folder>/.library/catalog/`: the source, each item, the people,
+places, and things those items use, the hearts for those items, the face
+embeddings for those items, and the object-analysis notes for those items.
+Move the folder, or open it on another computer, and Library reads that
+catalog, points it at the folder's new location, and shows the pictures
+with the work already done. Settings, undo, and the optional models stay
+in `library-data/`. A folder copied onto this drive still keeps its
+catalog in `library-data/`.
 
 Paths stored for files on this drive are relative to `library-data/`. A drive
 letter is never the identity of a file. A linked folder on another disk stores
@@ -371,11 +380,13 @@ serial and the path from that volume's root. On this computer the server
 opens those files. On another computer, if that volume is not mounted, the
 source is unavailable. This choice stores the generated tiles, previews, and
 proxy videos inside that folder, at `<folder>/.library/renditions/<id>/`, and
-sets the source's `previewStore` to `with-source`. Moving the folder moves
-those files with it. A later add of a folder that already has those files
-reuses a non-empty preview instead of making it again. The picture list
-itself still lives with this Library. A standalone HTML page in that folder
-comes later.
+sets the source's `previewStore` to `with-source`. The processed records
+for those pictures are written into `<folder>/.library/catalog/` as well,
+so moving the folder takes the tiles, the names, the faces, the places,
+and the ratings with it. A later add of a folder that already has that
+catalog loads it, points the records at the folder where it is now, and
+shows the finished pictures instead of processing them again. A standalone
+HTML page in that folder comes later.
 
 The dialog's starting choice is the setting `addFolderDefault`: `ask` (default),
 `copy-here`, or `serve-from-there`. The web dialog always confirms the path and

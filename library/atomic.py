@@ -117,6 +117,12 @@ def transact(
     if remaining.exists() and not any(remaining.iterdir()):
         remaining.rmdir()
     purge_orphan_undo_files(root)
+    try:
+        from library.portable import mirror_changes
+
+        mirror_changes(root, changes)
+    except Exception:
+        pass
     return tid
 
 
