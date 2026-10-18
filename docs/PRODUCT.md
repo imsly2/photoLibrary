@@ -211,6 +211,14 @@ address.
 The server listens on `127.0.0.1` and port `8765` unless settings say otherwise.
 Binding every interface is a setting, off by default.
 
+Command Center and Photon Arena own ports `8765`–`8774` on a dev PC.
+Library does not take a port in that band when another program already
+holds it, and it does not stop that program. It stores port `8785` in
+settings and opens `http://127.0.0.1:8785/`. The next launch uses the
+stored port. If `8785` is also taken by something else, launch stops
+with `port-in-use` and does not pick a third port. A family PC where
+`8765` is free stays on `8765`.
+
 The opened page stays on that live origin. Back (in-app or the browser button)
 must not jump to another host or port — including a leftover QA listen such as
 `127.0.0.1:18765`. History, links, and fetches use the current origin or
@@ -234,7 +242,10 @@ just finishes.
 **Check:** `python -m tests.qa check F2` (planned runner; common root/artifact
 arguments and full assertions in SLICES). from a clean temp library, `powershell -File launch.ps1` prints a
 URL `http://127.0.0.1:8765/` and `GET /api/health` returns
-`{"ok": true}`. Artifact: the response body saved to a file. A second launch
+`{"ok": true}`. When another program already holds `8765`, that same
+launch stores port `8785`, prints `http://127.0.0.1:8785/`, and health
+on that URL returns `{"ok": true}` while the other program keeps
+`8765`. Artifact: the response body saved to a file. A second launch
 against the same library folder does not create a second catalog.
 
 ## F3 — Command line and HTTP

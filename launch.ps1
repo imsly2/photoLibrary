@@ -172,6 +172,37 @@ function Test-Ffmpeg {
     return [bool](Get-Command ffmpeg -ErrorAction SilentlyContinue)
 }
 
+function Get-LibraryListenUrl {
+    param([Parameter(Mandatory = $true)][string]$Folder)
+    $port = 8765
+    $hostName = "127.0.0.1"
+    $settingsPath = Join-Path $Folder "library-data\settings.json"
+    if (Test-Path -LiteralPath $settingsPath) {
+        try {
+            $settings = Get-Content -LiteralPath $settingsPath -Raw | ConvertFrom-Json
+            if ($settings.port) { $port = [int]$settings.port }
+            if ($settings.listenHost) { $hostName = [string]$settings.listenHost }
+        } catch {
+            $port = 8765
+            $hostName = "127.0.0.1"
+        }
+    }
+    if ($hostName -eq "0.0.0.0" -or $hostName -eq "::") {
+        $hostName = "127.0.0.1"
+    }
+    return ("http://{0}:{1}/" -f $hostName, $port)
+}
+
+function Test-LibraryHealth {
+    param([Parameter(Mandatory = $true)][string]$Url)
+    try {
+        $resp = Invoke-WebRequest -Uri ($Url.TrimEnd("/") + "/api/health") -UseBasicParsing -TimeoutSec 1
+        return ($resp.StatusCode -eq 200 -and $resp.Content -match '"ok"\s*:\s*true')
+    } catch {
+        return $false
+    }
+}
+
 try {
     $python = @(Get-Python312)
     $ffmpegOk = Test-Ffmpeg
@@ -219,17 +250,20 @@ try {
 
     $argumentList = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "serve")
     $proc = Start-Process -FilePath $exe -ArgumentList $argumentList -WorkingDirectory $AppFolder -PassThru -NoNewWindow
-    $url = "http://127.0.0.1:8765/"
+    $url = Get-LibraryListenUrl -Folder $AppFolder
     $deadline = (Get-Date).AddSeconds(20)
     $ready = $false
     while ((Get-Date) -lt $deadline) {
-        try {
-            $resp = Invoke-WebRequest -Uri ($url.TrimEnd("/") + "/api/health") -UseBasicParsing -TimeoutSec 1
-            if ($resp.StatusCode -eq 200) { $ready = $true; break }
-        } catch {
-            Start-Sleep -Milliseconds 200
-        }
+        $url = Get-LibraryListenUrl -Folder $AppFolder
+        if (Test-LibraryHealth -Url $url) { $ready = $true; break }
+        if ($proc.HasExited) { break }
+        Start-Sleep -Milliseconds 200
     }
+    if (-not $ready) {
+        Write-Host "Library could not start. Its listen port is already in use."
+        exit 1
+    }
+    Write-Host $url
     if (-not $NoBrowser) {
         Start-Process $url
     }

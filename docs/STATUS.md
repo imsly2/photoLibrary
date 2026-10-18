@@ -4,6 +4,11 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-18 — Library and Photon Arena can both stay open. Factory
+  listen port stays 8765. When another program already holds
+  8765–8774, serve stores port 8785 (not an undo step) and the
+  launcher opens that URL. It does not stop Photon and does not scan
+  for a third port. A PC where 8765 is free stays on 8765.
 - 2026-10-17 — Photo rating after PR #44 (`a82e556`) on
   `cursor/photo-rating-e3e7`. Settings **Rating** = Off / Basic /
   Smart (default Basic). Queue stage **Rating** after transcribe.

@@ -29,13 +29,30 @@ fi
 
 "$PYTHON" -m library serve &
 PID=$!
-URL="http://127.0.0.1:8765/"
+read_url() {
+  "$PYTHON" -c 'import json; from pathlib import Path; p = Path("library-data/settings.json"); port, host = 8765, "127.0.0.1";
+data = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {};
+port = int(data.get("port") or port); host = str(data.get("listenHost") or host);
+host = "127.0.0.1" if host in ("0.0.0.0", "::") else host; print(f"http://{host}:{port}/")'
+}
+URL="$(read_url)"
+ready=0
 for _ in $(seq 1 50); do
-  if command -v curl >/dev/null 2>&1 && curl -sf "${URL}api/health" >/dev/null; then
+  URL="$(read_url)"
+  if command -v curl >/dev/null 2>&1 && curl -sf "${URL}api/health" | grep -q '"ok"'; then
+    ready=1
+    break
+  fi
+  if ! kill -0 "$PID" 2>/dev/null; then
     break
   fi
   sleep 0.2
 done
+if [ "$ready" -eq 0 ]; then
+  echo "Library could not start. Its listen port is already in use." >&2
+  exit 1
+fi
+echo "$URL"
 if [ "$NO_BROWSER" -eq 0 ]; then
   if command -v xdg-open >/dev/null 2>&1; then
     xdg-open "$URL" >/dev/null 2>&1 || true

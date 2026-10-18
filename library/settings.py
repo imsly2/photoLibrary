@@ -56,6 +56,13 @@ NUMBER_KEYS = frozenset({"placeMatchMeters", "tourOrbitSec", "tourPictureSec", "
 BOOL_KEYS = frozenset({"transcribeVideos", "ratingLearn"})
 SETTING_KEYS = frozenset(KEY_ORDER[1:])
 
+# Command Center and Photon Arena own 8765-8774. Library stays on 8765
+# when that port is free. When another program already holds a port in
+# the band, serve stores DESK_PORT instead of picking a random one.
+SHARED_PORT_LO = 8765
+SHARED_PORT_HI = 8774
+DESK_PORT = 8785
+
 DEFAULTS: dict[str, Any] = {
     "schemaVersion": SCHEMA_VERSION,
     "previewStore": "with-server",

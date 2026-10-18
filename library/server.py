@@ -843,12 +843,54 @@ def _probe_existing(root: Path, host: str, port: int) -> str | None:
         return None
 
 
+def _in_shared_band(port: int) -> bool:
+    from library.settings import SHARED_PORT_HI, SHARED_PORT_LO
+
+    return SHARED_PORT_LO <= int(port) <= SHARED_PORT_HI
+
+
+def _persist_desk_port(root: Path, settings: dict[str, Any]) -> tuple[int, str | None]:
+    """Store the reserved Library port when Arena/Command Center hold the band."""
+    from library.settings import DESK_PORT, write_settings_file
+
+    host = str(settings.get("listenHost") or "127.0.0.1")
+    try:
+        existing = matching_root_url(root, host, DESK_PORT)
+    except AppError as exc:
+        if exc.code == "port-in-use":
+            raise fail("port-in-use") from exc
+        raise
+    if int(settings.get("port") or 0) != DESK_PORT:
+        updated = dict(settings)
+        updated["port"] = DESK_PORT
+        write_settings_file(root, updated)
+        settings["port"] = DESK_PORT
+    return DESK_PORT, existing
+
+
+def _resolve_listen(
+    root: Path, host: str, port: int, settings: dict[str, Any]
+) -> tuple[int, str | None]:
+    try:
+        existing = matching_root_url(root, host, port)
+    except AppError as exc:
+        if exc.code != "port-in-use" or not _in_shared_band(port):
+            raise
+        return _persist_desk_port(root, settings)
+    return int(port), existing
+
+
 def serve(root: Path) -> int:
     """Start the server or reopen a matching-root instance. Returns process exit."""
     root = normalize_root(root)
     root.mkdir(parents=True, exist_ok=True)
     host, port = _read_listen_target(root)
-    existing = _probe_existing(root, host, port)
+    try:
+        existing = _probe_existing(root, host, port)
+    except AppError as exc:
+        if exc.code != "port-in-use" or not _in_shared_band(port):
+            raise
+        existing = None
     if existing is not None:
         print(existing, flush=True)
         return 0
@@ -863,8 +905,8 @@ def serve(root: Path) -> int:
         library.recover()
         settings = library.ensure_settings()
         host = settings["listenHost"]
-        port = settings["port"]
-        existing = _probe_existing(root, host, port)
+        port = int(settings["port"])
+        port, existing = _resolve_listen(root, host, port, settings)
         if existing is not None:
             print(existing, flush=True)
             return 0
