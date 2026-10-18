@@ -456,24 +456,99 @@ class RunState:
     poll_in_flight: bool = False
 
 
-def _catalog_item_dirs(lib_root: Path, fixture_dir: Path) -> list[Path]:
+def _server_items_dir(lib_root: Path) -> Path:
+    return lib_root / "catalog" / "items"
+
+
+def _server_journal_dirs(lib_root: Path) -> list[Path]:
     dirs: list[Path] = []
-    for base in (lib_root / "catalog", fixture_dir / ".library" / "catalog"):
-        folder = base / "items"
-        if folder.is_dir():
-            dirs.append(folder)
+    base = lib_root / "catalog" / "sources"
+    if not base.is_dir():
+        return dirs
+    for child in base.iterdir():
+        if child.is_dir() and child.name.endswith(".files"):
+            dirs.append(child)
     return dirs
 
 
-def _catalog_journal_dirs(lib_root: Path, fixture_dir: Path) -> list[Path]:
-    dirs: list[Path] = []
-    for base in (lib_root / "catalog" / "sources", fixture_dir / ".library" / "catalog" / "sources"):
-        if not base.is_dir():
+def _mirror_items_dir(fixture_dir: Path) -> Path:
+    return fixture_dir / ".library" / "catalog" / "items"
+
+
+def _item_catalog_key(item: dict[str, Any]) -> str:
+    rel = _item_rel_key(item)
+    if rel:
+        return rel
+    item_id = item.get("id")
+    return str(item_id) if type(item_id) is str else ""
+
+
+def _dedupe_catalog_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per picture: prefer hash id over pending-* when both exist."""
+    by_key: dict[str, dict[str, Any]] = {}
+    for item in items:
+        key = _item_catalog_key(item)
+        if not key:
             continue
-        for child in base.iterdir():
-            if child.is_dir() and child.name.endswith(".files"):
-                dirs.append(child)
-    return dirs
+        prev = by_key.get(key)
+        if prev is None:
+            by_key[key] = item
+            continue
+        prev_id = str(prev.get("id") or "")
+        new_id = str(item.get("id") or "")
+        if prev_id.startswith("pending-") and not new_id.startswith("pending-"):
+            by_key[key] = item
+    return list(by_key.values())
+
+
+def _collect_items_from_dir(items_dir: Path) -> list[dict[str, Any]]:
+    if not items_dir.is_dir():
+        return []
+    out: list[dict[str, Any]] = []
+    for path in items_dir.glob("*.json"):
+        item = _try_load_json_file(path)
+        if item is None:
+            continue
+        item_id = item.get("id")
+        if type(item_id) is not str or not item_id:
+            continue
+        out.append(item)
+    return out
+
+
+def _collect_server_catalog_items(lib_root: Path) -> list[dict[str, Any]]:
+    return _dedupe_catalog_items(_collect_items_from_dir(_server_items_dir(lib_root)))
+
+
+def _rendition_status_sig(item: dict[str, Any]) -> tuple[Any, ...]:
+    status = ((item.get("renditions") or {}).get("status") or {})
+    return tuple(status.get(slot) for slot in ALL_RENDITION_SLOTS)
+
+
+def _portable_mirror_caught_up(lib_root: Path, fixture_dir: Path) -> bool:
+    server = {
+        _item_catalog_key(item): _rendition_status_sig(item)
+        for item in _collect_server_catalog_items(lib_root)
+    }
+    if not server:
+        return False
+    mirror_items = _dedupe_catalog_items(_collect_items_from_dir(_mirror_items_dir(fixture_dir)))
+    mirror = {_item_catalog_key(item): _rendition_status_sig(item) for item in mirror_items}
+    for key, sig in server.items():
+        if mirror.get(key) != sig:
+            return False
+    return True
+
+
+def _measure_portable_mirror_lag(
+    lib_root: Path, fixture_dir: Path, everything_at: float, *, timeout: float = 10.0
+) -> float | None:
+    deadline = everything_at + timeout
+    while time.monotonic() < deadline:
+        if _portable_mirror_caught_up(lib_root, fixture_dir):
+            return time.monotonic() - everything_at
+        time.sleep(DISK_POLL_INTERVAL_SEC)
+    return None
 
 
 def _try_load_json_file(path: Path) -> dict[str, Any] | None:
@@ -505,13 +580,8 @@ def _note_file_read(state: RunState, rel_key: str, now: float) -> None:
         state.file_read_at[key] = now
 
 
-def _scan_disk_reading(
-    state: RunState,
-    lib_root: Path,
-    fixture_dir: Path,
-    now: float,
-) -> None:
-    for journal_dir in _catalog_journal_dirs(lib_root, fixture_dir):
+def _scan_disk_reading(state: RunState, lib_root: Path, now: float) -> None:
+    for journal_dir in _server_journal_dirs(lib_root):
         for path in journal_dir.glob("*.json"):
             key = str(path)
             if key in state.seen_journal_paths:
@@ -525,7 +595,8 @@ def _scan_disk_reading(
             state.seen_journal_paths.add(key)
             _note_file_read(state, rel, now)
 
-    for items_dir in _catalog_item_dirs(lib_root, fixture_dir):
+    items_dir = _server_items_dir(lib_root)
+    if items_dir.is_dir():
         for path in items_dir.glob("*.json"):
             key = str(path)
             if key in state.seen_item_paths:
@@ -537,20 +608,6 @@ def _scan_disk_reading(
             rel = _item_rel_key(item)
             if rel:
                 _note_file_read(state, rel, now)
-
-
-def _collect_disk_items(lib_root: Path, fixture_dir: Path) -> list[dict[str, Any]]:
-    by_id: dict[str, dict[str, Any]] = {}
-    for items_dir in _catalog_item_dirs(lib_root, fixture_dir):
-        for path in items_dir.glob("*.json"):
-            item = _try_load_json_file(path)
-            if item is None:
-                continue
-            item_id = item.get("id")
-            if type(item_id) is not str or not item_id:
-                continue
-            by_id[item_id] = item
-    return list(by_id.values())
 
 
 def _sorted_catalog_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -666,35 +723,80 @@ def _track_bookkeeping(
 
 
 BOOKKEEPING_MIN_SAMPLES = 5
+IMPLAUSIBLE_REASON = "timestamps implausible: batched writes?"
 
 
-def _finalize_bookkeeping(state: RunState) -> dict[str, Any]:
+def _ffmpeg_base_sec(ffmpeg: dict[str, float], slot: str) -> float:
+    return ffmpeg["thumbSecMean"] if slot == "thumb" else ffmpeg["previewSecMean"]
+
+
+def _bookkeeping_ms_from_event(ev: dict[str, Any], ffmpeg: dict[str, float]) -> float | None:
+    gap = float(ev.get("gapSec") or 0)
+    slot = str(ev.get("slot") or "thumb")
+    base = _ffmpeg_base_sec(ffmpeg, slot)
+    if not (0 < gap < 4.0) or gap < base:
+        return None
+    return max(0.0, gap - base) * 1000.0
+
+
+def _bookkeeping_samples_implausible(
+    samples: list[float], source_events: list[dict[str, Any]], ffmpeg: dict[str, float]
+) -> bool:
+    if not samples:
+        return True
+    if sum(1 for s in samples if s <= 1.0) > len(samples) / 2:
+        return True
+    qualifying = [ev for ev in source_events if float(ev.get("gapSec") or 0) > 0]
+    if not qualifying:
+        return True
+    bad = 0
+    for ev in qualifying:
+        gap = float(ev.get("gapSec") or 0)
+        base = _ffmpeg_base_sec(ffmpeg, str(ev.get("slot") or "thumb"))
+        if gap < base * 0.5:
+            bad += 1
+    return bad > len(qualifying) / 2
+
+
+def _finalize_bookkeeping(state: RunState, ffmpeg: dict[str, float]) -> dict[str, Any]:
     events = sorted(state.bookkeeping_events, key=lambda e: float(e.get("at") or 0))
     scan_done = state.milestones.scan_done
 
+    def build_window(event_filter) -> tuple[list[float], list[dict[str, Any]]]:
+        picked: list[dict[str, Any]] = []
+        samples: list[float] = []
+        for ev in events:
+            if not event_filter(ev):
+                continue
+            ms = _bookkeeping_ms_from_event(ev, ffmpeg)
+            if ms is None:
+                continue
+            picked.append(ev)
+            samples.append(ms)
+        return samples, picked
+
     steady: list[float] = []
+    steady_events: list[dict[str, Any]] = []
     if scan_done is not None:
         steady_cutoff = scan_done + 2.0
-        for ev in events:
-            at = float(ev.get("at") or 0)
-            if at < steady_cutoff:
-                continue
-            gap = float(ev.get("gapSec") or 0)
-            ms = ev.get("bookkeepingMs")
-            if ms is None or not (0 < gap < 4.0):
-                continue
-            steady.append(float(ms))
+
+        def steady_filter(ev: dict[str, Any]) -> bool:
+            return float(ev.get("at") or 0) >= steady_cutoff
+
+        steady, steady_events = build_window(steady_filter)
 
     if len(steady) >= BOOKKEEPING_MIN_SAMPLES:
-        return {
-            "meanMs": statistics.mean(steady),
-            "window": "postScanSteady",
-            "sampleCount": len(steady),
-            "samplesMs": steady,
-        }
+        if not _bookkeeping_samples_implausible(steady, steady_events, ffmpeg):
+            return {
+                "meanMs": statistics.mean(steady),
+                "window": "postScanSteady",
+                "sampleCount": len(steady),
+                "samplesMs": steady,
+            }
 
     first_thumb = state.milestones.first_thumb
     fallback: list[float] = []
+    fallback_events: list[dict[str, Any]] = []
     skipped_first = False
     if first_thumb is not None:
         for ev in events:
@@ -702,28 +804,37 @@ def _finalize_bookkeeping(state: RunState) -> dict[str, Any]:
             if at < first_thumb:
                 continue
             gap = float(ev.get("gapSec") or 0)
-            ms = ev.get("bookkeepingMs")
-            if ms is None or gap <= 0 or gap > 4.0:
+            if gap <= 0 or gap > 4.0:
                 continue
             if not skipped_first:
                 skipped_first = True
                 continue
-            fallback.append(float(ms))
+            ms = _bookkeeping_ms_from_event(ev, ffmpeg)
+            if ms is None:
+                continue
+            fallback_events.append(ev)
+            fallback.append(ms)
 
     if len(fallback) >= BOOKKEEPING_MIN_SAMPLES:
-        return {
-            "meanMs": statistics.mean(fallback),
-            "window": "afterFirstThumb",
-            "sampleCount": len(fallback),
-            "samplesMs": fallback,
-        }
+        if not _bookkeeping_samples_implausible(fallback, fallback_events, ffmpeg):
+            return {
+                "meanMs": statistics.mean(fallback),
+                "window": "afterFirstThumb",
+                "sampleCount": len(fallback),
+                "samplesMs": fallback,
+            }
 
+    implausible = (
+        len(steady) >= BOOKKEEPING_MIN_SAMPLES
+        or len(fallback) >= BOOKKEEPING_MIN_SAMPLES
+    )
     return {
         "meanMs": None,
         "window": "none",
         "sampleCount": len(fallback),
         "samplesMs": fallback,
         "steadyAttemptCount": len(steady),
+        "implausible": implausible,
     }
 
 
@@ -872,8 +983,8 @@ def _disk_poll_loop(
     while time.monotonic() < deadline:
         now = time.monotonic()
         t_rel = now - state.milestones.t0
-        _scan_disk_reading(state, lib_root, fixture_dir, now)
-        items = _sorted_catalog_items(_collect_disk_items(lib_root, fixture_dir))
+        _scan_disk_reading(state, lib_root, now)
+        items = _sorted_catalog_items(_collect_server_catalog_items(lib_root))
         _track_bookkeeping(state, items, now, ffmpeg)
 
         if state.milestones.first_thumb is None:
@@ -920,20 +1031,31 @@ def _disk_poll_loop(
 
         _probe_viewer_preview(base, state, now)
 
-        if len(state.timeline) < 500 or int(t_rel * 10) % 10 == 0:
-            state.timeline.append(
-                {
-                    "t": round(t_rel, 3),
-                    "diskItems": len(items),
-                    "filesRead": len(state.file_read_at),
-                    "thumbsReady": _thumb_ready_count(items),
-                    "queued": _any_queued(items) if items else True,
-                }
-            )
+        _timeline_append(
+            state,
+            {
+                "t": round(t_rel, 3),
+                "diskItems": len(items),
+                "filesRead": len(state.file_read_at),
+                "thumbsReady": _thumb_ready_count(items),
+                "queued": _any_queued(items) if items else True,
+            },
+        )
 
         if state.milestones.everything is not None:
             break
         time.sleep(DISK_POLL_INTERVAL_SEC)
+
+
+_TIMELINE_KEYS = ("diskItems", "filesRead", "thumbsReady", "queued")
+
+
+def _timeline_append(state: RunState, point: dict[str, Any]) -> None:
+    if state.timeline:
+        last = state.timeline[-1]
+        if all(last.get(k) == point.get(k) for k in _TIMELINE_KEYS):
+            return
+    state.timeline.append(point)
 
 
 def _compact_activity(activity: Any) -> dict[str, Any]:
@@ -960,7 +1082,7 @@ def _build_results(
     m = state.milestones
     t0 = m.t0
     reading = _reading_metrics(state.file_read_at, t0, m.scan_done)
-    bk = _finalize_bookkeeping(state)
+    bk = _finalize_bookkeeping(state, ffmpeg)
 
     def since(start: float | None) -> float | None:
         if start is None:
@@ -997,12 +1119,15 @@ def _build_results(
     items_p95 = _percentile(state.items_latencies, 95)
 
     bk_mean = bk["meanMs"]
-    bk_reason = f"fewer than {BOOKKEEPING_MIN_SAMPLES} completion gaps"
-    if bk.get("steadyAttemptCount") is not None and bk["sampleCount"] < BOOKKEEPING_MIN_SAMPLES:
-        bk_reason = (
-            f"fewer than {BOOKKEEPING_MIN_SAMPLES} gaps "
-            f"(steady={bk.get('steadyAttemptCount', 0)}, fallback={bk['sampleCount']})"
-        )
+    if bk.get("implausible"):
+        bk_reason = IMPLAUSIBLE_REASON
+    else:
+        bk_reason = f"fewer than {BOOKKEEPING_MIN_SAMPLES} completion gaps"
+        if bk.get("steadyAttemptCount") is not None and bk["sampleCount"] < BOOKKEEPING_MIN_SAMPLES:
+            bk_reason = (
+                f"fewer than {BOOKKEEPING_MIN_SAMPLES} gaps "
+                f"(steady={bk.get('steadyAttemptCount', 0)}, fallback={bk['sampleCount']})"
+            )
 
     rows = [
         _budget_row(
@@ -1105,6 +1230,18 @@ def _build_results(
     return rows, bk
 
 
+def _print_info_rows(info: dict[str, Any]) -> None:
+    lag = info.get("portableMirrorLagSec")
+    if lag is None and info.get("portableMirrorChecked"):
+        text = "n/a (>10 s or mirror missing)"
+    elif lag is None:
+        text = "n/a (not measured)"
+    else:
+        text = f"{lag:.3f}"
+    print(f"{'portableMirrorLagSec':<22} {'(info)':<18} {text:<28}")
+    print()
+
+
 def _print_table(rows: list[dict[str, Any]]) -> None:
     print()
     print(f"{'Budget':<22} {'Target':<18} {'Measured':<28} {'Result':<8}")
@@ -1182,6 +1319,15 @@ def run_bench(
         _disk_poll_loop(base, state, lib_root, fixture_dir, count, ffmpeg, deadline)
         timed_out = state.milestones.everything is None and time.monotonic() >= deadline
 
+        mirror_info: dict[str, Any] = {"portableMirrorChecked": False}
+        if state.milestones.everything is not None:
+            mirror_info["portableMirrorChecked"] = True
+            mirror_info["portableMirrorLagSec"] = _measure_portable_mirror_lag(
+                lib_root,
+                fixture_dir,
+                state.milestones.everything,
+            )
+
         stop_latency.set()
         ui_thread.join(timeout=5.0)
         if heavy_thread is not None:
@@ -1189,6 +1335,7 @@ def run_bench(
 
         rows, bookkeeping = _build_results(state, count, budgets, ffmpeg, timed_out)
         _print_table(rows)
+        _print_info_rows(mirror_info)
 
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         payload = {
@@ -1271,8 +1418,10 @@ def run_bench(
                 state.milestones.scan_done,
             ),
             "viewerItemId": state.viewer_item_id,
-            "timeline": state.timeline[-400:],
             "bookkeeping": bookkeeping,
+            "portableMirrorLagSec": mirror_info.get("portableMirrorLagSec"),
+            "portableMirrorChecked": mirror_info.get("portableMirrorChecked"),
+            "timeline": state.timeline,
         }
 
         ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
