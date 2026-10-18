@@ -108,6 +108,22 @@ def _scan_progress(kind: str, rel: str) -> None:
     print(f"{kind} {rel}", flush=True)
 
 
+def _pause_for_readers(lock: threading.Lock) -> None:
+    """Let other requests and the drain thread take the catalog lock."""
+    profile = bool(os.environ.get("LIBRARY_PROFILE_SCAN", "").strip())
+    started = time.perf_counter() if profile else 0.0
+    lock.release()
+    try:
+        time.sleep(0)
+        slept = time.perf_counter() if profile else 0.0
+    finally:
+        lock.acquire()
+        if profile:
+            from library.scan import note_scan_yield
+
+            note_scan_yield(slept - started, time.perf_counter() - slept)
+
+
 def listen_url(host: str, port: int) -> str:
     display = "127.0.0.1" if host == "0.0.0.0" else host
     return f"http://{display}:{port}/"
@@ -203,11 +219,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
         self._send_json(200, build(snap))
 
     def _yield_scan(self) -> None:
-        self.lock.release()
-        try:
-            time.sleep(0.001)
-        finally:
-            self.lock.acquire()
+        _pause_for_readers(self.lock)
 
     def _send(
         self,
@@ -334,11 +346,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 library = self.library
 
                 def yield_scan() -> None:
-                    lock.release()
-                    try:
-                        time.sleep(0.001)
-                    finally:
-                        lock.acquire()
+                    _pause_for_readers(lock)
 
                 def scan_worker() -> None:
                     lock.acquire()
@@ -408,11 +416,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 library = self.library
 
                 def yield_rescan() -> None:
-                    lock.release()
-                    try:
-                        time.sleep(0.001)
-                    finally:
-                        lock.acquire()
+                    _pause_for_readers(lock)
 
                 def rescan_worker() -> None:
                     lock.acquire()
@@ -846,6 +850,7 @@ class LibraryHandler(BaseHTTPRequestHandler):
         except Exception as exc:
             if _is_client_disconnect(exc):
                 return
+            traceback.print_exc()
             append_error(
                 self.library.root,
                 parsed.path + (("?" + parsed.query) if parsed.query else ""),

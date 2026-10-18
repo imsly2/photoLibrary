@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import cProfile
+import json
 import os
+import pstats
+import time
 from contextlib import nullcontext
 from contextvars import ContextVar
 import unicodedata
@@ -175,6 +179,18 @@ _SCAN_BATCH: ContextVar[list[dict[str, Any]] | None] = ContextVar("scan_batch", 
 _BATCH_LIMIT = 48
 
 
+_YIELD_INTERVAL = 0.5
+
+
+def _due_for_pending_pause(between: BetweenFn | None, last: float) -> bool:
+    """True when this file should stop on its pending id so readers can attach."""
+    if between is None:
+        return False
+    if not last:
+        return True
+    return time.perf_counter() - last >= _YIELD_INTERVAL
+
+
 def _flush_scan_batch(root: Path) -> None:
     batch = _SCAN_BATCH.get()
     if not batch:
@@ -228,7 +244,124 @@ def _hash_barrier_armed() -> bool:
     return os.environ.get("LIBRARY_TEST") == "1" and os.environ.get("LIBRARY_TEST_BARRIER") == "hash-publication"
 
 
+_profile_on: ContextVar[bool] = ContextVar("scan_profile_on", default=False)
+_profile_yields: list[dict[str, float]] = []
+_profile_files: list[float] = []
+
+
+def note_scan_yield(sleep_s: float, wait_s: float) -> None:
+    if _profile_on.get():
+        _profile_yields.append({"sleep": sleep_s, "wait": wait_s})
+
+
+def _note_scan_file() -> None:
+    if _profile_on.get():
+        _profile_files.append(time.perf_counter())
+
+
+def _observe_progress(on_progress: ProgressFn) -> ProgressFn:
+    if not _profile_on.get():
+        return on_progress
+
+    def wrapped(kind: str, rel: str) -> None:
+        on_progress(kind, rel)
+        _note_scan_file()
+
+    return wrapped
+
+
+def _profile_target() -> Path | None:
+    raw = os.environ.get("LIBRARY_PROFILE_SCAN", "").strip()
+    if not raw:
+        return None
+    return Path(raw)
+
+
+def _write_scan_profile(prof: cProfile.Profile | None, target: Path, seconds: float) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    prof_path = target if target.suffix == ".prof" else target.with_suffix(".prof")
+    json_path = prof_path.with_suffix(".json")
+    rows: list[dict[str, Any]] = []
+    if prof is not None:
+        prof.dump_stats(str(prof_path))
+        for (filename, line, func), (_cc, nc, tt, ct, _callers) in pstats.Stats(prof).stats.items():
+            rows.append(
+                {
+                    "func": func,
+                    "file": filename,
+                    "line": line,
+                    "calls": nc,
+                    "tottime": round(tt, 4),
+                    "cumtime": round(ct, 4),
+                }
+            )
+    rows.sort(key=lambda row: row["tottime"], reverse=True)
+    deltas: list[float] = []
+    previous = _profile_t0[0]
+    for stamp in _profile_files:
+        deltas.append(round(stamp - previous, 4))
+        previous = stamp
+    sleep = sum(row["sleep"] for row in _profile_yields)
+    wait = sum(row["wait"] for row in _profile_yields)
+    n = len(deltas)
+    tenth = max(1, n // 10)
+    def _mean(group: list[float]) -> float | None:
+        return round(sum(group) / len(group), 4) if group else None
+    payload = {
+        "seconds": round(seconds, 3),
+        "files": n,
+        "perFile": deltas,
+        "perFileMean": _mean(deltas),
+        "firstTenthMean": _mean(deltas[:tenth]),
+        "lastTenthMean": _mean(deltas[-tenth:]),
+        "lastToFirst": (
+            round((_mean(deltas[-tenth:]) or 0) / _mean(deltas[:tenth]), 3)
+            if _mean(deltas[:tenth])
+            else None
+        ),
+        "yields": {
+            "n": len(_profile_yields),
+            "sleepSec": round(sleep, 3),
+            "waitSec": round(wait, 3),
+            "sleepMeanMs": round(1000 * sleep / len(_profile_yields), 2) if _profile_yields else 0,
+            "waitMeanMs": round(1000 * wait / len(_profile_yields), 2) if _profile_yields else 0,
+        },
+        "functions": rows[:40],
+    }
+    json_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+_profile_t0: list[float] = [0.0]
+
+
 def _run_scoped_scan(
+    root: Path,
+    body: Callable[[], dict[str, Any]],
+    *,
+    batch: bool,
+) -> dict[str, Any]:
+    target = _profile_target()
+    cpu = os.environ.get("LIBRARY_PROFILE_CPU", "1") != "0"
+    prof = cProfile.Profile() if target is not None and cpu else None
+    token = _profile_on.set(target is not None)
+    _profile_yields.clear()
+    _profile_files.clear()
+    _profile_t0[0] = time.perf_counter()
+    if prof is not None:
+        prof.enable()
+    started = time.perf_counter()
+    try:
+        return _scoped_scan(root, body, batch=batch)
+    finally:
+        seconds = time.perf_counter() - started
+        if prof is not None:
+            prof.disable()
+        _profile_on.reset(token)
+        if target is not None:
+            _write_scan_profile(prof, target, seconds)
+
+
+def _scoped_scan(
     root: Path,
     body: Callable[[], dict[str, Any]],
     *,
@@ -256,14 +389,16 @@ def _run_scoped_scan(
                 seal_latest(root)
     finally:
         _SCAN_BATCH.reset(batch_token)
+        from library.activity import clear as clear_activity
+
+        # Catalog files are already durable. Portable copy and the sqlite
+        # rebuild keep running; readers can see the scan finish without waiting.
+        clear_activity("scan")
         sync_bundles(root)
     maybe_test_barrier("catalog-committed")
     from library.index import rebuild_sqlite
 
     rebuild_sqlite(root, use_barrier=True)
-    from library.activity import clear as clear_activity
-
-    clear_activity("scan")
     source_id = source.get("id") if isinstance(source, dict) else None
     if type(source_id) is str:
         source = try_load_source(root, source_id) or source
@@ -513,6 +648,8 @@ def _index_file(
         faces=(existing_pending.get("faces") if existing_pending else None),
         things=(existing_pending.get("things") if existing_pending else None),
     )
+    # Pause on the pending id only when a caller is waiting at between(), or the
+    # hash barrier is armed. Other files publish the hash in one batched write.
     if between is None and not _hash_barrier_armed():
         from library.annotate import plan_rebase_pending
         from library.catalog_io import publish_pending
@@ -580,6 +717,7 @@ def _index_file(
     _extend(root, changes)
     maybe_test_barrier("hash-publication")
     if between is not None:
+        _flush_scan_batch(root)
         between()
     from library.annotate import plan_rebase_pending
     from library.catalog_io import publish_pending
@@ -614,6 +752,9 @@ def _index_file(
             *plan_rebase_pending(root, pending, published),
         ],
     )
+    if between is not None:
+        _flush_scan_batch(root)
+        between()
     if decode_error:
         raise fail("decode-error")
     return published["id"]
@@ -674,16 +815,14 @@ def scan_serve_from_there(
             finally:
                 scan_serve_from_there._inner = False
 
-        return _run_scoped_scan(
-            root, run, batch=between is None and not _hash_barrier_armed()
-        )
+        return _run_scoped_scan(root, run, batch=not _hash_barrier_armed())
     scan_path = assert_scan_path_allowed(scan_path, root)
     if on_progress is None:
         on_progress = _default_progress
+    on_progress = _observe_progress(on_progress)
     if source is None:
         source = _start_source(root, scan_path, preview_store)
-    if between is not None:
-        between()
+    yield_at = 0.0
     added = 0
     skipped = 0
     errors: list[dict[str, str]] = []
@@ -697,8 +836,6 @@ def scan_serve_from_there(
     from library.activity import note as note_activity
 
     for index, (rel, path) in enumerate(files, start=1):
-        if between is not None:
-            between()
         note_activity(
             "scan",
             detail="Reading pictures",
@@ -715,8 +852,19 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            item_id = _index_file(root, source, rel, path, match_meters, between=between, io_context=io_context)
+            pause = _due_for_pending_pause(between, yield_at)
+            item_id = _index_file(
+                root,
+                source,
+                rel,
+                path,
+                match_meters,
+                between=between if pause else None,
+                io_context=io_context,
+            )
             added += 1
+            if pause:
+                yield_at = time.perf_counter()
             _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)
@@ -767,15 +915,14 @@ def scan_copy_here(
             finally:
                 scan_copy_here._inner = False
 
-        return _run_scoped_scan(
-            root, run, batch=between is None and not _hash_barrier_armed()
-        )
+        return _run_scoped_scan(root, run, batch=not _hash_barrier_armed())
     from library.copy import convert_linked_source, copy_media_files
     from library.paths import library_path
 
     scan_path = assert_scan_path_allowed(scan_path, root)
     if on_progress is None:
         on_progress = _default_progress
+    on_progress = _observe_progress(on_progress)
     if source is None:
         serial, volume_root = volume_of_path(scan_path)
         origin_rel = path_from_volume_root(scan_path, volume_root)
@@ -783,8 +930,7 @@ def scan_copy_here(
         if existing is not None and existing.get("mode") == "serve-from-there":
             convert_linked_source(root, existing["id"])
         source = _start_source(root, scan_path, preview_store, mode="copy-here")
-    if between is not None:
-        between()
+    yield_at = 0.0
     from library.activity import note as note_activity
     note_activity("scan", detail="Discovering pictures")
     with io_context():
@@ -799,8 +945,6 @@ def scan_copy_here(
     from library.activity import note as note_activity
 
     for index, (rel, path) in enumerate(files, start=1):
-        if between is not None:
-            between()
         note_activity(
             "scan",
             detail="Reading pictures",
@@ -826,6 +970,7 @@ def scan_copy_here(
                 on_progress("skipped", rel)
             continue
         try:
+            pause = _due_for_pending_pause(between, yield_at)
             item_id = _index_file(
                 root,
                 source,
@@ -833,10 +978,12 @@ def scan_copy_here(
                 dest_path,
                 match_meters,
                 original_name=Path(rel).name,
-                between=between,
+                between=between if pause else None,
                 io_context=io_context,
             )
             added += 1
+            if pause:
+                yield_at = time.perf_counter()
             _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)

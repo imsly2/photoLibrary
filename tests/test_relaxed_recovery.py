@@ -202,13 +202,14 @@ class RelaxedRecoveryTests(unittest.TestCase):
             )
 
     def test_annotate_follows_pending_id_after_publication(self) -> None:
-        """The list can observe a pending id during the hash pause. Publication then
-        deletes that file before the annotate request runs. The annotation lands
-        on the hash item instead of 404.
+        """A client can still hold a pending id after the hash file is the record.
+
+        The HTTP scan publishes the hash directly. The source row remembers that
+        hash, so annotate of the old pending id lands on it.
         """
         from library.annotate import apply_annotate
-        from library.catalog_io import iter_item_ids, load_item
-        from library.scan import scan_serve_from_there
+        from library.catalog_io import iter_item_ids, iter_source_ids, load_item, load_source
+        from library.scan import pending_id, scan_serve_from_there
 
         fixture = Path(__file__).resolve().parent / "fixtures" / "media" / "a" / "IMG_1042.jpg"
         with tempfile.TemporaryDirectory() as temp:
@@ -216,19 +217,15 @@ class RelaxedRecoveryTests(unittest.TestCase):
             folder = Path(temp) / "photos"
             folder.mkdir()
             shutil.copy2(fixture, folder / "IMG_1042.jpg")
-            seen: list[str] = []
-
-            def between() -> None:
-                for item_id in iter_item_ids(root):
-                    if item_id.startswith("pending-") and item_id not in seen:
-                        seen.append(item_id)
-
-            scan_serve_from_there(root, folder, between=between)
-            self.assertTrue(seen)
-            pending_id = seen[0]
-            self.assertFalse((root / "catalog" / "items" / f"{pending_id}.json").is_file())
-            annotated = apply_annotate(root, pending_id, {"people": [{"name": "Ada"}]})
+            scan_serve_from_there(root, folder)
+            self.assertFalse(any(item_id.startswith("pending-") for item_id in iter_item_ids(root)))
+            source = load_source(root, iter_source_ids(root)[0])
+            rel = next(iter(source["files"]))
+            pending = pending_id(source["id"], rel)
+            self.assertFalse((root / "catalog" / "items" / f"{pending}.json").is_file())
+            annotated = apply_annotate(root, pending, {"people": [{"name": "Ada"}]})
             self.assertFalse(annotated["id"].startswith("pending-"))
+            self.assertEqual(annotated["id"], source["files"][rel]["itemId"])
             stored = load_item(root, annotated["id"])
             self.assertTrue(stored.get("faces"))
 
