@@ -308,9 +308,10 @@ def _apply_gps(meta: dict[str, Any], gps: dict[int, Any]) -> None:
         meta["longitude"] = longitude
 
 
-def _still_from_jpeg(path: Path) -> dict[str, Any]:
+def _still_from_jpeg(path: Path, data: bytes | None = None) -> dict[str, Any]:
     meta = empty_metadata()
-    data = path.read_bytes()
+    if data is None:
+        data = path.read_bytes()
     width, height, tiff = _jpeg_size_and_exif(data)
     if width is not None:
         meta["width"] = width
@@ -487,23 +488,27 @@ def _video_from_ffprobe(path: Path) -> dict[str, Any]:
     return {"metadata": meta, "exifCapturedAt": captured}
 
 
-def _heif_probe(path: Path) -> dict[str, Any]:
-    if not heif_has_valid_brand(path):
+def _heif_probe(path: Path, data: bytes | None = None) -> dict[str, Any]:
+    if not heif_has_valid_brand(path, data):
         return {"metadata": empty_metadata(), "exifCapturedAt": None}
     return _still_from_probe(path)
 
 
-def read_capture(path: Path) -> tuple[str, str, dict[str, Any]]:
-    """Return capturedAt, capturedAtSource, and metadata for a media file."""
+def read_capture(path: Path, data: bytes | None = None) -> tuple[str, str, dict[str, Any]]:
+    """Return capturedAt, capturedAtSource, and metadata for a media file.
+
+    ``data`` is the file's bytes when the caller already holds them (the scan
+    hashes each file once and parses EXIF from that same read).
+    """
     suffix = file_suffix(path)
     extracted: dict[str, Any] = {"metadata": empty_metadata(), "exifCapturedAt": None}
     try:
         if suffix in HEIF_SUFFIXES:
-            extracted = _heif_probe(path)
+            extracted = _heif_probe(path, data)
         elif suffix in VIDEO_SUFFIXES:
             extracted = _video_from_ffprobe(path)
         elif suffix in {".jpg", ".jpeg"}:
-            extracted = _still_from_jpeg(path)
+            extracted = _still_from_jpeg(path, data)
         elif suffix in PHOTO_SUFFIXES:
             extracted = _still_from_probe(path)
     except OSError:

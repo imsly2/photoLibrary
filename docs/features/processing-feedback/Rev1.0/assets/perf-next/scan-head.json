@@ -1,0 +1,22 @@
+{
+  "label": "head",
+  "repo": "J:\\slyOS\\projects\\photoLibrary\\.qa\\wt-before",
+  "files": 40,
+  "fileBytesMB": 153.7,
+  "scan": {
+    "seconds": 4.3,
+    "perFileMs": 107.6,
+    "bytesReadMB": 466.4,
+    "readsPerFileBytes": 3.03,
+    "binaryOpens": 238,
+    "processes": 0
+  },
+  "previewDrain": {
+    "seconds": 9.11,
+    "steps": 40,
+    "perFileMs": 227.8,
+    "bytesReadMB": 0.0,
+    "binaryOpens": 0,
+    "processes": 40
+  }
+}

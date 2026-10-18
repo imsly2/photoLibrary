@@ -46,7 +46,7 @@ from library.media import (
     media_kind,
     mtime_iso,
     read_content_identifier,
-    sha256_file,
+    read_source,
     sha256_text,
 )
 from library.metadata import read_capture
@@ -599,23 +599,25 @@ def _index_file(
     with io_context():
         kind = media_kind(path)
         component = default_component(kind)
+        # One pass over the file: the hash, EXIF and the content identifier all
+        # come from the same bytes instead of three reads of a slow drive.
         try:
-            size = path.stat().st_size
-            modified = mtime_iso(path)
-            digest = sha256_file(path)
+            source_read = read_source(path)
+            size, modified, digest = source_read.size, source_read.modified, source_read.sha256
             later = path.stat()
             if later.st_size != size or mtime_iso(path) != modified:
                 raise fail("io-error")
         except OSError as exc:
             raise fail("io-error") from exc
-        decode_error = file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path)
+        data = source_read.data
+        decode_error = file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path, data)
         content_id = None
         try:
-            content_id = read_content_identifier(path)
+            content_id = read_content_identifier(path, data)
         except OSError:
             content_id = None
         try:
-            captured_at, captured_source, metadata = read_capture(path)
+            captured_at, captured_source, metadata = read_capture(path, data)
         except OSError:
             captured_at, captured_source, metadata = modified, "mtime", None
         if path.stat().st_size != size or mtime_iso(path) != modified:

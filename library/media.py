@@ -6,6 +6,8 @@ import hashlib
 import json
 import re
 import subprocess
+from collections import OrderedDict
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -33,6 +35,40 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+# Files up to this size are kept in memory after hashing so the same pass
+# also serves EXIF and the content identifier. Phone photos are 2-12 MB;
+# videos stream through the hash and go to ffprobe instead.
+KEEP_BYTES_MAX = 96 * 1024 * 1024
+
+
+@dataclass(frozen=True)
+class SourceRead:
+    """One pass over a file: its identity, and the bytes when small enough to keep."""
+
+    size: int
+    modified: str
+    sha256: str
+    data: bytes | None
+
+    def bytes_or_read(self, path: Path) -> bytes:
+        return self.data if self.data is not None else path.read_bytes()
+
+
+def read_source(path: Path) -> SourceRead:
+    """Hash a file in one read, keeping the bytes for the parsers that follow."""
+    stat = path.stat()
+    modified = mtime_iso(path)
+    digest = hashlib.sha256()
+    if stat.st_size <= KEEP_BYTES_MAX:
+        data = path.read_bytes()
+        digest.update(data)
+        return SourceRead(stat.st_size, modified, digest.hexdigest(), data)
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return SourceRead(stat.st_size, modified, digest.hexdigest(), None)
 
 
 # One still decode, probe or WebP encode. A hung decoder (ffmpeg blocked on a
@@ -159,13 +195,40 @@ def jpeg_xmp_content_identifier(data: bytes) -> str | None:
     return (match.group(1) or match.group(2) or "").strip() or None
 
 
-def heif_has_valid_brand(path: Path) -> bool:
-    data = path.read_bytes()[: 256 * 1024]
-    brands = read_ftyp_brands(data)
+def heif_has_valid_brand(path: Path, data: bytes | None = None) -> bool:
+    if data is None:
+        with open(path, "rb") as handle:
+            data = handle.read(256 * 1024)
+    brands = read_ftyp_brands(data[: 256 * 1024])
     return any(brand.strip() in VALID_HEIF_BRANDS for brand in brands)
 
 
+# Recent successful probes keyed by (path, size, mtime). A scan asks for the
+# content identifier and the capture metadata of the same video back to back,
+# and the preview encoder probes it again moments later.
+_PROBE_MEMO_MAX = 256
+_probe_memo: OrderedDict[tuple[str, int, int], dict[str, Any]] = OrderedDict()
+
+
 def ffprobe_json(path: Path) -> dict[str, Any] | None:
+    try:
+        stat = path.stat()
+        key: tuple[str, int, int] | None = (str(path), stat.st_size, stat.st_mtime_ns)
+    except OSError:
+        key = None
+    if key is not None and key in _probe_memo:
+        _probe_memo.move_to_end(key)
+        return json.loads(json.dumps(_probe_memo[key]))
+    payload = _ffprobe_json_uncached(path)
+    if key is not None and payload is not None:
+        _probe_memo[key] = payload
+        while len(_probe_memo) > _PROBE_MEMO_MAX:
+            _probe_memo.popitem(last=False)
+        return json.loads(json.dumps(payload))
+    return payload
+
+
+def _ffprobe_json_uncached(path: Path) -> dict[str, Any] | None:
     proc = run_ffmpeg(
         [
             "ffprobe",
@@ -204,10 +267,10 @@ def video_content_identifier(path: Path) -> str | None:
     return None
 
 
-def read_content_identifier(path: Path) -> str | None:
+def read_content_identifier(path: Path, data: bytes | None = None) -> str | None:
     suffix = file_suffix(path)
     if suffix in {".jpg", ".jpeg"}:
-        return jpeg_xmp_content_identifier(path.read_bytes())
+        return jpeg_xmp_content_identifier(path.read_bytes() if data is None else data)
     if suffix in VIDEO_SUFFIXES:
         return video_content_identifier(path)
     return None

@@ -1,0 +1,22 @@
+{
+  "label": "after",
+  "repo": "J:\\slyOS\\projects\\photoLibrary",
+  "files": 40,
+  "fileBytesMB": 153.7,
+  "scan": {
+    "seconds": 3.19,
+    "perFileMs": 79.7,
+    "bytesReadMB": 159.0,
+    "readsPerFileBytes": 1.03,
+    "binaryOpens": 158,
+    "processes": 0
+  },
+  "previewDrain": {
+    "seconds": 6.62,
+    "steps": 40,
+    "perFileMs": 165.6,
+    "bytesReadMB": 0.0,
+    "binaryOpens": 0,
+    "processes": 40
+  }
+}
