@@ -531,9 +531,15 @@ The grid shows a placeholder until the thumb exists, then the thumb.
 Queued thumbnails say “Creating preview…”; a failed or missing preview has
 the unavailable message instead, so waiting work is distinguishable from failure.
 Grid thumbnails and video posters take priority across the folder, ahead of
-viewer previews and full-length video encodes. They begin while the folder
-is still being scanned. Reading original bytes and encoding previews leave
-catalog and media requests free to respond; catalog publication stays serialized.
+viewer previews and full-length video encodes: every picture gets its thumb
+before any background preview starts, so the grid fills first and browsing
+can begin while the bigger previews are still being made. They begin while
+the folder is still being scanned. A picture opened in the viewer jumps the
+line: its preview is made next, and its thumb is scaled from that preview.
+Several files encode at once — half the computer's processor threads, at most
+6 — at below-normal priority so browsing stays responsive. Reading original
+bytes and encoding previews leave catalog and media requests free to respond;
+catalog publication stays serialized.
 Processing names the current derivative (thumbnail, poster, preview, proxy,
 or playback), and each queue shows completed, waiting, and failed work.
 Reading queue status does not hash or decode original pictures. Object counts
@@ -553,9 +559,9 @@ is. Budgets, from the moment Add folder starts:
 |------|--------|
 | Reading the folder (hash + metadata + record) | at least 15 pictures/s; the last tenth of files no slower than 1.25× the first tenth |
 | First grid thumbnail visible | within 3 s |
-| Every grid thumbnail and the video poster | within 30 s |
+| Every grid thumbnail and the video poster | within 10 s |
 | A picture opened in the viewer | its 1600 px preview within 2 s of opening, even while thumbnails are still queued |
-| Everything done (thumbs, previews, video proxy/playback) | within 90 s |
+| Everything done (thumbs, previews, video proxy/playback) | within 40 s |
 | Bookkeeping per finished file (all work except ffmpeg) | at most 50 ms |
 | Catalog and status requests while processing | `GET /api/jobs` p95 ≤ 300 ms, `GET /api/items` p95 ≤ 1 s |
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from pathlib import Path
 
 from library.errors import fail
@@ -62,6 +63,41 @@ class WriteLock:
             self._fd = None
 
     def __enter__(self) -> WriteLock:
+        self.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.release()
+
+
+class FairLock:
+    """In-process mutex handed over in arrival order.
+
+    ``threading.Lock`` lets the thread that just released it take it straight
+    back, so with several encoder threads a status request could wait through
+    many holds. Here every ``acquire`` takes a ticket and waits its turn.
+    Blocking acquire only.
+    """
+
+    def __init__(self) -> None:
+        self._turn = threading.Condition(threading.Lock())
+        self._next_ticket = 0
+        self._serving = 0
+
+    def acquire(self) -> bool:
+        with self._turn:
+            ticket = self._next_ticket
+            self._next_ticket += 1
+            while self._serving != ticket:
+                self._turn.wait()
+        return True
+
+    def release(self) -> None:
+        with self._turn:
+            self._serving += 1
+            self._turn.notify_all()
+
+    def __enter__(self) -> FairLock:
         self.acquire()
         return self
 

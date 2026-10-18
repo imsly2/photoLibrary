@@ -13,8 +13,16 @@ class PathError(ValueError):
     """Relative path failed containment or shape checks."""
 
 
+_normalized: dict[str, Path] = {}
+
+
 def normalize_root(root: str | Path) -> Path:
-    return Path(root).expanduser().resolve()
+    """Resolve once per path string; Windows ``resolve()`` hits the disk."""
+    key = str(root)
+    hit = _normalized.get(key)
+    if hit is None:
+        hit = _normalized[key] = Path(key).expanduser().resolve()
+    return hit
 
 
 def roots_equal(a: str | Path, b: str | Path) -> bool:

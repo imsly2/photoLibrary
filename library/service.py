@@ -22,6 +22,7 @@ from library.groups import ARRANGE, LEVELS, groups_from_entities, groups_from_it
 from library.errors import AppError, fail
 from library.media import file_suffix
 from library.renditions import drain_step as drain_queued_jpegs
+from library.renditions import encoding as rendition_encoding
 from library.renditions import relocate as relocate_renditions
 from library.renditions import rendition_abs, restore_relocate_files
 from library.volumes import location_file, location_matches_stat
@@ -910,6 +911,13 @@ class Library:
         read_weights_body(payload)
         return reset_rating_weights(self.root)
 
+    def encode_step(self, *, io_context=nullcontext) -> bool:
+        """One thumb/preview/video encode beside drain_step, for the extra
+        encoder threads. Never runs faces, objects, rating or transcripts."""
+        if self._jobs_paused or self._inferring:
+            return False
+        return drain_queued_jpegs(self.root, io_context=io_context, grid_only=self._scanning, sweep=False)
+
     def drain_step(self, *, io_context=nullcontext) -> bool:
         if getattr(self, "_jobs_paused", False):
             return False
@@ -918,7 +926,7 @@ class Library:
         self.ensure_settings()
         if drain_queued_jpegs(self.root, io_context=io_context, grid_only=self._scanning):
             return True
-        if getattr(self, "_scanning", False):
+        if getattr(self, "_scanning", False) or rendition_encoding(self.root):
             return False
         def log_drain_error(stage: str, exc: Exception) -> None:
             from library.log import append_error

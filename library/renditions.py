@@ -50,6 +50,12 @@ _swept_tmp_roots: set[str] = set()
 # One video encode (proxy, else playback) after this many viewer previews,
 # so a long preview backlog cannot postpone the single clip forever.
 _VIDEO_EVERY_PREVIEWS = 6
+# Encodes yield the CPU to the browser and to the server's request threads.
+_FFMPEG_PRIORITY: dict[str, Any] = (
+    {"creationflags": subprocess.BELOW_NORMAL_PRIORITY_CLASS} if os.name == "nt" else {}
+)
+# (root key, item id) an encoder thread is working on; pickers skip them.
+_in_flight: set[tuple[str, str]] = set()
 last_published_slot: str | None = None
 profile_counters = {
     "pick_calls": 0,
@@ -69,6 +75,19 @@ def reset_profile_counters() -> None:
 def _account_encode(started: float) -> None:
     profile_counters["encode_calls"] += 1
     profile_counters["encode_seconds"] += time.perf_counter() - started
+
+
+def encoder_count() -> int:
+    """How many files encode at once: half the processor threads, 1..6."""
+    return max(1, min(6, (os.cpu_count() or 2) // 2))
+
+
+def encoding(root: Path) -> bool:
+    """Some encoder thread is still working on this library."""
+    from library.item_index import root_key
+
+    key = root_key(root)
+    return any(claim[0] == key for claim in _in_flight)
 
 
 def _settings_caps(root: Path) -> tuple[int, int, int]:
@@ -164,6 +183,7 @@ def _write_webp(source: Path, dest: Path, cap: int) -> bool:
             ],
             capture_output=True,
             check=False,
+            **_FFMPEG_PRIORITY,
         )
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
             if tmp.exists():
@@ -175,47 +195,6 @@ def _write_webp(source: Path, dest: Path, cap: int) -> bool:
         if tmp.exists():
             tmp.unlink()
         return False
-
-
-def write_webp_pair(
-    source: Path,
-    thumb_stage: Path,
-    thumb_cap: int,
-    preview_stage: Path,
-    preview_cap: int,
-) -> bool:
-    """Encode a photo thumb and preview from one FFmpeg decode.
-
-    The caller owns publication and removes both stages on every exit path.
-    """
-    started = time.perf_counter()
-    try:
-        thumb_stage.parent.mkdir(parents=True, exist_ok=True)
-        preview_stage.parent.mkdir(parents=True, exist_ok=True)
-        graph = (
-            f"[0:v]split=2[thumb_in][preview_in];"
-            f"[thumb_in]{_scale_filter(thumb_cap)}[thumb_out];"
-            f"[preview_in]{_scale_filter(preview_cap)}[preview_out]"
-        )
-        proc = subprocess.run(
-            [
-                "ffmpeg", "-y", "-i", str(source),
-                "-filter_complex", graph,
-                "-map", "[thumb_out]", "-frames:v", "1", *WEBP_ENCODE, str(thumb_stage),
-                "-map", "[preview_out]", "-frames:v", "1", *WEBP_ENCODE, str(preview_stage),
-            ],
-            capture_output=True,
-            check=False,
-        )
-        return (
-            proc.returncode == 0
-            and thumb_stage.is_file() and thumb_stage.stat().st_size > 0
-            and preview_stage.is_file() and preview_stage.stat().st_size > 0
-        )
-    except OSError:
-        return False
-    finally:
-        _account_encode(started)
 
 
 def _stream_codecs(source: Path) -> tuple[str | None, str | None]:
@@ -313,7 +292,7 @@ def _run_ffmpeg(args: list[str], dest: Path) -> bool:
     cleanup_tmp_siblings(dest)
     tmp = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     try:
-        proc = subprocess.run(args + [str(tmp)], capture_output=True, check=False)
+        proc = subprocess.run(args + [str(tmp)], capture_output=True, check=False, **_FFMPEG_PRIORITY)
         if proc.returncode != 0 or not tmp.is_file() or tmp.stat().st_size <= 0:
             if tmp.exists():
                 tmp.unlink()
@@ -807,7 +786,7 @@ def next_rendition_job(root: Path, *, grid_only: bool = False) -> tuple[str, str
 
 
 def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path, int] | None:
-    from library.item_index import resync, wanted_ids
+    from library.item_index import resync, root_key, wanted_ids
 
     thumb_px, preview_px, proxy_width = _settings_caps(root)
     caps = {
@@ -818,9 +797,10 @@ def _next_rendition_job(root: Path, *, grid_only: bool) -> tuple[str, str, Path,
         "playback": 0,
     }
     cache = resync(root)
+    key = root_key(root)
 
     def take(item_id: str, slot: str) -> tuple[str, str, Path, int] | None:
-        if item_id not in cache.queued.get(slot, ()):
+        if item_id not in cache.queued.get(slot, ()) or (key, item_id) in _in_flight:
             return None
         item = cache.items.get(item_id)
         if item is None:
@@ -964,20 +944,6 @@ def publish_ready(root: Path, item_id: str, slot: str, relative: str, store: str
     _publish_change(root, item_rel(item_id), before, after)
 
 
-def publish_ready_slots(root: Path, item_id: str, relatives: dict[str, str], store: str) -> None:
-    """Record a staged photo pair with one item-record publication."""
-    before = try_load_item(root, item_id)
-    if before is None:
-        return
-    after = clone(before)
-    for slot, relative in relatives.items():
-        after["renditions"][slot] = relative
-        after["renditions"]["status"][slot] = "ready"
-    after["renditions"]["store"] = store
-    after = ordered_item(after)
-    _publish_change(root, item_rel(item_id), before, after)
-
-
 def publish_error(root: Path, item_id: str, slot: str) -> None:
     publish_slot_status(root, item_id, slot, "error", None)
 
@@ -1065,18 +1031,39 @@ def _source_signature(path: Path) -> tuple[int, int, int]:
     return stat.st_size, stat.st_mtime_ns, stat.st_ino
 
 
-def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -> bool:
-    """Caller serializes catalog access; only detached encoding releases its lock."""
+def drain_step(
+    root: Path, *, io_context=nullcontext, grid_only: bool = False, sweep: bool = True
+) -> bool:
+    """Encode one queued file. Caller holds the catalog lock; encoding releases it.
+
+    Several threads may call this at once (``encoder_count``); each claims its
+    item so no two encode the same picture. ``sweep=False`` (the extra encoder
+    threads) skips the idle missing-file sweep and publication settling.
+    """
     global last_published_slot
     last_published_slot = None
     sweep_library_rendition_tmps(root)
     job = next_rendition_job(root, grid_only=grid_only)
     if job is None:
+        if not sweep or encoding(root):
+            return False
         if requeue_missing_renditions(root, io_context=io_context):
             return True
         settle_rendition_publications(root)
         return False
     item_id, slot, source, cap = job
+    from library.item_index import root_key
+
+    claim = (root_key(root), item_id)
+    _in_flight.add(claim)
+    try:
+        return _encode_job(root, item_id, slot, source, cap, io_context)
+    finally:
+        _in_flight.discard(claim)
+
+
+def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_context) -> bool:
+    global last_published_slot
     last_published_slot = slot
     item = try_load_item(root, item_id)
     if item is None:
@@ -1091,68 +1078,24 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
         return True
     before_renditions = clone(item.get("renditions") or {})
     before_locations = clone(item.get("locations") or [])
-    statuses = before_renditions.get("status") or {}
-    pair_slots = (
-        ("thumb", "preview")
-        if slot in STILL_SLOTS
-        and statuses.get("thumb") == "queued"
-        and statuses.get("preview") == "queued"
-        else (slot,)
-    )
-    destinations: dict[str, Path] = {slot: dest}
-    if len(pair_slots) == 2:
-        pair_destinations = {
-            paired_slot: _job_destination(root, item, paired_slot)
-            for paired_slot in pair_slots
-        }
-        if any(pair_store != store or pair_dest is None
-               for pair_store, pair_dest in pair_destinations.values()):
-            pair_slots = (slot,)
-        else:
-            destinations.update({
-                paired_slot: pair_dest
-                for paired_slot, (_pair_store, pair_dest) in pair_destinations.items()
-                if pair_dest is not None
-            })
-            # Preserve existing-file adoption semantics; pair only when both
-            # slots genuinely need fresh output.
-            try:
-                if any(path.is_file() and path.stat().st_size > 0 for path in destinations.values()):
-                    pair_slots = (slot,)
-            except OSError:
-                pair_slots = (slot,)
-    for paired_slot in pair_slots:
-        _note_fairness(root, paired_slot)
-    stages: dict[str, Path] = {}
-    for paired_slot in pair_slots:
-        paired_dest = destinations[paired_slot]
-        cleanup_tmp_siblings(paired_dest)
-        stages[paired_slot] = paired_dest.with_name(f"{paired_dest.name}.{uuid.uuid4().hex}.tmp")
+    _note_fairness(root, slot)
+    stage = dest.with_name(f"{dest.name}.{uuid.uuid4().hex}.tmp")
     owner_id = before_renditions.get("sourceId") or ""
     owner = try_load_source(root, owner_id)
     owner_origin = clone(owner.get("origin")) if owner else None
-    outcomes = {paired_slot: "error" for paired_slot in pair_slots}
+    outcome = "error"
     signature = None
     try:
         with io_context():
             try:
+                cleanup_tmp_siblings(dest)
                 signature = _source_signature(source)
                 if slot == "playback" and browser_safe_mp4(source):
-                    outcomes[slot] = "not-applicable"
-                elif len(pair_slots) == 2:
-                    thumb_cap, preview_cap, _proxy_width = _settings_caps(root)
-                    ok = write_webp_pair(
-                        source,
-                        stages["thumb"],
-                        thumb_cap,
-                        stages["preview"],
-                        preview_cap,
-                    )
-                    outcomes = {paired_slot: "ready" if ok else "error" for paired_slot in pair_slots}
+                    outcome = "not-applicable"
                 elif dest.is_file() and dest.stat().st_size > 0:
-                    outcomes[slot] = "existing"
+                    outcome = "existing"
                 elif slot == "playback":
-                    outcomes[slot] = write_playback(source, stages[slot])
+                    outcome = write_playback(source, stage)
                 else:
                     writer = write_proxy if slot == "proxy" else write_webp
                     encode_source = source
@@ -1162,9 +1105,9 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
                         sibling = _ready_preview_sibling(dest)
                         if sibling is not None:
                             encode_source = sibling
-                    outcomes[slot] = "ready" if writer(encode_source, stages[slot], cap) else "error"
+                    outcome = "ready" if writer(encode_source, stage, cap) else "error"
             except OSError:
-                outcomes = {paired_slot: "error" for paired_slot in pair_slots}
+                outcome = "error"
         current = try_load_item(root, item_id)
         if current is None:
             return True
@@ -1181,55 +1124,26 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
                           else _primary_motion_path(current, root))
         if current_source != source or _job_destination(root, current, slot) != (store, dest):
             return True
-        if any(_job_destination(root, current, paired_slot) != (store, destinations[paired_slot])
-               for paired_slot in pair_slots):
-            return True
         try:
             if signature is not None and _source_signature(source) != signature:
                 return True
         except OSError:
-            outcomes = {paired_slot: "error" for paired_slot in pair_slots}
-        if len(pair_slots) == 2 and all(value == "ready" for value in outcomes.values()):
-            written: list[Path] = []
-            try:
-                for paired_slot in pair_slots:
-                    os.replace(stages[paired_slot], destinations[paired_slot])
-                    written.append(destinations[paired_slot])
-            except OSError:
-                for path in written:
-                    try:
-                        path.unlink(missing_ok=True)
-                    except OSError:
-                        pass
-                outcomes = {paired_slot: "error" for paired_slot in pair_slots}
-            else:
-                publish_ready_slots(
-                    root, item_id,
-                    {paired_slot: slot_target(root, current, paired_slot)[2] for paired_slot in pair_slots},
-                    store,
-                )
-        elif len(pair_slots) == 1:
-            outcome = outcomes[slot]
-            if outcome == "ready":
-                os.replace(stages[slot], dest)
-            if outcome in {"ready", "existing"}:
-                publish_ready(root, item_id, slot, slot_target(root, current, slot)[2], store)
-            elif outcome == "not-applicable":
-                dest.unlink(missing_ok=True)
-                publish_not_applicable(root, item_id, slot)
-            else:
-                publish_error(root, item_id, slot)
+            outcome = "error"
+        if outcome == "ready":
+            os.replace(stage, dest)
+        if outcome in {"ready", "existing"}:
+            publish_ready(root, item_id, slot, slot_target(root, current, slot)[2], store)
+        elif outcome == "not-applicable":
+            dest.unlink(missing_ok=True)
+            publish_not_applicable(root, item_id, slot)
         else:
-            for paired_slot in pair_slots:
-                publish_error(root, item_id, paired_slot)
+            publish_error(root, item_id, slot)
         return True
     finally:
-        for stage in stages.values():
-            try:
-                stage.unlink(missing_ok=True)
-                cleanup_tmp_siblings(stage)
-            except OSError:
-                pass
+        try:
+            stage.unlink(missing_ok=True)
+        except OSError:
+            pass
         clear()
 
 

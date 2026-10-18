@@ -18,7 +18,7 @@ from urllib.parse import parse_qs, urlparse
 from library.atomic import atomic_write_json
 from library.errors import AppError, fail
 from library.httpjson import encode, request_json
-from library.lock import WriteLock
+from library.lock import FairLock, WriteLock
 from library.log import append_error
 from library.paths import normalize_root, root_text, roots_equal
 from library.service import Library
@@ -1030,7 +1030,7 @@ def serve(root: Path) -> int:
             return 0
         handler = LibraryHandler
         handler.library = library
-        handler.lock = threading.Lock()
+        handler.lock = FairLock()
         handler.host = host
         handler.port = port
         handler.url = listen_url(host, port)
@@ -1047,23 +1047,39 @@ def serve(root: Path) -> int:
         )
         print(url, flush=True)
 
-        def drain_loop() -> None:
+        def io_unlocked():
+            return unlocked_io(handler.lock)
+
+        def drain_once() -> bool:
+            worked = library.drain_step(io_context=io_unlocked)
+            reset = None if worked else library.take_folder_reset()
+            if reset is not None:
+                start_rescan_worker(handler.lock, library, reset)
+            return worked
+
+        def work_loop(step) -> None:
             while not drain_stop.is_set():
                 worked = False
                 try:
                     with handler.lock:
-                        worked = library.drain_step(io_context=lambda: unlocked_io(handler.lock))
-                        reset = None if worked else library.take_folder_reset()
-                        if reset is not None:
-                            start_rescan_worker(handler.lock, library, reset)
+                        worked = step()
                 except Exception as exc:
                     traceback.print_exc()
                     append_error(library.root, "/api/jobs", f"processing-drain:outer:{type(exc).__name__}")
                     worked = False
-                drain_stop.wait(0.05 if worked else 0.25)
+                drain_stop.wait(0.005 if worked else 0.25)
 
-        drain_thread = threading.Thread(target=drain_loop, name="rendition-drain", daemon=True)
+        from library.renditions import encoder_count
+
+        drain_thread = threading.Thread(target=work_loop, args=(drain_once,), name="rendition-drain", daemon=True)
         drain_thread.start()
+        for n in range(1, encoder_count()):
+            threading.Thread(
+                target=work_loop,
+                args=(lambda: library.encode_step(io_context=io_unlocked),),
+                name=f"rendition-encode-{n}",
+                daemon=True,
+            ).start()
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
