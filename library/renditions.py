@@ -629,6 +629,71 @@ def note_wanted(root: Path, item_id: str) -> None:
     remember(root, item_id)
 
 
+MISSING_SWEEP_SEC = 30.0
+_last_missing_sweep: dict[str, float] = {}
+_missing_hinted: set[str] = set()
+
+
+def note_missing(root: Path) -> None:
+    """A media request found no file; the next idle drain step sweeps right away."""
+    from library.item_index import root_key
+
+    _missing_hinted.add(root_key(root))
+
+
+def requeue_missing_renditions(root: Path, *, io_context=nullcontext) -> bool:
+    """Queue again every ready slot whose file is gone (e.g. a deleted .library/).
+
+    Runs when hinted by a failed media request, otherwise every MISSING_SWEEP_SEC.
+    Folders that are not reachable right now are skipped, never requeued.
+    """
+    from library.item_index import iter_items, root_key
+
+    key = root_key(root)
+    now = time.monotonic()
+    if key not in _missing_hinted and now - _last_missing_sweep.get(key, -MISSING_SWEEP_SEC) < MISSING_SWEEP_SEC:
+        return False
+    _missing_hinted.discard(key)
+    _last_missing_sweep[key] = now
+    folders: dict[str, Path | None] = {}
+    expected: list[tuple[str, str, Path]] = []
+    for item in iter_items(root):
+        rend = item.get("renditions") or {}
+        status = rend.get("status") or {}
+        for slot in STILL_SLOTS + VIDEO_SLOTS:
+            relative = rend.get(slot)
+            if status.get(slot) != "ready" or type(relative) is not str or not relative:
+                continue
+            if rend.get("store") == "with-server":
+                try:
+                    path = library_path(root, relative)
+                except Exception:
+                    continue
+            else:
+                source_id = rend.get("sourceId") or ""
+                if source_id not in folders:
+                    source = try_load_source(root, source_id)
+                    folder = None if source is None else source_preview_root(source, root)
+                    folders[source_id] = folder if folder is not None and folder.is_dir() else None
+                folder = folders[source_id]
+                path = None if folder is None else _safe_join(folder, relative)
+                if path is None:
+                    continue
+            expected.append((item["id"], slot, path))
+    with io_context():
+        missing = [(item_id, slot) for item_id, slot, path in expected if _usable_file(path) is None]
+    requeued = False
+    for item_id, slot in missing:
+        current = try_load_item(root, item_id)
+        if current is None or ((current.get("renditions") or {}).get("status") or {}).get(slot) != "ready":
+            continue
+        if rendition_abs(current, slot, root) is not None:
+            continue
+        publish_slot_status(root, item_id, slot, "queued", None)
+        requeued = True
+    return requeued
+
+
 def _ready_preview_sibling(dest: Path) -> Path | None:
     """Thumb can be a downscale of a preview ffmpeg already oriented."""
     if dest.name != "thumb.webp":
@@ -902,6 +967,8 @@ def drain_step(root: Path, *, io_context=nullcontext, grid_only: bool = False) -
     sweep_library_rendition_tmps(root)
     job = next_rendition_job(root, grid_only=grid_only)
     if job is None:
+        if requeue_missing_renditions(root, io_context=io_context):
+            return True
         settle_rendition_publications(root)
         return False
     item_id, slot, source, cap = job

@@ -39,10 +39,8 @@ def unlocked_io(lock):
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
     etag = '"%x-%x"' % (mtime_ns, size)
-    if which in {"thumb", "preview", "poster", "face"}:
-        return "private, max-age=604800", etag
-    if which in {"proxy", "playback"}:
-        return "private, max-age=86400", etag
+    if which in {"thumb", "preview", "poster", "face", "proxy", "playback"}:
+        return "private, no-cache", etag
     return "no-store", None
 
 
@@ -888,8 +886,12 @@ class LibraryHandler(BaseHTTPRequestHandler):
         path = resolved["path"]
         content_type = resolved["content_type"]
         try:
-            data = path.read_bytes()
             stat = path.stat()
+            cache_control, etag = _media_cache(which, stat.st_mtime_ns, stat.st_size)
+            if etag and (self.headers.get("If-None-Match") or "") == etag:
+                self._send(304, b"", content_type, cache_control=cache_control, etag=etag)
+                return
+            data = path.read_bytes()
         except OSError as exc:
             if which in {"preview", "poster", "proxy", "playback"}:
                 from library.renditions import note_wanted
@@ -902,7 +904,6 @@ class LibraryHandler(BaseHTTPRequestHandler):
 
                 note_wanted(self.library.root, item_id)
             raise fail("unavailable" if which == "original" else "preview-unavailable")
-        cache_control, etag = _media_cache(which, stat.st_mtime_ns, stat.st_size)
         spec = parse_byte_range(self.headers.get("Range"), len(data))
         if spec is None:
             self._send(200, data, content_type, cache_control=cache_control, etag=etag)

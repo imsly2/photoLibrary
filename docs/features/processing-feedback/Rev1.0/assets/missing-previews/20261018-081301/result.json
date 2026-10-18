@@ -1,0 +1,105 @@
+{
+  "scratch": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\run-mx8a_s65",
+  "count": 12,
+  "video": true,
+  "checks": [
+    {
+      "name": "add-folder",
+      "pass": true,
+      "detail": 202
+    },
+    {
+      "name": "first-pass-idle",
+      "pass": true,
+      "detail": 6.78
+    },
+    {
+      "name": "thumb-served",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "bytes": 10892,
+        "cacheControl": "private, max-age=604800",
+        "etag": "\"18dfa1d307dc2ef8-2a8c\""
+      }
+    },
+    {
+      "name": "media-revalidates",
+      "pass": false,
+      "detail": "private, max-age=604800"
+    },
+    {
+      "name": "unchanged-is-304",
+      "pass": true,
+      "detail": 304
+    },
+    {
+      "name": "deleted-not-304",
+      "pass": true,
+      "detail": 404
+    },
+    {
+      "name": "processing-shows-waiting",
+      "pass": false,
+      "detail": {
+        "sec": null,
+        "queue": {
+          "id": "renditions",
+          "label": "Previews",
+          "pending": 0,
+          "done": 27,
+          "error": 0,
+          "state": "idle",
+          "available": true
+        }
+      }
+    },
+    {
+      "name": "every-ready-slot-has-file",
+      "pass": false,
+      "detail": {
+        "sec": null,
+        "ready": 27,
+        "missingFiles": 27,
+        "queue": {
+          "id": "renditions",
+          "label": "Previews",
+          "pending": 0,
+          "done": 27,
+          "error": 0,
+          "state": "idle",
+          "available": true
+        }
+      }
+    },
+    {
+      "name": "ready-serves-200",
+      "pass": false,
+      "detail": {
+        "200": 0,
+        "other": [
+          404,
+          404,
+          404,
+          404,
+          404
+        ]
+      }
+    }
+  ],
+  "readyBefore": 27,
+  "thumbBefore": {
+    "status": 200,
+    "bytes": 10892,
+    "cacheControl": "private, max-age=604800",
+    "etag": "\"18dfa1d307dc2ef8-2a8c\""
+  },
+  "thumbRightAfterDelete": {
+    "status": 404,
+    "bytes": 0,
+    "cacheControl": "no-store",
+    "etag": null
+  },
+  "restoreSec": null,
+  "result": "FAIL"
+}

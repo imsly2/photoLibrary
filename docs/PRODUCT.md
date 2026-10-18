@@ -563,6 +563,27 @@ Exit code is nonzero when any budget fails. `--count N` changes the
 fixture size; `--count 400` is the scaling run. Artifact: the bench JSON
 under `docs/features/processing-feedback/Rev1.0/assets/perf-bench/`.
 
+**Missing previews.** A preview file can disappear while its record still
+says ready — most often because someone deleted a folder's `.library/`.
+Library never shows a picture it no longer has: the browser revalidates
+every thumb, preview, poster, and face crop with the server (ETag; an
+unchanged file answers 304 without sending bytes), so a deleted file stops
+showing on the next load instead of living on in the browser cache. Within
+a few seconds Library notices a ready slot whose file is gone, puts it back
+in the queue, Processing counts it as waiting, and the grid shows
+“Creating preview…” until the new file exists. Deleting `.library/` does not
+forget names, faces, places, or ratings on this computer — those live in
+`library-data/catalog/`; the folder copy of those records is written again.
+
+**Check (missing previews):** `python -m tests.qa.missing_previews` adds a
+scratch copy of the fixture as serve-from-folder through HTTP, waits until
+Processing is idle, records a thumbnail's ETag, deletes the folder's
+`.library/`, then asserts: media responses require revalidation; the old
+ETag no longer gets 304; Processing shows waiting previews within 10 s;
+within 60 s every slot the catalog calls ready has a non-empty file on
+disk and serves 200. Artifact: `result.json` under
+`docs/features/processing-feedback/Rev1.0/assets/missing-previews/`.
+
 Years, Months, Days, and a Dates-off wall play the proxy, muted and
 looped, on the cell under the pointer. `playProxies` changes that:
 `days-and-all` (default) and `always` both hover-play at every Dates

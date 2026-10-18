@@ -1039,6 +1039,10 @@ class Library:
         except Exception as exc:
             raise fail("preview-unavailable") from exc
         if path is None or not path.is_file() or path.stat().st_size <= 0:
+            if ((item.get("renditions") or {}).get("status") or {}).get(which) == "ready":
+                from library.renditions import note_missing
+
+                note_missing(self.root)
             raise fail("preview-unavailable")
         content_type = "video/mp4" if which in {"proxy", "playback"} else "image/webp"
         return {"path": path, "content_type": content_type}
