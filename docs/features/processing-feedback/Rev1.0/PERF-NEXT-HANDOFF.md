@@ -111,7 +111,8 @@ Evidence: `docs/features/processing-feedback/Rev1.0/assets/camera-tiles/{before,
   drives headless Edge over CDP (Node 24's built-in WebSocket). Copy its
   pattern for filter and first-load timing. Playwright and the browser MCP
   are unavailable.
-- **Grid-order check:** `.qa\venv\Scripts\python.exe .qa\grid-order\check.py <app-dir> <label> <port>`.
+- **Grid-order check:** `docs/features/processing-feedback/Rev1.0/assets/grid-order/check.py`
+  (read its header for arguments).
 - **Profiling:** py-spy is in `.qa\venv`; summarize with
   `.qa\spy_summary.py <raw> <thread> <depth>` and `.qa\spy_holders.py <raw>`
   (who holds the lock).
