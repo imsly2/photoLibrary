@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 _TTL_S = 2.0
-_views: dict[tuple[int, bool], tuple[float, dict[str, Any]]] = {}
+_views: dict[tuple[str, int, bool], tuple[float, dict[str, Any], dict[str, Any]]] = {}
 _files: dict[str, tuple[float, Any, tuple[int, int] | None]] = {}
 _dirs: dict[str, tuple[float, Any, tuple[int, int] | None]] = {}
 
@@ -58,22 +58,36 @@ def cached_item_read(
     item: dict[str, Any],
     root: Path,
     marked: set[str],
+    *,
+    metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     install_path_checks()
     item_id = item.get("id")
     favorite = type(item_id) is str and item_id in marked
-    key = (id(item), favorite)
+    key = (os.path.normcase(os.path.abspath(str(root))), id(item), favorite)
     now = time.monotonic()
     hit = _views.get(key)
-    if hit is not None and now - hit[0] < _TTL_S:
-        return hit[1]
-    from library.catalog_io import item_read
+    from library.catalog_io import item_entities, item_read
+    from library.rating import quality_view
 
-    view = item_read(item, root, marked)
-    _views[key] = (now, view)
+    entities = item_entities(item, root) if metadata is None else metadata["entities"]
+    if hit is not None and hit[1] is item and now - hit[0] < _TTL_S:
+        base = hit[2]
+    else:
+        base = item_read(item, root, marked, entities=entities)
+        # Retain the raw object as well as its id: Python must not recycle the
+        # identity into an unrelated record while this cache entry remains live.
+        _views[key] = (now, item, base)
+    # A query's stack decoration must never mutate the cached base or leak into
+    # another filtered result. Entity records are refreshed independently of TTL.
+    view = dict(base)
+    view.pop("stack", None)
+    view["entities"] = entities
+    view["favorite"] = favorite
+    view["rating"] = quality_view(item) if metadata is None else metadata["rating"]
     if len(_views) > 8000:
         cutoff = now - _TTL_S
-        for old, (seen, _view) in list(_views.items()):
+        for old, (seen, _item, _view) in list(_views.items()):
             if seen < cutoff:
                 _views.pop(old, None)
     return view

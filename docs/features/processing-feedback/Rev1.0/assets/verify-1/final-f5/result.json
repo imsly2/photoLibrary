@@ -1,0 +1,352 @@
+{
+  "check": "F5",
+  "pass": true,
+  "assertions": [
+    {
+      "name": "scan-first-exit",
+      "pass": true,
+      "detail": "exit=1 stderr=''"
+    },
+    {
+      "name": "scan-first-added",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "originals-byte-identical",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-indexed:quad.png",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.png",
+      "pass": true,
+      "detail": "id='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938' expected='4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938'"
+    },
+    {
+      "name": "format-indexed:quad.gif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.gif",
+      "pass": true,
+      "detail": "id='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030' expected='d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030'"
+    },
+    {
+      "name": "format-indexed:quad.webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.webp",
+      "pass": true,
+      "detail": "id='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6' expected='c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6'"
+    },
+    {
+      "name": "format-indexed:quad.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.heic",
+      "pass": true,
+      "detail": "id='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a' expected='5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a'"
+    },
+    {
+      "name": "format-indexed:quad.heif",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.heif",
+      "pass": true,
+      "detail": "id='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875' expected='a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875'"
+    },
+    {
+      "name": "format-indexed:quad.tiff",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.tiff",
+      "pass": true,
+      "detail": "id='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91' expected='566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91'"
+    },
+    {
+      "name": "format-indexed:quad.bmp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:quad.bmp",
+      "pass": true,
+      "detail": "id='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015' expected='c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015'"
+    },
+    {
+      "name": "format-indexed:clip.mov",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:clip.mov",
+      "pass": true,
+      "detail": "id='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9' expected='b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9'"
+    },
+    {
+      "name": "format-indexed:clip.m4v",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:clip.m4v",
+      "pass": true,
+      "detail": "id='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad' expected='79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad'"
+    },
+    {
+      "name": "format-indexed:clip.avi",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:clip.avi",
+      "pass": true,
+      "detail": "id='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c' expected='a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c'"
+    },
+    {
+      "name": "format-indexed:clip.mkv",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:clip.mkv",
+      "pass": true,
+      "detail": "id='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7' expected='4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7'"
+    },
+    {
+      "name": "format-indexed:clip.webm",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:clip.webm",
+      "pass": true,
+      "detail": "id='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c' expected='ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c'"
+    },
+    {
+      "name": "format-indexed:broken.heic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "format-id-hash:broken.heic",
+      "pass": true,
+      "detail": "id='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd' expected='592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd'"
+    },
+    {
+      "name": "unicode-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "long-path-indexed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "unicode-hash-id",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "duplicate-one-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "duplicate-two-locations",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "scan-second-added-0",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "scan-second-skipped",
+      "pass": true,
+      "detail": "27"
+    },
+    {
+      "name": "scan-second-stdout-skipped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rescan-same-item-count",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-keep-indexed",
+      "pass": true,
+      "detail": "{'keep.jpg'}"
+    },
+    {
+      "name": "skip-hidden-library",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-notes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "skip-added-one",
+      "pass": true,
+      "detail": "{'sourceId': 'src_56fe623ee9d1', 'added': 1, 'skipped': 0, 'errors': []}"
+    },
+    {
+      "name": "scan-library-data-rejected-exit",
+      "pass": true,
+      "detail": "{\"error\":\"invalid-argument\"}\n"
+    },
+    {
+      "name": "barrier-hash-exit-86",
+      "pass": true,
+      "detail": "{\"error\":\"test-barrier\",\"barrier\":\"hash-publication\"}\n"
+    },
+    {
+      "name": "barrier-pending-present",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "barrier-hash-not-published",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "pending-name-flat",
+      "pass": true,
+      "detail": "pending-src_07525b481ea6-703239fa3dea919c8ec4be274679b0c1466a9d1c12327b0804a4d14716394f01.json"
+    },
+    {
+      "name": "barrier-recover-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-pending-cleared",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "barrier-one-item",
+      "pass": true,
+      "detail": "['1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81']"
+    },
+    {
+      "name": "seeded-annotations-moved",
+      "pass": true,
+      "detail": "[{\"personId\": \"person_aaaaaaaaaaaa\"}]"
+    },
+    {
+      "name": "barrier-item-is-hash",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "modified-bytes-differ",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "modified-two-items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "modified-old-current-false",
+      "pass": true,
+      "detail": "[False]"
+    },
+    {
+      "name": "modified-new-current-true",
+      "pass": true,
+      "detail": "[True]"
+    },
+    {
+      "name": "heic-cli-exit-1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heic-jpeg-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heic-broken-present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heic-jpeg-queued-or-ready",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heic-broken-error",
+      "pass": true,
+      "detail": "{\"store\": \"with-server\", \"sourceId\": \"src_5c4de60a0dc7\", \"thumb\": null, \"preview\": null, \"poster\": null, \"proxy\": null, \"playback\": null, \"status\": {\"thumb\": \"error\", \"preview\": \"error\", \"poster\": \"not-applicable\", \"proxy\": \"not-applicable\", \"playback\": \"not-applicable\"}}"
+    },
+    {
+      "name": "heic-broken-no-webp",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "heic-decode-error",
+      "pass": true,
+      "detail": "{'sourceId': 'src_5c4de60a0dc7', 'added': 2, 'skipped': 0, 'errors': [{'path': 'formats/broken.heic', 'error': 'decode-error'}]}"
+    },
+    {
+      "name": "original-hashes-unchanged",
+      "pass": true,
+      "detail": "{\"before\": 28, \"after\": 28}"
+    },
+    {
+      "name": "server-does-not-import-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "import-library.server-without-PIL",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "150a38efb6488504fcfdfb33c44604b706b429c1",
+  "commands": [
+    "python -m library scan <media> --serve-from-there",
+    "python -m library scan <media> --serve-from-there #2"
+  ],
+  "artifactPaths": {
+    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f5\\result.json",
+    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f5\\stdout.log",
+    "scan-resume.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f5\\scan-resume.json"
+  }
+}

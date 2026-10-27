@@ -21,6 +21,12 @@ computer.
 It is not a phone copier, not a cloud host, and not an editor. It does
 not rearrange your originals unless you ask it to copy a folder here.
 
+Pictures still on an iPhone are copied by the separate tool next to this
+folder, [iphonePhotos](../iphonePhotos/docs/PRODUCT.md)
+(`projects/iphonePhotos`). Run its `Setup.bat` once, copy the camera
+roll into a folder, then add that folder here. This library does not
+talk to the phone.
+
 ## Quick start
 
 1. **Get the folder.** Clone this repo over HTTPS, or download the ZIP

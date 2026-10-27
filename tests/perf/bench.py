@@ -352,7 +352,7 @@ def _prepare_library_root(port: int, scratch_root: Path) -> Path:
         "dir": "desc",
         "zoomLevel": "years",
         "language": "en",
-        "faceMatchThreshold": 0.8,
+        "faceMatchThreshold": 0.45,
         "faceMinSidePx": 80,
         "transcribeVideos": True,
         "ratingMode": "basic",

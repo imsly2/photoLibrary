@@ -368,6 +368,22 @@ def quick_captured_at(path: Path) -> str:
         return ""
 
 
+def upright_jpeg_size(path: Path) -> tuple[int, int] | None:
+    """A JPEG's pixel size after EXIF orientation, from its first 128 KB."""
+    if file_suffix(path) not in {".jpg", ".jpeg"}:
+        return None
+    try:
+        with open(path, "rb") as handle:
+            width, height, tiff = _jpeg_size_and_exif(handle.read(_HEAD_BYTES))
+        ifd0 = (_parse_tiff(tiff) if tiff else {}).get("ifd0") or {}
+    except (OSError, ValueError, IndexError):
+        return None
+    if not width or not height:
+        return None
+    turned = (_int_in_range(ifd0.get(TAG_ORIENTATION), 1, 8) or 1) >= 5
+    return (height, width) if turned else (width, height)
+
+
 def exif_orientation(path: Path) -> int:
     """EXIF orientation 1-8 from a JPEG's first 128 KB; 1 for anything else."""
     if file_suffix(path) not in {".jpg", ".jpeg"}:

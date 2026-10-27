@@ -1,0 +1,206 @@
+{
+  "check": "F4",
+  "pass": false,
+  "assertions": [
+    {
+      "name": "library-no-pillow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "choice-required-exit",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "choice-required-code",
+      "pass": true,
+      "detail": "{\"error\":\"choice-required\"}\n"
+    },
+    {
+      "name": "cli-flag-wins-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-link-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-no-originals",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-copy-exit",
+      "pass": false,
+      "detail": "{\"error\":\"internal-error\"}\n"
+    },
+    {
+      "name": "cli-flag-wins-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "cli-flag-wins-has-originals",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "implicit-copy-exit",
+      "pass": false,
+      "detail": "{\"error\":\"internal-error\"}\n"
+    },
+    {
+      "name": "implicit-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-exit",
+      "pass": false,
+      "detail": "{\"error\":\"internal-error\"}\n"
+    },
+    {
+      "name": "f4-copy-added-2",
+      "pass": false,
+      "detail": "{}"
+    },
+    {
+      "name": "f4-one-copied-source",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "f4-copy-mode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-copy-root-shape",
+      "pass": true,
+      "detail": "originals/f4-copy-media-src_5629adfd27a3"
+    },
+    {
+      "name": "f4-copied-photo",
+      "pass": false,
+      "detail": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\library-data\\originals\\f4-copy-media-src_5629adfd27a3\\a\\photo.jpg"
+    },
+    {
+      "name": "f4-copied-clip",
+      "pass": false,
+      "detail": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\library-data\\originals\\f4-copy-media-src_5629adfd27a3\\a\\clip.mp4"
+    },
+    {
+      "name": "f4-structure-kept",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-source-bytes-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-two-items",
+      "pass": false,
+      "detail": "[]"
+    },
+    {
+      "name": "f4-filenames",
+      "pass": false,
+      "detail": "set()"
+    },
+    {
+      "name": "copied-items-artifact",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-link-no-extra-originals",
+      "pass": false,
+      "detail": "0"
+    },
+    {
+      "name": "f4-two-sources",
+      "pass": true,
+      "detail": "2"
+    },
+    {
+      "name": "f4-linked-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-linked-kind-volume:no-exif.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_85364b55c6c9\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"windows:2CDC4AC8\", \"pathFromVolumeRoot\": \"slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/f4-link-media/b/no-exif.jpg\", \"lastKnownPath\": \"J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\processing-feedback\\\\Rev1.0\\\\assets\\\\verify-1\\\\f4\\\\f4-link-media\\\\b\\\\no-exif.jpg\", \"sizeBytes\": 13170, \"modifiedAt\": \"2022-02-03T04:05:06Z\", \"sha256\": \"1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81\"}]"
+    },
+    {
+      "name": "f4-linked-kind-volume:far.jpg",
+      "pass": true,
+      "detail": "[{\"sourceId\": \"src_85364b55c6c9\", \"role\": \"primary\", \"component\": \"still\", \"kind\": \"volume\", \"current\": true, \"libraryRelativePath\": null, \"volumeSerial\": \"windows:2CDC4AC8\", \"pathFromVolumeRoot\": \"slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/f4-link-media/b/far.jpg\", \"lastKnownPath\": \"J:\\\\slyOS\\\\projects\\\\photoLibrary\\\\docs\\\\features\\\\processing-feedback\\\\Rev1.0\\\\assets\\\\verify-1\\\\f4\\\\f4-link-media\\\\b\\\\far.jpg\", \"sizeBytes\": 12289, \"modifiedAt\": \"2022-01-01T00:00:00Z\", \"sha256\": \"c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc\"}]"
+    },
+    {
+      "name": "collision-seed-scan",
+      "pass": false,
+      "detail": "{\"error\":\"internal-error\"}\n"
+    },
+    {
+      "name": "collision-rescan-exit",
+      "pass": false,
+      "detail": "{\"error\":\"internal-error\"}\n"
+    },
+    {
+      "name": "collision-wrote-photo-3",
+      "pass": false,
+      "detail": "[WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/keep.jpg.partial-src_e7aef56f36ed'), WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/photo.jpg'), WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/photo_2.jpg')]"
+    },
+    {
+      "name": "collision-seed-a-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "collision-seed-b-unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f4-uncaught",
+      "pass": false,
+      "detail": "[Errno 2] No such file or directory: 'docs\\\\features\\\\processing-feedback\\\\Rev1.0\\\\assets\\\\verify-1\\\\f4\\\\collision-root\\\\originals\\\\collision-media-src_e7aef56f36ed\\\\photo_3.jpg'"
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "150a38efb6488504fcfdfb33c44604b706b429c1",
+  "commands": [
+    "scan <path> # ask default",
+    "addFolderDefault=copy-here scan --serve-from-there",
+    "addFolderDefault=serve-from-there scan --copy-here",
+    "addFolderDefault=copy-here scan <path>",
+    "scan <a/> --copy-here",
+    "scan <second/> --serve-from-there",
+    "scan keep.jpg --copy-here",
+    "scan photo.jpg --copy-here after seeded dest"
+  ],
+  "artifactPaths": {
+    "result.json": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\result.json",
+    "stdout.log": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\stdout.log",
+    "paths-before-after.json": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\paths-before-after.json",
+    "copied-items": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\copied-items",
+    "collision.json": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\collision.json",
+    "original-hashes.json": "docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\original-hashes.json"
+  }
+}

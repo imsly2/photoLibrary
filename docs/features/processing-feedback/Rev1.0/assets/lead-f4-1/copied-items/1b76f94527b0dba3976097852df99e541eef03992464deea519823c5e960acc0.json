@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+  "kind": "photo",
+  "filename": "photo.jpg",
+  "capturedAt": "2024-06-12T15:04:00",
+  "capturedAtSource": "exif",
+  "placeId": "place_29448d98b1cb",
+  "metadata": {
+    "width": 640,
+    "height": 480,
+    "orientation": 1,
+    "camera": null,
+    "lens": null,
+    "durationSec": null,
+    "latitude": 41.88,
+    "longitude": -87.63
+  },
+  "contentIdentifier": null,
+  "locations": [
+    {
+      "sourceId": "src_10fa09326cf7",
+      "role": "primary",
+      "component": "still",
+      "kind": "library-relative",
+      "current": true,
+      "libraryRelativePath": "originals/f4-copy-media-src_10fa09326cf7/a/photo.jpg",
+      "volumeSerial": null,
+      "pathFromVolumeRoot": null,
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\.qa\\processing-lead-f4\\library-data\\originals\\f4-copy-media-src_10fa09326cf7\\a\\photo.jpg",
+      "sizeBytes": 15274,
+      "modifiedAt": "2022-01-01T00:00:00Z",
+      "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    }
+  ],
+  "renditions": {
+    "store": "with-server",
+    "sourceId": "src_10fa09326cf7",
+    "thumb": null,
+    "preview": null,
+    "poster": null,
+    "proxy": null,
+    "playback": null,
+    "status": {
+      "thumb": "queued",
+      "preview": "queued",
+      "poster": "not-applicable",
+      "proxy": "not-applicable",
+      "playback": "not-applicable"
+    }
+  },
+  "faces": [],
+  "things": []
+}

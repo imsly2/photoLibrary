@@ -1,0 +1,141 @@
+{
+  "check": "F8",
+  "pass": false,
+  "assertions": [
+    {
+      "name": "with-source-item",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-under-source",
+      "pass": true,
+      "detail": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\f8-folder\\.library\\renditions\\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\\thumb.webp"
+    },
+    {
+      "name": "thumb-not-on-server-yet",
+      "pass": true,
+      "detail": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\library-data\\renditions\\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\\thumb.webp"
+    },
+    {
+      "name": "item-store-with-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "setting-without-relocate-keeps-source-bytes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-server-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-server-ok",
+      "pass": true,
+      "detail": "{\n  \"ok\": true\n}\n"
+    },
+    {
+      "name": "thumb-on-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "thumb-gone-from-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "item-store-with-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-to-source-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-thumb-under-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-thumb-gone-from-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "reverse-store-with-source",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "relocate-undo-exit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-store-with-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-bytes-on-server",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-media-serves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "undo-files-kept",
+      "pass": true,
+      "detail": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\library-data\\undo\\files\\99cb3360ef5b\\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "undo-files-kept",
+      "pass": true,
+      "detail": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\library-data\\undo\\files\\9d91adc2aab4\\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+    },
+    {
+      "name": "history-operation-relocate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "original-hashes-unchanged-f8",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "f8-runner",
+      "pass": false,
+      "detail": "serve exited 1 stdout='' stderr='{\"error\":\"port-in-use\"}\\n'"
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "fixtureManifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "revision": "150a38efb6488504fcfdfb33c44604b706b429c1",
+  "commands": [
+    "settings set previewStore with-source",
+    "POST /api/sources serve-from-there",
+    "settings set previewStore with-server",
+    "python -m library renditions relocate",
+    "renditions relocate reverse",
+    "undo relocate"
+  ],
+  "artifactPaths": {
+    "result.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\result.json",
+    "stdout.log": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\stdout.log",
+    "relocation-before-after.json": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\final-f8\\relocation-before-after.json"
+  }
+}

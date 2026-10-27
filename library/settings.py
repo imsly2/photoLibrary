@@ -82,7 +82,7 @@ DEFAULTS: dict[str, Any] = {
     "dir": "desc",
     "zoomLevel": "years",
     "language": "en",
-    "faceMatchThreshold": 0.8,
+    "faceMatchThreshold": 0.45,
     "faceMinSidePx": 80,
     "transcribeVideos": True,
     "ratingMode": "basic",

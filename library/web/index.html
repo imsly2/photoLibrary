@@ -135,6 +135,103 @@
         </label>
       </div>
     </div>
+    <button type="button" id="preview-splitter" hidden aria-label="Resize preview" aria-controls="viewer" data-i18n-aria="resizePreview"></button>
+    <div id="viewer" hidden>
+    <div id="viewer-bar">
+      <button type="button" id="viewer-back" data-i18n="back">Back</button>
+      <p id="viewer-crumb"></p>
+      <span id="viewer-source" hidden></span>
+      <div id="viewer-tools">
+        <div id="viewer-rating" hidden>
+          <button type="button" id="viewer-star-1" class="viewer-star" data-stars="1" aria-label="1 star">★</button>
+          <button type="button" id="viewer-star-2" class="viewer-star" data-stars="2" aria-label="2 stars">★</button>
+          <button type="button" id="viewer-star-3" class="viewer-star" data-stars="3" aria-label="3 stars">★</button>
+          <button type="button" id="viewer-star-4" class="viewer-star" data-stars="4" aria-label="4 stars">★</button>
+          <button type="button" id="viewer-star-5" class="viewer-star" data-stars="5" aria-label="5 stars">★</button>
+          <button type="button" id="viewer-pick" aria-pressed="false" data-i18n="pick">Pick</button>
+          <button type="button" id="viewer-reject" aria-pressed="false" data-i18n="reject">Reject</button>
+        </div>
+        <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite" data-i18n-aria="favorite">♡</button>
+        <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5" data-i18n="slideshow" data-i18n-title="slideshowTitle">Slideshow</button>
+        <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11" data-i18n="fullscreen" data-i18n-title="fullscreenTitle">Fullscreen</button>
+        <div id="viewer-info-wrap">
+          <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel" data-i18n="info">Info</button>
+          <div id="viewer-info-panel" hidden>
+            <div id="viewer-facts"></div>
+            <p class="info-heading" data-i18n="people">People</p>
+            <div id="viewer-people" class="label-row"></div>
+            <div id="viewer-face-crops"></div>
+            <p class="info-heading" data-i18n="places">Places</p>
+            <div id="viewer-place" class="label-row"></div>
+            <p class="info-heading" data-i18n="things">Things</p>
+            <div id="viewer-things" class="label-row"></div>
+            <p class="info-heading" data-i18n="tags">Tags</p>
+            <div id="viewer-tags" class="label-row"></div>
+            <details id="viewer-transcript-wrap" hidden>
+              <summary data-i18n="transcript">Transcript</summary>
+              <p id="viewer-summary" class="transcript-summary"></p>
+              <p id="viewer-keywords" class="transcript-keywords"></p>
+              <ol id="viewer-transcript-lines" class="transcript-lines"></ol>
+            </details>
+            <div id="viewer-fields">
+              <label class="annotate-field">
+                <span data-i18n="person">Person</span>
+                <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false" data-i18n-placeholder="person" data-i18n-aria="person">
+              </label>
+              <label class="annotate-field">
+                <span data-i18n="place">Place</span>
+                <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false" data-i18n-placeholder="place" data-i18n-aria="place">
+              </label>
+              <label class="annotate-field">
+                <span data-i18n="thing">Thing</span>
+                <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false" data-i18n-placeholder="thing" data-i18n-aria="thing">
+              </label>
+            </div>
+            <p id="annotate-error" hidden></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p id="unavailable-banner" hidden aria-live="polite" data-i18n="originalMissing">Original is not on this computer</p>
+    <div id="viewer-body">
+      <div id="viewer-stage">
+        <img id="viewer-image" alt="">
+        <img id="viewer-original" alt="" hidden>
+        <video id="viewer-video" hidden playsinline></video>
+        <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
+        <nav id="viewer-stack" hidden></nav>
+      </div>
+      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · V fill · Ctrl+1 100%" data-i18n-title="zoom">
+        <span id="viewer-zoom-pct">100%</span>
+        <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom" data-i18n-aria="viewerZoom">
+        <div id="viewer-fit-actions">
+          <button type="button" id="viewer-fit" aria-pressed="true" title="Fit Ctrl+0" data-i18n="fit" data-i18n-title="fitTitle">Fit</button>
+          <button type="button" id="viewer-fill" aria-pressed="false" title="Fill V" data-i18n="fill" data-i18n-title="fillTitle">Fill</button>
+        </div>
+      </aside>
+    </div>
+    <div id="viewer-bottom">
+      <div id="viewer-nav">
+        <button type="button" id="viewer-prev" title="Previous ←" data-i18n="previous" data-i18n-title="previousTitle">Previous</button>
+        <button type="button" id="viewer-rotate" title="Rotate Ctrl+R" data-i18n="rotate" data-i18n-title="rotateTitle">Rotate</button>
+        <button type="button" id="viewer-next" title="Next →" data-i18n="next" data-i18n-title="nextTitle">Next</button>
+      </div>
+      <div id="viewer-scrub-wrap" hidden>
+        <input type="range" id="viewer-scrub" min="0" max="1000" value="0" step="1" aria-label="Video position" data-i18n-aria="videoPosition">
+        <span id="viewer-scrub-time">0:00</span>
+        <button type="button" id="viewer-mute" title="Mute" aria-pressed="false" data-i18n="mute" data-i18n-title="mute">Mute</button>
+        <input type="range" id="viewer-volume" min="0" max="100" value="100" step="1" aria-label="Volume" data-i18n-aria="volume">
+      </div>
+      <div id="viewer-actions">
+        <button type="button" id="reveal-original" data-i18n="reveal">Reveal in Explorer</button>
+        <button type="button" id="locate-original" hidden data-i18n="locate">Locate</button>
+        <button type="button" id="open-original" data-i18n="open">Open</button>
+        <button type="button" id="viewer-print" title="Print Ctrl+P" data-i18n="print" data-i18n-title="printTitle">Print</button>
+        <button type="button" id="play-preview" disabled data-i18n="playPreview">Play preview</button>
+        <p id="reveal-error" hidden data-i18n="originalMissing">Original is not on this computer</p>
+      </div>
+    </div>
+  </div>
     <button type="button" id="library-splitter" aria-label="Resize People panel" aria-controls="library-side" data-i18n-aria="resizePeople"></button>
     <aside id="library-side" class="tags-collapsed" aria-label="Library panel" data-i18n-aria="libraryPanel">
       <div id="side-head">
@@ -360,8 +457,8 @@
       <label class="settings-field" for="set-faceMatchThreshold">
         <span data-i18n="faceMatchConfidence">Face match confidence</span>
         <span class="settings-slider-row">
-          <input type="range" id="set-faceMatchThreshold" min="0.35" max="0.95" step="0.01" value="0.80">
-          <output id="set-faceMatchThreshold-value" for="set-faceMatchThreshold">0.80</output>
+          <input type="range" id="set-faceMatchThreshold" min="0.35" max="0.95" step="0.01" value="0.45">
+          <output id="set-faceMatchThreshold-value" for="set-faceMatchThreshold">0.45</output>
         </span>
         <em class="settings-help" data-i18n="faceMatchHelp">Higher means fewer false merges and more Unnamed people. A face joins a person only when the score is above this value.</em>
       </label>
@@ -447,102 +544,6 @@
       <button type="button" id="add-submit" disabled data-i18n="add">Add</button>
     </div>
   </dialog>
-  <div id="viewer" hidden>
-    <div id="viewer-bar">
-      <button type="button" id="viewer-back" data-i18n="back">Back</button>
-      <p id="viewer-crumb"></p>
-      <span id="viewer-source" hidden></span>
-      <div id="viewer-tools">
-        <div id="viewer-rating" hidden>
-          <button type="button" id="viewer-star-1" class="viewer-star" data-stars="1" aria-label="1 star">★</button>
-          <button type="button" id="viewer-star-2" class="viewer-star" data-stars="2" aria-label="2 stars">★</button>
-          <button type="button" id="viewer-star-3" class="viewer-star" data-stars="3" aria-label="3 stars">★</button>
-          <button type="button" id="viewer-star-4" class="viewer-star" data-stars="4" aria-label="4 stars">★</button>
-          <button type="button" id="viewer-star-5" class="viewer-star" data-stars="5" aria-label="5 stars">★</button>
-          <button type="button" id="viewer-pick" aria-pressed="false" data-i18n="pick">Pick</button>
-          <button type="button" id="viewer-reject" aria-pressed="false" data-i18n="reject">Reject</button>
-        </div>
-        <button type="button" id="viewer-favorite" aria-pressed="false" aria-label="Favorite" data-i18n-aria="favorite">♡</button>
-        <button type="button" id="viewer-slideshow" aria-pressed="false" title="Slideshow F5" data-i18n="slideshow" data-i18n-title="slideshowTitle">Slideshow</button>
-        <button type="button" id="viewer-fullscreen" aria-pressed="false" title="Fullscreen F11" data-i18n="fullscreen" data-i18n-title="fullscreenTitle">Fullscreen</button>
-        <div id="viewer-info-wrap">
-          <button type="button" id="viewer-info" aria-expanded="false" aria-controls="viewer-info-panel" data-i18n="info">Info</button>
-          <div id="viewer-info-panel" hidden>
-            <div id="viewer-facts"></div>
-            <p class="info-heading" data-i18n="people">People</p>
-            <div id="viewer-people" class="label-row"></div>
-            <div id="viewer-face-crops"></div>
-            <p class="info-heading" data-i18n="places">Places</p>
-            <div id="viewer-place" class="label-row"></div>
-            <p class="info-heading" data-i18n="things">Things</p>
-            <div id="viewer-things" class="label-row"></div>
-            <p class="info-heading" data-i18n="tags">Tags</p>
-            <div id="viewer-tags" class="label-row"></div>
-            <details id="viewer-transcript-wrap" hidden>
-              <summary data-i18n="transcript">Transcript</summary>
-              <p id="viewer-summary" class="transcript-summary"></p>
-              <p id="viewer-keywords" class="transcript-keywords"></p>
-              <ol id="viewer-transcript-lines" class="transcript-lines"></ol>
-            </details>
-            <div id="viewer-fields">
-              <label class="annotate-field">
-                <span data-i18n="person">Person</span>
-                <input type="text" id="person-field" placeholder="Person" aria-label="Person" autocomplete="off" spellcheck="false" data-i18n-placeholder="person" data-i18n-aria="person">
-              </label>
-              <label class="annotate-field">
-                <span data-i18n="place">Place</span>
-                <input type="text" id="place-field" placeholder="Place" aria-label="Place" autocomplete="off" spellcheck="false" data-i18n-placeholder="place" data-i18n-aria="place">
-              </label>
-              <label class="annotate-field">
-                <span data-i18n="thing">Thing</span>
-                <input type="text" id="thing-field" placeholder="Thing" aria-label="Thing" autocomplete="off" spellcheck="false" data-i18n-placeholder="thing" data-i18n-aria="thing">
-              </label>
-            </div>
-            <p id="annotate-error" hidden></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p id="unavailable-banner" hidden aria-live="polite" data-i18n="originalMissing">Original is not on this computer</p>
-    <div id="viewer-body">
-      <div id="viewer-stage">
-        <img id="viewer-image" alt="">
-        <img id="viewer-original" alt="" hidden>
-        <video id="viewer-video" hidden playsinline></video>
-        <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
-        <nav id="viewer-stack" hidden></nav>
-      </div>
-      <aside id="viewer-zoom" class="viewer-zoom-field" title="Zoom Ctrl++ / Ctrl+− · wheel · Ctrl+0 fit · V fill · Ctrl+1 100%" data-i18n-title="zoom">
-        <span id="viewer-zoom-pct">100%</span>
-        <input type="range" id="viewer-zoom-slider" min="25" max="1600" value="100" aria-label="Viewer zoom" data-i18n-aria="viewerZoom">
-        <div id="viewer-fit-actions">
-          <button type="button" id="viewer-fit" aria-pressed="true" title="Fit Ctrl+0" data-i18n="fit" data-i18n-title="fitTitle">Fit</button>
-          <button type="button" id="viewer-fill" aria-pressed="false" title="Fill V" data-i18n="fill" data-i18n-title="fillTitle">Fill</button>
-        </div>
-      </aside>
-    </div>
-    <div id="viewer-bottom">
-      <div id="viewer-nav">
-        <button type="button" id="viewer-prev" title="Previous ←" data-i18n="previous" data-i18n-title="previousTitle">Previous</button>
-        <button type="button" id="viewer-rotate" title="Rotate Ctrl+R" data-i18n="rotate" data-i18n-title="rotateTitle">Rotate</button>
-        <button type="button" id="viewer-next" title="Next →" data-i18n="next" data-i18n-title="nextTitle">Next</button>
-      </div>
-      <div id="viewer-scrub-wrap" hidden>
-        <input type="range" id="viewer-scrub" min="0" max="1000" value="0" step="1" aria-label="Video position" data-i18n-aria="videoPosition">
-        <span id="viewer-scrub-time">0:00</span>
-        <button type="button" id="viewer-mute" title="Mute" aria-pressed="false" data-i18n="mute" data-i18n-title="mute">Mute</button>
-        <input type="range" id="viewer-volume" min="0" max="100" value="100" step="1" aria-label="Volume" data-i18n-aria="volume">
-      </div>
-      <div id="viewer-actions">
-        <button type="button" id="reveal-original" data-i18n="reveal">Reveal in Explorer</button>
-        <button type="button" id="locate-original" hidden data-i18n="locate">Locate</button>
-        <button type="button" id="open-original" data-i18n="open">Open</button>
-        <button type="button" id="viewer-print" title="Print Ctrl+P" data-i18n="print" data-i18n-title="printTitle">Print</button>
-        <button type="button" id="play-preview" disabled data-i18n="playPreview">Play preview</button>
-        <p id="reveal-error" hidden data-i18n="originalMissing">Original is not on this computer</p>
-      </div>
-    </div>
-  </div>
   <p id="slideshow-empty" hidden data-i18n="addPhotosFirst">Add photos first</p>
   <dialog id="duplicate-compare" aria-labelledby="duplicate-compare-title">
     <h2 id="duplicate-compare-title" data-i18n="compareTitle">Compare duplicates</h2>
@@ -623,6 +624,24 @@
       <button type="button" id="merge-wizard-not-same" data-i18n="notSame">Not same</button>
       <button type="button" id="merge-wizard-merge" data-i18n="merge">Merge</button>
       <button type="button" id="merge-wizard-close" data-i18n="cancel">Cancel</button>
+    </div>
+  </dialog>
+  <dialog id="face-time" aria-labelledby="face-time-title">
+    <h2 id="face-time-title"></h2>
+    <p id="face-time-date"></p>
+    <p id="face-time-place"></p>
+    <img id="face-time-frame" alt="">
+    <p id="face-time-status"></p>
+    <input id="face-time-scrub" type="range" min="0" max="0" value="0" aria-label="Time">
+    <div class="dialog-actions face-time-actions">
+      <label class="chrome-field" for="face-time-seconds">
+        <span data-i18n="secondsEach">Seconds each</span>
+        <input id="face-time-seconds" type="number" min="0.15" max="3" step="0.05" value="0.45">
+      </label>
+      <button type="button" id="face-time-play" data-i18n="play">Play</button>
+      <button type="button" id="face-time-moment" data-i18n="seeThisTime">See this time</button>
+      <button type="button" id="face-time-save" data-i18n="saveVideo">Save video</button>
+      <button type="button" id="face-time-close" data-i18n="cancel">Cancel</button>
     </div>
   </dialog>
   <dialog id="keyboard-help" aria-labelledby="keyboard-help-title">

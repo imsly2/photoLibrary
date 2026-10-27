@@ -1,0 +1,644 @@
+{
+  "label": "smoke",
+  "count": 10,
+  "appPath": "J:\\slyOS\\projects\\photoLibrary",
+  "gitCommit": "48e1da5e89df2c89fa17fea806af401b2c191eb8",
+  "port": 8798,
+  "fixtureDir": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\pictures-10",
+  "libraryRoot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\library-data",
+  "machine": {
+    "platform": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+    "python": "3.13.9"
+  },
+  "ffmpegBaseline": {
+    "thumbSecMean": 0.10394245000006777,
+    "previewSecMean": 0.29160571999982493,
+    "sampleCount": 10
+  },
+  "budgets": {
+    "countBaseline": 80,
+    "readingRateMinPicturesPerSec": 15,
+    "readingTenthRatioMax": 1.25,
+    "firstThumbMaxSec": 3,
+    "allThumbsPosterMaxSec": 30,
+    "viewerPreviewMaxSec": 2,
+    "everythingDoneMaxSec": 90,
+    "bookkeepingMaxMs": 50,
+    "apiJobsP95MaxMs": 300,
+    "apiItemsP95MaxMs": 1000,
+    "scaleLinearWithCount": [
+      "allThumbsPosterMaxSec",
+      "everythingDoneMaxSec"
+    ]
+  },
+  "scaledTargets": {
+    "allThumbsPosterMaxSec": 3.75,
+    "everythingDoneMaxSec": 11.25
+  },
+  "timeoutSec": 300.0,
+  "timedOut": false,
+  "results": [
+    {
+      "id": "readingRate",
+      "budget": ">= 15 pictures/s",
+      "target": 15,
+      "measured": 2.9409477214717934,
+      "pass": false
+    },
+    {
+      "id": "readingTenthRatio",
+      "budget": "<= 1.25",
+      "target": 1.25,
+      "measured": null,
+      "pass": false
+    },
+    {
+      "id": "firstThumb",
+      "budget": "<= 3 s",
+      "target": 3,
+      "measured": 0.507185100001152,
+      "pass": true
+    },
+    {
+      "id": "allThumbsPoster",
+      "budget": "<= 3.8 s (scaled)",
+      "target": 3.75,
+      "measured": 4.23058839999976,
+      "pass": false
+    },
+    {
+      "id": "viewerPreview",
+      "budget": "<= 2 s from viewer open",
+      "target": 2,
+      "measured": 4.355014699998719,
+      "pass": false
+    },
+    {
+      "id": "everythingDone",
+      "budget": "<= 11.2 s (scaled)",
+      "target": 11.25,
+      "measured": 15.89447950000067,
+      "pass": false
+    },
+    {
+      "id": "bookkeeping",
+      "budget": "<= 50 ms/job",
+      "target": 50,
+      "measured": 567.8333228574827,
+      "pass": false
+    },
+    {
+      "id": "apiJobsP95",
+      "budget": "<= 300 ms",
+      "target": 300,
+      "measured": 397.00876999895627,
+      "pass": false
+    },
+    {
+      "id": "apiItemsP95",
+      "budget": "<= 1000 ms",
+      "target": 1000,
+      "measured": 1209.5013849996576,
+      "pass": false
+    }
+  ],
+  "milestonesSec": {
+    "firstThumb": 0.507185100001152,
+    "allGrid": 4.23058839999976,
+    "viewerOpen": 0.507185100001152,
+    "viewerPreviewLatency": 4.355014699998719,
+    "everything": 15.89447950000067,
+    "scanDone": 3.7402909000011277
+  },
+  "latencyMs": {
+    "jobs": {
+      "p50": 144.86800000031508,
+      "p95": 397.00876999895627,
+      "max": 416.46919999948295,
+      "n": 12
+    },
+    "items": {
+      "p50": 98.93224999996164,
+      "p95": 1209.5013849996576,
+      "max": 1346.9900000000052,
+      "n": 12
+    }
+  },
+  "reading": {
+    "rate": 2.9409477214717934,
+    "tenthRatio": null
+  },
+  "viewerItemId": "0784729ed03be54960e3c36f67df77bced835a7b16854a259e05995aa9706a0f",
+  "timeline": [
+    {
+      "t": 0.082,
+      "items": 0,
+      "thumbsReady": 0,
+      "queued": false
+    },
+    {
+      "t": 0.208,
+      "items": 1,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.388,
+      "items": 2,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.507,
+      "items": 2,
+      "thumbsReady": 1,
+      "queued": true
+    },
+    {
+      "t": 0.696,
+      "scanAdded": 0,
+      "scanRunning": true,
+      "activity": {
+        "phase": "scan",
+        "done": 2,
+        "total": 11,
+        "file": "IMG_0165.JPG"
+      }
+    },
+    {
+      "t": 0.884,
+      "items": 4,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 1.093,
+      "items": 5,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 1.293,
+      "items": 6,
+      "thumbsReady": 3,
+      "queued": true
+    },
+    {
+      "t": 1.487,
+      "items": 6,
+      "thumbsReady": 4,
+      "queued": true
+    },
+    {
+      "t": 1.662,
+      "scanAdded": 0,
+      "scanRunning": true,
+      "activity": {
+        "phase": "scan",
+        "done": 6,
+        "total": 11,
+        "file": "IMG_0225.JPG"
+      }
+    },
+    {
+      "t": 2.062,
+      "items": 8,
+      "thumbsReady": 5,
+      "queued": true
+    },
+    {
+      "t": 2.301,
+      "items": 8,
+      "thumbsReady": 5,
+      "queued": true
+    },
+    {
+      "t": 2.451,
+      "items": 9,
+      "thumbsReady": 6,
+      "queued": true
+    },
+    {
+      "t": 2.737,
+      "items": 10,
+      "thumbsReady": 7,
+      "queued": true
+    },
+    {
+      "t": 2.987,
+      "scanAdded": 0,
+      "scanRunning": true,
+      "activity": {
+        "phase": "scan",
+        "done": 9,
+        "total": 11,
+        "file": "IMG_0240.JPG"
+      }
+    },
+    {
+      "t": 3.14,
+      "items": 10,
+      "thumbsReady": 8,
+      "queued": true
+    },
+    {
+      "t": 3.345,
+      "items": 11,
+      "thumbsReady": 9,
+      "queued": true
+    },
+    {
+      "t": 3.74,
+      "items": 11,
+      "thumbsReady": 9,
+      "queued": true
+    },
+    {
+      "t": 3.927,
+      "items": 11,
+      "thumbsReady": 10,
+      "queued": true
+    },
+    {
+      "t": 4.067,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 4.231,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 4.391,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 4.548,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 4.697,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 4.839,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 4.963,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.181,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.314,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.441,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.587,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 5.703,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.83,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 5.962,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 6.097,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 6.418,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 6.611,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 6.746,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 6.883,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 7.016,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 7.177,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 7.294,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 7.495,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 7.658,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 8.118,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 8.281,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 8.42,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 8.642,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 9.139,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 9.46,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 9.634,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 9.747,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 9.88,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.01,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.141,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.302,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 10.416,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.542,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.672,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 11.846,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 11.992,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 12.139,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 12.283,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 12.71,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 12.891,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 13.093,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 13.259,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 13.431,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 13.606,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 14.432,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 14.903,
+      "scanAdded": 11,
+      "scanRunning": false,
+      "activity": {
+        "phase": "idle",
+        "done": 0,
+        "total": 0,
+        "file": ""
+      }
+    },
+    {
+      "t": 15.372,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 15.695,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 15.894,
+      "items": 11,
+      "thumbsReady": 11,
+      "queued": false
+    }
+  ],
+  "bookkeepingSampleCount": 7
+}

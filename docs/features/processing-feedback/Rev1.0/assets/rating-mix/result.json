@@ -1,0 +1,149 @@
+{
+  "seconds": 214.1,
+  "rated": 550,
+  "skipped": 1,
+  "errors": 0,
+  "mode": "basic",
+  "before": {
+    "suggested": {
+      "3": 2,
+      "4": 37,
+      "5": 511
+    },
+    "yours": {},
+    "yoursCount": 0
+  },
+  "after": {
+    "suggested": {
+      "1": 17,
+      "2": 217,
+      "3": 225,
+      "4": 77,
+      "5": 14
+    },
+    "yours": {},
+    "yoursCount": 0
+  },
+  "highGoldOrThirds": [
+    {
+      "file": "IMG_0165.JPG",
+      "suggested": 5,
+      "sharp": 0.96,
+      "exposure": 0.93,
+      "face": null,
+      "thirds": null,
+      "gold": 1.0,
+      "mix": 0.968
+    },
+    {
+      "file": "IMG_E2886.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.79,
+      "face": 0.96,
+      "thirds": 0.98,
+      "gold": 1.0,
+      "mix": 0.963
+    },
+    {
+      "file": "IMG_3381.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.85,
+      "face": null,
+      "thirds": null,
+      "gold": 1.0,
+      "mix": 0.962
+    },
+    {
+      "file": "IMG_0227.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.82,
+      "face": null,
+      "thirds": null,
+      "gold": 1.0,
+      "mix": 0.955
+    },
+    {
+      "file": "IMG_3481.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.94,
+      "face": 0.78,
+      "thirds": 0.98,
+      "gold": 1.0,
+      "mix": 0.951
+    },
+    {
+      "file": "IMG_9394.JPG",
+      "suggested": 5,
+      "sharp": 0.98,
+      "exposure": 0.81,
+      "face": null,
+      "thirds": null,
+      "gold": 1.0,
+      "mix": 0.946
+    },
+    {
+      "file": "IMG_3492.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.76,
+      "face": null,
+      "thirds": null,
+      "gold": 1.0,
+      "mix": 0.939
+    },
+    {
+      "file": "IMG_3382.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.94,
+      "face": null,
+      "thirds": null,
+      "gold": 0.86,
+      "mix": 0.928
+    },
+    {
+      "file": "IMG_3477.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.88,
+      "face": 0.82,
+      "thirds": 0.91,
+      "gold": 1.0,
+      "mix": 0.927
+    },
+    {
+      "file": "IMG_3374.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.94,
+      "face": 0.76,
+      "thirds": 0.91,
+      "gold": 0.98,
+      "mix": 0.922
+    },
+    {
+      "file": "IMG_0223.JPG",
+      "suggested": 5,
+      "sharp": 1.0,
+      "exposure": 0.92,
+      "face": null,
+      "thirds": null,
+      "gold": 0.85,
+      "mix": 0.922
+    },
+    {
+      "file": "IMG_3369.JPG",
+      "suggested": 5,
+      "sharp": 0.99,
+      "exposure": 0.93,
+      "face": 0.82,
+      "thirds": 0.87,
+      "gold": 1.0,
+      "mix": 0.918
+    }
+  ]
+}

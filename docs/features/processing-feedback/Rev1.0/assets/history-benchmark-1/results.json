@@ -1,0 +1,93 @@
+{
+  "measuredAtUtc": "2026-10-18T07:07:28.543350+00:00",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "provenance": {
+    "baselineRevision": "150a38efb6488504fcfdfb33c44604b706b429c1",
+    "baselinePath": "library/history.py",
+    "baselineHistorySourceSha256": "19c66a5d47011709123b78369e88ee0b092d7d5195096928f2d5f5bd319f6ab6",
+    "coalescedWorkingHistorySourceSha256": "e8990434a20275becd546f2841c4075816fed71602b2901bebba9d4b6a904579",
+    "baselineDescription": "Unmodified plan_extend_entry from pinned HEAD; captures repeated full snapshots.",
+    "coalescedDescription": "Current working plan_extend_entry; frozen function text saved alongside benchmark."
+  },
+  "workload": "Synthetic in-memory source snapshots only; two source updates per file (pending then indexed). No item snapshots, media reads, disk transactions, fsync, portable mirrors, or real scans. After measures steady-state coalesced history, not one-time migration of an existing large history.",
+  "timing": "One measured planning call and one canonical serialization per variant and size; descriptive measurements, not performance thresholds. Workload creation and output-file I/O excluded. All byte counts are UTF-8.",
+  "snapshotSha256": {
+    "baseline-plan.py": "f5898012b3dbf56d0b91d7532745fdaf60679bf6cdabaf851338c7ae5b139f6d",
+    "coalesced-plan.py": "eae04a4fd04e56bd2876ffd0b25aa4bfd39109019590a63b14e116163a9d3462"
+  },
+  "measurements": [
+    {
+      "files": 50,
+      "baseline": {
+        "historyBytesAfter": 2148168,
+        "transactionChangesBytes": 4690592,
+        "planSeconds": 0.045467,
+        "serializeSeconds": 0.261889,
+        "planAndSerializeSeconds": 0.307356,
+        "historyChangeCountAfter": 101,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "coalesced": {
+        "historyBytesAfter": 20884,
+        "transactionChangesBytes": 85264,
+        "planSeconds": 0.000609,
+        "serializeSeconds": 0.005378,
+        "planAndSerializeSeconds": 0.005988,
+        "historyChangeCountAfter": 1,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "undoRedoEndpointsEquivalent": true
+    },
+    {
+      "files": 100,
+      "baseline": {
+        "historyBytesAfter": 8325618,
+        "transactionChangesBytes": 18159692,
+        "planSeconds": 0.23168,
+        "serializeSeconds": 0.922827,
+        "planAndSerializeSeconds": 1.154507,
+        "historyChangeCountAfter": 201,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "coalesced": {
+        "historyBytesAfter": 41034,
+        "transactionChangesBytes": 167664,
+        "planSeconds": 0.001776,
+        "serializeSeconds": 0.007766,
+        "planAndSerializeSeconds": 0.009542,
+        "historyChangeCountAfter": 1,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "undoRedoEndpointsEquivalent": true
+    },
+    {
+      "files": 200,
+      "baseline": {
+        "historyBytesAfter": 32770518,
+        "transactionChangesBytes": 71437892,
+        "planSeconds": 0.887399,
+        "serializeSeconds": 5.526496,
+        "planAndSerializeSeconds": 6.413895,
+        "historyChangeCountAfter": 401,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "coalesced": {
+        "historyBytesAfter": 81334,
+        "transactionChangesBytes": 332464,
+        "planSeconds": 0.001708,
+        "serializeSeconds": 0.017305,
+        "planAndSerializeSeconds": 0.019013,
+        "historyChangeCountAfter": 1,
+        "rollbackSnapshotPreserved": true,
+        "transactionChangeSequencePreserved": true
+      },
+      "undoRedoEndpointsEquivalent": true
+    }
+  ]
+}

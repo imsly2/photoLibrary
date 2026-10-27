@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "label": "rev1-scale-400",
+  "measurementCompleted": false,
+  "attempts": [
+    {
+      "port": 8799,
+      "reason": "HarnessError: server did not become healthy; port 8799 belonged to unrelated node.exe skills/photon-screenshots/scripts/serve-static.js PID 21388.",
+      "log": "rev1-scale-400.log",
+      "scratchRoot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\run-u9lmwht2",
+      "result": "startup-failed"
+    },
+    {
+      "stoppedAt": "2026-10-18 07:23:51 America/Chicago",
+      "scratchRoot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\run-sc07tppx",
+      "result": "interrupted-before-measurement",
+      "fixtureBytes": 1551406384,
+      "reason": "Stalled after 191 indexed items. Verified own benchmark runner PID 4784 and scratch server/launcher PIDs 27996/27800 were stopped; unrelated processes were left running.",
+      "fixtureExpectedFiles": 401,
+      "log": "rev1-scale-400-21165.log",
+      "sourceJournalFiles": 192,
+      "port": 21165,
+      "serverHealthyAt": "2026-10-18 07:21:07 America/Chicago",
+      "mirrorItems": 1,
+      "serverItems": 191
+    }
+  ],
+  "fixtureManifest": {
+    "filesExpected": 401,
+    "sha256": "eaff73e296905274da82acf8811b9f583b31a10c49c93eb9cee0f30b034e47b4",
+    "missing": 0,
+    "valid": true,
+    "filesChecked": 401,
+    "mismatched": 0
+  },
+  "finding": "Strong harness pipe backpressure suspicion: _start_server uses stdout/stderr=PIPE without draining; library/scan.py emits one flushed progress line per indexed file. library/server.py suppresses HTTP request logs. This is not a product scaling measurement.",
+  "observerNote": "The 100 ms disk observer reloads the full catalog and validates ready rendition files, adding workload at scale.",
+  "comparison": "No 400-item measurements available; latest-combined-3 is an 80-item UI-load report and provides no comparable completion/API diagnostics."
+}

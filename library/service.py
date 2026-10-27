@@ -155,7 +155,14 @@ class Library:
         )
         if entry.get("operation") == "relocate":
             restore_relocate_files(self.root, entry_id)
+        self._rebuild_face_index_after(entry)
         return {"ok": True}
+
+    def _rebuild_face_index_after(self, entry: dict[str, Any]) -> None:
+        from library.faces import FACE_INDEX_OPERATIONS, rebuild_index
+
+        if entry.get("operation") in FACE_INDEX_OPERATIONS:
+            rebuild_index(self.root)
 
     def redo(self) -> dict[str, bool]:
         self.recover()
@@ -181,6 +188,7 @@ class Library:
             self.root,
             plan_cursor_move(self.root, state["cursor"] + 1, file_changes),
         )
+        self._rebuild_face_index_after(entry)
         return {"ok": True}
 
     def history_len(self) -> int:
@@ -398,25 +406,64 @@ class Library:
         snap: dict[str, Any],
         query: dict[str, str] | None = None,
     ) -> list[dict[str, Any]]:
+        return list(self.items_iter_from_snapshot(snap, query))
+
+    def items_iter_from_snapshot(
+        self,
+        snap: dict[str, Any],
+        query: dict[str, str] | None = None,
+    ):
+        """Prepare final metadata order/stacks now; project each read on demand."""
+        from library.catalog_io import ItemEntityReader, item_query_read
         from library.read_cache import cached_item_read
         from library.stacks import annotate_stacks
+        from library.volumes import item_available
 
         query = query or {}
-        extra = set(query) - ITEM_QUERY_KEYS
-        if extra:
-            raise fail("invalid-argument")
+        _validate_item_query(query)
         settings = snap["settings"]
         marked = snap["marked"]
-        items = [cached_item_read(item, self.root, marked) for item in snap["items"]]
-        items = [item for item in items if _item_visible(item, settings, query)]
-        items = [item for item in items if _item_matches(item, query)]
-        items = [_attach_search_hint(item, query) for item in items]
+        # Validate unavailable independently of result membership, then defer its
+        # filesystem-backed check until stored metadata has narrowed the result.
+        _item_visible({"available": True}, settings, query)
+        recent = None
         if "recent" in query:
             if query.get("recent") != "1":
                 raise fail("invalid-argument")
-            allowed = set(snap["recent"])
-            items = [item for item in items if item.get("id") in allowed]
-        return annotate_stacks(_sort_items(items, query, settings))
+            recent = set(snap["recent"])
+        reader = ItemEntityReader(self.root)
+        matches = []
+        raw_by_id = {}
+        include_unavailable = query.get("unavailable") == "1" or (
+            "unavailable" not in query and settings["unavailableItems"] == "show"
+        )
+        for item in snap["items"]:
+            if recent is not None and item.get("id") not in recent:
+                continue
+            metadata = item_query_read(item, self.root, marked, reader)
+            if not _item_matches(metadata, query):
+                continue
+            if not include_unavailable:
+                # Final visible membership is required before emitting stack
+                # representatives; this checks only availability, not browser facts.
+                metadata["available"] = item_available(item, self.root)
+                if not metadata["available"]:
+                    continue
+            matches.append(metadata)
+            raw_by_id[item["id"]] = item
+        ordered_matches = annotate_stacks(_sort_items(matches, query, settings))
+
+        def reads():
+            for metadata in ordered_matches:
+                item = raw_by_id[metadata["id"]]
+                view = cached_item_read(item, self.root, marked, metadata=metadata)
+                if not include_unavailable:
+                    view["available"] = metadata["available"]
+                if "stack" in metadata:
+                    view["stack"] = metadata["stack"]
+                yield _attach_search_hint(view, query)
+
+        return reads()
 
     def items_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         return self.items_from_snapshot(self.snapshot_catalog(), query)
@@ -913,7 +960,9 @@ class Library:
 
     def encode_step(self, *, io_context=nullcontext) -> bool:
         """One thumb/preview/video encode beside drain_step, for the extra
-        encoder threads. Never runs faces, objects, rating or transcripts."""
+        encoder threads. A still encoded from the original may also publish
+        faces from that same upright frame. Never runs objects, rating or
+        transcripts."""
         if self._jobs_paused or self._inferring:
             return False
         return drain_queued_jpegs(self.root, io_context=io_context, sweep=False)
@@ -1235,6 +1284,36 @@ def _item_tour_eligible(item: dict[str, Any], root: Path) -> bool:
     except Exception:
         return False
     return path is not None and path.is_file() and path.stat().st_size > 0
+
+
+def _validate_item_query(query: dict[str, str]) -> None:
+    """Validate before response headers, including for an empty result."""
+    if set(query) - ITEM_QUERY_KEYS:
+        raise fail("invalid-argument")
+    for key, value in query.items():
+        if type(value) is not str:
+            raise fail("invalid-argument")
+        if key in {"person", "place", "thing", "source", "from", "to"} and not value:
+            raise fail("invalid-argument")
+        if key in {"person", "place", "thing"} and not any(value.split(",")):
+            raise fail("invalid-argument")
+        if key in {"favorite", "recent", "pick"} and value != "1":
+            raise fail("invalid-argument")
+        if key in {"unavailable", "hideRejects"} and value not in {"0", "1"}:
+            raise fail("invalid-argument")
+        if key == "minStars" and (not value.isdigit() or not 1 <= int(value) <= 5):
+            raise fail("invalid-argument")
+        allowed = {
+            "sort": {"date", "name", "location", "rating"},
+            "dir": {"asc", "desc"}, "scope": {"people", "places", "things"},
+            "flag": {"blurry", "too-dark", "too-bright"},
+        }
+        if key in allowed and value not in allowed[key]:
+            raise fail("invalid-argument")
+        if key == "kind":
+            kinds = {part.strip() for part in value.split(",") if part.strip()}
+            if not kinds or not kinds.issubset(ITEM_KINDS):
+                raise fail("invalid-argument")
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:

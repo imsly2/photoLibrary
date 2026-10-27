@@ -1,0 +1,14 @@
+﻿{
+    "beforePid":  12080,
+    "afterPid":  46936,
+    "healthOk":  true,
+    "listenerExe":  "C:\\Users\\SLY2.0\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "listenerParentPid":  25596,
+    "parentExe":  "J:\\slyOS\\projects\\photoLibrary\\.venv\\Scripts\\python.exe",
+    "parentStillAlive":  true,
+    "launchPs1StillRunning":  true,
+    "launcherPids":  [
+                         44300
+                     ],
+    "started":  "10/18/2026 21:17:26"
+}

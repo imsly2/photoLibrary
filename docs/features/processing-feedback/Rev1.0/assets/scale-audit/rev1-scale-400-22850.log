@@ -1,0 +1,18 @@
+
+Budget                 Target             Measured                     Result  
+------------------------------------------------------------------------------
+readingRate            >= 15 pictures/s   33.924                       PASS    
+readingTenthRatio      <= 1.25            0.753                        PASS    
+firstThumb             <= 3 s             0.391                        PASS    
+allThumbsPoster        <= 150.0 s (scaled) 109.625                      PASS    
+viewerPreview          <= 2 s from viewer open 0.844                        PASS    
+everythingDone         <= 450.0 s (scaled) 285.953                      PASS    
+bookkeeping            <= 50 ms/job       259.704                      FAIL    
+apiJobsP95             <= 300 ms          128.377                      PASS    
+apiItemsP95            <= 1000 ms         340.272                      PASS    
+
+portableMirrorLagSec   (info)             n/a (>10 s or mirror missing)
+
+Artifact: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\perf-bench\bench-20261018-073207-rev1-scale-400.json
+
+ExitCode: 1

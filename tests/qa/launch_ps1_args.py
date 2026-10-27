@@ -127,6 +127,10 @@ def static_source_checks() -> list[dict[str, object]]:
             "pass": "Start-Process -FilePath $python[0] -ArgumentList (@($python[1.." not in launch,
         },
         {
+            "name": "launch-replaces-this-library",
+            "pass": "Stop-ThisLibraryServe" in launch and "loads the latest code" in launch and "Test-SpawnedBy" in launch,
+        },
+        {
             "name": "rewrapped-python-array",
             "pass": "$python = @(Get-Python312)" in launch,
         },

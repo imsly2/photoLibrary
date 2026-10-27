@@ -7,6 +7,7 @@ from contextlib import contextmanager
 import json
 import os
 import socket
+import select
 import threading
 import time
 import traceback
@@ -54,6 +55,20 @@ def _query_map(query: str) -> dict[str, str]:
             raise fail("invalid-argument")
         out[key] = values[0]
     return out
+
+
+def _face_time_route(route: str) -> tuple[str, str, str | None] | None:
+    prefix = "/api/people/"
+    if not route.startswith(prefix):
+        return None
+    parts = [part for part in route[len(prefix) :].split("/") if part]
+    if any(part in {".", ".."} for part in parts):
+        return None
+    if len(parts) == 2 and parts[1] in {"timeline", "film"}:
+        return parts[0], parts[1], None
+    if len(parts) == 3 and parts[1] == "frame":
+        return parts[0], "frame", parts[2]
+    return None
 
 
 def parse_byte_range(header: str | None, length: int) -> tuple[int, int] | None:
@@ -246,6 +261,58 @@ class LibraryHandler(BaseHTTPRequestHandler):
         with Hold(self.lock, route):
             snap = snapshot()
         self._send_json(200, build(snap))
+
+    def _items_stream(self, query: dict[str, str]) -> None:
+        from library.lock_trace import Hold
+
+        with Hold(self.lock, "/api/items/stream"):
+            snap = self.library.snapshot_catalog()
+        # Eager metadata validation/order runs before headers; browser projection
+        # stays lazy and never holds the catalog lock or waits for later records.
+        rows = self.library.items_iter_from_snapshot(snap, query)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Connection", "close")
+        self.close_connection = True
+        self.end_headers()
+        if self.command == "HEAD":
+            return
+
+        def frame(body):
+            self.wfile.write(encode(body) + b"\n")
+            self.wfile.flush()
+
+        try:
+            frame({"type": "start"})
+            count = 0
+            while True:
+                if select.select([self.connection], [], [], 0)[0]:
+                    if not self.connection.recv(1, socket.MSG_PEEK):
+                        return
+                try:
+                    item = next(rows)
+                except StopIteration:
+                    break
+                frame({"type": "item", "item": item})
+                count += 1
+            frame({"type": "done", "count": count})
+        except Exception as exc:
+            if _is_client_disconnect(exc):
+                return
+            code = exc.code if isinstance(exc, AppError) else "internal-error"
+            try:
+                append_error(self.library.root, "/api/items/stream", code)
+            except Exception:
+                pass
+            try:
+                frame({"type": "error", "error": code})
+            except Exception as send_exc:
+                if not _is_client_disconnect(send_exc):
+                    try:
+                        append_error(self.library.root, "/api/items/stream", "stream-write-failed")
+                    except Exception:
+                        pass
 
     def _yield_scan(self) -> None:
         _pause_for_readers(self.lock)
@@ -455,6 +522,9 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._read_json()
                 with self.lock:
                     self._send_json(200, self.library.remove_source(source_id))
+                return
+            if route == "/api/items/stream" and method in {"GET", "HEAD"}:
+                self._items_stream(_query_map(parsed.query))
                 return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
@@ -682,6 +752,24 @@ class LibraryHandler(BaseHTTPRequestHandler):
                         ),
                     )
                 return
+            face_time = _face_time_route(route)
+            if face_time is not None:
+                person_id, action, item_id = face_time
+                from library.face_film import export_film, person_timeline, render_frame
+
+                if action == "timeline" and method in {"GET", "HEAD"}:
+                    self._send_json(200, person_timeline(self.library.root, person_id))
+                    return
+                if action == "frame" and method in {"GET", "HEAD"} and item_id:
+                    jpeg = render_frame(self.library.root, person_id, item_id)
+                    self._send(200, jpeg, "image/jpeg", cache_control="private, max-age=60")
+                    return
+                if action == "film" and method == "POST":
+                    body = self._read_json()
+                    seconds = body.get("seconds") if isinstance(body, dict) else None
+                    self._send_json(200, export_film(self.library.root, person_id, seconds))
+                    return
+                raise fail("not-found")
             if route.startswith("/api/people/") and method == "PUT":
                 person_id = route[len("/api/people/") :]
                 if not person_id or "/" in person_id:

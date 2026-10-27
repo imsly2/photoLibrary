@@ -1,0 +1,1615 @@
+{
+  "checks": [
+    {
+      "name": "start and first item arrive before final projection",
+      "pass": true,
+      "detail": {
+        "firstItemAt": 185615.469409,
+        "projectedAtFirst": [
+          {
+            "id": "b",
+            "at": 185615.3790687,
+            "underLock": false,
+            "finished": true
+          }
+        ],
+        "projectionEvents": [
+          {
+            "id": "b",
+            "at": 185615.3790687,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "a",
+            "at": 185615.4694848,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "c",
+            "at": 185615.5605834,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "d",
+            "at": 185615.6512866,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "e",
+            "at": 185615.7418774,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "f",
+            "at": 185615.8330454,
+            "underLock": false,
+            "finished": true
+          }
+        ],
+        "restTypes": [
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "stream snapshot under lock and projection outside lock",
+      "pass": true,
+      "detail": [
+        {
+          "event": "snapshot",
+          "underLock": true,
+          "at": 185615.3743508
+        }
+      ]
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ",
+      "pass": true,
+      "detail": {
+        "baselineHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+        "normalHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+        "streamHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+        "count": 6,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?sort=date&dir=asc",
+      "pass": true,
+      "detail": {
+        "baselineHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+        "normalHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+        "streamHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+        "count": 6,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?sort=name&dir=asc",
+      "pass": true,
+      "detail": {
+        "baselineHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+        "normalHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+        "streamHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+        "count": 6,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?sort=rating&dir=desc",
+      "pass": true,
+      "detail": {
+        "baselineHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+        "normalHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+        "streamHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+        "count": 6,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?sort=location&dir=asc",
+      "pass": true,
+      "detail": {
+        "baselineHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+        "normalHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+        "streamHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+        "count": 6,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?person=p1,p2",
+      "pass": true,
+      "detail": {
+        "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?thing=t1,t2",
+      "pass": true,
+      "detail": {
+        "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?place=l1,l2",
+      "pass": true,
+      "detail": {
+        "baselineHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+        "normalHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+        "streamHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+        "count": 3,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?favorite=1",
+      "pass": true,
+      "detail": {
+        "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?recent=1",
+      "pass": true,
+      "detail": {
+        "baselineHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+        "normalHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+        "streamHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+        "count": 2,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?minStars=4",
+      "pass": true,
+      "detail": {
+        "baselineHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+        "normalHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+        "streamHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+        "count": 2,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?hideRejects=1",
+      "pass": true,
+      "detail": {
+        "baselineHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "normalHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "streamHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "count": 5,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?q=%E4%BD%A0%E5%A5%BD",
+      "pass": true,
+      "detail": {
+        "baselineHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+        "normalHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+        "streamHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?q=%E6%9C%AA%E5%91%BD%E5%90%8D",
+      "pass": true,
+      "detail": {
+        "baselineHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+        "normalHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+        "streamHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?unavailable=0",
+      "pass": true,
+      "detail": {
+        "baselineHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "normalHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "streamHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+        "count": 5,
+        "lines": [
+          "start",
+          "item",
+          "item",
+          "item",
+          "item",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?person=p2&unavailable=0",
+      "pass": true,
+      "detail": {
+        "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+        "count": 1,
+        "lines": [
+          "start",
+          "item",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "old JSON current JSON stream full payload parity ?thing=no-match",
+      "pass": true,
+      "detail": {
+        "baselineHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "normalHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "streamHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "count": 0,
+        "lines": [
+          "start",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "NDJSON headers explicit and uncached",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "contentType": "application/x-ndjson; charset=utf-8",
+        "cacheControl": "no-store",
+        "contentLength": null,
+        "lines": [
+          {
+            "type": "start"
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "b",
+              "kind": "photo",
+              "filename": "IMG_1002.jpg",
+              "capturedAt": "2024-06-12T10:00:01",
+              "placeId": "l2",
+              "faces": [
+                {
+                  "personId": "p1"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1002.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 3,
+                "suggested": 1,
+                "flags": []
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/b",
+              "favorite": false,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l2",
+                    "name": "北京",
+                    "latitude": 3,
+                    "longitude": 4
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": 1,
+                "yours": 3,
+                "stars": 3,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 1,
+                "representative": false
+              }
+            }
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "a",
+              "kind": "photo",
+              "filename": "IMG_1001.jpg",
+              "capturedAt": "2024-06-12T10:00:00",
+              "placeId": "l1",
+              "faces": [
+                {
+                  "personId": "p1"
+                },
+                {
+                  "personId": "p2"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t1"
+                },
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1001.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 5,
+                "pick": true,
+                "flags": [
+                  "blurry"
+                ]
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/a",
+              "favorite": true,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  },
+                  {
+                    "id": "p2",
+                    "name": "小明"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l1",
+                    "name": "Park",
+                    "latitude": 1,
+                    "longitude": 2
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t1",
+                    "name": "Tree",
+                    "aliases": [
+                      "树"
+                    ]
+                  },
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": null,
+                "yours": 5,
+                "stars": 5,
+                "pick": true,
+                "reject": false,
+                "flags": [
+                  "blurry"
+                ],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": true
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 0,
+                "representative": true
+              }
+            }
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "f",
+              "kind": "photo",
+              "filename": "last.jpg",
+              "capturedAt": "2020-01-01T00:00:00",
+              "placeId": "l1",
+              "faces": [
+                {
+                  "personId": "p1"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t1"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/last.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 3,
+                "suggested": 1,
+                "flags": []
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/f",
+              "favorite": false,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l1",
+                    "name": "Park",
+                    "latitude": 1,
+                    "longitude": 2
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t1",
+                    "name": "Tree",
+                    "aliases": [
+                      "树"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": 1,
+                "yours": 3,
+                "stars": 3,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            }
+          },
+          {
+            "type": "done",
+            "count": 3
+          }
+        ],
+        "rawBytes": 2632
+      }
+    },
+    {
+      "name": "unavailable burst member excluded before final stack membership",
+      "pass": true,
+      "detail": {
+        "baseline": [
+          {
+            "id": "a",
+            "kind": "photo",
+            "filename": "IMG_1001.jpg",
+            "capturedAt": "2024-06-12T10:00:00",
+            "placeId": "l1",
+            "faces": [
+              {
+                "personId": "p1"
+              },
+              {
+                "personId": "p2"
+              }
+            ],
+            "things": [
+              {
+                "thingId": "t1"
+              },
+              {
+                "thingId": "t2"
+              }
+            ],
+            "locations": [
+              {
+                "current": true,
+                "sourceId": "s1",
+                "libraryRelativePath": "roll/IMG_1001.jpg",
+                "role": "primary",
+                "component": "still"
+              }
+            ],
+            "quality": {
+              "stars": 5,
+              "pick": true,
+              "flags": [
+                "blurry"
+              ]
+            },
+            "available": true,
+            "motionAvailable": false,
+            "lastKnownPath": "synthetic/a",
+            "favorite": true,
+            "entities": {
+              "people": [
+                {
+                  "id": "p1",
+                  "name": "Alice"
+                },
+                {
+                  "id": "p2",
+                  "name": "小明"
+                }
+              ],
+              "places": [
+                {
+                  "id": "l1",
+                  "name": "Park",
+                  "latitude": 1,
+                  "longitude": 2
+                }
+              ],
+              "things": [
+                {
+                  "id": "t1",
+                  "name": "Tree",
+                  "aliases": [
+                    "树"
+                  ]
+                },
+                {
+                  "id": "t2",
+                  "name": "Family",
+                  "aliases": [
+                    "家人"
+                  ]
+                }
+              ]
+            },
+            "rating": {
+              "suggested": null,
+              "yours": 5,
+              "stars": 5,
+              "pick": true,
+              "reject": false,
+              "flags": [
+                "blurry"
+              ],
+              "bestOfGroup": false,
+              "mode": null,
+              "blurry": true
+            }
+          }
+        ],
+        "stream": [
+          {
+            "id": "a",
+            "kind": "photo",
+            "filename": "IMG_1001.jpg",
+            "capturedAt": "2024-06-12T10:00:00",
+            "placeId": "l1",
+            "faces": [
+              {
+                "personId": "p1"
+              },
+              {
+                "personId": "p2"
+              }
+            ],
+            "things": [
+              {
+                "thingId": "t1"
+              },
+              {
+                "thingId": "t2"
+              }
+            ],
+            "locations": [
+              {
+                "current": true,
+                "sourceId": "s1",
+                "libraryRelativePath": "roll/IMG_1001.jpg",
+                "role": "primary",
+                "component": "still"
+              }
+            ],
+            "quality": {
+              "stars": 5,
+              "pick": true,
+              "flags": [
+                "blurry"
+              ]
+            },
+            "available": true,
+            "motionAvailable": false,
+            "lastKnownPath": "synthetic/a",
+            "favorite": true,
+            "entities": {
+              "people": [
+                {
+                  "id": "p1",
+                  "name": "Alice"
+                },
+                {
+                  "id": "p2",
+                  "name": "小明"
+                }
+              ],
+              "places": [
+                {
+                  "id": "l1",
+                  "name": "Park",
+                  "latitude": 1,
+                  "longitude": 2
+                }
+              ],
+              "things": [
+                {
+                  "id": "t1",
+                  "name": "Tree",
+                  "aliases": [
+                    "树"
+                  ]
+                },
+                {
+                  "id": "t2",
+                  "name": "Family",
+                  "aliases": [
+                    "家人"
+                  ]
+                }
+              ]
+            },
+            "rating": {
+              "suggested": null,
+              "yours": 5,
+              "stars": 5,
+              "pick": true,
+              "reject": false,
+              "flags": [
+                "blurry"
+              ],
+              "bestOfGroup": false,
+              "mode": null,
+              "blurry": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "preheader validation ?sort=bogus",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "preheader validation ?person=",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "preheader validation ?recent=0",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "preheader validation ?unavailable=bogus",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "preheader validation ?unknown=1",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "preheader validation ?sort=date&sort=name",
+      "pass": true,
+      "detail": {
+        "status": 400,
+        "contentType": "application/json",
+        "cacheControl": "no-store",
+        "contentLength": "28",
+        "lines": [
+          {
+            "error": "invalid-argument"
+          }
+        ],
+        "rawBytes": 28
+      }
+    },
+    {
+      "name": "midstream failure is one error without done or second response",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "contentType": "application/x-ndjson; charset=utf-8",
+        "cacheControl": "no-store",
+        "contentLength": null,
+        "lines": [
+          {
+            "type": "start"
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "b",
+              "kind": "photo",
+              "filename": "IMG_1002.jpg",
+              "capturedAt": "2024-06-12T10:00:01",
+              "placeId": "l2",
+              "faces": [
+                {
+                  "personId": "p1"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1002.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 3,
+                "suggested": 1,
+                "flags": []
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/b",
+              "favorite": false,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l2",
+                    "name": "北京",
+                    "latitude": 3,
+                    "longitude": 4
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": 1,
+                "yours": 3,
+                "stars": 3,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 1,
+                "representative": false
+              }
+            }
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "a",
+              "kind": "photo",
+              "filename": "IMG_1001.jpg",
+              "capturedAt": "2024-06-12T10:00:00",
+              "placeId": "l1",
+              "faces": [
+                {
+                  "personId": "p1"
+                },
+                {
+                  "personId": "p2"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t1"
+                },
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1001.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 5,
+                "pick": true,
+                "flags": [
+                  "blurry"
+                ]
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/a",
+              "favorite": true,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  },
+                  {
+                    "id": "p2",
+                    "name": "小明"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l1",
+                    "name": "Park",
+                    "latitude": 1,
+                    "longitude": 2
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t1",
+                    "name": "Tree",
+                    "aliases": [
+                      "树"
+                    ]
+                  },
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": null,
+                "yours": 5,
+                "stars": 5,
+                "pick": true,
+                "reject": false,
+                "flags": [
+                  "blurry"
+                ],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": true
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 0,
+                "representative": true
+              }
+            }
+          },
+          {
+            "type": "error",
+            "error": "unavailable"
+          }
+        ],
+        "rawBytes": 1907
+      }
+    },
+    {
+      "name": "disconnect error cannot be successful done",
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "contentType": "application/x-ndjson; charset=utf-8",
+        "cacheControl": "no-store",
+        "contentLength": null,
+        "lines": [
+          {
+            "type": "start"
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "b",
+              "kind": "photo",
+              "filename": "IMG_1002.jpg",
+              "capturedAt": "2024-06-12T10:00:01",
+              "placeId": "l2",
+              "faces": [
+                {
+                  "personId": "p1"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1002.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 3,
+                "suggested": 1,
+                "flags": []
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/b",
+              "favorite": false,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l2",
+                    "name": "北京",
+                    "latitude": 3,
+                    "longitude": 4
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": 1,
+                "yours": 3,
+                "stars": 3,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 1,
+                "representative": false
+              }
+            }
+          },
+          {
+            "type": "item",
+            "item": {
+              "id": "a",
+              "kind": "photo",
+              "filename": "IMG_1001.jpg",
+              "capturedAt": "2024-06-12T10:00:00",
+              "placeId": "l1",
+              "faces": [
+                {
+                  "personId": "p1"
+                },
+                {
+                  "personId": "p2"
+                }
+              ],
+              "things": [
+                {
+                  "thingId": "t1"
+                },
+                {
+                  "thingId": "t2"
+                }
+              ],
+              "locations": [
+                {
+                  "current": true,
+                  "sourceId": "s1",
+                  "libraryRelativePath": "roll/IMG_1001.jpg",
+                  "role": "primary",
+                  "component": "still"
+                }
+              ],
+              "quality": {
+                "stars": 5,
+                "pick": true,
+                "flags": [
+                  "blurry"
+                ]
+              },
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "synthetic/a",
+              "favorite": true,
+              "entities": {
+                "people": [
+                  {
+                    "id": "p1",
+                    "name": "Alice"
+                  },
+                  {
+                    "id": "p2",
+                    "name": "小明"
+                  }
+                ],
+                "places": [
+                  {
+                    "id": "l1",
+                    "name": "Park",
+                    "latitude": 1,
+                    "longitude": 2
+                  }
+                ],
+                "things": [
+                  {
+                    "id": "t1",
+                    "name": "Tree",
+                    "aliases": [
+                      "树"
+                    ]
+                  },
+                  {
+                    "id": "t2",
+                    "name": "Family",
+                    "aliases": [
+                      "家人"
+                    ]
+                  }
+                ]
+              },
+              "rating": {
+                "suggested": null,
+                "yours": 5,
+                "stars": 5,
+                "pick": true,
+                "reject": false,
+                "flags": [
+                  "blurry"
+                ],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": true
+              },
+              "stack": {
+                "id": "burst:a",
+                "kind": "burst",
+                "itemIds": [
+                  "a",
+                  "b"
+                ],
+                "count": 2,
+                "index": 0,
+                "representative": true
+              }
+            }
+          }
+        ],
+        "rawBytes": 1868
+      }
+    },
+    {
+      "name": "client disconnect stops further projection",
+      "pass": true,
+      "detail": {
+        "atDisconnect": 2,
+        "afterDisconnect": 2,
+        "events": [
+          {
+            "id": "b",
+            "at": 185615.9967094,
+            "underLock": false,
+            "finished": true
+          },
+          {
+            "id": "a",
+            "at": 185616.0977839,
+            "underLock": false,
+            "finished": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "healthy endpoint remains responsive after client disconnect",
+      "pass": true,
+      "detail": {
+        "ok": true
+      }
+    }
+  ],
+  "parity": {
+    "": {
+      "baselineHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+      "normalHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+      "streamHash": "73c56f9ba135d72847d240ca0304c91e2b936a0cfe1ab35372251b209a2aacd2",
+      "count": 6,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?sort=date&dir=asc": {
+      "baselineHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+      "normalHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+      "streamHash": "bdbacc14c751812e23499f17ebbfda2f4cf9728026a59a30bc9e27ae767bb130",
+      "count": 6,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?sort=name&dir=asc": {
+      "baselineHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+      "normalHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+      "streamHash": "7089527e292d689450f062d1a3825f2dbf063d5e39026e27549dcb597384b9ba",
+      "count": 6,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?sort=rating&dir=desc": {
+      "baselineHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+      "normalHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+      "streamHash": "816f50d67f3830d834a42ad9768e2cd1cf2364a8dae2acb18db107620a7e1b8f",
+      "count": 6,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?sort=location&dir=asc": {
+      "baselineHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+      "normalHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+      "streamHash": "e4962c8fb08f494fe988f53b617e303eb9cbf7604ee43df3357fdceaacba97df",
+      "count": 6,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?person=p1,p2": {
+      "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?thing=t1,t2": {
+      "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?place=l1,l2": {
+      "baselineHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+      "normalHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+      "streamHash": "3caf5cb003900d1d5710d7cd4efa9baecadbbf608e5e86639d0769fca5783628",
+      "count": 3,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?favorite=1": {
+      "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?recent=1": {
+      "baselineHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+      "normalHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+      "streamHash": "fc46eacac0693594dfa39181c0fbcced75f0f04255cf0bfa6604321a79067263",
+      "count": 2,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?minStars=4": {
+      "baselineHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+      "normalHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+      "streamHash": "aed6f5c78b9563b8c2c5f7c4cbfb433ebb3ffa5e96d00235be405188fd7ec32c",
+      "count": 2,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?hideRejects=1": {
+      "baselineHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "normalHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "streamHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "count": 5,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?q=%E4%BD%A0%E5%A5%BD": {
+      "baselineHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+      "normalHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+      "streamHash": "ea401e19333c6f8e23d6f69359cb80135da6fb5941a0e6a286dc9c5638b8955b",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?q=%E6%9C%AA%E5%91%BD%E5%90%8D": {
+      "baselineHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+      "normalHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+      "streamHash": "a5c727d0a05c0c1a654ba88dfa343c1db7d5141c846291f3e33945ac87b8142c",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?unavailable=0": {
+      "baselineHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "normalHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "streamHash": "2b9c5ad5263008cc52a245df42cd2f177214335d2ee0cde0e6c5b60dd2c06326",
+      "count": 5,
+      "lines": [
+        "start",
+        "item",
+        "item",
+        "item",
+        "item",
+        "item",
+        "done"
+      ]
+    },
+    "?person=p2&unavailable=0": {
+      "baselineHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "normalHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "streamHash": "c2cdc33080080ad4c0cadc3bc41ae9f9c4c708f0b2a49a5cf812edf1fafa2178",
+      "count": 1,
+      "lines": [
+        "start",
+        "item",
+        "done"
+      ]
+    },
+    "?thing=no-match": {
+      "baselineHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "normalHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "streamHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0,
+      "lines": [
+        "start",
+        "done"
+      ]
+    }
+  },
+  "note": "Real isolated HTTP handler and production service; mock synthetic catalog records, availability/entity loaders, serialization and deliberate projection delays/errors only. No live library or originals accessed."
+}

@@ -5,6 +5,31 @@ contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 
 ## Active performance work
 
+Regression floor for the current tree is
+[BROWSE-SPEED-BASELINE](features/processing-feedback/Rev1.0/BROWSE-SPEED-BASELINE.md)
+(remeasured 2026-10-20 on the 400-photo scratch catalog). All 13 payload
+hashes still match the pre-fix baseline. Tag filter 247 → 41 ms, person
+filter 241 → 41 ms, name sort 234 → 89 ms. Compare later work to
+`assets/browse-speed/query-regression-floor.json`.
+
+Browse-speed fixes and streamed `/api/items/stream` are in this working tree.
+Focused checks passed (browse browser 22/22, browse backend 60/60, stream
+browser 106/106, stream HTTP 31/31). No feature Check is closed. The live
+Library process was **not** restarted: refresh loads `library.js`; the stream
+endpoint is served only after a deliberate reload of this root. No activation
+JSON exists.
+
+Next product request:
+[SIDE-PREVIEW-PLAN](features/processing-feedback/Rev1.0/SIDE-PREVIEW-PLAN.md).
+Steve locked the row on 2026-10-20: grid, preview splitter, the existing
+viewer, People splitter, People sidebar. People stays. Nearby thumbs and
+the hover loupe wait until that dock is in.
+
+Latest narrative: [BROWSE-SPEED-RESULTS](features/processing-feedback/Rev1.0/BROWSE-SPEED-RESULTS.md)
+and [PROGRESSIVE-RESULTS-PLAN](features/processing-feedback/Rev1.0/PROGRESSIVE-RESULTS-PLAN.md).
+Read those before the older opportunity ledger; Faces/Objects lock work in
+that ledger is already implemented on this working tree.
+
 Continue [BIG-WINS-HANDOFF](features/processing-feedback/Rev1.0/BIG-WINS-HANDOFF.md): small-agent implementation of high-impact preview and responsiveness fixes. This supersedes the older measurement-first task; no broad test expansion.
 
 ## Next milestone: folder library (F23)
@@ -49,7 +74,7 @@ record for its pictures, flat, named `IMG_0456.JPG.json` / `.thumb.webp` /
    Setup.bat once for the Whisper and aesthetic models, restart Library,
    and Start Processing. Re-run faces with the stricter
    gates: `python -m library infer-faces --force` or Processing **Re-run
-   Faces**. Tune `faceMatchThreshold` (default 0.80, Settings slider
+   Faces**. Tune `faceMatchThreshold` (default 0.45, Settings slider
    0.35–0.95) and `faceMinSidePx` (default 80). Large stills use overlapping
    1280 detect tiles, then the same original→112 ArcFace crop. No 23rd Check.
 5. A feature Check is still closed only by [STATUS.md](STATUS.md)

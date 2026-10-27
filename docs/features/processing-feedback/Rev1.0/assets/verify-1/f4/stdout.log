@@ -1,0 +1,42 @@
+PASS library-no-pillow
+PASS choice-required-exit: {"error":"choice-required"}
+
+PASS choice-required-code: {"error":"choice-required"}
+
+PASS cli-flag-wins-link-exit
+PASS cli-flag-wins-link-mode
+PASS cli-flag-wins-no-originals
+FAIL cli-flag-wins-copy-exit: {"error":"internal-error"}
+
+PASS cli-flag-wins-copy-mode
+FAIL cli-flag-wins-has-originals
+FAIL implicit-copy-exit: {"error":"internal-error"}
+
+PASS implicit-copy-mode
+FAIL f4-copy-exit: {"error":"internal-error"}
+
+FAIL f4-copy-added-2: {}
+PASS f4-one-copied-source: 1
+PASS f4-copy-mode
+PASS f4-copy-root-shape: originals/f4-copy-media-src_5629adfd27a3
+FAIL f4-copied-photo: docs\features\processing-feedback\Rev1.0\assets\verify-1\f4\library-data\originals\f4-copy-media-src_5629adfd27a3\a\photo.jpg
+FAIL f4-copied-clip: docs\features\processing-feedback\Rev1.0\assets\verify-1\f4\library-data\originals\f4-copy-media-src_5629adfd27a3\a\clip.mp4
+PASS f4-structure-kept
+PASS f4-source-bytes-unchanged
+FAIL f4-two-items: []
+FAIL f4-filenames: set()
+FAIL copied-items-artifact
+PASS f4-link-exit
+FAIL f4-link-no-extra-originals: 0
+PASS f4-two-sources: 2
+PASS f4-linked-source
+PASS f4-linked-kind-volume:no-exif.jpg: [{"sourceId": "src_85364b55c6c9", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:2CDC4AC8", "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/f4-link-media/b/no-exif.jpg", "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\f4-link-media\\b\\no-exif.jpg", "sizeBytes": 13170, "modifiedAt": "2022-02-03T04:05:06Z", "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"}]
+PASS f4-linked-kind-volume:far.jpg: [{"sourceId": "src_85364b55c6c9", "role": "primary", "component": "still", "kind": "volume", "current": true, "libraryRelativePath": null, "volumeSerial": "windows:2CDC4AC8", "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/f4-link-media/b/far.jpg", "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\f4-link-media\\b\\far.jpg", "sizeBytes": 12289, "modifiedAt": "2022-01-01T00:00:00Z", "sha256": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc"}]
+FAIL collision-seed-scan: {"error":"internal-error"}
+
+FAIL collision-rescan-exit: {"error":"internal-error"}
+
+FAIL collision-wrote-photo-3: [WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/keep.jpg.partial-src_e7aef56f36ed'), WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/photo.jpg'), WindowsPath('docs/features/processing-feedback/Rev1.0/assets/verify-1/f4/collision-root/originals/collision-media-src_e7aef56f36ed/photo_2.jpg')]
+PASS collision-seed-a-unchanged
+PASS collision-seed-b-unchanged
+FAIL f4-uncaught: [Errno 2] No such file or directory: 'docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\f4\\collision-root\\originals\\collision-media-src_e7aef56f36ed\\photo_3.jpg'

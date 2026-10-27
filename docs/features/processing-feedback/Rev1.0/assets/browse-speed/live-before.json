@@ -1,0 +1,47 @@
+{
+  "note": "Read-only sequential observation of running app; not controlled before/after.",
+  "requests": [
+    {
+      "path": "/api/health",
+      "ms": 33.9,
+      "bytes": 11,
+      "count": null
+    },
+    {
+      "path": "/api/items?sort=date&dir=desc&hideRejects=1",
+      "ms": 1023.9,
+      "bytes": 2268491,
+      "count": 750
+    },
+    {
+      "path": "/api/items?thing=no-such-tag&hideRejects=1",
+      "ms": 289.9,
+      "bytes": 2,
+      "count": 0
+    },
+    {
+      "path": "/api/tags",
+      "ms": 13.1,
+      "bytes": 4180,
+      "count": null
+    },
+    {
+      "path": "/api/people",
+      "ms": 15.9,
+      "bytes": 17850,
+      "count": null
+    },
+    {
+      "path": "/api/sources",
+      "ms": 34.3,
+      "bytes": 214114,
+      "count": 2
+    },
+    {
+      "path": "/api/items?sort=name&hideRejects=1",
+      "ms": 75.6,
+      "bytes": 2268491,
+      "count": 750
+    }
+  ]
+}

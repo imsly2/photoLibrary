@@ -1,5 +1,11 @@
 # Big performance opportunities — active Cursor handoff
 
+**Latest, 2026-10-20:** [BROWSE-SPEED-RESULTS](BROWSE-SPEED-RESULTS.md) records the
+verified filter/render/thumbnail scheduling and metadata-query changes. Its
+evidence supersedes the older next-action ledger below for browsing. Faces and
+Objects inference already release the lock in the current tree. No live restart
+or additional feature Check closure in this pass.
+
 Updated 2026-10-18. User direction: prioritize large speed gains, use one smaller implementing agent, minimal focused verification, reversible commits. Do not spend remaining usage expanding benchmark infrastructure. This supersedes SCALE-PLAN's measurement-first emphasis for new work.
 
 ## Objective and order

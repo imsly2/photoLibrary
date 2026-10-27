@@ -1,0 +1,10 @@
+Dry-run: this copy has the local AI setup commands.
+  - python -m library setup-geo
+  - python -m library setup-ml objects
+  - python -m library setup-ml faces
+  - python -m library setup-ml transcribe
+  - python -m library setup-ml aesthetic
+
+A real Setup.bat would run those five, then: Ready -- run Library.bat
+
+First real Setup.bat needs the internet for Python/ffmpeg (if missing) and the cities / YOLO / InsightFace / Whisper / NIMA packs. Models stay under library-data/. Dry-run / -Help do not download.

@@ -312,6 +312,7 @@ def run_slice(root: Path, artifacts: Path) -> int:
     index = json.loads((root / "models" / "faces" / "index.json").read_text(encoding="utf-8"))
     checks.check("index-keep-only", set((index.get("people") or {}).keys()) == {person_a}, json.dumps(index))
     (artifacts / "merge.json").write_text(json.dumps({"keep": person_a, "drop": person_b, "index": index}, indent=2) + "\n", encoding="utf-8")
+    prove_index_cache(checks, root, person_a, person_b)
 
     prove_split(checks, artifacts, media)
 
@@ -348,6 +349,36 @@ def run_slice(root: Path, artifacts: Path) -> int:
             "people": str(artifacts / "people"),
         },
     )
+
+
+def prove_index_cache(checks: Checks, root: Path, keep: str | None, drop: str | None) -> None:
+    """Fingerprints ride on item faces; index.json is a cache outside undo."""
+    from library.catalog_io import item_read, load_item
+    from library.records import unpack_embedding
+
+    faces = [face for item in load_items(root) for face in item.get("faces") or [] if "detScore" in face]
+    checks.check(
+        "faces-carry-embedding",
+        bool(faces) and all(unpack_embedding(face.get("embedding")) for face in faces),
+        json.dumps([sorted(face) for face in faces]),
+    )
+    paths = []
+    for entry_path in sorted((root / "undo" / "entries").glob("*.json")):
+        entry = json.loads(entry_path.read_text(encoding="utf-8"))
+        paths += [change.get("path") for change in entry.get("changes") or []]
+    checks.check("history-no-index", "models/faces/index.json" not in paths, json.dumps(sorted(set(paths))))
+    item_id = next(item["id"] for item in load_items(root) if item.get("faces"))
+    read = item_read(load_item(root, item_id), root)
+    checks.check("item-read-no-embedding", all("embedding" not in face for face in read.get("faces") or []), json.dumps(read.get("faces")))
+
+    def index_people() -> set[str]:
+        index = json.loads((root / "models" / "faces" / "index.json").read_text(encoding="utf-8"))
+        return set((index.get("people") or {}).keys())
+
+    undo = run_library(root, ["undo"], env=test_env())
+    checks.check("undo-merge-rebuilds-index", undo.returncode == 0 and index_people() == {keep, drop}, json.dumps(sorted(index_people())))
+    redo = run_library(root, ["redo"], env=test_env())
+    checks.check("redo-merge-rebuilds-index", redo.returncode == 0 and index_people() == {keep}, json.dumps(sorted(index_people())))
 
 
 def prove_split(checks: Checks, artifacts: Path, media: Path) -> None:
@@ -451,7 +482,7 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     from library.settings import DEFAULTS, KEY_ORDER
     from tests.qa.s08 import fresh_root
 
-    checks.check("insight-threshold-family", abs(INSIGHT_THRESHOLD - 0.80) < 1e-9, str(INSIGHT_THRESHOLD))
+    checks.check("insight-threshold-family", abs(INSIGHT_THRESHOLD - 0.45) < 1e-9, str(INSIGHT_THRESHOLD))
     checks.check("min-side-default", DEFAULT_MIN_SIDE_PX >= 64, str(DEFAULT_MIN_SIDE_PX))
     checks.check(
         "settings-have-face-keys",
@@ -460,7 +491,7 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     )
     checks.check(
         "settings-face-threshold",
-        abs(float(DEFAULTS.get("faceMatchThreshold")) - 0.8) < 1e-9,
+        abs(float(DEFAULTS.get("faceMatchThreshold")) - 0.45) < 1e-9,
         json.dumps(DEFAULTS),
     )
     checks.check("settings-face-min-side", DEFAULTS.get("faceMinSidePx") == 80, json.dumps(DEFAULTS))
@@ -470,7 +501,7 @@ def prove_quality_gates(checks: Checks, artifacts: Path) -> None:
     migrated = validate_complete(fill_missing_defaults(legacy))
     checks.check(
         "legacy-settings-migrate",
-        abs(float(migrated.get("faceMatchThreshold")) - 0.8) < 1e-9 and migrated.get("faceMinSidePx") == 80,
+        abs(float(migrated.get("faceMatchThreshold")) - 0.45) < 1e-9 and migrated.get("faceMinSidePx") == 80,
         json.dumps(migrated),
     )
     prove_tile_detect(checks)

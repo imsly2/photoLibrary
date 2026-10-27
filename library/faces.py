@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import zipfile
 from contextlib import nullcontext
 from datetime import datetime, timezone
@@ -28,9 +29,9 @@ from library.catalog_io import (
 )
 from library.errors import AppError, fail
 from library.history import make_history_entry, plan_append
-from library.media import ffprobe_json, run_ffmpeg
-from library.paths import library_path
-from library.records import clone, ordered_item, ordered_person
+from library.media import decode_still_rgb
+from library.paths import library_path, root_text
+from library.records import clone, ordered_item, ordered_person, pack_embedding, unpack_embedding
 from library.volumes import location_file, location_matches_stat
 
 MODELS_REL = "models/faces"
@@ -50,9 +51,9 @@ REMOVED_ONNX = (
 BEACON = (255, 0, 170)
 FIXTURE_THRESHOLD = 0.85
 # buffalo_s ArcFace cosine. Match only when score is strictly above this.
-# 0.80 is the family default: fewer false merges, more Unnamed people.
+# Measured on family photos: same person ~0.3-0.7, different people ~0.
 # Fixture clustering stays on FIXTURE_THRESHOLD.
-INSIGHT_THRESHOLD = 0.80
+INSIGHT_THRESHOLD = 0.45
 INSIGHT_DET_MIN = 0.65
 DEFAULT_MIN_SIDE_PX = 80
 NAMED_WEAK_SIDE_PX = 120
@@ -200,6 +201,94 @@ def _index_readonly(root: Path) -> dict[str, Any] | None:
     data = load_index(root)
     _index_cache[str(path)] = (sig, data)
     return data
+
+
+FACE_INDEX_OPERATIONS = frozenset({"faces-infer", "faces-cleanup", "people-merge", "people-split"})
+_mirror_pending: set[str] = set()
+
+
+def write_index(root: Path, index: dict[str, Any], *, mirror: bool = True) -> None:
+    """Publish the face index: a cache of item faces, never an undo step.
+
+    ``mirror=False`` (one photo at a time in the drain) holds the portable
+    ``faces.json`` copy until ``settle_index_mirror``.
+    """
+    from library.atomic import atomic_write_json
+
+    atomic_write_json(index_path(root), index)
+    _mirror_pending.add(root_text(root))
+    if mirror:
+        settle_index_mirror(root)
+
+
+def settle_index_mirror(root: Path) -> None:
+    key = root_text(root)
+    if key not in _mirror_pending:
+        return
+    _mirror_pending.discard(key)
+    try:
+        from library.portable import mirror_face_index
+
+        mirror_face_index(root)
+    except Exception:
+        pass
+
+
+def _index_from_items(
+    root: Path,
+    index: dict[str, Any],
+    overrides: dict[str, list[dict[str, Any]]] | None = None,
+    *,
+    keep_unbacked: bool = True,
+) -> dict[str, Any]:
+    """Face lists and centroids recomputed from item faces.
+
+    A centroid is the mean of that person's stored fingerprints; a person
+    whose faces carry none keeps its prior centroid unless ``keep_unbacked``
+    is false (Re-run Faces: such a centroid predates stored fingerprints
+    and cannot be checked). People with no faces stay only while their
+    person file exists.
+    """
+    previous = index.get("people") or {}
+    refs: dict[str, list[dict[str, Any]]] = {}
+    vectors: dict[str, list[list[float]]] = {}
+    overrides = overrides or {}
+    for item_id in iter_item_ids(root):
+        faces = overrides[item_id] if item_id in overrides else load_item(root, item_id).get("faces") or []
+        for face in faces:
+            person_id = face.get("personId")
+            if type(person_id) is not str or not person_id:
+                continue
+            ref = {"itemId": item_id, "box": face.get("box")}
+            bucket = refs.setdefault(person_id, [])
+            if ref not in bucket:
+                bucket.append(ref)
+            vec = unpack_embedding(face.get("embedding"))
+            if vec is not None:
+                vectors.setdefault(person_id, []).append(vec)
+    people: dict[str, Any] = {}
+    for person_id in sorted(set(previous) | set(refs)):
+        if person_id not in refs and try_load_person(root, person_id) is None:
+            continue
+        old = previous.get(person_id) if isinstance(previous.get(person_id), dict) else {}
+        if person_id in vectors:
+            centroid = _centroid(vectors[person_id])
+        else:
+            centroid = list(old.get("centroid") or []) if keep_unbacked else []
+        people[person_id] = {"centroid": centroid, "faces": refs.get(person_id, [])}
+    out = dict(index)
+    out["people"] = people
+    return out
+
+
+def rebuild_index(root: Path) -> None:
+    """Re-derive the index after undo/redo of a face operation."""
+    current = load_index(root)
+    if current is None:
+        return
+    after = _index_from_items(root, current)
+    if after != current:
+        write_index(root, after)
 
 
 def faces_status(root: Path) -> dict[str, Any]:
@@ -368,44 +457,6 @@ def _still_path(item: dict[str, Any], root: Path) -> Path | None:
         if location_matches_stat(loc, path):
             return path
     return None
-
-
-def decode_rgb(path: Path) -> tuple[int, int, bytes]:
-    probe = ffprobe_json(path)
-    if probe is None:
-        raise fail("decode-error")
-    width = 0
-    height = 0
-    for stream in probe.get("streams") or []:
-        if stream.get("codec_type") == "video":
-            width = int(stream.get("width") or 0)
-            height = int(stream.get("height") or 0)
-            break
-    if width <= 0 or height <= 0:
-        raise fail("decode-error")
-    try:
-        proc = run_ffmpeg(
-            [
-                "ffmpeg",
-                "-v",
-                "error",
-                "-i",
-                str(path),
-                "-frames:v",
-                "1",
-                "-f",
-                "rawvideo",
-                "-pix_fmt",
-                "rgb24",
-                "pipe:1",
-            ]
-        )
-    except OSError as exc:
-        raise fail("dependency-missing") from exc
-    expected = width * height * 3
-    if proc.returncode != 0 or len(proc.stdout) < expected:
-        raise fail("decode-error")
-    return width, height, proc.stdout[:expected]
 
 
 def _is_beacon(r: int, g: int, b: int) -> bool:
@@ -610,14 +661,17 @@ def _similarity_matrix(src: Any, dst: Any) -> Any:
     scale = dst_norm / src_norm
     t = dst_mean - scale * (r @ src_mean)
     mat = np.zeros((2, 3), dtype=np.float64)
-    mat[:, :2] = r.T * scale
+    mat[:, :2] = r * scale
     mat[:, 2] = t
     return mat
 
 
 def _affine_112(image: Any, kps: Any) -> Any:
     np = _numpy()
-    mat = _similarity_matrix(kps, np.asarray(_ARCFACE_DST, dtype=np.float64))
+    # Map each template pixel back onto the photo. The previous matrix ran
+    # the other way, so every face was sampled from the top-left corner.
+    template = np.asarray(_ARCFACE_DST, dtype=np.float64)
+    mat = _similarity_matrix(template, np.asarray(kps, dtype=np.float64).reshape(5, 2))
     h, w = image.shape[:2]
     out = np.zeros((112, 112, 3), dtype=np.uint8)
     ys, xs = np.meshgrid(np.arange(112), np.arange(112), indexing="ij")
@@ -646,7 +700,12 @@ def _crop_112(image: Any, box: list[float]) -> Any:
     return crop[ys][:, xs]
 
 
+NMS_CONTAIN = 0.6
+
+
 def _nms(dets: Any, thresh: float) -> Any:
+    """Keep the best box per face. A tile edge can cut a face into a smaller
+    box that sits inside the full one; that is the same face, not a second."""
     np = _numpy()
     if len(dets) == 0:
         return dets
@@ -665,7 +724,8 @@ def _nms(dets: Any, thresh: float) -> Any:
         h = np.maximum(0.0, yy2 - yy1 + 1)
         inter = w * h
         ovr = inter / (areas[i] + areas[order[1:]] - inter)
-        order = order[np.where(ovr <= thresh)[0] + 1]
+        contain = inter / np.minimum(areas[i], areas[order[1:]])
+        order = order[np.where((ovr <= thresh) & (contain <= NMS_CONTAIN))[0] + 1]
     return dets[keep]
 
 
@@ -718,6 +778,34 @@ def _insight_sessions(root: Path, ort: Any) -> tuple[Any, Any]:
     return det, rec
 
 
+def align_portrait(image: Any, landmarks_xy: Any, size: int = 640) -> Any:
+    """Pin five photo landmarks to a scaled ArcFace template on a square canvas.
+
+    ``landmarks_xy`` are pixel coordinates on ``image``. The eyes land in the
+    same place on every frame.
+    """
+    np = _numpy()
+    template = np.asarray(_ARCFACE_DST, dtype=np.float64)
+    scale = (float(size) * 0.62) / 112.0
+    offset = (float(size) - 112.0 * scale) / 2.0
+    dst = template * scale + offset
+    mat = _similarity_matrix(dst, np.asarray(landmarks_xy, dtype=np.float64).reshape((5, 2)))
+    h, w = image.shape[:2]
+    out = np.zeros((size, size, 3), dtype=np.uint8)
+    ys, xs = np.meshgrid(np.arange(size), np.arange(size), indexing="ij")
+    src_x = mat[0, 0] * xs + mat[0, 1] * ys + mat[0, 2]
+    src_y = mat[1, 0] * xs + mat[1, 1] * ys + mat[1, 2]
+    src_x = np.clip(np.rint(src_x).astype(np.int32), 0, max(0, w - 1))
+    src_y = np.clip(np.rint(src_y).astype(np.int32), 0, max(0, h - 1))
+    out[:, :] = image[src_y, src_x]
+    return out
+
+
+# Encoder threads and the face drain can both reach InsightFace. One session
+# is not safe to run from two threads.
+_DETECT_LOCK = threading.Lock()
+
+
 def detect_insightface(
     root: Path,
     width: int,
@@ -726,6 +814,43 @@ def detect_insightface(
     *,
     min_side_px: int = DEFAULT_MIN_SIDE_PX,
     min_det: float = INSIGHT_DET_MIN,
+    landmarks_only: bool = False,
+) -> list[dict[str, Any]]:
+    with _DETECT_LOCK:
+        return _detect_insightface(
+            root,
+            width,
+            height,
+            rgb,
+            min_side_px=min_side_px,
+            min_det=min_det,
+            landmarks_only=landmarks_only,
+        )
+
+
+def detect_shared_frame(root: Path, width: int, height: int, rgb: bytes) -> list[dict[str, Any]]:
+    """Faces for an upright frame already decoded beside a thumb or preview."""
+    status = faces_status(root)
+    quality = face_quality_settings(root, str(status.get("backend") or ""))
+    return detect_insightface(
+        root,
+        width,
+        height,
+        rgb,
+        min_side_px=int(quality["minSidePx"]),
+        min_det=float(quality["minDetScore"]),
+    )
+
+
+def _detect_insightface(
+    root: Path,
+    width: int,
+    height: int,
+    rgb: bytes,
+    *,
+    min_side_px: int = DEFAULT_MIN_SIDE_PX,
+    min_det: float = INSIGHT_DET_MIN,
+    landmarks_only: bool = False,
 ) -> list[dict[str, Any]]:
     np = _numpy()
     ort = _ort()
@@ -837,20 +962,32 @@ def detect_insightface(
         box = _clamp_box([x1 / width, y1 / height, (x2 - x1) / width, (y2 - y1) / height])
         if not passes_min_side(box, width, height, min_side_px):
             continue
+        landmarks = _landmark_pairs(kps, width, height) if kps is not None else None
+        if landmarks_only:
+            row = {
+                "box": box,
+                "detScore": score,
+                "shortSidePx": box_short_side_px(box, width, height),
+            }
+            if landmarks is not None:
+                row["landmarks"] = landmarks
+            faces.append(row)
+            continue
         if kps is not None:
             aligned = _affine_112(image, np.asarray(kps).reshape((5, 2)))
         else:
             aligned = _crop_112(image, box)
         rec_blob = ((aligned.astype(np.float32) - 127.5) / 127.5).transpose(2, 0, 1)[None, ...]
         emb = rec.run(None, {rec_input: rec_blob})[0].reshape(-1)
-        faces.append(
-            {
-                "box": box,
-                "embedding": l2_normalize([float(x) for x in emb.tolist()]),
-                "detScore": score,
-                "shortSidePx": box_short_side_px(box, width, height),
-            }
-        )
+        row = {
+            "box": box,
+            "embedding": l2_normalize([float(x) for x in emb.tolist()]),
+            "detScore": score,
+            "shortSidePx": box_short_side_px(box, width, height),
+        }
+        if landmarks is not None:
+            row["landmarks"] = landmarks
+        faces.append(row)
     faces.sort(key=lambda face: (face["box"][0], face["box"][1]))
     return faces
 
@@ -945,8 +1082,9 @@ def detect_faces_on_still(
     *,
     min_side_px: int = DEFAULT_MIN_SIDE_PX,
     min_det: float = INSIGHT_DET_MIN,
+    landmarks_only: bool = False,
 ) -> list[dict[str, Any]]:
-    width, height, rgb = decode_rgb(path)
+    width, height, rgb = decode_still_rgb(path)
     if backend == BACKEND_FIXTURE:
         return detect_fixture(width, height, rgb, min_side_px=min_side_px)
     if backend == BACKEND_INSIGHT:
@@ -957,8 +1095,95 @@ def detect_faces_on_still(
             rgb,
             min_side_px=min_side_px,
             min_det=min_det,
+            landmarks_only=landmarks_only,
         )
     raise fail("models-missing")
+
+
+def _box_iou(a: list[float], b: list[float]) -> float:
+    ax, ay, aw, ah = (float(v) for v in a)
+    bx, by, bw, bh = (float(v) for v in b)
+    x1 = max(ax, bx)
+    y1 = max(ay, by)
+    x2 = min(ax + aw, bx + bw)
+    y2 = min(ay + ah, by + bh)
+    inter = max(0.0, x2 - x1) * max(0.0, y2 - y1)
+    union = aw * ah + bw * bh - inter
+    if union <= 0:
+        return 0.0
+    return inter / union
+
+
+def fill_face_landmarks(root: Path) -> dict[str, Any]:
+    """Store the five scan points on faces that only have a box and a fingerprint.
+
+    Who the face belongs to does not change.
+    """
+    from library.item_store import write
+    from library.records import ordered_item
+
+    status = faces_status(root)
+    if not status.get("ready"):
+        raise fail("models-missing")
+    backend = status.get("backend")
+    if type(backend) is not str or not backend:
+        raise fail("models-missing")
+    updated = 0
+    missed = 0
+    items = 0
+    for item_id in iter_item_ids(root):
+        try:
+            item = load_item(root, item_id)
+        except Exception:
+            continue
+        faces = [face for face in (item.get("faces") or []) if isinstance(face, dict)]
+        if not faces:
+            continue
+        pending = [
+            face
+            for face in faces
+            if not (isinstance(face.get("landmarks"), list) and len(face["landmarks"]) == 5)
+        ]
+        if not pending:
+            continue
+        path = _still_path(item, root)
+        if path is None:
+            missed += len(pending)
+            continue
+        try:
+            found = detect_faces_on_still(root, path, backend, landmarks_only=True)
+        except Exception:
+            missed += len(pending)
+            continue
+        changed = False
+        for face in pending:
+            box = face.get("box")
+            if not isinstance(box, list) or len(box) != 4:
+                missed += 1
+                continue
+            best = None
+            best_iou = 0.3
+            for det in found:
+                landmarks = det.get("landmarks")
+                det_box = det.get("box")
+                if not isinstance(landmarks, list) or len(landmarks) != 5 or not isinstance(det_box, list):
+                    continue
+                score = _box_iou(box, det_box)
+                if score > best_iou:
+                    best_iou = score
+                    best = landmarks
+            if best is None:
+                missed += 1
+                continue
+            face["landmarks"] = best
+            changed = True
+            updated += 1
+        if changed:
+            write(root, item_id, ordered_item(item))
+            items += 1
+        if items and items % 25 == 0:
+            print(f"eye points stored on {updated} faces", flush=True)
+    return {"ok": True, "faces": updated, "missed": missed, "items": items}
 
 
 def _centroid(embeddings: list[list[float]]) -> list[float]:
@@ -1109,8 +1334,14 @@ def cluster_detections(
         if embs and (replace_centroids or not (rec.get("centroid") or [])):
             people[pid]["centroid"] = _centroid(embs)
         elif embs:
-            existing = [people[pid].get("centroid") or []]
-            people[pid]["centroid"] = _centroid(existing + embs)
+            # Weight the stored mean by the faces behind it, or every new face
+            # drags the person halfway toward itself.
+            weight = float(max(1, len(rec.get("faces") or [])))
+            total = [float(v) * weight for v in rec.get("centroid") or []]
+            for emb in embs:
+                for i in range(min(len(total), len(emb))):
+                    total[i] += float(emb[i])
+            people[pid]["centroid"] = l2_normalize(total)
         people[pid]["faces"] = face_refs[pid]
     next_index = {
         "schemaVersion": 1,
@@ -1134,102 +1365,29 @@ def face_boxes_equal(left: Any, right: Any, eps: float = 1e-4) -> bool:
         return False
 
 
-def plan_merge_index(root: Path, keep_id: str, drop_id: str) -> dict[str, Any] | None:
-    current = load_index(root)
-    if current is None:
-        return None
-    people = dict(current.get("people") or {})
-    if drop_id not in people and keep_id not in people:
-        return None
-    before = clone(current)
-    keep = dict(people.get(keep_id) or {"centroid": [], "faces": []})
-    drop = dict(people.get(drop_id) or {"centroid": [], "faces": []})
-    embs = []
-    if keep.get("centroid"):
-        embs.append(list(keep["centroid"]))
-    if drop.get("centroid"):
-        embs.append(list(drop["centroid"]))
-    faces = list(keep.get("faces") or [])
-    for ref in drop.get("faces") or []:
-        rewritten = dict(ref)
-        if rewritten not in faces:
-            faces.append(rewritten)
-    people[keep_id] = {
-        "centroid": _centroid(embs) if embs else [],
-        "faces": faces,
-    }
-    people.pop(drop_id, None)
-    after = {
-        "schemaVersion": 1,
-        "backend": current.get("backend"),
-        "matchThreshold": current.get("matchThreshold"),
-        "people": people,
-    }
-    if "scanned" in current:
-        after["scanned"] = current.get("scanned")
-    if after == before:
-        return None
-    return {"path": INDEX_REL, "before": before, "after": after}
-
-
-def plan_split_index(
-    root: Path,
-    from_id: str,
-    new_id: str,
-    item_id: str,
-    box: list[float] | None,
-) -> dict[str, Any] | None:
-    current = load_index(root)
-    if current is None:
-        return None
-    people = dict(current.get("people") or {})
-    before = clone(current)
-    src = dict(people.get(from_id) or {"centroid": [], "faces": []})
-    moved: dict[str, Any] | None = None
-    kept: list[dict[str, Any]] = []
-    for ref in src.get("faces") or []:
-        rec = dict(ref)
-        same_item = rec.get("itemId") == item_id
-        same_box = box is None or face_boxes_equal(rec.get("box"), box)
-        if moved is None and same_item and same_box:
-            moved = rec
-            continue
-        kept.append(rec)
-    if moved is None:
-        moved = {"itemId": item_id}
-        if box is not None:
-            moved["box"] = list(box)
-    src_centroid = list(src.get("centroid") or [])
-    new_centroid: list[float] = []
-    if not kept and src_centroid:
-        new_centroid = src_centroid
-        src_centroid = []
-    people[from_id] = {"centroid": src_centroid, "faces": kept}
-    dest = dict(people.get(new_id) or {"centroid": [], "faces": []})
-    dest_faces = list(dest.get("faces") or [])
-    if moved not in dest_faces:
-        dest_faces.append(moved)
-    dest_centroid = list(dest.get("centroid") or []) or new_centroid
-    people[new_id] = {"centroid": dest_centroid, "faces": dest_faces}
-    after = {
-        "schemaVersion": 1,
-        "backend": current.get("backend"),
-        "matchThreshold": current.get("matchThreshold"),
-        "people": people,
-    }
-    if "scanned" in current:
-        after["scanned"] = current.get("scanned")
-    if after == before:
-        return None
-    return {"path": INDEX_REL, "before": before, "after": after}
-
-
 def _clamp_unit(value: float) -> float:
     return min(1.0, max(0.0, float(value)))
 
 
+def _landmark_pairs(kps: Any, width: int, height: int) -> list[list[float]] | None:
+    if kps is None or width <= 0 or height <= 0:
+        return None
+    np = _numpy()
+    pts = np.asarray(kps, dtype=np.float64).reshape((5, 2))
+    return [
+        [_clamp_unit(float(px) / width), _clamp_unit(float(py) / height)]
+        for px, py in pts
+    ]
+
+
 def _face_record(det: dict[str, Any]) -> dict[str, Any]:
     rec: dict[str, Any] = {"personId": det["personId"], "box": det["box"]}
+    embedding = det.get("embedding")
+    if isinstance(embedding, list) and embedding:
+        rec["embedding"] = pack_embedding(embedding)
+    landmarks = det.get("landmarks")
+    if isinstance(landmarks, list) and len(landmarks) == 5:
+        rec["landmarks"] = landmarks
     det_score = det.get("detScore")
     match_score = det.get("matchScore")
     if isinstance(det_score, (int, float)) and not isinstance(det_score, bool):
@@ -1298,39 +1456,6 @@ def _prune_empty_unnamed(
         )
 
 
-def _rebuild_index_face_lists(
-    root: Path,
-    index: dict[str, Any],
-    item_faces: dict[str, list[dict[str, Any]]] | None = None,
-) -> dict[str, Any]:
-    people = {}
-    for person_id, rec in (index.get("people") or {}).items():
-        if not isinstance(rec, dict):
-            continue
-        people[person_id] = {
-            "centroid": list(rec.get("centroid") or []),
-            "faces": [],
-        }
-    overrides = item_faces or {}
-    for item_id in iter_item_ids(root):
-        if item_id in overrides:
-            faces = overrides[item_id]
-        else:
-            faces = load_item(root, item_id).get("faces") or []
-        for face in faces:
-            person_id = face.get("personId")
-            if type(person_id) is not str or not person_id:
-                continue
-            if person_id not in people:
-                people[person_id] = {"centroid": [], "faces": []}
-            ref = {"itemId": item_id, "box": face.get("box")}
-            if ref not in people[person_id]["faces"]:
-                people[person_id]["faces"].append(ref)
-    next_index = dict(index)
-    next_index["people"] = people
-    return next_index
-
-
 def cleanup_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str, Any]:
     parsed = read_infer_payload(payload)
     status = faces_status(root)
@@ -1378,15 +1503,15 @@ def cleanup_faces(root: Path, payload: dict[str, Any] | None = None) -> dict[str
             if type(pid) is str and pid:
                 remaining.add(pid)
     _prune_empty_unnamed(root, remaining, changes)
-    before_index = load_index(root)
-    if before_index is not None:
-        after_index = _rebuild_index_face_lists(root, before_index, overrides)
-        after_index["matchThreshold"] = quality["matchThreshold"]
-        if after_index != before_index:
-            changes.append({"path": INDEX_REL, "before": before_index, "after": after_index})
     if changes:
         entry = make_history_entry(root, "faces-cleanup", changes)
         transact(root, plan_append(root, entry) + changes)
+    before_index = load_index(root)
+    if before_index is not None:
+        after_index = _index_from_items(root, before_index, overrides)
+        after_index["matchThreshold"] = quality["matchThreshold"]
+        if after_index != before_index:
+            write_index(root, after_index)
     return {
         "ok": True,
         "backend": backend,
@@ -1406,13 +1531,11 @@ def request_faces_rescan(root: Path) -> dict[str, Any]:
         status["backend"],
         float((load_manifest(root) or {}).get("matchThreshold") or INSIGHT_THRESHOLD),
     )
-    after = dict(current)
+    after = _index_from_items(root, current, keep_unbacked=False)
     after["scanned"] = {}
     after["forceRescan"] = True
-    from library.atomic import atomic_write_json
-
     if after != current:
-        atomic_write_json(index_path(root), after)
+        write_index(root, after)
     return {"ok": True, "queued": True, "backend": status["backend"]}
 
 
@@ -1421,11 +1544,13 @@ def infer_faces(
     payload: dict[str, Any] | None = None,
     *,
     detected: dict[str, list[dict[str, Any]]] | None = None,
+    mirror: bool = True,
 ) -> dict[str, Any]:
     """Detect, cluster and publish faces for the wanted items (all when none).
 
     ``detected`` maps item id -> faces already found by detect_faces_on_still;
-    the drain computes those with the server lock released and passes them in.
+    the drain computes those with the server lock released and passes them in,
+    with ``mirror=False`` so the portable faces.json is written once at the end.
     """
     parsed = read_infer_payload(payload)
     if parsed["cleanup"] and not parsed["force"]:
@@ -1434,7 +1559,8 @@ def infer_faces(
     backend = status["backend"]
     quality = face_quality_settings(root, backend)
     manifest = load_manifest(root) or {}
-    index = load_index(root) or _empty_index(
+    stored_index = load_index(root)
+    index = stored_index or _empty_index(
         backend, float(manifest.get("matchThreshold") or quality["matchThreshold"])
     )
     wanted = parsed["itemIds"]
@@ -1479,6 +1605,9 @@ def infer_faces(
             }
             if "detScore" in face:
                 rec["detScore"] = face["detScore"]
+            landmarks = face.get("landmarks")
+            if isinstance(landmarks, list) and len(landmarks) == 5:
+                rec["landmarks"] = landmarks
             side = face.get("shortSidePx")
             if isinstance(side, (int, float)) and not isinstance(side, bool):
                 rec["shortSidePx"] = float(side)
@@ -1529,7 +1658,7 @@ def infer_faces(
         after = ordered_item(item)
         if after != before:
             changes.append({"path": item_rel(item_id), "before": before, "after": after})
-    if force:
+    if force and wanted is None:
         for item_id in iter_item_ids(root):
             if item_id in by_item:
                 item_faces = by_item[item_id]
@@ -1539,17 +1668,15 @@ def infer_faces(
                 pid = face.get("personId")
                 if type(pid) is str and pid:
                     remaining.add(pid)
-        if wanted is None:
-            _prune_empty_unnamed(root, remaining, changes)
-            next_index = _rebuild_index_face_lists(root, next_index, by_item)
-            next_index["scanned"] = scanned_map
-            next_index["matchThreshold"] = quality["matchThreshold"]
-    before_index = load_index(root)
-    if next_index != before_index:
-        changes.append({"path": INDEX_REL, "before": before_index, "after": next_index})
+        _prune_empty_unnamed(root, remaining, changes)
+        next_index = _index_from_items(root, next_index, by_item)
+        next_index["scanned"] = scanned_map
+        next_index["matchThreshold"] = quality["matchThreshold"]
     if changes:
         entry = make_history_entry(root, "faces-infer", changes)
         transact(root, plan_append(root, entry) + changes)
+    if next_index != stored_index:
+        write_index(root, next_index, mirror=mirror)
     return {
         "ok": True,
         "backend": backend,
@@ -1574,17 +1701,6 @@ def scanned_item_ids(root: Path) -> set[str]:
 def faces_force_rescan(root: Path) -> bool:
     index = _index_readonly(root)
     return bool(index and index.get("forceRescan"))
-
-
-def _clear_force_rescan(root: Path) -> None:
-    current = load_index(root)
-    if current is None or not current.get("forceRescan"):
-        return
-    after = dict(current)
-    after.pop("forceRescan", None)
-    from library.atomic import atomic_write_json
-
-    atomic_write_json(index_path(root), after)
 
 
 def _mark_faces_scanned(root: Path, item_id: str) -> None:
@@ -1662,11 +1778,41 @@ def infer_faces_step(root: Path, *, io_context=nullcontext) -> bool:
         if _still_path(current, root) != path or _file_signature(path) != signature:
             return True
         try:
-            infer_faces(root, {"itemIds": [item_id], "force": force}, detected={item_id: found})
+            infer_faces(
+                root,
+                {"itemIds": [item_id], "force": force},
+                detected={item_id: found},
+                mirror=False,
+            )
         except Exception:
             _mark_faces_scanned(root, item_id)
             return True
         return True
     if force:
-        _clear_force_rescan(root)
+        _finish_rescan(root)
+    settle_index_mirror(root)
     return False
+
+
+def _finish_rescan(root: Path) -> None:
+    """End of Re-run Faces: drop unnamed people left with no faces, then
+    re-derive the index once from the fresh fingerprints."""
+    from library.item_index import iter_items
+
+    remaining = {
+        face.get("personId")
+        for item in iter_items(root)
+        for face in item.get("faces") or []
+        if type(face.get("personId")) is str
+    }
+    changes: list[dict[str, Any]] = []
+    _prune_empty_unnamed(root, remaining, changes)
+    if changes:
+        entry = make_history_entry(root, "faces-cleanup", changes)
+        transact(root, plan_append(root, entry) + changes)
+    current = load_index(root)
+    if current is None:
+        return
+    after = _index_from_items(root, current)
+    after.pop("forceRescan", None)
+    write_index(root, after)

@@ -1,0 +1,1243 @@
+{
+  "checks": [
+    {
+      "name": "ordered payload parity date-desc",
+      "pass": true,
+      "detail": {
+        "query": {},
+        "ids": [
+          "b",
+          "a",
+          "c",
+          "d",
+          "e",
+          "f"
+        ],
+        "baselineSha256": "ae87ca513382526f15a8e94c40dc41aae688640eb033771f4bc00874f3d049b7",
+        "afterSha256": "ae87ca513382526f15a8e94c40dc41aae688640eb033771f4bc00874f3d049b7",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "shared entities loaded once per query",
+      "pass": true,
+      "detail": [
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "place",
+          "l1"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "person",
+          "p1"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "person",
+          "p2"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "thing",
+          "t1"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "thing",
+          "t2"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "place",
+          "l2"
+        ],
+        [
+          "J:\\slyOS\\projects\\photoLibrary\\.qa\\browse-speed-verify\\synthetic-root",
+          "person",
+          "p0"
+        ]
+      ]
+    },
+    {
+      "name": "ordered payload parity date-asc",
+      "pass": true,
+      "detail": {
+        "query": {
+          "sort": "date",
+          "dir": "asc"
+        },
+        "ids": [
+          "f",
+          "e",
+          "d",
+          "c",
+          "a",
+          "b"
+        ],
+        "baselineSha256": "3db3d634f04e80080705395d755fd95eae3144c550be84d8e6c0bdd059031d94",
+        "afterSha256": "3db3d634f04e80080705395d755fd95eae3144c550be84d8e6c0bdd059031d94",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "ordered payload parity name",
+      "pass": true,
+      "detail": {
+        "query": {
+          "sort": "name",
+          "dir": "asc"
+        },
+        "ids": [
+          "a",
+          "b",
+          "c",
+          "f",
+          "e",
+          "d"
+        ],
+        "baselineSha256": "b8f4139675be564a0e15c549f9aa10f4fa83c6b7e048daf696f91880bd51631f",
+        "afterSha256": "b8f4139675be564a0e15c549f9aa10f4fa83c6b7e048daf696f91880bd51631f",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "ordered payload parity location",
+      "pass": true,
+      "detail": {
+        "query": {
+          "sort": "location",
+          "dir": "asc"
+        },
+        "ids": [
+          "f",
+          "a",
+          "b",
+          "e",
+          "d",
+          "c"
+        ],
+        "baselineSha256": "9ec158647f2b64db296182dc78033ff3d41c5a36b5d05b41828b6e8b7c36a161",
+        "afterSha256": "9ec158647f2b64db296182dc78033ff3d41c5a36b5d05b41828b6e8b7c36a161",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "ordered payload parity rating",
+      "pass": true,
+      "detail": {
+        "query": {
+          "sort": "rating",
+          "dir": "desc"
+        },
+        "ids": [
+          "a",
+          "c",
+          "b",
+          "d",
+          "e",
+          "f"
+        ],
+        "baselineSha256": "c67e55a71619202cb50191dce8991b7e2c441c6c7ce861234d87509c819bff6d",
+        "afterSha256": "c67e55a71619202cb50191dce8991b7e2c441c6c7ce861234d87509c819bff6d",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "ordered payload parity person-and",
+      "pass": true,
+      "detail": {
+        "query": {
+          "person": "p1,p2"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership person-and",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity person-name-chinese",
+      "pass": true,
+      "detail": {
+        "query": {
+          "person": "Alice,小明"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership person-name-chinese",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity thing-and",
+      "pass": true,
+      "detail": {
+        "query": {
+          "thing": "t1,t2"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership thing-and",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity tag-alias",
+      "pass": true,
+      "detail": {
+        "query": {
+          "thing": "Arbre"
+        },
+        "ids": [
+          "a",
+          "c",
+          "f"
+        ],
+        "baselineSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+        "afterSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "known membership tag-alias",
+      "pass": true,
+      "detail": [
+        "a",
+        "c",
+        "f"
+      ]
+    },
+    {
+      "name": "ordered payload parity tag-chinese-alias",
+      "pass": true,
+      "detail": {
+        "query": {
+          "thing": "家人"
+        },
+        "ids": [
+          "b",
+          "a"
+        ],
+        "baselineSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+        "afterSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "known membership tag-chinese-alias",
+      "pass": false,
+      "detail": [
+        "b",
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity place-or",
+      "pass": true,
+      "detail": {
+        "query": {
+          "place": "l1,l2"
+        },
+        "ids": [
+          "b",
+          "a",
+          "f"
+        ],
+        "baselineSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+        "afterSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "known membership place-or",
+      "pass": false,
+      "detail": [
+        "b",
+        "a",
+        "f"
+      ]
+    },
+    {
+      "name": "ordered payload parity place-name-or",
+      "pass": true,
+      "detail": {
+        "query": {
+          "place": "Park,北京"
+        },
+        "ids": [
+          "b",
+          "a",
+          "f"
+        ],
+        "baselineSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+        "afterSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "known membership place-name-or",
+      "pass": false,
+      "detail": [
+        "b",
+        "a",
+        "f"
+      ]
+    },
+    {
+      "name": "ordered payload parity source",
+      "pass": true,
+      "detail": {
+        "query": {
+          "source": "s2"
+        },
+        "ids": [
+          "d",
+          "e",
+          "f"
+        ],
+        "baselineSha256": "50d4d498b52081ea30eb7298edae63e001c15b388f71b29b316def6704bef2a5",
+        "afterSha256": "50d4d498b52081ea30eb7298edae63e001c15b388f71b29b316def6704bef2a5",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "known membership source",
+      "pass": true,
+      "detail": [
+        "d",
+        "e",
+        "f"
+      ]
+    },
+    {
+      "name": "ordered payload parity favorite",
+      "pass": true,
+      "detail": {
+        "query": {
+          "favorite": "1"
+        },
+        "ids": [
+          "a",
+          "d"
+        ],
+        "baselineSha256": "06d1970ad76de635010d2c9fe576aaf207370113f562c501a207c6d9fa0fa30e",
+        "afterSha256": "06d1970ad76de635010d2c9fe576aaf207370113f562c501a207c6d9fa0fa30e",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "known membership favorite",
+      "pass": true,
+      "detail": [
+        "a",
+        "d"
+      ]
+    },
+    {
+      "name": "ordered payload parity recent",
+      "pass": true,
+      "detail": {
+        "query": {
+          "recent": "1"
+        },
+        "ids": [
+          "b",
+          "e"
+        ],
+        "baselineSha256": "252df960d14088250529067dbdbe6dfdb3cc033d722998727b22ed4fff86204e",
+        "afterSha256": "252df960d14088250529067dbdbe6dfdb3cc033d722998727b22ed4fff86204e",
+        "entityLoads": 3,
+        "projected": 2
+      }
+    },
+    {
+      "name": "known membership recent",
+      "pass": true,
+      "detail": [
+        "b",
+        "e"
+      ]
+    },
+    {
+      "name": "ordered payload parity min-stars",
+      "pass": true,
+      "detail": {
+        "query": {
+          "minStars": "4"
+        },
+        "ids": [
+          "a",
+          "c"
+        ],
+        "baselineSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+        "afterSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "known membership min-stars",
+      "pass": true,
+      "detail": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "name": "ordered payload parity pick",
+      "pass": true,
+      "detail": {
+        "query": {
+          "pick": "1"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership pick",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity hide-rejects",
+      "pass": true,
+      "detail": {
+        "query": {
+          "hideRejects": "1"
+        },
+        "ids": [
+          "b",
+          "a",
+          "d",
+          "e",
+          "f"
+        ],
+        "baselineSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+        "afterSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+        "entityLoads": 7,
+        "projected": 5
+      }
+    },
+    {
+      "name": "ordered payload parity blurry",
+      "pass": true,
+      "detail": {
+        "query": {
+          "flag": "blurry"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership blurry",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity kind",
+      "pass": true,
+      "detail": {
+        "query": {
+          "kind": "video"
+        },
+        "ids": [
+          "e"
+        ],
+        "baselineSha256": "19ffd554cbffcd858848ea35d10820d434a48010af1ab7669e54da3efc74d72d",
+        "afterSha256": "19ffd554cbffcd858848ea35d10820d434a48010af1ab7669e54da3efc74d72d",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership kind",
+      "pass": true,
+      "detail": [
+        "e"
+      ]
+    },
+    {
+      "name": "ordered payload parity filename",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "IMG_1001"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership filename",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity date",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "2024-06"
+        },
+        "ids": [
+          "b",
+          "a"
+        ],
+        "baselineSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+        "afterSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "ordered payload parity transcript",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "你好"
+        },
+        "ids": [
+          "e"
+        ],
+        "baselineSha256": "9585e3ba98b9be22f625a55677104b83aca56c03103e4e599abc0b503eb67fc0",
+        "afterSha256": "9585e3ba98b9be22f625a55677104b83aca56c03103e4e599abc0b503eb67fc0",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership transcript",
+      "pass": true,
+      "detail": [
+        "e"
+      ]
+    },
+    {
+      "name": "ordered payload parity name-search",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "小明"
+        },
+        "ids": [
+          "a",
+          "c"
+        ],
+        "baselineSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+        "afterSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "ordered payload parity alias-search",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "树"
+        },
+        "ids": [
+          "a",
+          "c",
+          "f"
+        ],
+        "baselineSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+        "afterSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "ordered payload parity unnamed-cn",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "未命名"
+        },
+        "ids": [
+          "d"
+        ],
+        "baselineSha256": "d2597dbd22461e6c2a3ff62c72c39977443a413f193bd349873084107765fa15",
+        "afterSha256": "d2597dbd22461e6c2a3ff62c72c39977443a413f193bd349873084107765fa15",
+        "entityLoads": 7,
+        "projected": 1
+      }
+    },
+    {
+      "name": "known membership unnamed-cn",
+      "pass": true,
+      "detail": [
+        "d"
+      ]
+    },
+    {
+      "name": "ordered payload parity no-place-cn",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "无地点"
+        },
+        "ids": [
+          "c",
+          "d",
+          "e"
+        ],
+        "baselineSha256": "6dc6506068981dfc0588c19367fb54d7cd97122eff5c6a4081db6bc07eccbd85",
+        "afterSha256": "6dc6506068981dfc0588c19367fb54d7cd97122eff5c6a4081db6bc07eccbd85",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "ordered payload parity untagged-cn",
+      "pass": true,
+      "detail": {
+        "query": {
+          "q": "无标签"
+        },
+        "ids": [
+          "d",
+          "e"
+        ],
+        "baselineSha256": "d38ed7702d58672834fa2b283ea797d1dd2eb74e111824d9e3b406130add20b9",
+        "afterSha256": "d38ed7702d58672834fa2b283ea797d1dd2eb74e111824d9e3b406130add20b9",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "ordered payload parity range",
+      "pass": true,
+      "detail": {
+        "query": {
+          "from": "2023",
+          "to": "2025"
+        },
+        "ids": [
+          "b",
+          "a",
+          "c"
+        ],
+        "baselineSha256": "5e288be4650e3628f65c4d0d7f120ecbd7560bf7a2a478d8e5713ef353de396a",
+        "afterSha256": "5e288be4650e3628f65c4d0d7f120ecbd7560bf7a2a478d8e5713ef353de396a",
+        "entityLoads": 7,
+        "projected": 3
+      }
+    },
+    {
+      "name": "ordered payload parity unavailable-hide",
+      "pass": true,
+      "detail": {
+        "query": {
+          "unavailable": "0"
+        },
+        "ids": [
+          "b",
+          "a",
+          "d",
+          "e",
+          "f"
+        ],
+        "baselineSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+        "afterSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+        "entityLoads": 7,
+        "projected": 6
+      }
+    },
+    {
+      "name": "ordered payload parity selective-unavailable-hide",
+      "pass": true,
+      "detail": {
+        "query": {
+          "person": "p2",
+          "unavailable": "0"
+        },
+        "ids": [
+          "a"
+        ],
+        "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+        "entityLoads": 7,
+        "projected": 2
+      }
+    },
+    {
+      "name": "known membership selective-unavailable-hide",
+      "pass": true,
+      "detail": [
+        "a"
+      ]
+    },
+    {
+      "name": "ordered payload parity empty-tag",
+      "pass": true,
+      "detail": {
+        "query": {
+          "thing": "no-such-tag"
+        },
+        "ids": [],
+        "baselineSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "afterSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "entityLoads": 7,
+        "projected": 0
+      }
+    },
+    {
+      "name": "known membership empty-tag",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "empty selective filter projects no originals",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "transcript search hint preserved",
+      "pass": true,
+      "detail": {
+        "start": 1.25,
+        "text": "Hello 你好",
+        "field": "transcript"
+      }
+    },
+    {
+      "name": "rename visible within projection TTL",
+      "pass": false,
+      "detail": null
+    },
+    {
+      "name": "projection cache isolated by root",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "raw item object replacement invalidates projection",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "favorite state is part of cache identity",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "stack decoration does not leak between query membership",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "cached views retain raw object identity to prevent recycled ids",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "queries": {
+    "date-desc": {
+      "query": {},
+      "ids": [
+        "b",
+        "a",
+        "c",
+        "d",
+        "e",
+        "f"
+      ],
+      "baselineSha256": "ae87ca513382526f15a8e94c40dc41aae688640eb033771f4bc00874f3d049b7",
+      "afterSha256": "ae87ca513382526f15a8e94c40dc41aae688640eb033771f4bc00874f3d049b7",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "date-asc": {
+      "query": {
+        "sort": "date",
+        "dir": "asc"
+      },
+      "ids": [
+        "f",
+        "e",
+        "d",
+        "c",
+        "a",
+        "b"
+      ],
+      "baselineSha256": "3db3d634f04e80080705395d755fd95eae3144c550be84d8e6c0bdd059031d94",
+      "afterSha256": "3db3d634f04e80080705395d755fd95eae3144c550be84d8e6c0bdd059031d94",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "name": {
+      "query": {
+        "sort": "name",
+        "dir": "asc"
+      },
+      "ids": [
+        "a",
+        "b",
+        "c",
+        "f",
+        "e",
+        "d"
+      ],
+      "baselineSha256": "b8f4139675be564a0e15c549f9aa10f4fa83c6b7e048daf696f91880bd51631f",
+      "afterSha256": "b8f4139675be564a0e15c549f9aa10f4fa83c6b7e048daf696f91880bd51631f",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "location": {
+      "query": {
+        "sort": "location",
+        "dir": "asc"
+      },
+      "ids": [
+        "f",
+        "a",
+        "b",
+        "e",
+        "d",
+        "c"
+      ],
+      "baselineSha256": "9ec158647f2b64db296182dc78033ff3d41c5a36b5d05b41828b6e8b7c36a161",
+      "afterSha256": "9ec158647f2b64db296182dc78033ff3d41c5a36b5d05b41828b6e8b7c36a161",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "rating": {
+      "query": {
+        "sort": "rating",
+        "dir": "desc"
+      },
+      "ids": [
+        "a",
+        "c",
+        "b",
+        "d",
+        "e",
+        "f"
+      ],
+      "baselineSha256": "c67e55a71619202cb50191dce8991b7e2c441c6c7ce861234d87509c819bff6d",
+      "afterSha256": "c67e55a71619202cb50191dce8991b7e2c441c6c7ce861234d87509c819bff6d",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "person-and": {
+      "query": {
+        "person": "p1,p2"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "person-name-chinese": {
+      "query": {
+        "person": "Alice,小明"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "thing-and": {
+      "query": {
+        "thing": "t1,t2"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "tag-alias": {
+      "query": {
+        "thing": "Arbre"
+      },
+      "ids": [
+        "a",
+        "c",
+        "f"
+      ],
+      "baselineSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+      "afterSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "tag-chinese-alias": {
+      "query": {
+        "thing": "家人"
+      },
+      "ids": [
+        "b",
+        "a"
+      ],
+      "baselineSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+      "afterSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "place-or": {
+      "query": {
+        "place": "l1,l2"
+      },
+      "ids": [
+        "b",
+        "a",
+        "f"
+      ],
+      "baselineSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+      "afterSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "place-name-or": {
+      "query": {
+        "place": "Park,北京"
+      },
+      "ids": [
+        "b",
+        "a",
+        "f"
+      ],
+      "baselineSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+      "afterSha256": "a3cfcc2ec1d5bb48fe44b6a705d8c2a521baa3d731f2870c50fb1b387fc77560",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "source": {
+      "query": {
+        "source": "s2"
+      },
+      "ids": [
+        "d",
+        "e",
+        "f"
+      ],
+      "baselineSha256": "50d4d498b52081ea30eb7298edae63e001c15b388f71b29b316def6704bef2a5",
+      "afterSha256": "50d4d498b52081ea30eb7298edae63e001c15b388f71b29b316def6704bef2a5",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "favorite": {
+      "query": {
+        "favorite": "1"
+      },
+      "ids": [
+        "a",
+        "d"
+      ],
+      "baselineSha256": "06d1970ad76de635010d2c9fe576aaf207370113f562c501a207c6d9fa0fa30e",
+      "afterSha256": "06d1970ad76de635010d2c9fe576aaf207370113f562c501a207c6d9fa0fa30e",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "recent": {
+      "query": {
+        "recent": "1"
+      },
+      "ids": [
+        "b",
+        "e"
+      ],
+      "baselineSha256": "252df960d14088250529067dbdbe6dfdb3cc033d722998727b22ed4fff86204e",
+      "afterSha256": "252df960d14088250529067dbdbe6dfdb3cc033d722998727b22ed4fff86204e",
+      "entityLoads": 3,
+      "projected": 2
+    },
+    "min-stars": {
+      "query": {
+        "minStars": "4"
+      },
+      "ids": [
+        "a",
+        "c"
+      ],
+      "baselineSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+      "afterSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "pick": {
+      "query": {
+        "pick": "1"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "hide-rejects": {
+      "query": {
+        "hideRejects": "1"
+      },
+      "ids": [
+        "b",
+        "a",
+        "d",
+        "e",
+        "f"
+      ],
+      "baselineSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+      "afterSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+      "entityLoads": 7,
+      "projected": 5
+    },
+    "blurry": {
+      "query": {
+        "flag": "blurry"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "kind": {
+      "query": {
+        "kind": "video"
+      },
+      "ids": [
+        "e"
+      ],
+      "baselineSha256": "19ffd554cbffcd858848ea35d10820d434a48010af1ab7669e54da3efc74d72d",
+      "afterSha256": "19ffd554cbffcd858848ea35d10820d434a48010af1ab7669e54da3efc74d72d",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "filename": {
+      "query": {
+        "q": "IMG_1001"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "date": {
+      "query": {
+        "q": "2024-06"
+      },
+      "ids": [
+        "b",
+        "a"
+      ],
+      "baselineSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+      "afterSha256": "a3aef4057ac917c7f339ce5bfd307aa83636af26766ecb3f8b52350fd27f4aa0",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "transcript": {
+      "query": {
+        "q": "你好"
+      },
+      "ids": [
+        "e"
+      ],
+      "baselineSha256": "9585e3ba98b9be22f625a55677104b83aca56c03103e4e599abc0b503eb67fc0",
+      "afterSha256": "9585e3ba98b9be22f625a55677104b83aca56c03103e4e599abc0b503eb67fc0",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "name-search": {
+      "query": {
+        "q": "小明"
+      },
+      "ids": [
+        "a",
+        "c"
+      ],
+      "baselineSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+      "afterSha256": "9406b3abd6419e43956978d3d08038c6f9d5e5789454bebcc7ffbb6afdd8e489",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "alias-search": {
+      "query": {
+        "q": "树"
+      },
+      "ids": [
+        "a",
+        "c",
+        "f"
+      ],
+      "baselineSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+      "afterSha256": "3a279812d9a0bb6c3fd0030ef52531b0046f336f9eff9555245f4a4907df2a92",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "unnamed-cn": {
+      "query": {
+        "q": "未命名"
+      },
+      "ids": [
+        "d"
+      ],
+      "baselineSha256": "d2597dbd22461e6c2a3ff62c72c39977443a413f193bd349873084107765fa15",
+      "afterSha256": "d2597dbd22461e6c2a3ff62c72c39977443a413f193bd349873084107765fa15",
+      "entityLoads": 7,
+      "projected": 1
+    },
+    "no-place-cn": {
+      "query": {
+        "q": "无地点"
+      },
+      "ids": [
+        "c",
+        "d",
+        "e"
+      ],
+      "baselineSha256": "6dc6506068981dfc0588c19367fb54d7cd97122eff5c6a4081db6bc07eccbd85",
+      "afterSha256": "6dc6506068981dfc0588c19367fb54d7cd97122eff5c6a4081db6bc07eccbd85",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "untagged-cn": {
+      "query": {
+        "q": "无标签"
+      },
+      "ids": [
+        "d",
+        "e"
+      ],
+      "baselineSha256": "d38ed7702d58672834fa2b283ea797d1dd2eb74e111824d9e3b406130add20b9",
+      "afterSha256": "d38ed7702d58672834fa2b283ea797d1dd2eb74e111824d9e3b406130add20b9",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "range": {
+      "query": {
+        "from": "2023",
+        "to": "2025"
+      },
+      "ids": [
+        "b",
+        "a",
+        "c"
+      ],
+      "baselineSha256": "5e288be4650e3628f65c4d0d7f120ecbd7560bf7a2a478d8e5713ef353de396a",
+      "afterSha256": "5e288be4650e3628f65c4d0d7f120ecbd7560bf7a2a478d8e5713ef353de396a",
+      "entityLoads": 7,
+      "projected": 3
+    },
+    "unavailable-hide": {
+      "query": {
+        "unavailable": "0"
+      },
+      "ids": [
+        "b",
+        "a",
+        "d",
+        "e",
+        "f"
+      ],
+      "baselineSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+      "afterSha256": "744e020f0d6a10e6ea66deebcfce091fa6df2879374d0e987b73dc14ee030396",
+      "entityLoads": 7,
+      "projected": 6
+    },
+    "selective-unavailable-hide": {
+      "query": {
+        "person": "p2",
+        "unavailable": "0"
+      },
+      "ids": [
+        "a"
+      ],
+      "baselineSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "afterSha256": "ec6d89bf3e5da035581ab42b52be94d21be84b741a3b5ff26a4078863eb2df20",
+      "entityLoads": 7,
+      "projected": 2
+    },
+    "empty-tag": {
+      "query": {
+        "thing": "no-such-tag"
+      },
+      "ids": [],
+      "baselineSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "afterSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "entityLoads": 7,
+      "projected": 0
+    }
+  },
+  "note": "Synthetic records; mocked availability/entity loaders/ordered serialization only. Actual item query matching, rating, sorting, stack annotation and view caching executed. No real catalog or media touched."
+}

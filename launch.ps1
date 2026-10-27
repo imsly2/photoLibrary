@@ -203,6 +203,72 @@ function Test-LibraryHealth {
     }
 }
 
+function Get-LibraryRuntime {
+    param([Parameter(Mandatory = $true)][string]$Url)
+    try {
+        $resp = Invoke-WebRequest -Uri ($Url.TrimEnd("/") + "/api/runtime") -UseBasicParsing -TimeoutSec 2
+        if ($resp.StatusCode -ne 200) { return $null }
+        return ($resp.Content | ConvertFrom-Json)
+    } catch {
+        return $null
+    }
+}
+
+function Test-SameLibraryRoot {
+    param([string]$Left, [string]$Right)
+    if ([string]::IsNullOrWhiteSpace($Left) -or [string]::IsNullOrWhiteSpace($Right)) {
+        return $false
+    }
+    try {
+        $a = [System.IO.Path]::GetFullPath($Left).TrimEnd('\', '/')
+        $b = [System.IO.Path]::GetFullPath($Right).TrimEnd('\', '/')
+    } catch {
+        return $false
+    }
+    return [string]::Equals($a, $b, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Test-SpawnedBy {
+    param([int]$Ancestor, [int]$Candidate)
+    # The venv python.exe is a redirector. Start-Process sees that pid.
+    # The real interpreter is its child, and that child is the listener.
+    $current = $Candidate
+    for ($i = 0; $i -lt 8; $i++) {
+        if ($current -eq $Ancestor) { return $true }
+        if ($current -le 4) { return $false }
+        $info = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $current) -ErrorAction SilentlyContinue
+        if (-not $info) { return $false }
+        $parent = [int]$info.ParentProcessId
+        if ($parent -eq $current) { return $false }
+        $current = $parent
+    }
+    return $false
+}
+
+function Stop-ThisLibraryServe {
+    param([Parameter(Mandatory = $true)][string]$Folder)
+    $root = Join-Path $Folder "library-data"
+    $url = Get-LibraryListenUrl -Folder $Folder
+    $runtime = Get-LibraryRuntime -Url $url
+    if ($null -eq $runtime) { return 0 }
+    if ([int]$runtime.schemaVersion -ne 1) { return 0 }
+    if (-not (Test-SameLibraryRoot -Left ([string]$runtime.root) -Right $root)) { return 0 }
+    $listenPid = 0
+    try { $listenPid = [int]$runtime.pid } catch { return 0 }
+    # PID 0 and PID 4 are Idle and System. Never stop those.
+    if ($listenPid -le 4) { return 0 }
+    Write-Host ("Library is already open as pid {0}. Stopping it so this launch loads the latest code." -f $listenPid)
+    & taskkill.exe /PID $listenPid /T /F | Out-Host
+    $deadline = (Get-Date).AddSeconds(8)
+    while ((Get-Date) -lt $deadline) {
+        $alive = Get-Process -Id $listenPid -ErrorAction SilentlyContinue
+        if (-not $alive) { return $listenPid }
+        Start-Sleep -Milliseconds 200
+    }
+    Write-Host ("Could not stop the Library that is already open (pid {0})." -f $listenPid)
+    return -1
+}
+
 try {
     $python = @(Get-Python312)
     $ffmpegOk = Test-Ffmpeg
@@ -248,27 +314,50 @@ try {
         exit $LASTEXITCODE
     }
 
+    $replacedPid = Stop-ThisLibraryServe -Folder $AppFolder
+    if ($replacedPid -lt 0) {
+        exit 1
+    }
+
     $argumentList = Get-PythonArgumentList -Python $python -ModuleArgs @("-m", "library", "serve")
     $proc = Start-Process -FilePath $exe -ArgumentList $argumentList -WorkingDirectory $AppFolder -PassThru -NoNewWindow
+    $expectedRoot = Join-Path $AppFolder "library-data"
     $url = Get-LibraryListenUrl -Folder $AppFolder
     $deadline = (Get-Date).AddSeconds(20)
     $ready = $false
+    $serverPid = 0
     while ((Get-Date) -lt $deadline) {
         $url = Get-LibraryListenUrl -Folder $AppFolder
-        if (Test-LibraryHealth -Url $url) { $ready = $true; break }
+        $runtime = Get-LibraryRuntime -Url $url
+        $listenerPid = 0
+        if ($runtime -and $runtime.pid) { $listenerPid = [int]$runtime.pid }
+        if (
+            $listenerPid -gt 4 -and
+            (Test-SameLibraryRoot -Left ([string]$runtime.root) -Right $expectedRoot) -and
+            (Test-SpawnedBy -Ancestor $proc.Id -Candidate $listenerPid)
+        ) {
+            $ready = $true
+            $serverPid = $listenerPid
+            break
+        }
         if ($proc.HasExited) { break }
         Start-Sleep -Milliseconds 200
     }
     if (-not $ready) {
-        Write-Host "Library could not start. Its listen port is already in use."
+        if ($replacedPid -gt 0) {
+            Write-Host "Library could not replace the server that was already open."
+        } else {
+            Write-Host "Library could not start. Its listen port is already in use."
+        }
         exit 1
     }
+    Write-Host ("Library is running as pid {0}." -f $serverPid)
     Write-Host $url
     if (-not $NoBrowser) {
         Start-Process $url
     }
-    if ($proc -and -not $proc.HasExited) {
-        Wait-Process -Id $proc.Id
+    if ($serverPid -gt 4) {
+        Wait-Process -Id $serverPid
     }
     exit 0
 } catch {

@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
 import time
 import uuid
 from contextlib import nullcontext
@@ -160,6 +161,65 @@ def _scale_filter(cap: int) -> str:
 # libwebp method 2 rather than the default 4: same quality setting, much less
 # encode time per photo for slightly larger files.
 WEBP_ENCODE = ("-compression_level", "2", "-f", "webp")
+
+
+def encode_webp_and_rgb(source: Path, dest: Path, cap: int) -> tuple[int, int, bytes] | None:
+    """One upright decode: a capped WebP plus the full-resolution RGB frame.
+
+    ``None`` means the WebP was not written and the caller should use
+    ``write_webp``. The RGB matches ``decode_still_rgb`` of the same file.
+    """
+    from library.media import _upright_size
+
+    try:
+        width, height = _upright_size(source)
+    except Exception:
+        return None
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fd, raw_name = tempfile.mkstemp(prefix="library-still-", suffix=".rgb")
+    os.close(fd)
+    raw = Path(raw_name)
+    try:
+        proc = run_ffmpeg(
+            [
+                "ffmpeg",
+                "-y",
+                "-v",
+                "error",
+                "-i",
+                str(source),
+                "-filter_complex",
+                f"[0:v]split=2[full][prev];[prev]{_scale_filter(cap)}[p]",
+                "-map",
+                "[p]",
+                "-frames:v",
+                "1",
+                *WEBP_ENCODE,
+                str(dest),
+                "-map",
+                "[full]",
+                "-frames:v",
+                "1",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "rgb24",
+                str(raw),
+            ],
+            **_FFMPEG_PRIORITY,
+        )
+        expected = width * height * 3
+        data = raw.read_bytes() if proc.returncode == 0 and raw.is_file() else b""
+    except OSError:
+        data = b""
+        expected = 1
+        width = height = 0
+    finally:
+        raw.unlink(missing_ok=True)
+    if width <= 0 or len(data) < expected or not dest.is_file() or dest.stat().st_size <= 0:
+        dest.unlink(missing_ok=True)
+        return None
+    return width, height, data[:expected]
 
 
 def write_webp(source: Path, dest: Path, cap: int) -> bool:
@@ -1065,12 +1125,45 @@ def drain_step(root: Path, *, io_context=nullcontext, sweep: bool = True) -> boo
         _in_flight.discard(claim)
 
 
+def _share_face_decode(root: Path, item: dict[str, Any]) -> bool:
+    """True when this still encode should also detect faces on its frame."""
+    try:
+        from library.faces import BACKEND_INSIGHT, faces_force_rescan, faces_status, scanned_item_ids
+
+        status = faces_status(root)
+        if status.get("backend") != BACKEND_INSIGHT or not status.get("ready"):
+            return False
+        item_id = item.get("id")
+        if type(item_id) is not str or item.get("kind") not in {"photo", "live"}:
+            return False
+        if faces_force_rescan(root):
+            return True
+        if item.get("faces"):
+            return False
+        return item_id not in scanned_item_ids(root)
+    except Exception:
+        return False
+
+
+def _publish_shared_faces(root: Path, item_id: str, found: list[dict[str, Any]]) -> None:
+    from library.faces import faces_force_rescan, infer_faces
+
+    infer_faces(
+        root,
+        {"itemIds": [item_id], "force": faces_force_rescan(root)},
+        detected={item_id: found},
+        mirror=False,
+    )
+
+
 def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_context) -> bool:
     global last_published_slot
     last_published_slot = slot
     item = try_load_item(root, item_id)
     if item is None:
         return False
+    shared_ran = False
+    shared_faces: list[dict[str, Any]] | None = None
     from library.activity import note_item, clear
 
     note_item("renditions", "Previews", item, derivative=slot)
@@ -1110,7 +1203,29 @@ def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_
                         if sibling is not None:
                             encode_source = sibling
                     started = time.perf_counter()
-                    outcome = "ready" if writer(encode_source, stage, cap) else "error"
+                    share = (
+                        writer is write_webp
+                        and encode_source == source
+                        and slot in STILL_SLOTS
+                        and _share_face_decode(root, item)
+                    )
+                    if share:
+                        shared = encode_webp_and_rgb(source, stage, cap)
+                        if shared is None:
+                            outcome = "ready" if write_webp(encode_source, stage, cap) else "error"
+                        else:
+                            width, height, rgb = shared
+                            outcome = "ready"
+                            try:
+                                from library.faces import detect_shared_frame
+
+                                shared_faces = detect_shared_frame(root, width, height, rgb)
+                                shared_ran = True
+                            except Exception:
+                                shared_faces = None
+                                shared_ran = False
+                    else:
+                        outcome = "ready" if writer(encode_source, stage, cap) else "error"
                     encode_sec = time.perf_counter() - started
             except OSError:
                 outcome = "error"
@@ -1139,6 +1254,11 @@ def _encode_job(root: Path, item_id: str, slot: str, source: Path, cap: int, io_
             os.replace(stage, dest)
         if outcome in {"ready", "existing"}:
             publish_ready(root, item_id, slot, slot_target(root, current, slot)[2], store)
+            if outcome == "ready" and shared_ran and shared_faces is not None:
+                try:
+                    _publish_shared_faces(root, item_id, shared_faces)
+                except Exception:
+                    pass
         elif outcome == "not-applicable":
             dest.unlink(missing_ok=True)
             publish_not_applicable(root, item_id, slot)

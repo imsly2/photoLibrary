@@ -150,8 +150,6 @@ def mirror_changes(root: Path, changes: list[dict[str, Any]]) -> None:
             body = change.get("after") if change.get("after") is not None else change.get("before")
             if isinstance(body, dict):
                 _mirror_item(root, body, deleted=change.get("after") is None)
-                if body.get("faces"):
-                    faces = True
             continue
         kind = _entity_kind(path)
         if kind is None:
@@ -172,6 +170,14 @@ def mirror_changes(root: Path, changes: list[dict[str, Any]]) -> None:
         if favorites:
             _write_favorites(root, source, folder)
         if faces:
+            _write_faces(root, source, folder)
+
+
+def mirror_face_index(root: Path) -> None:
+    """Copy the face index into each portable folder; faces.write_index calls this."""
+    for source in _portable_sources(root):
+        folder = folder_for_source(root, source)
+        if folder is not None:
             _write_faces(root, source, folder)
 
 

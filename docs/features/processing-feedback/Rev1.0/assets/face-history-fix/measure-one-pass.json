@@ -1,0 +1,688 @@
+{
+  "library": "J:\\slyOS\\projects\\photoLibrary\\library-data",
+  "pictures": "J:\\Pictures\\1. Favorites Pictures",
+  "previewCap": 1600,
+  "note": "Faces wait until every rendition in the drain finishes, so a face pass cannot start while previews are still encoding. A decodes the original twice (preview, then faces). B decodes it once. C never sees pixels above 1600 px, so the 1280-tile pass on a large phone photo does not run.",
+  "adopt": "B",
+  "recommendation": "B is a clear win: the full-resolution RGB matches today's decode on every photo and the mean drops by 0.223s. Make the combined ffmpeg the default preview+face decode. No new setting. Do not detect on the 1600 px preview. C found 20 faces against A's 21 (1 missed, 0 extra, cosine mean 0.9189). Ship B only; keep detection on the original pixels.",
+  "summary": {
+    "photos": 16,
+    "A_mean_totalSec": 0.757,
+    "A_mean_previewSec": 0.296,
+    "A_mean_decodeSec": 0.148,
+    "A_mean_detectSec": 0.313,
+    "B_mean_totalSec": 0.534,
+    "B_mean_ffmpegSec": 0.224,
+    "B_mean_detectSec": 0.31,
+    "B_rgb_identical": 16,
+    "C_mean_totalSec": 0.53,
+    "C_mean_detectSec": 0.088,
+    "C_faces_vs_A": {
+      "facesA": 21,
+      "facesC": 20,
+      "matched": 20,
+      "missedByC": 1,
+      "extraInC": 0
+    },
+    "C_cosine_mean": 0.9189,
+    "C_cosine_min": 0.8471
+  },
+  "photos": [
+    {
+      "file": "IMG_0023.JPG",
+      "orient": 1,
+      "upright": [
+        2592,
+        1936
+      ],
+      "megapixels": 5.02,
+      "A": {
+        "previewSec": 0.261,
+        "decodeSec": 0.1,
+        "detectSec": 0.197,
+        "totalSec": 0.558,
+        "faces": 0,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.181,
+        "detectSec": 0.193,
+        "totalSec": 0.375,
+        "faces": 0,
+        "rgbIdenticalToA": true,
+        "previewBytes": 133200
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1196
+        ],
+        "decodeSec": 0.139,
+        "detectSec": 0.082,
+        "totalSec": 0.482,
+        "facesA": 0,
+        "facesC": 0,
+        "matched": 0,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": null,
+        "cosineMin": null
+      }
+    },
+    {
+      "file": "IMG_0240.JPG",
+      "orient": 6,
+      "upright": [
+        1936,
+        2592
+      ],
+      "megapixels": 5.02,
+      "A": {
+        "previewSec": 0.3,
+        "decodeSec": 0.099,
+        "detectSec": 0.213,
+        "totalSec": 0.612,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.191,
+        "detectSec": 0.219,
+        "totalSec": 0.41,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 78606
+      },
+      "C": {
+        "previewSize": [
+          1196,
+          1600
+        ],
+        "decodeSec": 0.143,
+        "detectSec": 0.088,
+        "totalSec": 0.531,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9276484189540863,
+        "cosineMin": 0.9276484189540863
+      }
+    },
+    {
+      "file": "IMG_0708.JPG",
+      "orient": 3,
+      "upright": [
+        2576,
+        1932
+      ],
+      "megapixels": 4.98,
+      "A": {
+        "previewSec": 0.378,
+        "decodeSec": 0.122,
+        "detectSec": 0.212,
+        "totalSec": 0.712,
+        "faces": 2,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.213,
+        "detectSec": 0.216,
+        "totalSec": 0.429,
+        "faces": 2,
+        "rgbIdenticalToA": true,
+        "previewBytes": 140856
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.163,
+        "detectSec": 0.085,
+        "totalSec": 0.626,
+        "facesA": 2,
+        "facesC": 2,
+        "matched": 2,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9767292510994365,
+        "cosineMin": 0.9655160623860859
+      }
+    },
+    {
+      "file": "IMG_E9610.JPG",
+      "orient": 1,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.274,
+        "decodeSec": 0.137,
+        "detectSec": 0.357,
+        "totalSec": 0.768,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.189,
+        "detectSec": 0.351,
+        "totalSec": 0.54,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 58690
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.157,
+        "detectSec": 0.088,
+        "totalSec": 0.52,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.8493955212468366,
+        "cosineMin": 0.8493955212468366
+      }
+    },
+    {
+      "file": "IMG_9941.JPG",
+      "orient": 6,
+      "upright": [
+        3024,
+        4032
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.394,
+        "decodeSec": 0.164,
+        "detectSec": 0.367,
+        "totalSec": 0.925,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.243,
+        "detectSec": 0.347,
+        "totalSec": 0.59,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 115746
+      },
+      "C": {
+        "previewSize": [
+          1200,
+          1600
+        ],
+        "decodeSec": 0.135,
+        "detectSec": 0.079,
+        "totalSec": 0.608,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9591097952353543,
+        "cosineMin": 0.9591097952353543
+      }
+    },
+    {
+      "file": "IMG_9963.JPG",
+      "orient": 3,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.429,
+        "decodeSec": 0.179,
+        "detectSec": 0.364,
+        "totalSec": 0.973,
+        "faces": 3,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.24,
+        "detectSec": 0.431,
+        "totalSec": 0.671,
+        "faces": 3,
+        "rgbIdenticalToA": true,
+        "previewBytes": 123884
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.144,
+        "detectSec": 0.101,
+        "totalSec": 0.674,
+        "facesA": 3,
+        "facesC": 3,
+        "matched": 3,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.945973855920323,
+        "cosineMin": 0.9257975488722233
+      }
+    },
+    {
+      "file": "IMG_0074.JPG",
+      "orient": 1,
+      "upright": [
+        2592,
+        1936
+      ],
+      "megapixels": 5.02,
+      "A": {
+        "previewSec": 0.24,
+        "decodeSec": 0.11,
+        "detectSec": 0.215,
+        "totalSec": 0.565,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.218,
+        "detectSec": 0.184,
+        "totalSec": 0.401,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 299370
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1196
+        ],
+        "decodeSec": 0.195,
+        "detectSec": 0.083,
+        "totalSec": 0.517,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9241141894666157,
+        "cosineMin": 0.9241141894666157
+      }
+    },
+    {
+      "file": "IMG_0407.JPG",
+      "orient": 6,
+      "upright": [
+        3024,
+        4032
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.374,
+        "decodeSec": 0.164,
+        "detectSec": 0.347,
+        "totalSec": 0.886,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.232,
+        "detectSec": 0.347,
+        "totalSec": 0.579,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 158958
+      },
+      "C": {
+        "previewSize": [
+          1200,
+          1600
+        ],
+        "decodeSec": 0.143,
+        "detectSec": 0.081,
+        "totalSec": 0.599,
+        "facesA": 1,
+        "facesC": 0,
+        "matched": 0,
+        "missedByC": 1,
+        "extraInC": 0,
+        "cosineMean": null,
+        "cosineMin": null
+      }
+    },
+    {
+      "file": "IMG_2049.JPG",
+      "orient": 3,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.206,
+        "decodeSec": 0.172,
+        "detectSec": 0.354,
+        "totalSec": 0.733,
+        "faces": 2,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.246,
+        "detectSec": 0.359,
+        "totalSec": 0.604,
+        "faces": 2,
+        "rgbIdenticalToA": true,
+        "previewBytes": 201364
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.148,
+        "detectSec": 0.094,
+        "totalSec": 0.448,
+        "facesA": 2,
+        "facesC": 2,
+        "matched": 2,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.8838221164026447,
+        "cosineMin": 0.8471166272968822
+      }
+    },
+    {
+      "file": "IMG_E9609.JPG",
+      "orient": 1,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.183,
+        "decodeSec": 0.141,
+        "detectSec": 0.367,
+        "totalSec": 0.69,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.193,
+        "detectSec": 0.336,
+        "totalSec": 0.529,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 57308
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.138,
+        "detectSec": 0.08,
+        "totalSec": 0.401,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9176773866706556,
+        "cosineMin": 0.9176773866706556
+      }
+    },
+    {
+      "file": "IMG_9940.JPG",
+      "orient": 6,
+      "upright": [
+        3024,
+        4032
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.346,
+        "decodeSec": 0.164,
+        "detectSec": 0.345,
+        "totalSec": 0.855,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.248,
+        "detectSec": 0.356,
+        "totalSec": 0.604,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 138030
+      },
+      "C": {
+        "previewSize": [
+          1200,
+          1600
+        ],
+        "decodeSec": 0.139,
+        "detectSec": 0.087,
+        "totalSec": 0.572,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.958508028696967,
+        "cosineMin": 0.958508028696967
+      }
+    },
+    {
+      "file": "IMG_9961.JPG",
+      "orient": 3,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.256,
+        "decodeSec": 0.185,
+        "detectSec": 0.379,
+        "totalSec": 0.82,
+        "faces": 3,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.259,
+        "detectSec": 0.369,
+        "totalSec": 0.628,
+        "faces": 3,
+        "rgbIdenticalToA": true,
+        "previewBytes": 121760
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.145,
+        "detectSec": 0.112,
+        "totalSec": 0.513,
+        "facesA": 3,
+        "facesC": 3,
+        "matched": 3,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.912208882293032,
+        "cosineMin": 0.8752071741465886
+      }
+    },
+    {
+      "file": "IMG_0165.JPG",
+      "orient": 1,
+      "upright": [
+        2592,
+        1936
+      ],
+      "megapixels": 5.02,
+      "A": {
+        "previewSec": 0.268,
+        "decodeSec": 0.102,
+        "detectSec": 0.183,
+        "totalSec": 0.553,
+        "faces": 0,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.19,
+        "detectSec": 0.182,
+        "totalSec": 0.372,
+        "faces": 0,
+        "rgbIdenticalToA": true,
+        "previewBytes": 121510
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1196
+        ],
+        "decodeSec": 0.136,
+        "detectSec": 0.077,
+        "totalSec": 0.482,
+        "facesA": 0,
+        "facesC": 0,
+        "matched": 0,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": null,
+        "cosineMin": null
+      }
+    },
+    {
+      "file": "IMG_0414.JPG",
+      "orient": 6,
+      "upright": [
+        3024,
+        4032
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.431,
+        "decodeSec": 0.184,
+        "detectSec": 0.384,
+        "totalSec": 0.998,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.289,
+        "detectSec": 0.352,
+        "totalSec": 0.64,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 148350
+      },
+      "C": {
+        "previewSize": [
+          1200,
+          1600
+        ],
+        "decodeSec": 0.148,
+        "detectSec": 0.092,
+        "totalSec": 0.671,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.8802227457172466,
+        "cosineMin": 0.8802227457172466
+      }
+    },
+    {
+      "file": "IMG_2097.JPG",
+      "orient": 3,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.215,
+        "decodeSec": 0.188,
+        "detectSec": 0.363,
+        "totalSec": 0.767,
+        "faces": 2,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.238,
+        "detectSec": 0.368,
+        "totalSec": 0.606,
+        "faces": 2,
+        "rgbIdenticalToA": true,
+        "previewBytes": 127540
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.141,
+        "detectSec": 0.088,
+        "totalSec": 0.444,
+        "facesA": 2,
+        "facesC": 2,
+        "matched": 2,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.9300626419754661,
+        "cosineMin": 0.9162143669951308
+      }
+    },
+    {
+      "file": "IMG_E9433.JPG",
+      "orient": 1,
+      "upright": [
+        4032,
+        3024
+      ],
+      "megapixels": 12.19,
+      "A": {
+        "previewSec": 0.183,
+        "decodeSec": 0.153,
+        "detectSec": 0.361,
+        "totalSec": 0.697,
+        "faces": 1,
+        "previewOk": true
+      },
+      "B": {
+        "ffmpegSec": 0.209,
+        "detectSec": 0.358,
+        "totalSec": 0.568,
+        "faces": 1,
+        "rgbIdenticalToA": true,
+        "previewBytes": 69714
+      },
+      "C": {
+        "previewSize": [
+          1600,
+          1200
+        ],
+        "decodeSec": 0.127,
+        "detectSec": 0.086,
+        "totalSec": 0.395,
+        "facesA": 1,
+        "facesC": 1,
+        "matched": 1,
+        "missedByC": 0,
+        "extraInC": 0,
+        "cosineMean": 0.8802892242940298,
+        "cosineMin": 0.8802892242940298
+      }
+    }
+  ]
+}

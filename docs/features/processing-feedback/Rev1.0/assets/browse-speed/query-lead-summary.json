@@ -1,0 +1,22 @@
+{
+  "kind": "Independent lead rerun of query_bench.py after",
+  "note": "Parent and implementer both ran after and wrote query-after.json; this separate summary retains parent tool output timings without treating the shared filename as two immutable runs.",
+  "items": 400,
+  "all13FullPayloadHashesMatchBaseline": true,
+  "all13StableAcrossThreeIterations": true,
+  "queries": {
+    "all-date": {"medianMs":153.10,"count":400,"entityOpens":140,"browserProjections":400},
+    "all-name": {"medianMs":102.21,"count":400,"entityOpens":140,"browserProjections":400},
+    "all-rating": {"medianMs":107.09,"count":400,"entityOpens":140,"browserProjections":400},
+    "all-location": {"medianMs":181.67,"count":400,"entityOpens":140,"browserProjections":400},
+    "empty-tag": {"medianMs":46.19,"count":0,"entityOpens":140,"browserProjections":0},
+    "person": {"medianMs":40.17,"count":2,"entityOpens":140,"browserProjections":2},
+    "tag": {"medianMs":39.37,"count":4,"entityOpens":140,"browserProjections":4},
+    "filename": {"medianMs":40.71,"count":1,"entityOpens":140,"browserProjections":1},
+    "date": {"medianMs":80.94,"count":188,"entityOpens":140,"browserProjections":188},
+    "chinese-unnamed": {"medianMs":43.84,"count":0,"entityOpens":140,"browserProjections":0},
+    "four-stars": {"medianMs":103.13,"count":400,"entityOpens":140,"browserProjections":400},
+    "favorites": {"medianMs":36.77,"count":0,"entityOpens":140,"browserProjections":0},
+    "recent": {"medianMs":183.80,"count":400,"entityOpens":140,"browserProjections":400}
+  }
+}

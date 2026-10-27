@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import copy
 import math
+import struct
 from pathlib import Path
 from typing import Any
 
@@ -332,9 +335,52 @@ def _read_score(value: Any) -> float:
     return min(1.0, max(0.0, number))
 
 
+def _read_landmarks(value: Any) -> list[list[float]]:
+    if not isinstance(value, list) or len(value) != 5:
+        raise fail("invalid-catalog")
+    out: list[list[float]] = []
+    for pair in value:
+        if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+            raise fail("invalid-catalog")
+        nums: list[float] = []
+        for item in pair:
+            if type(item) is bool or not isinstance(item, (int, float)):
+                raise fail("invalid-catalog")
+            number = float(item)
+            if not math.isfinite(number) or number < -0.02 or number > 1.02:
+                raise fail("invalid-catalog")
+            nums.append(min(1.0, max(0.0, number)))
+        out.append(nums)
+    return out
+
+
+EMBEDDING_MAX_VALUES = 4096
+
+
+def pack_embedding(values: list[float]) -> str:
+    """A face fingerprint as base64 little-endian float32 (512 values: 2732 chars)."""
+    return base64.b64encode(struct.pack(f"<{len(values)}f", *values)).decode("ascii")
+
+
+def unpack_embedding(text: Any) -> list[float] | None:
+    if type(text) is not str or not text:
+        return None
+    try:
+        raw = base64.b64decode(text, validate=True)
+    except (ValueError, binascii.Error):
+        return None
+    count = len(raw) // 4
+    if len(raw) % 4 or not 2 <= count <= EMBEDDING_MAX_VALUES:
+        return None
+    values = list(struct.unpack(f"<{count}f", raw))
+    if not all(math.isfinite(v) for v in values):
+        return None
+    return values
+
+
 def read_face(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    extra = set(data.keys()) - {"personId", "box", "detScore", "matchScore"}
+    extra = set(data.keys()) - {"personId", "box", "landmarks", "detScore", "matchScore", "embedding"}
     if extra or "personId" not in data:
         raise fail("invalid-catalog")
     out: dict[str, Any] = {"personId": _str(data["personId"])}
@@ -342,10 +388,16 @@ def read_face(value: Any) -> dict[str, Any]:
         box = _read_box(data["box"])
         if box is not None:
             out["box"] = box
+    if "landmarks" in data and data["landmarks"] is not None:
+        out["landmarks"] = _read_landmarks(data["landmarks"])
     if "detScore" in data:
         out["detScore"] = _read_score(data["detScore"])
     if "matchScore" in data:
         out["matchScore"] = _read_score(data["matchScore"])
+    if "embedding" in data:
+        if unpack_embedding(data["embedding"]) is None:
+            raise fail("invalid-catalog")
+        out["embedding"] = data["embedding"]
     return out
 
 

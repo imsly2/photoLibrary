@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "d88f2fec2f89",
+  "operation": "scan",
+  "createdAt": "2026-10-18T12:35:50.972219Z",
+  "changes": [
+    {
+      "path": "catalog/source-growth.json",
+      "before": null,
+      "after": {
+        "files": {}
+      }
+    }
+  ]
+}

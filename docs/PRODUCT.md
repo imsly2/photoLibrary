@@ -19,8 +19,9 @@ one per thing. A SQLite file is a search index rebuilt from those records.
 Delete the SQLite file and the server builds it again.
 
 This tool does not pull photos off an iPhone. That is
-[iphonePhotos](../../iphonePhotos/docs/PRODUCT.md). When that copy has landed
-in a folder, add the folder here.
+[iphonePhotos](../../iphonePhotos/docs/PRODUCT.md), the separate tool at
+`projects/iphonePhotos`. When that copy has landed in a folder, add the
+folder here.
 
 Nothing in this file is optional flavor. A feature is done when its **Check**
 passes. [STATUS.md](STATUS.md) records the artifact for each Check. Until then
@@ -218,8 +219,12 @@ winget `Git.Git`; if git is still missing, Update uses the zip.
 
 The launcher checks for Python 3.12+ and ffmpeg on PATH. If either is missing
 on Windows it installs them with winget (`Python.Python.3.12`, `Gyan.FFmpeg`)
-and continues. Then it starts the server and opens the browser at the listen
-address.
+and continues. If this folder's Library is already listening — `/api/health`
+is ok and `/api/runtime` names this `library-data` — the launcher stops only
+that process, then starts a new one so the page runs the code now on disk.
+Closing the browser does not stop the server. The next `Library.bat` or
+`Launch.bat` does. A different program on the port is left alone. Then it
+opens the browser at the listen address.
 
 The server listens on `127.0.0.1` and port `8765` unless settings say otherwise.
 Binding every interface is a setting, off by default.
@@ -259,7 +264,8 @@ URL `http://127.0.0.1:8765/` and `GET /api/health` returns
 launch stores port `8785`, prints `http://127.0.0.1:8785/`, and health
 on that URL returns `{"ok": true}` while the other program keeps
 `8765`. Artifact: the response body saved to a file. A second launch
-against the same library folder does not create a second catalog.
+against the same library folder replaces that folder's previous serve
+(new pid, same catalog) and does not leave the old process running.
 
 ## F3 — Command line and HTTP
 
@@ -309,7 +315,7 @@ Run commands as `python -m library --root <library-data> <command>`.
 | `analyze` / `analyze --item <id>` | `POST /api/analyze` `{}` or `{"itemId":"<id>"}` | Runs local object detection and writes Things through `annotate`. |
 | `infer-faces` | `POST /api/faces/infer` | Detects faces, clusters unnamed people. Never guesses a name. |
 | `transcribe` / `transcribe --item <id>` / `--force` | `POST /api/transcribe` `{}` or `{"itemId":"<id>","force"?}` | Local speech-to-text on videos with audio. Skips same size+mtime. Off in Settings skips the queue. |
-| `rate-photos` / `rate-photos --item <id>` / `--force` | `POST /api/rate` `{}` or `{"itemId":"<id>","force"?}` | Suggested 1–5 stars from sharpness, exposure, and faces. Smart blends a local aesthetic score. Skips same size+mtime. Off skips the queue. Never deletes or auto-rejects. |
+| `rate-photos` / `rate-photos --item <id>` / `--force` | `POST /api/rate` `{}` or `{"itemId":"<id>","force"?}` | Suggested 1–5 stars from sharpness, exposure, face, rule of thirds, and gold. Smart blends a local aesthetic score. Skips same size+mtime. Off skips the queue. Never deletes or auto-rejects. |
 | `rate <id> --stars N` / `--pick` / `--reject` / `--clear` | `POST /api/items/<id>/rating` `{stars?,pick?,reject?,clear?}` | User rating always wins. Reject hides from default views; the file stays. 0 / `--clear` clears yours. |
 | `settings get` / `settings set <key> <value>` | `GET` / `PUT /api/settings` | Reads and writes settings.json. |
 | `rebuild-index` | `POST /api/rebuild-index` | Deletes SQLite and rebuilds it from JSON. |
@@ -756,7 +762,17 @@ JSON responses.
 
 ## F10 — Open a picture
 
-Click a cell to open the viewer. Previous and Next sit at the **bottom** with
+Click a cell to open the viewer. On a wide window that viewer docks between
+the grid and the People sidebar: grid, a vertical resize handle
+(`#preview-splitter`), the same `#viewer`, then the existing People handle
+and sidebar. People, Tags, and Processing stay put. The handle resizes only
+the preview for the session (default 480px). It can grow until the grid is
+120px wide, and it can shrink to 320px. There is no fixed 720px cap. Back or Esc closes the dock and returns to the same grid
+scroll and filters. A window too narrow for that row, and F or F11, use the
+full-window viewer. Esc leaves fullscreen first; if the picture was docked,
+that returns to the dock.
+
+Previous and Next sit at the **bottom** with
 Rotate, Windows Photo Viewer style. Arrow keys move in the current sort and
 stop at the ends. Back (and Esc) returns to the grid he came from on the
 **same** live origin and port. Browser Back does the same while the page is
@@ -883,6 +899,16 @@ show.
 
 Esc stops the tour and leaves the globe where it stopped.
 
+### Face time
+
+Face time is another way to move through the library by time, next to the globe tour. It is one person, oldest photo first, with that person's eyes pinned to the same spot so the face stays still while the years change. The date is drawn on the frame.
+
+Open it from a person: the **⋯** on their row, or a right-click. The view plays. A scrubber stops on any frame. **See this time** leaves the film, filters the library to that calendar day (person filter cleared, dates grouped by day), and scrolls to that photo. When the photo has coordinates, it also opens the globe looking at that place, so the day on the grid is what else was going on then and the globe is where it was.
+
+**Save video** writes a new mp4 under `films/` in the library root (it never replaces an existing file) and opens it. Each frame stays up for the seconds chosen in the view (default 0.45).
+
+`GET /api/people/<id>/timeline` lists that person's photos in `capturedAt` order, with place name and coordinates when the photo has them. `GET /api/people/<id>/frame/<itemId>` returns the aligned JPEG. The face scan stores five landmarks with the box and the fingerprint. Face time uses the two eye points: the distance between them sets the size, width and height share that scale, and the midpoint of the eyes sits in the same place. A face with no eye points still uses its box, centered, with square pixels. Face time does not change who a face belongs to. `POST /api/people/<id>/film` with optional `{"seconds": 0.45}` writes the mp4 and opens it. The picture stays up until you move on, and the status shows which frame this is. **See this day** opens that calendar day in the library. **See this place** does the same and opens the globe when the photo has coordinates.
+
 ```json
 "tourOrbitSec": 8,
 "tourPictures": 5,
@@ -920,10 +946,20 @@ associations through the same catalog:
   `transcribeVideos` (default true) turns the Transcribe queue off.
   Search matches those words; results show **Said in video**.
 - `setup-ml aesthetic` / `rate-photos` scores photo and Live stills.
-  Basic (default) combines Laplacian sharpness (normalized per
-  resolution), histogram exposure, and face size/sharpness from
-  existing detections into a suggested 1–5 plus flags (`blurry`,
-  `too-dark`, `too-bright`). Smart blends that with a local NIMA
+  Basic (default) mixes five 0–1 scores. With a face in the photo:
+  sharpness 0.18, exposure 0.12, face size and sharpness 0.15, rule of
+  thirds 0.35, gold 0.20. The largest face is the subject. Thirds is how
+  close that face's center is to a rule-of-thirds intersection; a face
+  cut by the frame edge is capped. Gold is the share of pixels in the
+  sunset band (orange through gold, saturated, not blown out); about
+  12% of the frame fills that score. Skin-toned pixels stay low because
+  they are not saturated enough. Without a face, thirds and face drop
+  out and the mix is sharpness 0.35, exposure 0.25, gold 0.40, so a
+  sunset can still rise and a gray snapshot cannot. Stars use a floor:
+  an ordinary sharp mix stays near 2, and a 5 needs the mix near the
+  top. Sharpness alone does not make a 5. Info lists each score 0–100
+  and the mix next to the suggested stars. Flags stay `blurry`,
+  `too-dark`, `too-bright`. Smart blends that with a local NIMA
   ONNX score. `ratingMode` `off|basic|smart` (default `basic`) turns
   the Rating queue off or picks the stage. Same size+mtime is
   skipped. User stars / pick / reject always win. Reject only hides
@@ -931,13 +967,28 @@ associations through the same catalog:
   auto-rejects. Live/burst stacks and duplicate groups mark a
   suggested best-of-group. `ratingLearn` (default false) may nudge
   local suggestion weights from picks and rejects; reversible.
-- `setup-ml faces` / `infer-faces` detects faces on the full frame
-  fitted to 640×640, maps boxes back to the original, then
-  landmark-aligns / crops **original** pixels to 112×112 for ArcFace.
-  Large stills also run overlapping 1280 tiles (merged with NMS) so a
-  small face in a high-res phone photo is not crushed by the 640 pass.
-  Embeddings live in `models/faces/index.json`. Cosine must be strictly
-  above `faceMatchThreshold` (default **0.80**). Small or weak detections
+- `setup-ml faces` / `infer-faces` decodes the original still **upright**
+  (camera EXIF orientation applied, so a portrait phone shot is not
+  read sideways), detects faces on the full frame fitted to 640×640,
+  maps boxes back to the original, then landmark-aligns / crops
+  **original** pixels to 112×112 for ArcFace.
+  The first encode of that still from the original — its thumbnail, or
+  its preview when one is made — is the same ffmpeg process: a capped
+  WebP plus the upright full-resolution frame, and detection uses that
+  frame. The original is decoded once. The 1600 px preview is not the
+  detection input. A later **Re-run Faces** decodes the original again,
+  because the thumbnail is already on disk. No setting.
+  Large stills also run overlapping 1280 tiles (merged with NMS; a
+  partial face cut by a tile edge inside a larger box is the same face)
+  so a small face in a high-res phone photo is not crushed by the 640 pass.
+  Each face's 512-number fingerprint is stored on that face in the
+  photo's own record, so it travels with the folder.
+  `models/faces/index.json` holds one average fingerprint per person; it
+  is a cache rebuilt from those records, never an undo step. One photo's
+  face scan is a few KB of history, not a copy of every face.
+  Cosine must be strictly above `faceMatchThreshold` (default **0.45**,
+  measured on real family photos: same person ≈0.3–0.7, different
+  people ≈0). Small or weak detections
   need a clearer score before they join an already-named person. A human
   confirms every name in the People panel or Info. Faces never leave
   the machine. After changing the slider, Processing **Re-run Faces**.
@@ -955,7 +1006,11 @@ Exact person, place, thing, item and annotation payloads are in
 empty until somebody supplies them. The records stay readable JSON.
 
 `box` is x, y, width, height, each from 0 to 1, on the oriented picture.
-It may be omitted. A face is a box that points at a person. A person with
+It may be omitted. A face is a box that points at a person. It may also
+store `landmarks`: five points (left eye, right eye, nose, left mouth,
+right mouth), each x and y from 0 to 1 on that same oriented picture.
+Face time uses the two eye points from `landmarks` to set size and
+position. A person with
 `"name": null` is an unnamed face. Setting the name updates that person file.
 `people merge <keep-id> <drop-id>` rewrites every face, merges stored
 face embeddings when `models/faces/index.json` exists, and deletes the
@@ -993,6 +1048,27 @@ lists those ids. A second item annotated `--thing mug` reuses the same thing id.
 Artifact: the people file, the thing file, and the search JSON.
 
 ## F15 — Search
+
+Browsing responds to the current request first. Clicking a person, changing a
+filter or sort, and clearing a filter **clears the previous grid immediately**.
+Show the loading state until the first matching result, then draw matching results
+incrementally in the exact requested order. This happens on every switch, including
+repeat visits and warm caches. Never wait for the complete result body or the last
+thumbnail before drawing the first match. A newer request cancels/supersedes older
+work; obsolete rows, errors, completion callbacks and scheduled paints cannot appear
+in the new grid. Background refresh of an unchanged query preserves its painted grid.
+Prepare the metadata match/order before full browser-record projection, then stream
+records as they are projected. Paint the first record promptly and yield between
+bounded batches even if cached/network results arrive together. Completion must not
+cause a final full-grid snap or replay the whole result set. Do not wait for folder
+status, settings, People, Tags, or optional per-person leftover sections. Build
+date/entity groups from the same current results so grouping never repeats search.
+Thumbnails load progressively, with the visible grid first and a small nearby
+prefetch area; scrolling changes priority. A bounded painted-tile cache may accelerate
+individual newly arriving records but must not restore an entire old grid at once.
+Show an empty-result state only after successful completion with no matches; retain
+the current partial results on an error and make failure visible.
+These are responsiveness requirements within F7/F9/F11/F15, not another feature Check.
 
 The search box lives on `#filter-bar` and matches a person, place, or
 thing name, a filename, a capturedAt date (`YYYY`, `YYYY-MM`,
@@ -1049,7 +1125,7 @@ Rating queue on or off, and `ratingLearn` (bool, default false) which
 optionally nudges local suggestion weights. `sort` also accepts
 `rating`. The defaults below list those values. The header language switch writes
 `language`. The command line edits this file, including
-`faceMatchThreshold` (default 0.80, Settings slider 0.35–0.95) and
+`faceMatchThreshold` (default 0.45, Settings slider 0.35–0.95) and
 `faceMinSidePx`, so matching can be tuned without a rebuild. Higher
 threshold means fewer false merges and more Unnamed people. The browser
 does not keep a second copy. A pre-language file is filled with `en` on
@@ -1087,7 +1163,7 @@ where new renditions live. Language stays in the header.
   "dir": "desc",
   "zoomLevel": "years",
   "language": "en",
-  "faceMatchThreshold": 0.8,
+  "faceMatchThreshold": 0.45,
   "faceMinSidePx": 80,
   "transcribeVideos": true,
   "ratingMode": "basic",

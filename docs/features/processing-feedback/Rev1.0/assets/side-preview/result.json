@@ -1,0 +1,116 @@
+{
+  "graded": "2026-10-20",
+  "spec": [
+    "docs/features/processing-feedback/Rev1.0/SIDE-PREVIEW-PLAN.md section 1",
+    "docs/PRODUCT.md F10 dock paragraph"
+  ],
+  "overall": "fail",
+  "server": {
+    "url": "http://127.0.0.1:8785/",
+    "pid": 12060,
+    "restarted": false,
+    "viewport": "emulated 1600x900 for the wide dock; 800x900 narrow; 864x900 threshold"
+  },
+  "nodeCheck": "pass",
+  "checks": [
+    {
+      "id": "html-order",
+      "result": "pass",
+      "evidence": "Live DOM children of .workspace: library-stage, preview-splitter, viewer, library-splitter, library-side. index.html:118-236."
+    },
+    {
+      "id": "wide-click-docks-between-grid-and-people",
+      "result": "pass",
+      "evidence": "1600px workspace. Click IMG_3685.JPG. Grid stayed visible (844px). Viewer relative 480px at x=850. People sidebar 264px at x=1336. preview-docked class set. Screenshot dock-open.png."
+    },
+    {
+      "id": "people-tags-processing-stay",
+      "result": "pass",
+      "evidence": "People heading stayed expanded. Tags stayed collapsed (page default). Processing panel still in the sidebar. Side width stayed 264 through open, drag, and close."
+    },
+    {
+      "id": "preview-splitter-left-of-viewer",
+      "result": "pass",
+      "evidence": "6px col-resize button, hidden until docked. At default dock: splitter x=844 width 6, viewer starts at 850. style.css:737-760."
+    },
+    {
+      "id": "default-width-480-session-only",
+      "result": "pass",
+      "evidence": "First open set --preview-width to 480px. library.js:283. library-data/settings.json has no previewWidth key after the session."
+    },
+    {
+      "id": "clamp-320-720",
+      "result": "pass",
+      "evidence": "On a 1600px workspace, dragging the handle to the far left stopped at 720px (grid stage 604). Dragging far right stopped at 320px (grid stage 1004)."
+    },
+    {
+      "id": "grid-keeps-280",
+      "result": "fail",
+      "evidence": "At workspace width 864 (280+320+People 264), the click still docked and the grid stage measured 268px. Screenshot dock-grid-268.png.",
+      "bug": "library/web/assets/library.js:3609-3625"
+    },
+    {
+      "id": "drag-changes-width",
+      "result": "pass",
+      "evidence": "Pointer drag left on #preview-splitter: viewer width 480 -> 623. Stage, splitter, viewer, People stayed in that left-to-right order. People width stayed 264."
+    },
+    {
+      "id": "esc-closes-dock-grid-remains",
+      "result": "pass",
+      "evidence": "Second Esc hid #viewer, hid #preview-splitter, cleared the hash, left 680 grid cells and the People sidebar. Scroll set to 480 before open was 480 after close. Screenshot after-esc.png."
+    },
+    {
+      "id": "esc-leaves-fullscreen-then-returns-to-dock",
+      "result": "pass",
+      "evidence": "After F, first Esc set data-fullscreen back to 0 and restored the 320px dock (viewer still open). Second Esc closed it. Same two-step sequence after F11."
+    },
+    {
+      "id": "f-f11-fills-window",
+      "result": "fail",
+      "evidence": "F and F11 both set data-fullscreen=1 and position:fixed, but the viewer box was 0x900. The photo was not on screen; the grid showed through. #preview-splitter stayed displayed. Native document fullscreen was not granted in this embedded browser (fullscreenElement stayed null); the in-page fullscreen style is what collapsed the viewer. Screenshot fullscreen.png.",
+      "bug": "library/web/assets/style.css:1880-1909"
+    },
+    {
+      "id": "narrow-uses-full-window-viewer",
+      "result": "fail",
+      "evidence": "At workspace 800px the click correctly refused the dock (preview-docked false, #preview-splitter hidden) but the overlay viewer measured 0x900, so no picture appeared. Screenshot narrow-overlay.png.",
+      "bug": "library/web/assets/style.css:1880-1893"
+    },
+    {
+      "id": "globe-settings-clear-dock",
+      "result": "pass",
+      "evidence": "Settings click while docked hid the viewer, removed preview-docked, and hid the splitter. Globe click did the same. library.js:922-927 via hideViewerChrome."
+    },
+    {
+      "id": "same-viewer-controls",
+      "result": "pass",
+      "evidence": "One #viewer. Dock showed Back, stars, Pick, Reject, favorite, Slideshow, Fullscreen, Info, zoom slider, Previous, Rotate, Next, Reveal, Open, Print."
+    },
+    {
+      "id": "arrow-keys-stop-at-ends",
+      "result": "code-pass",
+      "browser": false,
+      "evidence": "stepViewer returns without wrapping when not in a slideshow and the next index is outside the list. library.js:3190-3212. Not exercised in the browser."
+    }
+  ],
+  "bugs": [
+    {
+      "file": "library/web/assets/style.css",
+      "line": 1880,
+      "summary": "#viewer is position:fixed; inset:0; width:0; flex:0 0 0. The docked width override applies only when preview-docked and data-fullscreen is not 1. Fullscreen and the narrow overlay both compute to a 0px-wide box, so the picture never fills the window."
+    },
+    {
+      "file": "library/web/assets/library.js",
+      "line": 3609,
+      "summary": "canDockViewer allows a dock at gridMin+previewMin+People (864px here) and ignores the two 6px splitters. clampPreviewWidth then forces the preview to at least 320 even when the leftover max is below 320, so the grid stage was 268px."
+    }
+  ],
+  "screenshots": [
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/dock-open.png",
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/dock-dragged.png",
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/fullscreen.png",
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/after-esc.png",
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/narrow-overlay.png",
+    "docs/features/processing-feedback/Rev1.0/assets/side-preview/dock-grid-268.png"
+  ]
+}

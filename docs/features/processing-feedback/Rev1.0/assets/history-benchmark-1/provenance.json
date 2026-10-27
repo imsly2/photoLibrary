@@ -1,0 +1,8 @@
+{
+  "baselineRevision": "150a38efb6488504fcfdfb33c44604b706b429c1",
+  "baselinePath": "library/history.py",
+  "baselineHistorySourceSha256": "19c66a5d47011709123b78369e88ee0b092d7d5195096928f2d5f5bd319f6ab6",
+  "coalescedWorkingHistorySourceSha256": "e8990434a20275becd546f2841c4075816fed71602b2901bebba9d4b6a904579",
+  "baselineDescription": "Unmodified plan_extend_entry from pinned HEAD; captures repeated full snapshots.",
+  "coalescedDescription": "Current working plan_extend_entry; frozen function text saved alongside benchmark."
+}

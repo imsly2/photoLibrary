@@ -1,0 +1,19 @@
+{
+  "browserCells": 135,
+  "sameCatalogRetained": true,
+  "browserPainted": 15,
+  "afterReadyThumbs": 19,
+  "sourceId": "src_acda5625dae4",
+  "laterPreviewWaiting": 299,
+  "afterItems": 164,
+  "comparison": "Live observations, not controlled benchmark",
+  "baselineItemsSeconds": 33.5027191,
+  "laterPreviewDone": 29,
+  "laterPreviewErrors": 0,
+  "testScope": "Two focused unit regressions, no full F4/F7/F8 Check closure",
+  "scanObservedDone": 16,
+  "date": "2026-10-18",
+  "afterItemsSeconds": 1.7646606,
+  "scanObservedTotal": 551,
+  "normalServerPort": 8785
+}

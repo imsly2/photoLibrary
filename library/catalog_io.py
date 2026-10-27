@@ -576,35 +576,49 @@ def try_load_thing(root: Path, thing_id: str) -> dict[str, Any] | None:
     return read_thing(load_json(path))
 
 
-def item_read(
-    item: dict[str, Any],
-    root: Path,
-    favorites: set[str] | None = None,
-) -> dict[str, Any]:
-    from library.favorites import favorite_ids
-    from library.volumes import item_available, item_motion_available
+class ItemEntityReader:
+    """Resolve shared entity records once during one catalog response.
 
-    out = ordered_item(item)
-    out["available"] = item_available(item, root)
-    out["motionAvailable"] = item_motion_available(item, root)
-    out.update(_last_known_read(item))
-    marked = favorite_ids(root) if favorites is None else favorites
-    out["favorite"] = item.get("id") in marked
+    Deliberately request-scoped: an entity rename is visible on the next query
+    even when no item record changed and the browser-view cache is still warm.
+    """
+
+    def __init__(self, root: Path) -> None:
+        self.root = root
+        self.records: dict[tuple[str, str], dict[str, Any] | None] = {}
+
+    def read(self, kind: str, entity_id: str) -> dict[str, Any] | None:
+        key = (kind, entity_id)
+        if key not in self.records:
+            loader, order = {
+                "places": (try_load_place, ordered_place),
+                "people": (try_load_person, ordered_person),
+                "things": (try_load_thing, ordered_thing),
+            }[kind]
+            record = loader(self.root, entity_id)
+            self.records[key] = None if record is None else order(record)
+        return self.records[key]
+
+
+def item_entities(
+    item: dict[str, Any], root: Path, reader: ItemEntityReader | None = None,
+) -> dict[str, list[dict[str, Any]]]:
+    reader = reader if reader is not None else ItemEntityReader(root)
     places: list[dict[str, Any]] = []
     place_id = item.get("placeId")
     if type(place_id) is str and place_id:
-        place = try_load_place(root, place_id)
+        place = reader.read("places", place_id)
         if place is not None:
-            places = [ordered_place(place)]
+            places = [place]
     people: list[dict[str, Any]] = []
     seen_people: set[str] = set()
     for face in item.get("faces") or []:
         person_id = face.get("personId")
         if type(person_id) is not str or person_id in seen_people:
             continue
-        person = try_load_person(root, person_id)
+        person = reader.read("people", person_id)
         if person is not None:
-            people.append(ordered_person(person))
+            people.append(person)
             seen_people.add(person_id)
     people.sort(key=lambda rec: rec["id"])
     things: list[dict[str, Any]] = []
@@ -613,14 +627,49 @@ def item_read(
         thing_id = ref.get("thingId")
         if type(thing_id) is not str or thing_id in seen_things:
             continue
-        thing = try_load_thing(root, thing_id)
+        thing = reader.read("things", thing_id)
         if thing is not None:
-            things.append(ordered_thing(thing))
+            things.append(thing)
             seen_things.add(thing_id)
     things.sort(key=lambda rec: rec["id"])
-    out["entities"] = {"people": people, "places": places, "things": things}
+    return {"people": people, "places": places, "things": things}
+
+
+def item_query_read(
+    item: dict[str, Any], root: Path, favorites: set[str], reader: ItemEntityReader,
+) -> dict[str, Any]:
+    """Metadata used by predicates; no original-path or availability checks."""
     from library.rating import quality_view
 
+    out = dict(item)
+    out["favorite"] = item.get("id") in favorites
+    out["entities"] = item_entities(item, root, reader)
+    out["rating"] = quality_view(item)
+    return out
+
+
+def item_read(
+    item: dict[str, Any],
+    root: Path,
+    favorites: set[str] | None = None,
+    *,
+    entities: dict[str, list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
+    from library.favorites import favorite_ids
+    from library.rating import quality_view
+    from library.volumes import item_available, item_motion_available
+
+    out = ordered_item(item)
+    if out.get("faces"):
+        out["faces"] = [
+            {key: value for key, value in face.items() if key != "embedding"} for face in out["faces"]
+        ]
+    out["available"] = item_available(item, root)
+    out["motionAvailable"] = item_motion_available(item, root)
+    out.update(_last_known_read(item))
+    marked = favorite_ids(root) if favorites is None else favorites
+    out["favorite"] = item.get("id") in marked
+    out["entities"] = item_entities(item, root) if entities is None else entities
     out["rating"] = quality_view(item)
     return out
 

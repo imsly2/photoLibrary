@@ -532,16 +532,11 @@ def apply_people_merge(root: Path, keep_id: str, drop_id: str) -> dict[str, Any]
         if after != before:
             changes.append({"path": item_rel(item_id), "before": before, "after": after})
     changes.append({"path": person_rel(drop_id), "before": drop, "after": None})
-    try:
-        from library.faces import plan_merge_index
-
-        index_change = plan_merge_index(root, keep_id, drop_id)
-        if index_change is not None:
-            changes.append(index_change)
-    except ImportError:
-        pass
     entry = make_history_entry(root, "people-merge", changes)
     transact(root, plan_append(root, entry) + changes)
+    from library.faces import rebuild_index
+
+    rebuild_index(root)
     return ordered_person(keep)
 
 
@@ -572,7 +567,6 @@ def apply_people_split(
     new_id = new_person_id(root)
     before_item = clone(item)
     rewritten: list[dict[str, Any]] = []
-    moved_box = faces[chosen].get("box")
     for index, face in enumerate(faces):
         face = clone(face)
         if index == chosen:
@@ -595,21 +589,11 @@ def apply_people_split(
                 {"path": person_rel(person_id), "before": before_person, "after": next_person}
             )
     changes.append({"path": person_rel(new_id), "before": None, "after": created})
-    try:
-        from library.faces import plan_split_index
-
-        split_box = None
-        if isinstance(moved_box, list) and len(moved_box) == 4:
-            split_box = [float(v) for v in moved_box]
-        elif box is not None:
-            split_box = list(box)
-        index_change = plan_split_index(root, person_id, new_id, item_id, split_box)
-        if index_change is not None:
-            changes.append(index_change)
-    except ImportError:
-        pass
     entry = make_history_entry(root, "people-split", changes)
     transact(root, plan_append(root, entry) + changes)
+    from library.faces import rebuild_index
+
+    rebuild_index(root)
     return created
 
 

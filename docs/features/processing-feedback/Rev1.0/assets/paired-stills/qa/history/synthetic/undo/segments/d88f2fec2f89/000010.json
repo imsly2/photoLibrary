@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "changes": [
+    {
+      "path": "catalog/source-growth.json",
+      "before": {
+        "files": {
+          "0": {
+            "itemId": "0"
+          },
+          "1": {
+            "itemId": "1"
+          },
+          "2": {
+            "itemId": "2"
+          },
+          "3": {
+            "itemId": "3"
+          },
+          "4": {
+            "itemId": "4"
+          },
+          "5": {
+            "itemId": "5"
+          },
+          "6": {
+            "itemId": "6"
+          },
+          "7": {
+            "itemId": "7"
+          },
+          "8": {
+            "itemId": "8"
+          }
+        }
+      },
+      "after": {
+        "files": {
+          "0": {
+            "itemId": "0"
+          },
+          "1": {
+            "itemId": "1"
+          },
+          "2": {
+            "itemId": "2"
+          },
+          "3": {
+            "itemId": "3"
+          },
+          "4": {
+            "itemId": "4"
+          },
+          "5": {
+            "itemId": "5"
+          },
+          "6": {
+            "itemId": "6"
+          },
+          "7": {
+            "itemId": "7"
+          },
+          "8": {
+            "itemId": "8"
+          },
+          "9": {
+            "itemId": "9"
+          }
+        }
+      }
+    },
+    {
+      "path": "catalog/leaf-9.json",
+      "before": null,
+      "after": {
+        "index": 9
+      }
+    }
+  ]
+}

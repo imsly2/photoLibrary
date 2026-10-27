@@ -1,0 +1,47 @@
+{
+  "label": "read-scan-410",
+  "fixture": {
+    "jpg": 410,
+    "mov": 1,
+    "source": "J:\\Pictures\\1. Favorites Pictures",
+    "copy": "J:\\slyOS\\projects\\photoLibrary\\.qa\\agent-drain\\pictures"
+  },
+  "scan": {
+    "files": 411,
+    "seconds": 61.5,
+    "filesPerSecond": 6.68,
+    "perFileMeanFirstTenth": 0.0894,
+    "perFileMeanLastTenth": 0.1318,
+    "lastToFirst": 1.473,
+    "jsonFilesWritten": 1502,
+    "jsonMBWritten": 16.81,
+    "jsonKBPerFile": 40.9,
+    "profiled": false,
+    "stages": {}
+  },
+  "drain": {
+    "steps": 0,
+    "seconds": 0.0,
+    "perSlotMeanSeconds": {},
+    "perSlotCount": {},
+    "jsonFilesWritten": 0,
+    "jsonMBWritten": 0.0,
+    "stages": {},
+    "counters": {
+      "pickCalls": 0,
+      "pickSeconds": 0,
+      "pickMeanSeconds": 0.0,
+      "encodeCalls": 0,
+      "encodeSeconds": 0.0,
+      "driveScans": 0,
+      "driveScanSeconds": 0,
+      "catalogResyncs": 0,
+      "catalogParses": 0,
+      "catalogScandirs": 0,
+      "bookkeepingMsPerFile": 0.0
+    }
+  },
+  "undoEntryBytes": [
+    1024489
+  ]
+}

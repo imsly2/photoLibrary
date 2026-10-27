@@ -1,0 +1,982 @@
+{
+  "queuedOrder": [
+    "thumb",
+    "thumb",
+    "poster",
+    "preview",
+    "preview",
+    "proxy",
+    "playback"
+  ],
+  "progressive": [
+    {
+      "scanning": true,
+      "order": [
+        "thumb"
+      ]
+    },
+    {
+      "scanning": true,
+      "order": [
+        "thumb",
+        "poster"
+      ]
+    }
+  ],
+  "responsiveness": [
+    {
+      "case": "annotate",
+      "requests": {
+        "items": {
+          "status": 200,
+          "seconds": 0.0774,
+          "body": [
+            {
+              "schemaVersion": 1,
+              "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+              "kind": "photo",
+              "filename": "no-exif.jpg",
+              "capturedAt": "2026-10-18T07:09:30Z",
+              "capturedAtSource": "mtime",
+              "placeId": null,
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": null,
+                "camera": null,
+                "lens": null,
+                "durationSec": null,
+                "latitude": null,
+                "longitude": null
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "still",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/no-exif.jpg",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+                  "sizeBytes": 13170,
+                  "modifiedAt": "2026-10-18T07:09:30.636175Z",
+                  "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp",
+                "preview": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp",
+                "poster": null,
+                "proxy": null,
+                "playback": null,
+                "status": {
+                  "thumb": "ready",
+                  "preview": "queued",
+                  "poster": "not-applicable",
+                  "proxy": "not-applicable",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [],
+              "things": [],
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [],
+                "places": [],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            },
+            {
+              "schemaVersion": 1,
+              "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+              "kind": "video",
+              "filename": "clip.mp4",
+              "capturedAt": "2024-06-12T15:07:00Z",
+              "capturedAtSource": "exif",
+              "placeId": "place_d94ad81a0fe2",
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": null,
+                "camera": null,
+                "lens": null,
+                "durationSec": 2.0,
+                "latitude": 41.88,
+                "longitude": -87.63
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "motion",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/clip.mp4",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\clip.mp4",
+                  "sizeBytes": 23631,
+                  "modifiedAt": "2026-10-18T07:09:30.639167Z",
+                  "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": null,
+                "preview": null,
+                "poster": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/poster.webp",
+                "proxy": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/proxy.mp4",
+                "playback": null,
+                "status": {
+                  "thumb": "not-applicable",
+                  "preview": "not-applicable",
+                  "poster": "ready",
+                  "proxy": "ready",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [],
+              "things": [],
+              "available": true,
+              "motionAvailable": true,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\clip.mp4",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [],
+                "places": [
+                  {
+                    "schemaVersion": 1,
+                    "id": "place_d94ad81a0fe2",
+                    "name": null,
+                    "latitude": 41.88,
+                    "longitude": -87.63
+                  }
+                ],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            },
+            {
+              "schemaVersion": 1,
+              "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+              "kind": "photo",
+              "filename": "IMG_1042.jpg",
+              "capturedAt": "2024-06-12T15:04:00",
+              "capturedAtSource": "exif",
+              "placeId": "place_d94ad81a0fe2",
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": 1,
+                "camera": null,
+                "lens": null,
+                "durationSec": null,
+                "latitude": 41.88,
+                "longitude": -87.63
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "still",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/IMG_1042.jpg",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\IMG_1042.jpg",
+                  "sizeBytes": 15274,
+                  "modifiedAt": "2026-10-18T07:09:30.633189Z",
+                  "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp",
+                "preview": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+                "poster": null,
+                "proxy": null,
+                "playback": null,
+                "status": {
+                  "thumb": "ready",
+                  "preview": "ready",
+                  "poster": "not-applicable",
+                  "proxy": "not-applicable",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [],
+              "things": [],
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\IMG_1042.jpg",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [],
+                "places": [
+                  {
+                    "schemaVersion": 1,
+                    "id": "place_d94ad81a0fe2",
+                    "name": null,
+                    "latitude": 41.88,
+                    "longitude": -87.63
+                  }
+                ],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            }
+          ]
+        },
+        "thumb": {
+          "status": 200,
+          "seconds": 0.0039,
+          "body": {
+            "bytes": 3780
+          }
+        },
+        "jobs": {
+          "status": 200,
+          "seconds": 0.0871,
+          "body": {
+            "ok": true,
+            "paused": false,
+            "processing": true,
+            "queues": [
+              {
+                "id": "renditions",
+                "label": "Previews",
+                "pending": 1,
+                "done": 5,
+                "error": 0,
+                "state": "running",
+                "available": true
+              },
+              {
+                "id": "analyze",
+                "label": "Analyze",
+                "pending": 1,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "infer-faces",
+                "label": "Faces",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "objects",
+                "label": "Objects",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "transcribe",
+                "label": "Transcribe",
+                "pending": 0,
+                "done": 0,
+                "error": 0,
+                "state": "idle",
+                "available": false
+              },
+              {
+                "id": "rate",
+                "label": "Rating",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "running",
+                "available": true
+              }
+            ]
+          }
+        },
+        "activity": {
+          "status": 200,
+          "seconds": 0.0011,
+          "body": {
+            "phase": "renditions",
+            "detail": "Previews",
+            "file": "no-exif.jpg",
+            "done": 0,
+            "total": 0,
+            "at": 1792307372.008,
+            "derivative": "preview",
+            "scan": {
+              "phase": "idle",
+              "detail": "",
+              "file": "",
+              "derivative": "",
+              "done": 0,
+              "total": 0,
+              "at": 0.0,
+              "elapsedSeconds": 0
+            },
+            "elapsedSeconds": 0.2,
+            "ok": true
+          }
+        },
+        "pause": {
+          "status": 200,
+          "seconds": 0.0697,
+          "body": {
+            "ok": true,
+            "paused": true,
+            "processing": false,
+            "queues": [
+              {
+                "id": "renditions",
+                "label": "Previews",
+                "pending": 1,
+                "done": 5,
+                "error": 0,
+                "state": "paused",
+                "available": true
+              },
+              {
+                "id": "analyze",
+                "label": "Analyze",
+                "pending": 1,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "infer-faces",
+                "label": "Faces",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "objects",
+                "label": "Objects",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "transcribe",
+                "label": "Transcribe",
+                "pending": 0,
+                "done": 0,
+                "error": 0,
+                "state": "idle",
+                "available": false
+              },
+              {
+                "id": "rate",
+                "label": "Rating",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "paused",
+                "available": true
+              }
+            ]
+          }
+        }
+      },
+      "edit": {
+        "status": 200,
+        "seconds": 0.0771,
+        "body": {
+          "schemaVersion": 1,
+          "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+          "kind": "photo",
+          "filename": "no-exif.jpg",
+          "capturedAt": "2026-10-18T07:09:30Z",
+          "capturedAtSource": "mtime",
+          "placeId": null,
+          "metadata": {
+            "width": 640,
+            "height": 480,
+            "orientation": null,
+            "camera": null,
+            "lens": null,
+            "durationSec": null,
+            "latitude": null,
+            "longitude": null
+          },
+          "contentIdentifier": null,
+          "locations": [
+            {
+              "sourceId": "src_2be8f0e0de39",
+              "role": "primary",
+              "component": "still",
+              "kind": "volume",
+              "current": true,
+              "libraryRelativePath": null,
+              "volumeSerial": "windows:2CDC4AC8",
+              "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/no-exif.jpg",
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+              "sizeBytes": 13170,
+              "modifiedAt": "2026-10-18T07:09:30.636175Z",
+              "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+            }
+          ],
+          "renditions": {
+            "store": "with-server",
+            "sourceId": "src_2be8f0e0de39",
+            "thumb": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp",
+            "preview": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp",
+            "poster": null,
+            "proxy": null,
+            "playback": null,
+            "status": {
+              "thumb": "ready",
+              "preview": "queued",
+              "poster": "not-applicable",
+              "proxy": "not-applicable",
+              "playback": "not-applicable"
+            }
+          },
+          "faces": [
+            {
+              "personId": "person_8c445e3b012b"
+            }
+          ],
+          "things": [],
+          "available": true,
+          "motionAvailable": false,
+          "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+          "lastKnownFile": true,
+          "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+          "favorite": false,
+          "entities": {
+            "people": [
+              {
+                "schemaVersion": 1,
+                "id": "person_8c445e3b012b",
+                "name": "While encoding"
+              }
+            ],
+            "places": [],
+            "things": []
+          },
+          "rating": {
+            "suggested": null,
+            "yours": null,
+            "stars": null,
+            "pick": false,
+            "reject": false,
+            "flags": [],
+            "bestOfGroup": false,
+            "mode": null,
+            "blurry": false
+          }
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "requests": {
+        "items": {
+          "status": 200,
+          "seconds": 0.0447,
+          "body": [
+            {
+              "schemaVersion": 1,
+              "id": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81",
+              "kind": "photo",
+              "filename": "no-exif.jpg",
+              "capturedAt": "2026-10-18T07:09:30Z",
+              "capturedAtSource": "mtime",
+              "placeId": null,
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": null,
+                "camera": null,
+                "lens": null,
+                "durationSec": null,
+                "latitude": null,
+                "longitude": null
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "still",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/no-exif.jpg",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+                  "sizeBytes": 13170,
+                  "modifiedAt": "2026-10-18T07:09:30.636175Z",
+                  "sha256": "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/thumb.webp",
+                "preview": "renditions/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81/preview.webp",
+                "poster": null,
+                "proxy": null,
+                "playback": null,
+                "status": {
+                  "thumb": "ready",
+                  "preview": "ready",
+                  "poster": "not-applicable",
+                  "proxy": "not-applicable",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [
+                {
+                  "personId": "person_8c445e3b012b"
+                }
+              ],
+              "things": [],
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\no-exif.jpg",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [
+                  {
+                    "schemaVersion": 1,
+                    "id": "person_8c445e3b012b",
+                    "name": "While encoding"
+                  }
+                ],
+                "places": [],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            },
+            {
+              "schemaVersion": 1,
+              "id": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+              "kind": "video",
+              "filename": "clip.mp4",
+              "capturedAt": "2024-06-12T15:07:00Z",
+              "capturedAtSource": "exif",
+              "placeId": "place_d94ad81a0fe2",
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": null,
+                "camera": null,
+                "lens": null,
+                "durationSec": 2.0,
+                "latitude": 41.88,
+                "longitude": -87.63
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "motion",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/clip.mp4",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\clip.mp4",
+                  "sizeBytes": 23631,
+                  "modifiedAt": "2026-10-18T07:09:30.639167Z",
+                  "sha256": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": null,
+                "preview": null,
+                "poster": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/poster.webp",
+                "proxy": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/proxy.mp4",
+                "playback": null,
+                "status": {
+                  "thumb": "not-applicable",
+                  "preview": "not-applicable",
+                  "poster": "ready",
+                  "proxy": "ready",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [],
+              "things": [],
+              "available": true,
+              "motionAvailable": true,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\clip.mp4",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [],
+                "places": [
+                  {
+                    "schemaVersion": 1,
+                    "id": "place_d94ad81a0fe2",
+                    "name": null,
+                    "latitude": 41.88,
+                    "longitude": -87.63
+                  }
+                ],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            },
+            {
+              "schemaVersion": 1,
+              "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+              "kind": "photo",
+              "filename": "IMG_1042.jpg",
+              "capturedAt": "2024-06-12T15:04:00",
+              "capturedAtSource": "exif",
+              "placeId": "place_d94ad81a0fe2",
+              "metadata": {
+                "width": 640,
+                "height": 480,
+                "orientation": 1,
+                "camera": null,
+                "lens": null,
+                "durationSec": null,
+                "latitude": 41.88,
+                "longitude": -87.63
+              },
+              "contentIdentifier": null,
+              "locations": [
+                {
+                  "sourceId": "src_2be8f0e0de39",
+                  "role": "primary",
+                  "component": "still",
+                  "kind": "volume",
+                  "current": true,
+                  "libraryRelativePath": null,
+                  "volumeSerial": "windows:2CDC4AC8",
+                  "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/lead-final-1/queued/pictures/IMG_1042.jpg",
+                  "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\IMG_1042.jpg",
+                  "sizeBytes": 15274,
+                  "modifiedAt": "2026-10-18T07:09:30.633189Z",
+                  "sha256": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+                }
+              ],
+              "renditions": {
+                "store": "with-server",
+                "sourceId": "src_2be8f0e0de39",
+                "thumb": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp",
+                "preview": "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+                "poster": null,
+                "proxy": null,
+                "playback": null,
+                "status": {
+                  "thumb": "ready",
+                  "preview": "queued",
+                  "poster": "not-applicable",
+                  "proxy": "not-applicable",
+                  "playback": "not-applicable"
+                }
+              },
+              "faces": [],
+              "things": [],
+              "available": true,
+              "motionAvailable": false,
+              "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures\\IMG_1042.jpg",
+              "lastKnownFile": true,
+              "lastKnownFolder": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\lead-final-1\\queued\\pictures",
+              "favorite": false,
+              "entities": {
+                "people": [],
+                "places": [
+                  {
+                    "schemaVersion": 1,
+                    "id": "place_d94ad81a0fe2",
+                    "name": null,
+                    "latitude": 41.88,
+                    "longitude": -87.63
+                  }
+                ],
+                "things": []
+              },
+              "rating": {
+                "suggested": null,
+                "yours": null,
+                "stars": null,
+                "pick": false,
+                "reject": false,
+                "flags": [],
+                "bestOfGroup": false,
+                "mode": null,
+                "blurry": false
+              }
+            }
+          ]
+        },
+        "thumb": {
+          "status": 200,
+          "seconds": 0.0045,
+          "body": {
+            "bytes": 3780
+          }
+        },
+        "jobs": {
+          "status": 200,
+          "seconds": 0.1049,
+          "body": {
+            "ok": true,
+            "paused": false,
+            "processing": true,
+            "queues": [
+              {
+                "id": "renditions",
+                "label": "Previews",
+                "pending": 1,
+                "done": 5,
+                "error": 0,
+                "state": "running",
+                "available": true
+              },
+              {
+                "id": "analyze",
+                "label": "Analyze",
+                "pending": 1,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "infer-faces",
+                "label": "Faces",
+                "pending": 1,
+                "done": 1,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "objects",
+                "label": "Objects",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "transcribe",
+                "label": "Transcribe",
+                "pending": 0,
+                "done": 0,
+                "error": 0,
+                "state": "idle",
+                "available": false
+              },
+              {
+                "id": "rate",
+                "label": "Rating",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "running",
+                "available": true
+              }
+            ]
+          }
+        },
+        "activity": {
+          "status": 200,
+          "seconds": 0.0018,
+          "body": {
+            "phase": "renditions",
+            "detail": "Previews",
+            "file": "IMG_1042.jpg",
+            "done": 0,
+            "total": 0,
+            "at": 1792307372.502,
+            "derivative": "preview",
+            "scan": {
+              "phase": "idle",
+              "detail": "",
+              "file": "",
+              "derivative": "",
+              "done": 0,
+              "total": 0,
+              "at": 0.0,
+              "elapsedSeconds": 0
+            },
+            "elapsedSeconds": 0.2,
+            "ok": true
+          }
+        },
+        "pause": {
+          "status": 200,
+          "seconds": 0.1025,
+          "body": {
+            "ok": true,
+            "paused": true,
+            "processing": false,
+            "queues": [
+              {
+                "id": "renditions",
+                "label": "Previews",
+                "pending": 1,
+                "done": 5,
+                "error": 0,
+                "state": "paused",
+                "available": true
+              },
+              {
+                "id": "analyze",
+                "label": "Analyze",
+                "pending": 1,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "infer-faces",
+                "label": "Faces",
+                "pending": 1,
+                "done": 1,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "objects",
+                "label": "Objects",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "unavailable",
+                "available": false
+              },
+              {
+                "id": "transcribe",
+                "label": "Transcribe",
+                "pending": 0,
+                "done": 0,
+                "error": 0,
+                "state": "idle",
+                "available": false
+              },
+              {
+                "id": "rate",
+                "label": "Rating",
+                "pending": 2,
+                "done": 0,
+                "error": 0,
+                "state": "paused",
+                "available": true
+              }
+            ]
+          }
+        }
+      },
+      "edit": {
+        "status": 200,
+        "seconds": 0.0863,
+        "body": {
+          "ok": true,
+          "id": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+        }
+      }
+    }
+  ],
+  "history": {
+    "extensions": 40,
+    "storedPaths": 41,
+    "scanPathsUnique": 8,
+    "undoRedoRecords": 3,
+    "pendingAnnotationRebased": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0"
+  },
+  "copy": {
+    "readOnlySourceHash": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "copiedHash": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "partialRemoved": true
+  }
+}

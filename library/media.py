@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
+import tempfile
 from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -248,6 +250,59 @@ def _ffprobe_json_uncached(path: Path) -> dict[str, Any] | None:
         return json.loads(proc.stdout or "{}")
     except json.JSONDecodeError:
         return None
+
+
+def fit_long_side(width: int, height: int, cap: int | None) -> tuple[int, int]:
+    if cap is None or max(width, height) <= cap:
+        return width, height
+    if width >= height:
+        return cap, max(1, int(round(height * cap / width)))
+    return max(1, int(round(width * cap / height))), cap
+
+
+def _upright_size(path: Path) -> tuple[int, int]:
+    """The frame size ffmpeg decodes: it turns a camera-rotated JPEG upright."""
+    from library.metadata import exif_orientation, upright_jpeg_size
+
+    size = upright_jpeg_size(path)
+    if size is not None:
+        return size
+    for stream in (ffprobe_json(path) or {}).get("streams") or []:
+        if stream.get("codec_type") == "video":
+            width = int(stream.get("width") or 0)
+            height = int(stream.get("height") or 0)
+            if width > 0 and height > 0:
+                return (height, width) if exif_orientation(path) >= 5 else (width, height)
+    raise fail("decode-error")
+
+
+def decode_still_rgb(path: Path, max_side: int | None = None) -> tuple[int, int, bytes]:
+    """One upright RGB24 frame of a still: ``(width, height, bytes)``.
+
+    ``max_side`` caps the long side. The frame goes through a temp file: on
+    Windows, reading 36 MB from an ffmpeg pipe is slower than the decode itself.
+    """
+    width, height = _upright_size(path)
+    out_w, out_h = fit_long_side(width, height, max_side)
+    fd, tmp_name = tempfile.mkstemp(prefix="library-still-", suffix=".rgb")
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        cmd = ["ffmpeg", "-v", "error", "-i", str(path)]
+        if (out_w, out_h) != (width, height):
+            cmd += ["-vf", f"scale={out_w}:{out_h}"]
+        cmd += ["-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "-y", str(tmp)]
+        try:
+            proc = run_ffmpeg(cmd)
+        except OSError as exc:
+            raise fail("dependency-missing") from exc
+        expected = out_w * out_h * 3
+        data = tmp.read_bytes() if proc.returncode == 0 else b""
+    finally:
+        tmp.unlink(missing_ok=True)
+    if len(data) < expected:
+        raise fail("decode-error")
+    return out_w, out_h, data[:expected]
 
 
 def ffprobe_tags(payload: dict[str, Any]) -> dict[str, Any]:

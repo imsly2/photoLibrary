@@ -1,0 +1,110 @@
+{
+  "manifestHash": "aef0163833ec0f6f4c951ca6aaa37c6cd19d351eb73247446a31a9f846da140f",
+  "files": [
+    {
+      "path": "a/IMG_1042.jpg",
+      "pass": true
+    },
+    {
+      "path": "a/near.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/far.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/no-exif.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/created.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/holiday_20200102.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/holiday_2020-01-03.jpg",
+      "pass": true
+    },
+    {
+      "path": "b/oriented.jpg",
+      "pass": true
+    },
+    {
+      "path": "live/LIVE_0001.jpg",
+      "pass": true
+    },
+    {
+      "path": "family/\u65c5\u884c photo.jpg",
+      "pass": true
+    },
+    {
+      "path": "nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg",
+      "pass": true
+    },
+    {
+      "path": "a/clip.mp4",
+      "pass": true
+    },
+    {
+      "path": "live/LIVE_0001.mov",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.png",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.gif",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.webp",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.tiff",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.bmp",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.heic",
+      "pass": true
+    },
+    {
+      "path": "formats/quad.heif",
+      "pass": true
+    },
+    {
+      "path": "formats/clip.mov",
+      "pass": true
+    },
+    {
+      "path": "formats/clip.m4v",
+      "pass": true
+    },
+    {
+      "path": "formats/clip.mkv",
+      "pass": true
+    },
+    {
+      "path": "formats/clip.avi",
+      "pass": true
+    },
+    {
+      "path": "formats/clip.webm",
+      "pass": true
+    },
+    {
+      "path": "formats/broken.heic",
+      "pass": true
+    }
+  ],
+  "pass": true
+}

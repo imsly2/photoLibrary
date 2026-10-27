@@ -74,7 +74,7 @@ def prove_static(checks: Checks) -> None:
     checks.check("product-folders", "Folders / sources come first" in product)
     checks.check("contracts-rescan", "/api/sources/<id>/rescan" in contracts)
     checks.check("contracts-face-which", "which=face" in contracts or "face&box" in contracts)
-    checks.check("default-threshold-080", abs(float(DEFAULTS["faceMatchThreshold"]) - 0.8) < 1e-9)
+    checks.check("default-threshold-045", abs(float(DEFAULTS["faceMatchThreshold"]) - 0.45) < 1e-9)
 
 
 def prove_http(checks: Checks, root: Path, artifacts: Path, commands: list[str]) -> None:
@@ -99,7 +99,7 @@ def prove_http(checks: Checks, root: Path, artifacts: Path, commands: list[str])
         checks.check("settings-http", status == 200, json.dumps(settings)[:400])
         checks.check(
             "settings-default-threshold",
-            abs(float((settings or {}).get("faceMatchThreshold") or 0) - 0.8) < 1e-9,
+            abs(float((settings or {}).get("faceMatchThreshold") or 0) - 0.45) < 1e-9,
             json.dumps(settings),
         )
         status, patched = request_json(

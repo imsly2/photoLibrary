@@ -21,7 +21,7 @@ from library.atomic import atomic_write_bytes, atomic_write_json, load_json, tra
 from library.catalog_io import item_rel, iter_item_ids, load_item
 from library.errors import AppError, fail
 from library.history import make_history_entry, plan_append
-from library.media import mtime_iso, run_ffmpeg
+from library.media import decode_still_rgb, mtime_iso, run_ffmpeg
 from library.paths import library_path
 from library.records import clone, ordered_item
 from library.volumes import location_file, location_matches_stat
@@ -37,10 +37,19 @@ SMART_SIDE = 224
 WEIGHTS_REL = "catalog/rating-weights.json"
 WEIGHTS_SCHEMA = 1
 
+# With a face, thirds and gold have to carry a high score. Sharpness cannot.
 DEFAULT_WEIGHTS = {
-    "sharpness": 0.45,
-    "exposure": 0.35,
-    "face": 0.20,
+    "sharpness": 0.18,
+    "exposure": 0.12,
+    "face": 0.15,
+    "thirds": 0.35,
+    "gold": 0.20,
+}
+# No face: a sunset can still rise; a gray sharp snapshot cannot.
+OPEN_WEIGHTS = {
+    "sharpness": 0.35,
+    "exposure": 0.25,
+    "gold": 0.40,
 }
 SMART_BLEND = 0.35
 LEARN_STEP = 0.03
@@ -62,6 +71,8 @@ METRIC_KEYS = (
     "faceQuality",
     "faceCount",
     "faceSharpness",
+    "thirds",
+    "gold",
     "aesthetic",
     "basic",
 )
@@ -255,7 +266,7 @@ def quality_view(item: dict[str, Any]) -> dict[str, Any]:
     suggested = rec.get("suggested")
     effective = yours if type(yours) is int else suggested
     flags = [flag for flag in (rec.get("flags") or []) if flag in FLAGS]
-    return {
+    view = {
         "suggested": suggested if type(suggested) is int else None,
         "yours": yours if type(yours) is int else None,
         "stars": effective if type(effective) is int else None,
@@ -265,6 +276,40 @@ def quality_view(item: dict[str, Any]) -> dict[str, Any]:
         "bestOfGroup": rec.get("bestOfGroup") is True,
         "mode": rec.get("mode"),
         "blurry": FLAG_BLURRY in flags,
+    }
+    scores = _score_breakdown(rec.get("metrics"))
+    if scores is not None:
+        view["scores"] = scores
+    return view
+
+
+def _unit_metric(metrics: dict[str, Any], key: str) -> float | None:
+    raw = metrics.get(key)
+    if type(raw) is bool or not isinstance(raw, (int, float)):
+        return None
+    number = float(raw)
+    if not math.isfinite(number):
+        return None
+    return round(max(0.0, min(1.0, number)), 3)
+
+
+def _score_breakdown(metrics: Any) -> dict[str, float | None] | None:
+    """0–1 feature scores for the info panel. None when rating has not run."""
+    if not isinstance(metrics, dict):
+        return None
+    mix = _unit_metric(metrics, "basic")
+    sharp = _unit_metric(metrics, "sharpness")
+    if mix is None and sharp is None:
+        return None
+    face_count = metrics.get("faceCount")
+    has_face = isinstance(face_count, (int, float)) and not isinstance(face_count, bool) and face_count > 0
+    return {
+        "sharpness": sharp,
+        "exposure": _unit_metric(metrics, "exposure"),
+        "face": _unit_metric(metrics, "faceQuality") if has_face else None,
+        "thirds": _unit_metric(metrics, "thirds") if has_face else None,
+        "gold": _unit_metric(metrics, "gold"),
+        "mix": mix,
     }
 
 
@@ -741,60 +786,8 @@ def _publish_quality(root: Path, item_id: str, record: dict[str, Any]) -> None:
 
 
 def decode_rgb(path: Path, max_side: int) -> tuple[bytes, int, int]:
-    width, height = _probe_size(path)
-    if width is None or height is None or width <= 0 or height <= 0:
-        raise fail("decode-error")
-    work_w, work_h = _working_size(width, height, max_side)
-    proc = run_ffmpeg(
-        [
-            "ffmpeg",
-            "-v",
-            "error",
-            "-i",
-            str(path),
-            "-vf",
-            f"scale={work_w}:{work_h}",
-            "-frames:v",
-            "1",
-            "-pix_fmt",
-            "rgb24",
-            "-f",
-            "rawvideo",
-            "pipe:1",
-        ]
-    )
-    expected = work_w * work_h * 3
-    if proc.returncode != 0 or len(proc.stdout) != expected:
-        raise fail("decode-error")
-    return proc.stdout, work_w, work_h
-
-
-def _working_size(width: int, height: int, cap: int) -> tuple[int, int]:
-    if max(width, height) <= cap:
-        return width, height
-    if width >= height:
-        return cap, max(1, int(round(height * cap / width)))
-    return max(1, int(round(width * cap / height))), cap
-
-
-def _probe_size(path: Path) -> tuple[int | None, int | None]:
-    from library.media import ffprobe_json
-
-    try:
-        probe = ffprobe_json(path)
-    except Exception:
-        return None, None
-    streams = probe.get("streams") if isinstance(probe, dict) else None
-    if not isinstance(streams, list):
-        return None, None
-    for stream in streams:
-        if not isinstance(stream, dict) or stream.get("codec_type") != "video":
-            continue
-        width = stream.get("width")
-        height = stream.get("height")
-        if type(width) is int and type(height) is int and width > 0 and height > 0:
-            return width, height
-    return None, None
+    width, height, rgb = decode_still_rgb(path, max_side)
+    return rgb, width, height
 
 
 def _gray_luma(rgb: bytes, width: int, height: int) -> list[int]:
@@ -903,6 +896,113 @@ def _luma(rgb: bytes, width: int, height: int) -> _PyLuma | _NpLuma:
     return _PyLuma(rgb, width, height) if np_mod is None else _NpLuma(np_mod, rgb, width, height)
 
 
+def thirds_score(faces: list[dict[str, Any]]) -> float | None:
+    """How close the largest face is to a rule-of-thirds intersection.
+
+    None when there is no face. A face cut by the frame edge is capped.
+    """
+    best_area = -1.0
+    chosen: tuple[float, float, float, float] | None = None
+    for face in faces:
+        if not isinstance(face, dict):
+            continue
+        box = face.get("box")
+        if not isinstance(box, list) or len(box) != 4:
+            continue
+        try:
+            x, y, w, h = (float(v) for v in box)
+        except (TypeError, ValueError):
+            continue
+        if w <= 0 or h <= 0:
+            continue
+        area = w * h
+        if area > best_area:
+            best_area = area
+            chosen = (x, y, w, h)
+    if chosen is None:
+        return None
+    x, y, w, h = chosen
+    cx, cy = x + w / 2.0, y + h / 2.0
+    points = ((1.0 / 3.0, 1.0 / 3.0), (1.0 / 3.0, 2.0 / 3.0), (2.0 / 3.0, 1.0 / 3.0), (2.0 / 3.0, 2.0 / 3.0))
+    dist = min(math.hypot(cx - px, cy - py) for px, py in points)
+    sigma = 0.11
+    score = math.exp(-(dist * dist) / (2.0 * sigma * sigma))
+    if x < 0.015 or y < 0.015 or x + w > 0.985 or y + h > 0.985:
+        score *= 0.45
+    return max(0.0, min(1.0, score))
+
+
+def gold_score(rgb: bytes, width: int, height: int) -> float:
+    """Share of sunset-gold pixels. About 12% of the frame fills the score.
+
+    Hue sits between orange and gold and saturation is high, so skin and
+    a beige wall stay low.
+    """
+    np_mod = _numpy()
+    if np_mod is not None:
+        return _gold_numpy(np_mod, rgb, width, height)
+    return _gold_python(rgb, width, height)
+
+
+def _gold_mask_fraction(hue: Any, sat: Any, value: Any, np_mod: Any) -> float:
+    warm = ((hue >= 8.0) & (hue <= 50.0)) | (hue >= 348.0)
+    keep = warm & (sat >= 0.50) & (value >= 0.28) & (value <= 0.97)
+    return float(np_mod.mean(keep))
+
+
+def _gold_numpy(np_mod: Any, rgb: bytes, width: int, height: int) -> float:
+    pix = np_mod.frombuffer(rgb, dtype=np_mod.uint8).reshape(height, width, 3).astype(np_mod.float32) / 255.0
+    red, green, blue = pix[..., 0], pix[..., 1], pix[..., 2]
+    mx = np_mod.maximum(np_mod.maximum(red, green), blue)
+    mn = np_mod.minimum(np_mod.minimum(red, green), blue)
+    chroma = mx - mn
+    sat = np_mod.divide(chroma, mx, out=np_mod.zeros_like(chroma), where=mx > 1e-6)
+    hue_x = np_mod.zeros_like(mx)
+    mask = chroma > 1e-6
+    red_max = mask & (mx == red)
+    green_max = mask & (mx == green) & ~red_max
+    blue_max = mask & ~red_max & ~green_max
+    hue_x[red_max] = np_mod.mod((green[red_max] - blue[red_max]) / chroma[red_max], 6.0)
+    hue_x[green_max] = (blue[green_max] - red[green_max]) / chroma[green_max] + 2.0
+    hue_x[blue_max] = (red[blue_max] - green[blue_max]) / chroma[blue_max] + 4.0
+    hue = hue_x * 60.0
+    fraction = _gold_mask_fraction(hue, sat, mx, np_mod)
+    return max(0.0, min(1.0, fraction / 0.12))
+
+
+def _gold_python(rgb: bytes, width: int, height: int) -> float:
+    pixels = width * height
+    if pixels <= 0:
+        return 0.0
+    step = 4
+    seen = 0
+    warm = 0
+    for index in range(0, pixels, step):
+        offset = index * 3
+        red, green, blue = rgb[offset] / 255.0, rgb[offset + 1] / 255.0, rgb[offset + 2] / 255.0
+        mx = max(red, green, blue)
+        mn = min(red, green, blue)
+        chroma = mx - mn
+        seen += 1
+        if chroma <= 1e-6 or mx <= 1e-6:
+            continue
+        sat = chroma / mx
+        if mx == red:
+            hue_x = ((green - blue) / chroma) % 6.0
+        elif mx == green:
+            hue_x = (blue - red) / chroma + 2.0
+        else:
+            hue_x = (red - green) / chroma + 4.0
+        hue = hue_x * 60.0
+        if sat < 0.50 or mx < 0.28 or mx > 0.97:
+            continue
+        if 8.0 <= hue <= 50.0 or hue >= 348.0:
+            warm += 1
+    if seen <= 0:
+        return 0.0
+    return max(0.0, min(1.0, (warm / seen) / 0.12))
+
+
 def compute_basic(
     rgb: bytes,
     width: int,
@@ -936,6 +1036,8 @@ def compute_basic(
             "faceQuality": face_q,
             "faceCount": float(face_count),
             "faceSharpness": face_sharp,
+            "thirds": thirds_score(faces),
+            "gold": gold_score(rgb, width, height),
             "aesthetic": None,
             "basic": None,
         }
@@ -988,6 +1090,20 @@ def _face_quality(
     return max(scores), len(scores), max(sharps)
 
 
+def _stars_from_mix(blended: float) -> int:
+    """A sharp ordinary mix stays low. A 5 needs the mix near the top."""
+    lifted = max(0.0, min(1.0, (float(blended) - 0.34) / 0.66))
+    if lifted >= 0.86:
+        return 5
+    if lifted >= 0.66:
+        return 4
+    if lifted >= 0.44:
+        return 3
+    if lifted >= 0.20:
+        return 2
+    return 1
+
+
 def combine_score(
     metrics: dict[str, Any],
     mode: str,
@@ -997,20 +1113,31 @@ def combine_score(
     sharp = float(metrics.get("sharpness") or 0.0)
     exposure = float(metrics.get("exposure") or 0.0)
     face = float(metrics.get("faceQuality") or 0.0)
+    gold = float(metrics.get("gold") or 0.0)
     face_count = int(metrics.get("faceCount") or 0)
-    w_s = float(weights.get("sharpness") or DEFAULT_WEIGHTS["sharpness"])
-    w_e = float(weights.get("exposure") or DEFAULT_WEIGHTS["exposure"])
-    w_f = float(weights.get("face") or DEFAULT_WEIGHTS["face"])
-    if face_count <= 0:
-        w_f = 0.0
-    total = w_s + w_e + w_f
+    thirds_raw = metrics.get("thirds")
+    has_thirds = isinstance(thirds_raw, (int, float)) and not isinstance(thirds_raw, bool)
+    if face_count > 0 and has_thirds:
+        parts = {
+            "sharpness": sharp,
+            "exposure": exposure,
+            "face": face,
+            "thirds": float(thirds_raw),
+            "gold": gold,
+        }
+        used = {key: float(weights.get(key) or DEFAULT_WEIGHTS[key]) for key in parts}
+    else:
+        parts = {"sharpness": sharp, "exposure": exposure, "gold": gold}
+        used = dict(OPEN_WEIGHTS)
+    total = sum(used.values())
     if total <= 0:
-        w_s, w_e, w_f, total = 0.45, 0.35, 0.0, 0.80
-    basic = (w_s * sharp + w_e * exposure + w_f * face) / total
+        used = dict(OPEN_WEIGHTS)
+        total = sum(used.values())
+    basic = sum(used[key] * parts[key] for key in parts) / total
     blended = basic
     if mode == "smart" and aesthetic is not None:
         blended = (1.0 - SMART_BLEND) * basic + SMART_BLEND * max(0.0, min(1.0, aesthetic))
-    suggested = int(max(1, min(5, round(1.0 + 4.0 * blended))))
+    suggested = _stars_from_mix(blended)
     flags: list[str] = []
     if sharp < 0.28:
         flags.append(FLAG_BLURRY)
@@ -1267,10 +1394,14 @@ def _nudge_weights(root: Path, quality: dict[str, Any], patch: dict[str, Any]) -
         sign = -1.0
     if sign == 0.0:
         return
+    thirds_raw = metrics.get("thirds")
+    thirds_value = float(thirds_raw) if isinstance(thirds_raw, (int, float)) and not isinstance(thirds_raw, bool) else 0.0
     mapping = {
         "sharpness": float(metrics.get("sharpness") or 0.0),
         "exposure": float(metrics.get("exposure") or 0.0),
         "face": float(metrics.get("faceQuality") or 0.0),
+        "thirds": thirds_value,
+        "gold": float(metrics.get("gold") or 0.0),
     }
     next_weights = dict(current)
     for key, value in mapping.items():

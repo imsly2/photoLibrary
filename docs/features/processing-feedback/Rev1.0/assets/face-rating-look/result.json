@@ -1,0 +1,235 @@
+{
+  "personOfInterestMin": 3,
+  "suggestMinScore": 0.55,
+  "clusterThreshold": 0.8,
+  "peopleTotal": 9,
+  "visible": 5,
+  "hidden": 4,
+  "hiddenByCount": {
+    "2": 1,
+    "1": 3
+  },
+  "visibleRows": [
+    {
+      "itemCount": 258,
+      "named": false,
+      "id": "person_6ad1674df17d"
+    },
+    {
+      "itemCount": 97,
+      "named": false,
+      "id": "person_e85db6e1899b"
+    },
+    {
+      "itemCount": 27,
+      "named": false,
+      "id": "person_f05f1e100264"
+    },
+    {
+      "itemCount": 14,
+      "named": false,
+      "id": "person_a492222aa521"
+    },
+    {
+      "itemCount": 5,
+      "named": false,
+      "id": "person_1b99259038f9"
+    }
+  ],
+  "suggestionCount": 24,
+  "suggestionScoreBins": {
+    "0.80+": 6,
+    "0.70-0.79": 6,
+    "0.60-0.69": 2,
+    "0.55-0.59": 10
+  },
+  "suggestionTop": [
+    {
+      "score": 0.9485,
+      "keepCount": 258,
+      "dropCount": 97
+    },
+    {
+      "score": 0.941,
+      "keepCount": 258,
+      "dropCount": 27
+    },
+    {
+      "score": 0.8875,
+      "keepCount": 97,
+      "dropCount": 27
+    },
+    {
+      "score": 0.8737,
+      "keepCount": 5,
+      "dropCount": 2
+    },
+    {
+      "score": 0.8511,
+      "keepCount": 97,
+      "dropCount": 14
+    },
+    {
+      "score": 0.8268,
+      "keepCount": 258,
+      "dropCount": 14
+    },
+    {
+      "score": 0.778,
+      "keepCount": 258,
+      "dropCount": 5
+    },
+    {
+      "score": 0.755,
+      "keepCount": 27,
+      "dropCount": 5
+    }
+  ],
+  "suggestionLow": [
+    {
+      "score": 0.5678,
+      "keepCount": 258,
+      "dropCount": 1
+    },
+    {
+      "score": 0.5596,
+      "keepCount": 97,
+      "dropCount": 1
+    },
+    {
+      "score": 0.5538,
+      "keepCount": 97,
+      "dropCount": 2
+    },
+    {
+      "score": 0.5508,
+      "keepCount": 27,
+      "dropCount": 1
+    },
+    {
+      "score": 0.5503,
+      "keepCount": 14,
+      "dropCount": 1
+    }
+  ],
+  "visibleUnnamedPairs": [
+    {
+      "aCount": 258,
+      "bCount": 97,
+      "score": 0.9485
+    },
+    {
+      "aCount": 258,
+      "bCount": 27,
+      "score": 0.941
+    },
+    {
+      "aCount": 97,
+      "bCount": 27,
+      "score": 0.8875
+    },
+    {
+      "aCount": 97,
+      "bCount": 14,
+      "score": 0.8511
+    },
+    {
+      "aCount": 258,
+      "bCount": 14,
+      "score": 0.8268
+    },
+    {
+      "aCount": 258,
+      "bCount": 5,
+      "score": 0.778
+    },
+    {
+      "aCount": 27,
+      "bCount": 5,
+      "score": 0.755
+    },
+    {
+      "aCount": 27,
+      "bCount": 14,
+      "score": 0.741
+    },
+    {
+      "aCount": 97,
+      "bCount": 5,
+      "score": 0.7326
+    },
+    {
+      "aCount": 14,
+      "bCount": 5,
+      "score": 0.7181
+    }
+  ],
+  "photos": [
+    {
+      "file": "IMG_3582.JPG",
+      "id": "014f893db28cd4fedde4746a66be0793f4e0cd814de1661efe34da85e6f3a1ea",
+      "faces": [
+        {
+          "personId": "person_6ad1674df17d",
+          "x": 0.258,
+          "detScore": 0.842910885810852,
+          "matchScore": 0.8368701641849895,
+          "itemCount": 258,
+          "visible": true,
+          "named": false
+        },
+        {
+          "personId": "person_6ad1674df17d",
+          "x": 0.262,
+          "detScore": 0.6795134544372559,
+          "matchScore": 0.8368701641849895,
+          "itemCount": 258,
+          "visible": true,
+          "named": false
+        },
+        {
+          "personId": "person_6ad1674df17d",
+          "x": 0.428,
+          "detScore": 0.8791773319244385,
+          "matchScore": 0.8368701641849895,
+          "itemCount": 258,
+          "visible": true,
+          "named": false
+        }
+      ]
+    }
+  ],
+  "rated": 550,
+  "stars": {
+    "4": 37,
+    "5": 511,
+    "3": 2
+  },
+  "basicBins": {
+    "0.70-0.79": 16,
+    "0.90+": 492,
+    "0.80-0.89": 36,
+    "0.50-0.69": 6
+  },
+  "basic": {
+    "min": 0.5844,
+    "p10": 0.8987,
+    "p50": 0.9439,
+    "p90": 0.9731,
+    "max": 0.9953
+  },
+  "sharpness": {
+    "min": 0.4846,
+    "p10": 0.9739,
+    "p50": 1.0,
+    "p90": 1.0,
+    "max": 1.0
+  },
+  "exposure": {
+    "min": 0.3858,
+    "p10": 0.792,
+    "p50": 0.8796,
+    "p90": 0.9403,
+    "max": 0.9893
+  }
+}

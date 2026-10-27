@@ -1,0 +1,37 @@
+PASS with-source-item
+PASS thumb-under-source: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\verify-1\f8\f8-folder\.library\renditions\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\thumb.webp
+PASS thumb-not-on-server-yet: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\verify-1\f8\library-data\renditions\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0\thumb.webp
+PASS item-store-with-source
+PASS setting-without-relocate-keeps-source-bytes
+PASS relocate-to-server-exit
+PASS relocate-to-server-ok: {
+  "ok": true
+}
+
+PASS thumb-on-server
+PASS thumb-gone-from-source
+PASS item-store-with-server
+PASS relocate-to-source-exit
+PASS reverse-thumb-under-source
+PASS reverse-thumb-gone-from-server
+PASS reverse-store-with-source
+PASS relocate-undo-exit
+PASS undo-store-with-server
+FAIL undo-bytes-on-server
+PASS undo-media-serves
+PASS undo-files-kept: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\verify-1\f8\library-data\undo\files\cc15fdc3ee47\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS undo-files-kept: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\verify-1\f8\library-data\undo\files\ecc034332b4c\1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0
+PASS history-operation-relocate
+PASS original-hashes-unchanged-f8
+PASS override-item
+PASS override-wins-source
+PASS override-not-server
+PASS override-source-field: "with-source"
+PASS dedup-one-item: 1
+PASS dedup-two-locations
+PASS dedup-one-primary
+PASS dedup-owner-is-primary-source
+PASS dedup-one-rendition-dir
+PASS dedup-second-has-no-copy
+PASS dedup-owner-first
+FAIL f8-runner: ready timeout []

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "changes": [
+    {
+      "path": "catalog/source-growth.json",
+      "before": {
+        "files": {
+          "0": {
+            "itemId": "0"
+          }
+        }
+      },
+      "after": {
+        "files": {
+          "0": {
+            "itemId": "0"
+          },
+          "1": {
+            "itemId": "1"
+          }
+        }
+      }
+    },
+    {
+      "path": "catalog/leaf-1.json",
+      "before": null,
+      "after": {
+        "index": 1
+      }
+    }
+  ]
+}

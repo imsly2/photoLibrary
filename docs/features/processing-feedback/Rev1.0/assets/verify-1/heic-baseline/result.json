@@ -1,0 +1,147 @@
+{
+  "baseline": "git show HEAD:library/renditions.py",
+  "sourceSha256": "caf34f38c3945def4b9274bc1f4013613780cf9c3307213841e29c145b5a2b53",
+  "summary": {
+    "schemaVersion": 1,
+    "id": "src_cb505045cec0",
+    "name": "media",
+    "mode": "serve-from-there",
+    "origin": {
+      "volumeSerial": "windows:2CDC4AC8",
+      "pathFromVolumeRoot": "slyOS/projects/photoLibrary/docs/features/processing-feedback/Rev1.0/assets/verify-1/heic-baseline/media",
+      "lastKnownPath": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\heic-baseline\\media"
+    },
+    "copyRoot": null,
+    "previewStore": "with-server",
+    "files": {
+      "broken.heic": {
+        "destination": null,
+        "itemId": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+        "component": "still",
+        "sizeBytes": 512,
+        "modifiedAt": "2026-10-18T07:09:50.890839Z",
+        "sha256": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+        "state": "indexed"
+      },
+      "quad.heic": {
+        "destination": null,
+        "itemId": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+        "component": "still",
+        "sizeBytes": 7752,
+        "modifiedAt": "2026-10-18T07:09:50.885851Z",
+        "sha256": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+        "state": "indexed"
+      },
+      "quad.heif": {
+        "destination": null,
+        "itemId": "a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+        "component": "still",
+        "sizeBytes": 7668,
+        "modifiedAt": "2026-10-18T07:09:50.887846Z",
+        "sha256": "a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+        "state": "indexed"
+      }
+    },
+    "scan": {
+      "state": "error",
+      "added": 3,
+      "skipped": 0,
+      "errors": [
+        {
+          "path": "broken.heic",
+          "error": "decode-error"
+        }
+      ]
+    },
+    "available": true,
+    "path": "J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\heic-baseline\\media",
+    "stats": {
+      "photos": 3,
+      "videos": 0,
+      "live": 0,
+      "total": 3,
+      "renditionsDone": 0,
+      "renditionsQueued": 2,
+      "renditionsError": 1
+    }
+  },
+  "items": [
+    {
+      "file": "broken.heic",
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_cb505045cec0",
+        "thumb": null,
+        "preview": null,
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "error",
+          "preview": "error",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      }
+    },
+    {
+      "file": "quad.heic",
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_cb505045cec0",
+        "thumb": "renditions/5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a/thumb.webp",
+        "preview": "renditions/5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      }
+    },
+    {
+      "file": "quad.heif",
+      "renditions": {
+        "store": "with-server",
+        "sourceId": "src_cb505045cec0",
+        "thumb": "renditions/a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875/thumb.webp",
+        "preview": "renditions/a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875/preview.webp",
+        "poster": null,
+        "proxy": null,
+        "playback": null,
+        "status": {
+          "thumb": "ready",
+          "preview": "ready",
+          "poster": "not-applicable",
+          "proxy": "not-applicable",
+          "playback": "not-applicable"
+        }
+      }
+    }
+  ],
+  "independentFFmpeg": [
+    {
+      "file": "quad.heic",
+      "exit": 0,
+      "stderr": "",
+      "bytes": 2598
+    },
+    {
+      "file": "quad.heif",
+      "exit": 0,
+      "stderr": "",
+      "bytes": 2212
+    },
+    {
+      "file": "broken.heic",
+      "exit": 3199971767,
+      "stderr": "[mov,mp4,m4a,3gp,3g2,mj2 @ 000002e3f8c57240] moov atom not found\n[in#0 @ 000002e3f8c56fc0] Error opening input: Invalid data found when processing input\nError opening input file J:\\slyOS\\projects\\photoLibrary\\docs\\features\\processing-feedback\\Rev1.0\\assets\\verify-1\\heic-baseline\\media\\broken.heic.\nError opening input files: Invalid data found when processing input\n",
+      "bytes": 0
+    }
+  ]
+}

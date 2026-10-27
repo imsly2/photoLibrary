@@ -1,0 +1,5 @@
+{
+  "cases": 992,
+  "pass": true,
+  "expectedSource": "Python str.casefold and codepoint tuple order"
+}

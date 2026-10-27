@@ -4,6 +4,56 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-27 — `Setup.bat -DryRun` on this PC finds Python, ffmpeg, git, the existing `.venv`, and all five local packs (places, objects, faces, transcribe, aesthetic). It does not download. A fresh PC was going to create `.venv` with the executable name `System.Object[]` because PowerShell wrapped the Python path three arrays deep. `setup.ps1` now unwraps that to the real `python.exe` before it prints or creates `.venv`. GitHub `main` already contains `Setup.bat`. This PC's `main` is 32 commits ahead of `origin/main`; those commits do not change the installer. Not pushed.
+
+- 2026-10-20 — Browse responsiveness: item results paint without waiting for
+  settings/folders/sidebar; newer filters supersede old work; visible thumbnails
+  take priority on scroll; recently painted cells survive filter/clear. Metadata
+  matches before original-path/full-browser projection, and shared entities resolve
+  once per query. On the existing 400-photo scratch catalog, selective tag query
+  247 → 39 ms, person query 241 → 40 ms; all 13 complete response hashes unchanged.
+  Independent browser **22/22**, synthetic backend **60/60**, lead backend **60/60**.
+  [Results and exact artifacts](features/processing-feedback/Rev1.0/BROWSE-SPEED-RESULTS.md).
+  Item metadata still arrives as one JSON response; synthetic/scratch results are
+  not a live-library speed guarantee. Full feature Checks were not rerun; no new
+  Check closed. Live backend was not restarted. Existing unrelated edits preserved.
+
+- 2026-10-20 — Suggested stars no longer sit at 5 for almost every photo.
+  The mix is sharpness, exposure, face, rule of thirds, and gold. With a
+  face, thirds is 0.35 and sharpness is 0.18. Without a face, gold is 0.40
+  and sharpness is 0.35. A 5 needs that mix near the top. Re-rate of the
+  live library (550 photos, 214 s, 0 errors): suggested stars 511 fives →
+  14 fives, 77 fours, 225 threes, 217 twos, 17 ones. Nobody had set their
+  own stars, so nothing personal was overwritten. Info on a photo lists
+  sharpness, exposure, face, thirds, gold, and the mix as 0–100.
+  [result.json](features/processing-feedback/Rev1.0/assets/rating-mix/result.json).
+
+- 2026-10-19 — Face fingerprints stay on the photo, and the face index is no
+  longer an undo step. Re-run on the live library (550 photos, threshold
+  0.45, server restarted onto this code): 338 people → 56 (11 visible,
+  37 on a single photo). The four biggest groups cover 227, 202, 109, and
+  24 photos. Pace stayed flat, about 2.0 s/photo across 18.4 minutes
+  (file timer around 1 s; last 20 sampled gaps 1.04 s, first 20 1.39 s).
+  New undo is 500 files, 5.2 MB, mean 10 KB, max 67 KB. The previous 500
+  entries, 4.41 GB, are still on disk. Every stored face has a 512-number
+  fingerprint (658/658). Contact sheet:
+  [sheet-045.png](features/processing-feedback/Rev1.0/assets/face-history-fix/live-rerun/sheet-045.png).
+  Run log:
+  [result.json](features/processing-feedback/Rev1.0/assets/face-history-fix/live-rerun/result.json).
+  One ffmpeg now writes the thumbnail (or preview) and the upright frame
+  face detection uses, so a new photo is decoded once. Measured on 16
+  library JPEGs: full-frame RGB matched today's decode 16/16, mean
+  0.757 s → 0.534 s. Detecting on the 1600 px preview missed 1 of 21
+  faces and moved fingerprints (cosine mean 0.92), so that is not the
+  path. This re-run still decoded originals; the thumbnails were already
+  on disk.
+  [measure-one-pass.json](features/processing-feedback/Rev1.0/assets/face-history-fix/measure-one-pass.json),
+  [prove-shared-frame.json](features/processing-feedback/Rev1.0/assets/face-history-fix/prove-shared-frame.json).
+  QA this tree: FACES 122/123 (`js-face-crop-url` only), TASTE-SETUP
+  65/65, TASTE-PEOPLE 34/35 and TASTE-RATING 76/77 (playwright not
+  installed), TASTE-SETTINGS 30/31 (`js-face-crop`, same missing
+  `which=face&box=` literal).
+
 - 2026-10-18 — Performance pass (perf-next): four areas measured, three fixed,
   all local commits `5a1279f`, `06fcb49`, `46a2206`. Ranked by what Steve feels,
   with before → after on the same fixture each time:

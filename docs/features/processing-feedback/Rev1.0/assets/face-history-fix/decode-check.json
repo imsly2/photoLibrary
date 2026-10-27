@@ -1,0 +1,140 @@
+{
+  "orientationCounts": {
+    "6": 106,
+    "3": 55,
+    "1": 386,
+    "0": 3
+  },
+  "upright": [
+    {
+      "file": "IMG_2136.JPG",
+      "orientation": 0,
+      "size": [
+        2880,
+        2160
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.9807845186042524
+    },
+    {
+      "file": "IMG_1425.JPG",
+      "orientation": 0,
+      "size": [
+        2880,
+        2160
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.779757855366941
+    },
+    {
+      "file": "IMG_2135.JPG",
+      "orientation": 0,
+      "size": [
+        2160,
+        2880
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 1.0410520618998629
+    },
+    {
+      "file": "IMG_E9609.JPG",
+      "orientation": 1,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7329691119632009
+    },
+    {
+      "file": "IMG_9042.JPG",
+      "orientation": 1,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7996659440525181
+    },
+    {
+      "file": "IMG_8849.JPG",
+      "orientation": 1,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.748145649399163
+    },
+    {
+      "file": "IMG_3582.JPG",
+      "orientation": 3,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7191589856107052
+    },
+    {
+      "file": "IMG_3040.JPG",
+      "orientation": 3,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7687703071197615
+    },
+    {
+      "file": "IMG_8507.JPG",
+      "orientation": 3,
+      "size": [
+        4032,
+        3024
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7389076595787492
+    },
+    {
+      "file": "IMG_0456.JPG",
+      "orientation": 6,
+      "size": [
+        2316,
+        3088
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.6994647134449545
+    },
+    {
+      "file": "IMG_8985.JPG",
+      "orientation": 6,
+      "size": [
+        3024,
+        4032
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.6963954917100585
+    },
+    {
+      "file": "IMG_9169.JPG",
+      "orientation": 6,
+      "size": [
+        3024,
+        4032
+      ],
+      "matchesPillowUpright": true,
+      "meanAbsDiff": 0.7360545201877047
+    }
+  ],
+  "timing": {
+    "before_ffprobe_plus_pipe": 0.311,
+    "after_header_plus_tempfile": 0.279
+  },
+  "sideways": {
+    "photos": 15,
+    "facesFoundAfterFix": 14,
+    "facesFoundBefore": 0
+  },
+  "pass": true
+}

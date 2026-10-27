@@ -1,0 +1,23 @@
+{
+  "tests": [
+    "tests.test_objects_status",
+    "tests.test_volume_lookup_scope"
+  ],
+  "result": "passed",
+  "testsRun": 2,
+  "exitCode": 0,
+  "log": "verifier-unit.log",
+  "runtimePid": 35968,
+  "port": 8785,
+  "activity": {
+    "ok": true,
+    "phase": "idle",
+    "done": 0,
+    "total": 0,
+    "at": 1792308641.407,
+    "scanPhase": "scan",
+    "scanDone": 51,
+    "scanTotal": 551,
+    "scanAt": 1792308641.4603717
+  }
+}

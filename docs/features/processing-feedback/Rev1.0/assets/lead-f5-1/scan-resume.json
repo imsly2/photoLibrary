@@ -1,0 +1,60 @@
+{
+  "first": {
+    "sourceId": "src_1b858ec52dc9",
+    "added": 27,
+    "skipped": 0,
+    "errors": [
+      {
+        "path": "formats/broken.heic",
+        "error": "decode-error"
+      }
+    ]
+  },
+  "duplicate": {
+    "locations": 2
+  },
+  "second": {
+    "summary": {
+      "sourceId": "src_1b858ec52dc9",
+      "added": 0,
+      "skipped": 27,
+      "errors": []
+    },
+    "stdout": "skipped a/IMG_1042.jpg\nskipped a/clip.mp4\nskipped a/near.jpg\nskipped b/created.jpg\nskipped b/far.jpg\nskipped b/holiday_2020-01-03.jpg\nskipped b/holiday_20200102.jpg\nskipped b/no-exif.jpg\nskipped b/oriented.jpg\nskipped family/\u00e6\u2014\u2026\u00e8\u00a1\u0152 photo.jpg\nskipped formats/broken.heic\nskipped formats/clip.avi\nskipped formats/clip.m4v\nskipped formats/clip.mkv\nskipped formats/clip.mov\nskipped formats/clip.webm\nskipped formats/quad.bmp\nskipped formats/quad.gif\nskipped formats/quad.heic\nskipped formats/quad.heif\nskipped formats/quad.png\nskipped formats/quad.tiff\nskipped formats/quad.webp\nskipped live/LIVE_0001.jpg\nskipped live/LIVE_0001.mov\nskipped nested/deep/level03/level04/level05/dir/dir/dir/raw_relative_path_would_make_a_bad_pending_json_filename.jpg\nskipped second/source/same.jpg\n{\n  \"sourceId\": \"src_1b858ec52dc9\",\n  \"added\": 0,\n  \"skipped\": 27,\n  \"errors\": []\n}\n"
+  },
+  "skip": {
+    "summary": {
+      "sourceId": "src_3fe3d1a24dff",
+      "added": 1,
+      "skipped": 0,
+      "errors": []
+    },
+    "names": [
+      "keep.jpg"
+    ]
+  },
+  "barrier": {
+    "itemIds": [
+      "1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81"
+    ],
+    "annotationsMoved": true
+  },
+  "modified": {
+    "oldHash": "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0",
+    "newHash": "c60aa9a857df0fcb4a32cec1e81d65c803ac6a997fd68743a0ceba2e06e18bdc",
+    "oldCurrent": [
+      false
+    ]
+  },
+  "heic": {
+    "sourceId": "src_c86c4db325d3",
+    "added": 2,
+    "skipped": 0,
+    "errors": [
+      {
+        "path": "formats/broken.heic",
+        "error": "decode-error"
+      }
+    ]
+  }
+}

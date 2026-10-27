@@ -1,0 +1,450 @@
+{
+  "assertions": [
+    {
+      "name": "en-file-derivative-elapsed",
+      "pass": true,
+      "detail": "Previews · Viewer preview · no-exif.jpg · 52s"
+    },
+    {
+      "name": "en-counts-setup",
+      "pass": true,
+      "detail": "Previews · 3 done · 4 waiting · 0 errorsAnalyze · 0 done · 1 waiting · 0 errors · Setup needed or disabledFaces · 0 done · 2 waiting · 0 errors · Setup needed or disabledObjects · 0 done · 2 waiting · 0 errors · Setup needed or disabledTranscribe · 0 done · 0 waiting · 0 errors · Setup needed or disabledRating · 0 done · 2 waiting · 0 errors"
+    },
+    {
+      "name": "preview-painting",
+      "pass": true,
+      "detail": {
+        "count": 3,
+        "painted": 3,
+        "missing": 0,
+        "files": [
+          {
+            "file": "no-exif.jpg",
+            "kind": "photo",
+            "painted": true,
+            "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+            "placeholder": false
+          },
+          {
+            "file": "clip.mp4",
+            "kind": "video",
+            "painted": true,
+            "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+            "placeholder": false
+          },
+          {
+            "file": "IMG_1042.jpg",
+            "kind": "photo",
+            "painted": true,
+            "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+            "placeholder": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "pause-responds-before-encoder-release",
+      "pass": true,
+      "detail": {
+        "status": "Previews · Viewer preview · no-exif.jpg · 52s · Paused after this file",
+        "queues": "Previews · 3 done · 4 waiting · 0 errors · PausedAnalyze · 0 done · 1 waiting · 0 errors · Setup needed or disabledFaces · 0 done · 2 waiting · 0 errors · Setup needed or disabledObjects · 0 done · 2 waiting · 0 errors · Setup needed or disabledTranscribe · 0 done · 0 waiting · 0 errors · Setup needed or disabledRating · 0 done · 2 waiting · 0 errors · Paused",
+        "pauseDisabled": true,
+        "resumeText": "Resume",
+        "thumbs": {
+          "count": 3,
+          "painted": 3,
+          "missing": 0,
+          "files": [
+            {
+              "file": "no-exif.jpg",
+              "kind": "photo",
+              "painted": true,
+              "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+              "placeholder": false
+            },
+            {
+              "file": "clip.mp4",
+              "kind": "video",
+              "painted": true,
+              "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+              "placeholder": false
+            },
+            {
+              "file": "IMG_1042.jpg",
+              "kind": "photo",
+              "painted": true,
+              "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+              "placeholder": false
+            }
+          ]
+        },
+        "polling": {
+          "catalog": false,
+          "activity": false
+        }
+      }
+    },
+    {
+      "name": "zh-counts-and-preview",
+      "pass": true,
+      "detail": {
+        "status": "预览 · 查看预览 · no-exif.jpg · 52秒",
+        "queues": "预览 · 已完成 3 · 等待 4 · 错误 0分析 · 已完成 0 · 等待 1 · 错误 0 · 需要安装或已停用人脸 · 已完成 0 · 等待 2 · 错误 0 · 需要安装或已停用物体 · 已完成 0 · 等待 2 · 错误 0 · 需要安装或已停用转录 · 已完成 0 · 等待 0 · 错误 0 · 需要安装或已停用评分 · 已完成 0 · 等待 2 · 错误 0",
+        "pauseDisabled": false,
+        "resumeText": "开始",
+        "thumbs": {
+          "count": 3,
+          "painted": 3,
+          "missing": 0,
+          "files": [
+            {
+              "file": "no-exif.jpg",
+              "kind": "photo",
+              "painted": true,
+              "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+              "placeholder": false
+            },
+            {
+              "file": "clip.mp4",
+              "kind": "video",
+              "painted": true,
+              "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+              "placeholder": false
+            },
+            {
+              "file": "IMG_1042.jpg",
+              "kind": "photo",
+              "painted": true,
+              "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+              "placeholder": false
+            }
+          ]
+        },
+        "polling": {
+          "catalog": false,
+          "activity": false
+        }
+      }
+    },
+    {
+      "name": "one-jobs-poll-in-flight",
+      "pass": true,
+      "detail": {
+        "active": {
+          "GET /api/activity": 0,
+          "GET /api/health": 0,
+          "GET /api/jobs": 1,
+          "GET /api/people": 0,
+          "GET /api/tags": 0,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 0,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 0,
+          "GET /api/sources": 0,
+          "GET /api/settings": 0,
+          "GET /api/people/suggestions": 0
+        },
+        "max": {
+          "GET /api/activity": 1,
+          "GET /api/health": 1,
+          "GET /api/jobs": 1,
+          "GET /api/people": 1,
+          "GET /api/tags": 1,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 1,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 1,
+          "GET /api/sources": 1,
+          "GET /api/settings": 1,
+          "GET /api/people/suggestions": 1
+        },
+        "calls": {
+          "GET /api/activity": 6,
+          "GET /api/health": 3,
+          "GET /api/jobs": 3,
+          "GET /api/people": 3,
+          "GET /api/tags": 3,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 3,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 3,
+          "GET /api/sources": 3,
+          "GET /api/settings": 3,
+          "GET /api/people/suggestions": 3
+        }
+      }
+    },
+    {
+      "name": "one-activity-poll-in-flight",
+      "pass": true,
+      "detail": {
+        "active": {
+          "GET /api/activity": 0,
+          "GET /api/health": 0,
+          "GET /api/jobs": 1,
+          "GET /api/people": 0,
+          "GET /api/tags": 0,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 0,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 0,
+          "GET /api/sources": 0,
+          "GET /api/settings": 0,
+          "GET /api/people/suggestions": 0
+        },
+        "max": {
+          "GET /api/activity": 1,
+          "GET /api/health": 1,
+          "GET /api/jobs": 1,
+          "GET /api/people": 1,
+          "GET /api/tags": 1,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 1,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 1,
+          "GET /api/sources": 1,
+          "GET /api/settings": 1,
+          "GET /api/people/suggestions": 1
+        },
+        "calls": {
+          "GET /api/activity": 6,
+          "GET /api/health": 3,
+          "GET /api/jobs": 3,
+          "GET /api/people": 3,
+          "GET /api/tags": 3,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 3,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 3,
+          "GET /api/sources": 3,
+          "GET /api/settings": 3,
+          "GET /api/people/suggestions": 3
+        }
+      }
+    },
+    {
+      "name": "activity-independent-of-slow-jobs",
+      "pass": true,
+      "detail": {
+        "active": {
+          "GET /api/activity": 0,
+          "GET /api/health": 0,
+          "GET /api/jobs": 1,
+          "GET /api/people": 0,
+          "GET /api/tags": 0,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 0,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 0,
+          "GET /api/sources": 0,
+          "GET /api/settings": 0,
+          "GET /api/people/suggestions": 0
+        },
+        "max": {
+          "GET /api/activity": 1,
+          "GET /api/health": 1,
+          "GET /api/jobs": 1,
+          "GET /api/people": 1,
+          "GET /api/tags": 1,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 1,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 1,
+          "GET /api/sources": 1,
+          "GET /api/settings": 1,
+          "GET /api/people/suggestions": 1
+        },
+        "calls": {
+          "GET /api/activity": 6,
+          "GET /api/health": 3,
+          "GET /api/jobs": 3,
+          "GET /api/people": 3,
+          "GET /api/tags": 3,
+          "GET /api/items?sort=date&dir=desc&hideRejects=1": 3,
+          "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 3,
+          "GET /api/sources": 3,
+          "GET /api/settings": 3,
+          "GET /api/people/suggestions": 3
+        }
+      }
+    }
+  ],
+  "console": [],
+  "networkFailures": [],
+  "httpErrors": [],
+  "processing-en": {
+    "status": "Previews · Viewer preview · no-exif.jpg · 52s",
+    "queues": "Previews · 3 done · 4 waiting · 0 errorsAnalyze · 0 done · 1 waiting · 0 errors · Setup needed or disabledFaces · 0 done · 2 waiting · 0 errors · Setup needed or disabledObjects · 0 done · 2 waiting · 0 errors · Setup needed or disabledTranscribe · 0 done · 0 waiting · 0 errors · Setup needed or disabledRating · 0 done · 2 waiting · 0 errors",
+    "pauseDisabled": false,
+    "resumeText": "Start",
+    "thumbs": {
+      "count": 3,
+      "painted": 3,
+      "missing": 0,
+      "files": [
+        {
+          "file": "no-exif.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+          "placeholder": false
+        },
+        {
+          "file": "clip.mp4",
+          "kind": "video",
+          "painted": true,
+          "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+          "placeholder": false
+        },
+        {
+          "file": "IMG_1042.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+          "placeholder": false
+        }
+      ]
+    },
+    "polling": {
+      "catalog": true,
+      "activity": false
+    }
+  },
+  "paused-en": {
+    "status": "Previews · Viewer preview · no-exif.jpg · 52s · Paused after this file",
+    "queues": "Previews · 3 done · 4 waiting · 0 errors · PausedAnalyze · 0 done · 1 waiting · 0 errors · Setup needed or disabledFaces · 0 done · 2 waiting · 0 errors · Setup needed or disabledObjects · 0 done · 2 waiting · 0 errors · Setup needed or disabledTranscribe · 0 done · 0 waiting · 0 errors · Setup needed or disabledRating · 0 done · 2 waiting · 0 errors · Paused",
+    "pauseDisabled": true,
+    "resumeText": "Resume",
+    "thumbs": {
+      "count": 3,
+      "painted": 3,
+      "missing": 0,
+      "files": [
+        {
+          "file": "no-exif.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+          "placeholder": false
+        },
+        {
+          "file": "clip.mp4",
+          "kind": "video",
+          "painted": true,
+          "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+          "placeholder": false
+        },
+        {
+          "file": "IMG_1042.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+          "placeholder": false
+        }
+      ]
+    },
+    "polling": {
+      "catalog": false,
+      "activity": false
+    }
+  },
+  "processing-zh": {
+    "status": "预览 · 查看预览 · no-exif.jpg · 52秒",
+    "queues": "预览 · 已完成 3 · 等待 4 · 错误 0分析 · 已完成 0 · 等待 1 · 错误 0 · 需要安装或已停用人脸 · 已完成 0 · 等待 2 · 错误 0 · 需要安装或已停用物体 · 已完成 0 · 等待 2 · 错误 0 · 需要安装或已停用转录 · 已完成 0 · 等待 0 · 错误 0 · 需要安装或已停用评分 · 已完成 0 · 等待 2 · 错误 0",
+    "pauseDisabled": false,
+    "resumeText": "开始",
+    "thumbs": {
+      "count": 3,
+      "painted": 3,
+      "missing": 0,
+      "files": [
+        {
+          "file": "no-exif.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+          "placeholder": false
+        },
+        {
+          "file": "clip.mp4",
+          "kind": "video",
+          "painted": true,
+          "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+          "placeholder": false
+        },
+        {
+          "file": "IMG_1042.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+          "placeholder": false
+        }
+      ]
+    },
+    "polling": {
+      "catalog": false,
+      "activity": false
+    }
+  },
+  "pollingSlowJobs": {
+    "active": {
+      "GET /api/activity": 0,
+      "GET /api/health": 0,
+      "GET /api/jobs": 1,
+      "GET /api/people": 0,
+      "GET /api/tags": 0,
+      "GET /api/items?sort=date&dir=desc&hideRejects=1": 0,
+      "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 0,
+      "GET /api/sources": 0,
+      "GET /api/settings": 0,
+      "GET /api/people/suggestions": 0
+    },
+    "max": {
+      "GET /api/activity": 1,
+      "GET /api/health": 1,
+      "GET /api/jobs": 1,
+      "GET /api/people": 1,
+      "GET /api/tags": 1,
+      "GET /api/items?sort=date&dir=desc&hideRejects=1": 1,
+      "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 1,
+      "GET /api/sources": 1,
+      "GET /api/settings": 1,
+      "GET /api/people/suggestions": 1
+    },
+    "calls": {
+      "GET /api/activity": 6,
+      "GET /api/health": 3,
+      "GET /api/jobs": 3,
+      "GET /api/people": 3,
+      "GET /api/tags": 3,
+      "GET /api/items?sort=date&dir=desc&hideRejects=1": 3,
+      "GET /api/groups?sort=date&dir=desc&hideRejects=1&level=years": 3,
+      "GET /api/sources": 3,
+      "GET /api/settings": 3,
+      "GET /api/people/suggestions": 3
+    }
+  },
+  "after-release-en": {
+    "status": "Rating · IMG_1042.jpg · 1s",
+    "queues": "Previews · 6 done · 0 waiting · 0 errorsAnalyze · 0 done · 1 waiting · 0 errors · Setup needed or disabledFaces · 0 done · 2 waiting · 0 errors · Setup needed or disabledObjects · 0 done · 2 waiting · 0 errors · Setup needed or disabledTranscribe · 0 done · 0 waiting · 0 errors · Setup needed or disabledRating · 2 done · 0 waiting · 0 errors",
+    "pauseDisabled": true,
+    "resumeText": "Start",
+    "thumbs": {
+      "count": 3,
+      "painted": 3,
+      "missing": 0,
+      "files": [
+        {
+          "file": "no-exif.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1847e2bb0eea8060293e675f980ae7d82878d13e5e01e48a403c804386e3fc81?which=thumb",
+          "placeholder": false
+        },
+        {
+          "file": "clip.mp4",
+          "kind": "video",
+          "painted": true,
+          "which": "/api/media/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913?which=poster",
+          "placeholder": false
+        },
+        {
+          "file": "IMG_1042.jpg",
+          "kind": "photo",
+          "painted": true,
+          "which": "/api/media/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0?which=thumb",
+          "placeholder": false
+        }
+      ]
+    },
+    "polling": {
+      "catalog": false,
+      "activity": false
+    }
+  },
+  "pass": true
+}

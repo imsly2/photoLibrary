@@ -1,0 +1,6 @@
+{
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "playwright": "None",
+  "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+  "ffprobe": "ffprobe version 8.0-full_build-www.gyan.dev Copyright (c) 2007-2025 the FFmpeg developers"
+}

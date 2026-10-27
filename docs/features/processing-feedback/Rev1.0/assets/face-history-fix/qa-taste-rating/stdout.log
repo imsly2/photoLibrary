@@ -1,0 +1,77 @@
+PASS server-does-not-import-pillow
+PASS import-library.server-without-PIL
+PASS product-setup-ml-aesthetic
+PASS product-rate-photos
+PASS product-rate-cmd
+PASS product-rating-mode
+PASS contracts-rate
+PASS contracts-hide-rejects
+PASS ui-rating-chips
+PASS html-settings-rating
+PASS setup-ps1-aesthetic
+PASS i18n-zh-rating
+PASS default-rating-basic
+PASS default-rating-learn-off
+PASS settings-key-rating
+PASS legacy-fills-rating
+PASS media-sharp: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\sharp.jpg
+PASS media-blur: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\blur.jpg
+PASS media-dark: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\dark.jpg
+PASS media-bright: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\bright.jpg
+PASS media-colorful: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\colorful.jpg
+PASS media-gray: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\graysharp.jpg
+PASS media-burst1: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\burst_001.jpg
+PASS media-burst2: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\burst_002.jpg
+PASS media-burst3: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\burst_003.jpg
+PASS scan-exit
+PASS scanned-9: 9
+PASS setup-ml-exit
+PASS setup-ml-ok: {"ok": true, "kind": "rate", "model": "nima-mobilenet.onnx", "engine": "nima-mobilenet", "backend": "fixture", "path": "models/aesthetic/nima-mobilenet.onnx", "sha256": "f54497e1ec0b32feb6d10b6b4a4d08d654523d2f8c0a9f7522379411ff691ccb", "bytes": 522, "device": "cpu"}
+PASS fixture-model-file: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-root\models\aesthetic\nima-mobilenet.onnx
+PASS rate-exit
+PASS rate-ok: {"ok": true, "rated": 9, "skipped": 0, "errors": 0, "items": [{"id": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92", "suggested": 3, "flags": ["too-bright"], "bestOfGroup": false}, {"id": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a", "suggested": 3, "flags": ["too-dark"], "bestOfGroup": false}, {"id": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03", "suggested": 3, "flags": [], "bestOfGroup": false}], "mode": "basic"}
+PASS rated-at-least-8: {"ok": true, "rated": 9, "skipped": 0, "errors": 0, "items": [{"id": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92", "suggested": 3, "flags": ["too-bright"], "bestOfGroup": false}, {"id": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a", "suggested": 3, "flags": ["too-dark"], "bestOfGroup": false}, {"id": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15", "suggested": 5, "flags": [], "bestOfGroup": false}, {"id": "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03", "suggested": 3, "flags": [], "bestOfGroup": false}], "mode": "basic"}
+PASS blur-below-sharp: blur=3 sharp=5
+PASS dark-flagged: ["too-dark"]
+PASS bright-flagged: ["too-bright"]
+PASS blur-flagged: ["blurry"]
+PASS burst3-best: {"suggested": 5, "yours": null, "stars": 5, "pick": false, "reject": false, "flags": [], "bestOfGroup": true, "mode": "basic", "blurry": false}
+PASS burst-not-all-best
+PASS burst-stack: {"id": "burst:89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "kind": "burst", "itemIds": ["89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b", "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15"], "count": 3, "index": 2, "representative": true}
+PASS burst-rep-sharpest: {"id": "burst:89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "kind": "burst", "itemIds": ["89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b", "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15"], "count": 3, "index": 2, "representative": true}
+PASS face-quality-used: 0.9999553329432256
+PASS rescan-rated-0: {"ok": true, "rated": 0, "skipped": 9, "errors": 0, "items": [], "mode": "basic"}
+PASS rescan-skipped: {"ok": true, "rated": 0, "skipped": 9, "errors": 0, "items": [], "mode": "basic"}
+PASS user-stars-5: {"suggested": 5, "yours": 5, "stars": 5, "pick": false, "reject": false, "flags": [], "bestOfGroup": false, "mode": "basic", "blurry": false}
+PASS user-pick: {"suggested": 5, "yours": 5, "stars": 5, "pick": true, "reject": false, "flags": [], "bestOfGroup": false, "mode": "basic", "blurry": false}
+PASS user-reject: {"suggested": 3, "yours": null, "stars": 3, "pick": false, "reject": true, "flags": ["blurry"], "bestOfGroup": false, "mode": "basic", "blurry": true}
+PASS reject-file-stays: J:\slyOS\projects\photoLibrary\docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-media\blur.jpg
+PASS stars-persist-restart: {"suggested": 5, "yours": 5, "stars": 5, "pick": true, "reject": false, "flags": [], "bestOfGroup": false, "mode": "basic", "blurry": false}
+PASS user-overrides-suggested: {"suggested": 5, "yours": 5, "stars": 5, "pick": true, "reject": false, "flags": [], "bestOfGroup": false, "mode": "basic", "blurry": false}
+PASS hide-rejects-hides-blur: ["burst_003.jpg", "burst_002.jpg", "burst_001.jpg", "colorful.jpg", "dark.jpg", "graysharp.jpg", "bright.jpg", "sharp.jpg"]
+PASS show-rejects-keeps-blur: ["burst_003.jpg", "burst_002.jpg", "burst_001.jpg", "colorful.jpg", "dark.jpg", "graysharp.jpg", "bright.jpg", "blur.jpg", "sharp.jpg"]
+PASS min-stars-has-sharp: ["burst_003.jpg", "graysharp.jpg", "sharp.jpg"]
+PASS min-stars-skips-blur: ["burst_003.jpg", "graysharp.jpg", "sharp.jpg"]
+PASS picks-filter: ["sharp.jpg"]
+PASS blurry-filter: ["burst_002.jpg", "burst_001.jpg", "blur.jpg"]
+PASS sort-rating-first-high: ["sharp.jpg", "burst_003.jpg", "graysharp.jpg", "burst_002.jpg", "burst_001.jpg"]
+PASS setting-off-exit
+PASS setting-off-persists: {"schemaVersion": 1, "previewStore": "with-server", "unavailableItems": "show", "addFolderDefault": "ask", "playProxies": "days-and-all", "listenHost": "127.0.0.1", "port": 18765, "thumbPx": 320, "previewPx": 1600, "proxyWidth": 480, "placeMatchMeters": 100, "tourOrbitSec": 8, "tourPictures": 5, "tourPictureSec": 3, "sort": "date", "dir": "desc", "zoomLevel": "years", "language": "en", "faceMatchThreshold": 0.45, "faceMinSidePx": 80, "transcribeVideos": true, "ratingMode": "off", "ratingLearn": false}
+PASS jobs-has-rate: {"ok": true, "paused": false, "processing": true, "queues": [{"id": "renditions", "label": "Previews", "pending": 9, "done": 0, "error": 0, "state": "running", "available": true}, {"id": "analyze", "label": "Analyze", "pending": 0, "done": 0, "error": 0, "state": "idle", "available": false}, {"id": "infer-faces", "label": "Faces", "pending": 8, "done": 1, "error": 0, "state": "unavailable", "avail
+PASS setting-off-unavailable: {"id": "rate", "label": "Rating", "pending": 0, "done": 9, "error": 0, "state": "idle", "available": false}
+PASS setting-off-skips-step
+PASS setting-off-rated-0: {"ok": true, "rated": 0, "skipped": 0, "errors": 0, "items": [], "mode": "off"}
+PASS setting-smart-exit
+PASS setting-smart-available: {"id": "rate", "label": "Rating", "pending": 0, "done": 9, "error": 0, "state": "idle", "available": true}
+PASS smart-rated: {"ok": true, "rated": 9, "skipped": 0, "errors": 0, "items": [{"id": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e", "suggested": 4, "flags": [], "bestOfGroup": false}, {"id": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e", "suggested": 2, "flags": ["blurry"], "bestOfGroup": false}, {"id": "89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37", "suggested": 3, "flags": ["blurry"], "bestOfGroup": false}, {"id": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92", "suggested": 3, "flags": ["too-bright"], "bestOfGroup": false}, {"id": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24", "suggested": 4, "flags": [], "bestOfGroup": false}, {"id": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a", "suggested": 2, "flags": ["too-dark"], "bestOfGroup": false}, {"id": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15", "suggested": 4, "flags": [], "bestOfGroup": true}, {"id": "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b", "suggested": 2, "flags": ["blurry"], "bestOfGroup": false}, {"id": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03", "suggested": 3, "flags": [], "bestOfGroup": false}], "mode": "smart"}
+PASS smart-loads-aesthetic: {"basicColor": 3.0, "basicGray": 5.0, "smartColor": 3.0, "smartGray": 4.0, "colorAesthetic": 0.41185686323377824, "grayAesthetic": 0.15178934733072916}
+PASS smart-changes-order: {"basicColor": 3.0, "basicGray": 5.0, "smartColor": 3.0, "smartGray": 4.0, "colorAesthetic": 0.41185686323377824, "grayAesthetic": 0.15178934733072916}
+PASS learn-on
+PASS learn-pick-ok
+PASS learn-writes-weights: docs\features\processing-feedback\Rev1.0\assets\face-history-fix\qa-taste-rating\rating-root\catalog\rating-weights.json
+PASS clear-stars: {"suggested": 4, "yours": null, "stars": 4, "pick": false, "reject": false, "flags": [], "bestOfGroup": false, "mode": "smart", "blurry": false}
+PASS health: {'ok': True}
+PASS rate-get
+PASS http-rate-stars: {"suggested": 4, "yours": 4, "stars": 4, "pick": false, "reject": false, "flags": [], "bestOfGroup": false, "mode": "smart", "blurry": false}
+PASS http-min-stars: ["burst_003.jpg", "graysharp.jpg", "sharp.jpg"]
+FAIL playwright-import: No module named 'playwright'

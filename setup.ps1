@@ -213,6 +213,52 @@ function Get-BootstrapPython {
     return ,[string[]]@()
 }
 
+# PowerShell unrolls a returned array, and the comma that stops that
+# unroll nests another array. Three wraps deep, [string]$cmd[0] becomes
+# the text "System.Object[]" and a new PC cannot create .venv.
+# Walk until the first element is the executable path.
+function ConvertTo-PythonCommand {
+    param($Value)
+    $current = $Value
+    for ($i = 0; $i -lt 8; $i++) {
+        if ($null -eq $current) {
+            return ,@()
+        }
+        if ($current -is [string]) {
+            if ([string]::IsNullOrWhiteSpace($current)) {
+                return ,@()
+            }
+            return ,@($current)
+        }
+        $items = @($current)
+        if ($items.Count -eq 0) {
+            return ,@()
+        }
+        $allStrings = $true
+        foreach ($item in $items) {
+            if ($item -isnot [string]) {
+                $allStrings = $false
+                break
+            }
+        }
+        if ($allStrings) {
+            $flat = New-Object System.Collections.Generic.List[string]
+            foreach ($item in $items) {
+                if (-not [string]::IsNullOrWhiteSpace($item)) {
+                    [void]$flat.Add($item)
+                }
+            }
+            return ,$flat.ToArray()
+        }
+        if ($items.Count -eq 1) {
+            $current = $items[0]
+            continue
+        }
+        return ,@()
+    }
+    return ,@()
+}
+
 function Get-PythonArgumentList {
     param(
         [Parameter(Mandatory = $true)][AllowEmptyCollection()][object[]]$Python,
@@ -437,7 +483,7 @@ try {
     }
 
     Write-Step -Number 1 -Total 9 -Text "Checking Python 3.12+, ffmpeg, and optional git (internet if they are missing)..."
-    $bootstrap = @(Ensure-PythonAndFfmpeg)
+    $bootstrap = ConvertTo-PythonCommand (Ensure-PythonAndFfmpeg)
     if (-not $DryRun -and ($bootstrap.Count -lt 1 -or -not $bootstrap[0])) {
         Write-FailNext -Step "Python / ffmpeg" -Detail "Python 3.12+ is required."
         Write-Error "Python 3.12+ is required."
@@ -522,7 +568,7 @@ try {
 
     Write-Host ""
     if ($DryRun) {
-        Write-Host "Dry-run ready -- all four setup commands are in this copy."
+        Write-Host "Dry-run ready -- all five setup commands are in this copy."
         Write-Host "Run Setup.bat (without -DryRun) to download packs. Then run Library.bat."
     } else {
         Write-Host "Ready -- run Library.bat"

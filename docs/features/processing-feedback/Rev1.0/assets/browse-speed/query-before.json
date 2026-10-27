@@ -1,0 +1,158 @@
+{
+  "label": "before",
+  "root": "J:\\slyOS\\projects\\photoLibrary\\.qa\\ui-400\\library-data",
+  "items": 400,
+  "queries": {
+    "all-date": {
+      "query": {
+        "sort": "date",
+        "dir": "desc",
+        "hideRejects": "1"
+      },
+      "count": 400,
+      "sha256": "7807a419dc47e575fa5ce0343cbda8ef650006333f22749da0e24e3386ca9454",
+      "stable": true,
+      "medianMs": 241.77,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "all-name": {
+      "query": {
+        "sort": "name",
+        "dir": "asc",
+        "hideRejects": "1"
+      },
+      "count": 400,
+      "sha256": "aeec25cb69ccda32183dba9a76ac6d8f5204965baec07a15ad319d3a5a90bfd1",
+      "stable": true,
+      "medianMs": 234.21,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "all-rating": {
+      "query": {
+        "sort": "rating",
+        "dir": "desc",
+        "hideRejects": "1"
+      },
+      "count": 400,
+      "sha256": "1cf24e6416f8ac1a7c7b21077216f743c84ef86f478c41b52539fcf6f44cec37",
+      "stable": true,
+      "medianMs": 297.07,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "all-location": {
+      "query": {
+        "sort": "location",
+        "dir": "asc"
+      },
+      "count": 400,
+      "sha256": "f3d96e15652719f3e35e40eead28d5915e59cdb3cd2a0b80ff22d33ea188a790",
+      "stable": true,
+      "medianMs": 240.5,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "empty-tag": {
+      "query": {
+        "thing": "no-such-tag",
+        "hideRejects": "1"
+      },
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stable": true,
+      "medianMs": 241.72,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "person": {
+      "query": {
+        "person": "person_6c420c07a09d"
+      },
+      "count": 2,
+      "sha256": "27d0cdcef34c89da2940ac278162efb2f3ae13c3cd3eff635b4fafa799cee58d",
+      "stable": true,
+      "medianMs": 241.22,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "tag": {
+      "query": {
+        "thing": "thing_03493d6db710"
+      },
+      "count": 4,
+      "sha256": "2bf69a9e6575ce027d49aaa7731225d74dfedf2ccf584fbb97e0b4dbd627cc8a",
+      "stable": true,
+      "medianMs": 246.97,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "filename": {
+      "query": {
+        "q": "IMG_0456.JPG"
+      },
+      "count": 1,
+      "sha256": "72bbe9f4050ed978d5dbe75b968d64f1d0dce9324a65935b2dbc4b6c355e99bf",
+      "stable": true,
+      "medianMs": 315.17,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "date": {
+      "query": {
+        "q": "2024"
+      },
+      "count": 188,
+      "sha256": "09285f76124d9e2bb5dc8aba11eb1acb8ef7f0c1de2e8ee1f5ed73d2bf89a17b",
+      "stable": true,
+      "medianMs": 270.99,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "chinese-unnamed": {
+      "query": {
+        "q": "\u672a\u547d\u540d"
+      },
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stable": true,
+      "medianMs": 245.38,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "four-stars": {
+      "query": {
+        "minStars": "4"
+      },
+      "count": 400,
+      "sha256": "7807a419dc47e575fa5ce0343cbda8ef650006333f22749da0e24e3386ca9454",
+      "stable": true,
+      "medianMs": 293.79,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "favorites": {
+      "query": {
+        "favorite": "1"
+      },
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stable": true,
+      "medianMs": 245.97,
+      "entityOpens": 873,
+      "browserProjections": 400
+    },
+    "recent": {
+      "query": {
+        "recent": "1"
+      },
+      "count": 400,
+      "sha256": "7807a419dc47e575fa5ce0343cbda8ef650006333f22749da0e24e3386ca9454",
+      "stable": true,
+      "medianMs": 256.93,
+      "entityOpens": 873,
+      "browserProjections": 400
+    }
+  }
+}

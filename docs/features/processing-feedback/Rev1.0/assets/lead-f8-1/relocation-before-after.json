@@ -1,0 +1,23 @@
+{
+  "before": {
+    "source": [
+      "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+      "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    ],
+    "server": []
+  },
+  "after": {
+    "source": [],
+    "server": [
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+      "1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    ]
+  },
+  "reverse": {
+    "source": [
+      "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/preview.webp",
+      "renditions/1b76f94527b0dba3976097852df99e541eef03992464deea519823c5e960acc0/thumb.webp"
+    ],
+    "server": []
+  }
+}

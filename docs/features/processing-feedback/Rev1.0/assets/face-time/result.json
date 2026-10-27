@@ -1,0 +1,16 @@
+{
+  "personId": "person_1495b2de5f82",
+  "name": null,
+  "count": 3,
+  "first": {
+    "itemId": "4ac46ea7083f06bd9f0288ffebdb739ee490c1f5e7808060ee81d0aac00b889e",
+    "capturedAt": "2024-07-18T13:22:49Z",
+    "filename": "IMG_3701.JPG",
+    "placeId": "place_7cae65aa3ede",
+    "placeName": "Pamukkale, Denizli",
+    "latitude": 37.93201388888889,
+    "longitude": 29.121902777777777,
+    "hasLandmarks": false
+  },
+  "jpegBytes": 96877
+}

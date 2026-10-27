@@ -1,0 +1,662 @@
+[
+  {
+    "path": "formats/quad.png",
+    "hash": "4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 908
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/4c93e83e2d7e6cdf45b188ca84b971c2e6136aac0e46d354d7d6e8d54a415938/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2308
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/quad.gif",
+    "hash": "d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 944
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/d423f3532df3a313fd91b4b665f3b7d2a664d573e1df6217adba397349480030/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2352
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/quad.webp",
+    "hash": "c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 1034
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/c84d3439fda6eeba994d3dd7470ac96f23d4fc0ccbecc2f0b7718329c7a3b7b6/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2412
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/quad.heic",
+    "hash": "5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 1112
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/5cc27f64a324324e8068aa7ff0e4a7bf7625a3733e387e0a4a25d9124d839b4a/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2598
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": "installed ffmpeg decodes this fixture",
+    "decodeProbe": {
+      "decoded": true,
+      "exitCode": 0,
+      "bytes": 2598
+    }
+  },
+  {
+    "path": "formats/quad.heif",
+    "hash": "a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 898
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/a29b235ce50919841b44e648679d676ebaef8606cf7dd339400e487bd75d9875/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2212
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": "installed ffmpeg decodes this fixture",
+    "decodeProbe": {
+      "decoded": true,
+      "exitCode": 0,
+      "bytes": 2212
+    }
+  },
+  {
+    "path": "formats/quad.tiff",
+    "hash": "566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 1020
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/566095c48bd0799484c5db7df852202bfd73692935435fda61be335110586d91/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2724
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/quad.bmp",
+    "hash": "c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 1038
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/c2cd1b1bb63e93808bb84b8874bb32b85cdbc89f3ead2eee7529adc94539e015/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 2628
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/clip.mov",
+    "hash": "b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 216
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/b181e42221e50778c545dcc021558c6456f7a54a4830603e9761e454fd5a1ff9/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3447
+      },
+      "playback": {
+        "status": "queued",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/clip.m4v",
+    "hash": "79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 214
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/79676212934eb1c8edff9ff37ab78a7149b066214ae8c53e47b2c6aa2d9dc8ad/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3447
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/clip.avi",
+    "hash": "a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 224
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3456
+      },
+      "playback": {
+        "status": "ready",
+        "path": "renditions/a3ec3af6b69d265e3197623286c5cda7f1b1f23456b359c5547c1d84c246c23c/playback.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 36367
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/clip.mkv",
+    "hash": "4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 216
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3460
+      },
+      "playback": {
+        "status": "ready",
+        "path": "renditions/4ebeae8e63a4f1df9fd7ece1ca9ad7462be2f14955cd22fb398c17d10c7c0af7/playback.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 23723
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/clip.webm",
+    "hash": "ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 222
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3447
+      },
+      "playback": {
+        "status": "ready",
+        "path": "renditions/ad18159f2591a79905156be94270d6fe52e74cbcef0ded854e85d293384c460c/playback.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 36774
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "formats/broken.heic",
+    "hash": "592f0eae19aa9635a19a2364f079cc89ac1bf3ce14a4f890753f017bc4a259cd",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "error",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "error",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": "installed ffmpeg cannot decode this fixture",
+    "decodeProbe": {
+      "decoded": false,
+      "exitCode": 3199971767,
+      "bytes": 0
+    }
+  },
+  {
+    "path": "a/clip.mp4",
+    "hash": "93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913",
+    "kind": "video",
+    "slots": {
+      "thumb": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "preview": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "poster": {
+        "status": "ready",
+        "path": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/poster.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 224
+      },
+      "proxy": {
+        "status": "ready",
+        "path": "renditions/93ef90e4409cb754a71ce6b22d222e03c6b089c9b6a4835660be51ee63aa8913/proxy.mp4",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 3446
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  },
+  {
+    "path": "b/oriented.jpg",
+    "hash": "52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7",
+    "kind": "photo",
+    "slots": {
+      "thumb": {
+        "status": "ready",
+        "path": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/thumb.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 1740
+      },
+      "preview": {
+        "status": "ready",
+        "path": "renditions/52e6037ff78aaacfff71f8e2e1a41f25b5e70c78eca54126aca5e97a11c056c7/preview.webp",
+        "readyNonEmpty": true,
+        "fileExists": true,
+        "fileBytes": 4154
+      },
+      "poster": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "proxy": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      },
+      "playback": {
+        "status": "not-applicable",
+        "path": null,
+        "readyNonEmpty": false,
+        "fileExists": false,
+        "fileBytes": 0
+      }
+    },
+    "note": null
+  }
+]

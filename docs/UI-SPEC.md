@@ -52,11 +52,11 @@ fill. They must read as clickable toggles, not heading text.
 | Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, 4 stars and up / Picks / Hide rejects / Blurry, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location/Rating stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local`). Click runs `POST /api/update`, which always tracks `main` over anonymous HTTPS git, or a zip of `main` if git is missing. No `gh`, no GitHub login. `library-data/` is never replaced. While the pull runs, `#update-status` says Updating… Then one i18n sentence: updated / already current / pull failed / diverged / need-public / update-unavailable. A successful Update refreshes `#library-version`. When the pull writes a newer `main` and this Library serve is running, stop only that process on the settings port and relaunch; the page says Restarting… then reloads. If Library was not running, Update finishes without launching. No command prompt. Launcher `Update.bat` uses the same pull and relaunch. |
-| Viewer | Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS, hash; extra current paths as **Also at**; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes `#duplicate-compare`, then Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
+| Viewer | A wide click docks the existing `#viewer` between `#library-stage` and `#library-side`, with `#preview-splitter` (6px, session width, default 480px, min 320px, grows until the grid is 120px wide) on its left. A grid tile smaller than the thumb's longest side (`thumbPx`) shows that thumb at full size on hover; the flyout does not take the click. People stays. A narrow window and F/F11 use the full-window viewer; Esc leaves fullscreen first, then closes the dock or the full viewer. Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS, hash; extra current paths as **Also at**; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes `#duplicate-compare`, then Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
 | Original absent, preview present | Exact banner “Original is not on this computer”. Cached preview remains; Open original disabled. Video/live Play preview enabled only if proxy exists. |
 | Preview absent or failed | Stable placeholder with “Preview is not available”. If original exists the viewer may still load it. Missing-original banner also appears when both are absent. No broken image icon, endless spinner, or invented retry modal. Rescan is the existing retry operation. |
 | Empty search | Query/chips remain; “No matches for …” including the query (or “No matches” when only a chip/filter is empty). Clearing query/chip returns matching broader grid, no catalog mutation. |
-| Settings | `#settings-view` (Ctrl+, / header Settings). **Folders first:** each source lists lastKnown path, available, mode, photo/video counts, preview done/queued/error, last scan running/complete/error + added/skipped. Add folder reuses the named dialog. **Serve from that folder** tells the user that the processed pictures and their names, faces, places, and ratings are saved in a `.library` folder inside the chosen folder, and the request sends `previewStore: with-source`. Refresh rescans that source (skip unchanged). Remove folder is catalog-only (confirm). Then the existing settings.json keys as grouped controls (`previewStore` notes where renditions live). Face match confidence is a 0.35–0.95 slider (default 0.80) with a Re-run Faces note; `faceMinSidePx` is a number. Language stays in the header. Change persists through HTTP immediately on valid commit. Inline validation preserves last valid value. Host/port label says “Applies next launch”. Esc returns to prior Library/Globe view. |
+| Settings | `#settings-view` (Ctrl+, / header Settings). **Folders first:** each source lists lastKnown path, available, mode, photo/video counts, preview done/queued/error, last scan running/complete/error + added/skipped. Add folder reuses the named dialog. **Serve from that folder** tells the user that the processed pictures and their names, faces, places, and ratings are saved in a `.library` folder inside the chosen folder, and the request sends `previewStore: with-source`. Refresh rescans that source (skip unchanged). Remove folder is catalog-only (confirm). Then the existing settings.json keys as grouped controls (`previewStore` notes where renditions live). Face match confidence is a 0.35–0.95 slider (default 0.45) with a Re-run Faces note; `faceMinSidePx` is a number. Language stays in the header. Change persists through HTTP immediately on valid commit. Inline validation preserves last valid value. Host/port label says “Applies next launch”. Esc returns to prior Library/Globe view. |
 | Globe | Realistic local Earth texture (oceans, continents, ice — not abstract blobs) and clusters from visible located items; no-location items absent. Plain “No locations to show” if empty. WebGL unavailable produces inline error text, not another map provider. Horizontal drag yaws with the pointer (inverted from the first grab); vertical drag pitch is unchanged. |
 | Tour | Existing globe motion plus media presentation, as specified below. Esc stops motion/playback at current globe position and leaves Globe. No new slideshow settings beyond the three existing tour settings. |
 
@@ -396,6 +396,21 @@ and says “No locations to show”. Esc at any phase cancels timers/media and s
 at current position. While touring, user drag/wheel first stops the tour and then
 applies that same gesture, so playback does not fight the user.
 
+## Face time
+
+`#face-time` is a dialog opened from a person row **⋯** (`#` not used; the
+button is `.person-more`) or a right-click on that row. It plays that person's
+photos oldest first. The face stays pinned from the stored face box. The
+date is painted on the frame and repeated in `#face-time-date`. The status
+shows which frame this is (`3 of 24`). Playback waits until that picture is
+up. `#face-time-scrub` stops on a frame. `#face-time-moment` reads **See this
+day**, or **See this place** when the photo has coordinates. It closes the
+dialog, filters the library to that `YYYY-MM-DD`, clears the person filter,
+groups by day, and scrolls to the photo. **See this place** also opens the
+globe looking at that place. `#face-time-save` writes a new mp4 and opens it.
+Seconds per photo
+is `#face-time-seconds` (default 0.45). Esc closes the dialog and stops playback.
+
 ## Keyboard and proof
 
 Use PRODUCT's keyboard table, plus the focused-text exception above. Esc cancels
@@ -427,6 +442,18 @@ These assertions extend each feature's existing Check; they are not separately
 counted features. Passing only an API half never closes a UI feature.
 
 ## Windows Presentable Shell
+
+Filter/sort loading follows PRODUCT F15: clear old tiles in the input handler when
+the query changes (including Clear all and clicking a selected person to remove it),
+show loading, then progressively draw current streamed records in order. Repeat and
+warm-cache visits use the same path. The first record paints before stream completion;
+bounded paint batches yield to the browser, and completion does not rebuild the grid.
+Unchanged-query background refresh keeps painted tiles. Current results paint
+independently of sidebar/status reads, and obsolete response/paint callbacks are
+ignored. Load visible thumbnails before nearby prefetch; offscreen work must not
+hold the queue after scrolling. Retain only a bounded session cache of painted
+cells, refreshing their metadata and still URL when each is reused. Empty results
+are shown only after completion; errors preserve the current query's partial tiles.
 
 First-class shell contract for the family Windows PC. Not a 23rd Check, not
 albums, not an editor, not a cloud. PRODUCT F2 / F3 / F4 / F7 / F9 / F10 /
@@ -484,7 +511,9 @@ geo pack; unnamed face clusters show **Unnamed**); a collapsible
 **Transcript** (`#viewer-transcript-wrap`) shows the extractive summary,
 keywords, and timestamped lines — clicking a line seeks the open video.
 Stars on tiles show yours if set, else the suggestion. Info lists
-**Suggested** vs **Yours**, pick / reject, flags, and **Best of group**.
+**Suggested** vs **Yours**, then the raw scores that made the suggestion
+(sharpness, exposure, face, thirds, gold, and the mix, each 0–100),
+pick / reject, flags, and **Best of group**.
 `#viewer-rating` 1–5 / Pick / Reject writes the user rating. Reject
 hides from default views and never deletes.
 Clicking a named
@@ -720,7 +749,7 @@ taste gate.
 | 5 | Progress / scan error | Status + console; items as ready; failure shows Retry, never a blank page |
 | 6 | Wall + sort + filters | Dates Off = one wall; Years/Months/Days separate from Size; Size + Dates bottom-left; ≥8 sizes; thumbs stay through Size/Dates and person-filter / Clear; Newest/Oldest/Name; Search on `#filter-bar`; All / Photos / Videos / Favorites plus Person/Place/Tag chips; Group Date/People/Places/Tags; People + Tags on the right, each collapsible, Tags never covers a face |
 | 7 | Search | Filename, date, or a tag; empty “No matches for …” |
-| 8 | Open | Preview then original or `playback`; no “Showing original” control; `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable; no overlay pills; missing-file placeholder |
+| 8 | Open | Wide window docks `#viewer` between the grid and People, with `#preview-splitter`. Narrow window and F/F11 use the full-window viewer. Preview then original or `playback`; no “Showing original” control; `#viewer-source` names Preview / Loading full… / Original / Full / Preview — full unavailable; no overlay pills; missing-file placeholder |
 | 9 | Next / Prev / arrows | Bottom Previous and Next; arrows; stop at ends; Back stays on this origin |
 | 10 | Keyboard parity | Ctrl++/− or **plain wheel** zoom; Ctrl+0 fit; Ctrl+1 100%; Ctrl+R rotate; Space play/pause video; tooltips show shortcuts |
 | 11 | Zoom slider / pan / rotate | Vertical side viewer zoom with %; click-drag pan; Rotate beside Prev/Next. Grid Size ≠ Dates. Scrub in `#viewer-bottom` |
@@ -734,7 +763,8 @@ taste gate.
 | 19 | Globe basics | Local Earth; drag right yaws east; cluster opens newest; Esc leaves the filtered grid |
 
 All 19 green ⇒ presentable. Soon rows (filmstrip, multi-select, Print,
-copy file, `?`, recently added) do **not** block this gate. Deeper
+copy file, `?`, recently added) do **not** block this gate. Face time is
+specified with the globe and does not add a presentable-checklist row. Deeper
 settings, F3 parity, globe polish, and macOS/Linux launch do not block
 it. A missing Must row **does**, even if an F-id already has an API
 artifact.

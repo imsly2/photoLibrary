@@ -1,0 +1,35 @@
+{
+  "rows": [
+    {
+      "file": "IMG_0023.JPG",
+      "orient": 1,
+      "rgbIdentical": true,
+      "full": [
+        2592,
+        1936
+      ],
+      "thumb": [
+        320,
+        240
+      ],
+      "thumbLongSide": 320,
+      "webpBytes": 10892
+    },
+    {
+      "file": "IMG_0240.JPG",
+      "orient": 6,
+      "rgbIdentical": true,
+      "full": [
+        1936,
+        2592
+      ],
+      "thumb": [
+        240,
+        320
+      ],
+      "thumbLongSide": 320,
+      "webpBytes": 4572
+    }
+  ],
+  "shareGateOnUnscannedPhoto": true
+}

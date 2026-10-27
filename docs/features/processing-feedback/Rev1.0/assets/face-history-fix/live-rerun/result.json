@@ -1,0 +1,5121 @@
+{
+  "threshold": 0.45,
+  "pausedAfterResume": false,
+  "seconds": 1105.7,
+  "sawWork": true,
+  "photosTimed": 550,
+  "secPerPhoto": {
+    "mean": 2.009,
+    "max": 6.979,
+    "first20mean": 1.387,
+    "last20mean": 1.041
+  },
+  "undo": {
+    "beforeFiles": 500,
+    "beforeBytes": 4414919261,
+    "newFiles": 500,
+    "newBytes": 5176707,
+    "newMeanKB": 10.11,
+    "newMaxKB": 67.15,
+    "newMinKB": 5.67
+  },
+  "people": {
+    "total": 56,
+    "named": 0,
+    "visible": 11,
+    "singleFace": 37,
+    "top": [
+      227,
+      202,
+      109,
+      24,
+      5,
+      5,
+      4,
+      4,
+      4,
+      3,
+      3,
+      2
+    ]
+  },
+  "facesQueue": {
+    "id": "infer-faces",
+    "label": "Faces",
+    "pending": 0,
+    "done": 550,
+    "error": 0,
+    "state": "idle",
+    "available": true
+  },
+  "samples": [
+    {
+      "t": 0.0,
+      "pending": 550,
+      "done": 0,
+      "state": "running",
+      "phase": "idle",
+      "file": "",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 1,
+      "newUndoMeanKB": 1.58
+    },
+    {
+      "t": 5.1,
+      "pending": 546,
+      "done": 4,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3040.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 5,
+      "newUndoMeanKB": 9.04
+    },
+    {
+      "t": 10.3,
+      "pending": 542,
+      "done": 8,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9042.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 9,
+      "newUndoMeanKB": 9.5
+    },
+    {
+      "t": 16.1,
+      "pending": 538,
+      "done": 12,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8882.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 13,
+      "newUndoMeanKB": 9.64
+    },
+    {
+      "t": 21.6,
+      "pending": 534,
+      "done": 16,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3136.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 17,
+      "newUndoMeanKB": 10.58
+    },
+    {
+      "t": 26.7,
+      "pending": 531,
+      "done": 19,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3704.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 20,
+      "newUndoMeanKB": 10.04
+    },
+    {
+      "t": 31.7,
+      "pending": 527,
+      "done": 23,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2884.JPG",
+      "elapsedOnFile": 1.1,
+      "paused": false,
+      "newUndo": 24,
+      "newUndoMeanKB": 10.33
+    },
+    {
+      "t": 36.9,
+      "pending": 525,
+      "done": 25,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3574.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 26,
+      "newUndoMeanKB": 10.25
+    },
+    {
+      "t": 42.3,
+      "pending": 521,
+      "done": 29,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8563.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 30,
+      "newUndoMeanKB": 10.11
+    },
+    {
+      "t": 47.4,
+      "pending": 518,
+      "done": 32,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E9402.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 33,
+      "newUndoMeanKB": 10.13
+    },
+    {
+      "t": 52.5,
+      "pending": 514,
+      "done": 36,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3822.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 37,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 59.2,
+      "pending": 511,
+      "done": 39,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9643.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 40,
+      "newUndoMeanKB": 9.89
+    },
+    {
+      "t": 64.2,
+      "pending": 507,
+      "done": 43,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_5087.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 44,
+      "newUndoMeanKB": 9.74
+    },
+    {
+      "t": 69.4,
+      "pending": 504,
+      "done": 46,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2542.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 47,
+      "newUndoMeanKB": 9.86
+    },
+    {
+      "t": 74.7,
+      "pending": 500,
+      "done": 50,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2545.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 51,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 80.5,
+      "pending": 496,
+      "done": 54,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3492.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 55,
+      "newUndoMeanKB": 10.06
+    },
+    {
+      "t": 86.2,
+      "pending": 492,
+      "done": 58,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8975.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 59,
+      "newUndoMeanKB": 9.89
+    },
+    {
+      "t": 91.3,
+      "pending": 488,
+      "done": 62,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9770.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 63,
+      "newUndoMeanKB": 9.84
+    },
+    {
+      "t": 96.6,
+      "pending": 485,
+      "done": 65,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E9433.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 66,
+      "newUndoMeanKB": 9.86
+    },
+    {
+      "t": 102.1,
+      "pending": 481,
+      "done": 69,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3662.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 70,
+      "newUndoMeanKB": 9.77
+    },
+    {
+      "t": 107.3,
+      "pending": 477,
+      "done": 73,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9745.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 74,
+      "newUndoMeanKB": 9.82
+    },
+    {
+      "t": 113.1,
+      "pending": 473,
+      "done": 77,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9697.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 78,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 118.9,
+      "pending": 469,
+      "done": 81,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2788.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 82,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 123.9,
+      "pending": 465,
+      "done": 85,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3820.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 86,
+      "newUndoMeanKB": 9.89
+    },
+    {
+      "t": 129.3,
+      "pending": 462,
+      "done": 88,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2535.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 89,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 134.4,
+      "pending": 458,
+      "done": 92,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2022.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 93,
+      "newUndoMeanKB": 9.84
+    },
+    {
+      "t": 141.7,
+      "pending": 457,
+      "done": 93,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3792.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 94,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 146.9,
+      "pending": 453,
+      "done": 97,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8767.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 98,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 152.0,
+      "pending": 451,
+      "done": 99,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9764.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 100,
+      "newUndoMeanKB": 9.79
+    },
+    {
+      "t": 157.2,
+      "pending": 448,
+      "done": 102,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2886.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 103,
+      "newUndoMeanKB": 9.84
+    },
+    {
+      "t": 163.4,
+      "pending": 443,
+      "done": 107,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0460.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 108,
+      "newUndoMeanKB": 9.87
+    },
+    {
+      "t": 168.5,
+      "pending": 440,
+      "done": 110,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8983.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 111,
+      "newUndoMeanKB": 9.85
+    },
+    {
+      "t": 175.1,
+      "pending": 440,
+      "done": 110,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3369.JPG",
+      "elapsedOnFile": 0.5,
+      "paused": false,
+      "newUndo": 111,
+      "newUndoMeanKB": 9.85
+    },
+    {
+      "t": 180.9,
+      "pending": 438,
+      "done": 112,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3118.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 113,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 186.1,
+      "pending": 436,
+      "done": 114,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0405.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 115,
+      "newUndoMeanKB": 9.82
+    },
+    {
+      "t": 191.1,
+      "pending": 433,
+      "done": 117,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0223.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 118,
+      "newUndoMeanKB": 9.81
+    },
+    {
+      "t": 196.2,
+      "pending": 430,
+      "done": 120,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8545.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 121,
+      "newUndoMeanKB": 9.76
+    },
+    {
+      "t": 201.7,
+      "pending": 426,
+      "done": 124,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9720.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 125,
+      "newUndoMeanKB": 9.85
+    },
+    {
+      "t": 207.1,
+      "pending": 423,
+      "done": 127,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9431.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 128,
+      "newUndoMeanKB": 9.86
+    },
+    {
+      "t": 212.4,
+      "pending": 420,
+      "done": 130,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3533.JPG",
+      "elapsedOnFile": 0.6,
+      "paused": false,
+      "newUndo": 131,
+      "newUndoMeanKB": 9.82
+    },
+    {
+      "t": 217.6,
+      "pending": 418,
+      "done": 132,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2794.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 133,
+      "newUndoMeanKB": 9.79
+    },
+    {
+      "t": 222.9,
+      "pending": 415,
+      "done": 135,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3841.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 136,
+      "newUndoMeanKB": 9.8
+    },
+    {
+      "t": 228.1,
+      "pending": 412,
+      "done": 138,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3923.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 139,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 233.3,
+      "pending": 411,
+      "done": 139,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9922.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 140,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 238.6,
+      "pending": 408,
+      "done": 142,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3192.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 143,
+      "newUndoMeanKB": 9.84
+    },
+    {
+      "t": 243.8,
+      "pending": 406,
+      "done": 144,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0403.JPG",
+      "elapsedOnFile": 0.6,
+      "paused": false,
+      "newUndo": 145,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 250.3,
+      "pending": 405,
+      "done": 145,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9227.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 146,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 255.4,
+      "pending": 403,
+      "done": 147,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9738.JPG",
+      "elapsedOnFile": 0.5,
+      "paused": false,
+      "newUndo": 148,
+      "newUndoMeanKB": 9.82
+    },
+    {
+      "t": 261.1,
+      "pending": 400,
+      "done": 150,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8952.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 151,
+      "newUndoMeanKB": 9.83
+    },
+    {
+      "t": 267.5,
+      "pending": 397,
+      "done": 153,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2205.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 154,
+      "newUndoMeanKB": 9.86
+    },
+    {
+      "t": 273.3,
+      "pending": 394,
+      "done": 156,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9766.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 157,
+      "newUndoMeanKB": 9.85
+    },
+    {
+      "t": 279.5,
+      "pending": 391,
+      "done": 159,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9496.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 160,
+      "newUndoMeanKB": 9.86
+    },
+    {
+      "t": 288.0,
+      "pending": 388,
+      "done": 162,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9421.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 163,
+      "newUndoMeanKB": 9.89
+    },
+    {
+      "t": 293.9,
+      "pending": 386,
+      "done": 164,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2123.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 165,
+      "newUndoMeanKB": 9.91
+    },
+    {
+      "t": 299.1,
+      "pending": 383,
+      "done": 167,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_5084.JPG",
+      "elapsedOnFile": 1.0,
+      "paused": false,
+      "newUndo": 168,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 304.1,
+      "pending": 380,
+      "done": 170,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3198.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 171,
+      "newUndoMeanKB": 9.9
+    },
+    {
+      "t": 309.8,
+      "pending": 377,
+      "done": 173,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0631.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 174,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 315.2,
+      "pending": 375,
+      "done": 175,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8848.JPG",
+      "elapsedOnFile": 0.5,
+      "paused": false,
+      "newUndo": 176,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 321.1,
+      "pending": 372,
+      "done": 178,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9776.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 179,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 326.3,
+      "pending": 369,
+      "done": 181,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3135.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 182,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 332.2,
+      "pending": 366,
+      "done": 184,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3465.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 185,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 338.0,
+      "pending": 363,
+      "done": 187,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3692.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 188,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 344.4,
+      "pending": 360,
+      "done": 190,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3137.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 191,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 350.1,
+      "pending": 357,
+      "done": 193,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3832.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 194,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 356.1,
+      "pending": 354,
+      "done": 196,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3327.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 197,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 361.7,
+      "pending": 351,
+      "done": 199,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8509.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 200,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 367.2,
+      "pending": 348,
+      "done": 202,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E9289.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 203,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 373.1,
+      "pending": 345,
+      "done": 205,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3168.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 206,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 378.9,
+      "pending": 342,
+      "done": 208,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2121.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 209,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 385.5,
+      "pending": 339,
+      "done": 211,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2572.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 212,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 391.6,
+      "pending": 336,
+      "done": 214,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9883.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 215,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 397.6,
+      "pending": 333,
+      "done": 217,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2537.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 218,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 403.4,
+      "pending": 330,
+      "done": 220,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3377.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 221,
+      "newUndoMeanKB": 10.02
+    },
+    {
+      "t": 409.5,
+      "pending": 327,
+      "done": 223,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9148.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 224,
+      "newUndoMeanKB": 10.03
+    },
+    {
+      "t": 415.4,
+      "pending": 324,
+      "done": 226,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8328.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 227,
+      "newUndoMeanKB": 10.03
+    },
+    {
+      "t": 421.6,
+      "pending": 321,
+      "done": 229,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3524.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 230,
+      "newUndoMeanKB": 10.02
+    },
+    {
+      "t": 427.8,
+      "pending": 318,
+      "done": 232,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3915.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 233,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 433.0,
+      "pending": 315,
+      "done": 235,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3113.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 236,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 438.8,
+      "pending": 313,
+      "done": 237,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3370.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 238,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 445.5,
+      "pending": 310,
+      "done": 240,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9882.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 241,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 451.5,
+      "pending": 307,
+      "done": 243,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3833.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 244,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 457.4,
+      "pending": 303,
+      "done": 247,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0708.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 248,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 463.6,
+      "pending": 301,
+      "done": 249,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8818.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 250,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 470.1,
+      "pending": 298,
+      "done": 252,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3044.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 253,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 475.2,
+      "pending": 296,
+      "done": 254,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2546.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 255,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 481.4,
+      "pending": 293,
+      "done": 257,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3843.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 258,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 487.7,
+      "pending": 290,
+      "done": 260,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9347.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 261,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 494.2,
+      "pending": 287,
+      "done": 263,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9722.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 264,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 500.4,
+      "pending": 284,
+      "done": 266,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2925.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 267,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 505.5,
+      "pending": 281,
+      "done": 269,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3043.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 270,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 511.4,
+      "pending": 279,
+      "done": 271,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9234.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 272,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 518.1,
+      "pending": 276,
+      "done": 274,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3383.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 275,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 523.3,
+      "pending": 274,
+      "done": 276,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3079.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 277,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 529.9,
+      "pending": 271,
+      "done": 279,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3686.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 280,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 535.0,
+      "pending": 269,
+      "done": 281,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3042.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 282,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 541.7,
+      "pending": 266,
+      "done": 284,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3847.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 285,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 546.8,
+      "pending": 263,
+      "done": 287,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8608.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 288,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 553.2,
+      "pending": 261,
+      "done": 289,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9521.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 290,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 558.6,
+      "pending": 258,
+      "done": 292,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3119.JPG",
+      "elapsedOnFile": 1.3,
+      "paused": false,
+      "newUndo": 293,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 564.5,
+      "pending": 256,
+      "done": 294,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3836.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 295,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 569.9,
+      "pending": 253,
+      "done": 297,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9742.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 298,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 576.0,
+      "pending": 251,
+      "done": 299,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2097.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 300,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 582.3,
+      "pending": 248,
+      "done": 302,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3921.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 303,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 587.7,
+      "pending": 246,
+      "done": 304,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0384.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 305,
+      "newUndoMeanKB": 10.02
+    },
+    {
+      "t": 594.0,
+      "pending": 242,
+      "done": 308,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_1102.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 309,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 600.4,
+      "pending": 239,
+      "done": 311,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0495.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 312,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 606.7,
+      "pending": 237,
+      "done": 313,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3895.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 314,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 611.8,
+      "pending": 234,
+      "done": 316,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3133.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 317,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 618.5,
+      "pending": 232,
+      "done": 318,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3496.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 319,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 625.5,
+      "pending": 229,
+      "done": 321,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9594.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 322,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 632.4,
+      "pending": 226,
+      "done": 324,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3380.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 325,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 639.2,
+      "pending": 223,
+      "done": 327,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2204.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 328,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 645.8,
+      "pending": 220,
+      "done": 330,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2653.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 331,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 651.3,
+      "pending": 217,
+      "done": 333,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8987.JPG",
+      "elapsedOnFile": 1.0,
+      "paused": false,
+      "newUndo": 334,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 657.3,
+      "pending": 215,
+      "done": 335,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3689.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 336,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 662.3,
+      "pending": 213,
+      "done": 337,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3343.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 338,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 669.3,
+      "pending": 210,
+      "done": 340,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9648.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 341,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 674.6,
+      "pending": 207,
+      "done": 343,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3848.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 344,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 679.7,
+      "pending": 205,
+      "done": 345,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8574.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 346,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 686.0,
+      "pending": 203,
+      "done": 347,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3376.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 348,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 692.9,
+      "pending": 200,
+      "done": 350,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3073.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 351,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 698.1,
+      "pending": 197,
+      "done": 353,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3827.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 354,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 704.7,
+      "pending": 195,
+      "done": 355,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8337.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 356,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 709.7,
+      "pending": 193,
+      "done": 357,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8895.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 358,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 714.8,
+      "pending": 190,
+      "done": 360,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3162.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 361,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 721.2,
+      "pending": 188,
+      "done": 362,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9821.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 363,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 726.4,
+      "pending": 185,
+      "done": 365,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3534.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 366,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 733.0,
+      "pending": 183,
+      "done": 367,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9696.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 368,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 738.3,
+      "pending": 180,
+      "done": 370,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8379.JPG",
+      "elapsedOnFile": 0.7,
+      "paused": false,
+      "newUndo": 371,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 745.1,
+      "pending": 178,
+      "done": 372,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9652.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 373,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 752.0,
+      "pending": 175,
+      "done": 375,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9771.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 376,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 757.1,
+      "pending": 172,
+      "done": 378,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0433.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 379,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 763.9,
+      "pending": 170,
+      "done": 380,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3045.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 381,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 769.2,
+      "pending": 167,
+      "done": 383,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0225.JPG",
+      "elapsedOnFile": 0.7,
+      "paused": false,
+      "newUndo": 384,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 775.8,
+      "pending": 165,
+      "done": 385,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3565.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 386,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 782.8,
+      "pending": 162,
+      "done": 388,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E8735.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 389,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 789.8,
+      "pending": 159,
+      "done": 391,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2855.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 392,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 794.8,
+      "pending": 156,
+      "done": 394,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0593.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 395,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 799.8,
+      "pending": 154,
+      "done": 396,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3134.JPG",
+      "elapsedOnFile": 0.7,
+      "paused": false,
+      "newUndo": 397,
+      "newUndoMeanKB": 9.91
+    },
+    {
+      "t": 804.9,
+      "pending": 152,
+      "done": 398,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9941.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 399,
+      "newUndoMeanKB": 9.91
+    },
+    {
+      "t": 811.7,
+      "pending": 150,
+      "done": 400,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3486.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 401,
+      "newUndoMeanKB": 9.92
+    },
+    {
+      "t": 816.8,
+      "pending": 147,
+      "done": 403,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_5033.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 404,
+      "newUndoMeanKB": 9.93
+    },
+    {
+      "t": 823.2,
+      "pending": 145,
+      "done": 405,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3523.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 406,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 828.5,
+      "pending": 142,
+      "done": 408,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3196.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 409,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 833.6,
+      "pending": 140,
+      "done": 410,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8584.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 411,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 840.2,
+      "pending": 138,
+      "done": 412,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9489.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 413,
+      "newUndoMeanKB": 9.94
+    },
+    {
+      "t": 847.1,
+      "pending": 135,
+      "done": 415,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9719.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 416,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 852.2,
+      "pending": 132,
+      "done": 418,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9433.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 419,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 858.8,
+      "pending": 130,
+      "done": 420,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3894.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 421,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 864.1,
+      "pending": 127,
+      "done": 423,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E2648.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 424,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 869.2,
+      "pending": 125,
+      "done": 425,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3828.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 426,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 874.2,
+      "pending": 123,
+      "done": 427,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9203.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 428,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 879.4,
+      "pending": 121,
+      "done": 429,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2113.JPG",
+      "elapsedOnFile": 1.0,
+      "paused": false,
+      "newUndo": 430,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 886.2,
+      "pending": 119,
+      "done": 431,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9905.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 432,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 891.6,
+      "pending": 117,
+      "done": 433,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3791.JPG",
+      "elapsedOnFile": 0.6,
+      "paused": false,
+      "newUndo": 434,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 896.9,
+      "pending": 114,
+      "done": 436,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9656.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 437,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 903.8,
+      "pending": 112,
+      "done": 438,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9436.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 439,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 909.2,
+      "pending": 109,
+      "done": 441,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9645.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 442,
+      "newUndoMeanKB": 9.95
+    },
+    {
+      "t": 915.8,
+      "pending": 107,
+      "done": 443,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3796.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 444,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 921.0,
+      "pending": 104,
+      "done": 446,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9811.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 447,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 926.3,
+      "pending": 102,
+      "done": 448,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9027.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 449,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 933.3,
+      "pending": 99,
+      "done": 451,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_1517.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 452,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 938.5,
+      "pending": 97,
+      "done": 453,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9351.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 454,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 943.5,
+      "pending": 95,
+      "done": 455,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3395.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 456,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 948.7,
+      "pending": 93,
+      "done": 457,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_0428.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 458,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 954.1,
+      "pending": 91,
+      "done": 459,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3835.JPG",
+      "elapsedOnFile": 0.6,
+      "paused": false,
+      "newUndo": 460,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 961.0,
+      "pending": 89,
+      "done": 461,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9662.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 462,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 966.3,
+      "pending": 86,
+      "done": 464,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3795.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 465,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 973.2,
+      "pending": 84,
+      "done": 466,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3391.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 467,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 978.6,
+      "pending": 81,
+      "done": 469,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E9176.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 470,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 985.8,
+      "pending": 79,
+      "done": 471,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3757.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 472,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 991.4,
+      "pending": 77,
+      "done": 473,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3352.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 474,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 996.7,
+      "pending": 75,
+      "done": 475,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2537.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 476,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 1003.1,
+      "pending": 73,
+      "done": 477,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3782.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 478,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 1008.2,
+      "pending": 71,
+      "done": 479,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E3893.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 480,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 1013.7,
+      "pending": 69,
+      "done": 481,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_E9610.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 482,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 1018.9,
+      "pending": 67,
+      "done": 483,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3477.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 484,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 1024.0,
+      "pending": 65,
+      "done": 485,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_7652.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 486,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1029.1,
+      "pending": 63,
+      "done": 487,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9200.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 488,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1034.4,
+      "pending": 61,
+      "done": 489,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3388.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 490,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1039.7,
+      "pending": 59,
+      "done": 491,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3464.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 492,
+      "newUndoMeanKB": 9.99
+    },
+    {
+      "t": 1045.1,
+      "pending": 56,
+      "done": 494,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9820.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 495,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1050.3,
+      "pending": 54,
+      "done": 496,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2543.JPG",
+      "elapsedOnFile": 0.9,
+      "paused": false,
+      "newUndo": 497,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1055.6,
+      "pending": 52,
+      "done": 498,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2927.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 499,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 1060.8,
+      "pending": 46,
+      "done": 504,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3473.JPG",
+      "elapsedOnFile": 0.6,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1066.3,
+      "pending": 40,
+      "done": 510,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8392.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 9.97
+    },
+    {
+      "t": 1071.7,
+      "pending": 34,
+      "done": 516,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_4373.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 9.96
+    },
+    {
+      "t": 1077.3,
+      "pending": 28,
+      "done": 522,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9743.JPG",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 9.98
+    },
+    {
+      "t": 1082.3,
+      "pending": 22,
+      "done": 528,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_3840.JPG",
+      "elapsedOnFile": 0.1,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 1087.7,
+      "pending": 16,
+      "done": 534,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_9044.JPG",
+      "elapsedOnFile": 0.5,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 1092.7,
+      "pending": 11,
+      "done": 539,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_8919.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 10.0
+    },
+    {
+      "t": 1098.0,
+      "pending": 5,
+      "done": 545,
+      "state": "running",
+      "phase": "infer-faces",
+      "file": "IMG_2983.JPG",
+      "elapsedOnFile": 0.4,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 10.01
+    },
+    {
+      "t": 1104.2,
+      "pending": 0,
+      "done": 550,
+      "state": "idle",
+      "phase": "analyze",
+      "file": "Golubovci, Zeta",
+      "elapsedOnFile": 0.2,
+      "paused": false,
+      "newUndo": 500,
+      "newUndoMeanKB": 10.11
+    }
+  ],
+  "perPhoto": [
+    {
+      "file": "IMG_0456.JPG",
+      "wallSec": 1.748,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8985.JPG",
+      "wallSec": 1.231,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3582.JPG",
+      "wallSec": 1.189,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3040.JPG",
+      "wallSec": 1.29,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9609.JPG",
+      "wallSec": 1.313,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9169.JPG",
+      "wallSec": 1.355,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8507.JPG",
+      "wallSec": 1.196,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9042.JPG",
+      "wallSec": 1.255,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_8849.JPG",
+      "wallSec": 1.203,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8579.JPG",
+      "wallSec": 1.291,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9379.JPG",
+      "wallSec": 1.221,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3333.JPG",
+      "wallSec": 1.319,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8882.JPG",
+      "wallSec": 2.005,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3398.JPG",
+      "wallSec": 1.318,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0585.JPG",
+      "wallSec": 0.935,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9767.JPG",
+      "wallSec": 1.227,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3136.JPG",
+      "wallSec": 2.624,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9207.JPG",
+      "wallSec": 1.252,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_0023.JPG",
+      "wallSec": 1.268,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3704.JPG",
+      "wallSec": 1.503,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8465.JPG",
+      "wallSec": 1.477,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3835.JPG",
+      "wallSec": 1.34,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2884.JPG",
+      "wallSec": 2.293,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9413.JPG",
+      "wallSec": 1.771,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3527.JPG",
+      "wallSec": 1.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3574.JPG",
+      "wallSec": 1.725,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3785.JPG",
+      "wallSec": 1.596,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3837.JPG",
+      "wallSec": 1.589,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8563.JPG",
+      "wallSec": 1.484,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9201.JPG",
+      "wallSec": 1.361,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2395.JPG",
+      "wallSec": 1.434,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3529.JPG",
+      "wallSec": 1.333,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9402.JPG",
+      "wallSec": 1.417,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3725.JPG",
+      "wallSec": 1.516,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0592.JPG",
+      "wallSec": 1.684,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3822.JPG",
+      "wallSec": 1.607,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8745.JPG",
+      "wallSec": 1.428,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3190.JPG",
+      "wallSec": 1.745,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_8881.JPG",
+      "wallSec": 2.371,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9643.JPG",
+      "wallSec": 1.529,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3782.JPG",
+      "wallSec": 1.793,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5034.JPG",
+      "wallSec": 1.255,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5087.JPG",
+      "wallSec": 1.357,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_1098.JPG",
+      "wallSec": 1.147,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2526.JPG",
+      "wallSec": 1.716,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2990.JPG",
+      "wallSec": 1.45,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2542.JPG",
+      "wallSec": 1.276,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9161.JPG",
+      "wallSec": 1.307,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0430.JPG",
+      "wallSec": 1.485,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0633.JPG",
+      "wallSec": 1.144,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2545.JPG",
+      "wallSec": 1.611,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3041.JPG",
+      "wallSec": 1.512,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9164.JPG",
+      "wallSec": 1.348,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3850.JPG",
+      "wallSec": 1.377,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3492.JPG",
+      "wallSec": 1.547,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0165.JPG",
+      "wallSec": 1.188,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3262.JPG",
+      "wallSec": 1.492,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1946.JPG",
+      "wallSec": 1.509,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8975.JPG",
+      "wallSec": 1.367,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_8484.JPG",
+      "wallSec": 1.639,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3794.JPG",
+      "wallSec": 1.648,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9770.JPG",
+      "wallSec": 1.489,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_3328.JPG",
+      "wallSec": 1.339,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9167.JPG",
+      "wallSec": 1.518,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8485.JPG",
+      "wallSec": 1.324,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9433.JPG",
+      "wallSec": 1.249,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3574.JPG",
+      "wallSec": 1.425,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E8734.JPG",
+      "wallSec": 1.361,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3121.JPG",
+      "wallSec": 1.538,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3662.JPG",
+      "wallSec": 1.408,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1516.JPG",
+      "wallSec": 1.18,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0226.JPG",
+      "wallSec": 1.167,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8766.JPG",
+      "wallSec": 1.409,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9745.JPG",
+      "wallSec": 1.463,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0425.JPG",
+      "wallSec": 1.633,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8819.JPG",
+      "wallSec": 1.326,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3375.JPG",
+      "wallSec": 1.357,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9697.JPG",
+      "wallSec": 1.403,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2986.JPG",
+      "wallSec": 1.435,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0432.JPG",
+      "wallSec": 1.549,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5031.JPG",
+      "wallSec": 1.473,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E2788.JPG",
+      "wallSec": 1.577,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3348.JPG",
+      "wallSec": 1.369,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3658.JPG",
+      "wallSec": 1.59,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3820.JPG",
+      "wallSec": 1.597,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1100.JPG",
+      "wallSec": 1.166,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2544.JPG",
+      "wallSec": 1.424,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9348.JPG",
+      "wallSec": 1.679,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2535.JPG",
+      "wallSec": 1.616,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3386.JPG",
+      "wallSec": 1.576,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3478.JPG",
+      "wallSec": 1.452,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2022.JPG",
+      "wallSec": 4.864,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_2525.JPG",
+      "wallSec": 2.86,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3792.JPG",
+      "wallSec": 1.731,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9765.JPG",
+      "wallSec": 1.452,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5120.JPG",
+      "wallSec": 1.555,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8767.JPG",
+      "wallSec": 1.859,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_3198.JPG",
+      "wallSec": 1.667,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_5003.JPG",
+      "wallSec": 2.072,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9764.JPG",
+      "wallSec": 1.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3374.JPG",
+      "wallSec": 1.784,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3040.JPG",
+      "wallSec": 1.538,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2886.JPG",
+      "wallSec": 1.566,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2049.JPG",
+      "wallSec": 1.579,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E8392.JPG",
+      "wallSec": 1.714,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1097.JPG",
+      "wallSec": 1.397,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0460.JPG",
+      "wallSec": 1.385,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2544 (2).JPG",
+      "wallSec": 1.554,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2548.JPG",
+      "wallSec": 1.725,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8983.JPG",
+      "wallSec": 6.979,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_3369.JPG",
+      "wallSec": 4.173,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3373.JPG",
+      "wallSec": 1.709,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3118.JPG",
+      "wallSec": 2.741,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0404.JPG",
+      "wallSec": 2.432,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0405.JPG",
+      "wallSec": 1.597,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9704.JPG",
+      "wallSec": 1.804,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8979.JPG",
+      "wallSec": 1.603,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0223.JPG",
+      "wallSec": 1.589,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_7653.JPG",
+      "wallSec": 1.775,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9089.JPG",
+      "wallSec": 1.719,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8545.JPG",
+      "wallSec": 1.595,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3130.JPG",
+      "wallSec": 1.578,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9693.JPG",
+      "wallSec": 1.78,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9720.JPG",
+      "wallSec": 1.905,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_9744.JPG",
+      "wallSec": 1.886,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3837.JPG",
+      "wallSec": 1.705,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9431.JPG",
+      "wallSec": 1.677,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_9452.JPG",
+      "wallSec": 1.865,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0459.JPG",
+      "wallSec": 1.694,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3533.JPG",
+      "wallSec": 2.013,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_0595.JPG",
+      "wallSec": 1.819,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3046.JPG",
+      "wallSec": 1.852,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2794.JPG",
+      "wallSec": 1.911,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3660.JPG",
+      "wallSec": 1.98,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2136.JPG",
+      "wallSec": 1.435,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3841.JPG",
+      "wallSec": 1.979,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2982.JPG",
+      "wallSec": 2.816,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3923.JPG",
+      "wallSec": 5.145,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_9922.JPG",
+      "wallSec": 1.831,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9888.JPG",
+      "wallSec": 1.633,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9762.JPG",
+      "wallSec": 1.901,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3192.JPG",
+      "wallSec": 1.624,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9088.JPG",
+      "wallSec": 1.605,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2518.JPG",
+      "wallSec": 1.945,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_0403.JPG",
+      "wallSec": 6.929,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9227.JPG",
+      "wallSec": 3.116,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9376.JPG",
+      "wallSec": 1.963,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_9738.JPG",
+      "wallSec": 1.951,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9500.JPG",
+      "wallSec": 1.702,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9664.JPG",
+      "wallSec": 2.08,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8952.JPG",
+      "wallSec": 2.746,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3467.JPG",
+      "wallSec": 2.12,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9372.JPG",
+      "wallSec": 1.555,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2205.JPG",
+      "wallSec": 2.031,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3831.JPG",
+      "wallSec": 1.792,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9210.JPG",
+      "wallSec": 1.918,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9766.JPG",
+      "wallSec": 1.912,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_E9234.JPG",
+      "wallSec": 2.135,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3091.JPG",
+      "wallSec": 2.151,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9496.JPG",
+      "wallSec": 1.792,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9703.JPG",
+      "wallSec": 1.786,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8311.JPG",
+      "wallSec": 4.962,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9421.JPG",
+      "wallSec": 3.559,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3701.JPG",
+      "wallSec": 2.292,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2123.JPG",
+      "wallSec": 2.724,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9226.JPG",
+      "wallSec": 2.084,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5084.JPG",
+      "wallSec": 1.707,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_2536.JPG",
+      "wallSec": 1.673,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1425.JPG",
+      "wallSec": 1.628,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3198.JPG",
+      "wallSec": 1.882,
+      "activitySec": 0.3
+    },
+    {
+      "file": "IMG_9352.JPG",
+      "wallSec": 2.13,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2104.JPG",
+      "wallSec": 2.147,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0631.JPG",
+      "wallSec": 1.688,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_3535.JPG",
+      "wallSec": 2.022,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9290.JPG",
+      "wallSec": 1.699,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_8848.JPG",
+      "wallSec": 2.182,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8457.JPG",
+      "wallSec": 1.714,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3919.JPG",
+      "wallSec": 1.96,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9776.JPG",
+      "wallSec": 1.933,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3481.JPG",
+      "wallSec": 1.754,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0074.JPG",
+      "wallSec": 1.547,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3135.JPG",
+      "wallSec": 2.13,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9481.JPG",
+      "wallSec": 1.656,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3083.JPG",
+      "wallSec": 2.129,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3465.JPG",
+      "wallSec": 1.84,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9356.JPG",
+      "wallSec": 1.788,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E3193.JPG",
+      "wallSec": 2.08,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3692.JPG",
+      "wallSec": 2.148,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3701.JPG",
+      "wallSec": 2.31,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9165.JPG",
+      "wallSec": 1.98,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3137.JPG",
+      "wallSec": 2.037,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8310.JPG",
+      "wallSec": 1.951,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2885.JPG",
+      "wallSec": 1.693,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3832.JPG",
+      "wallSec": 1.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3661.JPG",
+      "wallSec": 2.246,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3371.JPG",
+      "wallSec": 2.028,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3327.JPG",
+      "wallSec": 1.797,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9783.JPG",
+      "wallSec": 1.889,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3522.JPG",
+      "wallSec": 1.832,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8509.JPG",
+      "wallSec": 1.907,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8570.JPG",
+      "wallSec": 1.855,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3842.JPG",
+      "wallSec": 1.816,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E9289.JPG",
+      "wallSec": 2.108,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3531.JPG",
+      "wallSec": 1.941,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3685.JPG",
+      "wallSec": 1.84,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3168.JPG",
+      "wallSec": 2.096,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3819.JPG",
+      "wallSec": 1.882,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5032.JPG",
+      "wallSec": 1.839,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2121.JPG",
+      "wallSec": 2.039,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3670.JPG",
+      "wallSec": 2.461,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3836.JPG",
+      "wallSec": 2.103,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2572.JPG",
+      "wallSec": 1.951,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9490.JPG",
+      "wallSec": 2.012,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2852.JPG",
+      "wallSec": 2.12,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9883.JPG",
+      "wallSec": 2.0,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9199.JPG",
+      "wallSec": 2.036,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3174.JPG",
+      "wallSec": 1.929,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E2537.JPG",
+      "wallSec": 2.037,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2928.JPG",
+      "wallSec": 1.973,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3936.JPG",
+      "wallSec": 1.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3377.JPG",
+      "wallSec": 1.956,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8362.JPG",
+      "wallSec": 1.916,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3171.JPG",
+      "wallSec": 2.269,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9148.JPG",
+      "wallSec": 1.953,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9434.JPG",
+      "wallSec": 2.03,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8988.JPG",
+      "wallSec": 1.891,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8328.JPG",
+      "wallSec": 2.055,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3172.JPG",
+      "wallSec": 1.959,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4933.JPG",
+      "wallSec": 2.148,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3524.JPG",
+      "wallSec": 1.941,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8735.JPG",
+      "wallSec": 2.078,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3382.JPG",
+      "wallSec": 2.209,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E3915.JPG",
+      "wallSec": 2.422,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3120.JPG",
+      "wallSec": 2.344,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3113.JPG",
+      "wallSec": 2.309,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0224.JPG",
+      "wallSec": 1.814,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9902.JPG",
+      "wallSec": 2.166,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3370.JPG",
+      "wallSec": 2.216,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9655.JPG",
+      "wallSec": 2.125,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9495.JPG",
+      "wallSec": 2.264,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9882.JPG",
+      "wallSec": 1.977,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2539.JPG",
+      "wallSec": 1.888,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9066.JPG",
+      "wallSec": 2.142,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3833.JPG",
+      "wallSec": 2.003,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3396.JPG",
+      "wallSec": 2.039,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9737.JPG",
+      "wallSec": 1.94,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0708.JPG",
+      "wallSec": 1.844,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E9387.JPG",
+      "wallSec": 2.14,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8721.JPG",
+      "wallSec": 2.217,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8818.JPG",
+      "wallSec": 2.214,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0426.JPG",
+      "wallSec": 2.261,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3047.JPG",
+      "wallSec": 1.969,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3044.JPG",
+      "wallSec": 2.607,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3659.JPG",
+      "wallSec": 2.462,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2546.JPG",
+      "wallSec": 1.99,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9963.JPG",
+      "wallSec": 2.102,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9958.JPG",
+      "wallSec": 2.105,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3843.JPG",
+      "wallSec": 2.327,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8980.JPG",
+      "wallSec": 2.028,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3379.JPG",
+      "wallSec": 2.023,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9347.JPG",
+      "wallSec": 2.137,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E3197.JPG",
+      "wallSec": 2.324,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4922.JPG",
+      "wallSec": 2.016,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9722.JPG",
+      "wallSec": 2.169,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9935.JPG",
+      "wallSec": 2.027,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9155.JPG",
+      "wallSec": 1.989,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2925.JPG",
+      "wallSec": 2.385,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E8767.JPG",
+      "wallSec": 2.29,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3043.JPG",
+      "wallSec": 2.24,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0222.JPG",
+      "wallSec": 1.892,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9537.JPG",
+      "wallSec": 2.241,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9234.JPG",
+      "wallSec": 2.328,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2541.JPG",
+      "wallSec": 1.956,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3790.JPG",
+      "wallSec": 2.345,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3383.JPG",
+      "wallSec": 2.314,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3196.JPG",
+      "wallSec": 2.483,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3079.JPG",
+      "wallSec": 2.538,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9739.JPG",
+      "wallSec": 2.23,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3834.JPG",
+      "wallSec": 2.223,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3686.JPG",
+      "wallSec": 2.565,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3937.JPG",
+      "wallSec": 2.624,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3042.JPG",
+      "wallSec": 2.045,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8746.JPG",
+      "wallSec": 2.122,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2647.JPG",
+      "wallSec": 2.489,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3847.JPG",
+      "wallSec": 2.122,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3702.JPG",
+      "wallSec": 2.492,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8608.JPG",
+      "wallSec": 2.359,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9394.JPG",
+      "wallSec": 2.223,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_2538.JPG",
+      "wallSec": 2.284,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9521.JPG",
+      "wallSec": 2.287,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8609.JPG",
+      "wallSec": 2.262,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3119.JPG",
+      "wallSec": 2.585,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9774.JPG",
+      "wallSec": 2.067,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2987.JPG",
+      "wallSec": 2.108,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3836.JPG",
+      "wallSec": 2.362,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9357.JPG",
+      "wallSec": 2.571,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9742.JPG",
+      "wallSec": 2.331,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_9772.JPG",
+      "wallSec": 2.115,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9822.JPG",
+      "wallSec": 2.087,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2097.JPG",
+      "wallSec": 2.027,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9728.JPG",
+      "wallSec": 2.128,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9769.JPG",
+      "wallSec": 2.198,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E3921.JPG",
+      "wallSec": 2.609,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8883.JPG",
+      "wallSec": 2.749,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0384.JPG",
+      "wallSec": 2.094,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0227.JPG",
+      "wallSec": 2.085,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3397.JPG",
+      "wallSec": 2.122,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1102.JPG",
+      "wallSec": 1.885,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2653.JPG",
+      "wallSec": 2.28,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3920.JPG",
+      "wallSec": 2.303,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0495.JPG",
+      "wallSec": 1.781,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9948.JPG",
+      "wallSec": 2.222,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4905.JPG",
+      "wallSec": 2.293,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3895.JPG",
+      "wallSec": 2.331,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9377.JPG",
+      "wallSec": 2.242,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3133.JPG",
+      "wallSec": 2.47,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_9353.JPG",
+      "wallSec": 2.491,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9206.JPG",
+      "wallSec": 2.215,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3496.JPG",
+      "wallSec": 2.181,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4672.JPG",
+      "wallSec": 2.281,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3846.JPG",
+      "wallSec": 2.576,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9594.JPG",
+      "wallSec": 2.345,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9609.JPG",
+      "wallSec": 2.096,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9633.JPG",
+      "wallSec": 2.419,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3380.JPG",
+      "wallSec": 2.121,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2856.JPG",
+      "wallSec": 2.325,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2989.JPG",
+      "wallSec": 2.334,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2204.JPG",
+      "wallSec": 2.161,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9777.JPG",
+      "wallSec": 2.126,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3939.JPG",
+      "wallSec": 2.392,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_2653.JPG",
+      "wallSec": 2.423,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3109.JPG",
+      "wallSec": 2.538,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8987.JPG",
+      "wallSec": 2.162,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2649.JPG",
+      "wallSec": 2.235,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9653.JPG",
+      "wallSec": 2.129,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3689.JPG",
+      "wallSec": 2.529,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3132.JPG",
+      "wallSec": 2.453,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3343.JPG",
+      "wallSec": 2.258,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9936.JPG",
+      "wallSec": 2.184,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2648.JPG",
+      "wallSec": 2.53,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9648.JPG",
+      "wallSec": 2.313,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3849.JPG",
+      "wallSec": 2.508,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3848.JPG",
+      "wallSec": 2.516,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_9763.JPG",
+      "wallSec": 2.614,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8574.JPG",
+      "wallSec": 2.338,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3679.JPG",
+      "wallSec": 2.193,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3938.JPG",
+      "wallSec": 2.193,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3376.JPG",
+      "wallSec": 2.43,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3261.JPG",
+      "wallSec": 2.166,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0429.JPG",
+      "wallSec": 2.34,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3073.JPG",
+      "wallSec": 2.551,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3167.JPG",
+      "wallSec": 2.215,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3827.JPG",
+      "wallSec": 2.479,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2652.JPG",
+      "wallSec": 2.303,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9355.JPG",
+      "wallSec": 2.283,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8337.JPG",
+      "wallSec": 2.313,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_2385.JPG",
+      "wallSec": 2.675,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8895.JPG",
+      "wallSec": 2.315,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9865.JPG",
+      "wallSec": 2.356,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3162.JPG",
+      "wallSec": 2.311,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9683.JPG",
+      "wallSec": 2.262,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9043.JPG",
+      "wallSec": 2.22,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9821.JPG",
+      "wallSec": 2.342,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2926.JPG",
+      "wallSec": 2.427,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3534.JPG",
+      "wallSec": 2.287,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3683.JPG",
+      "wallSec": 2.514,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8483.JPG",
+      "wallSec": 2.243,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9696.JPG",
+      "wallSec": 2.456,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9024.JPG",
+      "wallSec": 2.395,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_8379.JPG",
+      "wallSec": 2.59,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8572.JPG",
+      "wallSec": 2.155,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8733.JPG",
+      "wallSec": 2.513,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9652.JPG",
+      "wallSec": 2.237,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8577.JPG",
+      "wallSec": 2.17,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3913.JPG",
+      "wallSec": 2.45,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9771.JPG",
+      "wallSec": 2.43,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3851.JPG",
+      "wallSec": 2.223,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0433.JPG",
+      "wallSec": 2.489,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_8984.JPG",
+      "wallSec": 2.434,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3818.JPG",
+      "wallSec": 2.377,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3045.JPG",
+      "wallSec": 2.669,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3480.JPG",
+      "wallSec": 2.207,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_0225.JPG",
+      "wallSec": 2.365,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8871.JPG",
+      "wallSec": 2.269,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9166.JPG",
+      "wallSec": 2.375,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3565.JPG",
+      "wallSec": 2.275,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2984.JPG",
+      "wallSec": 2.255,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3378.JPG",
+      "wallSec": 2.432,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E8735.JPG",
+      "wallSec": 2.196,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8606.JPG",
+      "wallSec": 2.362,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2988.JPG",
+      "wallSec": 2.509,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2855.JPG",
+      "wallSec": 2.197,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3381.JPG",
+      "wallSec": 2.36,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0593.JPG",
+      "wallSec": 2.385,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2652.JPG",
+      "wallSec": 2.649,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3134.JPG",
+      "wallSec": 2.644,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3197.JPG",
+      "wallSec": 2.331,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9941.JPG",
+      "wallSec": 2.498,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_7651.JPG",
+      "wallSec": 2.376,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2985.JPG",
+      "wallSec": 2.408,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3486.JPG",
+      "wallSec": 2.313,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2139.JPG",
+      "wallSec": 2.419,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5033.JPG",
+      "wallSec": 2.48,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_8558.JPG",
+      "wallSec": 2.183,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0632.JPG",
+      "wallSec": 2.139,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3523.JPG",
+      "wallSec": 2.49,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9607.JPG",
+      "wallSec": 2.38,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3196.JPG",
+      "wallSec": 2.376,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3169.JPG",
+      "wallSec": 2.725,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8584.JPG",
+      "wallSec": 2.445,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9020.JPG",
+      "wallSec": 2.305,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0406.JPG",
+      "wallSec": 2.257,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9489.JPG",
+      "wallSec": 2.451,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9861.JPG",
+      "wallSec": 2.274,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3935.JPG",
+      "wallSec": 2.171,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9719.JPG",
+      "wallSec": 2.289,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9940.JPG",
+      "wallSec": 2.358,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9433.JPG",
+      "wallSec": 2.425,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3532.JPG",
+      "wallSec": 2.297,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3144.JPG",
+      "wallSec": 2.351,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3894.JPG",
+      "wallSec": 2.299,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E2647.JPG",
+      "wallSec": 2.541,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E2648.JPG",
+      "wallSec": 2.52,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2094.JPG",
+      "wallSec": 2.604,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3828.JPG",
+      "wallSec": 2.638,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9198.JPG",
+      "wallSec": 2.385,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9203.JPG",
+      "wallSec": 2.455,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_E3942.JPG",
+      "wallSec": 2.591,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_2113.JPG",
+      "wallSec": 2.49,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3852.JPG",
+      "wallSec": 2.579,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2531.JPG",
+      "wallSec": 2.27,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9905.JPG",
+      "wallSec": 2.494,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5106.JPG",
+      "wallSec": 2.537,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3791.JPG",
+      "wallSec": 2.753,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8476.JPG",
+      "wallSec": 2.506,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9656.JPG",
+      "wallSec": 2.331,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3356.JPG",
+      "wallSec": 2.554,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8698.JPG",
+      "wallSec": 2.468,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9436.JPG",
+      "wallSec": 2.425,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9708.JPG",
+      "wallSec": 2.478,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9645.JPG",
+      "wallSec": 2.421,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9741.JPG",
+      "wallSec": 2.323,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9327.JPG",
+      "wallSec": 2.38,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3796.JPG",
+      "wallSec": 2.516,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0634.JPG",
+      "wallSec": 2.222,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9811.JPG",
+      "wallSec": 2.475,
+      "activitySec": 0.3
+    },
+    {
+      "file": "IMG_E3940.JPG",
+      "wallSec": 2.825,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9027.JPG",
+      "wallSec": 2.48,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9923.JPG",
+      "wallSec": 2.405,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2929.JPG",
+      "wallSec": 2.567,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1517.JPG",
+      "wallSec": 2.292,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9225.JPG",
+      "wallSec": 2.477,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9351.JPG",
+      "wallSec": 2.528,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9903.JPG",
+      "wallSec": 2.463,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3395.JPG",
+      "wallSec": 2.396,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3170.JPG",
+      "wallSec": 2.764,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0428.JPG",
+      "wallSec": 2.683,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_3115.JPG",
+      "wallSec": 2.725,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_3835.JPG",
+      "wallSec": 2.672,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9768.JPG",
+      "wallSec": 2.322,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8479.JPG",
+      "wallSec": 2.339,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9662.JPG",
+      "wallSec": 2.513,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0457.JPG",
+      "wallSec": 2.337,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3795.JPG",
+      "wallSec": 2.792,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_1099.JPG",
+      "wallSec": 2.325,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4787.JPG",
+      "wallSec": 2.263,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3391.JPG",
+      "wallSec": 2.442,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3333.JPG",
+      "wallSec": 2.468,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9176.JPG",
+      "wallSec": 2.529,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3930.JPG",
+      "wallSec": 2.363,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9174.JPG",
+      "wallSec": 2.77,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_E3757.JPG",
+      "wallSec": 2.811,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3528.JPG",
+      "wallSec": 2.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3352.JPG",
+      "wallSec": 2.586,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0427.JPG",
+      "wallSec": 2.72,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2537.JPG",
+      "wallSec": 3.8,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_5112.JPG",
+      "wallSec": 2.61,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3782.JPG",
+      "wallSec": 2.476,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9707.JPG",
+      "wallSec": 2.594,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3893.JPG",
+      "wallSec": 2.741,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3129.JPG",
+      "wallSec": 2.788,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9610.JPG",
+      "wallSec": 2.43,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_9904.JPG",
+      "wallSec": 2.721,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3477.JPG",
+      "wallSec": 2.569,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0431.JPG",
+      "wallSec": 2.594,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_7652.JPG",
+      "wallSec": 2.629,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9775.JPG",
+      "wallSec": 2.453,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9200.JPG",
+      "wallSec": 2.668,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8371.JPG",
+      "wallSec": 2.682,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3388.JPG",
+      "wallSec": 2.552,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3364.JPG",
+      "wallSec": 2.734,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3464.JPG",
+      "wallSec": 2.464,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9602.JPG",
+      "wallSec": 2.421,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9820.JPG",
+      "wallSec": 2.62,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_0414.JPG",
+      "wallSec": 2.651,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2543.JPG",
+      "wallSec": 2.611,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4908.JPG",
+      "wallSec": 2.242,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8986.JPG",
+      "wallSec": 0.888,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2927.JPG",
+      "wallSec": 1.01,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0466.JPG",
+      "wallSec": 0.441,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_9961.JPG",
+      "wallSec": 1.159,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0407.JPG",
+      "wallSec": 0.44,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_9197.JPG",
+      "wallSec": 1.174,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9309.JPG",
+      "wallSec": 0.464,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_3473.JPG",
+      "wallSec": 0.936,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_2067.JPG",
+      "wallSec": 0.904,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_9933.JPG",
+      "wallSec": 0.893,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_8775.JPG",
+      "wallSec": 1.37,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8991.JPG",
+      "wallSec": 0.874,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9170.JPG",
+      "wallSec": 0.955,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8392.JPG",
+      "wallSec": 1.006,
+      "activitySec": 0.5
+    },
+    {
+      "file": "IMG_2533.JPG",
+      "wallSec": 0.535,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_2649.JPG",
+      "wallSec": 1.502,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2872.JPG",
+      "wallSec": 0.984,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3326.JPG",
+      "wallSec": 0.448,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_2135.JPG",
+      "wallSec": 0.932,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_4373.JPG",
+      "wallSec": 1.353,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2540.JPG",
+      "wallSec": 0.724,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_1101.JPG",
+      "wallSec": 0.61,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9317.JPG",
+      "wallSec": 0.449,
+      "activitySec": 0.0
+    },
+    {
+      "file": "IMG_9087.JPG",
+      "wallSec": 1.401,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3466.JPG",
+      "wallSec": 1.122,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_9743.JPG",
+      "wallSec": 1.052,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3194.JPG",
+      "wallSec": 0.475,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_E2983.JPG",
+      "wallSec": 1.166,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3399.JPG",
+      "wallSec": 0.94,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3724.JPG",
+      "wallSec": 0.953,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9866.JPG",
+      "wallSec": 0.438,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_3840.JPG",
+      "wallSec": 1.532,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3891.JPG",
+      "wallSec": 0.95,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9067.JPG",
+      "wallSec": 0.468,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_3845.JPG",
+      "wallSec": 1.488,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8683.JPG",
+      "wallSec": 0.445,
+      "activitySec": 0.0
+    },
+    {
+      "file": "IMG_9044.JPG",
+      "wallSec": 1.222,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3479.JPG",
+      "wallSec": 0.476,
+      "activitySec": 0.2
+    },
+    {
+      "file": "IMG_8369.JPG",
+      "wallSec": 1.089,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E9391.JPG",
+      "wallSec": 0.44,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_9601.JPG",
+      "wallSec": 0.92,
+      "activitySec": 0.0
+    },
+    {
+      "file": "IMG_E2792.JPG",
+      "wallSec": 1.362,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_8919.JPG",
+      "wallSec": 0.476,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_9702.JPG",
+      "wallSec": 1.354,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2098.JPG",
+      "wallSec": 0.974,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_9361.JPG",
+      "wallSec": 0.959,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0240.JPG",
+      "wallSec": 0.585,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_E3892.JPG",
+      "wallSec": 0.91,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2983.JPG",
+      "wallSec": 0.481,
+      "activitySec": 0.1
+    },
+    {
+      "file": "IMG_3413.JPG",
+      "wallSec": 1.127,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_2545 (2).JPG",
+      "wallSec": 0.974,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_0594.JPG",
+      "wallSec": 0.914,
+      "activitySec": 0.4
+    },
+    {
+      "file": "IMG_3530.JPG",
+      "wallSec": 4.152,
+      "activitySec": null
+    }
+  ]
+}

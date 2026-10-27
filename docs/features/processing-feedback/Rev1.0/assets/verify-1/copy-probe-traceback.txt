@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+  File "J:\slyOS\projects\photoLibrary\library\copy.py", line 189, in write_via_partial
+    os.fsync(handle.fileno())
+OSError: [Errno 9] Bad file descriptor

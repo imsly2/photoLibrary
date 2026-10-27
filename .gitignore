@@ -117,3 +117,13 @@ venv/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Local proof runs and launch logs. A clone does not need them.
+/_proof-catalog/
+/_proof-portable/
+/debug.log
+/_*.log
+
+# Generated folder-library leftovers inside feature evidence.
+docs/features/**/.library/
+docs/features/**/*.tmp

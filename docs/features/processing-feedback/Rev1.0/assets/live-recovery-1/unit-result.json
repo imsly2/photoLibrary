@@ -1,0 +1,5 @@
+{
+  "test": "tests.test_objects_status",
+  "exitCode": 0,
+  "scope": "Focused queue status regression, not a full feature Check"
+}

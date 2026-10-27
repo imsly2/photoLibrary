@@ -1,0 +1,323 @@
+{
+  "cli": {
+    "media": {
+      "sharp": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\sharp.jpg",
+      "blur": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\blur.jpg",
+      "dark": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\dark.jpg",
+      "bright": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\bright.jpg",
+      "colorful": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\colorful.jpg",
+      "gray": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\graysharp.jpg",
+      "burst1": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\burst_001.jpg",
+      "burst2": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\burst_002.jpg",
+      "burst3": "docs\\features\\processing-feedback\\Rev1.0\\assets\\face-history-fix\\qa-taste-rating\\rating-media\\burst_003.jpg"
+    },
+    "setup": {
+      "ok": true,
+      "kind": "rate",
+      "model": "nima-mobilenet.onnx",
+      "engine": "nima-mobilenet",
+      "backend": "fixture",
+      "path": "models/aesthetic/nima-mobilenet.onnx",
+      "sha256": "f54497e1ec0b32feb6d10b6b4a4d08d654523d2f8c0a9f7522379411ff691ccb",
+      "bytes": 522,
+      "device": "cpu"
+    },
+    "rate": {
+      "ok": true,
+      "rated": 9,
+      "skipped": 0,
+      "errors": 0,
+      "items": [
+        {
+          "id": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92",
+          "suggested": 3,
+          "flags": [
+            "too-bright"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a",
+          "suggested": 3,
+          "flags": [
+            "too-dark"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15",
+          "suggested": 5,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03",
+          "suggested": 3,
+          "flags": [],
+          "bestOfGroup": false
+        }
+      ],
+      "mode": "basic"
+    },
+    "basicScores": {
+      "sharp": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "blur": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "dark": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "too-dark"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "bright": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "too-bright"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "colorful": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "gray": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": false
+      },
+      "burst1": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "burst2": {
+        "suggested": 3,
+        "yours": null,
+        "stars": 3,
+        "pick": false,
+        "reject": false,
+        "flags": [
+          "blurry"
+        ],
+        "bestOfGroup": false,
+        "mode": "basic",
+        "blurry": true
+      },
+      "burst3": {
+        "suggested": 5,
+        "yours": null,
+        "stars": 5,
+        "pick": false,
+        "reject": false,
+        "flags": [],
+        "bestOfGroup": true,
+        "mode": "basic",
+        "blurry": false
+      }
+    },
+    "rescan": {
+      "ok": true,
+      "rated": 0,
+      "skipped": 9,
+      "errors": 0,
+      "items": [],
+      "mode": "basic"
+    },
+    "smart": {
+      "ok": true,
+      "rated": 9,
+      "skipped": 0,
+      "errors": 0,
+      "items": [
+        {
+          "id": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e",
+          "suggested": 2,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "89b46a3c7c831832098b55ed37b937c83fc62595b6c840d4191ca37ab9900c37",
+          "suggested": 3,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92",
+          "suggested": 3,
+          "flags": [
+            "too-bright"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": false
+        },
+        {
+          "id": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a",
+          "suggested": 2,
+          "flags": [
+            "too-dark"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15",
+          "suggested": 4,
+          "flags": [],
+          "bestOfGroup": true
+        },
+        {
+          "id": "d420f4d3048175328f72dd693975cf359508d94d8397b4c715bda4f2ecc6275b",
+          "suggested": 2,
+          "flags": [
+            "blurry"
+          ],
+          "bestOfGroup": false
+        },
+        {
+          "id": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03",
+          "suggested": 3,
+          "flags": [],
+          "bestOfGroup": false
+        }
+      ],
+      "mode": "smart"
+    },
+    "smartOrder": {
+      "basicColor": 3.0,
+      "basicGray": 5.0,
+      "smartColor": 3.0,
+      "smartGray": 4.0,
+      "colorAesthetic": 0.41185686323377824,
+      "grayAesthetic": 0.15178934733072916
+    },
+    "ids": {
+      "sharp": "73c17a6a75c132d3ee1091e567248e7b82a3da049140c2d3f8b08b50980ab91e",
+      "blur": "7df489c5a0be2a52c19211f845a104c38648e8d0f042f35ff948666aca89161e",
+      "dark": "aa0a64d019a3baa75333d015f2008dd03bf9eb1f9ff2a1960495a5986cfd163a",
+      "bright": "8b59430de917f85660ce45ff66eca1b51aed21e95643881515b328291094cb92",
+      "colorful": "d4ee09ae599b63a4dabf2b39280583bed6065d9e620c08e88644b581ddcadf03",
+      "gray": "9b3d1254de122ec83ee4bf65b0b8090d048b80892424bc26ffdf4fa3575aaa24",
+      "burst3": "c4dc6003de64d5dc5a7253e2e60ddea35406bffef76367054782738149543a15"
+    }
+  },
+  "http": {
+    "url": "http://127.0.0.1:18765/",
+    "rateGet": {
+      "ok": true,
+      "installed": true,
+      "enabled": true,
+      "mode": "smart",
+      "learn": true,
+      "model": "nima-mobilenet.onnx",
+      "engine": "nima-mobilenet",
+      "pending": 0,
+      "done": 9,
+      "error": 0
+    }
+  }
+}

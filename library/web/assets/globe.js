@@ -1405,8 +1405,28 @@
     }
   });
 
+  function showMoment(moment) {
+    stopTour();
+    const lat = Number(moment && moment.latitude);
+    const lon = Number(moment && moment.longitude);
+    if (!isFinite(lat) || !isFinite(lon)) {
+      return;
+    }
+    const look = lookAtPlace({ latitude: lat, longitude: lon }, CLOSE_DIST);
+    yaw = look.yaw;
+    pitch = look.pitch;
+    distance = look.distance;
+    canvas.dataset.framed = "1";
+    if (emptyEl) {
+      emptyEl.hidden = true;
+    }
+    syncCameraDataset();
+    requestDraw();
+  }
+
   window.libraryGlobe = {
     setActive: setActive,
+    showMoment: showMoment,
     refresh: loadPlaces,
     stopTour: stopTour,
     isTouring: function () {

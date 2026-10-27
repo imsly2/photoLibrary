@@ -1,0 +1,312 @@
+{
+  "label": "smoke",
+  "load": "ui",
+  "count": 10,
+  "appPath": "J:\\slyOS\\projects\\photoLibrary",
+  "gitCommit": "c45b3be932672fe302c1969102377a0f9671e71f",
+  "port": 8798,
+  "fixtureDir": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\pictures-10",
+  "libraryRoot": "J:\\slyOS\\projects\\photoLibrary\\.qa\\bench\\library-data",
+  "machine": {
+    "platform": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+    "python": "3.13.9"
+  },
+  "ffmpegBaseline": {
+    "thumbSecMean": 0.16284731999985524,
+    "previewSecMean": 0.3207587400003831,
+    "sampleCount": 10
+  },
+  "budgets": {
+    "countBaseline": 80,
+    "readingRateMinPicturesPerSec": 15,
+    "readingTenthRatioMax": 1.25,
+    "firstThumbMaxSec": 3,
+    "allThumbsPosterMaxSec": 30,
+    "viewerPreviewMaxSec": 2,
+    "everythingDoneMaxSec": 90,
+    "bookkeepingMaxMs": 50,
+    "apiJobsP95MaxMs": 300,
+    "apiItemsP95MaxMs": 1000,
+    "scaleLinearWithCount": [
+      "allThumbsPosterMaxSec",
+      "everythingDoneMaxSec"
+    ]
+  },
+  "scaledTargets": {
+    "allThumbsPosterMaxSec": 3.75,
+    "everythingDoneMaxSec": 11.25
+  },
+  "timeoutSec": 300.0,
+  "timedOut": false,
+  "results": [
+    {
+      "id": "readingRate",
+      "budget": ">= 15 pictures/s",
+      "target": 15,
+      "measured": 5.104407878940415,
+      "measuredDisplay": "5.104",
+      "result": "FAIL",
+      "pass": false
+    },
+    {
+      "id": "readingTenthRatio",
+      "budget": "<= 1.25",
+      "target": 1.25,
+      "measured": 2.7920445447845053,
+      "measuredDisplay": "2.792",
+      "result": "FAIL",
+      "pass": false
+    },
+    {
+      "id": "firstThumb",
+      "budget": "<= 3 s",
+      "target": 3,
+      "measured": 0.5970276000007289,
+      "measuredDisplay": "0.597",
+      "result": "PASS",
+      "pass": true
+    },
+    {
+      "id": "allThumbsPoster",
+      "budget": "<= 3.8 s (scaled)",
+      "target": 3.75,
+      "measured": 3.568049500001507,
+      "measuredDisplay": "3.568",
+      "result": "PASS",
+      "pass": true
+    },
+    {
+      "id": "viewerPreview",
+      "budget": "<= 2 s from viewer open",
+      "target": 2,
+      "measured": 0.7618311000005633,
+      "measuredDisplay": "0.762",
+      "result": "PASS",
+      "pass": true
+    },
+    {
+      "id": "everythingDone",
+      "budget": "<= 11.2 s (scaled)",
+      "target": 11.25,
+      "measured": 10.303610000002664,
+      "measuredDisplay": "10.304",
+      "result": "PASS",
+      "pass": true
+    },
+    {
+      "id": "bookkeeping",
+      "budget": "<= 50 ms/job",
+      "target": 50,
+      "measured": 335.37310285667314,
+      "measuredDisplay": "335.373",
+      "result": "FAIL",
+      "pass": false
+    },
+    {
+      "id": "apiJobsP95",
+      "budget": "<= 300 ms",
+      "target": 300,
+      "measured": 1222.8707000012946,
+      "measuredDisplay": "1222.871",
+      "result": "FAIL",
+      "pass": false
+    },
+    {
+      "id": "apiItemsP95",
+      "budget": "<= 1000 ms",
+      "target": 1000,
+      "measured": 458.3254950000984,
+      "measuredDisplay": "458.325",
+      "result": "PASS",
+      "pass": true
+    }
+  ],
+  "milestonesSec": {
+    "firstThumb": 0.5970276000007289,
+    "allGrid": 3.568049500001507,
+    "viewerOpen": 0.5970276000007289,
+    "viewerPreviewLatency": 0.7618311000005633,
+    "everything": 10.303610000002664,
+    "scanDone": 2.1550002000003587
+  },
+  "latencyMs": {
+    "jobs": {
+      "p50": 14.704199998959666,
+      "p95": 1222.8707000012946,
+      "max": 2414.6395000025223,
+      "n": 11
+    },
+    "items": {
+      "p50": 20.429350000995328,
+      "p95": 458.3254950000984,
+      "max": 782.6516999994055,
+      "n": 10
+    }
+  },
+  "reading": {
+    "rate": 5.104407878940415,
+    "tenthRatio": 2.7920445447845053,
+    "files": 11,
+    "scanWallSec": 2.1550002000003587
+  },
+  "viewerItemId": "3928c461e39c231818e4661f06e0a66f4471ef65f9655e52fa5f5a4411cac7a3",
+  "bookkeeping": {
+    "meanMs": 335.37310285667314,
+    "window": "postScanSteady",
+    "sampleCount": 7,
+    "samplesMs": [
+      199.16125999843644,
+      196.4797600001475,
+      97.52625999935843,
+      1572.9055600011634,
+      94.83666000123775,
+      93.48605999803111,
+      93.21615999833737
+    ]
+  },
+  "portableMirrorLagSec": 0.23935679999704007,
+  "portableMirrorChecked": true,
+  "timeline": [
+    {
+      "t": 0.082,
+      "diskItems": 0,
+      "filesRead": 0,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.183,
+      "diskItems": 1,
+      "filesRead": 1,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.285,
+      "diskItems": 2,
+      "filesRead": 2,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.388,
+      "diskItems": 3,
+      "filesRead": 3,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.494,
+      "diskItems": 4,
+      "filesRead": 4,
+      "thumbsReady": 0,
+      "queued": true
+    },
+    {
+      "t": 0.597,
+      "diskItems": 5,
+      "filesRead": 5,
+      "thumbsReady": 1,
+      "queued": true
+    },
+    {
+      "t": 0.731,
+      "diskItems": 7,
+      "filesRead": 7,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 0.834,
+      "diskItems": 8,
+      "filesRead": 8,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 0.962,
+      "diskItems": 10,
+      "filesRead": 10,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 1.473,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 2,
+      "queued": true
+    },
+    {
+      "t": 1.58,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 3,
+      "queued": true
+    },
+    {
+      "t": 2.119,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 4,
+      "queued": true
+    },
+    {
+      "t": 2.329,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 5,
+      "queued": true
+    },
+    {
+      "t": 2.534,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 6,
+      "queued": true
+    },
+    {
+      "t": 2.74,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 7,
+      "queued": true
+    },
+    {
+      "t": 2.949,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 8,
+      "queued": true
+    },
+    {
+      "t": 3.052,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 9,
+      "queued": true
+    },
+    {
+      "t": 3.258,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 10,
+      "queued": true
+    },
+    {
+      "t": 3.568,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 11,
+      "queued": true
+    },
+    {
+      "t": 10.304,
+      "diskItems": 11,
+      "filesRead": 11,
+      "thumbsReady": 11,
+      "queued": false
+    }
+  ]
+}
