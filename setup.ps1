@@ -113,6 +113,7 @@ function Show-Help {
     Write-Host "  5. python -m library setup-ml faces"
     Write-Host "  6. python -m library setup-ml transcribe"
     Write-Host "  7. python -m library setup-ml aesthetic"
+    Write-Host "  8. Optional iPhone tool beside this folder (projects/iphonePhotos)"
     Write-Host ""
     Write-Host "First model download needs the internet. Models stay under library-data/."
     Write-Host "Re-run is safe (idempotent). No MSI. Does not start Library.bat."
@@ -471,6 +472,45 @@ function Install-Shortcuts {
     }
 }
 
+function Ensure-IphoneTool {
+    $parent = Split-Path -Parent $AppFolder
+    $tool = Join-Path $parent "iphonePhotos"
+    $hostExe = Join-Path $tool "ui-host\bin\Release\net10.0\win-x64\iphone-photos-host.exe"
+    Write-Host ""
+    Write-Host "Import iPhone uses the separate tool next to Library."
+    if (-not (Test-Path -LiteralPath $hostExe)) {
+        Write-Host "iPhone tool not found. Import iPhone will say it is not installed."
+        Write-Host ("Expected: " + $hostExe)
+        Write-Host "Copy that folder beside Library and run its Setup.bat. Library setup still finishes."
+        return
+    }
+    Write-Host ("iPhone tool: " + $tool)
+    if ($DryRun) {
+        Write-Host "Dry-run: would start the phone helper. If it needs .NET 10, would winget Microsoft.DotNet.Runtime.10."
+        return
+    }
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $output = & $hostExe 2>&1 | Out-String
+    $ErrorActionPreference = $prev
+    if ($output -match "You must install or update \.NET") {
+        Write-Host "Phone helper needs the .NET 10 runtime. Trying winget..."
+        & winget install --id Microsoft.DotNet.Runtime.10 -e --accept-package-agreements --accept-source-agreements --disable-interactivity --source winget
+        $ErrorActionPreference = "Continue"
+        $output = & $hostExe 2>&1 | Out-String
+        $ErrorActionPreference = "Stop"
+        if ($output -match "You must install or update \.NET") {
+            Write-Host "The .NET 10 runtime is still missing. Import iPhone will say so. Library setup still finishes."
+            return
+        }
+    }
+    if ($output -match "Usage:") {
+        Write-Host "Phone helper starts. Import iPhone can use it."
+        return
+    }
+    Write-Host "Phone helper did not print its usage. Import iPhone will show the tool's own message."
+}
+
 try {
     if ($DryRun) {
         Write-Host "Dry-run -- no winget, pip, or model download."
@@ -565,6 +605,7 @@ try {
 
     Write-Step -Number 9 -Total 9 -Text "Creating Desktop and Start Menu shortcuts..."
     Install-Shortcuts
+    Ensure-IphoneTool
 
     Write-Host ""
     if ($DryRun) {

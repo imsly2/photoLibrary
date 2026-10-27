@@ -5265,7 +5265,7 @@
         main.innerHTML = '<p id="grid-loading">' + t("loadingPictures") + "</p>";
         renderKey = "loading";
       } else {
-        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + t("emptyLibrary") + '</p><button type="button" id="empty-add-folder">' + t("addFolder") + '</button><p class="empty-hint">' + t("familyHint") + "</p></div>";
+        main.innerHTML = '<div class="empty-state" id="empty-library"><p>' + t("emptyLibrary") + '</p><button type="button" id="empty-add-folder">' + t("addFolder") + '</button><button type="button" id="empty-import-iphone">' + t("importIphone") + '</button><p class="empty-hint">' + t("familyHint") + "</p></div>";
         const emptyAdd = document.getElementById("empty-add-folder");
         if (emptyAdd) {
           emptyAdd.setAttribute("aria-label", t("addPhotos"));
@@ -6948,6 +6948,11 @@
           button.textContent = t("addFolder");
           button.addEventListener("click", openAddDialog);
           main.appendChild(button);
+          const iphone = document.createElement("button");
+          iphone.type = "button";
+          iphone.id = "empty-import-iphone";
+          iphone.textContent = t("importIphone");
+          main.appendChild(iphone);
         }
       }
     }

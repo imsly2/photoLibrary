@@ -18,10 +18,17 @@ beside the server: one JSON record per picture, one per person, one per place,
 one per thing. A SQLite file is a search index rebuilt from those records.
 Delete the SQLite file and the server builds it again.
 
-This tool does not pull photos off an iPhone. That is
+This tool does not talk to the phone itself. That program is
 [iphonePhotos](../../iphonePhotos/docs/PRODUCT.md), the separate tool at
-`projects/iphonePhotos`. When that copy has landed in a folder, add the
-folder here.
+`projects/iphonePhotos`, next to this folder. **Import iPhone** in the
+header opens a dialog in this app. The dialog asks that tool to list the
+camera roll and copy what is missing into a folder you pick. An existing
+file is never replaced. When the copy finishes, or you stop it, that
+folder is added with Serve from that folder. Unlock the phone and tap
+Trust first. If the tool is not beside Library, or the phone helper
+cannot start, the dialog says so and does not pretend to copy.
+`Setup.bat` checks for the sibling tool and the .NET 10 runtime the
+helper needs. A missing phone tool does not fail Library setup.
 
 Nothing in this file is optional flavor. A feature is done when its **Check**
 passes. [STATUS.md](STATUS.md) records the artifact for each Check. Until then

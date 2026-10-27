@@ -45,6 +45,7 @@
       <button type="button" id="delete-file" class="toolbar-action" disabled data-i18n="deleteFile">Delete file</button>
     </div>
     <button type="button" id="add-folder-btn" data-i18n="addFolder">Add folder</button>
+    <button type="button" id="import-iphone-btn" data-i18n="importIphone">Import iPhone</button>
     <label class="toolbar-field language-field">
       <span data-i18n="language">Language</span>
       <select id="language" aria-label="Language" data-i18n-aria="language">
@@ -513,6 +514,27 @@
       <button type="button" id="rating-weights-reset" data-i18n="resetRatingWeights">Reset suggestion weights</button>
     </section>
   </div>
+  <dialog id="import-iphone" aria-labelledby="import-iphone-title">
+    <h2 id="import-iphone-title" data-i18n="importIphone">Import iPhone</h2>
+    <p id="import-iphone-help" data-i18n="importIphoneHelp">Unlock the phone and tap Trust. Nothing is copied until you press Copy what's missing. Existing files stay.</p>
+    <label class="path-field">
+      <span data-i18n="path">Path</span>
+      <span class="path-row">
+        <input type="text" id="import-iphone-path" autocomplete="off" spellcheck="false">
+        <button type="button" id="import-iphone-browse" data-i18n="browse">Browse</button>
+      </span>
+    </label>
+    <p id="import-iphone-phone"></p>
+    <p id="import-iphone-counts"></p>
+    <div id="import-iphone-rows"></div>
+    <p id="import-iphone-status"></p>
+    <p id="import-iphone-error" class="dialog-error" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" id="import-iphone-close" data-i18n="cancel">Cancel</button>
+      <button type="button" id="import-iphone-look" data-i18n="look">Look</button>
+      <button type="button" id="import-iphone-copy" data-i18n="copyMissing">Copy what's missing</button>
+    </div>
+  </dialog>
   <dialog id="add-folder" aria-labelledby="add-folder-title">
     <h2 id="add-folder-title" data-i18n="addAFolder">Add a folder</h2>
     <label class="path-field">
@@ -686,6 +708,7 @@
   </div>
   <script src="/assets/i18n.js"></script>
   <script src="/assets/library.js"></script>
+  <script src="/assets/iphone-import.js"></script>
   <script src="/assets/globe.js"></script>
 </body>
 </html>

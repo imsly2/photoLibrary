@@ -472,6 +472,35 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 chosen = pick_folder()
                 self._send_json(200, {"path": chosen})
                 return
+            if route == "/api/iphone" and method in {"GET", "HEAD"}:
+                from library.iphone_import import job, status
+
+                payload = status()
+                payload["job"] = job()
+                self._send_json(200, payload)
+                return
+            if route == "/api/iphone/look" and method == "POST":
+                body = self._read_json()
+                if not isinstance(body, dict):
+                    raise fail("invalid-argument")
+                from library.iphone_import import look
+
+                self._send_json(200, look(str(body.get("path") or "")))
+                return
+            if route == "/api/iphone/copy" and method == "POST":
+                body = self._read_json()
+                if not isinstance(body, dict):
+                    raise fail("invalid-argument")
+                from library.iphone_import import start_copy
+
+                self._send_json(202, start_copy(str(body.get("path") or "")))
+                return
+            if route == "/api/iphone/stop" and method == "POST":
+                self._read_json()
+                from library.iphone_import import stop_copy
+
+                self._send_json(200, stop_copy())
+                return
             if route == "/api/update" and method == "GET":
                 from library.app_update import update_status
 

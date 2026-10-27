@@ -582,13 +582,48 @@ h1 {
   max-width: 24rem;
 }
 
-#empty-add-folder {
+#empty-add-folder,
+#empty-import-iphone {
   background: #2d4a7a;
   border: 1px solid #4a7ad4;
   color: #f2f2f4;
   border-radius: 6px;
   padding: 0.45rem 1rem;
   cursor: pointer;
+}
+
+#empty-import-iphone {
+  margin-left: 0.5rem;
+  background: #243044;
+}
+
+#import-iphone {
+  width: min(46rem, calc(100vw - 2rem));
+}
+
+#import-iphone-rows {
+  max-height: 16rem;
+  overflow: auto;
+  border: 1px solid #2a2a32;
+  border-radius: 6px;
+  margin: 0.5rem 0 0.75rem;
+}
+
+#import-iphone-rows:empty {
+  display: none;
+}
+
+.iphone-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid #2a2a32;
+  font-size: 0.85rem;
+}
+
+.iphone-row span:last-child {
+  color: #c8c8d0;
 }
 
 #reconnect-retry,
