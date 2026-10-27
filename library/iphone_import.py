@@ -151,7 +151,7 @@ def look(path: str) -> dict:
     api = _load(root)
     phone_error = api["ExplorerError"]
     try:
-        name, files = api["list_layout"]()
+        name, files, repeated = api["list_layout"]()
     except phone_error as exc:
         return {"ok": False, "message": str(exc)}
     items = api["plan_mirror"](files, dest)
@@ -183,6 +183,7 @@ def look(path: str) -> dict:
         "skip": skip,
         "willCopy": will_copy,
         "kept": kept,
+        "repeated": repeated,
         "rows": rows,
     }
 
@@ -230,11 +231,17 @@ def _copy_worker(path: str) -> None:
     api = _load(root)
     phone_error = api["ExplorerError"]
     try:
-        name, files = api["list_layout"]()
+        name, files, repeated = api["list_layout"]()
         items = api["plan_mirror"](files, dest)
         skip = sum(1 for item in items if item.action == api["ACTION_SKIP"])
         will_copy = sum(1 for item in items if item.action == api["ACTION_COPY"])
         kept = len(items) - skip - will_copy
+        message = "Copying what is missing."
+        if repeated:
+            message = (
+                f"Explorer listed {repeated} pictures twice. Each was counted once. "
+                + message
+            )
         _set(
             phone=name,
             path=str(dest),
@@ -243,7 +250,7 @@ def _copy_worker(path: str) -> None:
             willCopy=will_copy,
             kept=kept,
             phase="copying",
-            message="Copying what is missing.",
+            message=message,
         )
         done = api["completed_pairs"](dest)
         copied = 0

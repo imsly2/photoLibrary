@@ -61,11 +61,18 @@ function Add-FileLine($Item, $RelativePath) {
 }
 
 function Walk-Folder($FolderItem, $Prefix) {
+    $seenHere = @{}
     foreach ($child in @($FolderItem.GetFolder.Items())) {
         $name = [string]$child.Name
         if ([string]::IsNullOrWhiteSpace($name) -or $name -eq "." -or $name -eq ".." -or $name.Contains("/") -or $name.Contains("\")) {
             throw "Explorer returned a folder name that cannot be a backup path."
         }
+        $nameKey = $name.ToLowerInvariant()
+        if ($seenHere.ContainsKey($nameKey)) {
+            [Console]::Error.WriteLine("Repeated listing $name")
+            continue
+        }
+        $seenHere[$nameKey] = $true
         $relative = if ($Prefix) { $Prefix + "/" + $name } else { $name }
         if ($child.IsFolder) {
             Walk-Folder $child $relative

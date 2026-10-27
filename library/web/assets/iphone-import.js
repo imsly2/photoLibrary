@@ -290,7 +290,9 @@
         statusEl.textContent = "";
         return;
       }
-      statusEl.textContent = "Nothing was copied.";
+      statusEl.textContent = body.repeated
+        ? "Nothing was copied. Explorer listed " + body.repeated + " pictures twice. Each was counted once."
+        : "Nothing was copied.";
       paintCounts(body);
       paintRows(body.rows || []);
       if (body.path) {

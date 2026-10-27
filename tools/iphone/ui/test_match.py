@@ -52,6 +52,21 @@ class MatchTests(unittest.TestCase):
             self.assertEqual(by_source["201508_a/IMG_0520.JPG"].dest_relative, "201508_a/IMG_0520.JPG")
             self.assertNotIn("2026-05", by_source["201508_a/IMG_0520.JPG"].dest_relative or "")
 
+    def test_explorer_repeat_is_counted_once(self) -> None:
+        from ui.explorer import _files_from_lines
+
+        phone, files, repeated = _files_from_lines(
+            [
+                '{"phone": "Apple iPhone"}',
+                '{"rel": "202510_a/IMG_1673.JPG", "size": 10}',
+                '{"rel": "202510_a/IMG_1673.JPG", "size": 10}',
+                '{"rel": "202510_a/IMG_1674.JPG", "size": 11}',
+            ]
+        )
+        self.assertEqual(phone, "Apple iPhone")
+        self.assertEqual(repeated, 1)
+        self.assertEqual([item.source_path for item in files], ["202510_a/IMG_1673.JPG", "202510_a/IMG_1674.JPG"])
+
     def test_interrupted_transfer_cleans_partial(self) -> None:
         with TemporaryDirectory() as raw:
             final = Path(raw) / "IMG_0001.HEIC"

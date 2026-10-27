@@ -58,15 +58,13 @@ def _failure(proc: subprocess.CompletedProcess[str]) -> str:
     return f"The Explorer phone reader exited with code {proc.returncode}."
 
 
-def list_layout() -> tuple[str, list[PhoneFile]]:
-    """Return the Explorer phone name and every Internal Storage file."""
-    proc = _run("list")
-    if proc.returncode != 0:
-        raise ExplorerError(_failure(proc))
+def _files_from_lines(lines: list[str]) -> tuple[str, list[PhoneFile], int]:
+    """Parse Explorer listing lines. A repeated path is counted once."""
     phone = "Apple iPhone"
     files: list[PhoneFile] = []
-    seen: set[str] = set()
-    for line in proc.stdout.splitlines():
+    seen: dict[str, int] = {}
+    repeated = 0
+    for line in lines:
         text = line.strip()
         if not text:
             continue
@@ -89,12 +87,21 @@ def list_layout() -> tuple[str, list[PhoneFile]]:
             raise ExplorerError(f"The Explorer phone reader returned a bad size for {rel}.")
         key = rel.casefold()
         if key in seen:
-            raise ExplorerError(f"Explorer listed {rel} more than once.")
-        seen.add(key)
+            repeated += 1
+            continue
+        seen[key] = size
         files.append(PhoneFile(rel, size, datetime.fromtimestamp(0, timezone.utc)))
     if not files:
         raise ExplorerError("Internal Storage did not list any files. Unlock the phone and tap Trust.")
-    return phone, files
+    return phone, files, repeated
+
+
+def list_layout() -> tuple[str, list[PhoneFile], int]:
+    """Return the phone name, each Internal Storage file once, and repeat count."""
+    proc = _run("list")
+    if proc.returncode != 0:
+        raise ExplorerError(_failure(proc))
+    return _files_from_lines(proc.stdout.splitlines())
 
 
 def pull_file(relative: str, dest: Path) -> None:
