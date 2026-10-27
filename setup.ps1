@@ -141,6 +141,7 @@ if ([string]::IsNullOrEmpty($resolved)) {
     exit 1
 }
 $AppFolder = $resolved
+& (Join-Path $AppFolder "local-runtime.ps1") -AppFolder $AppFolder
 if ($ProbeAppFolder) {
     Write-Host ("APPFOLDER=" + $AppFolder)
     exit 0

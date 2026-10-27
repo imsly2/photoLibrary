@@ -140,3 +140,6 @@ docs/features/**/*.tmp
 .env
 .env.*
 !.env.example
+
+# App-local runtime downloads (never commit binaries or machine state).
+.local/

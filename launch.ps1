@@ -101,6 +101,7 @@ if ([string]::IsNullOrEmpty($resolved)) {
     exit 1
 }
 $AppFolder = $resolved
+& (Join-Path $AppFolder "local-runtime.ps1") -AppFolder $AppFolder
 try {
     Set-Location -LiteralPath $AppFolder
 } catch {

@@ -163,3 +163,10 @@ and size checks. Phone pulls temporarily stage a whole file on the system drive,
 so both that drive and the destination need free space. iCloud-only originals
 cannot be verified by a DCIM inventory. Never report a complete backup from
 transfer counts alone.
+
+For an app-local dependency install, extract the Microsoft Windows x64 .NET 10
+runtime ZIP into `.local/dotnet/` and place ffmpeg.exe and ffprobe.exe in
+`.local/ffmpeg/bin/`. Setup and the daily launcher load these paths for their
+own process only. These downloads are ignored by Git. Verify the runtime ZIP
+against Microsoft's release-metadata SHA-512 and the ffmpeg archive against
+its publisher's checksum before use. The normal winget setup remains supported.
