@@ -4,6 +4,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-27 — [iPhone mirror backup handoff](hand-offs/IPHONE-MIRROR-BACKUP-2026-10-27.md) consolidates corrected findings and next development steps. All 11 old-folder samples hash-verified; missing-file test demonstrates Explorer-mirror mismatch and preview/capture-metadata month disagreement. Earlier wrong-phone/DCIM-only whole-library and 38 GB storage-used inferences are superseded. Full backup remains on hold.
+
 - 2026-10-27 — iPhone inventory diagnostic added at `tools/iphone/Inventory.ps1`, using the shipped GetAndSee.Core client. Live DCIM + CPLAssets scan: 17,468 files / 121,397,081,259 bytes, no scan errors. Five UUID-named source/local sample pairs match SHA-256. Offline diagnostic boundary/ambiguity/error checks pass (`tests/qa/iphone_inventory.ps1`). `Cli.ps1 --help` works under Windows PowerShell 5.1 with app-local bundle extraction; shipped `copy --dry-run` still lists only DCIM. Existing copy workflow is not expanded; no full backup or feature Check closed. Private reports remain outside Git in setup chat outputs.
 
 - 2026-10-27 — Bundled importer interrupted-transfer and short-transfer cleanup regression tests pass; match suite 11/11. Synthetic checks only, no hardware disconnect was induced. Full existing-destination plan and private file inventories remain outside Git. No full backup authorized or performed.

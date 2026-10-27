@@ -3,6 +3,13 @@
 Current build doorway. North star: [PRODUCT.md](PRODUCT.md). Screen
 contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 
+## Second-PC iPhone backup handoff
+
+For the exact-Windows-mirror request, read
+[the iPhone backup handoff](hand-offs/IPHONE-MIRROR-BACKUP-2026-10-27.md).
+DCIM scanning misses CPLAssets; current copy paths do not mirror Explorer.
+The next step is a read-only Windows manifest, not a full copy.
+
 ## Active performance work
 
 Regression floor for the current tree is
