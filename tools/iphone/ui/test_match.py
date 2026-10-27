@@ -22,6 +22,26 @@ from ui.match import (
 
 
 class MatchTests(unittest.TestCase):
+    def test_interrupted_transfer_cleans_partial(self) -> None:
+        with TemporaryDirectory() as raw:
+            final = Path(raw) / "IMG_0001.HEIC"
+            def interrupted():
+                yield b"abc"
+                raise OSError("USB disconnected")
+            with self.assertRaisesRegex(OSError, "USB disconnected"):
+                write_stream(final, 6, interrupted())
+            self.assertFalse(final.exists())
+            self.assertFalse(final.with_name(final.name + ".partial").exists())
+
+    def test_short_transfer_cleans_partial(self) -> None:
+        from ui.match import SizeMismatch
+        with TemporaryDirectory() as raw:
+            final = Path(raw) / "IMG_0001.MOV"
+            with self.assertRaises(SizeMismatch):
+                write_stream(final, 6, [b"abc"])
+            self.assertFalse(final.exists())
+            self.assertFalse(final.with_name(final.name + ".partial").exists())
+
     def test_exact_match_skips(self) -> None:
         with TemporaryDirectory() as raw:
             dest = Path(raw)
