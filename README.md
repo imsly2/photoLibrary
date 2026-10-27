@@ -107,3 +107,59 @@ to do, what has been checked, and how screens should behave.
 | [docs/STATUS.md](docs/STATUS.md) | What has actually been verified |
 | [docs/UI-SPEC.md](docs/UI-SPEC.md) | Screen contract for the Windows shell |
 | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Defaults taken from other photo apps |
+
+## Developing from two Windows PCs
+
+Use a separate clone on each PC. Keep personal photos outside the repository;
+`library-data/`, `.venv/`, and `.env` files are ignored. Configure Git's credential
+manager for HTTPS login; never put tokens in a remote URL or tracked file. Confirm
+`git config user.name` and `git config user.email` belong to the person committing.
+The repository owner can invite the second account under GitHub Settings >
+Collaborators; that account must accept the invitation before pushing.
+
+Before new work, with a clean working tree:
+
+```powershell
+git switch main
+git fetch origin
+git pull --ff-only origin main
+git switch -c feature/my-change
+```
+
+Make a small change, review `git diff`, stage named files, then:
+
+```powershell
+git commit -m "Describe the change"
+git push -u origin feature/my-change
+```
+
+Open the branch's Compare & pull request link on GitHub, targeting `main`.
+Review the diff and checks on either PC, merge on GitHub, then update the other
+PC with fetch and fast-forward pull. Commit or stash local work before switching
+branches. Do not force-push. The app's Update Library button follows `main`;
+use Git commands while developing on a feature branch.
+
+### Second-PC troubleshooting
+
+- Missing ffmpeg: Setup uses winget package `Gyan.FFmpeg`. Restart the launcher
+  after installation so it sees the updated PATH. Video/HEIC previews require
+  a working media decoder; a running web server alone does not verify them.
+- Missing phone runtime: the bundled Windows x64 helper requires the .NET 10
+  runtime (`Microsoft.DotNet.Runtime.10`). It is not self-contained. Setup recognizes
+  both "install .NET" and "install or update .NET" host messages.
+- Apple USB: install/open Apple Devices or iTunes, connect by USB, unlock, and
+  tap Trust. Restricted sessions may not be able to inspect Store apps or devices;
+  failed inspection does not prove that the phone is absent.
+- Python environment creation: if ensurepip fails in a restricted temporary
+  directory, use a writable TEMP/TMP directory for that setup session and rerun.
+- Optional model packs are downloaded separately by Setup; successful core
+  installation does not mean all optional AI dependencies work on that Python.
+
+Before a full phone backup, use a separate small test destination and verify
+original file bytes and metadata. The importer matches existing files by name
+and size, not content checksum: a skip is not proof of identical content. Keep
+Live Photo stills and motion files together. Interrupted copies use partial files
+and size checks. Phone pulls temporarily stage a whole file on the system drive,
+so both that drive and the destination need free space. iCloud-only originals
+cannot be verified by a DCIM inventory. Never report a complete backup from
+transfer counts alone.

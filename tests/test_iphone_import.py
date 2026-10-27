@@ -30,3 +30,14 @@ def test_destination_rejects_a_file(tmp_path: Path) -> None:
 def test_destination_creates_a_folder(tmp_path: Path) -> None:
     dest = _destination(str(tmp_path / "roll"))
     assert dest.is_dir()
+
+
+@pytest.mark.parametrize("message", ["You must install .NET to run this application.", "You must install or update .NET to run this application."])
+def test_status_explains_missing_runtime(monkeypatch, message):
+    from types import SimpleNamespace
+    from library import iphone_import
+    monkeypatch.setattr(iphone_import, "tool_root", lambda: Path("helper"))
+    monkeypatch.setattr(iphone_import.subprocess, "run", lambda *a, **kw: SimpleNamespace(stdout="", stderr=message))
+    result = iphone_import.status()
+    assert result["installed"] is False
+    assert ".NET 10 runtime" in result["message"]

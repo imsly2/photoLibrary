@@ -498,7 +498,13 @@ function Ensure-IphoneTool {
         return
     }
     Write-Host ("iPhone helper: " + $hostExe)
-    if (-not (Test-IphoneAppleUsb)) {
+    $appleUsb = $false
+    try {
+        $appleUsb = Test-IphoneAppleUsb
+    } catch {
+        Write-Host "Could not inspect Apple USB software on this PC. Check Apple Devices manually."
+    }
+    if (-not $appleUsb) {
         Write-Host "Import iPhone also needs Apple Devices (or iTunes) opened once on this PC."
         Write-Host "Install from the Microsoft Store (winget id 9NP83LWLPZ9K, source msstore), open it once, then plug in the phone."
     }
@@ -510,13 +516,13 @@ function Ensure-IphoneTool {
     $ErrorActionPreference = "Continue"
     $output = & $hostExe 2>&1 | Out-String
     $ErrorActionPreference = $prev
-    if ($output -match "You must install or update \.NET") {
+    if ($output -match "You must install(?: or update)? \.NET") {
         Write-Host "Phone helper needs the .NET 10 runtime. Trying winget..."
         & winget install --id Microsoft.DotNet.Runtime.10 -e --accept-package-agreements --accept-source-agreements --disable-interactivity --source winget
         $ErrorActionPreference = "Continue"
         $output = & $hostExe 2>&1 | Out-String
         $ErrorActionPreference = $prev
-        if ($output -match "You must install or update \.NET") {
+        if ($output -match "You must install(?: or update)? \.NET") {
             Write-Host "The .NET 10 runtime is still missing. Import iPhone will say so. Library setup still finishes."
             return
         }

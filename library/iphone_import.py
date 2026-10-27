@@ -119,7 +119,7 @@ def status() -> dict:
     except OSError as exc:
         return {"installed": False, "message": str(exc), "tool": str(root)}
     text = (proc.stdout or "") + (proc.stderr or "")
-    if "You must install or update .NET" in text:
+    if "You must install .NET" in text or "You must install or update .NET" in text:
         return {"installed": False, "message": _RUNTIME, "tool": str(root)}
     if "Usage:" not in text:
         detail = text.strip() or "The phone helper did not start."
