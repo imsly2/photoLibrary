@@ -310,4 +310,13 @@
       stopCopy();
     }
   });
+
+  if (window.location.hash === "#import-iphone") {
+    openDialog();
+  }
+  window.addEventListener("hashchange", function () {
+    if (window.location.hash === "#import-iphone") {
+      openDialog();
+    }
+  });
 })();

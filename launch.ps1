@@ -2,6 +2,8 @@ param(
     [switch]$NoBrowser,
     [switch]$Update,
     [switch]$SetupMl,
+    [switch]$Attach,
+    [string]$Page,
     [string]$AppFolder
 )
 
@@ -194,6 +196,29 @@ function Get-LibraryListenUrl {
     return ("http://{0}:{1}/" -f $hostName, $port)
 }
 
+function Open-LibraryPage {
+    param([Parameter(Mandatory = $true)][string]$Url)
+    $open = $Url
+    if ($Page -eq "import-iphone") {
+        $open = $Url.TrimEnd("/") + "/#import-iphone"
+    }
+    Write-Host $open
+    if (-not $NoBrowser) {
+        Start-Process $open
+    }
+}
+
+function Test-ThisLibraryIsOpen {
+    param([Parameter(Mandatory = $true)][string]$Folder)
+    $url = Get-LibraryListenUrl -Folder $Folder
+    $runtime = Get-LibraryRuntime -Url $url
+    if ($null -eq $runtime) { return $false }
+    if ([int]$runtime.schemaVersion -ne 1) { return $false }
+    $root = Join-Path $Folder "library-data"
+    if (-not (Test-SameLibraryRoot -Left ([string]$runtime.root) -Right $root)) { return $false }
+    return (Test-LibraryHealth -Url $url)
+}
+
 function Test-LibraryHealth {
     param([Parameter(Mandatory = $true)][string]$Url)
     try {
@@ -258,8 +283,19 @@ function Stop-ThisLibraryServe {
     try { $listenPid = [int]$runtime.pid } catch { return 0 }
     # PID 0 and PID 4 are Idle and System. Never stop those.
     if ($listenPid -le 4) { return 0 }
+    $killPid = $listenPid
+    $info = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $listenPid) -ErrorAction SilentlyContinue
+    if ($info) {
+        $parentId = [int]$info.ParentProcessId
+        if ($parentId -gt 4) {
+            $parent = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $parentId) -ErrorAction SilentlyContinue
+            if ($parent -and [string]$parent.CommandLine -match "library serve") {
+                $killPid = $parentId
+            }
+        }
+    }
     Write-Host ("Library is already open as pid {0}. Stopping it so this launch loads the latest code." -f $listenPid)
-    & taskkill.exe /PID $listenPid /T /F | Out-Host
+    & taskkill.exe /PID $killPid /T /F | Out-Host
     $deadline = (Get-Date).AddSeconds(8)
     while ((Get-Date) -lt $deadline) {
         $alive = Get-Process -Id $listenPid -ErrorAction SilentlyContinue
@@ -271,6 +307,12 @@ function Stop-ThisLibraryServe {
 }
 
 try {
+    if ($Attach -and (Test-ThisLibraryIsOpen -Folder $AppFolder)) {
+        Write-Host "Library is already open. This window can close."
+        Open-LibraryPage (Get-LibraryListenUrl -Folder $AppFolder)
+        exit 0
+    }
+
     $python = @(Get-Python312)
     $ffmpegOk = Test-Ffmpeg
     if ($python.Count -lt 1 -or -not $python[0] -or -not $ffmpegOk) {
@@ -317,6 +359,12 @@ try {
 
     $replacedPid = Stop-ThisLibraryServe -Folder $AppFolder
     if ($replacedPid -lt 0) {
+        if (Test-ThisLibraryIsOpen -Folder $AppFolder) {
+            Write-Host "Could not restart Library. The one already open is still running."
+            Open-LibraryPage (Get-LibraryListenUrl -Folder $AppFolder)
+            exit 0
+        }
+        Write-Host "Could not stop the Library that is already open, and it is not answering."
         exit 1
     }
 
@@ -324,7 +372,7 @@ try {
     $proc = Start-Process -FilePath $exe -ArgumentList $argumentList -WorkingDirectory $AppFolder -PassThru -NoNewWindow
     $expectedRoot = Join-Path $AppFolder "library-data"
     $url = Get-LibraryListenUrl -Folder $AppFolder
-    $deadline = (Get-Date).AddSeconds(20)
+    $deadline = (Get-Date).AddSeconds(60)
     $ready = $false
     $serverPid = 0
     while ((Get-Date) -lt $deadline) {
@@ -345,18 +393,44 @@ try {
         Start-Sleep -Milliseconds 200
     }
     if (-not $ready) {
+        if ($proc -and -not $proc.HasExited) {
+            Write-Host "Library is still starting. Leave this window open."
+            $deadline = (Get-Date).AddSeconds(60)
+            while ((Get-Date) -lt $deadline) {
+                $url = Get-LibraryListenUrl -Folder $AppFolder
+                $runtime = Get-LibraryRuntime -Url $url
+                $listenerPid = 0
+                if ($runtime -and $runtime.pid) { $listenerPid = [int]$runtime.pid }
+                if (
+                    $listenerPid -gt 4 -and
+                    (Test-SameLibraryRoot -Left ([string]$runtime.root) -Right $expectedRoot) -and
+                    (Test-SpawnedBy -Ancestor $proc.Id -Candidate $listenerPid)
+                ) {
+                    $ready = $true
+                    $serverPid = $listenerPid
+                    break
+                }
+                if ($proc.HasExited) { break }
+                Start-Sleep -Milliseconds 500
+            }
+        }
+    }
+    if (-not $ready) {
+        if (Test-ThisLibraryIsOpen -Folder $AppFolder) {
+            Write-Host "Library is already open."
+            Open-LibraryPage (Get-LibraryListenUrl -Folder $AppFolder)
+            exit 0
+        }
         if ($replacedPid -gt 0) {
             Write-Host "Library could not replace the server that was already open."
         } else {
             Write-Host "Library could not start. Its listen port is already in use."
         }
+        Write-Host "Leave any Library window that is already open. Closing it stops the server."
         exit 1
     }
     Write-Host ("Library is running as pid {0}." -f $serverPid)
-    Write-Host $url
-    if (-not $NoBrowser) {
-        Start-Process $url
-    }
+    Open-LibraryPage $url
     if ($serverPid -gt 4) {
         Wait-Process -Id $serverPid
     }

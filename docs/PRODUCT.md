@@ -237,7 +237,9 @@ is ok and `/api/runtime` names this `library-data` — the launcher stops only
 that process, then starts a new one so the page runs the code now on disk.
 Closing the browser does not stop the server. The next `Library.bat` or
 `Launch.bat` does. A different program on the port is left alone. Then it
-opens the browser at the listen address.
+opens the browser at the listen address. `ImportIphone.bat` opens the copy
+screen. If Library is already listening, that bat leaves the server
+running and only opens the page.
 
 The server listens on `127.0.0.1` and port `8765` unless settings say otherwise.
 Binding every interface is a setting, off by default.

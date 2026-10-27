@@ -4,6 +4,8 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-27 — Library was already running at `http://127.0.0.1:8785/` (pid 58356) while a second `Library.bat` tried to replace it. `ImportIphone.bat` uses attach: with that server up, `launch.ps1 -Attach -NoBrowser -Page import-iphone` printed the address and exited 0, and pid 58356 was still running. `Library.bat` / `Launch.bat` in the photo library folder are the daily launcher. There is no scripts folder.
+
 - 2026-10-27 — Import iPhone Look reads Explorer's Internal Storage folders. On this PC, with the phone connected, Look at `J:\Iphone Backup\test` reported 2,587 files on the phone, 54 exact matches, 0 size conflicts, and 2,533 not in that test folder. All 54 copied files were those exact matches. A one-file export of `201508_a/IMG_0519.JPG` through that same Explorer copy matched the test file's SHA-256 (509,648 bytes) and was deleted. The test folder was not modified. The other 2,533 files were not copied. Summary: `J:\Iphone Backup\reports\look-test-folder.json`. Match tests 12/12.
 
 - 2026-10-27 — [iPhone mirror backup handoff](hand-offs/IPHONE-MIRROR-BACKUP-2026-10-27.md) consolidates corrected findings and next development steps. All 11 old-folder samples hash-verified; missing-file test demonstrates Explorer-mirror mismatch and preview/capture-metadata month disagreement. Earlier wrong-phone/DCIM-only whole-library and 38 GB storage-used inferences are superseded. Full backup remains on hold.

@@ -40,14 +40,22 @@ folder is added to the library.
    Open Apple Devices (or iTunes) once on that PC before plugging in a
    phone. If a step fails, the window says what to try next. Safe to run
    again.
-3. **Library daily.** Double-click the **Library** icon (or `Library.bat`).
-   A browser window opens on this computer.
-4. **Chinese UI.** In the header, set **Language** to **中文**. The
+3. **Library daily.** Double-click the **Library** icon (or `Library.bat`
+   in this folder, not a scripts folder). `Launch.bat` does the same
+   thing. A browser window opens on this computer. Leave that black
+   window open. Closing it stops Library. If a launch says Library is
+   already open, the server is still running: use the address it prints.
+4. **Import iPhone.** Double-click `ImportIphone.bat` in this same
+   folder. That opens the copy screen. If Library is already open, it
+   does not start a second server. The copy tool lives in this repo.
+   `Update.bat` or **Update Library** pulls the latest from GitHub
+   `main`.
+5. **Chinese UI.** In the header, set **Language** to **中文**. The
    choice is remembered.
-5. **Add photos.** Click **Add folder** and point it at pictures already
+6. **Add photos.** Click **Add folder** and point it at pictures already
    on the PC. You can copy them into the library, or leave them where
    they are.
-6. **Updates.** **Update Library** in the header, or `Update.bat`. That
+7. **Updates.** **Update Library** in the header, or `Update.bat`. That
    always tracks `main`: plain `git` over public HTTPS if git is
    present, otherwise a zip of `main`. `library-data/` is not replaced.
    If Library was open, it restarts. No GitHub login. Do not install

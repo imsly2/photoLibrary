@@ -206,6 +206,23 @@ try {
         Write-LibraryShortcut -LinkPath $link -Target $target -Icon $icon
         Write-Host ("Wrote " + $link)
     }
+    $importBat = Join-Path $AppFolder "ImportIphone.bat"
+    if (Test-Path -LiteralPath $importBat) {
+        $desktopDir = [Environment]::GetFolderPath("Desktop")
+        $programs = [Environment]::GetFolderPath("Programs")
+        if (-not $programs) {
+            $programs = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"
+        }
+        foreach ($dir in @($desktopDir, $programs)) {
+            $link = Join-Path $dir "Import iPhone.lnk"
+            Write-LibraryShortcut -LinkPath $link -Target $importBat -Icon $icon
+            $shell = New-Object -ComObject WScript.Shell
+            $shortcut = $shell.CreateShortcut($link)
+            $shortcut.Description = "Import iPhone"
+            $shortcut.Save()
+            Write-Host ("Wrote " + $link)
+        }
+    }
     Write-Host "Shortcut ready -- double-click Library on the Desktop."
     exit 0
 } catch {
