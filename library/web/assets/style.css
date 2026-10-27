@@ -615,11 +615,19 @@ h1 {
 
 .iphone-row {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 0.8fr;
+  grid-template-columns: 1.6fr 1fr;
   gap: 0.5rem;
   padding: 0.35rem 0.6rem;
   border-bottom: 1px solid #2a2a32;
   font-size: 0.85rem;
+}
+
+.iphone-row.match span:last-child {
+  color: #9dcea6;
+}
+
+.iphone-row.copy span:last-child {
+  color: #e6d7a2;
 }
 
 .iphone-row span:last-child {

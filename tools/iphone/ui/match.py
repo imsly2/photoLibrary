@@ -13,8 +13,10 @@ PARTIAL_SUFFIX = ".partial"
 
 ACTION_SKIP = "skip"
 ACTION_COPY = "copy"
+ACTION_KEEP = "keep"
 
 SKIP_TEXT = "Skipped, exact match"
+KEEP_TEXT = "Left in place, size differs"
 WILL_COPY_SIZE_TEXT = "Will copy, size differs"
 WILL_COPY_MISSING_TEXT = "Will copy, not in folder"
 WILL_COPY_PAIRED_TEXT = "Will copy, already paired"
@@ -83,6 +85,8 @@ def folder_text(item: PlanItem) -> str:
 def look_status(item: PlanItem) -> str:
     if item.action == ACTION_SKIP:
         return SKIP_TEXT
+    if item.action == ACTION_KEEP:
+        return KEEP_TEXT
     if item.local_relative is None or item.local_size is None:
         return WILL_COPY_MISSING_TEXT
     if item.local_size == item.size:
@@ -295,6 +299,86 @@ def plan(phone_files: list[PhoneFile], destination: Path) -> list[PlanItem]:
                 local_relative,
                 local_size,
                 stem_relative,
+            )
+        )
+    return items
+
+
+def _safe_mirror_relative(source_path: str) -> str:
+    rel = source_path.replace("\\", "/").strip("/")
+    parts = tuple(Path(rel).parts)
+    if (
+        not rel
+        or rel.startswith(("/", "\\"))
+        or ".." in parts
+        or any(part.endswith(":") for part in parts)
+    ):
+        raise ValueError(f"Not an Internal Storage path: {source_path}")
+    return rel
+
+
+def _mirror_locals(destination: Path) -> dict[str, tuple[str, int]]:
+    found: dict[str, tuple[str, int]] = {}
+    for dirpath, dirnames, filenames in os.walk(destination):
+        dirnames[:] = [name for name in dirnames if name != ".library"]
+        for name in filenames:
+            if name == LOG_NAME or name.endswith(PARTIAL_SUFFIX):
+                continue
+            path = Path(dirpath) / name
+            rel = path.relative_to(destination).as_posix()
+            found[rel.casefold()] = (rel, path.stat().st_size)
+    return found
+
+
+def plan_mirror(phone_files: list[PhoneFile], destination: Path) -> list[PlanItem]:
+    """Match Explorer's Internal Storage paths. Never invent a date folder.
+
+    Same folder, name, and size is a skip. A different size at that path is
+    left untouched. A missing file is copied to that same relative path.
+    """
+    locals_by_path = _mirror_locals(destination)
+    items: list[PlanItem] = []
+    for phone in phone_files:
+        rel = _safe_mirror_relative(phone.source_path)
+        found = locals_by_path.get(rel.casefold())
+        if found is not None and found[1] == phone.size:
+            items.append(
+                PlanItem(
+                    rel,
+                    phone.size,
+                    phone.mtime,
+                    ACTION_SKIP,
+                    found[0],
+                    found[0],
+                    found[1],
+                    None,
+                )
+            )
+            continue
+        if found is not None:
+            items.append(
+                PlanItem(
+                    rel,
+                    phone.size,
+                    phone.mtime,
+                    ACTION_KEEP,
+                    None,
+                    found[0],
+                    found[1],
+                    None,
+                )
+            )
+            continue
+        items.append(
+            PlanItem(
+                rel,
+                phone.size,
+                phone.mtime,
+                ACTION_COPY,
+                rel,
+                None,
+                None,
+                None,
             )
         )
     return items

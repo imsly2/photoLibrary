@@ -43,35 +43,75 @@
     pathInput.disabled = busy;
   }
 
+  function fileLabel(row) {
+    const phone = row.phone || "";
+    const cut = phone.indexOf("  (");
+    return cut === -1 ? phone : phone.slice(0, cut);
+  }
+
+  function addRow(label, status, kind) {
+    const line = document.createElement("div");
+    line.className = "iphone-row" + (kind ? " " + kind : "");
+    const name = document.createElement("span");
+    name.textContent = label;
+    const state = document.createElement("span");
+    state.textContent = status;
+    line.appendChild(name);
+    line.appendChild(state);
+    rowsEl.appendChild(line);
+  }
+
   function paintRows(rows) {
     rowsEl.replaceChildren();
-    const shown = (rows || []).filter(function (row) {
-      return row.action !== "skip";
-    }).slice(0, 300);
-    shown.forEach(function (row) {
-      const line = document.createElement("div");
-      line.className = "iphone-row";
-      ["phone", "folder", "status"].forEach(function (key) {
-        const cell = document.createElement("span");
-        cell.textContent = row[key] || "";
-        line.appendChild(cell);
-      });
-      rowsEl.appendChild(line);
+    const all = rows || [];
+    const matched = all.filter(function (row) {
+      return row.action === "skip";
     });
+    const waiting = all.filter(function (row) {
+      return row.action === "copy";
+    });
+    const kept = all.filter(function (row) {
+      return row.action !== "skip" && row.action !== "copy";
+    });
+    matched.slice(0, 200).forEach(function (row) {
+      addRow(fileLabel(row), "Already in this folder", "match");
+    });
+    kept.slice(0, 50).forEach(function (row) {
+      addRow(fileLabel(row), "Same place, different size, left alone", "keep");
+    });
+    waiting.slice(0, 100).forEach(function (row) {
+      addRow(fileLabel(row), "Not in this folder yet", "copy");
+    });
+    const hiddenMatches = Math.max(0, matched.length - 200);
+    const hiddenWaiting = Math.max(0, waiting.length - 100);
+    if (hiddenMatches || hiddenWaiting) {
+      addRow(
+        "The list is shortened.",
+        (hiddenMatches ? hiddenMatches + " more already here. " : "") +
+          (hiddenWaiting ? hiddenWaiting + " more still on the phone." : ""),
+        "more"
+      );
+    }
   }
 
   function paintCounts(data) {
-    const phone = data.phone ? data.phone : "";
-    phoneEl.textContent = phone;
+    phoneEl.textContent = "";
     if (typeof data.onPhone !== "number") {
       countsEl.textContent = "";
       return;
     }
-    countsEl.textContent =
-      "On the phone " + data.onPhone +
-      "    Exact match " + (data.skip || 0) +
-      "    Will copy " + (data.willCopy || 0) +
-      (data.copied ? "    Copied " + data.copied : "");
+    const phone = data.phone ? data.phone : "The phone";
+    let text =
+      phone + " has " + Number(data.onPhone).toLocaleString() + " pictures. " +
+      Number(data.skip || 0).toLocaleString() + " are already in this folder. " +
+      Number(data.willCopy || 0).toLocaleString() + " are not here yet.";
+    if (data.kept) {
+      text += " " + Number(data.kept).toLocaleString() + " have a different size and were left alone.";
+    }
+    if (data.copied) {
+      text += " " + Number(data.copied).toLocaleString() + " copied.";
+    }
+    countsEl.textContent = text;
   }
 
   function readJson(res) {
@@ -250,7 +290,7 @@
         statusEl.textContent = "";
         return;
       }
-      statusEl.textContent = "Look finished. Nothing was copied.";
+      statusEl.textContent = "Nothing was copied.";
       paintCounts(body);
       paintRows(body.rows || []);
       if (body.path) {

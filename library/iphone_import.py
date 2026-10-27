@@ -8,18 +8,15 @@ It never writes to the phone.
 from __future__ import annotations
 
 import os
-import subprocess
+import shutil
 import sys
+import tempfile
 import threading
 from pathlib import Path
 
 _MISSING = (
     "The iPhone import tool is missing from this Library copy. "
     "Re-run Setup.bat or pull the latest code from the photoLibrary repo."
-)
-_RUNTIME = (
-    "The phone helper needs the .NET 10 runtime. "
-    "Run Setup.bat again, then try Import iPhone."
 )
 
 _lock = threading.Lock()
@@ -71,8 +68,10 @@ def _load(root: Path):
     root_s = str(root)
     if root_s not in sys.path:
         sys.path.insert(0, root_s)
+    from ui.explorer import ExplorerError, list_layout, pull_file  # type: ignore
     from ui.match import (  # type: ignore
         ACTION_COPY,
+        ACTION_KEEP,
         ACTION_SKIP,
         completed_pairs,
         copy_item,
@@ -81,12 +80,15 @@ def _load(root: Path):
         log_skip_if_new,
         look_status,
         phone_text,
-        plan,
+        plan_mirror,
     )
-    from ui.phone import Phone, PhoneError  # type: ignore
 
     return {
+        "ExplorerError": ExplorerError,
+        "list_layout": list_layout,
+        "pull_file": pull_file,
         "ACTION_COPY": ACTION_COPY,
+        "ACTION_KEEP": ACTION_KEEP,
         "ACTION_SKIP": ACTION_SKIP,
         "completed_pairs": completed_pairs,
         "copy_item": copy_item,
@@ -95,9 +97,7 @@ def _load(root: Path):
         "log_skip_if_new": log_skip_if_new,
         "look_status": look_status,
         "phone_text": phone_text,
-        "plan": plan,
-        "Phone": Phone,
-        "PhoneError": PhoneError,
+        "plan_mirror": plan_mirror,
     }
 
 
@@ -105,25 +105,9 @@ def status() -> dict:
     root = tool_root()
     if root is None:
         return {"installed": False, "message": _MISSING}
-    host = _host_exe(root)
-    try:
-        proc = subprocess.run(
-            [str(host)],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=20,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-        )
-    except OSError as exc:
-        return {"installed": False, "message": str(exc), "tool": str(root)}
-    text = (proc.stdout or "") + (proc.stderr or "")
-    if "You must install .NET" in text or "You must install or update .NET" in text:
-        return {"installed": False, "message": _RUNTIME, "tool": str(root)}
-    if "Usage:" not in text:
-        detail = text.strip() or "The phone helper did not start."
-        return {"installed": False, "message": detail, "tool": str(root)}
+    script = root / "ExplorerLayout.ps1"
+    if not script.is_file():
+        return {"installed": False, "message": _MISSING, "tool": str(root)}
     return {"installed": True, "message": "", "tool": str(root)}
 
 
@@ -165,22 +149,23 @@ def look(path: str) -> dict:
     except ValueError as exc:
         return {"ok": False, "message": str(exc)}
     api = _load(root)
-    phone_error = api["PhoneError"]
+    phone_error = api["ExplorerError"]
     try:
-        with api["Phone"]() as phone:
-            name = phone.connect()
-            files = phone.list_dcim()
+        name, files = api["list_layout"]()
     except phone_error as exc:
         return {"ok": False, "message": str(exc)}
-    items = api["plan"](files, dest)
+    items = api["plan_mirror"](files, dest)
     rows = []
     skip = 0
     will_copy = 0
+    kept = 0
     for item in items:
         if item.action == api["ACTION_SKIP"]:
             skip += 1
-        else:
+        elif item.action == api["ACTION_COPY"]:
             will_copy += 1
+        else:
+            kept += 1
         rows.append(
             {
                 "phone": api["phone_text"](item.source_path, item.size),
@@ -197,6 +182,7 @@ def look(path: str) -> dict:
         "onPhone": len(items),
         "skip": skip,
         "willCopy": will_copy,
+        "kept": kept,
         "rows": rows,
     }
 
@@ -242,57 +228,69 @@ def _copy_worker(path: str) -> None:
         _set(running=False, phase="error", error=str(exc), message=str(exc))
         return
     api = _load(root)
-    phone_error = api["PhoneError"]
+    phone_error = api["ExplorerError"]
     try:
-        with api["Phone"]() as phone:
-            try:
-                name = phone.connect()
-                files = phone.list_dcim()
-            except phone_error as exc:
-                _set(running=False, phase="error", error=str(exc), message=str(exc))
+        name, files = api["list_layout"]()
+        items = api["plan_mirror"](files, dest)
+        skip = sum(1 for item in items if item.action == api["ACTION_SKIP"])
+        will_copy = sum(1 for item in items if item.action == api["ACTION_COPY"])
+        kept = len(items) - skip - will_copy
+        _set(
+            phone=name,
+            path=str(dest),
+            onPhone=len(items),
+            skip=skip,
+            willCopy=will_copy,
+            kept=kept,
+            phase="copying",
+            message="Copying what is missing.",
+        )
+        done = api["completed_pairs"](dest)
+        copied = 0
+        for item in items:
+            if _stop.is_set():
+                _set(
+                    running=False,
+                    phase="stopped",
+                    copied=copied,
+                    message="Stopped. Files already copied stay copied.",
+                )
                 return
-            items = api["plan"](files, dest)
-            skip = sum(1 for item in items if item.action == api["ACTION_SKIP"])
-            will_copy = len(items) - skip
-            _set(
-                phone=name,
-                path=str(dest),
-                onPhone=len(items),
-                skip=skip,
-                willCopy=will_copy,
-                phase="copying",
-                message="Copying what is missing.",
-            )
-            done = api["completed_pairs"](dest)
-            copied = 0
-            for item in items:
-                if _stop.is_set():
-                    _set(
-                        running=False,
-                        phase="stopped",
-                        copied=copied,
-                        message="Stopped. Files already copied stay copied.",
-                    )
-                    return
-                if item.action == api["ACTION_SKIP"]:
-                    api["log_skip_if_new"](dest, item, done)
-                    continue
-                label = api["file_name"](item.source_path)
-                _set(current=label, message="Copying " + label)
-                try:
-                    api["copy_item"](dest, item, phone.iter_file(item.source_path, item.size))
-                except Exception as exc:
-                    _set(
-                        running=False,
-                        phase="error",
-                        copied=copied,
-                        current=label,
-                        error=str(exc),
-                        message="Stopped on " + label + ". Files already copied stay copied.",
-                    )
-                    return
-                copied += 1
-                _set(copied=copied)
+            if item.action == api["ACTION_SKIP"]:
+                api["log_skip_if_new"](dest, item, done)
+                continue
+            if item.action != api["ACTION_COPY"] or not item.dest_relative:
+                continue
+            label = item.dest_relative
+            _set(current=label, message="Copying " + label)
+            directory = Path(tempfile.mkdtemp(prefix="iphone-explorer-"))
+            staged = directory / Path(item.dest_relative).name
+            try:
+                api["pull_file"](item.source_path, staged)
+
+                def chunks():
+                    with staged.open("rb") as handle:
+                        while True:
+                            block = handle.read(1024 * 1024)
+                            if not block:
+                                break
+                            yield block
+
+                api["copy_item"](dest, item, chunks())
+            except Exception as exc:
+                _set(
+                    running=False,
+                    phase="error",
+                    copied=copied,
+                    current=label,
+                    error=str(exc),
+                    message="Stopped on " + label + ". Files already copied stay copied.",
+                )
+                return
+            finally:
+                shutil.rmtree(directory, ignore_errors=True)
+            copied += 1
+            _set(copied=copied)
     except phone_error as exc:
         _set(running=False, phase="error", error=str(exc), message=str(exc))
         return

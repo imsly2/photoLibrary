@@ -23,8 +23,12 @@ One clone of this folder is the whole tool, including the iPhone
 importer. The phone program lives inside this repo at `tools/iphone`.
 It is not a second clone and not a folder you have to copy beside
 Library. **Import iPhone** in the header opens that importer in this
-app. It lists the camera roll and copies what is missing into a folder
-you pick. An existing file is never replaced. The phone is read-only.
+app. It reads the phone the way File Explorer does: Apple iPhone,
+Internal Storage, then the same `201508_a` folder names. Look reports
+how many of those files are already in the folder you picked. Copy
+writes only what is missing, into those same folder names. A file
+already there with the same name and size stays. A different size is
+left untouched and reported. The phone is read-only.
 When the copy finishes, or you stop it, that folder is added with Serve
 from that folder. Unlock the phone and tap Trust first. `Setup.bat`
 installs the .NET 10 runtime the phone helper needs, and tells you to

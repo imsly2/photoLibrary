@@ -17,11 +17,41 @@ from ui.match import (
     look_status,
     phone_text,
     plan,
+    plan_mirror,
     write_stream,
 )
 
 
 class MatchTests(unittest.TestCase):
+    def test_mirror_matches_explorer_folder_and_leaves_a_different_size(self) -> None:
+        from ui.match import ACTION_KEEP
+
+        when = datetime(2015, 8, 1)
+        with TemporaryDirectory() as raw:
+            dest = Path(raw)
+            kept = dest / "201508_a" / "IMG_0519.JPG"
+            kept.parent.mkdir()
+            kept.write_bytes(b"same-bytes")
+            clash = dest / "201405_a" / "IMG_0569.JPG"
+            clash.parent.mkdir()
+            clash.write_bytes(b"old")
+            items = plan_mirror(
+                [
+                    PhoneFile("201508_a/IMG_0519.JPG", kept.stat().st_size, when),
+                    PhoneFile("201405_a/IMG_0569.JPG", 99, when),
+                    PhoneFile("201508_a/IMG_0520.JPG", 4, when),
+                ],
+                dest,
+            )
+            by_source = {item.source_path: item for item in items}
+            self.assertEqual(by_source["201508_a/IMG_0519.JPG"].action, "skip")
+            self.assertEqual(by_source["201508_a/IMG_0519.JPG"].dest_relative, "201508_a/IMG_0519.JPG")
+            self.assertEqual(by_source["201405_a/IMG_0569.JPG"].action, ACTION_KEEP)
+            self.assertIsNone(by_source["201405_a/IMG_0569.JPG"].dest_relative)
+            self.assertEqual(by_source["201508_a/IMG_0520.JPG"].action, "copy")
+            self.assertEqual(by_source["201508_a/IMG_0520.JPG"].dest_relative, "201508_a/IMG_0520.JPG")
+            self.assertNotIn("2026-05", by_source["201508_a/IMG_0520.JPG"].dest_relative or "")
+
     def test_interrupted_transfer_cleans_partial(self) -> None:
         with TemporaryDirectory() as raw:
             final = Path(raw) / "IMG_0001.HEIC"

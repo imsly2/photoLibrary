@@ -32,12 +32,19 @@ def test_destination_creates_a_folder(tmp_path: Path) -> None:
     assert dest.is_dir()
 
 
-@pytest.mark.parametrize("message", ["You must install .NET to run this application.", "You must install or update .NET to run this application."])
-def test_status_explains_missing_runtime(monkeypatch, message):
-    from types import SimpleNamespace
-    from library import iphone_import
-    monkeypatch.setattr(iphone_import, "tool_root", lambda: Path("helper"))
-    monkeypatch.setattr(iphone_import.subprocess, "run", lambda *a, **kw: SimpleNamespace(stdout="", stderr=message))
-    result = iphone_import.status()
-    assert result["installed"] is False
-    assert ".NET 10 runtime" in result["message"]
+def test_status_requires_the_explorer_reader(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    host = tmp_path / "ui-host" / "bin" / "Release" / "net10.0" / "win-x64" / "iphone-photos-host.exe"
+    host.parent.mkdir(parents=True)
+    host.write_bytes(b"")
+    match = tmp_path / "ui" / "match.py"
+    match.parent.mkdir()
+    match.write_text("# match\n", encoding="utf-8")
+    monkeypatch.setenv("LIBRARY_IPHONE_TOOL", str(tmp_path))
+    assert tool_root() == tmp_path
+    from library.iphone_import import status
+
+    missing = status()
+    assert missing["installed"] is False
+    (tmp_path / "ExplorerLayout.ps1").write_text("# reader\n", encoding="utf-8")
+    ready = status()
+    assert ready["installed"] is True
