@@ -1,0 +1,333 @@
+name: CI
+
+# Triggers:
+#   pull_request      — run on EVERY pull request, regardless of its base branch. The previous
+#                       `branches: [main]` filter silently skipped CI for STACKED PRs (a PR whose base is
+#                       a feature branch rather than main, e.g. a spike based on feature/sprint-3.5).
+#                       Dropping the base filter closes that gap so every PR is validated.
+#   push: [main]      — validate main after every merge.
+#   workflow_dispatch — allow a manual re-run from the Actions tab. If a `synchronize` event is ever
+#                       missed (a push to an open PR that does not kick off a run), the run can be
+#                       re-triggered manually instead of closing and reopening the PR.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel an in-progress run when a new commit lands on the SAME workflow + ref. Scoping the group to the
+# workflow name as well as the ref keeps unrelated workflows from cancelling each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build + test (windows-latest, .NET 10)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history + tags so MinVer can derive the version
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          cache: true # restore the NuGet global-packages cache, keyed on the project/props files below
+          cache-dependency-path: |
+            **/*.csproj
+            Directory.Build.props
+
+      # The .sln does not exist yet — Nova creates it in Phase 1.
+      # Every dotnet step is guarded so this workflow runs green on the Phase 0 PR
+      # and starts doing real work the moment the .sln lands.
+      - name: Restore
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            dotnet restore
+          } else {
+            Write-Host "No .sln found — skipping restore (Phase 0 bootstrap PR)."
+          }
+
+      - name: Format check
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            dotnet format --verify-no-changes
+          } else {
+            Write-Host "No .sln found — skipping format check."
+          }
+
+      - name: Build
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            dotnet build -c Release --no-restore
+          } else {
+            Write-Host "No .sln found — skipping build."
+          }
+
+      - name: Test
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            # --blame-hang-* / --blame-crash: the fake-device harness injects REAL parked-read and
+            # spinning-close faults, so a regressed test could otherwise hang the runner until the
+            # 6-hour job timeout. Abort with a full process dump after 5 minutes of no test progress,
+            # and dump on an unexpected test-host crash, so a hang/crash fails fast with an artifact to
+            # diagnose from. The GitHubActions logger annotates failing tests inline on the PR and puts
+            # pass/fail counts in the job summary (no more log-diving across 163+ tests).
+            #
+            # --filter "Category!=E2E": this gating job runs the FAST unit + in-process-harness lane only.
+            # The real-.exe E2E (which builds the FakeDevice EXE and spawns it as a subprocess) is slow, so
+            # it runs in its own `exe-e2e` job below. `!=` still includes every untagged unit test.
+            dotnet test -c Release --no-build `
+              --results-directory TestResults `
+              --filter "Category!=E2E" `
+              --logger "GitHubActions" `
+              --logger "trx" `
+              --blame-hang-timeout 5m `
+              --blame-hang-dump-type full `
+              --blame-crash
+          } else {
+            Write-Host "No .sln found — skipping tests."
+          }
+
+      - name: Upload test diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-diagnostics
+          # TRX results plus any blame hang/crash dump (.dmp) and the blame sequence file.
+          path: |
+            **/TestResults/**/*.trx
+            **/TestResults/**/*.dmp
+            **/TestResults/**/Sequence_*.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish-smoke:
+    name: published EXE smoke (--help, windows-latest)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history + tags so MinVer can derive the version
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          cache: true # restore the NuGet global-packages cache, keyed on the project/props files below
+          cache-dependency-path: |
+            **/*.csproj
+            Directory.Build.props
+
+      # Build the SAME single-file artifact the release pipeline ships and prove it runs before any
+      # release is trusted: the native AFC DLLs must self-extract (IncludeNativeLibrariesForSelfExtract)
+      # and `--help` must exit 0 on a clean runner. Guarded so the Phase 0 bootstrap PR stays green.
+      - name: Publish single-file and run --help
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            dotnet publish src/GetAndSee.Cli -c Release -r win-x64 --self-contained true `
+              -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+            $exe = "src/GetAndSee.Cli/bin/Release/net10.0/win-x64/publish/get-and-see.exe"
+            if (-not (Test-Path $exe)) { throw "published EXE not found at $exe" }
+            & $exe --help
+            if ($LASTEXITCODE -ne 0) { throw "published EXE --help failed with exit $LASTEXITCODE" }
+            Write-Host "Published single-file EXE ran --help successfully."
+          } else {
+            Write-Host "No .sln found - skipping publish smoke (Phase 0 bootstrap PR)."
+          }
+
+      # The byte-identical-release GUARD (Sprint 3.6). The opt-in GAS_FAKE_DEVICE seam is gated behind the
+      # FAKE_DEVICE compile constant + a `-p:FakeDevice=true`-only project reference, so a NORMAL release
+      # build must carry no trace of the fake. This step PROVES it on the exact single-file artifact
+      # release.yml ships (published just above): it asserts the EXE carries neither the fake assembly nor
+      # the seam type. Without it, "byte-identical default" is only an unverified comment in the csproj.
+      - name: Release guard — shipped EXE is fake-free
+        shell: pwsh
+        run: |
+          if (-not (Test-Path *.sln)) {
+            Write-Host "No .sln found — skipping release guard (Phase 0 bootstrap PR)."
+            return
+          }
+          $publishDir = "src/GetAndSee.Cli/bin/Release/net10.0/win-x64/publish"
+          $exe = Join-Path $publishDir "get-and-see.exe"
+          if (-not (Test-Path $exe)) { throw "release guard: published EXE not found at $exe" }
+
+          # (1) No fake-device file may sit in the publish output (defends a non-single-file layout).
+          $leaked = @(Get-ChildItem -Path $publishDir -Recurse -Filter 'GetAndSee.FakeDevice*' -ErrorAction SilentlyContinue)
+          if ($leaked.Count -gt 0) {
+            throw "release guard FAILED: fake-device file(s) in publish output: $($leaked.Name -join ', ')"
+          }
+
+          # (2) The shipped single-file EXE must not CONTAIN the fake. Built with -p:FakeDevice=true the
+          #     GetAndSee.FakeDevice assembly is bundled in and get-and-see.dll gains an assembly reference
+          #     to it; both surface the UTF-8 metadata names below. A normal (release) build references
+          #     nothing, so these strings are absent. release.yml does not enable single-file compression,
+          #     so the bundled assemblies are stored verbatim and a byte scan is reliable.
+          $bytes = [System.IO.File]::ReadAllBytes($exe)
+          $haystack = [System.Text.Encoding]::ASCII.GetString($bytes)
+
+          # Positive control (so this absence-only guard can never rot into a vacuous green): the scan must be
+          # able to SEE assembly-name metadata at all. If a known-always-present name is missing, the publish
+          # layout changed (single-file compression/trimming/format) and the marker scan has gone BLIND — fail
+          # loudly rather than "pass" by finding nothing. Pairs with the negative checks below.
+          if (-not $haystack.Contains('GetAndSee.Core')) {
+            throw "release guard FAILED (blind): the byte scan cannot find even 'GetAndSee.Core' in the EXE — the publish layout changed, so the fake-free check is no longer trustworthy. Re-validate the marker scan before shipping."
+          }
+
+          foreach ($needle in @('GetAndSee.FakeDevice', 'FakeDeviceGate')) {
+            if ($haystack.Contains($needle)) {
+              throw "release guard FAILED: shipped EXE contains '$needle' — the FAKE_DEVICE seam leaked into a release build."
+            }
+          }
+          Write-Host "Release guard PASSED: shipped EXE carries no GetAndSee.FakeDevice assembly and FAKE_DEVICE was not defined."
+
+  exe-e2e:
+    name: real-.exe E2E (FakeDevice seam, windows-latest)
+    runs-on: windows-latest
+    timeout-minutes: 20 # the fixture builds the FakeDevice EXE then spawns it; per-test subprocess timeouts guard hangs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history + tags so MinVer can derive the version
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          cache: true # restore the NuGet global-packages cache, keyed on the project/props files below
+          cache-dependency-path: |
+            **/*.csproj
+            Directory.Build.props
+
+      # The real-process E2E lane (Sprint 3.6). These tests BUILD the opt-in `-p:FakeDevice=true` EXE and
+      # run it as a SUBPROCESS (GAS_FAKE_DEVICE=<spec>) to assert the real get-and-see.exe's exit codes and
+      # cross-process resume — the one thing the in-process harness cannot do (it can't restart a process).
+      # Kept in its own job (filter Category=E2E) so the gating unit suite stays fast. The fixture builds the
+      # FakeDevice EXE to a temp dir; nothing it produces is shipped.
+      - name: Run real-.exe E2E
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            dotnet test tests/GetAndSee.Tests/GetAndSee.Tests.csproj -c Release `
+              --results-directory TestResults `
+              --filter "Category=E2E" `
+              --logger "GitHubActions" `
+              --logger "trx"
+          } else {
+            Write-Host "No .sln found — skipping real-.exe E2E (Phase 0 bootstrap PR)."
+          }
+
+      - name: Upload E2E diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-diagnostics
+          path: |
+            **/TestResults/**/*.trx
+            **/TestResults/**/*.dmp
+          if-no-files-found: ignore
+          retention-days: 14
+
+  secret-scan:
+    name: gitleaks secret scan (pre-public gate)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Pre-public security gate: fail the build on any committed secret (keys, tokens, .pem/.pfx,
+      # connection strings). Complements the code-review skill's secrets lens (PROJECT_BRIEF §13.6).
+      # We download a pinned official gitleaks binary (no third-party action, no telemetry/license
+      # logic) and scan the working tree; --redact ensures a finding is never printed in the log.
+      - name: Run gitleaks
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=8.18.4
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks detect --source . --no-git --redact --verbose --exit-code 1
+
+  coverage:
+    name: coverage (advisory, non-gating)
+    runs-on: windows-latest
+
+    # Coverage runs in its OWN job so the gating "build + test" job stays at baseline speed (coverlet
+    # instrumentation roughly doubles test time). This job is ADVISORY only: the test step is
+    # continue-on-error and nothing here gates a merge — it just surfaces line/branch numbers in the job
+    # summary now that the fake-device harness exercises the copy pipeline end-to-end.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history + tags so MinVer can derive the version (keeps the build warning-clean)
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            Directory.Build.props
+
+      - name: Test with coverage
+        continue-on-error: true # advisory only — pass/fail is owned by the gating "build + test" job
+        shell: pwsh
+        run: |
+          if (Test-Path *.sln) {
+            # Exclude the slow real-.exe E2E lane here too — coverage is advisory and the E2E build+spawn
+            # would otherwise run a second time in this job for no coverage benefit (it owns no unique src lines).
+            dotnet test -c Release `
+              --results-directory TestResults `
+              --filter "Category!=E2E" `
+              --collect "XPlat Code Coverage"
+          } else {
+            Write-Host "No .sln found — skipping coverage."
+          }
+
+      - name: Coverage summary
+        if: always()
+        shell: pwsh
+        run: |
+          # coverlet emits one Cobertura report per test project; the two OVERLAP on GetAndSee.Core, so a
+          # naive sum would double-count it. ReportGenerator merges + de-duplicates them into one summary,
+          # and its GitHub-flavored markdown is appended to the job summary. Advisory only — never gates a
+          # merge. Pinned version, installed into a tool-path under RUNNER_TEMP (no workspace pollution).
+          $reports = Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml -ErrorAction SilentlyContinue
+          if (-not $reports) {
+            "No coverage report found (tests may have failed in this advisory job)." |
+              Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            exit 0
+          }
+          $tool = Join-Path $env:RUNNER_TEMP 'rgtool'
+          dotnet tool install dotnet-reportgenerator-globaltool --version 5.5.10 --tool-path $tool
+          & (Join-Path $tool 'reportgenerator.exe') `
+            "-reports:**/TestResults/**/coverage.cobertura.xml" `
+            "-targetdir:$env:RUNNER_TEMP/CoverageReport" `
+            "-reporttypes:MarkdownSummaryGithub"
+          Get-Content "$env:RUNNER_TEMP/CoverageReport/SummaryGithub.md" |
+            Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-cobertura
+          path: '**/TestResults/**/coverage.cobertura.xml'
+          if-no-files-found: ignore
+          retention-days: 14

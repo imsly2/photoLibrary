@@ -146,7 +146,9 @@
   function pollJob() {
     fetch("/api/iphone").then(readJson).then(function (data) {
       const job = data.job || {};
-      if (job.message) {
+      if (job.current) {
+        statusEl.textContent = "Copying " + job.current + "…";
+      } else if (job.message) {
         statusEl.textContent = job.message;
       }
       paintCounts(job);

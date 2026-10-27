@@ -1,0 +1,21 @@
+# In-progress file copies from the get-and-see tool itself, if anyone ever
+# runs the tool with the repo as destination by accident.
+*.partial
+
+# ─────────────────────────────────────────────────────────────────────────────
+# .NET-standard entries.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Build output
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio working folder + per-user files
+.vs/
+*.user
+*.suo
+
+# Test runner output
+TestResults/

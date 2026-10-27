@@ -1,0 +1,356 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0/win-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {},
+    ".NETCoreApp,Version=v10.0/win-x64": {
+      "iphone-photos-host/1.0.0": {
+        "dependencies": {
+          "GetAndSee.Core": "1.0.0"
+        },
+        "runtime": {
+          "iphone-photos-host.dll": {}
+        }
+      },
+      "iMobileDevice-net/1.3.17": {
+        "runtime": {
+          "lib/netcoreapp3.0/iMobileDevice-net.dll": {
+            "assemblyVersion": "1.3.0.0",
+            "fileVersion": "1.3.17.17360"
+          }
+        },
+        "native": {
+          "runtimes/win-x64/native/bz2.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/getopt.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/iconv-2.dll": {
+            "fileVersion": "1.16.0.0"
+          },
+          "runtimes/win-x64/native/idevice_id.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceactivation.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceactivation.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicebackup.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicebackup2.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicecrashreport.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicedate.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicedebug.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicedebugserverproxy.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicediagnostics.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceenterrecovery.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceimagemounter.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceinfo.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceinstaller.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicename.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicenotificationproxy.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicepair.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ideviceprovision.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicerestore.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicescreenshot.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/idevicesyslog.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/imobiledevice-net-lighthouse.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/imobiledevice.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/ios_webkit_debug_proxy.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/iproxy.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/irecovery.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/irecovery.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libcrypto-1_1-x64.dll": {
+            "fileVersion": "1.1.1.9"
+          },
+          "runtimes/win-x64/native/libcurl.dll": {
+            "fileVersion": "7.74.0.0"
+          },
+          "runtimes/win-x64/native/libssl-1_1-x64.dll": {
+            "fileVersion": "1.1.1.9"
+          },
+          "runtimes/win-x64/native/libusb-1.0.dll": {
+            "fileVersion": "1.0.24.11584"
+          },
+          "runtimes/win-x64/native/libusb0.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libxml2.dll": {
+            "fileVersion": "2.9.10.0"
+          },
+          "runtimes/win-x64/native/lzma.dll": {
+            "fileVersion": "5.2.5.0"
+          },
+          "runtimes/win-x64/native/pcre.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/pcreposix.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/plist.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/plist_cmp.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/plist_test.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/plistutil.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/pthreadVC3.dll": {
+            "fileVersion": "3.0.0.0"
+          },
+          "runtimes/win-x64/native/readline.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/usbmuxd.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/usbmuxd.exe": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/vcruntime140.dll": {
+            "fileVersion": "14.0.24406.0"
+          },
+          "runtimes/win-x64/native/zip.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/zlib1.dll": {
+            "fileVersion": "1.2.11.0"
+          }
+        }
+      },
+      "MetadataExtractor/2.9.3": {
+        "dependencies": {
+          "XmpCore": "6.1.10.1"
+        },
+        "runtime": {
+          "lib/net8.0/MetadataExtractor.dll": {
+            "assemblyVersion": "2.9.3.0",
+            "fileVersion": "2.9.3.0"
+          }
+        }
+      },
+      "Microsoft.Data.Sqlite/10.0.8": {
+        "dependencies": {
+          "Microsoft.Data.Sqlite.Core": "10.0.8",
+          "SQLitePCLRaw.bundle_e_sqlite3": "3.0.3",
+          "SQLitePCLRaw.core": "3.0.3"
+        }
+      },
+      "Microsoft.Data.Sqlite.Core/10.0.8": {
+        "dependencies": {
+          "SQLitePCLRaw.core": "3.0.3"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Data.Sqlite.dll": {
+            "assemblyVersion": "10.0.8.0",
+            "fileVersion": "10.0.826.23019"
+          }
+        }
+      },
+      "SourceGear.sqlite3/3.50.4.5": {
+        "native": {
+          "runtimes/win-x64/native/e_sqlite3.dll": {
+            "fileVersion": "3.50.4.5"
+          }
+        }
+      },
+      "SQLitePCLRaw.bundle_e_sqlite3/3.0.3": {
+        "dependencies": {
+          "SQLitePCLRaw.config.e_sqlite3": "3.0.3",
+          "SourceGear.sqlite3": "3.50.4.5"
+        }
+      },
+      "SQLitePCLRaw.config.e_sqlite3/3.0.3": {
+        "dependencies": {
+          "SQLitePCLRaw.provider.e_sqlite3": "3.0.3"
+        },
+        "runtime": {
+          "lib/net8.0/SQLitePCLRaw.batteries_v2.dll": {
+            "assemblyVersion": "3.0.3.3048",
+            "fileVersion": "3.0.3.3048"
+          }
+        }
+      },
+      "SQLitePCLRaw.core/3.0.3": {
+        "runtime": {
+          "lib/net8.0/SQLitePCLRaw.core.dll": {
+            "assemblyVersion": "3.0.3.3048",
+            "fileVersion": "3.0.3.3048"
+          }
+        }
+      },
+      "SQLitePCLRaw.provider.e_sqlite3/3.0.3": {
+        "dependencies": {
+          "SQLitePCLRaw.core": "3.0.3"
+        },
+        "runtime": {
+          "lib/net8.0/SQLitePCLRaw.provider.e_sqlite3.dll": {
+            "assemblyVersion": "3.0.3.3048",
+            "fileVersion": "3.0.3.3048"
+          }
+        }
+      },
+      "XmpCore/6.1.10.1": {
+        "runtime": {
+          "lib/netstandard2.0/XmpCore.dll": {
+            "assemblyVersion": "6.1.10.1",
+            "fileVersion": "6.1.10.1"
+          }
+        }
+      },
+      "GetAndSee.Core/1.0.0": {
+        "dependencies": {
+          "MetadataExtractor": "2.9.3",
+          "Microsoft.Data.Sqlite": "10.0.8",
+          "SQLitePCLRaw.bundle_e_sqlite3": "3.0.3",
+          "iMobileDevice-net": "1.3.17"
+        },
+        "runtime": {
+          "GetAndSee.Core.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "iphone-photos-host/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "iMobileDevice-net/1.3.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Sk3K7iigG/6Q6gFedJdTxa5ukIlgnTLKPCoem0UBZFIiElGcWMOFZGs07heEhW/SeB7rtkpSrW1lRD0bSYrFSg==",
+      "path": "imobiledevice-net/1.3.17",
+      "hashPath": "imobiledevice-net.1.3.17.nupkg.sha512"
+    },
+    "MetadataExtractor/2.9.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7dBcqlPC2Zc/bsZtXnv8nCWe5h5WsLHszzHtxnpcsVy4MwlD3KQ3wVNoiYBm0a3rzt5hRwAosPvLPhlXrV5lyg==",
+      "path": "metadataextractor/2.9.3",
+      "hashPath": "metadataextractor.2.9.3.nupkg.sha512"
+    },
+    "Microsoft.Data.Sqlite/10.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iyDWyD6r/SnqgoYYQIlLhxL1ZIGZr+SByMXrJKSA1w7sOt7bPMJmN3h2laqwKqyQkjh/lUPJ7LTXwpvqzhggOQ==",
+      "path": "microsoft.data.sqlite/10.0.8",
+      "hashPath": "microsoft.data.sqlite.10.0.8.nupkg.sha512"
+    },
+    "Microsoft.Data.Sqlite.Core/10.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-26t7WDiEjjAls/sFpWvVEFDxt+7Q5VPt6+blU2Lafuj9L8PzAv/GtGV4cqVPtrhWbfD2BX/z2v8hD1qXYtK6Aw==",
+      "path": "microsoft.data.sqlite.core/10.0.8",
+      "hashPath": "microsoft.data.sqlite.core.10.0.8.nupkg.sha512"
+    },
+    "SourceGear.sqlite3/3.50.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UtnipXhJYZKQOQIfpws/msLK7IRhMplE1CZCaZLIQXRnGD474QVpO/J9nMlQQY8NZueGz1aidjoxDRnrC1NT3Q==",
+      "path": "sourcegear.sqlite3/3.50.4.5",
+      "hashPath": "sourcegear.sqlite3.3.50.4.5.nupkg.sha512"
+    },
+    "SQLitePCLRaw.bundle_e_sqlite3/3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Zt8jmSL5zcDWGk8rmzhWBJ6IRyLWh1yWS04Pg72+GIvo3Ba4E/rG4Y/4l7AWlSEogEbzyKRTCXUAs1v/O7Pkkg==",
+      "path": "sqlitepclraw.bundle_e_sqlite3/3.0.3",
+      "hashPath": "sqlitepclraw.bundle_e_sqlite3.3.0.3.nupkg.sha512"
+    },
+    "SQLitePCLRaw.config.e_sqlite3/3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-caP/ap0X2fyVmstCXu5ueOmcr2XWAxA2XyKghV7H4bOAFmq3nWcsGl9q44iY1HYG+i8Qr4G9XEqdfti0rV6/ZQ==",
+      "path": "sqlitepclraw.config.e_sqlite3/3.0.3",
+      "hashPath": "sqlitepclraw.config.e_sqlite3.3.0.3.nupkg.sha512"
+    },
+    "SQLitePCLRaw.core/3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bjm6FY4lZyP+t7GmiuvSM0QXpFihAvyE0Y9O2yibm3g95AAWJPNnHOKVNJGyPTGIKuK7Pr4Wh8Rd8/aOtAclQw==",
+      "path": "sqlitepclraw.core/3.0.3",
+      "hashPath": "sqlitepclraw.core.3.0.3.nupkg.sha512"
+    },
+    "SQLitePCLRaw.provider.e_sqlite3/3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wd+fGvZTrr3BJNe48opSczmC176Okd61ZgoZNQcdvZwkek6to978ccdpcFmNo5GHxCnk29KwT+f+lAZYgfLVZg==",
+      "path": "sqlitepclraw.provider.e_sqlite3/3.0.3",
+      "hashPath": "sqlitepclraw.provider.e_sqlite3.3.0.3.nupkg.sha512"
+    },
+    "XmpCore/6.1.10.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/Tp2/e39e7z8hLtS4TXt0FNNZHbf5yNFfHS0/59soXlgOzZlyRZivvzWpvujyaWkTWWgecp/1nHxkuc5vntn7A==",
+      "path": "xmpcore/6.1.10.1",
+      "hashPath": "xmpcore.6.1.10.1.nupkg.sha512"
+    },
+    "GetAndSee.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -18,14 +18,15 @@ Family PCs. Someone can set it up; a parent or mother-in-law can browse
 afterward. Daily use is a double-click, then the browser on this
 computer.
 
-It is not a phone copier, not a cloud host, and not an editor. It does
-not rearrange your originals unless you ask it to copy a folder here.
+It is not a cloud host and not an editor. It does not rearrange your
+originals unless you ask it to copy a folder here.
 
-Pictures still on an iPhone are copied by the separate tool next to this
-folder, [iphonePhotos](../iphonePhotos/docs/PRODUCT.md)
-(`projects/iphonePhotos`). Run its `Setup.bat` once, copy the camera
-roll into a folder, then add that folder here. This library does not
-talk to the phone.
+Pictures still on an iPhone are copied from inside Library. Click
+**Import iPhone**. The phone program is in this same folder at
+`tools/iphone`. Unlock the phone and tap Trust, pick a folder on the
+PC, then **Look** and **Copy what's missing**. An existing file is
+never replaced. The phone is read-only. When the copy finishes, that
+folder is added to the library.
 
 ## Quick start
 
@@ -35,7 +36,10 @@ talk to the phone.
    (Python, ffmpeg, optional git, and optional face / object / place
    models). Models stay in `library-data/`. Setup also writes a Desktop
    / Start Menu **Library** icon (`CreateShortcut.bat` can recreate it).
-   If a step fails, the window says what to try next. Safe to run again.
+   If the iPhone helper needs it, Setup installs the .NET 10 runtime.
+   Open Apple Devices (or iTunes) once on that PC before plugging in a
+   phone. If a step fails, the window says what to try next. Safe to run
+   again.
 3. **Library daily.** Double-click the **Library** icon (or `Library.bat`).
    A browser window opens on this computer.
 4. **Chinese UI.** In the header, set **Language** to **中文**. The

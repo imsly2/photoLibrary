@@ -6,9 +6,10 @@ often on external drives. In one sitting: launch the Library folder, point it at
 those pictures, browse small pictures quickly, and open one. An agent can then
 write who, where, and what is in them so they can be found again.
 
-It is a local library server that travels with its app and data folder. It is not
-the phone copier, a cloud host, a required bundled image model, a desktop browser
-shell, or a tool that rearranges originals on its own. Optional local place,
+It is a local library server that travels with its app and data folder. The iPhone
+importer travels with it, at `tools/iphone`. It is not a cloud host, a required
+bundled image model, a desktop browser shell, or a tool that rearranges originals
+on its own. Optional local place,
 object, and face workers can be downloaded into the library folder; they stay
 off until setup and never call a cloud API. Copying originals is an explicit
 choice; linking leaves them where they are. No accounts or separate family mode.
@@ -18,17 +19,18 @@ beside the server: one JSON record per picture, one per person, one per place,
 one per thing. A SQLite file is a search index rebuilt from those records.
 Delete the SQLite file and the server builds it again.
 
-This tool does not talk to the phone itself. That program is
-[iphonePhotos](../../iphonePhotos/docs/PRODUCT.md), the separate tool at
-`projects/iphonePhotos`, next to this folder. **Import iPhone** in the
-header opens a dialog in this app. The dialog asks that tool to list the
-camera roll and copy what is missing into a folder you pick. An existing
-file is never replaced. When the copy finishes, or you stop it, that
-folder is added with Serve from that folder. Unlock the phone and tap
-Trust first. If the tool is not beside Library, or the phone helper
-cannot start, the dialog says so and does not pretend to copy.
-`Setup.bat` checks for the sibling tool and the .NET 10 runtime the
-helper needs. A missing phone tool does not fail Library setup.
+One clone of this folder is the whole tool, including the iPhone
+importer. The phone program lives inside this repo at `tools/iphone`.
+It is not a second clone and not a folder you have to copy beside
+Library. **Import iPhone** in the header opens that importer in this
+app. It lists the camera roll and copies what is missing into a folder
+you pick. An existing file is never replaced. The phone is read-only.
+When the copy finishes, or you stop it, that folder is added with Serve
+from that folder. Unlock the phone and tap Trust first. `Setup.bat`
+installs the .NET 10 runtime the phone helper needs, and tells you to
+open Apple Devices once if the USB service is not listening. Library
+still browses if that runtime is missing. The dialog then says the
+helper cannot start.
 
 Nothing in this file is optional flavor. A feature is done when its **Check**
 passes. [STATUS.md](STATUS.md) records the artifact for each Check. Until then

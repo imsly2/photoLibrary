@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>IphonePhotos.Host</RootNamespace>
+    <AssemblyName>iphone-photos-host</AssemblyName>
+    <!-- imobiledevice-net copies its native DLLs only when the runnable project has a RID. -->
+    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\get-and-see\src\GetAndSee.Core\GetAndSee.Core.csproj" />
+  </ItemGroup>
+
+</Project>

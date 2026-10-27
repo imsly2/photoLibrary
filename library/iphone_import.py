@@ -1,8 +1,8 @@
 """Import iPhone dialog backend.
 
-The phone helper and the match rules stay in the sibling iphonePhotos
-tool. This module only finds that tool, asks it to look or copy, and
-reports progress. It never writes to the phone.
+The phone helper and match rules live in tools/iphone inside this repo.
+This module finds that tool, asks it to look or copy, and reports progress.
+It never writes to the phone.
 """
 
 from __future__ import annotations
@@ -14,8 +14,8 @@ import threading
 from pathlib import Path
 
 _MISSING = (
-    "The iPhone tool is not next to Library. "
-    "Copy the iphonePhotos folder beside this folder and run its Setup.bat."
+    "The iPhone import tool is missing from this Library copy. "
+    "Re-run Setup.bat or pull the latest code from the photoLibrary repo."
 )
 _RUNTIME = (
     "The phone helper needs the .NET 10 runtime. "
@@ -45,6 +45,7 @@ def tool_root() -> Path | None:
     if env:
         candidates.append(Path(env))
     library_dir = Path(__file__).resolve().parents[1]
+    candidates.append(library_dir / "tools" / "iphone")
     candidates.append(library_dir.parent / "iphonePhotos")
     for path in candidates:
         host = _host_exe(path)

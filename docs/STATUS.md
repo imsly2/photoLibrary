@@ -4,7 +4,9 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
-- 2026-10-27 — `Setup.bat -DryRun` on this PC finds Python, ffmpeg, git, the existing `.venv`, and all five local packs (places, objects, faces, transcribe, aesthetic). It does not download. A fresh PC was going to create `.venv` with the executable name `System.Object[]` because PowerShell wrapped the Python path three arrays deep. `setup.ps1` now unwraps that to the real `python.exe` before it prints or creates `.venv`. GitHub `main` already contains `Setup.bat`. This PC's `main` is 32 commits ahead of `origin/main`; those commits do not change the installer. Not pushed.
+- 2026-10-27 — Import iPhone is inside this repo at `tools/iphone` (267 files). With `LIBRARY_IPHONE_TOOL` unset, `tool_root()` is `J:\slyOS\projects\photoLibrary\tools\iphone` and `status()` reports `installed: true`. The helper exe starts and prints Usage. No file in that tree is over 100 MB. `J:\slyOS\projects\iphonePhotos` is still there and was not deleted. No phone was plugged in, so Look and Copy against a device were not run.
+
+- 2026-10-27 — `Setup.bat -DryRun` on this PC finds Python, ffmpeg, git, the existing `.venv`, and all five local packs (places, objects, faces, transcribe, aesthetic). It does not download. A fresh PC was going to create `.venv` with the executable name `System.Object[]` because PowerShell wrapped the Python path three arrays deep. `setup.ps1` now unwraps that to the real `python.exe` before it prints or creates `.venv`. Those library commits and the Import iPhone button are on `origin/main` (`c852ec7`).
 
 - 2026-10-20 — Browse responsiveness: item results paint without waiting for
   settings/folders/sidebar; newer filters supersede old work; visible thumbnails

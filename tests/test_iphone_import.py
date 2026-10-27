@@ -1,4 +1,4 @@
-"""Import iPhone finds the sibling tool and refuses a bad destination."""
+"""Import iPhone finds tools/iphone and refuses a bad destination."""
 
 from __future__ import annotations
 

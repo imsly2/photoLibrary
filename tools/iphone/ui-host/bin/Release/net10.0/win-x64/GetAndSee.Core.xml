@@ -1,0 +1,2147 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GetAndSee.Core</name>
+    </assembly>
+    <members>
+        <member name="T:GetAndSee.Core.Device.AbandonableReadStream">
+            <summary>
+            Read-only <see cref="T:System.IO.Stream"/> decorator that shields the copy loop from an orphaned device read so
+            the run-level <see cref="T:GetAndSee.Core.Transfer.ForwardProgressWatchdog"/> can stop a stuck transfer
+            cleanly (#11 / #25 / #42 / R2).
+            </summary>
+            <remarks>
+            <para>
+            The native AFC read is a blocking call with no timeout, dispatched onto a thread-pool worker. A cable
+            yank, a sleeping device, or a USB bus reset can make it park forever or pin a core and never return.
+            This decorator races each <see cref="M:GetAndSee.Core.Device.AbandonableReadStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)"/> against the supplied
+            cancellation token: when the run-level forward-progress watchdog observes that bytes have stopped
+            flowing and trips that token, the in-flight read is <i>abandoned</i> and an
+            <see cref="T:System.OperationCanceledException"/> is surfaced, so the caller is never blocked on the orphaned
+            read.
+            </para>
+            <para>
+            Unlike the Sprint 2 design, this decorator no longer owns its own inactivity timer. Liveness is a
+            single run-level concept driven by the byte heartbeat; this type only provides the two things the
+            watchdog needs to act on a stuck read: (1) an abandon-on-cancellation race so a cancel actually
+            unblocks the pinned read, and (2) a private reusable scratch buffer so an abandoned read that keeps
+            writing can never corrupt a pooled buffer already handed back to the caller's
+            <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </para>
+            <para>
+            On abandonment, disposal of the inner stream (which closes the native AFC handle) is scheduled for
+            whenever the orphaned read eventually returns or faults — so the handle is not leaked. If the read
+            never returns, the process is exiting anyway and the OS reclaims it.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.#ctor(System.IO.Stream,System.TimeProvider)">
+            <summary>Wraps <paramref name="inner"/> so its reads can be abandoned on cancellation.</summary>
+            <param name="inner">The underlying read stream (owned and disposed by this decorator).</param>
+            <param name="timeProvider">Time source passed through to the abandon race; defaults to <see cref="P:System.TimeProvider.System"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Device.AbandonableReadStream.CanRead">
+            <inheritdoc />
+        </member>
+        <member name="P:GetAndSee.Core.Device.AbandonableReadStream.CanSeek">
+            <inheritdoc />
+        </member>
+        <member name="P:GetAndSee.Core.Device.AbandonableReadStream.CanWrite">
+            <inheritdoc />
+        </member>
+        <member name="P:GetAndSee.Core.Device.AbandonableReadStream.Length">
+            <inheritdoc />
+        </member>
+        <member name="P:GetAndSee.Core.Device.AbandonableReadStream.Position">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+            <remarks>
+            Not supported: the copy pipeline reads asynchronously so reads can be raced against cancellation.
+            A synchronous read would block on the inner native read with no way to abandon it on a disconnect
+            (the very hang this exists to prevent), so it is disabled rather than silently falling through.
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.Flush">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.SetLength(System.Int64)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AbandonableReadStream.Dispose(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="T:GetAndSee.Core.Device.AfcErrors">
+            <summary>
+            Maps read-only AFC error codes to the right <see cref="T:GetAndSee.Core.Errors.DeviceException"/>, distinguishing a lost
+            device <i>connection</i> (stop the run cleanly and resumably) from a single unreadable file
+            (fail just that file and keep going).
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcErrors.IsConnectionFatal(iMobileDevice.Afc.AfcError)">
+            <summary>
+            Returns <see langword="true"/> for AFC error codes that mean the device connection/transport
+            itself is gone — a yanked USB cable or a dropped usbmux/AFC socket — rather than a problem with
+            one file.
+            </summary>
+            <remarks>
+            Deliberately conservative: per-file conditions (<c>ObjectNotFound</c>, <c>PermDenied</c>,
+            <c>ReadError</c>, <c>IoError</c>, …) are excluded so a single corrupt or locked file is still
+            failed-and-skipped, not mistaken for a disconnect that aborts the whole run.
+            </remarks>
+            <param name="error">The AFC error code returned by a read-only native call.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcErrors.ToException(iMobileDevice.Afc.AfcError,System.String)">
+            <summary>
+            Builds the typed exception for a failed read-only AFC call: a
+            <see cref="T:GetAndSee.Core.Errors.DeviceConnectionLostException"/> when the connection is gone (so the run stops
+            cleanly and resumably), otherwise a plain <see cref="T:GetAndSee.Core.Errors.DeviceException"/> describing a per-file
+            failure the caller can record and move past.
+            </summary>
+            <param name="error">The AFC error code returned by the native call.</param>
+            <param name="message">The per-file diagnostic message (used only for non-connection errors).</param>
+        </member>
+        <member name="T:GetAndSee.Core.Device.AfcIPhoneClient">
+            <summary>
+            <see cref="T:GetAndSee.Core.Device.IPhoneClient"/> implementation backed by <c>imobiledevice-net</c> (native AFC).
+            </summary>
+            <remarks>
+            Binds <b>only</b> the read path of the library: device enumeration, the lockdown handshake,
+            starting <c>com.apple.afc</c>, directory listing, file stat, and read-only file open. No
+            write, delete, rename, truncate, or directory-create call is referenced anywhere in this class
+            — the prohibition is verified at build time by <c>ReadOnlyContractTests</c> (PROJECT_BRIEF §9.1).
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.#ctor(System.TimeSpan,System.TimeProvider)">
+            <summary>Creates a read-only AFC client.</summary>
+            <param name="readTimeout">
+            Inactivity timeout applied to the blocking native open/list/stat calls and the read stream
+            (#25 / #11 / R2). When <see cref="F:System.TimeSpan.Zero"/> (the default) the watchdog is disabled and
+            the native calls block indefinitely, preserving the original unguarded behavior.
+            </param>
+            <param name="clock">Time source for the watchdog; defaults to <see cref="P:System.TimeProvider.System"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Device.AfcIPhoneClient.Device">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.ConnectAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.ListDirectoryAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.GetFileInfoAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.OpenReadAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Device.AfcIPhoneClient.Dispose">
+            <summary>Releases all AFC, lockdown, and device handles in reverse order of acquisition.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Device.AfcReadStream">
+            <summary>
+            Forward-only, read-only <see cref="T:System.IO.Stream"/> over an open AFC file handle.
+            Wraps <c>afc_file_read</c> and closes the handle (<c>afc_file_close</c>) on dispose.
+            </summary>
+        </member>
+        <member name="T:GetAndSee.Core.Device.DcimEnumerator">
+            <summary>
+            Recursively walks the device's <c>/DCIM/</c> tree over the read-only <see cref="T:GetAndSee.Core.Device.IPhoneClient"/>,
+            yielding every regular file it finds.
+            </summary>
+        </member>
+        <member name="F:GetAndSee.Core.Device.DcimEnumerator.DefaultRoot">
+            <summary>The conventional AFC root of the camera roll.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Device.DcimEnumerator.#ctor(GetAndSee.Core.Device.IPhoneClient)">
+            <summary>Creates an enumerator over the supplied read-only device client.</summary>
+            <param name="client">A connected read-only device client.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Device.DcimEnumerator.EnumerateAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Enumerates all regular files beneath <paramref name="root"/>, descending into subdirectories.
+            Directories themselves are not yielded.
+            </summary>
+            <param name="root">The AFC directory to walk. Defaults to <see cref="F:GetAndSee.Core.Device.DcimEnumerator.DefaultRoot"/>.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>An async stream of <see cref="T:GetAndSee.Core.Device.RemoteFile"/> descriptors.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Device.DeviceWatchdog">
+            <summary>
+            The shared device-inactivity watchdog: races a blocking device operation against a timeout on an
+            injectable <see cref="T:System.TimeProvider"/> and, if the operation does not settle in time, abandons it
+            and throws <see cref="T:GetAndSee.Core.Errors.DeviceStallException"/> so the run can stop cleanly and resumably (#11 / #25 / R2).
+            </summary>
+            <remarks>
+            <para>
+            The native AFC calls (<c>afc_file_open</c>, <c>afc_read_directory</c>, <c>afc_get_file_info</c>,
+            <c>afc_file_read</c>) are blocking with no timeout: a cable yank, a sleeping device, or a USB bus
+            reset parks them forever (the #11/#25 hang). This helper runs the operation off the caller's path
+            and races it against <see cref="M:System.Threading.Tasks.Task.Delay(System.TimeSpan,System.TimeProvider,System.Threading.CancellationToken)"/>. If the
+            timeout wins, the operation is <i>abandoned</i>: a continuation is scheduled so that whenever it
+            eventually settles, any resource it produced is released (no handle leak), while the caller gets a
+            <see cref="T:GetAndSee.Core.Errors.DeviceStallException"/> instead of blocking forever.
+            </para>
+            <para>
+            This is the single implementation of the abandon-on-timeout/abandon-on-cancellation logic. The four
+            blocking native calls (open/stat/list) guard against a parked call with a timeout here, and
+            <see cref="T:GetAndSee.Core.Device.AbandonableReadStream"/> reuses the same race to abandon a stuck read when the run-level
+            forward-progress watchdog cancels it — so the behavior is defined and tested in exactly one place.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Device.DeviceWatchdog.RunWithTimeoutAsync``1(System.Func{``0},System.TimeSpan,System.TimeProvider,System.Threading.CancellationToken,System.Action{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Runs a blocking native call on a worker thread and guards it with the inactivity timeout.
+            </summary>
+            <typeparam name="T">The native call's result type.</typeparam>
+            <param name="blockingNativeCall">The synchronous, blocking native call to guard.</param>
+            <param name="timeout">Maximum time to wait before treating the call as a stall.</param>
+            <param name="clock">Time source for the timeout; injectable so the watchdog is testable.</param>
+            <param name="cancellationToken">Token observed for caller cancellation (distinct from a stall).</param>
+            <param name="onAbandoned">
+            Optional cleanup invoked when an <i>abandoned</i> call eventually settles, receiving the settled
+            task so it can release any resource the late call produced (e.g. close an AFC handle). Not
+            invoked on the normal, in-time path.
+            </param>
+            <returns>The native call's result.</returns>
+            <exception cref="T:GetAndSee.Core.Errors.DeviceStallException">The call produced no result within <paramref name="timeout"/>.</exception>
+        </member>
+        <member name="M:GetAndSee.Core.Device.DeviceWatchdog.RaceAgainstTimeoutAsync``1(System.Threading.Tasks.Task{``0},System.TimeSpan,System.TimeProvider,System.Threading.CancellationToken,System.Action{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Races an already-running device <paramref name="operation"/> against the inactivity timeout.
+            </summary>
+            <typeparam name="T">The operation's result type.</typeparam>
+            <param name="operation">The in-flight device operation to guard.</param>
+            <param name="timeout">Maximum time to wait before treating the operation as a stall.</param>
+            <param name="clock">Time source for the timeout; injectable so the watchdog is testable.</param>
+            <param name="cancellationToken">Token observed for caller cancellation (distinct from a stall).</param>
+            <param name="onAbandoned">
+            Optional cleanup invoked when an <i>abandoned</i> operation eventually settles (see
+            <see cref="M:GetAndSee.Core.Device.DeviceWatchdog.RunWithTimeoutAsync``1(System.Func{``0},System.TimeSpan,System.TimeProvider,System.Threading.CancellationToken,System.Action{System.Threading.Tasks.Task{``0}})"/>).
+            </param>
+            <returns>The operation's result.</returns>
+            <exception cref="T:GetAndSee.Core.Errors.DeviceStallException">The operation did not settle within <paramref name="timeout"/>.</exception>
+        </member>
+        <member name="T:GetAndSee.Core.Device.IPhoneClient">
+            <summary>
+            Read-only view of an iPhone's media file system over AFC (Apple File Conduit).
+            </summary>
+            <remarks>
+            <para>
+            This is the project's single most safety-critical contract. By design the interface exposes
+            <b>only</b> read operations — connect, list a directory, stat a file, and open a file for
+            reading. There is deliberately no write, delete, rename, truncate, or directory-create method
+            here or on any implementation, so no caller can mutate the device (PROJECT_BRIEF §9.1).
+            </para>
+            <para>
+            The prohibition is enforced at build time: <c>ReadOnlyContractTests</c> reflects over the
+            compiled <c>GetAndSee.Core</c> assembly and fails the build if any AFC/lockdown mutation symbol
+            is referenced (see <c>docs/sprint-1/afc-library-decision.md</c> §5.5).
+            </para>
+            </remarks>
+        </member>
+        <member name="P:GetAndSee.Core.Device.IPhoneClient.Device">
+            <summary>
+            Information about the connected device, or <see langword="null"/> before <see cref="M:GetAndSee.Core.Device.IPhoneClient.ConnectAsync(System.Threading.CancellationToken)"/> succeeds.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Device.IPhoneClient.ConnectAsync(System.Threading.CancellationToken)">
+            <summary>
+            Establishes the read-only AFC session: locate the device, perform the lockdown handshake,
+            start <c>com.apple.afc</c>, and create the AFC client.
+            </summary>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>A task that completes once the device is connected and ready to read.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Device.IPhoneClient.ListDirectoryAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Lists the immediate child entry names of an AFC directory (excluding <c>.</c> and <c>..</c>).
+            </summary>
+            <param name="path">Absolute device path, e.g. <c>/DCIM/</c>.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>The child entry names. Use <see cref="M:GetAndSee.Core.Device.IPhoneClient.GetFileInfoAsync(System.String,System.Threading.CancellationToken)"/> to classify each one.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Device.IPhoneClient.GetFileInfoAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Reads metadata (size, modified time, directory flag) for a single AFC path.
+            </summary>
+            <param name="path">Absolute device path.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>The parsed file information.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Device.IPhoneClient.OpenReadAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Opens a file on the device for sequential reading.
+            </summary>
+            <param name="path">Absolute device path to a regular file.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>A forward-only, read-only stream over the file's bytes. The caller owns and disposes it.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Device.RemoteFile">
+            <summary>
+            A single media file discovered on the device, as yielded by the DCIM enumerator.
+            </summary>
+            <param name="Path">Absolute AFC path on the device, e.g. <c>/DCIM/100APPLE/IMG_0001.HEIC</c>.</param>
+            <param name="Size">Size in bytes as reported by AFC (<c>st_size</c>).</param>
+            <param name="ModifiedAt">Last-modified timestamp from AFC (<c>st_mtime</c>), or <see langword="null"/> if unavailable.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Device.RemoteFile.#ctor(System.String,System.Int64,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            A single media file discovered on the device, as yielded by the DCIM enumerator.
+            </summary>
+            <param name="Path">Absolute AFC path on the device, e.g. <c>/DCIM/100APPLE/IMG_0001.HEIC</c>.</param>
+            <param name="Size">Size in bytes as reported by AFC (<c>st_size</c>).</param>
+            <param name="ModifiedAt">Last-modified timestamp from AFC (<c>st_mtime</c>), or <see langword="null"/> if unavailable.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFile.Path">
+            <summary>Absolute AFC path on the device, e.g. <c>/DCIM/100APPLE/IMG_0001.HEIC</c>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFile.Size">
+            <summary>Size in bytes as reported by AFC (<c>st_size</c>).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFile.ModifiedAt">
+            <summary>Last-modified timestamp from AFC (<c>st_mtime</c>), or <see langword="null"/> if unavailable.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Device.RemoteFileInfo">
+            <summary>
+            File metadata returned by a read-only <c>afc_get_file_info</c> call.
+            </summary>
+            <param name="Size">Size in bytes (<c>st_size</c>). Zero for directories.</param>
+            <param name="ModifiedAt">Last-modified timestamp (<c>st_mtime</c>), or <see langword="null"/> if it could not be parsed.</param>
+            <param name="IsDirectory">True when AFC reports the entry as a directory (<c>st_ifmt == S_IFDIR</c>).</param>
+        </member>
+        <member name="M:GetAndSee.Core.Device.RemoteFileInfo.#ctor(System.Int64,System.Nullable{System.DateTimeOffset},System.Boolean)">
+            <summary>
+            File metadata returned by a read-only <c>afc_get_file_info</c> call.
+            </summary>
+            <param name="Size">Size in bytes (<c>st_size</c>). Zero for directories.</param>
+            <param name="ModifiedAt">Last-modified timestamp (<c>st_mtime</c>), or <see langword="null"/> if it could not be parsed.</param>
+            <param name="IsDirectory">True when AFC reports the entry as a directory (<c>st_ifmt == S_IFDIR</c>).</param>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFileInfo.Size">
+            <summary>Size in bytes (<c>st_size</c>). Zero for directories.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFileInfo.ModifiedAt">
+            <summary>Last-modified timestamp (<c>st_mtime</c>), or <see langword="null"/> if it could not be parsed.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.RemoteFileInfo.IsDirectory">
+            <summary>True when AFC reports the entry as a directory (<c>st_ifmt == S_IFDIR</c>).</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Device.DeviceInfo">
+            <summary>
+            Identity of the connected device, captured once at connect time for the run summary and manifest.
+            </summary>
+            <param name="Udid">Unique device identifier reported by usbmuxd.</param>
+            <param name="Name">User-assigned device name (e.g. "Sample iPhone"), or <see langword="null"/> if unavailable.</param>
+            <param name="ProductType">Apple product type (e.g. "iPhone13,3"), or <see langword="null"/> if unavailable.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Device.DeviceInfo.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Identity of the connected device, captured once at connect time for the run summary and manifest.
+            </summary>
+            <param name="Udid">Unique device identifier reported by usbmuxd.</param>
+            <param name="Name">User-assigned device name (e.g. "Sample iPhone"), or <see langword="null"/> if unavailable.</param>
+            <param name="ProductType">Apple product type (e.g. "iPhone13,3"), or <see langword="null"/> if unavailable.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Device.DeviceInfo.Udid">
+            <summary>Unique device identifier reported by usbmuxd.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.DeviceInfo.Name">
+            <summary>User-assigned device name (e.g. "Sample iPhone"), or <see langword="null"/> if unavailable.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Device.DeviceInfo.ProductType">
+            <summary>Apple product type (e.g. "iPhone13,3"), or <see langword="null"/> if unavailable.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Errors.DeviceConnectionLostException">
+            <summary>
+            Raised when a read-only AFC call fails with an error that means the device connection itself is
+            gone — a yanked USB cable or a dropped usbmux/AFC socket — rather than a problem with one file.
+            </summary>
+            <remarks>
+            A sibling of <see cref="T:GetAndSee.Core.Errors.DeviceStallException"/>: both stop the copy run cleanly and resumably
+            (the in-flight file is left non-<c>done</c>, exit code 3) instead of marking a single file failed
+            and marching every remaining file into its own connection error or open-hang (#25).
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Errors.DeviceConnectionLostException.DefaultMessage">
+            <summary>The default user-facing message shown when the device connection is lost.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceConnectionLostException.#ctor">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceConnectionLostException"/> with the default actionable message.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceConnectionLostException.#ctor(System.String)">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceConnectionLostException"/> with a custom message.</summary>
+            <param name="message">A clear, actionable description of the connection loss.</param>
+        </member>
+        <member name="T:GetAndSee.Core.Errors.DeviceException">
+            <summary>
+            Raised when the device cannot be reached or an AFC/lockdown read operation fails.
+            Carries a user-facing message suitable for printing directly to the console.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceException.#ctor(System.String)">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceException"/> with a user-facing message.</summary>
+            <param name="message">A clear, actionable description of what went wrong.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceException.#ctor(System.String,System.Exception)">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceException"/> with a user-facing message and an inner cause.</summary>
+            <param name="message">A clear, actionable description of what went wrong.</param>
+            <param name="innerException">The underlying exception.</param>
+        </member>
+        <member name="T:GetAndSee.Core.Errors.DeviceStallException">
+            <summary>
+            Raised by the read-stall watchdog (#11 / R2) when the device produces no bytes within the
+            configured read timeout — the symptom of a yanked cable, a sleeping device, or a USB bus reset.
+            </summary>
+            <remarks>
+            A subtype of <see cref="T:GetAndSee.Core.Errors.DeviceException"/> so existing device-error handling catches it, but
+            distinct so the run can stop cleanly and resumably rather than marking a single file failed and
+            thrashing on every subsequent (also-stalled) read.
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Errors.DeviceStallException.DefaultMessage">
+            <summary>The default user-facing message shown when a read stalls.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceStallException.#ctor">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceStallException"/> with the default actionable message.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.DeviceStallException.#ctor(System.String)">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.DeviceStallException"/> with a custom message.</summary>
+            <param name="message">A clear, actionable description of the stall.</param>
+        </member>
+        <member name="T:GetAndSee.Core.Errors.PreflightException">
+            <summary>
+            Raised by a pre-flight check that should stop the run before any copying begins
+            (driver service down, destination not writable, insufficient free space).
+            Carries a user-facing, actionable message.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Errors.PreflightException.#ctor(System.String)">
+            <summary>Creates a <see cref="T:GetAndSee.Core.Errors.PreflightException"/> with a user-facing message.</summary>
+            <param name="message">A clear, actionable description of what failed and how to fix it.</param>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.FileState">
+            <summary>Lifecycle state of a single file in the transfer journal.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.FileState.Pending">
+            <summary>Enumerated and planned, not yet started.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.FileState.InProgress">
+            <summary>Copy in flight (a <c>.partial</c> may exist on disk).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.FileState.Done">
+            <summary>Copied, size-verified, and renamed to its final path.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.FileState.Failed">
+            <summary>Copy failed; safe to retry on the next run.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.FileStateText">
+            <summary>Maps <see cref="T:GetAndSee.Core.Journal.FileState"/> to and from its persisted text form.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.TransferJournal">
+            <summary>
+            SQLite-backed transfer journal and manifest, stored at <c>&lt;dest&gt;/get-and-see.db</c> (visible
+            at the destination root, not hidden — brainstorm Session 3).
+            </summary>
+            <remarks>
+            <para>
+            The same file is both the in-progress journal (per-file <see cref="T:GetAndSee.Core.Journal.FileState"/>, enabling resume)
+            and the long-term manifest. A file's identity is its <b>source path + source size</b> (R17), so a
+            rename on disk never causes a re-copy and two same-named files are not confused.
+            </para>
+            <para>
+            A <c>manifest</c> SQL view exposes the user-facing columns of completed files and can be queried
+            with any sqlite3 tool.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.TransferJournal.DatabaseFileName">
+            <summary>The journal/manifest filename written at the destination root.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.TransferJournal.SchemaVersion">
+            <summary>Current journal schema version (bumped when tables are added; migrated in place).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.TransferJournal.OrganizeSchemeKey">
+            <summary>The <c>settings</c> key under which an archive's <c>organize_scheme</c> token is stored.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Journal.TransferJournal.ReorganizeTargetKey">
+            <summary>
+            The <c>settings</c> key holding an in-flight <c>reorganize</c>'s target scheme token. It is present
+            only while a layout migration is underway (a crash/resume marker) and cleared when the migration
+            completes cleanly; it is a settings key only, so it needs no schema-version bump.
+            </summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.TransferJournal.DatabasePath">
+            <summary>Absolute path to the SQLite database file backing this journal.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.Open(System.String)">
+            <summary>
+            Opens (creating if necessary) the journal at <c>&lt;destinationRoot&gt;/get-and-see.db</c> and
+            ensures the schema and <c>manifest</c> view exist.
+            </summary>
+            <param name="destinationRoot">The destination root directory.</param>
+            <returns>An open journal. The caller owns and disposes it.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.OpenReadOnly(System.String)">
+            <summary>
+            Opens an existing journal at <c>&lt;destinationRoot&gt;/get-and-see.db</c> <b>read-only</b> for
+            inspection (e.g. the <c>status</c> verb). The database is never created, migrated, or written
+            to — the connection uses <see cref="F:Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly"/>.
+            </summary>
+            <param name="destinationRoot">The destination root directory containing an existing database.</param>
+            <returns>An open read-only journal. The caller owns and disposes it.</returns>
+            <exception cref="T:System.IO.FileNotFoundException">Thrown when no database exists at the destination.</exception>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.Migrate">
+            <summary>
+            Applies additive schema migrations in place using <c>PRAGMA user_version</c>. v1 (version 0/1) gains
+            the <c>devices</c> and <c>runs</c> tables; v2 gains the <c>settings</c> table. Existing <c>files</c>
+            data is never touched.
+            </summary>
+            <remarks>
+            The v2→v3 step is the migration-safety crux: a <b>pre-existing</b> archive (any file already
+            journaled) is stamped <c>organize_scheme = 'year-month'</c> — the only layout that existed before
+            v3 — so its files keep resolving to their existing paths and a resume is byte-stable. A brand-new
+            database (no <c>files</c> rows yet at migration time) is left unstamped, so the first <c>copy</c>
+            records the chosen (or default) scheme instead.
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.GetOrganizeScheme">
+            <summary>
+            Returns the archive's recorded folder-layout scheme, or <see langword="null"/> when none is recorded
+            (a brand-new archive, or a pre-v3 database opened read-only without the <c>settings</c> table).
+            </summary>
+            <returns>The recorded <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/>, or <see langword="null"/>.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.SetOrganizeScheme(GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>Records the archive's folder-layout scheme, replacing any previously recorded value.</summary>
+            <param name="scheme">The scheme to persist.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.GetReorganizeTarget">
+            <summary>
+            Returns the target scheme of an in-flight <c>reorganize</c> (the <c>reorganize_target</c> marker), or
+            <see langword="null"/> when no layout migration is underway. Used to resume an interrupted reorganize
+            and to let <c>copy</c> refuse an archive that is mid-migration.
+            </summary>
+            <returns>The in-flight target <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/>, or <see langword="null"/>.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.SetReorganizeTarget(GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>Records that a <c>reorganize</c> toward <paramref name="target"/> is in progress (crash/resume marker).</summary>
+            <param name="target">The layout the reorganize is migrating the archive to.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.ClearReorganizeTarget">
+            <summary>Clears the in-flight <c>reorganize</c> marker once a layout migration has completed cleanly.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.EnsurePending(GetAndSee.Core.Device.RemoteFile)">
+            <summary>
+            Ensures a <see cref="F:GetAndSee.Core.Journal.FileState.Pending"/> row exists for the file. If a row already exists
+            (any state), it is left untouched so resume logic is preserved.
+            </summary>
+            <param name="file">The enumerated device file.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.GetState(System.String,System.Int64)">
+            <summary>Returns the recorded state of a file, or <see langword="null"/> if it is not journaled.</summary>
+            <param name="sourcePath">Device source path.</param>
+            <param name="sourceSize">Source size in bytes.</param>
+            <returns>The file's <see cref="T:GetAndSee.Core.Journal.FileState"/>, or <see langword="null"/>.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.MarkInProgress(System.String,System.Int64,System.DateTimeOffset)">
+            <summary>Marks a file as <see cref="F:GetAndSee.Core.Journal.FileState.InProgress"/> and stamps its start time.</summary>
+            <param name="sourcePath">Device source path.</param>
+            <param name="sourceSize">Source size in bytes.</param>
+            <param name="startedAt">UTC start time.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.MarkDone(System.String,System.Int64,System.String,GetAndSee.Core.Organize.MediaMetadata,System.DateTimeOffset,System.String)">
+            <summary>Marks a file <see cref="F:GetAndSee.Core.Journal.FileState.Done"/>, recording its destination path and metadata.</summary>
+            <param name="sourcePath">Device source path.</param>
+            <param name="sourceSize">Source size in bytes.</param>
+            <param name="relativeDestPath">Destination path relative to the destination root.</param>
+            <param name="metadata">Extracted media metadata.</param>
+            <param name="copiedAt">UTC completion time.</param>
+            <param name="sha256">Optional SHA-256 hex digest (null unless hash verification ran).</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.UpdateDestPath(System.String,System.Int64,System.String)">
+            <summary>
+            Updates a completed file's recorded destination path after <c>reorganize</c> moves it on disk — a
+            single <c>UPDATE</c> so the manifest always points at the file's real on-disk location. The file's
+            <c>done</c> state and every other column are untouched; only <c>dest_path</c> changes.
+            </summary>
+            <param name="sourcePath">Device source path (part of the file's identity).</param>
+            <param name="sourceSize">Source size in bytes (part of the file's identity).</param>
+            <param name="newRelativeDestPath">The new destination path, relative to the archive root.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.MarkFailed(System.String,System.Int64,System.String,System.DateTimeOffset)">
+            <summary>Marks a file <see cref="F:GetAndSee.Core.Journal.FileState.Failed"/> with an error message.</summary>
+            <param name="sourcePath">Device source path.</param>
+            <param name="sourceSize">Source size in bytes.</param>
+            <param name="error">A short failure description.</param>
+            <param name="finishedAt">UTC time of failure.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.GetUsedDestPaths">
+            <summary>
+            Returns the set of destination paths already recorded in the journal (case-insensitive),
+            used by the copier to disambiguate filename collisions across runs.
+            </summary>
+            <returns>A case-insensitive set of relative destination paths.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.CountByState">
+            <summary>Counts files in each state.</summary>
+            <returns>A snapshot of per-state counts.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.ReadManifest">
+            <summary>
+            Reads the user-facing rows of the <c>manifest</c> view (completed files only) for summary
+            generation.
+            </summary>
+            <returns>All completed file entries.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.ReadSearchRows">
+            <summary>
+            Reads the columns the <c>search</c> command filters on from the <c>manifest</c> view (completed
+            files only): the relative destination path, a resolved capture date (EXIF <c>DateTimeOriginal</c>
+            when present, else the source modified time), size, camera, and GPS. Read-only.
+            </summary>
+            <returns>One row per completed file.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.EnumerateDoneForReorganize">
+            <summary>
+            Reads every completed file with the inputs <c>reorganize</c> needs to re-place it: its identity
+            (<c>source_path</c> + <c>source_size</c>), current <c>dest_path</c>, and the two stored timestamps
+            that resolve its folder date — in a <b>deterministic order</b> (by <c>source_path</c>) so
+            collision-suffix assignment is reproducible across runs and interruptions. Read-only.
+            </summary>
+            <returns>One entry per completed file, ordered by source path.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.UpsertDevice(System.String,System.String,System.String,System.DateTimeOffset)">
+            <summary>Inserts or updates the device's record, refreshing its last-seen time (R: multi-device story).</summary>
+            <param name="udid">Device UDID.</param>
+            <param name="name">Device name, if known.</param>
+            <param name="model">Device product type/model, if known.</param>
+            <param name="seenAt">UTC time the device was seen.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.RecordRun(System.DateTimeOffset,System.DateTimeOffset,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>Records a completed (or stopped) run for the archive's audit trail.</summary>
+            <param name="startedAt">UTC run start.</param>
+            <param name="finishedAt">UTC run end.</param>
+            <param name="command">The command line / verb that ran.</param>
+            <param name="copied">Files copied this run.</param>
+            <param name="skipped">Files skipped this run.</param>
+            <param name="failed">Files failed this run.</param>
+            <param name="exitCode">Process exit code.</param>
+            <param name="deviceUdid">UDID of the device used, if any.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.ReadDevices">
+            <summary>Reads all known devices, most-recently-seen first.</summary>
+            <returns>The device records.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.ReadRunsSummary">
+            <summary>Summarizes the run history (count, first/latest run, and the latest run's outcome).</summary>
+            <returns>A <see cref="T:GetAndSee.Core.Journal.RunsSummary"/>; <see cref="P:GetAndSee.Core.Journal.RunsSummary.TotalRuns"/> is 0 when none recorded.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.TransferJournal.Dispose">
+            <summary>Closes the underlying SQLite connection.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.JournalCounts">
+            <summary>Per-state file counts from the journal.</summary>
+            <param name="Pending">Files not yet started.</param>
+            <param name="InProgress">Files mid-copy.</param>
+            <param name="Done">Files completed and verified.</param>
+            <param name="Failed">Files that failed and may be retried.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.JournalCounts.#ctor(System.Int64,System.Int64,System.Int64,System.Int64)">
+            <summary>Per-state file counts from the journal.</summary>
+            <param name="Pending">Files not yet started.</param>
+            <param name="InProgress">Files mid-copy.</param>
+            <param name="Done">Files completed and verified.</param>
+            <param name="Failed">Files that failed and may be retried.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.JournalCounts.Pending">
+            <summary>Files not yet started.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.JournalCounts.InProgress">
+            <summary>Files mid-copy.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.JournalCounts.Done">
+            <summary>Files completed and verified.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.JournalCounts.Failed">
+            <summary>Files that failed and may be retried.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.ManifestEntry">
+            <summary>A single completed-file row from the <c>manifest</c> view.</summary>
+            <param name="DestPath">Destination path relative to the root.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="ExifDateTimeOriginalIso">EXIF capture time (ISO 8601), or <see langword="null"/>.</param>
+            <param name="SourceMtimeIso">Source modified time (ISO 8601 UTC), or <see langword="null"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.ManifestEntry.#ctor(System.String,System.Int64,System.String,System.String)">
+            <summary>A single completed-file row from the <c>manifest</c> view.</summary>
+            <param name="DestPath">Destination path relative to the root.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="ExifDateTimeOriginalIso">EXIF capture time (ISO 8601), or <see langword="null"/>.</param>
+            <param name="SourceMtimeIso">Source modified time (ISO 8601 UTC), or <see langword="null"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestEntry.DestPath">
+            <summary>Destination path relative to the root.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestEntry.SizeBytes">
+            <summary>File size in bytes.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestEntry.ExifDateTimeOriginalIso">
+            <summary>EXIF capture time (ISO 8601), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestEntry.SourceMtimeIso">
+            <summary>Source modified time (ISO 8601 UTC), or <see langword="null"/>.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.ManifestSearchRow">
+            <summary>A completed-file row projected for the <c>search</c> command's filters.</summary>
+            <param name="RelativePath">Destination path relative to the archive root.</param>
+            <param name="CapturedAt">Resolved capture date (EXIF original, else source mtime), or <see langword="null"/>.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="CameraMake">EXIF camera make, or <see langword="null"/>.</param>
+            <param name="CameraModel">EXIF camera model, or <see langword="null"/>.</param>
+            <param name="GpsLatitude">EXIF GPS latitude, or <see langword="null"/>.</param>
+            <param name="GpsLongitude">EXIF GPS longitude, or <see langword="null"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.ManifestSearchRow.#ctor(System.String,System.Nullable{System.DateTimeOffset},System.Int64,System.String,System.String,System.Nullable{System.Double},System.Nullable{System.Double})">
+            <summary>A completed-file row projected for the <c>search</c> command's filters.</summary>
+            <param name="RelativePath">Destination path relative to the archive root.</param>
+            <param name="CapturedAt">Resolved capture date (EXIF original, else source mtime), or <see langword="null"/>.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="CameraMake">EXIF camera make, or <see langword="null"/>.</param>
+            <param name="CameraModel">EXIF camera model, or <see langword="null"/>.</param>
+            <param name="GpsLatitude">EXIF GPS latitude, or <see langword="null"/>.</param>
+            <param name="GpsLongitude">EXIF GPS longitude, or <see langword="null"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.RelativePath">
+            <summary>Destination path relative to the archive root.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.CapturedAt">
+            <summary>Resolved capture date (EXIF original, else source mtime), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.SizeBytes">
+            <summary>File size in bytes.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.CameraMake">
+            <summary>EXIF camera make, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.CameraModel">
+            <summary>EXIF camera model, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.GpsLatitude">
+            <summary>EXIF GPS latitude, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ManifestSearchRow.GpsLongitude">
+            <summary>EXIF GPS longitude, or <see langword="null"/>.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.ReorganizeEntry">
+            <summary>A completed-file row projected for the <c>reorganize</c> engine's placement and move planning.</summary>
+            <param name="SourcePath">Device source path (part of the file's identity).</param>
+            <param name="SourceSize">Source size in bytes (identity, and the expected on-disk size when reconciling a move).</param>
+            <param name="DestPath">Current destination path relative to the archive root.</param>
+            <param name="ExifDateTimeOriginal">Parsed EXIF capture time (wall clock), or <see langword="null"/>.</param>
+            <param name="SourceMtime">Parsed source modified time, or <see langword="null"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.ReorganizeEntry.#ctor(System.String,System.Int64,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTimeOffset})">
+            <summary>A completed-file row projected for the <c>reorganize</c> engine's placement and move planning.</summary>
+            <param name="SourcePath">Device source path (part of the file's identity).</param>
+            <param name="SourceSize">Source size in bytes (identity, and the expected on-disk size when reconciling a move).</param>
+            <param name="DestPath">Current destination path relative to the archive root.</param>
+            <param name="ExifDateTimeOriginal">Parsed EXIF capture time (wall clock), or <see langword="null"/>.</param>
+            <param name="SourceMtime">Parsed source modified time, or <see langword="null"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ReorganizeEntry.SourcePath">
+            <summary>Device source path (part of the file's identity).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ReorganizeEntry.SourceSize">
+            <summary>Source size in bytes (identity, and the expected on-disk size when reconciling a move).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ReorganizeEntry.DestPath">
+            <summary>Current destination path relative to the archive root.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ReorganizeEntry.ExifDateTimeOriginal">
+            <summary>Parsed EXIF capture time (wall clock), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.ReorganizeEntry.SourceMtime">
+            <summary>Parsed source modified time, or <see langword="null"/>.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.DeviceRecord">
+            <summary>A device recorded in the journal's <c>devices</c> table.</summary>
+            <param name="Udid">Device UDID.</param>
+            <param name="Name">Device name, if known.</param>
+            <param name="Model">Device product type/model, if known.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.DeviceRecord.#ctor(System.String,System.String,System.String)">
+            <summary>A device recorded in the journal's <c>devices</c> table.</summary>
+            <param name="Udid">Device UDID.</param>
+            <param name="Name">Device name, if known.</param>
+            <param name="Model">Device product type/model, if known.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.DeviceRecord.Udid">
+            <summary>Device UDID.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.DeviceRecord.Name">
+            <summary>Device name, if known.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.DeviceRecord.Model">
+            <summary>Device product type/model, if known.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Journal.RunsSummary">
+            <summary>Summary of the journal's run history, including the latest run's outcome.</summary>
+            <param name="TotalRuns">Number of recorded runs.</param>
+            <param name="FirstRunAt">Start time of the first run, or <see langword="null"/>.</param>
+            <param name="LatestRunAt">Start time of the latest run, or <see langword="null"/>.</param>
+            <param name="LastCopied">Files copied in the latest run.</param>
+            <param name="LastSkipped">Files skipped in the latest run.</param>
+            <param name="LastFailed">Files failed in the latest run.</param>
+            <param name="LastElapsed">Wall-clock duration of the latest run.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Journal.RunsSummary.#ctor(System.Int32,System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Int32,System.Int32,System.Int32,System.TimeSpan)">
+            <summary>Summary of the journal's run history, including the latest run's outcome.</summary>
+            <param name="TotalRuns">Number of recorded runs.</param>
+            <param name="FirstRunAt">Start time of the first run, or <see langword="null"/>.</param>
+            <param name="LatestRunAt">Start time of the latest run, or <see langword="null"/>.</param>
+            <param name="LastCopied">Files copied in the latest run.</param>
+            <param name="LastSkipped">Files skipped in the latest run.</param>
+            <param name="LastFailed">Files failed in the latest run.</param>
+            <param name="LastElapsed">Wall-clock duration of the latest run.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.TotalRuns">
+            <summary>Number of recorded runs.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.FirstRunAt">
+            <summary>Start time of the first run, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.LatestRunAt">
+            <summary>Start time of the latest run, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.LastCopied">
+            <summary>Files copied in the latest run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.LastSkipped">
+            <summary>Files skipped in the latest run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.LastFailed">
+            <summary>Files failed in the latest run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Journal.RunsSummary.LastElapsed">
+            <summary>Wall-clock duration of the latest run.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.CollisionSuffix">
+            <summary>
+            The shared filename-collision rule: keep a desired relative destination path if it is available,
+            otherwise append <c>_2</c>, <c>_3</c>, … to the stem until an available variant is found. Used by both
+            the copier (across-run name collisions during a copy) and <c>reorganize</c> (the new collisions a coarser
+            layout creates), so the disambiguation is identical and never re-implemented (R5 — never overwrite).
+            </summary>
+            <remarks>
+            The caller supplies the availability predicate, which owns what "available" means for its context (the
+            copier checks its in-run assignment set plus on-disk existence; the reorganizer checks the in-run
+            assignment set so a crash-interrupted move re-derives the same suffix deterministically). This type only
+            generates the candidate names in a stable order.
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.CollisionSuffix.Resolve(System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Returns <paramref name="relativePath"/> if <paramref name="isAvailable"/> accepts it, otherwise the
+            first <c>stem_N.ext</c> variant (N ≥ 2, ascending) it accepts, preserving the directory and extension.
+            </summary>
+            <param name="relativePath">The desired relative destination path.</param>
+            <param name="isAvailable">Predicate returning <see langword="true"/> when a candidate path may be used.</param>
+            <returns>The first available path — the input itself or a numeric-suffixed variant of its leaf.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.DateFolderOrganizer">
+            <summary>
+            Maps a remote file to its relative destination path under a chosen <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> when a
+            sane capture date is available, otherwise <c>unsorted/&lt;name&gt;</c>.
+            </summary>
+            <remarks>
+            Date source preference (R16): EXIF <c>DateTimeOriginal</c> → file modified time → <c>unsorted</c>.
+            A date is only trusted if it falls within <c>[1990-01-01, now + 1 day]</c>; nonsense dates are
+            routed to <c>unsorted</c>. Filenames are sanitized so device-supplied strings can never escape
+            the destination tree (PROJECT_BRIEF §9.3). The scheme only changes the date-folder shape; the
+            <c>unsorted</c> fallback is identical under every scheme, and two files sharing a capture date (e.g. a
+            Live Photo's <c>.HEIC</c> + <c>.MOV</c>) always co-locate.
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.DateFolderOrganizer.UnsortedFolder">
+            <summary>Folder for files with no trustworthy capture date.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.#ctor(System.TimeProvider)">
+            <summary>Creates an organizer.</summary>
+            <param name="clock">Time source for the upper date-sanity bound; defaults to the system clock.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.GetRelativeDestination(GetAndSee.Core.Device.RemoteFile,GetAndSee.Core.Organize.MediaMetadata,GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>
+            Computes the destination path for a file under <paramref name="scheme"/>, relative to the
+            destination root.
+            </summary>
+            <param name="file">The enumerated device file.</param>
+            <param name="metadata">Extracted metadata, or <see langword="null"/> if none is available yet (e.g. dry-run).</param>
+            <param name="scheme">The archive's folder layout.</param>
+            <returns>
+            A relative path such as <c>2024-08\IMG_1234.HEIC</c> (<see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Month"/>),
+            <c>2024\2024-08\IMG_1234.HEIC</c> (<see cref="F:GetAndSee.Core.Organize.OrganizeScheme.YearMonth"/>), or
+            <c>unsorted\IMG_1234.HEIC</c> when no trustworthy date exists (identical under every scheme).
+            </returns>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.GetRelativeDestination(System.String,System.Nullable{System.DateTime},GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>
+            Computes the relative destination path for an already-final leaf <paramref name="fileName"/> placed by
+            <paramref name="captureDate"/> under <paramref name="scheme"/>. This is the pure folder-shape rule
+            shared by the copier (which derives the name and date from a device file) and <c>reorganize</c> (which
+            derives them from the journal), so the two can never disagree on where a file belongs.
+            </summary>
+            <param name="fileName">The final destination leaf name — already sanitized, and carrying any <c>_2</c>/<c>_3</c> suffix assigned at copy time.</param>
+            <param name="captureDate">The resolved capture date (see <see cref="M:GetAndSee.Core.Organize.DateFolderOrganizer.ResolveDate(System.Nullable{System.DateTime},System.Nullable{System.DateTimeOffset})"/>), or <see langword="null"/> for <c>unsorted</c>.</param>
+            <param name="scheme">The archive's folder layout.</param>
+            <returns>
+            A relative path such as <c>2024-08\IMG_1234.HEIC</c> (<see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Month"/>) or
+            <c>unsorted\IMG_1234.HEIC</c> when no trustworthy date exists (identical under every scheme).
+            </returns>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.ResolveDate(System.Nullable{System.DateTime},System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Resolves a file's folder date from its two stored timestamps using the R16 trust rule: a sane EXIF
+            <c>DateTimeOriginal</c> wins, else a sane file modified time, else <see langword="null"/> (⇒ <c>unsorted</c>).
+            Shared by the copier and <c>reorganize</c> so both agree on placement from the same inputs.
+            </summary>
+            <param name="exifOriginal">EXIF capture time (wall clock), or <see langword="null"/>.</param>
+            <param name="modifiedAt">File modified time, or <see langword="null"/>.</param>
+            <returns>The trusted capture date, or <see langword="null"/> when neither timestamp is trustworthy.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.ExtractFileName(System.String)">
+            <summary>Returns the final path segment (filename) of an AFC path.</summary>
+            <param name="remotePath">An AFC path using forward slashes.</param>
+            <returns>The filename portion.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.DateFolderOrganizer.SanitizeFileName(System.String)">
+            <summary>
+            Replaces characters that are invalid in a Windows filename with underscores and strips
+            trailing dots/spaces, guaranteeing a non-empty, path-safe name.
+            </summary>
+            <param name="fileName">A candidate filename.</param>
+            <returns>A sanitized filename safe to write to disk.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.ExifMetadataExtractor">
+            <summary>
+            <see cref="T:GetAndSee.Core.Organize.IMediaMetadataExtractor"/> backed by MetadataExtractor. Reads EXIF
+            <c>DateTimeOriginal</c>, GPS coordinates, and camera make/model from a local file.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.ExifMetadataExtractor.Extract(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:GetAndSee.Core.Organize.LivePhotoDetector">
+            <summary>
+            Detects Live Photo pairs among copied files: an image (<c>.HEIC</c>/<c>.HEIF</c>/<c>.JPG</c>) and a
+            <c>.MOV</c> that share the same folder and basename (e.g. <c>IMG_1234.HEIC</c> + <c>IMG_1234.MOV</c>).
+            </summary>
+            <remarks>
+            Because the organizer places both halves into the same <c>YYYY/YYYY-MM</c> folder by their shared
+            EXIF date, a basename match within a folder is a reliable pairing signal — no timestamp tolerance
+            is needed once the files are organized.
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.LivePhotoDetector.FindPairs(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Finds Live Photo pairs among the given destination paths.
+            </summary>
+            <param name="destPaths">Relative destination paths of copied files.</param>
+            <returns>The detected pairs as (image path, video path) tuples.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.MediaMetadata">
+            <summary>
+            Metadata extracted from a media file's EXIF/container, used to organize and index it.
+            All members are nullable: screenshots, some videos, and corrupt files may carry none.
+            </summary>
+            <param name="DateTimeOriginal">Wall-clock capture time (EXIF <c>DateTimeOriginal</c>), or <see langword="null"/>.</param>
+            <param name="GpsLatitude">GPS latitude in decimal degrees, or <see langword="null"/>.</param>
+            <param name="GpsLongitude">GPS longitude in decimal degrees, or <see langword="null"/>.</param>
+            <param name="CameraMake">Camera manufacturer (EXIF <c>Make</c>), or <see langword="null"/>.</param>
+            <param name="CameraModel">Camera model (EXIF <c>Model</c>), or <see langword="null"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.MediaMetadata.#ctor(System.Nullable{System.DateTime},System.Nullable{System.Double},System.Nullable{System.Double},System.String,System.String)">
+            <summary>
+            Metadata extracted from a media file's EXIF/container, used to organize and index it.
+            All members are nullable: screenshots, some videos, and corrupt files may carry none.
+            </summary>
+            <param name="DateTimeOriginal">Wall-clock capture time (EXIF <c>DateTimeOriginal</c>), or <see langword="null"/>.</param>
+            <param name="GpsLatitude">GPS latitude in decimal degrees, or <see langword="null"/>.</param>
+            <param name="GpsLongitude">GPS longitude in decimal degrees, or <see langword="null"/>.</param>
+            <param name="CameraMake">Camera manufacturer (EXIF <c>Make</c>), or <see langword="null"/>.</param>
+            <param name="CameraModel">Camera model (EXIF <c>Model</c>), or <see langword="null"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.DateTimeOriginal">
+            <summary>Wall-clock capture time (EXIF <c>DateTimeOriginal</c>), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.GpsLatitude">
+            <summary>GPS latitude in decimal degrees, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.GpsLongitude">
+            <summary>GPS longitude in decimal degrees, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.CameraMake">
+            <summary>Camera manufacturer (EXIF <c>Make</c>), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.CameraModel">
+            <summary>Camera model (EXIF <c>Model</c>), or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.MediaMetadata.Empty">
+            <summary>An empty metadata record (used when nothing could be extracted).</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.IMediaMetadataExtractor">
+            <summary>
+            Extracts <see cref="T:GetAndSee.Core.Organize.MediaMetadata"/> from a copied media file on local disk.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.IMediaMetadataExtractor.Extract(System.String)">
+            <summary>
+            Reads metadata from a local file. Implementations must never throw for unreadable or
+            unsupported files; they return <see cref="P:GetAndSee.Core.Organize.MediaMetadata.Empty"/> instead.
+            </summary>
+            <param name="filePath">Path to a local media file.</param>
+            <returns>The extracted metadata, or <see cref="P:GetAndSee.Core.Organize.MediaMetadata.Empty"/>.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.OrganizeScheme">
+            <summary>
+            The date-folder layout strategy for an archive. Chosen once when an archive is first created and then
+            recorded in the journal so a re-run never silently re-shuffles an existing tree (see
+            <see cref="T:GetAndSee.Core.Organize.OrganizeSchemeResolver"/>).
+            </summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeScheme.Month">
+            <summary>Flat <c>YYYY-MM\name.ext</c> — one click to any month, sorts chronologically. The default.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeScheme.YearMonth">
+            <summary>Nested <c>YYYY\YYYY-MM\name.ext</c> — the original v1.0 layout, now opt-in.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeScheme.Year">
+            <summary>Flat <c>YYYY\name.ext</c> — coarse, few folders.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeScheme.Flat">
+            <summary>Everything in one folder (<c>name.ext</c>) — tiny libraries / search-only users.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.OrganizeSchemes">
+            <summary>
+            Maps <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> values to and from their stable string tokens — the form used on the
+            <c>--organize-by</c> command line and persisted in the journal's <c>organize_scheme</c> setting.
+            </summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.Default">
+            <summary>The default scheme for a brand-new archive: flat <c>YYYY-MM</c>.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.MonthToken">
+            <summary>Token for <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Month"/>.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.YearMonthToken">
+            <summary>Token for <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.YearMonth"/>.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.YearToken">
+            <summary>Token for <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Year"/>.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.FlatToken">
+            <summary>Token for <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Flat"/>.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Organize.OrganizeSchemes.AllTokens">
+            <summary>All accepted tokens, in presentation order, for help text and option validation.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.OrganizeSchemes.ToToken(GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>Returns the stable token for a scheme.</summary>
+            <param name="scheme">The scheme.</param>
+            <returns>Its command-line / persisted token.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.OrganizeSchemes.Parse(System.String)">
+            <summary>Parses a token to its scheme, throwing on an unknown value.</summary>
+            <param name="token">A scheme token (case-insensitive).</param>
+            <returns>The matching <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/>.</returns>
+            <exception cref="T:System.ArgumentException">The token does not name a known scheme.</exception>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.OrganizeSchemes.TryParse(System.String)">
+            <summary>Parses a token to its scheme, returning <see langword="null"/> for an unknown or missing value.</summary>
+            <param name="token">A scheme token (case-insensitive), or <see langword="null"/>.</param>
+            <returns>The matching scheme, or <see langword="null"/> when unrecognized — tolerant of a foreign value persisted by a newer build.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.SchemeResolution">
+            <summary>
+            The outcome of resolving an archive's effective <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> for a <c>copy</c> run.
+            </summary>
+            <param name="Effective">The scheme the run must use.</param>
+            <param name="Warning">A user-facing warning when an explicit <c>--organize-by</c> was ignored, else <see langword="null"/>.</param>
+            <param name="ShouldRecord">
+            <see langword="true"/> when the archive has no recorded scheme yet and <see cref="P:GetAndSee.Core.Organize.SchemeResolution.Effective"/> must be
+            persisted so future runs are byte-stable.
+            </param>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.SchemeResolution.#ctor(GetAndSee.Core.Organize.OrganizeScheme,System.String,System.Boolean)">
+            <summary>
+            The outcome of resolving an archive's effective <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> for a <c>copy</c> run.
+            </summary>
+            <param name="Effective">The scheme the run must use.</param>
+            <param name="Warning">A user-facing warning when an explicit <c>--organize-by</c> was ignored, else <see langword="null"/>.</param>
+            <param name="ShouldRecord">
+            <see langword="true"/> when the archive has no recorded scheme yet and <see cref="P:GetAndSee.Core.Organize.SchemeResolution.Effective"/> must be
+            persisted so future runs are byte-stable.
+            </param>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.SchemeResolution.Effective">
+            <summary>The scheme the run must use.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.SchemeResolution.Warning">
+            <summary>A user-facing warning when an explicit <c>--organize-by</c> was ignored, else <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Organize.SchemeResolution.ShouldRecord">
+            <summary>
+            <see langword="true"/> when the archive has no recorded scheme yet and <see cref="P:GetAndSee.Core.Organize.SchemeResolution.Effective"/> must be
+            persisted so future runs are byte-stable.
+            </summary>
+        </member>
+        <member name="T:GetAndSee.Core.Organize.OrganizeSchemeResolver">
+            <summary>
+            Decides which <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> a <c>copy</c> run uses, given the archive's recorded scheme
+            (if any) and the <c>--organize-by</c> request. The layout is an <b>archive property</b>: once recorded
+            it is authoritative, so a re-run never silently re-shuffles an existing tree.
+            </summary>
+            <remarks>
+            Resolution rules:
+            <list type="bullet">
+              <item>
+                <b>A recorded scheme exists</b> → it is used. If <c>--organize-by</c> was passed <i>explicitly</i>
+                and differs, a warning is returned and the recorded scheme is still kept (use <c>reorganize</c> to
+                change a layout). A merely <i>defaulted</i> flag yields silently to the recorded scheme.
+              </item>
+              <item>
+                <b>No recorded scheme</b> (a brand-new archive — the v2→v3 migration only stamps a pre-existing
+                one) → the requested scheme is used and flagged to be recorded.
+              </item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Organize.OrganizeSchemeResolver.Resolve(System.Nullable{GetAndSee.Core.Organize.OrganizeScheme},GetAndSee.Core.Organize.OrganizeScheme,System.Boolean)">
+            <summary>Resolves the effective scheme for a run.</summary>
+            <param name="recorded">The scheme already recorded for the archive, or <see langword="null"/> if none.</param>
+            <param name="requested">The scheme from <c>--organize-by</c> (its default when not passed).</param>
+            <param name="requestedIsExplicit"><see langword="true"/> when <c>--organize-by</c> was passed on the command line (not defaulted).</param>
+            <returns>The <see cref="T:GetAndSee.Core.Organize.SchemeResolution"/> describing the effective scheme, any warning, and whether to record it.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Preflight.HostPowerStatus">
+            <summary>Host AC/battery power state, used by the on-battery pre-flight warning (R14).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Preflight.HostPowerStatus.Unknown">
+            <summary>Could not be determined.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Preflight.HostPowerStatus.Ac">
+            <summary>Running on AC (mains) power.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Preflight.HostPowerStatus.Battery">
+            <summary>Running on battery.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Preflight.HostPower">
+            <summary>Reads the host's power-line status on Windows via <c>GetSystemPowerStatus</c>.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.HostPower.Get">
+            <summary>Returns the current power state, or <see cref="F:GetAndSee.Core.Preflight.HostPowerStatus.Unknown"/> if unavailable.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Preflight.PreflightChecks">
+            <summary>
+            Checks that must pass before any copying begins: the Apple driver service is reachable (R21),
+            the destination is writable (R15), and there is enough free space (R4).
+            </summary>
+        </member>
+        <member name="F:GetAndSee.Core.Preflight.PreflightChecks.UsbmuxdPort">
+            <summary>Loopback port the Apple usbmuxd service listens on.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.PreflightChecks.#ctor(System.Nullable{System.TimeSpan},System.Func{GetAndSee.Core.Preflight.HostPowerStatus})">
+            <summary>Creates the pre-flight checks.</summary>
+            <param name="probeTimeout">How long to wait for the usbmuxd probe; defaults to 2 seconds.</param>
+            <param name="powerStatusProvider">Host power-status source; defaults to the Windows API. Injectable for tests.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.PreflightChecks.GetHostPowerStatus">
+            <summary>Returns the host's current power state (R14: warn before a long run on battery).</summary>
+            <returns>The host power status.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.PreflightChecks.EnsureDriverServiceReachableAsync(System.Threading.CancellationToken)">
+            <summary>
+            Probes <c>127.0.0.1:27015</c>. If it is unreachable the Apple driver service is not running,
+            which looks identical to "no device" — so we surface a distinct, actionable message (R21).
+            </summary>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <exception cref="T:GetAndSee.Core.Errors.PreflightException">Thrown when the service cannot be reached.</exception>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.PreflightChecks.EnsureDestinationWritable(System.String)">
+            <summary>
+            Verifies the destination exists (creating it if needed) and is writable by creating and
+            deleting a probe file (R15).
+            </summary>
+            <param name="destinationRoot">The destination root directory.</param>
+            <exception cref="T:GetAndSee.Core.Errors.PreflightException">Thrown when the destination cannot be written.</exception>
+        </member>
+        <member name="M:GetAndSee.Core.Preflight.PreflightChecks.EnsureSufficientFreeSpace(System.String,System.Int64)">
+            <summary>
+            Verifies the destination drive has at least <paramref name="estimatedBytes"/> plus 5% headroom
+            of free space (R4).
+            </summary>
+            <param name="destinationRoot">The destination root directory.</param>
+            <param name="estimatedBytes">Estimated total bytes to be copied.</param>
+            <exception cref="T:GetAndSee.Core.Errors.PreflightException">Thrown when free space is insufficient.</exception>
+        </member>
+        <member name="T:GetAndSee.Core.Progress.IProgressReporter">
+            <summary>
+            Renders transfer progress. Implementations decide how and when to display it (a live dashboard
+            refreshes on a timer reading <see cref="M:GetAndSee.Core.Progress.TransferProgress.Snapshot"/>; the text fallback prints one
+            line per completed file). Keeping the copy loop behind this interface makes the engine UI-agnostic.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.IProgressReporter.Start(GetAndSee.Core.Progress.TransferProgress)">
+            <summary>Called once before the first file, with the shared progress model to read from.</summary>
+            <param name="progress">The live progress model for this run.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.IProgressReporter.OnFileCompleted(GetAndSee.Core.Transfer.CopyResult)">
+            <summary>Called after each file reaches a terminal state.</summary>
+            <param name="result">The file's copy result.</param>
+        </member>
+        <member name="T:GetAndSee.Core.Progress.ProgressMode">
+            <summary>Decides which progress reporter a run should use.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.ProgressMode.ShouldUseDashboard(System.Boolean,System.Boolean)">
+            <summary>
+            Returns <see langword="true"/> when the live dashboard should be used: the user has not passed
+            <c>--no-dashboard</c> and the output is an interactive terminal (not redirected or piped).
+            </summary>
+            <param name="dashboardDisabled">Whether <c>--no-dashboard</c> was supplied.</param>
+            <param name="outputRedirected">Whether console output is redirected/piped (non-interactive).</param>
+            <returns><see langword="true"/> to use the live dashboard; <see langword="false"/> to use the text fallback.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Progress.ProgressSnapshot">
+            <summary>
+            An immutable point-in-time view of a transfer's progress, rendered by any
+            <see cref="T:GetAndSee.Core.Progress.IProgressReporter"/>.
+            </summary>
+            <param name="TotalFiles">Total files planned for this run.</param>
+            <param name="CopiedFiles">Files copied so far this run.</param>
+            <param name="SkippedFiles">Files skipped (already done) so far this run.</param>
+            <param name="FailedFiles">Files that failed so far this run.</param>
+            <param name="TotalBytes">Total bytes planned for this run.</param>
+            <param name="ProcessedBytes">Bytes accounted for so far (streamed this run plus skipped files' sizes).</param>
+            <param name="CurrentBytesPerSecond">Rolling (~3s) transfer rate — answers "is it moving right now?".</param>
+            <param name="AverageBytesPerSecond">Cumulative average transfer rate over the whole run.</param>
+            <param name="Eta">Estimated time remaining, or <see langword="null"/> when not yet computable.</param>
+            <param name="CurrentFileName">Name of the file currently being copied, or empty.</param>
+            <param name="CurrentFileCopiedBytes">Bytes streamed for the current file.</param>
+            <param name="CurrentFileTotalBytes">Total size of the current file.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.ProgressSnapshot.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int64,System.Int64,System.Double,System.Double,System.Nullable{System.TimeSpan},System.String,System.Int64,System.Int64)">
+            <summary>
+            An immutable point-in-time view of a transfer's progress, rendered by any
+            <see cref="T:GetAndSee.Core.Progress.IProgressReporter"/>.
+            </summary>
+            <param name="TotalFiles">Total files planned for this run.</param>
+            <param name="CopiedFiles">Files copied so far this run.</param>
+            <param name="SkippedFiles">Files skipped (already done) so far this run.</param>
+            <param name="FailedFiles">Files that failed so far this run.</param>
+            <param name="TotalBytes">Total bytes planned for this run.</param>
+            <param name="ProcessedBytes">Bytes accounted for so far (streamed this run plus skipped files' sizes).</param>
+            <param name="CurrentBytesPerSecond">Rolling (~3s) transfer rate — answers "is it moving right now?".</param>
+            <param name="AverageBytesPerSecond">Cumulative average transfer rate over the whole run.</param>
+            <param name="Eta">Estimated time remaining, or <see langword="null"/> when not yet computable.</param>
+            <param name="CurrentFileName">Name of the file currently being copied, or empty.</param>
+            <param name="CurrentFileCopiedBytes">Bytes streamed for the current file.</param>
+            <param name="CurrentFileTotalBytes">Total size of the current file.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.TotalFiles">
+            <summary>Total files planned for this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.CopiedFiles">
+            <summary>Files copied so far this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.SkippedFiles">
+            <summary>Files skipped (already done) so far this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.FailedFiles">
+            <summary>Files that failed so far this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.TotalBytes">
+            <summary>Total bytes planned for this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.ProcessedBytes">
+            <summary>Bytes accounted for so far (streamed this run plus skipped files' sizes).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.CurrentBytesPerSecond">
+            <summary>Rolling (~3s) transfer rate — answers "is it moving right now?".</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.AverageBytesPerSecond">
+            <summary>Cumulative average transfer rate over the whole run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.Eta">
+            <summary>Estimated time remaining, or <see langword="null"/> when not yet computable.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.CurrentFileName">
+            <summary>Name of the file currently being copied, or empty.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.CurrentFileCopiedBytes">
+            <summary>Bytes streamed for the current file.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.CurrentFileTotalBytes">
+            <summary>Total size of the current file.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.ProcessedFiles">
+            <summary>Files processed so far (copied + skipped + failed).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.ProgressSnapshot.ByteFraction">
+            <summary>Fraction of total bytes processed in <c>[0, 1]</c> (0 when the total is unknown).</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Progress.TextProgressReporter">
+            <summary>
+            The plain-text fallback reporter: one line per completed file (the Sprint 1 output). Used when the
+            output is redirected/piped/non-interactive or <c>--no-dashboard</c> is set, so logs and CI stay
+            clean and ANSI-free.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TextProgressReporter.#ctor(System.IO.TextWriter)">
+            <summary>Creates a text reporter.</summary>
+            <param name="writer">Destination writer; defaults to <see cref="P:System.Console.Out"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TextProgressReporter.Start(GetAndSee.Core.Progress.TransferProgress)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TextProgressReporter.OnFileCompleted(GetAndSee.Core.Transfer.CopyResult)">
+            <inheritdoc />
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TextProgressReporter.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:GetAndSee.Core.Progress.TransferProgress">
+            <summary>
+            Thread-safe, UI-agnostic model of a transfer's live progress, including a rolling-window current
+            speed and an ETA (#10). The copy loop feeds it cheap updates; any reporter reads
+            <see cref="M:GetAndSee.Core.Progress.TransferProgress.Snapshot"/> on its own schedule.
+            </summary>
+            <remarks>
+            <para>
+            The hot path (<see cref="M:GetAndSee.Core.Progress.TransferProgress.RecordBytes(System.Int64)"/>, called per chunk) is a single interlocked add — no locks,
+            no allocation, no device I/O — so the live readout cannot measurably slow the copy. Current speed
+            is derived by sampling the monotonic byte counter when <see cref="M:GetAndSee.Core.Progress.TransferProgress.Snapshot"/> is called (the
+            dashboard does this at ≤4 Hz), which keeps the streaming thread free of timing work.
+            </para>
+            <para>
+            Time is read through an injectable <see cref="T:System.TimeProvider"/> so the speed/ETA math is
+            deterministically unit-testable with a fake clock.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.#ctor(System.Int32,System.Int64,System.TimeProvider)">
+            <summary>Creates a progress model for a run of the given size.</summary>
+            <param name="totalFiles">Total files planned.</param>
+            <param name="totalBytes">Total bytes planned.</param>
+            <param name="clock">Time source; defaults to <see cref="P:System.TimeProvider.System"/>.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.TransferProgress.TotalFiles">
+            <summary>Total files planned for this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Progress.TransferProgress.TotalBytes">
+            <summary>Total bytes planned for this run.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.RecordBytes(System.Int64)">
+            <summary>Records bytes streamed for the current file (hot path — interlocked, lock-free).</summary>
+            <param name="delta">Bytes streamed since the last call.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.StartFile(System.String,System.Int64)">
+            <summary>Marks the start of a new file (resets the per-file byte counter).</summary>
+            <param name="name">Display name of the file.</param>
+            <param name="fileBytes">Total size of the file in bytes.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.RecordSkippedBytes(System.Int64)">
+            <summary>Accounts for a skipped (already-done) file's bytes in the overall progress.</summary>
+            <param name="fileBytes">Size of the skipped file in bytes.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.CompleteFile(GetAndSee.Core.Transfer.CopyStatus)">
+            <summary>Records a file's terminal status into the running counts.</summary>
+            <param name="status">The file's copy outcome.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Progress.TransferProgress.Snapshot">
+            <summary>Computes a current snapshot, including rolling current speed, average speed, and ETA.</summary>
+            <returns>An immutable <see cref="T:GetAndSee.Core.Progress.ProgressSnapshot"/>.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Reorganize.Reorganizer">
+            <summary>
+            Migrates an existing archive to a different <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/> by moving files within the
+            archive root only — an <b>offline</b>, atomic, resumable operation (the first thing in the product that
+            moves files on the PC). Data integrity is sacred: every move is a same-volume atomic rename followed by a
+            single journal update, a crash between the two is reconciled on the next run, and no file is ever lost,
+            truncated, or clobbered.
+            </summary>
+            <remarks>
+            <para>Flow (see <see cref="M:GetAndSee.Core.Reorganize.Reorganizer.Execute(GetAndSee.Core.Reorganize.ReorganizePlan,System.Threading.CancellationToken)"/>):</para>
+            <list type="number">
+              <item>write the in-flight <c>reorganize_target</c> marker so an interruption is detectable and resumable;</item>
+              <item>for each planned move, in the deterministic plan order: ensure the target folder, atomic
+                <see cref="M:System.IO.File.Move(System.String,System.String)"/>, then <see cref="M:GetAndSee.Core.Journal.TransferJournal.UpdateDestPath(System.String,System.Int64,System.String)"/>;</item>
+              <item>crash-reconcile — a file already at its target (source gone, size matches) heals the journal; a
+                file missing from both places is a per-file failure that never drops the row;</item>
+              <item>remove folders the migration emptied (best-effort);</item>
+              <item>on a fully clean run (no per-file failures), stamp the new scheme and clear the marker.</item>
+            </list>
+            <para>
+            <b>Offline:</b> the reorganizer has no device dependency — it never references <c>IPhoneClient</c> or
+            makes any AFC/lockdown call. It reads placement inputs from the journal only, so the read-only device
+            contract is untouched.
+            </para>
+            <para>
+            <b>Collision determinism:</b> new collisions (a coarser layout mapping two files to one target) are
+            resolved with the shared <see cref="T:GetAndSee.Core.Organize.CollisionSuffix"/> <c>_2/_3</c> rule against the <i>in-run
+            assignment set only</i> — never on-disk existence. A resumed run therefore re-derives the exact same
+            suffixed target a prior run assigned; a file physically moved to that target but not yet journaled is
+            healed at move time rather than bumped again. Clobber-safety is enforced at move time by the
+            non-overwrite <see cref="M:System.IO.File.Move(System.String,System.String)"/> plus a size-checked reconcile.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.Reorganizer.#ctor(GetAndSee.Core.Journal.TransferJournal,GetAndSee.Core.Organize.DateFolderOrganizer,System.String)">
+            <summary>Creates a reorganizer for the archive at <paramref name="destinationRoot"/>.</summary>
+            <param name="journal">The archive's open, writable journal.</param>
+            <param name="organizer">The date-folder organizer whose placement rules the reorganize reuses.</param>
+            <param name="destinationRoot">The archive root directory (all moves stay within it).</param>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.Reorganizer.Plan(GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>
+            Computes the deterministic move plan to reach <paramref name="targetScheme"/> from the journal's
+            current placement, without touching disk or the journal. Files already at their target are counted
+            (<see cref="P:GetAndSee.Core.Reorganize.ReorganizePlan.AlreadyPlaced"/>) but not moved; new collisions are resolved with the
+            shared <c>_2/_3</c> rule.
+            </summary>
+            <param name="targetScheme">The layout to migrate the archive to.</param>
+            <returns>The move plan.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.Reorganizer.Execute(GetAndSee.Core.Reorganize.ReorganizePlan,System.Threading.CancellationToken)">
+            <summary>
+            Executes <paramref name="plan"/>: sets the in-flight marker, performs each atomic move plus journal
+            update (reconciling a crash-interrupted move), removes emptied folders, and — only on a fully clean
+            run — stamps the new scheme and clears the marker. Writes nothing when <paramref name="plan"/> has no
+            moves other than finalizing the scheme/marker.
+            </summary>
+            <param name="plan">A plan from <see cref="M:GetAndSee.Core.Reorganize.Reorganizer.Plan(GetAndSee.Core.Organize.OrganizeScheme)"/> for this archive.</param>
+            <param name="cancellationToken">Observed between files so Ctrl+C stops cleanly and resumably.</param>
+            <returns>A report of what happened.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.Reorganizer.TryApplyMove(GetAndSee.Core.Reorganize.PlannedMove)">
+            <summary>
+            Returns <see langword="true"/> when <paramref name="move"/> ends with the file at its target (moved
+            now, or already there from an interrupted run and healed), <see langword="false"/> on a per-file
+            failure. A failure never drops the row — its journal entry stays <c>done</c> at its current
+            <c>dest_path</c>, so nothing is lost and a re-run retries it.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.Reorganizer.RemoveEmptyDirectories">
+            <summary>
+            Removes directories the migration emptied, deepest-first, so an emptied <c>YYYY\YYYY-MM\</c> and then
+            its now-empty <c>YYYY\</c> both go. Only ever deletes a genuinely empty directory (so a folder still
+            holding a moved-in, failed, or user file is kept), never the archive root or the staging folder.
+            Best-effort cosmetics — a failure to remove is not a run failure.
+            </summary>
+            <returns>The number of directories removed.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Reorganize.PlannedMove">
+            <summary>One planned file move within a <see cref="T:GetAndSee.Core.Reorganize.ReorganizePlan"/>.</summary>
+            <param name="SourcePath">Device source path (identity, for the journal update).</param>
+            <param name="SourceSize">Source size in bytes (identity, and the expected on-disk size when reconciling).</param>
+            <param name="CurrentDestPath">The file's current path, relative to the archive root.</param>
+            <param name="TargetDestPath">The file's target path (collision-resolved), relative to the archive root.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.PlannedMove.#ctor(System.String,System.Int64,System.String,System.String)">
+            <summary>One planned file move within a <see cref="T:GetAndSee.Core.Reorganize.ReorganizePlan"/>.</summary>
+            <param name="SourcePath">Device source path (identity, for the journal update).</param>
+            <param name="SourceSize">Source size in bytes (identity, and the expected on-disk size when reconciling).</param>
+            <param name="CurrentDestPath">The file's current path, relative to the archive root.</param>
+            <param name="TargetDestPath">The file's target path (collision-resolved), relative to the archive root.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.PlannedMove.SourcePath">
+            <summary>Device source path (identity, for the journal update).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.PlannedMove.SourceSize">
+            <summary>Source size in bytes (identity, and the expected on-disk size when reconciling).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.PlannedMove.CurrentDestPath">
+            <summary>The file's current path, relative to the archive root.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.PlannedMove.TargetDestPath">
+            <summary>The file's target path (collision-resolved), relative to the archive root.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Reorganize.ReorganizePlan">
+            <summary>The deterministic plan for one <c>reorganize</c> run.</summary>
+            <param name="TargetScheme">The layout being migrated to.</param>
+            <param name="Moves">The files to move, in deterministic (source-path) order.</param>
+            <param name="AlreadyPlaced">Files already at their target under <paramref name="TargetScheme"/> (not moved).</param>
+            <param name="CollisionsResuffixed">Moves whose target required a <c>_2/_3</c> suffix to avoid a new collision.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.ReorganizePlan.#ctor(GetAndSee.Core.Organize.OrganizeScheme,System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Reorganize.PlannedMove},System.Int32,System.Int32)">
+            <summary>The deterministic plan for one <c>reorganize</c> run.</summary>
+            <param name="TargetScheme">The layout being migrated to.</param>
+            <param name="Moves">The files to move, in deterministic (source-path) order.</param>
+            <param name="AlreadyPlaced">Files already at their target under <paramref name="TargetScheme"/> (not moved).</param>
+            <param name="CollisionsResuffixed">Moves whose target required a <c>_2/_3</c> suffix to avoid a new collision.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizePlan.TargetScheme">
+            <summary>The layout being migrated to.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizePlan.Moves">
+            <summary>The files to move, in deterministic (source-path) order.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizePlan.AlreadyPlaced">
+            <summary>Files already at their target under <paramref name="TargetScheme"/> (not moved).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizePlan.CollisionsResuffixed">
+            <summary>Moves whose target required a <c>_2/_3</c> suffix to avoid a new collision.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Reorganize.ReorganizeReport">
+            <summary>The outcome of a <c>reorganize</c> run.</summary>
+            <param name="Moved">Files moved to (or healed at) their target this run.</param>
+            <param name="AlreadyPlaced">Files that were already at their target.</param>
+            <param name="CollisionsResuffixed">Moves that needed a numeric suffix to avoid a new collision.</param>
+            <param name="Failed">Files that could not be moved (left resumable, never dropped).</param>
+            <param name="DirectoriesRemoved">Emptied folders removed during cleanup.</param>
+            <param name="FinalScheme">The archive's recorded scheme after the run.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Reorganize.ReorganizeReport.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,GetAndSee.Core.Organize.OrganizeScheme)">
+            <summary>The outcome of a <c>reorganize</c> run.</summary>
+            <param name="Moved">Files moved to (or healed at) their target this run.</param>
+            <param name="AlreadyPlaced">Files that were already at their target.</param>
+            <param name="CollisionsResuffixed">Moves that needed a numeric suffix to avoid a new collision.</param>
+            <param name="Failed">Files that could not be moved (left resumable, never dropped).</param>
+            <param name="DirectoriesRemoved">Emptied folders removed during cleanup.</param>
+            <param name="FinalScheme">The archive's recorded scheme after the run.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.Moved">
+            <summary>Files moved to (or healed at) their target this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.AlreadyPlaced">
+            <summary>Files that were already at their target.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.CollisionsResuffixed">
+            <summary>Moves that needed a numeric suffix to avoid a new collision.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.Failed">
+            <summary>Files that could not be moved (left resumable, never dropped).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.DirectoriesRemoved">
+            <summary>Emptied folders removed during cleanup.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Reorganize.ReorganizeReport.FinalScheme">
+            <summary>The archive's recorded scheme after the run.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Search.MediaSearchCriteria">
+            <summary>
+            The filters for a <c>search</c> over an archive's manifest. Every filter is optional; when several are
+            set a file must satisfy all of them (logical AND).
+            </summary>
+            <param name="From">Inclusive lower bound on capture date, or <see langword="null"/>.</param>
+            <param name="To">Inclusive upper bound on capture date, or <see langword="null"/>.</param>
+            <param name="Type">Required media type, or <see langword="null"/> for any.</param>
+            <param name="Camera">Case-insensitive substring matched against camera make or model, or <see langword="null"/>.</param>
+            <param name="MinSize">Inclusive minimum size in bytes, or <see langword="null"/>.</param>
+            <param name="MaxSize">Inclusive maximum size in bytes, or <see langword="null"/>.</param>
+            <param name="HasGps">When <see langword="true"/>, only files that carry GPS coordinates match.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Search.MediaSearchCriteria.#ctor(System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{GetAndSee.Core.Search.MediaType},System.String,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Boolean)">
+            <summary>
+            The filters for a <c>search</c> over an archive's manifest. Every filter is optional; when several are
+            set a file must satisfy all of them (logical AND).
+            </summary>
+            <param name="From">Inclusive lower bound on capture date, or <see langword="null"/>.</param>
+            <param name="To">Inclusive upper bound on capture date, or <see langword="null"/>.</param>
+            <param name="Type">Required media type, or <see langword="null"/> for any.</param>
+            <param name="Camera">Case-insensitive substring matched against camera make or model, or <see langword="null"/>.</param>
+            <param name="MinSize">Inclusive minimum size in bytes, or <see langword="null"/>.</param>
+            <param name="MaxSize">Inclusive maximum size in bytes, or <see langword="null"/>.</param>
+            <param name="HasGps">When <see langword="true"/>, only files that carry GPS coordinates match.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.From">
+            <summary>Inclusive lower bound on capture date, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.To">
+            <summary>Inclusive upper bound on capture date, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.Type">
+            <summary>Required media type, or <see langword="null"/> for any.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.Camera">
+            <summary>Case-insensitive substring matched against camera make or model, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.MinSize">
+            <summary>Inclusive minimum size in bytes, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.MaxSize">
+            <summary>Inclusive maximum size in bytes, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchCriteria.HasGps">
+            <summary>When <see langword="true"/>, only files that carry GPS coordinates match.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Search.MediaSearchHit">
+            <summary>A single file that matched a <see cref="T:GetAndSee.Core.Search.MediaSearchCriteria"/>.</summary>
+            <param name="RelativePath">Destination path relative to the archive root.</param>
+            <param name="CapturedAt">Resolved capture date, or <see langword="null"/>.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="Type">The file's derived media type.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Search.MediaSearchHit.#ctor(System.String,System.Nullable{System.DateTimeOffset},System.Int64,GetAndSee.Core.Search.MediaType)">
+            <summary>A single file that matched a <see cref="T:GetAndSee.Core.Search.MediaSearchCriteria"/>.</summary>
+            <param name="RelativePath">Destination path relative to the archive root.</param>
+            <param name="CapturedAt">Resolved capture date, or <see langword="null"/>.</param>
+            <param name="SizeBytes">File size in bytes.</param>
+            <param name="Type">The file's derived media type.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchHit.RelativePath">
+            <summary>Destination path relative to the archive root.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchHit.CapturedAt">
+            <summary>Resolved capture date, or <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchHit.SizeBytes">
+            <summary>File size in bytes.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Search.MediaSearchHit.Type">
+            <summary>The file's derived media type.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Search.MediaSearch">
+            <summary>
+            Applies a <see cref="T:GetAndSee.Core.Search.MediaSearchCriteria"/> to manifest rows. Pure and side-effect-free — it reads no
+            device and opens no files; the caller supplies the rows from a read-only journal.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Search.MediaSearch.Find(System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Journal.ManifestSearchRow},GetAndSee.Core.Search.MediaSearchCriteria)">
+            <summary>Filters and orders manifest rows by the criteria.</summary>
+            <param name="rows">The manifest rows to search (typically every completed file).</param>
+            <param name="criteria">The filters to apply.</param>
+            <returns>Matching files as hits, ordered by capture date (oldest first, undated last) then path.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Search.MediaType">
+            <summary>The coarse media category of a file, derived from its extension for the <c>search</c> filter.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Search.MediaType.Photo">
+            <summary>A still image (HEIC, JPG, PNG-as-photo, DNG, …).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Search.MediaType.Video">
+            <summary>A video clip (MOV, MP4, …).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Search.MediaType.Screenshot">
+            <summary>A screen capture (PNG — iOS saves screenshots as PNG while the camera shoots HEIC/JPG).</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Search.MediaType.Other">
+            <summary>Anything else (sidecars, raw dumps, unknown extensions).</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Search.MediaTypeClassifier">
+            <summary>
+            Classifies a file into a <see cref="T:GetAndSee.Core.Search.MediaType"/> from its extension. Heuristic and extension-only — no
+            file contents are read. On iOS the camera shoots <c>HEIC</c>/<c>JPG</c> and screenshots are <c>PNG</c>,
+            so a <c>.png</c> is treated as a screenshot.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Search.MediaTypeClassifier.Classify(System.String)">
+            <summary>Classifies a file path by extension.</summary>
+            <param name="path">A file name or path (only its extension is inspected).</param>
+            <returns>The derived <see cref="T:GetAndSee.Core.Search.MediaType"/>.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Summary.RunStats">
+            <summary>Aggregate counters for a single run, used in the console summary and <c>summary.txt</c>.</summary>
+            <param name="Enumerated">Total files discovered on the device this run.</param>
+            <param name="Copied">Files copied this run.</param>
+            <param name="Skipped">Files skipped because the journal already had them done.</param>
+            <param name="Failed">Files that failed this run.</param>
+            <param name="BytesCopied">Total bytes copied this run.</param>
+            <param name="Elapsed">Wall-clock duration of the run.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Summary.RunStats.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int64,System.TimeSpan)">
+            <summary>Aggregate counters for a single run, used in the console summary and <c>summary.txt</c>.</summary>
+            <param name="Enumerated">Total files discovered on the device this run.</param>
+            <param name="Copied">Files copied this run.</param>
+            <param name="Skipped">Files skipped because the journal already had them done.</param>
+            <param name="Failed">Files that failed this run.</param>
+            <param name="BytesCopied">Total bytes copied this run.</param>
+            <param name="Elapsed">Wall-clock duration of the run.</param>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.Enumerated">
+            <summary>Total files discovered on the device this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.Copied">
+            <summary>Files copied this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.Skipped">
+            <summary>Files skipped because the journal already had them done.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.Failed">
+            <summary>Files that failed this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.BytesCopied">
+            <summary>Total bytes copied this run.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Summary.RunStats.Elapsed">
+            <summary>Wall-clock duration of the run.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Summary.SummaryWriter">
+            <summary>
+            Generates the human-readable <c>&lt;dest&gt;/summary.txt</c> from the manifest and the run's
+            statistics (brainstorm Session 3). Regenerated at the end of every run.
+            </summary>
+        </member>
+        <member name="F:GetAndSee.Core.Summary.SummaryWriter.FileName">
+            <summary>The summary filename written at the destination root.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Summary.SummaryWriter.Write(System.String,System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Journal.ManifestEntry},System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Journal.DeviceRecord},GetAndSee.Core.Journal.RunsSummary,System.DateTimeOffset,System.Boolean)">
+            <summary>Writes <c>summary.txt</c> to the destination root.</summary>
+            <param name="destinationRoot">Destination root directory.</param>
+            <param name="manifest">Completed-file rows from the journal.</param>
+            <param name="devices">Devices recorded in the journal.</param>
+            <param name="runs">Run-history summary from the journal.</param>
+            <param name="generatedAt">UTC timestamp to stamp the file with.</param>
+            <param name="flushToDisk">
+            When <see langword="true"/>, fsync the file before returning. Used by the disconnect escape-hatch
+            (#45), which hard-terminates the process immediately after, so the bytes must be on disk rather than
+            only in the OS write cache. The normal end-of-run write leaves this <see langword="false"/> and is
+            unchanged.
+            </param>
+        </member>
+        <member name="M:GetAndSee.Core.Summary.SummaryWriter.Build(System.String,System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Journal.ManifestEntry},System.Collections.Generic.IReadOnlyList{GetAndSee.Core.Journal.DeviceRecord},GetAndSee.Core.Journal.RunsSummary,System.DateTimeOffset)">
+            <summary>Builds the summary text without writing it (used by <c>status</c> and tests).</summary>
+            <param name="destinationRoot">Destination root directory.</param>
+            <param name="manifest">Completed-file rows from the journal.</param>
+            <param name="devices">Devices recorded in the journal.</param>
+            <param name="runs">Run-history summary from the journal.</param>
+            <param name="generatedAt">UTC timestamp to stamp the file with.</param>
+            <returns>The full summary text.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.CopyStatus">
+            <summary>Outcome of attempting to copy one file.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.CopyStatus.Copied">
+            <summary>The file was streamed, verified, and moved into place this run.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.CopyStatus.Skipped">
+            <summary>The file was already <c>done</c> in the journal and was skipped.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.CopyStatus.Failed">
+            <summary>The copy failed; the journal row is marked <c>failed</c> and the file can be retried.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.CopyResult">
+            <summary>Result of a single-file copy attempt.</summary>
+            <param name="Status">What happened.</param>
+            <param name="File">The source file.</param>
+            <param name="RelativeDestPath">The destination path relative to the root, when copied; otherwise <see langword="null"/>.</param>
+            <param name="BytesCopied">Bytes written this run (0 for skipped/failed).</param>
+            <param name="Error">Failure message when <see cref="P:GetAndSee.Core.Transfer.CopyResult.Status"/> is <see cref="F:GetAndSee.Core.Transfer.CopyStatus.Failed"/>.</param>
+            <param name="Sha256">
+            Lowercase hex SHA-256 of the copied bytes when <c>--verify-hash</c> was enabled and the file was
+            copied this run; otherwise <see langword="null"/> (R12).
+            </param>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.CopyResult.#ctor(GetAndSee.Core.Transfer.CopyStatus,GetAndSee.Core.Device.RemoteFile,System.String,System.Int64,System.String,System.String)">
+            <summary>Result of a single-file copy attempt.</summary>
+            <param name="Status">What happened.</param>
+            <param name="File">The source file.</param>
+            <param name="RelativeDestPath">The destination path relative to the root, when copied; otherwise <see langword="null"/>.</param>
+            <param name="BytesCopied">Bytes written this run (0 for skipped/failed).</param>
+            <param name="Error">Failure message when <see cref="P:GetAndSee.Core.Transfer.CopyResult.Status"/> is <see cref="F:GetAndSee.Core.Transfer.CopyStatus.Failed"/>.</param>
+            <param name="Sha256">
+            Lowercase hex SHA-256 of the copied bytes when <c>--verify-hash</c> was enabled and the file was
+            copied this run; otherwise <see langword="null"/> (R12).
+            </param>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.Status">
+            <summary>What happened.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.File">
+            <summary>The source file.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.RelativeDestPath">
+            <summary>The destination path relative to the root, when copied; otherwise <see langword="null"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.BytesCopied">
+            <summary>Bytes written this run (0 for skipped/failed).</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.Error">
+            <summary>Failure message when <see cref="P:GetAndSee.Core.Transfer.CopyResult.Status"/> is <see cref="F:GetAndSee.Core.Transfer.CopyStatus.Failed"/>.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.CopyResult.Sha256">
+            <summary>
+            Lowercase hex SHA-256 of the copied bytes when <c>--verify-hash</c> was enabled and the file was
+            copied this run; otherwise <see langword="null"/> (R12).
+            </summary>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.DisconnectEscapeHatch">
+            <summary>
+            The Sprint 3.4 disconnect escape-hatch: the single action run on the forward-progress watchdog's
+            independent timer thread when the device is proven gone (#45). It writes the run summary and terminates
+            the process with exit code 3 <b>without unwinding through native device code</b>.
+            </summary>
+            <remarks>
+            <para>
+            Five rounds of guarding individual native calls (read, open, stat, list) each relocated the hang to the
+            next unguarded synchronous native call. #45 captured the real class live: on a mid-copy yank
+            <c>afc_file_read</c> returns <c>EmptyResponse</c>/0 and the fault unwinds into the read stream's
+            <c>await using</c> disposal → <c>afc_file_close</c>, which busy-spins forever on the dead transport.
+            </para>
+            <para>
+            When the byte heartbeat is dead the device is provably gone and the data is already safe (the journal is
+            a crash-safe SQLite WAL with each file committed). So instead of trying to unwind gracefully through
+            native code that may spin, this escape-hatch — running on the watchdog's independent timer thread, which
+            the wedged main thread cannot block — prints the disconnect line, writes and flushes
+            <c>summary.txt</c> from a fresh read-only journal connection (no device call), and hard-terminates the
+            process via <see cref="T:GetAndSee.Core.Transfer.IProcessTerminator"/>. The orphaned spinning native thread is reaped by the OS.
+            </para>
+            <para>
+            Summary writing is best-effort: the journal on disk is the durable source of truth and recovers on the
+            next open, so a failure to refresh <c>summary.txt</c> must never prevent the terminate — the terminate
+            is the load-bearing guarantee.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.DisconnectEscapeHatch.DisconnectExitCode">
+            <summary>The process exit code that signals a clean, resumable lost-device stop.</summary>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.DisconnectEscapeHatch.DisconnectMessage">
+            <summary>The single line printed when the device is detected gone.</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.DisconnectEscapeHatch.#ctor(System.String,GetAndSee.Core.Transfer.IProcessTerminator,System.IO.TextWriter)">
+            <summary>Creates a disconnect escape-hatch targeting <paramref name="destinationRoot"/>.</summary>
+            <param name="destinationRoot">Destination root holding the journal and where <c>summary.txt</c> is written.</param>
+            <param name="terminator">The finalizer-skipping process terminator (real impl = <see cref="T:GetAndSee.Core.Transfer.TerminateProcessTerminator"/>).</param>
+            <param name="output">Where the disconnect line is printed; defaults to <see cref="P:System.Console.Out"/>.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.DisconnectEscapeHatch.Activate">
+            <summary>
+            Runs the escape-hatch exactly once: print the disconnect line, write and flush <c>summary.txt</c>,
+            then terminate the process with <see cref="F:GetAndSee.Core.Transfer.DisconnectEscapeHatch.DisconnectExitCode"/>. Safe to call from the watchdog's
+            timer thread; never re-enters native device code.
+            </summary>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.FileCopier">
+            <summary>
+            Copies one device file at a time, atomically and verifiably (R1, R7, R10), updating the journal
+            at every state transition and disambiguating filename collisions without ever overwriting (R5).
+            </summary>
+            <remarks>
+            <para>Per-file pipeline:</para>
+            <list type="number">
+              <item>skip if the journal already has the file <c>done</c>;</item>
+              <item>mark <c>in_progress</c>;</item>
+              <item>stream the AFC read stream into a staging <c>.partial</c> under the destination, counting bytes;</item>
+              <item>flush to disk (fsync);</item>
+              <item>verify the byte count equals the AFC-reported size — mismatch ⇒ fail, never publish;</item>
+              <item>read EXIF from the local copy to choose its date folder under the archive's <see cref="T:GetAndSee.Core.Organize.OrganizeScheme"/>;</item>
+              <item>resolve any filename collision (<c>_2</c>, <c>_3</c>, …);</item>
+              <item>atomically <see cref="M:System.IO.File.Move(System.String,System.String)"/> the staging file into its final path;</item>
+              <item>mark <c>done</c> with the recorded metadata.</item>
+            </list>
+            <para>
+            The final folder never contains a partial file: bytes land in a staging <c>.partial</c> and are
+            only ever moved (renamed) into place after they are complete and verified. On failure the staging
+            file is removed and the journal records the error.
+            </para>
+            <para>
+            Every destination path is normalized through <see cref="T:GetAndSee.Core.Util.LongPath"/> so a deep destination plus a
+            long original filename can exceed the legacy 260-character limit (R6). When <c>verifyHash</c> is
+            set, each file's SHA-256 is computed in the same pass that streams it and recorded in the manifest
+            (R12); the device read path is unchanged and remains read-only.
+            </para>
+            <para>
+            Across a run the copier guards liveness with a single run-level <see cref="T:GetAndSee.Core.Transfer.ForwardProgressWatchdog"/>
+            fed by the byte heartbeat: if the device stops delivering bytes (a parked read, a between-file
+            fast-fail burst, or an intra-file native spin — all "forward byte progress stopped") for the
+            configured timeout, the run stops cleanly and resumably with a
+            <see cref="T:GetAndSee.Core.Errors.DeviceConnectionLostException"/> (exit 3) rather than hanging or spinning through every
+            remaining file (#11 / #25 / #38 / #42). The copier is <see cref="T:System.IDisposable"/> so that watchdog's
+            timer is released at the end of the run.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Transfer.FileCopier.DefaultConsecutiveFailureLimit">
+            <summary>
+            Default number of consecutive per-file failures the forward-progress watchdog treats as a lost
+            device connection (#38). Ten failures in a row with no progress between them is an unambiguous
+            "device gone" signal — a real disconnect fast-fails every file — while staying well clear of the
+            isolated bad or changed files a healthy multi-thousand-file run may legitimately hit.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.FileCopier.#ctor(GetAndSee.Core.Device.IPhoneClient,GetAndSee.Core.Journal.TransferJournal,GetAndSee.Core.Organize.DateFolderOrganizer,GetAndSee.Core.Organize.IMediaMetadataExtractor,System.String,GetAndSee.Core.Organize.OrganizeScheme,System.TimeProvider,System.Nullable{System.TimeSpan},System.Action{System.Int64},System.Boolean,System.Int32,System.Action)">
+            <summary>Creates a copier targeting <paramref name="destinationRoot"/>.</summary>
+            <param name="client">Connected read-only device client.</param>
+            <param name="journal">Open transfer journal at the destination root.</param>
+            <param name="organizer">Date-folder organizer.</param>
+            <param name="organizeScheme">
+            The archive's folder layout, applied to every file's destination path. <b>Required</b> — layout is an
+            archive property, so the caller must thread the resolved scheme here explicitly (the CLI/resolver owns
+            the product default; a new archive's default is <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.Month"/>). The historical
+            byte-stable direction for an existing nested archive is <see cref="F:GetAndSee.Core.Organize.OrganizeScheme.YearMonth"/>.
+            </param>
+            <param name="metadataExtractor">EXIF/metadata extractor used on the local copy.</param>
+            <param name="destinationRoot">Destination root directory.</param>
+            <param name="clock">Time source; defaults to the system clock. Also drives the forward-progress watchdog.</param>
+            <param name="readTimeout">
+            Forward-progress timeout for the run-level liveness watchdog (#11 / #25 / #38 / #42 / R2): if the
+            device delivers no bytes (and completes no file) for this long while a copy is in flight, the run
+            stops cleanly and resumably. <see langword="null"/> or non-positive disables the watchdog (reads
+            can block indefinitely, as in Sprint 1).
+            </param>
+            <param name="onBytesStreamed">
+            Optional cheap per-chunk callback invoked with the number of bytes just streamed, used to drive
+            the live progress/speed readout. Must not block.
+            </param>
+            <param name="verifyHash">
+            When <see langword="true"/>, compute each copied file's SHA-256 during the copy (single pass over
+            the stream buffer) and record it in the manifest's <c>sha256</c> column (R12 / <c>--verify-hash</c>).
+            Read-only and off by default; when <see langword="false"/> no hashing occurs and the copy is
+            byte-for-byte identical to the default path.
+            </param>
+            <param name="consecutiveFailureLimit">
+            Number of consecutive per-file failures (with no intervening progress) after which the run is
+            stopped as a lost device connection (#38) — the fast path for a cable-yank that fast-fails every
+            file instead of parking. Defaults to <see cref="F:GetAndSee.Core.Transfer.FileCopier.DefaultConsecutiveFailureLimit"/>.
+            </param>
+            <param name="onDisconnect">
+            The Sprint 3.4 disconnect escape-hatch (#45), run on the forward-progress watchdog's independent
+            timer thread the first time it trips. When the byte heartbeat is dead the device is provably gone
+            and the main copy thread may be wedged in a synchronous native call (<c>afc_file_close</c> spinning
+            on the dead transport) that cancellation cannot interrupt, so this action writes the summary and
+            hard-terminates the process rather than relying on a clean unwind. <see langword="null"/> keeps the
+            Sprint 3.3 cancel-and-unwind behaviour.
+            </param>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.FileCopier.CleanStaging">
+            <summary>
+            Removes any leftover staging <c>.partial</c> files from a previous interrupted run. Best-effort.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.FileCopier.CopyAsync(GetAndSee.Core.Device.RemoteFile,System.Threading.CancellationToken)">
+            <summary>Copies a single file through the atomic pipeline.</summary>
+            <param name="file">The source file to copy.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>The <see cref="T:GetAndSee.Core.Transfer.CopyResult"/> describing what happened.</returns>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.FileCopier.Dispose">
+            <summary>Stops the forward-progress watchdog timer and releases its resources.</summary>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.ForwardProgressWatchdog">
+            <summary>
+            The run-level forward-progress (liveness) watchdog: the single, manifestation-agnostic guard that
+            turns "the device stopped delivering bytes" into a clean, resumable stop, regardless of <i>why</i> the
+            bytes stopped (#11 → #25 → #38 → #42).
+            </summary>
+            <remarks>
+            <para>
+            Every prior unplug fix guarded a specific code location (a parked read, a parked open, a between-file
+            failure burst), and real hardware then found the next location. The one invariant across all of them is
+            that forward <b>byte</b> progress stops — the staging <c>.partial</c> freezes. This watchdog watches
+            that symptom directly via the existing per-chunk heartbeat (<c>onBytesStreamed</c>), on an
+            <b>independent timer</b> that does not depend on any device read returning. While a copy is in flight,
+            if no progress is recorded for <c>timeout</c>, it trips a single <see cref="T:System.Threading.CancellationToken"/> that
+            the copy loop observes, unwinding to the existing <see cref="T:GetAndSee.Core.Errors.DeviceConnectionLostException"/> / exit-3
+            path (resumable; <c>summary.txt</c> written).
+            </para>
+            <para>
+            It folds in the Sprint 3.2 forward-progress breaker (#38): a burst of consecutive per-file failures
+            with no intervening progress (a cable-yank that fast-fails every file instead of parking) trips it
+            immediately rather than waiting out the inactivity timer, so the journal is not churned through
+            thousands of failed rows. A single success or any streamed byte resets the streak, so an isolated bad
+            or changed file never trips it.
+            </para>
+            <para>
+            Why a run-level <i>timer</i> and not the old per-read inactivity timer: the per-read guard only armed
+            when a read failed to complete promptly and was enforced through a thread-pool-scheduled continuation,
+            so it provided no run-level, read-independent liveness — a read that returned fast-and-wrong, or a
+            native read that pinned a core and never returned, slipped past it (the #42 intra-file spin). This
+            guard is always armed while copying and fires on the heartbeat alone.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.#ctor(System.TimeSpan,System.TimeProvider,System.Int32,System.Action)">
+            <summary>Creates and arms a forward-progress watchdog.</summary>
+            <param name="timeout">
+            Maximum time with no forward progress (no streamed bytes and no completed/skipped file) before the
+            device is treated as lost. Must be positive; tie this to <c>--read-timeout</c>.
+            </param>
+            <param name="clock">Time source for the timer and the progress clock; injectable so the watchdog is testable.</param>
+            <param name="consecutiveFailureLimit">
+            Number of consecutive per-file failures (with no intervening progress) that trips the watchdog
+            immediately — the fast path for a cable-yank that fast-fails every file (#38). Must be positive.
+            </param>
+            <param name="onTrip">
+            The disconnect escape-hatch, run once on the watchdog's independent timer thread the first time it
+            trips (#45). The main copy thread may be wedged in a synchronous native call that cancellation
+            cannot interrupt, so this action writes the summary and hard-terminates the process rather than
+            relying on a clean unwind. <see langword="null"/> keeps the Sprint 3.3 behaviour (cancel only).
+            </param>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.ForwardProgressWatchdog.Token">
+            <summary>A token that is cancelled when the watchdog trips. The copy loop races its reads against it.</summary>
+        </member>
+        <member name="P:GetAndSee.Core.Transfer.ForwardProgressWatchdog.Tripped">
+            <summary>Whether the watchdog has tripped (the device is considered lost).</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.RecordProgress">
+            <summary>
+            Records forward progress — a streamed byte chunk or a completed/skipped file. Resets both the
+            inactivity clock and the consecutive-failure streak. Cheap and lock-free; safe to call on the hot
+            per-chunk path.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.RecordFailure">
+            <summary>
+            Records a per-file failure. A run of <see cref="F:GetAndSee.Core.Transfer.ForwardProgressWatchdog.consecutiveFailureLimit"/> failures with no
+            intervening progress trips the watchdog immediately (the #38 fast-fail path).
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.Dispose">
+            <summary>
+            Stops the timer and releases the cancellation source. Safe against the timer's in-flight
+            <see cref="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.Check"/> callback: once disposed, a late <see cref="M:GetAndSee.Core.Transfer.ForwardProgressWatchdog.Trip"/> is a no-op, so no
+            <see cref="T:System.ObjectDisposedException"/> can escape on the timer thread during shutdown (reachable when
+            post-loop work outlasts the timeout since the last byte).
+            </summary>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.IProcessTerminator">
+            <summary>
+            Abstraction over an immediate, finalizer-skipping process termination, injected so the disconnect
+            escape-hatch (<see cref="T:GetAndSee.Core.Transfer.DisconnectEscapeHatch"/>) can be exercised in tests without killing the test
+            host.
+            </summary>
+            <remarks>
+            The production implementation (<see cref="T:GetAndSee.Core.Transfer.TerminateProcessTerminator"/>) hard-terminates the current
+            process via the OS so that <b>no managed or critical finalizer runs</b>. That is the whole point on the
+            #45 disconnect path: the byte heartbeat is dead because a synchronous native call (<c>afc_file_close</c>)
+            is busy-spinning on a dead transport, and any finalizer that re-enters that native layer would itself
+            hang. A test double records the requested exit code instead of terminating, so the escape-hatch's
+            behaviour can be asserted deterministically.
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.IProcessTerminator.Terminate(System.Int32)">
+            <summary>
+            Immediately terminates the current process with <paramref name="exitCode"/> without running any
+            finalizers. The call is not expected to return.
+            </summary>
+            <param name="exitCode">The process exit code (3 for a lost-device disconnect).</param>
+        </member>
+        <member name="T:GetAndSee.Core.Transfer.TerminateProcessTerminator">
+            <summary>
+            The production <see cref="T:GetAndSee.Core.Transfer.IProcessTerminator"/>: a finalizer-skipping hard exit via the Win32
+            <c>TerminateProcess</c> on the current process pseudo-handle.
+            </summary>
+            <remarks>
+            <para>
+            On the #45 disconnect path the process must end <b>without</b> running finalizers. <c>Environment.Exit</c>
+            is unsafe there because it runs finalizers — the <c>AfcReadStream</c> finalizer (<c>afc_file_close</c>)
+            and the <c>AfcClientHandle</c> SafeHandle <i>critical</i> finalizer (<c>afc_client_free</c>) would each
+            re-enter the busy-spinning native layer on the dead transport, so the exit itself would hang.
+            <c>TerminateProcess</c> tells the OS to reap every thread and handle immediately; no managed or critical
+            finalizer runs, so nothing re-enters native device code.
+            </para>
+            <para>
+            Windows-only (the tool ships <c>win-x64</c>); guarded by <see cref="M:System.OperatingSystem.IsWindows"/>. On any
+            other OS — where the native AFC layer is never loaded, so no native spin can occur — it falls back to
+            <see cref="M:System.Environment.Exit(System.Int32)"/> so the process still stops.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Transfer.TerminateProcessTerminator.Terminate(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:GetAndSee.Core.Util.ByteSize">
+            <summary>Formats byte counts as compact, human-readable sizes (e.g. <c>397.2 GB</c>).</summary>
+        </member>
+        <member name="M:GetAndSee.Core.Util.ByteSize.Humanize(System.Int64)">
+            <summary>Formats a byte count using binary (1024) units and one decimal place above bytes.</summary>
+            <param name="bytes">A non-negative byte count.</param>
+            <returns>A string such as <c>0 B</c>, <c>512 B</c>, or <c>1.5 GB</c>.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Util.LongPath">
+            <summary>
+            Normalizes Windows destination paths to the extended-length <c>\\?\</c> form so the copier can
+            write past the legacy 260-character <c>MAX_PATH</c> limit (R6).
+            </summary>
+            <remarks>
+            <para>
+            A deep destination root combined with a long original filename can exceed <c>MAX_PATH</c> and
+            throw a cryptic <see cref="T:System.IO.IOException"/> (actually <see cref="T:System.IO.PathTooLongException"/>).
+            Prefixing a fully-qualified path with the <c>\\?\</c> device prefix (or <c>\\?\UNC\</c> for a network
+            share) tells Windows to skip the legacy limit and pass the path straight to the file system. The
+            prefix works regardless of the machine's <c>LongPathsEnabled</c> registry/manifest setting, so it
+            is the reliable mechanism on any runner.
+            </para>
+            <para>
+            Read-only safety: this only affects how <b>destination</b> (PC-side) paths are spelled. It never
+            touches the device or the AFC read path, so the read-only contract is unaffected.
+            </para>
+            <para>
+            The input is expected to be an absolute, separator-normalized path (e.g. the output of
+            <see cref="M:System.IO.Path.GetFullPath(System.String)"/>). A <c>\\?\</c> path is passed to the OS
+            verbatim, so forward slashes and relative segments are <i>not</i> normalized by Windows — callers
+            must hand in a clean, backslash-separated absolute path.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GetAndSee.Core.Util.LongPath.ToExtended(System.String)">
+            <summary>
+            Returns <paramref name="path"/> rewritten with the Windows extended-length prefix when it is a
+            fully-qualified Windows path, so it can exceed <c>MAX_PATH</c>. Returns the input unchanged on
+            non-Windows platforms, for already-prefixed paths, and for paths that are not fully qualified.
+            </summary>
+            <param name="path">An absolute, normalized path (e.g. from <see cref="M:System.IO.Path.GetFullPath(System.String)"/>).</param>
+            <returns>The extended-length form on Windows, otherwise the original path.</returns>
+        </member>
+        <member name="T:GetAndSee.Core.Util.ReadDiagnostics">
+            <summary>
+            Hidden, opt-in diagnostics for the device read path, used to capture the exact native return values
+            during a real cable-yank (the #11 → #25 → #38 → #42 unplug investigation). Disabled unless the
+            <c>GAS_DEBUG_READS</c> environment variable is set, so the healthy copy path pays only a single cached
+            boolean check per read and the diagnostics never ship enabled.
+            </summary>
+            <remarks>
+            <para>
+            When enabled, each <c>afc_file_read</c> call and the staging file's growth are logged to
+            <see cref="P:System.Console.Error"/> with a <c>[reads]</c> prefix: the per-read AFC error code, the requested
+            and returned byte counts, the elapsed native time, and the running total. A frozen total at ~100% CPU
+            with no error is the signature of a native read that never returns — the thing this exists to prove on
+            hardware.
+            </para>
+            <para>
+            Read-only and side-effect-free with respect to the device: it only observes values the read path
+            already produced. It logs device file paths (e.g. <c>/DCIM/100APPLE/IMG_0001.MOV</c>), which are
+            generic camera paths, never file contents or user-identifying data.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:GetAndSee.Core.Util.ReadDiagnostics.Enabled">
+            <summary>
+            Whether read diagnostics are enabled (the <c>GAS_DEBUG_READS</c> environment variable is set to a
+            truthy value). Evaluated once at startup so the healthy read path stays a single field read.
+            </summary>
+        </member>
+        <member name="M:GetAndSee.Core.Util.ReadDiagnostics.LogRead(System.String,System.Object,System.Int32,System.Int64,System.TimeSpan,System.Int64)">
+            <summary>
+            Logs a single device read. No-op unless <see cref="F:GetAndSee.Core.Util.ReadDiagnostics.Enabled"/>; callers must still guard the
+            surrounding timing so a disabled build allocates nothing.
+            </summary>
+            <param name="path">The device path being read.</param>
+            <param name="error">The AFC error code the native read returned (e.g. <c>Success</c>).</param>
+            <param name="requested">The number of bytes requested.</param>
+            <param name="received">The number of bytes the native read reported.</param>
+            <param name="elapsed">How long the native read took.</param>
+            <param name="runningTotal">The running total of bytes streamed for this file so far.</param>
+        </member>
+        <member name="M:GetAndSee.Core.Util.ReadDiagnostics.Log(System.String)">
+            <summary>
+            Logs a free-form diagnostic line. No-op unless <see cref="F:GetAndSee.Core.Util.ReadDiagnostics.Enabled"/>.
+            </summary>
+            <param name="message">The message to log (without the <c>[reads]</c> prefix).</param>
+        </member>
+    </members>
+</doc>

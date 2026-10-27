@@ -113,7 +113,7 @@ function Show-Help {
     Write-Host "  5. python -m library setup-ml faces"
     Write-Host "  6. python -m library setup-ml transcribe"
     Write-Host "  7. python -m library setup-ml aesthetic"
-    Write-Host "  8. Optional iPhone tool beside this folder (projects/iphonePhotos)"
+    Write-Host "  8. Import iPhone helper (tools/iphone) and .NET 10 runtime if needed"
     Write-Host ""
     Write-Host "First model download needs the internet. Models stay under library-data/."
     Write-Host "Re-run is safe (idempotent). No MSI. Does not start Library.bat."
@@ -472,19 +472,36 @@ function Install-Shortcuts {
     }
 }
 
+function Test-IphoneAppleUsb {
+    foreach ($name in @("AppleInc.AppleDevices", "AppleInc.iTunes")) {
+        $pkg = Get-AppxPackage -Name $name -ErrorAction SilentlyContinue
+        if ($pkg) { return $true }
+    }
+    $keys = @(
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
+    )
+    $rows = Get-ItemProperty $keys -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -match "iTunes|Apple Devices|Apple Mobile Device" }
+    return [bool]$rows
+}
+
 function Ensure-IphoneTool {
-    $parent = Split-Path -Parent $AppFolder
-    $tool = Join-Path $parent "iphonePhotos"
+    $tool = Join-Path $AppFolder "tools\iphone"
     $hostExe = Join-Path $tool "ui-host\bin\Release\net10.0\win-x64\iphone-photos-host.exe"
     Write-Host ""
-    Write-Host "Import iPhone uses the separate tool next to Library."
+    Write-Host "Import iPhone uses the helper in tools\iphone inside this repo."
     if (-not (Test-Path -LiteralPath $hostExe)) {
-        Write-Host "iPhone tool not found. Import iPhone will say it is not installed."
+        Write-Host "iPhone helper not found. Import iPhone will say it is not installed."
         Write-Host ("Expected: " + $hostExe)
-        Write-Host "Copy that folder beside Library and run its Setup.bat. Library setup still finishes."
+        Write-Host "Pull the latest photoLibrary code or run tools\iphone\Setup.bat to build the helper. Library setup still finishes."
         return
     }
-    Write-Host ("iPhone tool: " + $tool)
+    Write-Host ("iPhone helper: " + $hostExe)
+    if (-not (Test-IphoneAppleUsb)) {
+        Write-Host "Import iPhone also needs Apple Devices (or iTunes) opened once on this PC."
+        Write-Host "Install from the Microsoft Store (winget id 9NP83LWLPZ9K, source msstore), open it once, then plug in the phone."
+    }
     if ($DryRun) {
         Write-Host "Dry-run: would start the phone helper. If it needs .NET 10, would winget Microsoft.DotNet.Runtime.10."
         return
@@ -498,7 +515,7 @@ function Ensure-IphoneTool {
         & winget install --id Microsoft.DotNet.Runtime.10 -e --accept-package-agreements --accept-source-agreements --disable-interactivity --source winget
         $ErrorActionPreference = "Continue"
         $output = & $hostExe 2>&1 | Out-String
-        $ErrorActionPreference = "Stop"
+        $ErrorActionPreference = $prev
         if ($output -match "You must install or update \.NET") {
             Write-Host "The .NET 10 runtime is still missing. Import iPhone will say so. Library setup still finishes."
             return

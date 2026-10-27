@@ -104,6 +104,14 @@ docs/features/processing-feedback/**/catalog/
 docs/features/processing-feedback/**/pictures/
 docs/features/processing-feedback/**/preflight/
 
+# Bundled iPhone import tool (runtime junk only; keep the built helper exe)
+tools/iphone/**/__pycache__/
+tools/iphone/.venv/
+tools/iphone/logs/
+tools/iphone/ui/window-state.json
+tools/iphone/ui-host/obj/
+tools/iphone/get-and-see/.git/
+
 # Python
 __pycache__/
 *.py[cod]
