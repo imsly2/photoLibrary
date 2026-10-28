@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import csv
 import io
+import math
 import zipfile
 from pathlib import Path
 from typing import Any
@@ -37,6 +38,8 @@ call a cloud geocoder while scanning or browsing.
 """
 
 _cache: dict[str, tuple[Path, list[tuple[float, float, str]]]] = {}
+_grid_cache: dict[str, tuple[tuple[str, int, int], dict[tuple[int, int], list[tuple[float, float, str]]]]] = {}
+_CELL_DEG = 1.0
 
 
 def geo_dir(root: Path) -> Path:
@@ -99,19 +102,76 @@ def _load_cities(root: Path) -> list[tuple[float, float, str]]:
     return rows
 
 
+def _lat_cell(lat: float) -> int:
+    return max(-90, min(89, math.floor(lat / _CELL_DEG)))
+
+
+def _lon_cell(lon: float) -> int:
+    cell = math.floor(lon / _CELL_DEG)
+    if cell >= 180:
+        cell -= 360
+    if cell < -180:
+        cell += 360
+    return cell
+
+
+def _city_grid(root: Path) -> dict[tuple[int, int], list[tuple[float, float, str]]]:
+    """Cities grouped by 1-degree cell. The nearest city is in a nearby cell."""
+    path = cities_path(root)
+    stamp = _cities_stamp(path)
+    cached = _grid_cache.get("grid")
+    if cached is not None and cached[0] == stamp:
+        return cached[1]
+    buckets: dict[tuple[int, int], list[tuple[float, float, str]]] = {}
+    for lat, lon, label in _load_cities(root):
+        buckets.setdefault((_lat_cell(lat), _lon_cell(lon)), []).append((lat, lon, label))
+    _grid_cache["grid"] = (stamp, buckets)
+    return buckets
+
+
+def _outside_square_meters(lat: float, lon: float, qi: int, qj: int, radius: int) -> float:
+    """A lower bound on the distance from this point to any city outside the searched square.
+
+    Underestimated on purpose: a short bound searches one more ring, a long one could
+    pick the wrong city.
+    """
+    if qj - radius < -180 or qj + radius + 1 > 180:
+        return 0.0
+    lat_span = min(lat - (qi - radius), (qi + radius + 1) - lat)
+    lon_span = min(lon - (qj - radius), (qj + radius + 1) - lon)
+    lat_m = 110000.0
+    lon_m = max(1.0, 111000.0 * math.cos(math.radians(lat)))
+    return min(lat_span * lat_m, lon_span * lon_m)
+
+
 def lookup_name(root: Path, latitude: float, longitude: float) -> str | None:
     from library.places import haversine_meters
 
-    cities = _load_cities(root)
-    if not cities:
+    buckets = _city_grid(root)
+    if not buckets:
         return None
+    qi, qj = _lat_cell(latitude), _lon_cell(longitude)
     best_name: str | None = None
     best_dist = float("inf")
-    for lat, lon, label in cities:
-        dist = haversine_meters(latitude, longitude, lat, lon)
-        if dist < best_dist:
-            best_dist = dist
-            best_name = label
+    for radius in range(181):
+        cells: list[tuple[int, int]] = []
+        if radius == 0:
+            cells.append((qi, qj))
+        else:
+            for di in range(-radius, radius + 1):
+                cells.append((qi + di, _lon_cell((qj - radius) * _CELL_DEG)))
+                cells.append((qi + di, _lon_cell((qj + radius) * _CELL_DEG)))
+            for dj in range(-radius + 1, radius):
+                cells.append((qi - radius, _lon_cell((qj + dj) * _CELL_DEG)))
+                cells.append((qi + radius, _lon_cell((qj + dj) * _CELL_DEG)))
+        for cell in cells:
+            for lat, lon, label in buckets.get(cell, ()):
+                dist = haversine_meters(latitude, longitude, lat, lon)
+                if dist < best_dist:
+                    best_dist = dist
+                    best_name = label
+        if best_name is not None and best_dist <= _outside_square_meters(latitude, longitude, qi, qj, radius):
+            return best_name
     return best_name
 
 
@@ -121,6 +181,7 @@ def city_count(root: Path) -> int:
 
 def _invalidate() -> None:
     _cache.pop("cities", None)
+    _grid_cache.pop("grid", None)
 
 
 def install_pack(root: Path, source: Path) -> dict[str, Any]:

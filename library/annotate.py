@@ -33,6 +33,7 @@ from library.history import (
     load_state,
     make_history_entry,
     plan_append,
+    state_path,
 )
 from library.records import (
     clone,
@@ -658,6 +659,42 @@ def plan_absorb_item_refs(
     return changes
 
 
+_rebase_index: dict[str, tuple[tuple[int, int, int], dict[str, list[str]]]] = {}
+
+
+def _annotate_paths(root: Path) -> dict[str, list[str]]:
+    """Undo entries that mention each catalog path. Built once until history changes.
+
+    A scan used to open every undo entry for every picture. This library has
+    500 of those entries, and none of them belong to a picture that was just read.
+    """
+    state = load_state(root)
+    path = state_path(root)
+    try:
+        stamp = path.stat().st_mtime_ns
+    except OSError:
+        stamp = 0
+    token = (stamp, len(state["entries"]), state["cursor"])
+    key = str(root.resolve())
+    cached = _rebase_index.get(key)
+    if cached is not None and cached[0] == token:
+        return cached[1]
+    found: dict[str, list[str]] = {}
+    for entry_id in state["entries"][: state["cursor"]]:
+        entry = load_entry(root, entry_id)
+        if entry.get("operation") != "annotate":
+            continue
+        seen: set[str] = set()
+        for change in entry.get("changes") or []:
+            change_path = change.get("path")
+            if type(change_path) is not str or change_path in seen:
+                continue
+            seen.add(change_path)
+            found.setdefault(change_path, []).append(entry_id)
+    _rebase_index[key] = (token, found)
+    return found
+
+
 def plan_rebase_pending(
     root: Path,
     pending_id: str,
@@ -667,12 +704,10 @@ def plan_rebase_pending(
     hash_path = item_rel(published["id"])
     if pending_path == hash_path:
         return []
-    state = load_state(root)
+    entry_ids = _annotate_paths(root).get(pending_path) or []
     changes: list[dict[str, Any]] = []
-    for entry_id in state["entries"][: state["cursor"]]:
+    for entry_id in entry_ids:
         entry = load_entry(root, entry_id)
-        if entry.get("operation") != "annotate":
-            continue
         rewritten = False
         new_entry_changes: list[dict[str, Any]] = []
         for change in entry.get("changes") or []:

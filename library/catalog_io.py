@@ -414,11 +414,39 @@ def try_load_place(root: Path, place_id: str) -> dict[str, Any] | None:
     return read_place(load_json(path))
 
 
+_PLACE_DISK: dict[str, tuple[tuple[int, int], dict[str, dict[str, Any]]]] = {}
+
+
+def _place_disk(root: Path) -> dict[str, dict[str, Any]]:
+    """Place records already on disk. Re-read only when a place file is added or replaced.
+
+    A scan used to open every place file for every picture. New pictures still
+    in the catalog batch are merged from the overlay by ``load_places``.
+    """
+    folder = places_dir(root)
+    try:
+        stamp = folder.stat().st_mtime_ns
+        count = sum(1 for path in folder.glob("*.json"))
+    except OSError:
+        stamp, count = 0, 0
+    key = str(Path(root).resolve())
+    token = (stamp, count)
+    cached = _PLACE_DISK.get(key)
+    if cached is not None and cached[0] == token:
+        return cached[1]
+    places = {
+        place["id"]: place
+        for place in (load_place(root, place_id) for place_id in iter_place_ids(root))
+    }
+    _PLACE_DISK[key] = (token, places)
+    return places
+
+
 def load_places(root: Path) -> list[dict[str, Any]]:
-    places = {place["id"]: place for place in (load_place(root, place_id) for place_id in iter_place_ids(root))}
+    places = dict(_place_disk(root))
     overlay = _CATALOG_OVERLAY.get()
     if overlay is None:
-        return list(places.values())
+        return [clone(place) for place in places.values()]
     prefix = "catalog/places/"
     for relative, payload in overlay.items():
         if not relative.startswith(prefix) or not relative.endswith(".json"):
@@ -428,7 +456,7 @@ def load_places(root: Path) -> list[dict[str, Any]]:
             places.pop(place_id, None)
         else:
             places[place_id] = read_place(clone(payload))
-    return list(places.values())
+    return [clone(place) for place in places.values()]
 
 
 def new_place_id(root: Path) -> str:

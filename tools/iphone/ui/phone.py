@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 import tempfile
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -149,3 +150,71 @@ class Phone:
             errors="replace",
             creationflags=_NO_WINDOW,
         )
+
+
+def stream_list(on_row=None, should_stop=None) -> tuple[str, list[PhoneFile]]:
+    """List /DCIM as the helper prints each file. The phone stays read-only."""
+    if not _HOST.is_file():
+        raise PhoneError(_MISSING)
+    proc = subprocess.Popen(
+        [str(_HOST), "list"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        creationflags=_NO_WINDOW,
+    )
+    errors: list[str] = []
+
+    def _stderr() -> None:
+        if proc.stderr is None:
+            return
+        errors.append(proc.stderr.read())
+
+    err_thread = threading.Thread(target=_stderr, name="iphone-month-err", daemon=True)
+    err_thread.start()
+    name = ""
+    files: list[PhoneFile] = []
+    assert proc.stdout is not None
+    try:
+        for line in proc.stdout:
+            if should_stop is not None and should_stop():
+                proc.kill()
+                raise PhoneError("Look stopped.")
+            text = line.strip()
+            if not text:
+                continue
+            try:
+                row = json.loads(text)
+            except json.JSONDecodeError as exc:
+                raise PhoneError(f"The phone helper returned invalid JSON: {text}") from exc
+            if not isinstance(row, dict):
+                raise PhoneError(f"The phone helper returned invalid JSON: {text}")
+            if on_row is not None:
+                on_row(row)
+            if "path" not in row:
+                phone = row.get("phone")
+                if isinstance(phone, str) and phone.strip():
+                    name = phone.strip()
+                continue
+            path = row.get("path")
+            size = row.get("size")
+            if not isinstance(path, str) or not path:
+                raise PhoneError("The phone helper returned a file with no path.")
+            if isinstance(size, bool) or not isinstance(size, (int, float)):
+                raise PhoneError(f"The phone helper returned a bad size for {path}.")
+            files.append(PhoneFile(path, int(size), _parse_mtime(row.get("mtime"))))
+    finally:
+        proc.wait()
+        err_thread.join(timeout=2)
+    if should_stop is not None and should_stop() and proc.returncode not in {0, None}:
+        raise PhoneError("Look stopped.")
+    if proc.returncode not in {0, None}:
+        text = "".join(errors).strip() or f"The phone helper exited with code {proc.returncode}."
+        raise PhoneError(text.splitlines()[0])
+    if not name:
+        raise PhoneError("The phone helper did not report a phone name.")
+    if not files:
+        raise PhoneError("The phone helper did not list any camera files.")
+    return name, files

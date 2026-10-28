@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import atexit
 import json
 import math
 import os
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 import zipfile
 from contextlib import nullcontext
 from datetime import datetime, timezone
@@ -64,6 +66,9 @@ TILE_SRC = 1280
 TILE_OVERLAP = 320
 TILE_TRIGGER = 1600
 TILE_MAX = 12
+# One upright frame, like the reduced thumbnail decode. A 12-megapixel
+# phone photo used to add a dozen extra tiles and take about 20 seconds.
+FACE_DETECT_LONG_SIDE = 1920
 BACKEND_INSIGHT = "insightface-buffalo_s"
 BACKEND_FIXTURE = "fixture"
 
@@ -170,7 +175,15 @@ def load_manifest(root: Path) -> dict[str, Any] | None:
 
 
 def load_index(root: Path) -> dict[str, Any] | None:
+    key = root_text(root)
+    pending = _pending_index.get(key)
+    if pending is not None:
+        return pending[0]
     path = index_path(root)
+    sig = _index_sig(path)
+    cached = _memory_index.get(key)
+    if cached is not None and sig is not None and _memory_sig.get(key) == sig:
+        return cached
     if not path.is_file():
         return None
     try:
@@ -179,22 +192,49 @@ def load_index(root: Path) -> dict[str, Any] | None:
         raise fail("invalid-catalog") from exc
     if not isinstance(data, dict) or data.get("schemaVersion") != 1:
         raise fail("invalid-catalog")
+    if sig is not None:
+        _remember_memory(root, data, sig)
     return data
 
 
 _index_cache: dict[str, tuple[tuple[int, int], dict[str, Any] | None]] = {}
+# Drain updates this immediately and flushes the multi-megabyte file in
+# batches. Readers in this process see the memory copy, so a photo is not
+# parsed back off disk before the next one starts.
+_memory_index: dict[str, dict[str, Any]] = {}
+_memory_sig: dict[str, tuple[int, int]] = {}
+_pending_index: dict[str, tuple[dict[str, Any], float, int]] = {}
+_FLUSH_EVERY = 24
+_FLUSH_AFTER_S = 3.0
+
+
+def _index_sig(path: Path) -> tuple[int, int] | None:
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    return (int(st.st_mtime_ns), int(st.st_size))
+
+
+def _remember_memory(root: Path, index: dict[str, Any], sig: tuple[int, int] | None) -> None:
+    key = root_text(root)
+    _memory_index[key] = index
+    if sig is not None:
+        _memory_sig[key] = sig
+        _index_cache[str(index_path(root))] = (sig, index)
 
 
 def _index_readonly(root: Path) -> dict[str, Any] | None:
     """load_index for callers that only read: parsed again only when the file
     changes. The index holds every embedding, so each idle tick re-parsing it
     three times added up. Never mutate the returned dict."""
+    pending = _pending_index.get(root_text(root))
+    if pending is not None:
+        return pending[0]
     path = index_path(root)
-    try:
-        st = path.stat()
-    except OSError:
+    sig = _index_sig(path)
+    if sig is None:
         return None
-    sig = (int(st.st_mtime_ns), int(st.st_size))
     hit = _index_cache.get(str(path))
     if hit is not None and hit[0] == sig:
         return hit[1]
@@ -210,18 +250,56 @@ _mirror_pending: set[str] = set()
 def write_index(root: Path, index: dict[str, Any], *, mirror: bool = True) -> None:
     """Publish the face index: a cache of item faces, never an undo step.
 
-    ``mirror=False`` (one photo at a time in the drain) holds the portable
-    ``faces.json`` copy until ``settle_index_mirror``.
+    ``mirror=False`` (one photo at a time in the drain) keeps the parsed index
+    in memory and rewrites the multi-megabyte file in batches. The portable
+    ``faces.json`` copy waits for ``settle_index_mirror``. ``mirror=True``
+    writes the file before returning.
     """
+    key = root_text(root)
+    previous = _pending_index.get(key)
+    started = previous[1] if previous is not None else time.monotonic()
+    count = (previous[2] if previous is not None else 0) + 1
+    _pending_index[key] = (index, started, count)
+    _memory_index[key] = index
+    _mirror_pending.add(key)
+    due = mirror or count >= _FLUSH_EVERY or (time.monotonic() - started) >= _FLUSH_AFTER_S
+    if due:
+        _flush_pending(root, mirror=mirror)
+
+
+def flush_index(root: Path) -> None:
+    """Write any batched face-index update. Safe to call when nothing is pending."""
+    _flush_pending(root, mirror=False)
+
+
+def _flush_pending(root: Path, *, mirror: bool) -> None:
     from library.atomic import atomic_write_json
 
-    atomic_write_json(index_path(root), index)
-    _mirror_pending.add(root_text(root))
+    key = root_text(root)
+    pending = _pending_index.get(key)
+    if pending is None:
+        if mirror:
+            settle_index_mirror(root)
+        return
+    index = pending[0]
+    path = index_path(root)
+    atomic_write_json(path, index)
+    _pending_index.pop(key, None)
+    _remember_memory(root, index, _index_sig(path))
     if mirror:
         settle_index_mirror(root)
 
 
+def _flush_pending_all() -> None:
+    for key in list(_pending_index):
+        _flush_pending(Path(key), mirror=False)
+
+
+atexit.register(_flush_pending_all)
+
+
 def settle_index_mirror(root: Path) -> None:
+    _flush_pending(root, mirror=False)
     key = root_text(root)
     if key not in _mirror_pending:
         return
@@ -815,6 +893,7 @@ def detect_insightface(
     min_side_px: int = DEFAULT_MIN_SIDE_PX,
     min_det: float = INSIGHT_DET_MIN,
     landmarks_only: bool = False,
+    single_window: bool = False,
 ) -> list[dict[str, Any]]:
     with _DETECT_LOCK:
         return _detect_insightface(
@@ -825,6 +904,7 @@ def detect_insightface(
             min_side_px=min_side_px,
             min_det=min_det,
             landmarks_only=landmarks_only,
+            single_window=single_window,
         )
 
 
@@ -851,6 +931,7 @@ def _detect_insightface(
     min_side_px: int = DEFAULT_MIN_SIDE_PX,
     min_det: float = INSIGHT_DET_MIN,
     landmarks_only: bool = False,
+    single_window: bool = False,
 ) -> list[dict[str, Any]]:
     np = _numpy()
     ort = _ort()
@@ -923,7 +1004,8 @@ def _detect_insightface(
 
     rows = []
     kps_rows = []
-    for window in iter_detect_windows(width, height):
+    windows = [(0, 0, width, height)] if single_window else iter_detect_windows(width, height)
+    for window in windows:
         pre, kps = run_window(*window)
         if pre is None:
             continue
@@ -1084,18 +1166,27 @@ def detect_faces_on_still(
     min_det: float = INSIGHT_DET_MIN,
     landmarks_only: bool = False,
 ) -> list[dict[str, Any]]:
-    width, height, rgb = decode_still_rgb(path)
     if backend == BACKEND_FIXTURE:
+        width, height, rgb = decode_still_rgb(path)
         return detect_fixture(width, height, rgb, min_side_px=min_side_px)
     if backend == BACKEND_INSIGHT:
+        from library.media import _upright_size
+
+        full_w, full_h = _upright_size(path)
+        width, height, rgb = decode_still_rgb(path, max_side=FACE_DETECT_LONG_SIDE)
+        scale = (width / float(full_w)) if full_w else 1.0
+        # The 80 px gate is in original pixels. The reduced frame is smaller,
+        # so the same face is a smaller count of pixels here.
+        adjusted_min = min_side_px if scale >= 0.999 else max(16, int(round(min_side_px * scale)))
         return detect_insightface(
             root,
             width,
             height,
             rgb,
-            min_side_px=min_side_px,
+            min_side_px=adjusted_min,
             min_det=min_det,
             landmarks_only=landmarks_only,
+            single_window=True,
         )
     raise fail("models-missing")
 

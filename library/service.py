@@ -74,6 +74,7 @@ class Library:
 
     def recover(self, *, finish_pending: bool | None = None) -> dict[str, Any]:
         from library.catalog_io import finish_pending_publications
+        from library.scan import settle_interrupted_scans
 
         recovered = recover_transactions(self.root)
         scanning = getattr(self, "_scanning", False)
@@ -82,6 +83,8 @@ class Library:
         if finish_pending:
             finish_pending_publications(self.root)
         maybe_rebuild_missing(self.root)
+        if not scanning:
+            settle_interrupted_scans(self.root)
         return recovered
 
     def ensure_settings(self) -> dict[str, Any]:
@@ -431,7 +434,13 @@ class Library:
             if query.get("recent") != "1":
                 raise fail("invalid-argument")
             recent = set(snap["recent"])
-        reader = ItemEntityReader(self.root)
+        person_token = query.get("person")
+        people_by_id = _people_by_id(self.root) if person_token else None
+        # Entity records are needed to match a name, place, thing, or search,
+        # and to sort by place. A date/name/rating pass and a person-id click
+        # can decide membership from the item and the person files alone.
+        needs_entities = _prepare_needs_entities(query, settings) and people_by_id is None
+        reader = ItemEntityReader(self.root) if needs_entities or people_by_id is not None else None
         matches = []
         raw_by_id = {}
         include_unavailable = query.get("unavailable") == "1" or (
@@ -440,9 +449,32 @@ class Library:
         for item in snap["items"]:
             if recent is not None and item.get("id") not in recent:
                 continue
-            metadata = item_query_read(item, self.root, marked, reader)
-            if not _item_matches(metadata, query):
+            if people_by_id is not None and not _person_query_matches(item, person_token, people_by_id):
                 continue
+            heavy = bool(
+                query.get("place") or query.get("thing") or query.get("q")
+                or (query.get("sort") or settings.get("sort")) == "location"
+            )
+            if people_by_id is not None and not heavy:
+                metadata = _slim_match_record(item, marked)
+                # People membership is already decided. Drop the partial entity
+                # list before projection so the response still resolves places
+                # and things for each match.
+                metadata["entities"] = {
+                    "people": _linked_people(item, people_by_id),
+                    "places": [],
+                    "things": [],
+                }
+                if not _item_matches(metadata, query):
+                    continue
+                metadata.pop("entities", None)
+            else:
+                if needs_entities or people_by_id is not None:
+                    metadata = item_query_read(item, self.root, marked, reader)
+                else:
+                    metadata = _slim_match_record(item, marked)
+                if not _item_matches(metadata, query):
+                    continue
             if not include_unavailable:
                 # Final visible membership is required before emitting stack
                 # representatives; this checks only availability, not browser facts.
@@ -830,6 +862,10 @@ class Library:
             request_faces_rescan(self.root)
             return jobs_status(self.root, getattr(self, "_jobs_paused", False))
         self._jobs_paused = action == "pause"
+        if self._jobs_paused:
+            from library.faces import flush_index
+
+            flush_index(self.root)
         return jobs_status(self.root, self._jobs_paused)
 
     def analyze_places(self) -> dict[str, Any]:
@@ -969,6 +1005,9 @@ class Library:
 
     def drain_step(self, *, io_context=nullcontext) -> bool:
         if getattr(self, "_jobs_paused", False):
+            from library.faces import flush_index
+
+            flush_index(self.root)
             return False
         if getattr(self, "_inferring", False):
             return False
@@ -1035,7 +1074,9 @@ class Library:
         except Exception as exc:
             log_drain_error("rating", exc)
         from library.activity import clear as clear_activity
+        from library.faces import flush_index
 
+        flush_index(self.root)
         clear_activity()
         return False
 
@@ -1065,6 +1106,25 @@ class Library:
         if which == "camera":
             return self._resolve_camera(item)
         return self._resolve_rendition(item, which)
+
+    def rendition_status(self, query: dict[str, str]) -> dict[str, Any]:
+        """Per-item ``renditions.status`` for on-screen tiles. No catalog walk."""
+        ids = parse_rendition_status_ids(query)
+        from library.item_index import load_item as index_load
+
+        items: list[dict[str, Any]] = []
+        for item_id in ids:
+            try:
+                item = index_load(self.root, item_id)
+            except AppError as exc:
+                if exc.code == "not-found":
+                    continue
+                raise
+            status = (item.get("renditions") or {}).get("status")
+            if not isinstance(status, dict):
+                status = {}
+            items.append({"id": item_id, "status": dict(status)})
+        return {"items": items}
 
     def _resolve_camera(self, item: dict[str, Any]) -> dict[str, Any]:
         from library.metadata import camera_thumbnail
@@ -1286,6 +1346,31 @@ def _item_tour_eligible(item: dict[str, Any], root: Path) -> bool:
     return path is not None and path.is_file() and path.stat().st_size > 0
 
 
+def parse_rendition_status_ids(query: dict[str, str]) -> list[str]:
+    """Parse ``ids=`` for GET /api/rendition-status. 1..80 item ids, request order."""
+    if set(query) != {"ids"}:
+        raise fail("invalid-argument")
+    raw = query["ids"]
+    if type(raw) is not str or raw == "":
+        raise fail("invalid-argument")
+    parts = raw.split(",")
+    if not parts or len(parts) > 80:
+        raise fail("invalid-argument")
+    ids: list[str] = []
+    for part in parts:
+        if (
+            not part
+            or part in {".", ".."}
+            or "/" in part
+            or "\\" in part
+        ):
+            raise fail("invalid-argument")
+        ids.append(part)
+    if not ids:
+        raise fail("invalid-argument")
+    return ids
+
+
 def _validate_item_query(query: dict[str, str]) -> None:
     """Validate before response headers, including for an empty result."""
     if set(query) - ITEM_QUERY_KEYS:
@@ -1314,6 +1399,63 @@ def _validate_item_query(query: dict[str, str]) -> None:
             kinds = {part.strip() for part in value.split(",") if part.strip()}
             if not kinds or not kinds.issubset(ITEM_KINDS):
                 raise fail("invalid-argument")
+
+
+def _prepare_needs_entities(query: dict[str, str], settings: dict[str, Any]) -> bool:
+    if query.get("person") or query.get("place") or query.get("thing") or query.get("q"):
+        return True
+    sort = query.get("sort") or settings.get("sort")
+    return sort == "location"
+
+
+def _people_by_id(root: Path) -> dict[str, dict[str, Any]]:
+    from library.catalog_io import load_people
+    from library.records import ordered_person
+
+    return {person["id"]: ordered_person(person) for person in load_people(root)}
+
+
+def _linked_people(item: dict[str, Any], people_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """People records for this item's faces, in the same order as item_entities."""
+    found: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for face in item.get("faces") or []:
+        if not isinstance(face, dict):
+            continue
+        person_id = face.get("personId")
+        if type(person_id) is not str or person_id in seen:
+            continue
+        person = people_by_id.get(person_id)
+        if person is None:
+            continue
+        seen.add(person_id)
+        found.append(person)
+    return found
+
+
+def _person_query_matches(
+    item: dict[str, Any], token: str, people_by_id: dict[str, dict[str, Any]]
+) -> bool:
+    return _all_tokens_match(_linked_people(item, people_by_id), token)
+
+
+def _slim_match_record(item: dict[str, Any], marked: set[str]) -> dict[str, Any]:
+    """Sort and filter fields that do not require entity records."""
+    from library.rating import quality_view
+
+    item_id = item.get("id")
+    return {
+        "id": item_id,
+        "capturedAt": item.get("capturedAt") or "",
+        "filename": item.get("filename") or "",
+        "kind": item.get("kind"),
+        "favorite": type(item_id) is str and item_id in marked,
+        "rating": quality_view(item),
+        "quality": item.get("quality"),
+        "locations": item.get("locations") or [],
+        "metadata": item.get("metadata"),
+        "placeId": item.get("placeId"),
+    }
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:

@@ -8,10 +8,83 @@ param(
 )
 $ErrorActionPreference = "Stop"
 $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+$script:writeLock = New-Object System.Object
+$script:pulse = [hashtable]::Synchronized(@{ On = $false; Stop = $false; Label = ""; Start = [DateTime]::UtcNow })
+$script:pulsePs = $null
+$script:pulseRs = $null
+$script:lastListMs = 0
 
 function Write-JsonLine($Object) {
     $line = $Object | ConvertTo-Json -Compress -Depth 4
-    [Console]::Out.WriteLine($line)
+    [System.Threading.Monitor]::Enter($script:writeLock)
+    try {
+        [Console]::Out.WriteLine($line)
+        [Console]::Out.Flush()
+    } finally {
+        [System.Threading.Monitor]::Exit($script:writeLock)
+    }
+}
+
+function Start-PulseThread {
+    if ($script:pulsePs) { return }
+    $rs = [runspacefactory]::CreateRunspace()
+    $rs.Open()
+    $rs.SessionStateProxy.SetVariable("pulse", $script:pulse)
+    $rs.SessionStateProxy.SetVariable("writeLock", $script:writeLock)
+    $ps = [powershell]::Create()
+    $ps.Runspace = $rs
+    [void]$ps.AddScript({
+        while ($true) {
+            if ($pulse.Stop) { break }
+            Start-Sleep -Milliseconds 1000
+            if ($pulse.Stop -or -not $pulse.On) { continue }
+            $ms = [int](([DateTime]::UtcNow - $pulse.Start).TotalMilliseconds)
+            if ($ms -lt 400) { continue }
+            if (-not $pulse.On) { continue }
+            $line = ([ordered]@{ reading = [string]$pulse.Label; waitingMs = $ms } | ConvertTo-Json -Compress)
+            [System.Threading.Monitor]::Enter($writeLock)
+            try {
+                [Console]::Out.WriteLine($line)
+                [Console]::Out.Flush()
+            } finally {
+                [System.Threading.Monitor]::Exit($writeLock)
+            }
+        }
+    })
+    $script:pulseRs = $rs
+    $script:pulsePs = $ps
+    $script:pulseHandle = $ps.BeginInvoke()
+}
+
+function Stop-PulseThread {
+    if ($script:pulse) {
+        $script:pulse.On = $false
+        $script:pulse.Stop = $true
+    }
+    if ($script:pulseHandle) {
+        try { $null = $script:pulseHandle.AsyncWaitHandle.WaitOne(1500) } catch {}
+    }
+    if ($script:pulsePs) {
+        try { $script:pulsePs.Stop() } catch {}
+        try { $script:pulsePs.Dispose() } catch {}
+        $script:pulsePs = $null
+    }
+    if ($script:pulseRs) {
+        try { $script:pulseRs.Close() } catch {}
+        try { $script:pulseRs.Dispose() } catch {}
+        $script:pulseRs = $null
+    }
+}
+
+function Start-FolderPulse($Label) {
+    Start-PulseThread
+    $script:pulse.Label = [string]$Label
+    $script:pulse.Start = [DateTime]::UtcNow
+    $script:pulse.On = $true
+}
+
+function Stop-FolderPulse {
+    if ($script:pulse) { $script:pulse.On = $false }
 }
 
 function Get-PhoneStorage {
@@ -60,12 +133,61 @@ function Add-FileLine($Item, $RelativePath) {
     })
 }
 
-function Walk-Folder($FolderItem, $Prefix) {
+function Get-FolderItems($FolderItem, $Label, $EmptyWaitMs) {
+    # Count on a phone folder often blocks until Windows has the whole
+    # folder. A second thread emits waitingMs during that block so the
+    # dialog clock keeps moving. When Count returns quickly, keep polling:
+    # the folder may still be filling in.
+    Start-FolderPulse $Label
+    $listed = [Diagnostics.Stopwatch]::StartNew()
+    $items = $FolderItem.GetFolder.Items()
+    $last = -1
+    $quiet = 0
+    $grewSlowly = $false
+    $emptyLimit = [Math]::Max(2, [int]($EmptyWaitMs / 150))
+    $count = 0
+    while ($true) {
+        $read = [Diagnostics.Stopwatch]::StartNew()
+        $count = [int]$items.Count
+        $readMs = [int]$read.ElapsedMilliseconds
+        $stableAfterSlow = $false
+        if ($count -ne $last) {
+            $last = $count
+            $quiet = 0
+            $grewSlowly = $readMs -ge 400
+            Write-JsonLine ([ordered]@{ reading = $Label; found = $count })
+        } else {
+            $quiet++
+            $stableAfterSlow = $grewSlowly
+            $grewSlowly = $false
+        }
+        $filled = $count -gt 0 -and ($quiet -ge 2 -or $stableAfterSlow)
+        $empty = $count -eq 0 -and $quiet -ge $emptyLimit
+        if ($filled -or $empty) { break }
+        if (-not $grewSlowly) { Start-Sleep -Milliseconds 150 }
+    }
+    Stop-FolderPulse
+    $script:lastListMs = [int]$listed.ElapsedMilliseconds
+    Write-JsonLine ([ordered]@{ reading = $Label; found = $count; listMs = $script:lastListMs })
+    return ,$items
+}
+
+function Walk-Folder($FolderItem, $Prefix, $EmptyWaitMs) {
+    $label = if ($Prefix) { $Prefix } else { "Internal Storage" }
+    $items = Get-FolderItems $FolderItem $label $EmptyWaitMs
+    $listMs = $script:lastListMs
+    if (-not $Prefix) { $script:rootCount = $items.Count }
     $seenHere = @{}
-    foreach ($child in @($FolderItem.GetFolder.Items())) {
+    $filesHere = 0
+    $sizeMs = 0
+    $sizeSw = [Diagnostics.Stopwatch]::StartNew()
+    foreach ($child in $items) {
         $name = [string]$child.Name
         if ([string]::IsNullOrWhiteSpace($name) -or $name -eq "." -or $name -eq ".." -or $name.Contains("/") -or $name.Contains("\")) {
-            throw "Explorer returned a folder name that cannot be a backup path."
+            $script:skipped++
+            $where = if ($Prefix) { $Prefix } else { "Internal Storage" }
+            [Console]::Error.WriteLine("Skipped an item with no usable name in $where")
+            continue
         }
         $nameKey = $name.ToLowerInvariant()
         if ($seenHere.ContainsKey($nameKey)) {
@@ -75,10 +197,24 @@ function Walk-Folder($FolderItem, $Prefix) {
         $seenHere[$nameKey] = $true
         $relative = if ($Prefix) { $Prefix + "/" + $name } else { $name }
         if ($child.IsFolder) {
-            Walk-Folder $child $relative
+            $sizeMs += [int]$sizeSw.ElapsedMilliseconds
+            $sizeSw.Reset()
+            Write-JsonLine ([ordered]@{ reading = $relative })
+            Walk-Folder $child $relative 900
+            $sizeSw.Start()
         } else {
             Add-FileLine $child $relative
+            $filesHere++
         }
+    }
+    $sizeMs += [int]$sizeSw.ElapsedMilliseconds
+    if ($filesHere -gt 0 -or $listMs -ge 1000) {
+        Write-JsonLine ([ordered]@{
+            reading = $label
+            listMs = $listMs
+            files = $filesHere
+            sizeMs = $sizeMs
+        })
     }
 }
 
@@ -109,8 +245,22 @@ $pair = Get-PhoneStorage
 $shell = $pair.Shell
 $storage = $pair.Storage
 if ($Action -eq "list") {
-    Write-JsonLine ([ordered]@{ phone = "Apple iPhone" })
-    Walk-Folder $storage ""
+    $script:skipped = 0
+    $script:rootCount = 0
+    try {
+        Write-JsonLine ([ordered]@{ phone = "Apple iPhone" })
+        Write-JsonLine ([ordered]@{ reading = "Internal Storage" })
+        # A cold phone fills Internal Storage after a short wait. A stuck phone
+        # stays empty until the cable is unplugged, and waiting longer does not help.
+        Walk-Folder $storage "" 4000
+        if ($script:rootCount -eq 0) {
+            [Console]::Error.WriteLine("Internal Storage opened empty. Unplug the phone, plug it back in, unlock it, and try Look again.")
+            exit 1
+        }
+        Write-JsonLine ([ordered]@{ skipped = $script:skipped })
+    } finally {
+        Stop-PulseThread
+    }
     exit 0
 }
 

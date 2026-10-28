@@ -27,12 +27,15 @@ def note(
     done: int = 0,
     total: int = 0,
     derivative: str = "",
+    timing: str | None = None,
 ) -> None:
     with _lock:
         state = _scan if phase == "scan" else _state
         state.update(phase=phase or "idle", detail=detail or "", file=file or "",
                      done=int(done or 0), total=int(total or 0), at=time.time(),
                      derivative=derivative or "")
+        if timing is not None:
+            state["timing"] = timing
 
 
 def note_item(phase: str, detail: str, item: dict[str, Any] | None, *, derivative: str = "") -> None:
@@ -47,7 +50,7 @@ def clear(phase: str | None = None) -> None:
     if phase == "scan":
         with _lock:
             _scan.clear()
-            _scan.update(phase="idle", detail="", file="", derivative="", done=0, total=0, at=0.0)
+            _scan.update(phase="idle", detail="", file="", derivative="", done=0, total=0, at=0.0, timing="")
     else:
         note("idle")
 

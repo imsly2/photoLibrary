@@ -4,6 +4,98 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-10-28 — Import iPhone can read the phone two ways. By month is the
+  default: Apple's file channel, folders like `2026-10`, and a second
+  picture with the same filename is saved beside the first as `name_2`.
+  Match Explorer folders stays available for a backup that already uses
+  `202610_a`, and that way is the slow one. By month lists `/DCIM`.
+  The running server does not have this choice until it reloads.
+  No feature Check closed.
+
+- 2026-10-28 — Copy what's missing was reading the phone a second time with
+  the same Explorer listing Look uses (`202510_a/IMG_…`, not DCIM names).
+  That second pass is faster because Windows already has the folder list.
+  The run that was stopped had found 34,163 files, 54 already in the
+  destination, and had copied 44. After this process reloads, Copy of the
+  same folder uses the Look list and does not read the phone again.
+  No feature Check closed.
+
+- 2026-10-28 — Import iPhone Look shows found, already here, and not here
+  yet as separate numbers, with a running timer and a clock that keeps
+  moving while a folder is quiet. A Look already running on this PC
+  started at 12:12:26 AM. At 12:30 AM it was still reading, on folder
+  `202307_a`, with 20,399 pictures found (40 already in the destination,
+  20,359 not here yet). That is about 19 pictures a second on average.
+  The reader had used 33 seconds of CPU. The wait is Windows asking the
+  phone for one folder at a time, then handing the whole folder over at
+  once. The next Look records how long each folder took to list and how
+  long sizes took. This running Look keeps the reader it already started.
+  Refresh the Library tab to see the new layout. No feature Check closed.
+
+- 2026-10-27 — Import iPhone Look counts pictures while a folder is still
+  filling in, and starts comparing them with the folder you picked
+  during that read instead of after the whole camera roll. The dialog
+  polls about twice a second. `tests/test_iphone_import.py` covers the
+  running count. No feature Check closed.
+
+- 2026-10-27 — The dense grid no longer builds a placeholder for every
+  photo. It keeps the on-screen rows, loads those pictures before
+  anything off screen, and can reuse up to 1,024 pictures it already
+  decoded when a filter changes. The old grid is not put back. A 576-tile
+  cold scroll completed in 1.7 s (it was 8.0 s, and before that still
+  short at 14.9 s). The open view held 78 cells instead of about 12,000.
+  The bottom bar counts how many on-screen tiles are loaded and how many
+  pictures are still to load. The largest folder row names the file
+  processing is working on. Name sort was still thin in that run (16
+  tiles at 25 s, stream unfinished) and faces moved 12 photos in 122 s
+  while the browse test ran. No server restart. No feature Check closed.
+  Measurements: [DENSE-LIVE-MEASUREMENT](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
+
+- 2026-10-27 — Dense browsing is partly faster and **not complete**. Ready
+  thumbnails were already about 10 ms each on the server. The multi-second
+  wait was the catalog prepare, stretched by face-index reads and writes on
+  the same interpreter, plus the page laying out every cell. Prepare for
+  14,608 items is about 0.5 s on its own and 376 ms in one live response
+  (it had been 16–32 s). A 576-tile scroll completed in 8.0 s; the earlier
+  run was still at 542 of 576 after 14.9 s. First tiles on open went from
+  about 10 s to about 1.1 s. Face steps no longer re-read and rewrite the
+  whole face index every photo (median step about 955 ms to 663 ms). The
+  live server was restarted once onto this code; faces kept running.
+  Measurements and the remaining DOM cost are in
+  [DENSE-LIVE-MEASUREMENT](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
+  No feature Check closed.
+
+- 2026-10-27 — Dense live browsing performance work is **not complete**. The
+  page rotates queued-thumbnail status checks beyond 80 IDs and reuses its
+  streaming layout map. A 576-tile cold scroll remained about 14 seconds;
+  person filtering and sorting also remain slow. The explicit cancellation
+  experiment was reverted after a slower live run. Measurements, limitations,
+  synthetic proof, and the remaining work are in
+  [DENSE-LIVE-MEASUREMENT](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
+  No feature Check closed.
+
+- 2026-10-27 — Face detection on a phone photo was the full frame plus up to twelve extra tiles, about 20 seconds. The earlier one-second test was detection alone on three smaller photos, not that live Faces pass. An 8-megapixel photo now takes about half a second to one and a half seconds: one upright frame at most 1920 on the long side, one detection pass. The grid keeps a thumbnail that has started loading instead of cancelling it on scroll, and Size goes down to 36 px.
+
+- 2026-10-27 — Face detection on three real photos from Unsorted Pictures took 2.5s, then 1.3s, then 0.9s. None of those three had a face. That work stays on the Faces queue after thumbnails. Putting it on the folder read would put the scan back to about a second a picture.
+
+- 2026-10-27 — Import iPhone Look names the folder it is reading and how many pictures and folders it has found, instead of sitting on “Reading the camera roll” until the phone listing finishes.
+
+- 2026-10-27 — Processing lists each folder. A scan record left at `running` when Library is not walking that folder becomes `interrupted` on startup, and the page stops reloading the catalog because of it. On this PC, `1. Unsorted Pictures` was stuck `running` (199 photos, 198 thumbs done, 1 failed, added 0) and is now `interrupted` with Resume. `1. Favorites Pictures` is complete (551 added) with Check for new files. Check and Resume both re-walk that folder and skip unchanged size and modified time. `tests/test_folder_index.py` 6 passed. Library restarted onto this code. No feature Check closed.
+
+- 2026-10-27 — Thumbnail path is lighter. A thumb encode no longer also detects faces. JPEG thumbs decode at reduced size when the long side still covers the target (one 2 MB phone JPEG: 117 ms full decode, 74 ms reduced, both about 10 KB). While previews are queued, the grid asks `GET /api/rendition-status` for on-screen ids instead of re-downloading the catalog. The open grid loads at most six tile images, does not abort a transfer before 20 seconds, and skips painting off-screen cells. On this PC the library at `http://127.0.0.1:8785/` reached a finished catalog in 5.4 s with 184 of 185 on-screen tiles showing a picture (the one missing tile is the known unavailable preview). `tests/test_light_thumbs.py` 9 passed. Library was restarted onto this code (pid 3980). The first open still sends the whole catalog, about 2.3 MB for 750 photos. No feature Check closed.
+
+- 2026-10-27 — A new picture now takes about a fifth of a second. Reading the photo is most of that. The catalog record is about 15ms and the queued save is about 50ms. It was about one second, almost all of it re-reading undo history and searching 69,822 cities. The photo and the thumbnail are not written in this step.
+
+- 2026-10-27 — The scan status line and `library-data/scan-timing.log` split each batch of 25 pictures into reading the file, metadata, writing the catalog, and saving the batch.
+
+- 2026-10-27 — A folder scan no longer opens every picture just to sort them, and it no longer publishes one picture at a time. Resume counts found pictures, then reads them in batches.
+
+- 2026-10-27 — A folder scan says how many pictures it has found while it is still looking, then how many of the pictures in the folder are scanned. Resume no longer sits on “Finding pictures” with no count.
+
+- 2026-10-27 — Look keeps going when Explorer returns an item with no name. One blank item in `202504_a` was stopping the scan. That item is skipped.
+
+- 2026-10-27 — When Internal Storage opens with no folders, Look stops and says to unplug the phone and plug it back in. Her backup `K:\Photos\Iphone 2017-2026.10` has 7,995 pictures in the month folders. The phone folder was empty, so Look could not match them yet.
+
 - 2026-10-27 — Look no longer stops when Explorer lists one picture twice. A repeated path such as `202510_a/IMG_1673.JPG` is counted once. `ui.test_match` repeat test passed. Her computer still has the old error until it pulls this commit.
 
 - 2026-10-27 — Library was already running at `http://127.0.0.1:8785/` (pid 58356) while a second `Library.bat` tried to replace it. `ImportIphone.bat` uses attach: with that server up, `launch.ps1 -Attach -NoBrowser -Page import-iphone` printed the address and exited 0, and pid 58356 was still running. `Library.bat` / `Launch.bat` in the photo library folder are the daily launcher. There is no scripts folder.

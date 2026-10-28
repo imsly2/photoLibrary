@@ -41,6 +41,20 @@ def unlocked_io(lock):
         processing_log.note_lock_wait(time.perf_counter() - waited)
 
 
+def _lower_thread_priority() -> None:
+    """Processing threads stay behind catalog requests. Windows thread priority
+    is not the process class used for ffmpeg; this is the drain thread itself."""
+    if os.name != "nt":
+        return
+    try:
+        import ctypes
+
+        kernel = ctypes.windll.kernel32
+        kernel.SetThreadPriority(kernel.GetCurrentThread(), -1)
+    except Exception:
+        return
+
+
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
     etag = '"%x-%x"' % (mtime_ns, size)
     if which in {"thumb", "camera", "preview", "poster", "face", "proxy", "playback"}:
@@ -226,6 +240,10 @@ def matching_root_url(root: Path, host: str, port: int) -> str | None:
 
 
 class LibraryHandler(BaseHTTPRequestHandler):
+    # Persistent connections. Every response sets Content-Length, except the
+    # item stream which closes itself. HTTP/1.0 was opening a new connection
+    # for every thumbnail.
+    protocol_version = "HTTP/1.1"
     library: Library
     lock: threading.Lock
     host: str
@@ -265,12 +283,22 @@ class LibraryHandler(BaseHTTPRequestHandler):
     def _items_stream(self, query: dict[str, str]) -> None:
         from library.lock_trace import Hold
 
+        started = time.perf_counter()
         with Hold(self.lock, "/api/items/stream"):
+            acquired = time.perf_counter()
             snap = self.library.snapshot_catalog()
+        snapped = time.perf_counter()
         # Eager metadata validation/order runs before headers; browser projection
         # stays lazy and never holds the catalog lock or waits for later records.
         rows = self.library.items_iter_from_snapshot(snap, query)
+        prepared = time.perf_counter()
         self.send_response(200)
+        self.send_header("Server-Timing", ", ".join(
+            f"{name};dur={seconds * 1000:.2f}" for name, seconds in (
+                ("lock", acquired - started), ("snapshot", snapped - acquired),
+                ("prepare", prepared - snapped),
+            )
+        ))
         self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
         self.send_header("Connection", "close")
@@ -485,7 +513,8 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     raise fail("invalid-argument")
                 from library.iphone_import import look
 
-                self._send_json(200, look(str(body.get("path") or "")))
+                mode = body.get("mode")
+                self._send_json(202, look(str(body.get("path") or ""), mode if isinstance(mode, str) else ""))
                 return
             if route == "/api/iphone/copy" and method == "POST":
                 body = self._read_json()
@@ -493,7 +522,11 @@ class LibraryHandler(BaseHTTPRequestHandler):
                     raise fail("invalid-argument")
                 from library.iphone_import import start_copy
 
-                self._send_json(202, start_copy(str(body.get("path") or "")))
+                mode = body.get("mode")
+                self._send_json(
+                    202,
+                    start_copy(str(body.get("path") or ""), mode if isinstance(mode, str) else ""),
+                )
                 return
             if route == "/api/iphone/stop" and method == "POST":
                 self._read_json()
@@ -554,6 +587,10 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if route == "/api/items/stream" and method in {"GET", "HEAD"}:
                 self._items_stream(_query_map(parsed.query))
+                return
+            if route == "/api/rendition-status" and method in {"GET", "HEAD"}:
+                # Per-id reads; no FairLock across disk (same spirit as media resolve).
+                self._send_json(200, self.library.rendition_status(_query_map(parsed.query)))
                 return
             if route == "/api/items" and method in {"GET", "HEAD"}:
                 query = _query_map(parsed.query)
@@ -1184,6 +1221,7 @@ def serve(root: Path) -> int:
 
         def work_loop(step) -> None:
             FairLock.mark_background()
+            _lower_thread_priority()
             while not drain_stop.is_set():
                 worked = False
                 try:

@@ -70,7 +70,10 @@ def cached_item_read(
     from library.catalog_io import item_entities, item_read
     from library.rating import quality_view
 
-    entities = item_entities(item, root) if metadata is None else metadata["entities"]
+    if metadata is not None and "entities" in metadata:
+        entities = metadata["entities"]
+    else:
+        entities = item_entities(item, root)
     if hit is not None and hit[1] is item and now - hit[0] < _TTL_S:
         base = hit[2]
     else:
@@ -84,7 +87,10 @@ def cached_item_read(
     view.pop("stack", None)
     view["entities"] = entities
     view["favorite"] = favorite
-    view["rating"] = quality_view(item) if metadata is None else metadata["rating"]
+    if metadata is not None and "rating" in metadata:
+        view["rating"] = metadata["rating"]
+    else:
+        view["rating"] = quality_view(item)
     if len(_views) > 8000:
         cutoff = now - _TTL_S
         for old, (seen, _item, _view) in list(_views.items()):

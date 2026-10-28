@@ -581,7 +581,10 @@ def read_scan_error(value: Any) -> dict[str, Any]:
 
 def read_scan(value: Any) -> dict[str, Any]:
     data = _require_dict(value)
-    _exact_keys(data, SCAN_KEYS)
+    unknown = set(data) - set(SCAN_KEYS) - {"total"}
+    missing = set(SCAN_KEYS) - set(data)
+    if unknown or missing:
+        raise fail("invalid-catalog")
     state = _str(data["state"])
     if state not in SCAN_STATES:
         raise fail("invalid-catalog")
@@ -592,12 +595,18 @@ def read_scan(value: Any) -> dict[str, Any]:
     errors = data["errors"]
     if not isinstance(errors, list):
         raise fail("invalid-catalog")
-    return {
+    out: dict[str, Any] = {
         "state": state,
         "added": added,
         "skipped": skipped,
-        "errors": [read_scan_error(item) for item in errors],
     }
+    if "total" in data:
+        total = _int(data["total"])
+        if total < 0:
+            raise fail("invalid-catalog")
+        out["total"] = total
+    out["errors"] = [read_scan_error(item) for item in errors]
+    return out
 
 
 def read_source(value: Any) -> dict[str, Any]:

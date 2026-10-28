@@ -47,7 +47,7 @@ fill. They must read as clickable toggles, not heading text.
 |---|---|
 | Empty library | Library header and Add folder as the CTA; plain “No pictures yet” in grid. No fake sample pictures. Add opens named dialog. |
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
-| Import iPhone | Header button beside Add folder, and the same button on an empty library. `ImportIphone.bat` opens this same dialog and does not start a second Library when one is already open. Browse picks the destination. **Look** reads Apple iPhone → Internal Storage, the same folders Explorer shows (`201508_a`), and does not write. A file already at that same relative path with the same size is an exact match. **Copy what's missing** writes only files that are not there, into those same folder names, then adds that folder with Serve from that folder. Same path and a different size is left untouched. Esc stops a copy; Esc again closes. Nothing on the phone is deleted or overwritten. After Look, one sentence says how many pictures are already in the folder and how many are not. The list shows the already-copied files first, labeled Already in this folder, then files that are not here yet. The current filename shows while copying. If Explorer cannot see the phone, the dialog says so. |
+| Import iPhone | Header button beside Add folder, and the same button on an empty library. `ImportIphone.bat` opens this same dialog and does not start a second Library when one is already open. Browse picks the destination. Two choices sit above the path. **By month** is the default. It reads the phone over Apple's file channel and saves into `YYYY-MM` folders. A file already there is never replaced. A second picture with the same filename is saved beside it as `name_2`. **Match Explorer folders** reads Apple iPhone → Internal Storage, keeps folders such as `201508_a`, and does not write on Look. Use it when the destination was copied from Explorer. That choice is the slow one. While that read is still going, the dialog shows separate counts for pictures found, already in this folder, and not here yet, the folder it is asking the phone for, a running timer, and pictures per second. The timer and the time spent on the current folder keep moving when the phone has not handed over a new picture. Items seen in the open folder climb while that folder is still filling in. Refreshing the page while a Look is running reopens this dialog on that same Look. A file already at that same relative path with the same size is an exact match. **Copy what's missing** writes only files that are not there, into those same folder names, then adds that folder with Serve from that folder. After a Look of that same folder, Copy uses the list Look just made and does not read the phone again. A second read, when one is needed, is the same Explorer listing and is usually faster because Windows already has the folders. Same path and a different size is left untouched. Esc stops a copy; Esc again closes. Nothing on the phone is deleted or overwritten. After Look, one sentence says how many pictures are already in the folder and how many are not. The list shows the already-copied files first, labeled Already in this folder, then files that are not here yet. The current filename shows while copying. If Explorer cannot see the phone, the dialog says so. |
 | Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts, readable error text, and **Retry**; never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
 | Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, 4 stars and up / Picks / Hide rejects / Blurry, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location/Rating stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
@@ -80,8 +80,8 @@ Groups and contents follow current sort; date headings express each item's date.
 For location/name sorts, group order follows the first occurrence in sorted items,
 and within each group items retain that order. No item disappears on level change.
 
-The grid has **one** density slider: `#size-slider`, eight discrete stops
-(72, 104, 144, 192, 256, 336, 420, 520 px). It only changes `--cell`. It
+The grid has **one** density slider: `#size-slider`, ten discrete stops
+(36, 48, 72, 104, 144, 192, 256, 336, 420, 520 px). It only changes `--cell`. It
 does not refetch or rebuild tiles, and it does not change date grouping.
 Ctrl+wheel on the grid steps that same Size slider (coalesce an event
 burst so one gesture moves one stop). Plain wheel on the grid scrolls the
@@ -326,10 +326,17 @@ percentage), and **Pause** / **Start** (Resume when paused).
 
 Also poll `GET /api/activity` about once a second. That reply is the
 file the server is on right now (`phase`, `file`, `done`, `total`,
-`at`), and it does not wait for the catalog walk. While a phase is
-running, `#jobs-status` names it: `Reading pictures · IMG_0123.JPG ·
-101 of 550 · 4s`. The seconds count up on that same file so a long
-read does not look frozen. Queue rows show completed, waiting, and failed
+`at`), and it does not wait for the catalog walk. While the folder is
+still being counted, the line says `Finding pictures · 1,240 found so
+far · 202510_a`, then `Reading pictures · IMG_0123.JPG · 101 of 550 ·
+4s`. The folder row says how many pictures are in the folder and how
+many of those are scanned. Pictures are ordered from the date in the
+file name, or from the file time, without opening every file first.
+The seconds count up on that same file so a long
+read does not look frozen. After each 25 pictures the same line adds
+where the time went: reading the file, metadata, writing the catalog,
+and saving the batch. A copy of those lines is `scan-timing.log` in
+the library data folder. Queue rows show completed, waiting, and failed
 work; unavailable optional queues say setup is needed. Rendition activity
 names Thumbnail / Poster / Preview / Video proxy / Video playback as well
 as the file. A separate scan line stays visible when the folder is being

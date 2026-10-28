@@ -123,8 +123,9 @@
       <div id="library-chrome">
         <label class="chrome-field" for="size-slider">
           <span data-i18n="size">Size</span>
-          <input type="range" id="size-slider" min="0" max="7" step="1" value="0" aria-label="Grid density thumbnail size" data-i18n-aria="sizeSlider">
+          <input type="range" id="size-slider" min="0" max="9" step="1" value="2" aria-label="Grid density thumbnail size" data-i18n-aria="sizeSlider">
         </label>
+        <p id="grid-load-status"></p>
         <label class="chrome-field">
           <span data-i18n="datesGroup">Dates</span>
           <select id="date-group" aria-label="Date grouping Years Months Days or Off" data-i18n-aria="dateGrouping">
@@ -274,6 +275,8 @@
         <h2 id="jobs-heading" data-i18n="processing">Processing</h2>
         <p id="jobs-status" data-i18n="idle">Idle</p>
         <ul id="jobs-queues"></ul>
+        <ul id="jobs-folders"></ul>
+        <p id="jobs-folder-hint"></p>
         <div id="jobs-actions">
           <button type="button" id="jobs-pause" disabled data-i18n="pause">Pause</button>
           <button type="button" id="jobs-resume" data-i18n="start">Start</button>
@@ -516,7 +519,19 @@
   </div>
   <dialog id="import-iphone" aria-labelledby="import-iphone-title">
     <h2 id="import-iphone-title" data-i18n="importIphone">Import iPhone</h2>
-    <p id="import-iphone-help" data-i18n="importIphoneHelp">Unlock the phone and tap Trust. Look checks this folder and does not copy. Copy adds only pictures that are not already here, into the same folders Explorer shows.</p>
+    <p id="import-iphone-help" data-i18n="importIphoneHelp">Unlock the phone and tap Trust. Look checks this folder and does not copy. Copy adds only pictures that are not already here.</p>
+    <fieldset class="settings-fieldset" id="import-iphone-layout">
+      <legend>How to read the phone</legend>
+      <label class="choice">
+        <input type="radio" name="iphone-layout" value="month" checked>
+        <span>By month</span>
+      </label>
+      <label class="choice">
+        <input type="radio" name="iphone-layout" value="explorer">
+        <span>Match Explorer folders</span>
+      </label>
+    </fieldset>
+    <p id="import-iphone-layout-note"></p>
     <label class="path-field">
       <span data-i18n="path">Path</span>
       <span class="path-row">
@@ -525,6 +540,30 @@
       </span>
     </label>
     <p id="import-iphone-phone"></p>
+    <div id="import-iphone-live" hidden>
+      <p class="iphone-live-top">
+        <span class="iphone-pulse" aria-hidden="true"></span>
+        <span id="import-iphone-elapsed">0:00</span>
+        <span id="import-iphone-rate"></span>
+      </p>
+      <p id="import-iphone-folder"></p>
+      <dl class="iphone-stats">
+        <div>
+          <dt>Found</dt>
+          <dd id="import-iphone-found">0</dd>
+        </div>
+        <div>
+          <dt>Already here</dt>
+          <dd id="import-iphone-here">0</dd>
+        </div>
+        <div>
+          <dt>Not here yet</dt>
+          <dd id="import-iphone-missing">0</dd>
+        </div>
+      </dl>
+      <p id="import-iphone-kept" hidden></p>
+      <p id="import-iphone-pace" aria-live="polite"></p>
+    </div>
     <p id="import-iphone-counts"></p>
     <div id="import-iphone-rows"></div>
     <p id="import-iphone-status"></p>

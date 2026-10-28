@@ -23,14 +23,29 @@ One clone of this folder is the whole tool, including the iPhone
 importer. The phone program lives inside this repo at `tools/iphone`.
 It is not a second clone and not a folder you have to copy beside
 Library. **Import iPhone** in the header opens that importer in this
-app. It reads the phone the way File Explorer does: Apple iPhone,
-Internal Storage, then the same `201508_a` folder names. Look reports
-how many of those files are already in the folder you picked. Copy
-writes only what is missing, into those same folder names. A file
-already there with the same name and size stays. A different size is
-left untouched and reported. The phone is read-only.
+app. The dialog offers two ways to read the phone. **By month** is the
+normal way. It uses Apple's file channel, the fast directory listing,
+and saves pictures into folders named like `2026-10`. It does not
+reproduce Explorer's `202610_a` names. A file already in the destination
+is never replaced. Another picture with the same filename is written
+beside it as `IMG_0001_2`, and the original stays. Same filename and
+same size counts as already here. **Match Explorer folders** is the
+other way, for a destination that was copied from File Explorer. It
+reads Apple iPhone → Internal Storage and keeps names such as
+`201508_a/IMG_0519.JPG`. That way waits on Explorer, so it is much
+slower. Same relative path and same size stays. A different size is
+left untouched. While either read is still going, the dialog shows
+pictures found, already here, and not here yet as separate numbers, the
+folder it is in, how long it has been running, and how fast pictures
+are being found. Comparison starts during that read. Copy after a Look
+of the same folder and the same way uses that list and does not read
+the phone again. Copy writes only what is missing. The phone is
+read-only. By month lists `/DCIM`, the camera files Apple exposes on
+that channel. It is not a complete copy of every file Explorer shows.
 When the copy finishes, or you stop it, that folder is added with Serve
-from that folder. Unlock the phone and tap Trust first. `Setup.bat`
+from that folder. Unlock the phone and tap Trust first. If Internal
+Storage opens and shows no folders, unplug the phone, plug it back in,
+and unlock it. Look stops and says so. `Setup.bat`
 installs the .NET 10 runtime the phone helper needs, and tells you to
 open Apple Devices once if the USB service is not listening. Library
 still browses if that runtime is missing. The dialog then says the
@@ -452,6 +467,27 @@ that item once.
 
 The scan is resumable. Stop the process and run the same command again. Files
 already hashed and unchanged are left alone.
+
+A scan record that still says `running` when this process is not walking
+that folder is `interrupted`. Startup marks those records interrupted.
+The page does not treat an interrupted folder as an active scan, and it
+does not reload the catalog because of it.
+
+The Processing panel lists each folder under the library-wide queue
+numbers. Each row names the folder and says whether its index walk is
+running, stopped, finished, or failed. It shows how many pictures are
+indexed, how many thumbnails are done, waiting, and failed, and how many
+files the last walk added versus skipped because they were already
+indexed. The queue numbers above the list stay library-wide. They do not
+stand in for a folder.
+
+**Check** on a finished folder, and **Resume** on a stopped or failed
+folder, both re-walk that one folder. A file with the same size and
+modified time stays indexed. A new or changed file is added and queued
+for thumbnails. Nothing watches a folder in the background. New files
+are indexed when that folder is checked. When the walk finishes, the row
+shows the new added and skipped counts. **Start** still only runs work
+that is already indexed. It does not look for new files.
 The scan remains one undo step. Its history keeps the first previous value
 and latest new value for each catalog path, rather than every intermediate
 source snapshot, so adding more files does not inflate that step quadratically.
@@ -600,6 +636,30 @@ just to calculate their displayed counts.
 Status polling keeps at most one poll in flight so a slow response does not
 build up a backlog of requests.
 
+A thumbnail or poster encode writes only that derivative. It does not detect
+faces, and it does not decode a full-resolution color frame in the same step.
+Faces run on the Faces queue only after no thumbnail or poster is waiting.
+A JPEG thumbnail or preview is decoded at a reduced size when that reduced
+frame still covers the target (`ffmpeg` `lowres`: 1/2, 1/4, or 1/8) and is
+then scaled to `thumbPx` or `previewPx`. A phone photo is not fully decoded
+just to make a grid tile. If the reduced decode fails, the encoder uses the
+full frame, same as a HEIC, PNG, or other still.
+
+While thumbnails are still queued, the open grid does not re-download the
+catalog to learn that a file is ready. Once a second it asks
+`GET /api/rendition-status?ids=` for the tiles on screen (at most 80 ids)
+and, when a status flips to ready, loads that tile. A scan that adds or
+removes files still refreshes the catalog. The page does not cancel a
+thumbnail transfer that is still moving; a transfer ends on load, on error,
+or after 20 seconds with no bytes. At most six thumbnail requests are in
+flight, and about one extra screen is prefetched.
+
+Off-screen tiles stay cheap. Each grid cell uses `content-visibility: auto`
+with `contain-intrinsic-size` set to the cell size, so a tablet skips
+painting tiles that are not on screen and the scroll height stays correct.
+Which tiles need a picture comes from an intersection observer on the grid,
+not from measuring every cell on each scroll.
+
 **Processing speed.** Measured on the family PC against a fixed fixture:
 80 of Steve's own JPEGs (about 3.5 MB each) plus one iPhone `.MOV`, added
 as serve-from-folder with previews kept in the folder (the real setup).
@@ -729,7 +789,7 @@ Artifact: both directory listings, before and after.
 
 ## F9 — Zoom
 
-One Size slider steps cell pixels (eight useful stops: 72, 104, 144,
+One Size slider steps cell pixels (ten stops: 36, 48, 72, 104, 144,
 192, 256, 336, 420, 520). Ctrl+wheel on the grid drives that slider
 only. Size does not change date grouping. Size is a session view option,
 not a settings.json key. Size and Dates sit together at the **bottom
@@ -984,18 +1044,13 @@ associations through the same catalog:
   local suggestion weights from picks and rejects; reversible.
 - `setup-ml faces` / `infer-faces` decodes the original still **upright**
   (camera EXIF orientation applied, so a portrait phone shot is not
-  read sideways), detects faces on the full frame fitted to 640×640,
-  maps boxes back to the original, then landmark-aligns / crops
-  **original** pixels to 112×112 for ArcFace.
-  The first encode of that still from the original — its thumbnail, or
-  its preview when one is made — is the same ffmpeg process: a capped
-  WebP plus the upright full-resolution frame, and detection uses that
-  frame. The original is decoded once. The 1600 px preview is not the
-  detection input. A later **Re-run Faces** decodes the original again,
-  because the thumbnail is already on disk. No setting.
-  Large stills also run overlapping 1280 tiles (merged with NMS; a
-  partial face cut by a tile edge inside a larger box is the same face)
-  so a small face in a high-res phone photo is not crushed by the 640 pass.
+  read sideways). A phone photo is decoded once with the long side at
+  most 1920, then one detection pass, the same idea as the reduced
+  thumbnail decode. It is not split into a dozen full-resolution tiles.
+  Boxes stay fractions of the picture. The 112 crop comes from that
+  reduced frame. The 1600 px preview is not the detection input.
+  A later **Re-run Faces** decodes again, because the thumbnail is
+  already on disk. No setting.
   Each face's 512-number fingerprint is stored on that face in the
   photo's own record, so it travels with the folder.
   `models/faces/index.json` holds one average fingerprint per person; it
@@ -1292,7 +1347,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel (each section collapsible; Tags start collapsed) and processing Pause/Start, Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel (each section collapsible; Tags start collapsed) and processing Pause/Start with one row per folder (index walk, thumbnails done/waiting/failed, Check or Resume), Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |

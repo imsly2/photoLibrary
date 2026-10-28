@@ -55,16 +55,19 @@ class MatchTests(unittest.TestCase):
     def test_explorer_repeat_is_counted_once(self) -> None:
         from ui.explorer import _files_from_lines
 
-        phone, files, repeated = _files_from_lines(
+        phone, files, repeated, skipped = _files_from_lines(
             [
                 '{"phone": "Apple iPhone"}',
+                '{"reading": "202510_a"}',
                 '{"rel": "202510_a/IMG_1673.JPG", "size": 10}',
                 '{"rel": "202510_a/IMG_1673.JPG", "size": 10}',
                 '{"rel": "202510_a/IMG_1674.JPG", "size": 11}',
+                '{"skipped": 1}',
             ]
         )
         self.assertEqual(phone, "Apple iPhone")
         self.assertEqual(repeated, 1)
+        self.assertEqual(skipped, 1)
         self.assertEqual([item.source_path for item in files], ["202510_a/IMG_1673.JPG", "202510_a/IMG_1674.JPG"])
 
     def test_interrupted_transfer_cleans_partial(self) -> None:

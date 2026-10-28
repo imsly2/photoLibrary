@@ -22,6 +22,7 @@ from library.catalog_io import (
     find_source_by_origin,
     fold_source_changes,
     item_rel,
+    iter_source_ids,
     load_source,
     new_source_id,
     pair_live_items,
@@ -123,9 +124,26 @@ def _skip_dir(path: Path, library_root: Path) -> bool:
     return False
 
 
-def iter_media_files(scan_path: Path, library_root: Path) -> list[tuple[str, Path]]:
+def iter_media_files(
+    scan_path: Path,
+    library_root: Path,
+    *,
+    on_found: Callable[[int, str], None] | None = None,
+) -> list[tuple[str, Path]]:
     found: list[tuple[str, Path]] = []
     scan_path = normalize_root(scan_path)
+    last_note = 0.0
+
+    def report(final: bool = False) -> None:
+        nonlocal last_note
+        if on_found is None or not found:
+            return
+        now = time.perf_counter()
+        if not final and now - last_note < 0.4:
+            return
+        last_note = now
+        on_found(len(found), found[-1][0])
+
     for dirpath, dirnames, filenames in os.walk(scan_path, followlinks=False):
         current = Path(dirpath)
         dirnames[:] = sorted(
@@ -143,6 +161,8 @@ def iter_media_files(scan_path: Path, library_root: Path) -> list[tuple[str, Pat
                 continue
             rel = normalize_rel(path.relative_to(scan_path).as_posix())
             found.append((rel, path))
+            report()
+    report(True)
     found.sort(key=lambda item: item[0])
     return found
 
@@ -150,24 +170,37 @@ def iter_media_files(scan_path: Path, library_root: Path) -> list[tuple[str, Pat
 def _in_grid_order(
     root: Path, source: dict[str, Any], files: list[tuple[str, Path]]
 ) -> list[tuple[str, Path]]:
-    """Unchanged files first (they are skipped), then new ones in grid order,
-    so each new tile lands below the ones already showing."""
+    """Unchanged files first, then new ones in date order.
+
+    The date comes from the file name, then the file time. Opening every
+    picture here made a full folder look stuck before any of it was read.
+    """
     from library.grid_order import descending
-    from library.metadata import quick_captured_at
+    from library.metadata import filename_captured_at
 
     settings = load_settings_file(root) if settings_path(root).exists() else defaults()
     known = source.get("files") or {}
-    unchanged = [row for row in files if _unchanged(known.get(row[0]), row[1], root)]
-    if len(unchanged) == len(files):
+    unchanged: list[tuple[str, Path]] = []
+    fresh: list[tuple[str, float, str, Path]] = []
+    for rel, path in files:
+        if _unchanged(known.get(rel), path, root):
+            unchanged.append((rel, path))
+            continue
+        if settings["sort"] == "name":
+            fresh.append(("", 0.0, rel, path))
+            continue
+        try:
+            stamp = path.stat().st_mtime
+        except OSError:
+            stamp = 0.0
+        fresh.append((filename_captured_at(Path(rel).name) or "", stamp, rel, path))
+    if not fresh:
         return files
-    seen = {rel for rel, _ in unchanged}
-    fresh = [row for row in files if row[0] not in seen]
     if settings["sort"] == "name":
-        fresh.sort(key=lambda row: (Path(row[0]).name, row[0]), reverse=descending(settings))
+        fresh.sort(key=lambda row: (Path(row[2]).name, row[2]), reverse=descending(settings))
     else:
-        dates = {rel: quick_captured_at(path) for rel, path in fresh}
-        fresh.sort(key=lambda row: (dates[row[0]], row[0]), reverse=descending(settings))
-    return unchanged + fresh
+        fresh.sort(reverse=descending(settings))
+    return unchanged + [(rel, path) for _date, _stamp, rel, path in fresh]
 
 
 def _place_match_meters(root: Path) -> float:
@@ -213,13 +246,92 @@ _BATCH_LIMIT = 48
 _YIELD_INTERVAL = 0.5
 
 
-def _due_for_pending_pause(between: BetweenFn | None, last: float) -> bool:
-    """True when this file should stop on its pending id so readers can attach."""
+def _release_for_readers(root: Path, between: BetweenFn | None, yield_at: float) -> float:
+    """Let the page read the catalog without publishing every picture alone.
+
+    Publishing one picture at a time made a full folder run at about one
+    picture a second. Batches still land often enough for the count to move.
+    """
     if between is None:
-        return False
-    if not last:
-        return True
-    return time.perf_counter() - last >= _YIELD_INTERVAL
+        return yield_at
+    now = time.perf_counter()
+    if yield_at and now - yield_at < _YIELD_INTERVAL:
+        return yield_at
+    started = time.perf_counter()
+    _flush_scan_batch(root)
+    between()
+    _scan_clock["flush"] += time.perf_counter() - started
+    return time.perf_counter()
+
+
+_scan_clock = {"read": 0.0, "meta": 0.0, "catalog": 0.0, "flush": 0.0}
+_scan_window = {"n": 0, "wall": 0.0}
+_scan_timing_line = ""
+
+
+def _lap(name: str, started: float) -> float:
+    now = time.perf_counter()
+    _scan_clock[name] = _scan_clock.get(name, 0.0) + (now - started)
+    return now
+
+
+def _reset_scan_clock() -> None:
+    for key in _scan_clock:
+        _scan_clock[key] = 0.0
+
+
+def _ms(seconds: float) -> int:
+    return int(round(seconds * 1000))
+
+
+def _record_scan_file(root: Path, wall: float) -> None:
+    """Remember where the last picture's time went, and log every 25."""
+    global _scan_timing_line
+    window = _scan_window
+    window["n"] += 1
+    window["wall"] += wall
+    for key in _scan_clock:
+        window[key] = window.get(key, 0.0) + _scan_clock[key]
+    _reset_scan_clock()
+    if window["n"] < 25:
+        return
+    count = window["n"]
+    each = window["wall"] / count
+    read_s = window.get("read", 0.0) / count
+    meta_s = window.get("meta", 0.0) / count
+    catalog_s = window.get("catalog", 0.0) / count
+    flush_s = window.get("flush", 0.0) / count
+    other_s = max(0.0, each - read_s - meta_s - catalog_s - flush_s)
+    detail = (
+        f"Last {count} pictures averaged {_ms(each)}ms each. "
+        f"Reading the file {_ms(read_s)}ms. "
+        f"Metadata {_ms(meta_s)}ms. "
+        f"Writing the catalog {_ms(catalog_s)}ms "
+        f"(folder list {_ms(window.get('src', 0.0) / count)}ms, "
+        f"volume {_ms(window.get('where', 0.0) / count)}ms, "
+        f"place {_ms(window.get('place', 0.0) / count)}ms, "
+        f"record {_ms(window.get('item', 0.0) / count)}ms, "
+        f"thumbnail check {_ms(window.get('adopt', 0.0) / count)}ms, "
+        f"undo history {_ms(window.get('plan', 0.0) / count)}ms, "
+        f"queue {_ms(window.get('extend', 0.0) / count)}ms). "
+        f"Saving the batch {_ms(flush_s)}ms. "
+        f"Other {_ms(other_s)}ms."
+    )
+    line = (
+        f"Last {count} pictures averaged {_ms(each)}ms each. "
+        f"Reading the file {_ms(read_s)}ms. "
+        f"Writing the catalog {_ms(catalog_s)}ms. "
+        f"Saving the batch {_ms(flush_s)}ms."
+    )
+    _scan_timing_line = line
+    path = root / "scan-timing.log"
+    stamp = time.strftime("%Y-%m-%dT%H:%M:%S")
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(f"{stamp}  {detail}\n")
+    print(line, flush=True)
+    window.clear()
+    window["n"] = 0
+    window["wall"] = 0.0
 
 
 def _flush_scan_batch(root: Path) -> None:
@@ -259,16 +371,72 @@ def _fold_scan_source(
     added: int,
     skipped: int,
     errors: list[dict[str, str]],
+    total: int | None = None,
 ) -> dict[str, Any]:
     current = try_load_source(root, source["id"]) or source
-    current["scan"] = {
+    scan: dict[str, Any] = {
         "state": "error" if errors else "complete",
         "added": added,
         "skipped": skipped,
         "errors": errors,
     }
+    if total is None:
+        previous = current.get("scan") if isinstance(current.get("scan"), dict) else {}
+        total = previous.get("total") if isinstance(previous, dict) else None
+    if isinstance(total, int) and not isinstance(total, bool):
+        scan["total"] = total
+    current["scan"] = scan
     _extend(root, fold_source_changes(root, current))
     return try_load_source(root, source["id"]) or current
+
+
+def _remember_scan_total(root: Path, source: dict[str, Any], total: int) -> None:
+    current = clone(try_load_source(root, source["id"]) or source)
+    scan = dict(current.get("scan") or {})
+    scan["state"] = "running"
+    scan["total"] = total
+    current["scan"] = scan
+    _extend(root, fold_source_changes(root, current))
+    _flush_scan_batch(root)
+
+
+def _note_found(count: int, rel: str) -> None:
+    from library.activity import note as note_activity
+
+    folder = Path(rel).parent.as_posix()
+    note_activity(
+        "scan",
+        detail="Discovering pictures",
+        file="" if folder == "." else folder,
+        done=count,
+        total=0,
+    )
+
+
+def settle_interrupted_scans(root: Path) -> int:
+    """Mark stale running scan records interrupted. Keeps added/skipped/errors."""
+    changed = 0
+    for source_id in iter_source_ids(root):
+        source = try_load_source(root, source_id)
+        if source is None:
+            continue
+        scan = source.get("scan")
+        if not isinstance(scan, dict) or scan.get("state") != "running":
+            continue
+        current = clone(source)
+        scan_out: dict[str, Any] = {
+            "state": "interrupted",
+            "added": scan.get("added", 0),
+            "skipped": scan.get("skipped", 0),
+            "errors": list(scan.get("errors") or []),
+        }
+        previous_total = scan.get("total")
+        if isinstance(previous_total, int) and not isinstance(previous_total, bool) and previous_total >= 0:
+            scan_out["total"] = previous_total
+        current["scan"] = scan_out
+        transact(root, extend_current_operation(root, fold_source_changes(root, current)))
+        changed += 1
+    return changed
 
 
 def _hash_barrier_armed() -> bool:
@@ -596,11 +764,13 @@ def _index_file(
 ) -> str:
     from library.copy import make_library_location
 
+    _reset_scan_clock()
     with io_context():
         kind = media_kind(path)
         component = default_component(kind)
         # One pass over the file: the hash, EXIF and the content identifier all
         # come from the same bytes instead of three reads of a slow drive.
+        read_started = time.perf_counter()
         try:
             source_read = read_source(path)
             size, modified, digest = source_read.size, source_read.modified, source_read.sha256
@@ -609,6 +779,8 @@ def _index_file(
                 raise fail("io-error")
         except OSError as exc:
             raise fail("io-error") from exc
+        _scan_clock["read"] += time.perf_counter() - read_started
+        meta_started = time.perf_counter()
         data = source_read.data
         decode_error = file_suffix(path) in HEIF_SUFFIXES and not heif_has_valid_brand(path, data)
         content_id = None
@@ -622,7 +794,11 @@ def _index_file(
             captured_at, captured_source, metadata = modified, "mtime", None
         if path.stat().st_size != size or mtime_iso(path) != modified:
             raise fail("io-error")
+        _scan_clock["meta"] += time.perf_counter() - meta_started
+    catalog_started = time.perf_counter()
+    mark = catalog_started
     source = try_load_source(root, source["id"]) or source
+    mark = _lap("src", mark)
     prev_entry = (source.get("files") or {}).get(rel)
     prev_item_id = prev_entry.get("itemId") if prev_entry else None
     source_id = source["id"]
@@ -653,6 +829,7 @@ def _index_file(
             modified_at=modified,
             sha256=digest,
         )
+    mark = _lap("where", mark)
     latitude = None if metadata is None else metadata.get("latitude")
     longitude = None if metadata is None else metadata.get("longitude")
     place_id = None
@@ -661,6 +838,7 @@ def _index_file(
         place_id, new_place = resolve_place(
             root, float(latitude), float(longitude), match_meters
         )
+    mark = _lap("place", mark)
     existing_pending = try_load_item(root, pending)
     if existing_pending is not None and existing_pending.get("placeId"):
         place_id = existing_pending["placeId"]
@@ -685,6 +863,7 @@ def _index_file(
         faces=(existing_pending.get("faces") if existing_pending else None),
         things=(existing_pending.get("things") if existing_pending else None),
     )
+    mark = _lap("item", mark)
     # Pause on the pending id only when a caller is waiting at between(), or the
     # hash barrier is armed. Other files publish the hash in one batched write.
     if between is None and not _hash_barrier_armed():
@@ -693,6 +872,7 @@ def _index_file(
         from library.renditions import adopt_ready_files
 
         published = adopt_ready_files(root, source, publish_pending(root, item))
+        mark = _lap("adopt", mark)
         changes = [
             {
                 "path": item_rel(published["id"]),
@@ -724,9 +904,12 @@ def _index_file(
                 changes.append(
                     {"path": place_rel(new_place["id"]), "before": existing_place, "after": new_place}
                 )
+        mark = _lap("plan", mark)
         _extend(root, changes)
+        _lap("extend", mark)
         if decode_error:
             raise fail("decode-error")
+        _scan_clock["catalog"] += time.perf_counter() - catalog_started
         return published["id"]
     pending_entry = make_file_entry(
         item_id=pending,
@@ -794,6 +977,7 @@ def _index_file(
         between()
     if decode_error:
         raise fail("decode-error")
+    _scan_clock["catalog"] += time.perf_counter() - catalog_started
     return published["id"]
 
 
@@ -868,7 +1052,9 @@ def scan_serve_from_there(
     from library.activity import note as note_activity
     note_activity("scan", detail="Discovering pictures")
     with io_context():
-        files = _in_grid_order(root, source, iter_media_files(scan_path, root))
+        listed = iter_media_files(scan_path, root, on_found=_note_found)
+    _remember_scan_total(root, source, len(listed))
+    files = _in_grid_order(root, source, listed)
     total = len(files)
     from library.activity import note as note_activity
 
@@ -877,8 +1063,9 @@ def scan_serve_from_there(
             "scan",
             detail="Reading pictures",
             file=Path(rel).name,
-            done=index - 1,
+            done=index,
             total=total,
+            timing=_scan_timing_line,
         )
         source = try_load_source(root, source["id"]) or source
         entry = source["files"].get(rel)
@@ -889,19 +1076,19 @@ def scan_serve_from_there(
                 on_progress("skipped", rel)
             continue
         try:
-            pause = _due_for_pending_pause(between, yield_at)
+            file_started = time.perf_counter()
             item_id = _index_file(
                 root,
                 source,
                 rel,
                 path,
                 match_meters,
-                between=between if pause else None,
+                between=None,
                 io_context=io_context,
             )
             added += 1
-            if pause:
-                yield_at = time.perf_counter()
+            yield_at = _release_for_readers(root, between, yield_at)
+            _record_scan_file(root, time.perf_counter() - file_started)
             _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)
@@ -922,7 +1109,7 @@ def scan_serve_from_there(
     _flush_scan_batch(root)
     pair_live_items(root, source["id"])
     remember_recent(root, added_ids)
-    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors)
+    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors, total=len(files))
 
 
 def scan_copy_here(
@@ -971,7 +1158,9 @@ def scan_copy_here(
     from library.activity import note as note_activity
     note_activity("scan", detail="Discovering pictures")
     with io_context():
-        files = _in_grid_order(root, source, iter_media_files(scan_path, root))
+        listed = iter_media_files(scan_path, root, on_found=_note_found)
+    _remember_scan_total(root, source, len(listed))
+    files = _in_grid_order(root, source, listed)
     source = copy_media_files(root, source, scan_path, files, between=between)
     added = 0
     skipped = 0
@@ -986,8 +1175,9 @@ def scan_copy_here(
             "scan",
             detail="Reading pictures",
             file=Path(rel).name,
-            done=index - 1,
+            done=index,
             total=total,
+            timing=_scan_timing_line,
         )
         source = try_load_source(root, source["id"]) or source
         entry = source["files"].get(rel)
@@ -1007,7 +1197,7 @@ def scan_copy_here(
                 on_progress("skipped", rel)
             continue
         try:
-            pause = _due_for_pending_pause(between, yield_at)
+            file_started = time.perf_counter()
             item_id = _index_file(
                 root,
                 source,
@@ -1015,12 +1205,12 @@ def scan_copy_here(
                 dest_path,
                 match_meters,
                 original_name=Path(rel).name,
-                between=between if pause else None,
+                between=None,
                 io_context=io_context,
             )
             added += 1
-            if pause:
-                yield_at = time.perf_counter()
+            yield_at = _release_for_readers(root, between, yield_at)
+            _record_scan_file(root, time.perf_counter() - file_started)
             _record_added_id(added_ids, item_id)
             if on_progress is not None:
                 on_progress("added", rel)
@@ -1041,4 +1231,4 @@ def scan_copy_here(
     _flush_scan_batch(root)
     pair_live_items(root, source["id"])
     remember_recent(root, added_ids)
-    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors)
+    return _fold_scan_source(root, source, added=added, skipped=skipped, errors=errors, total=len(files))

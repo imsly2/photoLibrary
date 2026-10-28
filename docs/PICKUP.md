@@ -10,7 +10,40 @@ For the exact-Windows-mirror request, read
 DCIM scanning misses CPLAssets; current copy paths do not mirror Explorer.
 The next step is a read-only Windows manifest, not a full copy.
 
+## iPhone Look, 2026-10-28
+
+A Look can sit on one camera-roll folder for a long stretch, then jump
+the picture count when Windows finishes that folder. The dialog now
+shows found, already here, and not here yet separately, plus a timer
+that keeps ticking during the quiet stretch. Refresh the Library tab.
+Do not restart the server while that Look is still running. The reader
+already in flight does not pick up script changes. No feature Check closed.
+
 ## Active performance work
+
+Dense scrolling now keeps placeholders for the on-screen rows only.
+A 576-tile cold jump completed in 1.7 seconds; the previous run was 8.0
+seconds, and the one before that was still short at 14.9 seconds. The
+open years view holds 78 cells in the page instead of about 12,000.
+Filter and name-sort streams can still be slow while face detection is
+running, and one known preview can stay blank. Refresh the open tab.
+Details are in
+[DENSE-LIVE-MEASUREMENT](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
+Do not treat this pass as a closed Check.
+
+Steve, 2026-10-27, on a tablet: making the first thumbnails looks stuck, and
+painting them as tiles is too heavy. The live catalog on this PC is about
+750 photos, thumbs already ready, each thumb a few kilobytes. The weight is
+the open page re-downloading the whole catalog (about 2.3 MB) every second
+while any preview is queued, measuring every cell on scroll, and aborting a
+tile image that takes longer than 3.5 s. F7 now says a thumb encode does not
+also detect faces, JPEG thumbs decode at reduced size, the grid polls
+`/api/rendition-status` for on-screen ids, and off-screen cells are not
+painted. That code is what the server on port 8785 is running now
+(restarted 2026-10-27, pid 3980). Refresh the tablet. The first open still
+downloads the whole catalog, about 2.3 MB here. No feature Check closed.
+
+## Active performance work (browse speed, 2026-10-20)
 
 Regression floor for the current tree is
 [BROWSE-SPEED-BASELINE](features/processing-feedback/Rev1.0/BROWSE-SPEED-BASELINE.md)

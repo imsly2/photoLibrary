@@ -1,4 +1,4 @@
-"""Tests for library.folder_index.write_index."""
+"""Tests for library.folder_index.write_index and stale scan settle on recover."""
 
 from __future__ import annotations
 
@@ -9,7 +9,13 @@ import time
 import unittest
 from pathlib import Path
 
+from library.atomic import transact
+from library.catalog_io import ensure_catalog_dirs, fold_source_changes, source_rel, try_load_source
 from library.folder_index import write_index
+from library.records import make_source
+from library.service import Library
+
+SRC = "src_0123456789ab"
 
 
 def _parse_index_js(text: str) -> dict:
@@ -109,6 +115,52 @@ class WriteIndex(unittest.TestCase):
         write_index(self.lib, records, folder_name="Stable")
         self.assertEqual(js_path.stat().st_mtime_ns, mtime_js)
         self.assertEqual(html_path.stat().st_mtime_ns, mtime_html)
+
+
+class SettleInterruptedScans(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.root = (self.tmp / "library-data").resolve()
+        self.root.mkdir()
+        ensure_catalog_dirs(self.root)
+        source = make_source(
+            source_id=SRC,
+            name="Favorites",
+            mode="serve-from-there",
+            preview_store="with-server",
+            origin={
+                "volumeSerial": "windows:00000000",
+                "pathFromVolumeRoot": "Pictures/Favorites",
+                "lastKnownPath": str(self.tmp / "Pictures" / "Favorites"),
+            },
+            scan={"state": "running", "added": 3, "skipped": 4, "errors": []},
+        )
+        transact(self.root, [{"path": source_rel(SRC), "before": None, "after": source}])
+
+    def tearDown(self) -> None:
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_recover_marks_stale_running_interrupted(self) -> None:
+        lib = Library(self.root)
+        self.assertFalse(lib._scanning)
+        lib.recover()
+        reloaded = try_load_source(self.root, SRC)
+        self.assertIsNotNone(reloaded)
+        self.assertEqual(reloaded["scan"]["state"], "interrupted")
+        self.assertEqual(reloaded["scan"]["added"], 3)
+        self.assertEqual(reloaded["scan"]["skipped"], 4)
+        self.assertEqual(reloaded["scan"]["errors"], [])
+
+        lib._scanning = True
+        running = dict(reloaded)
+        running["scan"] = {"state": "running", "added": 3, "skipped": 4, "errors": []}
+        transact(self.root, fold_source_changes(self.root, running))
+        lib.recover()
+        again = try_load_source(self.root, SRC)
+        self.assertIsNotNone(again)
+        self.assertEqual(again["scan"]["state"], "running")
+        self.assertEqual(again["scan"]["added"], 3)
+        self.assertEqual(again["scan"]["skipped"], 4)
 
 
 if __name__ == "__main__":

@@ -330,6 +330,21 @@ def _mirror_locals(destination: Path) -> dict[str, tuple[str, int]]:
     return found
 
 
+def mirror_action(
+    source_path: str,
+    size: int,
+    locals_by_path: dict[str, tuple[str, int]],
+) -> str:
+    """Same rule as the final Look: path and size, nothing invented."""
+    rel = _safe_mirror_relative(source_path)
+    found = locals_by_path.get(rel.casefold())
+    if found is not None and found[1] == size:
+        return ACTION_SKIP
+    if found is not None:
+        return ACTION_KEEP
+    return ACTION_COPY
+
+
 def plan_mirror(phone_files: list[PhoneFile], destination: Path) -> list[PlanItem]:
     """Match Explorer's Internal Storage paths. Never invent a date folder.
 
@@ -340,8 +355,9 @@ def plan_mirror(phone_files: list[PhoneFile], destination: Path) -> list[PlanIte
     items: list[PlanItem] = []
     for phone in phone_files:
         rel = _safe_mirror_relative(phone.source_path)
+        action = mirror_action(phone.source_path, phone.size, locals_by_path)
         found = locals_by_path.get(rel.casefold())
-        if found is not None and found[1] == phone.size:
+        if action == ACTION_SKIP and found is not None:
             items.append(
                 PlanItem(
                     rel,
@@ -355,7 +371,7 @@ def plan_mirror(phone_files: list[PhoneFile], destination: Path) -> list[PlanIte
                 )
             )
             continue
-        if found is not None:
+        if action == ACTION_KEEP and found is not None:
             items.append(
                 PlanItem(
                     rel,

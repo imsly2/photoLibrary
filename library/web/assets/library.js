@@ -189,6 +189,8 @@
   const jobsServe = document.getElementById("jobs-serve");
   let lastActivity = null;
   const jobsQueues = document.getElementById("jobs-queues");
+  const jobsFolders = document.getElementById("jobs-folders");
+  const jobsFolderHint = document.getElementById("jobs-folder-hint");
   const jobsPause = document.getElementById("jobs-pause");
   const jobsResume = document.getElementById("jobs-resume");
   const jobsRerunFaces = document.getElementById("jobs-rerun-faces");
@@ -211,8 +213,8 @@
   const PLACEHOLDER = "Preview is not available";
   const LEVELS = ["years", "months", "days", "all"];
   const DATE_MODES = ["years", "months", "days", "off"];
-  const SIZE_STEPS = [72, 104, 144, 192, 256, 336, 420, 520];
-  const DEFAULT_SIZE = { years: 0, months: 1, days: 3, all: 6 };
+  const SIZE_STEPS = [36, 48, 72, 104, 144, 192, 256, 336, 420, 520];
+  const DEFAULT_SIZE = { years: 2, months: 3, days: 5, all: 8 };
   const HEART_MIN = 144;
   const PLAY_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.1v7.8L10.2 6z"/></svg>';
   const HEART_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13.4S2.6 10 1.5 7.1C.6 5.1 1.6 3 3.8 3c1.2 0 2 .7 2.3 1.2C6.4 3.7 7.2 3 8.4 3c2.2 0 3.2 2.1 2.3 4.1C9.6 10 8 13.4 8 13.4z"/></svg>';
@@ -975,6 +977,9 @@
     fetch("/api/sources").then(readJson).then(function (sources) {
       lastSources = Array.isArray(sources) ? sources : [];
       renderSettingsSources(lastSources);
+      if (lastJobs) {
+        renderJobs(lastJobs);
+      }
     }).catch(function () {});
   }
 
@@ -1248,10 +1253,47 @@
     return mode === "copy-here" ? t("copyHereMode") : t("serveThereMode");
   }
 
+  function scanProgressText(scan) {
+    const record = scan || {};
+    const scanned = Number(record.added || 0) + Number(record.skipped || 0);
+    const total = Number(record.total || 0);
+    const live = lastActivity && lastActivity.scan;
+    if (record.state === "running" && live && live.phase === "scan") {
+      if (live.detail === "Discovering pictures") {
+        return live.done ? t("foundSoFar", { n: Number(live.done).toLocaleString() }) : t("discoveringPictures");
+      }
+      if (live.detail === "Sorting pictures" && live.total) {
+        return t("sortingPictures") + ". " + t("progressCount", {
+          done: Number(live.done || 0).toLocaleString(),
+          total: Number(live.total).toLocaleString(),
+        });
+      }
+      if (live.total) {
+        return t("scanProgress", {
+          scanned: Number(live.done || 0).toLocaleString(),
+          total: Number(live.total).toLocaleString(),
+        });
+      }
+    }
+    if (total > 0) {
+      return t("scanProgress", {
+        scanned: scanned.toLocaleString(),
+        total: total.toLocaleString(),
+      });
+    }
+    if (scanned > 0) {
+      return t("scanScannedOnly", { n: scanned.toLocaleString() });
+    }
+    return "";
+  }
+
   function sourceScanLabel(scan) {
     const state = (scan && scan.state) || "idle";
     if (state === "running") {
       return t("scanRunning");
+    }
+    if (state === "interrupted") {
+      return t("scanInterrupted");
     }
     if (state === "error") {
       return t("scanError");
@@ -1260,6 +1302,18 @@
       return t("scanComplete");
     }
     return t("scanIdle");
+  }
+
+  function sourceFolderName(source) {
+    if (source && source.name) {
+      return source.name;
+    }
+    const path = (source && (source.path || (source.origin && source.origin.lastKnownPath))) || "";
+    const parts = String(path).replace(/\\/g, "/").split("/").filter(Boolean);
+    if (parts.length) {
+      return parts[parts.length - 1];
+    }
+    return (source && source.id) || "";
   }
 
   function renderSettingsSources(sources) {
@@ -1299,11 +1353,9 @@
       const scanLine = document.createElement("p");
       const scan = source.scan || {};
       const bits = [sourceScanLabel(scan)];
-      if (scan.state === "complete" || scan.state === "error" || scan.state === "running") {
-        bits.push(t("scanCounts", {
-          added: Number(scan.added || 0),
-          skipped: Number(scan.skipped || 0),
-        }));
+      const progress = scanProgressText(scan);
+      if (progress) {
+        bits.push(progress);
       }
       scanLine.textContent = bits.join(" · ");
       const actions = document.createElement("div");
@@ -1835,8 +1887,8 @@
   }
 
   const STILL_MAX = 12;
-  const STILL_STALL_MS = 3500;
-  const STILL_NEAR_MAX = 64;
+  const STILL_STALL_MS = 20000;
+  const STILL_NEAR_MAX = 24;
   let stillActive = 0;
   const stillQueue = [];
   let stillJobs = [];
@@ -1845,6 +1897,68 @@
   let stillBatching = false;
   let stillSuspended = false;
   const stillOk = Object.create(null);
+  const stillIntersecting = new Set();
+  const stillNear = new Set();
+  let stillObserverReady = false;
+  const stillObserver = typeof IntersectionObserver === "function"
+    ? new IntersectionObserver(function (entries) {
+      stillObserverReady = true;
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          stillIntersecting.add(entry.target);
+        } else {
+          stillIntersecting.delete(entry.target);
+        }
+      });
+      scheduleGridStills();
+    }, { root: main, rootMargin: "0px", threshold: 0 })
+    : null;
+  const stillNearObserver = typeof IntersectionObserver === "function"
+    ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          stillNear.add(entry.target);
+        } else {
+          stillNear.delete(entry.target);
+        }
+      });
+      scheduleGridStills();
+    }, { root: main, rootMargin: "240px 0px", threshold: 0 })
+    : null;
+
+  function observeStillCell(cell) {
+    if (stillObserver && cell) {
+      stillObserver.observe(cell);
+    }
+    if (stillNearObserver && cell) {
+      stillNearObserver.observe(cell);
+    }
+  }
+
+  function unobserveStillCell(cell) {
+    if (stillObserver && cell) {
+      stillObserver.unobserve(cell);
+    }
+    if (stillNearObserver && cell) {
+      stillNearObserver.unobserve(cell);
+    }
+    stillIntersecting.delete(cell);
+    stillNear.delete(cell);
+  }
+
+  function cellsByStreamRank(source) {
+    const cells = [];
+    source.forEach(function (cell) {
+      if (!cell.isConnected || cell.dataset.streamRank == null || cell.dataset.streamRank === "") {
+        return;
+      }
+      cells.push(cell);
+    });
+    cells.sort(function (a, b) {
+      return Number(a.dataset.streamRank) - Number(b.dataset.streamRank);
+    });
+    return cells;
+  }
 
   function stillLooksGood(img, url) {
     if (!img || img.hidden || !img.complete || !(img.naturalWidth > 0)) {
@@ -1893,6 +2007,9 @@
     if (pump !== false) {
       pumpStillQueue();
     }
+    if (virtualActiveCache) {
+      scheduleVirtualGrid();
+    }
   }
 
   function cancelStill(job) {
@@ -1919,6 +2036,35 @@
     return !viewer.hidden && (viewer.dataset.fullscreen === "1" || !viewerDocked);
   }
 
+  function viewportStillRank(nodeList) {
+    const bounds = main.getBoundingClientRect();
+    const visible = [];
+    const nearby = [];
+    Array.prototype.forEach.call(nodeList, function (cell) {
+      if (!cell || !cell.isConnected) {
+        return;
+      }
+      const rect = cell.getBoundingClientRect();
+      if (!rect.width || !rect.height || rect.right <= bounds.left || rect.left >= bounds.right) {
+        return;
+      }
+      const row = { cell: cell, top: rect.top };
+      if (rect.bottom > bounds.top && rect.top < bounds.bottom) {
+        visible.push(row);
+      } else {
+        nearby.push(row);
+      }
+    });
+    visible.sort(function (a, b) { return a.top - b.top; });
+    nearby.sort(function (a, b) { return a.top - b.top; });
+    const hungry = visible.some(function (row) {
+      return !stillLooksGood(row.cell.querySelector("img"));
+    });
+    return (hungry ? visible : visible.concat(nearby.slice(0, STILL_NEAR_MAX))).map(function (row) {
+      return { cell: row.cell };
+    });
+  }
+
   function paintGridStills() {
     if (stillFrame) {
       window.cancelAnimationFrame(stillFrame);
@@ -1931,32 +2077,63 @@
       stillJobs.forEach(cancelStill);
       return;
     }
-    const bounds = main.getBoundingClientRect();
-    const visible = [];
-    const nearby = [];
-    const margin = Math.max(200, bounds.height);
-    main.querySelectorAll(".cell").forEach(function (cell) {
-      const rect = cell.getBoundingClientRect();
-      if (!rect.width || !rect.height || rect.right <= bounds.left || rect.left >= bounds.right) {
-        return;
+    let ranked;
+    const virtualNodes = document.querySelectorAll("#virtual-grid .cell");
+    const visibleCells = stillObserver ? cellsByStreamRank(stillIntersecting) : [];
+    if (virtualNodes.length) {
+      ranked = viewportStillRank(virtualNodes);
+    } else if (stillObserver && stillObserverReady && visibleCells.length) {
+      const visibleIds = new Set(visibleCells);
+      const nearbyCells = cellsByStreamRank(stillNear).filter(function (cell) {
+        return !visibleIds.has(cell);
+      }).slice(0, STILL_NEAR_MAX);
+      const hungry = visibleCells.some(function (cell) {
+        return !stillLooksGood(cell.querySelector("img"));
+      });
+      ranked = (hungry ? visibleCells : visibleCells.concat(nearbyCells)).map(function (cell) { return { cell: cell }; });
+    } else {
+      const bounds = main.getBoundingClientRect();
+      const candidates = [];
+      if (stillObserver) {
+        stillNear.forEach(function (cell) {
+          if (cell.isConnected) {
+            candidates.push(cell);
+          }
+        });
+        if (!candidates.length) {
+          stillIntersecting.forEach(function (cell) {
+            if (cell.isConnected) {
+              candidates.push(cell);
+            }
+          });
+        }
+      } else {
+        main.querySelectorAll(".cell").forEach(function (cell) {
+          candidates.push(cell);
+        });
       }
-      if (rect.bottom > bounds.top && rect.top < bounds.bottom) {
-        visible.push({ cell: cell, distance: Math.abs(rect.top - bounds.top) });
-      } else if (rect.bottom > bounds.top - margin && rect.top < bounds.bottom + margin) {
-        nearby.push({ cell: cell, distance: Math.min(Math.abs(rect.bottom - bounds.top), Math.abs(rect.top - bounds.bottom)) });
-      }
-    });
-    visible.sort(function (a, b) { return a.distance - b.distance; });
-    nearby.sort(function (a, b) { return a.distance - b.distance; });
-    const ranked = visible.concat(nearby.slice(0, STILL_NEAR_MAX));
+      candidates.sort(function (a, b) { return a.offsetTop - b.offsetTop; });
+      const visible = [];
+      const nearby = [];
+      candidates.forEach(function (cell) {
+        const rect = cell.getBoundingClientRect();
+        if (!rect.width || !rect.height || rect.right <= bounds.left || rect.left >= bounds.right) {
+          return;
+        }
+        if (rect.bottom > bounds.top && rect.top < bounds.bottom) {
+          visible.push({ cell: cell });
+        } else {
+          nearby.push({ cell: cell });
+        }
+      });
+      const hungry = visible.some(function (row) {
+        return !stillLooksGood(row.cell.querySelector("img"));
+      });
+      ranked = hungry ? visible : visible.concat(nearby.slice(0, STILL_NEAR_MAX));
+    }
     stillTargets = new Set(ranked.map(function (row) { return row.cell; }));
-    const onScreen = new Set(visible.map(function (row) { return row.cell; }));
-    const waitingVisible = visible.some(function (row) {
-      return !stillLooksGood(row.cell.querySelector("img"), stillUrlFor(row.cell.dataset.id));
-    });
     stillJobs.forEach(function (job) {
-      if (!job.settled && (!stillTargets.has(job.cell) || !job.cell.isConnected
-        || job.url !== stillUrlFor(job.id) || (waitingVisible && !onScreen.has(job.cell)))) {
+      if (!job.settled && (!job.cell.isConnected || job.url !== stillUrlFor(job.id))) {
         cancelStill(job);
       }
     });
@@ -1976,14 +2153,26 @@
     }
   }
 
+  function scheduleGridAfterResize() {
+    const size = currentCellSize();
+    const mode = gridMode();
+    if (!metricsCache || metricsCache.clientWidth !== main.clientWidth || metricsCache.size !== size || metricsCache.mode !== mode) {
+      metricsCache = null;
+      virtualKey = "";
+      scheduleVirtualGrid();
+    }
+    scheduleGridStills();
+  }
+
   main.addEventListener("scroll", function () {
     hideThumbHover();
+    scheduleVirtualGrid();
     scheduleGridStills();
   }, { passive: true });
   main.addEventListener("click", scheduleGridStills);
-  window.addEventListener("resize", scheduleGridStills, { passive: true });
+  window.addEventListener("resize", scheduleGridAfterResize, { passive: true });
   if (typeof ResizeObserver === "function") {
-    new ResizeObserver(scheduleGridStills).observe(main);
+    new ResizeObserver(scheduleGridAfterResize).observe(main);
   }
 
   function enqueueStill(cell, id, url, forceReload) {
@@ -2126,6 +2315,15 @@
     }
     if (!forceReload && stillLooksGood(img, url)) {
       stillOk[id] = url;
+      placeholder.hidden = true;
+      img.hidden = false;
+      return;
+    }
+    if (!forceReload && stillOk[id] === url) {
+      img.setAttribute("data-still", url);
+      if ((img.getAttribute("src") || "") !== url) {
+        img.src = url;
+      }
       placeholder.hidden = true;
       img.hidden = false;
       return;
@@ -4641,9 +4839,17 @@
       return;
     }
     const cell = main.querySelector('.cell[data-id="' + id + '"]');
-    if (cell) {
+    if (cell && cell.isConnected) {
       cell.scrollIntoView({ block: "center", inline: "nearest" });
+      return;
     }
+    const host = document.getElementById("virtual-grid");
+    if (!host || !virtualIndex || virtualIndex[id] == null) {
+      return;
+    }
+    main.scrollTop = Math.max(0, host.offsetTop + virtualIndex[id] - main.clientHeight / 2);
+    virtualKey = "";
+    mountVirtualGrid();
   }
 
   function formatDuration(sec) {
@@ -4866,6 +5072,7 @@
     main.className = "level-" + level + (groupDates ? "" : " wall");
     main.style.setProperty("--cell", size + "px");
     if (sizeSlider) {
+      sizeSlider.max = String(SIZE_STEPS.length - 1);
       sizeSlider.value = String(gridSize);
     }
     if (dateGroupSelect && dateGroupSelect.value !== dateMode) {
@@ -4992,7 +5199,7 @@
   }
 
   const paintedCells = new Map();
-  const PAINTED_CELL_MAX = 256;
+  const PAINTED_CELL_MAX = 1024;
 
   function tileMetadataKey(item) {
     return JSON.stringify([item.filename, item.kind, item.available, item.favorite,
@@ -5021,6 +5228,7 @@
     if (hoverCell === cell) { stopHover(); }
     const job = liveStillJob(cell);
     if (job) { cancelStill(job); }
+    unobserveStillCell(cell);
     const key = (cell.dataset.slot || "grid") + ":" + cell.dataset.id;
     if (stillLooksGood(cell.querySelector("img"))) {
       paintedCells.delete(key);
@@ -5118,9 +5326,497 @@
       if (placeholder) {
         placeholder.textContent = stillPlaceholder(item);
       }
+      observeStillCell(cell);
       return cell;
     }
-    return makeCell(itemById(id), slot);
+    cell = makeCell(itemById(id), slot);
+    observeStillCell(cell);
+    return cell;
+  }
+
+  let virtualActiveCache = false;
+  let virtualRecountAt = 0;
+  let virtualKey = "";
+  let virtualIndex = null;
+  let metricsCache = null;
+  let virtualFrame = 0;
+  let streamGroupState = null;
+  let streamGroupsTrusted = true;
+
+  function gridMode() {
+    if (!groupDates && arrangeBy === "dates") {
+      return "wall";
+    }
+    if (groupDates && (settings.zoomLevel === "years" || settings.zoomLevel === "months")) {
+      return "mosaic";
+    }
+    return "list";
+  }
+
+  function gridSlotCount() {
+    let count = 0;
+    items.forEach(function (item) {
+      if (!isStackHidden(item)) {
+        count += 1;
+      }
+    });
+    return count;
+  }
+
+  function measureGridChrome(mode) {
+    const size = currentCellSize();
+    const section = document.createElement("section");
+    section.className = "group";
+    section.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;left:0;top:0;width:100%";
+    const heading = document.createElement("h2");
+    heading.className = "group-key";
+    heading.textContent = "May 2024";
+    const list = document.createElement("div");
+    list.className = mode === "wall" ? "item-list wall-list" : mode === "mosaic" ? "mosaic" : "item-list";
+    const probe = document.createElement("button");
+    probe.className = "cell";
+    probe.type = "button";
+    probe.style.contentVisibility = "visible";
+    probe.style.width = size + "px";
+    probe.style.height = size + "px";
+    list.appendChild(probe);
+    section.appendChild(heading);
+    section.appendChild(list);
+    main.appendChild(section);
+    const gapValue = parseFloat(getComputedStyle(list).rowGap || getComputedStyle(list).gap);
+    const headerMargin = parseFloat(getComputedStyle(heading).marginBottom) || 0;
+    const natural = size + 2;
+    const measuredOuter = probe.offsetHeight;
+    const measured = {
+      width: list.clientWidth || section.clientWidth || 1,
+      gap: isFinite(gapValue) ? gapValue : (mode === "list" ? 8 : 2),
+      outer: measuredOuter >= natural - 2 ? measuredOuter : natural,
+      header: (heading.offsetHeight || 24) + headerMargin,
+      groupGap: parseFloat(getComputedStyle(section).marginBottom) || 0,
+    };
+    section.remove();
+    return measured;
+  }
+
+  function gridMetrics(width) {
+    const mode = gridMode();
+    const size = currentCellSize();
+    const useWidth = width || 0;
+    if (metricsCache && metricsCache.mode === mode && metricsCache.size === size && metricsCache.width === useWidth && useWidth) {
+      return metricsCache;
+    }
+    const measured = measureGridChrome(mode);
+    const gap = measured.gap;
+    const outer = measured.outer || (size + 2);
+    const inner = Math.max(useWidth || measured.width || 1, 280);
+    metricsCache = {
+      mode: mode,
+      wall: mode === "wall",
+      size: size,
+      clientWidth: main.clientWidth,
+      width: inner,
+      gap: gap,
+      outer: outer,
+      cols: Math.max(1, Math.floor((inner + gap) / (outer + gap))),
+      stride: outer + gap,
+      header: measured.header,
+      groupGap: measured.groupGap,
+    };
+    return metricsCache;
+  }
+
+  function refreshVirtualActive() {
+    if (virtualActiveCache) {
+      return;
+    }
+    const metrics = gridMetrics(gridInnerWidth());
+    const need = Math.max(480, metrics.cols * Math.max(1, Math.ceil((main.clientHeight || 700) / metrics.outer)));
+    if (items.length <= need || items.length < virtualRecountAt) {
+      return;
+    }
+    virtualRecountAt = items.length + 250;
+    virtualActiveCache = gridSlotCount() > need;
+  }
+
+  function virtualGridActive() {
+    refreshVirtualActive();
+    return virtualActiveCache;
+  }
+
+  function gridInnerWidth() {
+    const style = getComputedStyle(main);
+    const pad = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+    return Math.max(1, main.clientWidth - pad);
+  }
+
+  function resetStreamGroups() {
+    streamGroupState = null;
+    streamGroupsTrusted = true;
+  }
+
+  function streamBucketFor(item) {
+    if (arrangeBy === "dates") {
+      const captured = (item && item.capturedAt) || "";
+      let key = captured.slice(0, 10);
+      if (settings.zoomLevel === "years") {
+        key = captured.slice(0, 4);
+      } else if (settings.zoomLevel === "months") {
+        key = captured.slice(0, 7);
+      }
+      return { key: key, id: null, mapKey: "d:" + key };
+    }
+    let chosen = null;
+    if (arrangeBy === "people") {
+      chosen = firstEntity(item, "people");
+    } else if (arrangeBy === "places") {
+      chosen = (((item || {}).entities || {}).places || [])[0] || null;
+      if (chosen && !chosen.name) {
+        chosen = chosen.latitude != null && chosen.longitude != null
+          ? { id: chosen.id, name: Number(chosen.latitude).toFixed(2) + ", " + Number(chosen.longitude).toFixed(2) }
+          : null;
+      }
+    } else {
+      chosen = firstEntity(item, "things");
+    }
+    if (!chosen) {
+      const leftoverKey = arrangeBy === "people" ? "Unknown" : arrangeBy === "places" ? "No place" : "Untagged";
+      return { key: leftoverKey, id: null, mapKey: "leftover" };
+    }
+    return { key: chosen.name || "Unnamed", id: chosen.id, mapKey: "id:" + chosen.id };
+  }
+
+  function addStreamGroupItem(item) {
+    if (!streamGroupState) {
+      streamGroupState = { list: [], index: Object.create(null), dirty: false };
+    }
+    const bucket = streamBucketFor(item);
+    let group = streamGroupState.index[bucket.mapKey];
+    if (!group) {
+      group = { key: bucket.key, id: bucket.id, itemIds: [] };
+      streamGroupState.index[bucket.mapKey] = group;
+      streamGroupState.list.push(group);
+      if (arrangeBy !== "dates") {
+        streamGroupState.dirty = true;
+      }
+    }
+    group.itemIds.push(item.id);
+  }
+
+  function publishStreamGroups() {
+    if (!streamGroupState) {
+      groups = [];
+      return;
+    }
+    if (streamGroupState.dirty) {
+      const named = [];
+      const leftover = [];
+      streamGroupState.list.forEach(function (group) {
+        if (group.id == null) {
+          leftover.push(group);
+        } else {
+          named.push(group);
+        }
+      });
+      named.sort(function (a, b) {
+        return groupTextCompare(a.key, b.key) || groupTextCompare(a.id, b.id, true);
+      });
+      streamGroupState.list = named.concat(leftover);
+      streamGroupState.dirty = false;
+    }
+    groups = streamGroupState.list;
+  }
+
+  function virtualBlocks() {
+    if (!groupDates && arrangeBy === "dates") {
+      const ids = [];
+      items.forEach(function (item) {
+        if (item && !isStackHidden(item)) {
+          ids.push(item.id);
+        }
+      });
+      return [{ key: "wall", id: null, label: "", ids: ids, collapsed: false, collapseKey: "" }];
+    }
+    return (groups || []).map(function (group) {
+      const ids = [];
+      (group.itemIds || []).forEach(function (id) {
+        if (!isStackHidden(itemById(id))) {
+          ids.push(id);
+        }
+      });
+      const collapseKey = arrangeBy + ":" + (group.id || group.key);
+      return {
+        key: group.key,
+        id: group.id || null,
+        label: displayGroupKey(group),
+        ids: ids,
+        collapsed: !!collapsedGroups[collapseKey],
+        collapseKey: collapseKey,
+      };
+    });
+  }
+
+  function layoutVirtual(blocks, metrics) {
+    const placed = [];
+    const index = Object.create(null);
+    let y = 0;
+    blocks.forEach(function (block, blockIndex) {
+      const header = block.label ? metrics.header : 0;
+      const rows = block.collapsed ? 0 : Math.ceil(block.ids.length / metrics.cols);
+      const rowsHeight = rows ? rows * metrics.outer + (rows - 1) * metrics.gap : 0;
+      const groupGap = blockIndex === blocks.length - 1 ? 0 : metrics.groupGap;
+      const height = header + rowsHeight + groupGap;
+      placed.push({ block: block, y: y, header: header, rows: rows, height: height });
+      const origin = y + header;
+      for (let i = 0; i < block.ids.length; i += 1) {
+        index[block.ids[i]] = origin + Math.floor(i / metrics.cols) * metrics.stride;
+      }
+      y += height;
+    });
+    virtualIndex = index;
+    return { placed: placed, total: y };
+  }
+
+  function retireEagerGrid() {
+    Array.from(main.children).forEach(function (node) {
+      if (!node || node.id === "virtual-grid" || node.id === "favorites" || node.id === "photos-together" || node.dataset.personId) {
+        return;
+      }
+      if (node.id === "grid-loading" || node.classList.contains("group") || node.classList.contains("wall-list")) {
+        node.querySelectorAll(".cell").forEach(rememberPaintedCell);
+        node.remove();
+      }
+    });
+  }
+
+  function ensureVirtualHost() {
+    let host = document.getElementById("virtual-grid");
+    if (!host || !host.isConnected) {
+      host = document.createElement("div");
+      host.id = "virtual-grid";
+      const spacer = document.createElement("div");
+      spacer.className = "virtual-spacer";
+      host.appendChild(spacer);
+    }
+    const solo = Array.prototype.find.call(main.children, function (child) {
+      return child.dataset && child.dataset.personId;
+    });
+    if (host.parentNode !== main) {
+      main.insertBefore(host, solo || null);
+    }
+    return host;
+  }
+
+  function makeVirtualHost() {
+    const host = document.createElement("div");
+    host.id = "virtual-grid";
+    const spacer = document.createElement("div");
+    spacer.className = "virtual-spacer";
+    host.appendChild(spacer);
+    return host;
+  }
+
+  function bindVirtualHeading(heading, block) {
+    heading.setAttribute("role", "button");
+    heading.tabIndex = 0;
+    heading.setAttribute("aria-expanded", block.collapsed ? "false" : "true");
+    function toggle(event) {
+      event.preventDefault();
+      collapsedGroups[block.collapseKey] = !collapsedGroups[block.collapseKey];
+      virtualKey = "";
+      mountVirtualGrid();
+    }
+    heading.addEventListener("click", toggle);
+    heading.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        toggle(event);
+      }
+    });
+  }
+
+  function syncGridLoadStatus() {
+    const el = document.getElementById("grid-load-status");
+    if (!el) {
+      return;
+    }
+    if (!virtualActiveCache || !items.length) {
+      el.textContent = "";
+      return;
+    }
+    const bounds = main.getBoundingClientRect();
+    let visible = 0;
+    let loaded = 0;
+    let decoded = paintedCells.size;
+    document.querySelectorAll("#virtual-grid .cell").forEach(function (cell) {
+      const img = cell.querySelector("img");
+      const ok = stillLooksGood(img);
+      if (ok) {
+        decoded += 1;
+      }
+      const rect = cell.getBoundingClientRect();
+      if (rect.bottom <= bounds.top || rect.top >= bounds.bottom || rect.right <= bounds.left || rect.left >= bounds.right) {
+        return;
+      }
+      visible += 1;
+      if (ok) {
+        loaded += 1;
+      }
+    });
+    const total = items.length;
+    el.textContent = t("gridLoadStatus", {
+      loaded: loaded,
+      visible: visible,
+      memory: decoded.toLocaleString(),
+      left: Math.max(0, total - decoded).toLocaleString(),
+    });
+  }
+
+  function mountVirtualGrid() {
+    if (!virtualGridActive() || !items.length) {
+      return;
+    }
+    retireEagerGrid();
+    const host = ensureVirtualHost();
+    const loading = main.querySelector("#grid-loading");
+    if (loading) {
+      loading.remove();
+    }
+    const metrics = gridMetrics(host.clientWidth || gridInnerWidth());
+    const layout = layoutVirtual(virtualBlocks(), metrics);
+    const spacer = host.querySelector(".virtual-spacer");
+    if (spacer) {
+      spacer.style.height = Math.max(layout.total, 1) + "px";
+    }
+    const origin = host.offsetTop;
+    const top = main.scrollTop - origin;
+    const bottom = top + main.clientHeight;
+    const hungry = virtualWindowHungry();
+    const pad = hungry ? 0 : metrics.stride * 2;
+    const start = top - pad;
+    const end = bottom + pad;
+    const plans = [];
+    const slice = [];
+    layout.placed.forEach(function (piece) {
+      if (piece.y + piece.height <= start || piece.y >= end) {
+        return;
+      }
+      const block = piece.block;
+      const headerBottom = piece.y + piece.header;
+      const visibleTop = Math.max(start, piece.y);
+      const visibleBot = Math.min(end, piece.y + piece.height);
+      let showHeader = piece.header > 0 && visibleTop < headerBottom && block.label;
+      let firstRow = 0;
+      let lastRow = -1;
+      if (!block.collapsed && piece.rows) {
+        const stride = metrics.stride;
+        if (!showHeader) {
+          firstRow = Math.max(0, Math.floor((visibleTop - headerBottom) / stride));
+        }
+        while (firstRow < piece.rows && headerBottom + firstRow * stride + metrics.outer <= visibleTop) {
+          firstRow += 1;
+        }
+        lastRow = firstRow;
+        while (lastRow + 1 < piece.rows && headerBottom + (lastRow + 1) * stride < visibleBot) {
+          lastRow += 1;
+        }
+        if (headerBottom + firstRow * stride >= visibleBot) {
+          lastRow = -1;
+        }
+      }
+      if (!showHeader && lastRow < firstRow) {
+        return;
+      }
+      const ids = lastRow >= firstRow ? block.ids.slice(firstRow * metrics.cols, (lastRow + 1) * metrics.cols) : [];
+      ids.forEach(function (id) { slice.push(id); });
+      plans.push({
+        block: block,
+        showHeader: showHeader,
+        firstRow: firstRow,
+        ids: ids,
+        top: showHeader ? piece.y : headerBottom + firstRow * metrics.stride,
+      });
+    });
+    const sliceKey = [metrics.cols, metrics.size, metrics.width, hungry ? 1 : 0, slice.join(",")].join(":");
+    if (sliceKey === virtualKey && host.querySelector(".virtual-chunk")) {
+      syncGridLoadStatus();
+      return;
+    }
+    virtualKey = sliceKey;
+    const existing = collectCells();
+    const fragment = document.createDocumentFragment();
+    plans.forEach(function (plan) {
+      const chunk = document.createElement("div");
+      chunk.className = "virtual-chunk" + (plan.block.label ? " group" : "") + (plan.block.collapsed ? " collapsed" : "");
+      chunk.style.top = plan.top + "px";
+      if (plan.showHeader) {
+        const heading = document.createElement("h2");
+        heading.className = "group-key";
+        heading.textContent = plan.block.label;
+        if (plan.block.collapseKey) {
+          bindVirtualHeading(heading, plan.block);
+        }
+        chunk.appendChild(heading);
+      }
+      if (plan.ids.length) {
+        const list = document.createElement("div");
+        list.className = metrics.mode === "mosaic" ? "mosaic" : metrics.mode === "wall" ? "item-list wall-list" : "item-list";
+        plan.ids.forEach(function (id, offset) {
+          const cell = takeCell(existing, id, "grid");
+          cell.dataset.streamRank = String(plan.firstRow * metrics.cols + offset);
+          cell.classList.toggle("selected", selectedIds.indexOf(id) >= 0);
+          list.appendChild(cell);
+        });
+        chunk.appendChild(list);
+      }
+      fragment.appendChild(chunk);
+    });
+    Object.keys(existing).forEach(function (key) {
+      if (key.indexOf("grid:") !== 0) {
+        return;
+      }
+      const cell = existing[key];
+      if (cell && cell.isConnected) {
+        rememberPaintedCell(cell);
+      }
+    });
+    host.querySelectorAll(".virtual-chunk").forEach(function (node) {
+      node.remove();
+    });
+    host.appendChild(fragment);
+    syncGridLoadStatus();
+    paintGridStills();
+  }
+
+  function virtualWindowHungry() {
+    const bounds = main.getBoundingClientRect();
+    const cells = document.querySelectorAll("#virtual-grid .cell");
+    if (!cells.length) {
+      return true;
+    }
+    let seen = false;
+    for (let i = 0; i < cells.length; i += 1) {
+      const rect = cells[i].getBoundingClientRect();
+      if (rect.bottom <= bounds.top || rect.top >= bounds.bottom) {
+        continue;
+      }
+      seen = true;
+      if (!stillLooksGood(cells[i].querySelector("img"))) {
+        return true;
+      }
+    }
+    return !seen;
+  }
+
+  function scheduleVirtualGrid() {
+    if (!virtualActiveCache) {
+      return;
+    }
+    if (virtualFrame) {
+      return;
+    }
+    virtualFrame = window.requestAnimationFrame(function () {
+      virtualFrame = 0;
+      mountVirtualGrid();
+    });
   }
 
   function makeFavoritesSection(existing, mosaic) {
@@ -5245,7 +5941,9 @@
     return out;
   }
 
+  let gridRenderRevision = 0;
   function render() {
+    gridRenderRevision += 1;
     if (catalogLoading && !items.length && leftoverCount() === 0) {
       showCatalogLoading();
       return;
@@ -5309,18 +6007,23 @@
     if (together) {
       fragment.appendChild(together);
     }
-    if (!groupDates && arrangeBy === "dates") {
+    if (virtualGridActive()) {
+      virtualKey = "";
+      fragment.appendChild(makeVirtualHost());
+    } else if (!groupDates && arrangeBy === "dates") {
       const list = document.createElement("div");
       list.className = "item-list wall-list";
-    items.forEach(function (item) {
+    items.forEach(function (item, index) {
       const cell = takeVisibleCell(existing, item.id, "grid");
       if (cell) {
+        cell.dataset.streamRank = String(index);
         list.appendChild(cell);
       }
     });
       fragment.appendChild(list);
     } else {
       const shown = (arrangeBy === "dates") ? groups : (groups.length ? groups : groupsFromArrange(items, arrangeBy));
+      let streamRank = 0;
       shown.forEach(function (group) {
         const section = document.createElement("section");
         const collapseKey = arrangeBy + ":" + (group.id || group.key);
@@ -5353,6 +6056,8 @@
         (group.itemIds || []).forEach(function (id) {
           const cell = takeVisibleCell(existing, id, "grid");
           if (cell) {
+            cell.dataset.streamRank = String(streamRank);
+            streamRank += 1;
             list.appendChild(cell);
           }
         });
@@ -5376,7 +6081,11 @@
     applyGridMetrics();
     paintSelection();
     renderKey = key;
-    paintGridStills();
+    if (virtualActiveCache) {
+      mountVirtualGrid();
+    } else {
+      paintGridStills();
+    }
     if (anchor) {
       scrollIdIntoView(anchor);
     }
@@ -6369,6 +7078,12 @@
     const parts = [label];
     if (activity.phase === "scan" && activity.detail === "Discovering pictures") {
       parts[0] = t("discoveringPictures");
+      if (activity.done) {
+        parts.push(t("foundSoFar", { n: Number(activity.done).toLocaleString() }));
+      }
+    }
+    if (activity.phase === "scan" && activity.detail === "Sorting pictures") {
+      parts[0] = t("sortingPictures");
     }
     if (activity.derivative) {
       parts.push(t("derivative_" + activity.derivative));
@@ -6378,6 +7093,9 @@
     }
     if (activity.total) {
       parts.push(t("progressCount", { done: activity.done || 0, total: activity.total }));
+    }
+    if (activity.timing) {
+      parts.push(activity.timing);
     }
     if (activity.at) {
       const secs = Math.max(0, Math.round(Number(activity.elapsedSeconds || 0) + (performance.now() - activityReceivedAt) / 1000));
@@ -6419,6 +7137,39 @@
     return t("idle");
   }
 
+  function folderWorkLine(source, sources) {
+    if (!source || !sources || !sources.length) {
+      return "";
+    }
+    let primary = sources[0];
+    sources.forEach(function (row) {
+      const photos = Number((row.stats || {}).photos || 0);
+      const best = Number((primary.stats || {}).photos || 0);
+      if (photos > best) {
+        primary = row;
+      }
+    });
+    if ((source.id || "") !== (primary.id || "")) {
+      return "";
+    }
+    const live = activitySentence(lastActivity);
+    if (live) {
+      return live;
+    }
+    const running = ((lastJobs && lastJobs.queues) || []).filter(function (queue) {
+      return queue && queue.state === "running" && (queue.pending || 0) > 0;
+    });
+    if (!running.length) {
+      return "";
+    }
+    return running.map(function (queue) {
+      return t("queueLeft", {
+        label: I18N.queueLabel(queue.id, queue.label),
+        n: Number(queue.pending || 0).toLocaleString(),
+      });
+    }).join(" · ");
+  }
+
   function renderJobs(body) {
     lastJobs = body;
     if (!jobsStatus || !jobsQueues) {
@@ -6439,6 +7190,64 @@
       }) + extra;
       jobsQueues.appendChild(li);
     });
+    if (jobsFolders) {
+      jobsFolders.innerHTML = "";
+      (lastSources || []).forEach(function (source) {
+        const scan = source.scan || {};
+        const stats = source.stats || {};
+        const li = document.createElement("li");
+        li.dataset.sourceId = source.id || "";
+        li.dataset.state = scan.state || "idle";
+        const bodyEl = document.createElement("div");
+        bodyEl.className = "jobs-folder-body";
+        const name = document.createElement("p");
+        name.textContent = sourceFolderName(source);
+        bodyEl.appendChild(name);
+        const scanLine = document.createElement("p");
+        const bits = [sourceScanLabel(scan)];
+        const progress = scanProgressText(scan);
+        if (progress) {
+          bits.push(progress);
+        }
+        scanLine.textContent = bits.join(" · ");
+        bodyEl.appendChild(scanLine);
+        const countBits = [t("photosCount", { n: Number(stats.photos || 0) })];
+        const videos = Number(stats.videos || 0);
+        if (videos > 0) {
+          countBits.push(t("videosCount", { n: videos }));
+        }
+        const counts = document.createElement("p");
+        counts.textContent = countBits.join(" · ");
+        bodyEl.appendChild(counts);
+        const previews = document.createElement("p");
+        previews.textContent = t("previewsDone", {
+          done: Number(stats.renditionsDone || 0),
+          queued: Number(stats.renditionsQueued || 0),
+          error: Number(stats.renditionsError || 0),
+        });
+        bodyEl.appendChild(previews);
+        const work = folderWorkLine(source, lastSources || []);
+        if (work) {
+          const workLine = document.createElement("p");
+          workLine.textContent = work;
+          bodyEl.appendChild(workLine);
+        }
+        const action = document.createElement("button");
+        action.type = "button";
+        const canResume = scan.state === "interrupted" || scan.state === "error";
+        action.textContent = canResume ? t("resume") : t("checkFolder");
+        action.disabled = !!scanning || scan.state === "running";
+        action.addEventListener("click", function () {
+          rescanSource(source.id);
+        });
+        li.appendChild(bodyEl);
+        li.appendChild(action);
+        jobsFolders.appendChild(li);
+      });
+    }
+    if (jobsFolderHint) {
+      jobsFolderHint.textContent = t("jobsFolderHint");
+    }
     const pending = ((body && body.queues) || []).some(function (q) { return (q.pending || 0) > 0; });
     if (jobsPause) {
       jobsPause.disabled = !(body && body.processing);
@@ -6537,6 +7346,90 @@
     return false;
   }
 
+  let renditionStatusInFlight = null;
+  let renditionStatusGen = 0;
+  let renditionStatusOffset = 0;
+
+  function visibleRenditionStatusIds() {
+    const ids = [];
+    const seen = Object.create(null);
+    function add(id) {
+      if (!id || seen[id]) {
+        return;
+      }
+      seen[id] = true;
+      ids.push(id);
+    }
+    const statusCells = stillNear.size ? stillNear : stillIntersecting;
+    if (stillObserver && stillObserverReady && statusCells.size) {
+      statusCells.forEach(function (cell) {
+        if (cell.isConnected) {
+          add(cell.dataset.id);
+        }
+      });
+    } else {
+      const cells = main.querySelectorAll(".cell");
+      for (let i = 0; i < cells.length && ids.length < 40; i += 1) {
+        add(cells[i].dataset.id);
+      }
+    }
+    if (ids.length <= 80) {
+      renditionStatusOffset = 0;
+      return ids;
+    }
+    // Rotate through dense viewports instead of repeatedly checking only the
+    // first 80. The endpoint caps each request at 80 IDs.
+    const start = renditionStatusOffset % ids.length;
+    const selected = ids.concat(ids).slice(start, start + 80);
+    renditionStatusOffset = (start + 80) % ids.length;
+    return selected;
+  }
+
+  function loadVisibleRenditionStatus() {
+    if (renditionStatusInFlight) {
+      return renditionStatusInFlight;
+    }
+    const ids = visibleRenditionStatusIds();
+    if (!ids.length) {
+      return Promise.resolve(null);
+    }
+    const gen = ++renditionStatusGen;
+    renditionStatusInFlight = fetch("/api/rendition-status?ids=" + ids.join(",")).then(readJson).then(function (body) {
+      if (gen !== renditionStatusGen) {
+        return null;
+      }
+      let changed = false;
+      (body && body.items || []).forEach(function (row) {
+        if (!row || !row.id) {
+          return;
+        }
+        const index = itemIndexById[row.id];
+        const live = index != null ? items[index] : extraById[row.id];
+        if (!live) {
+          return;
+        }
+        const nextStatus = row.status && typeof row.status === "object" ? row.status : {};
+        const before = JSON.stringify((live.renditions || {}).status || {});
+        const after = JSON.stringify(nextStatus);
+        if (before === after) {
+          return;
+        }
+        if (!live.renditions) {
+          live.renditions = {};
+        }
+        live.renditions.status = nextStatus;
+        changed = true;
+      });
+      if (changed) {
+        paintGridStills();
+      }
+      return body;
+    }).finally(function () {
+      renditionStatusInFlight = null;
+    });
+    return renditionStatusInFlight;
+  }
+
   let catalogChromeInFlight = null;
   let initialSettingsLoaded = false;
   function refreshCatalogChrome() {
@@ -6558,6 +7451,9 @@
         scanning = status.running;
         showStatus(sources.length ? status.text : "", !!sources.length);
         syncScanRetry(sources);
+        if (lastJobs) {
+          renderJobs(lastJobs);
+        }
       }).catch(function () {}),
       fetch("/api/settings").then(readJson).then(function (data) {
         // A user edit after this request started takes precedence over its snapshot.
@@ -6604,6 +7500,12 @@
     items = [];
     itemIndexById = Object.create(null);
     groups = [];
+    resetStreamGroups();
+    virtualActiveCache = false;
+    virtualRecountAt = 0;
+    virtualKey = "";
+    virtualIndex = null;
+    metricsCache = null;
     extraById = Object.create(null);
     togetherByPerson = Object.create(null);
     catalogReady = false;
@@ -6754,8 +7656,13 @@
       return;
     }
     const cell = takeCell(layout.cells, item.id, slot);
+    layout.cells[key] = cell;
+    cell.classList.toggle("selected", selectedIds.indexOf(item.id) >= 0);
     const ranks = slot.indexOf("solo-") === 0 ? request.soloRanks.get(slot.slice(5)) : request.ranks;
     const rank = ranks.get(item.id);
+    if (rank != null) {
+      cell.dataset.streamRank = String(rank);
+    }
     const before = request.background ? Array.prototype.find.call(list.children, function (node) {
       return node !== cell && (ranks.get(node.dataset.id) == null || ranks.get(node.dataset.id) > rank);
     }) : null;
@@ -6768,7 +7675,11 @@
 
   function appendStreamRows(request, rows, soloId) {
     if (!request.current()) { return; }
-    const layout = streamLayout();
+    if (!request.layout || request.layoutRevision !== gridRenderRevision) {
+      request.layout = streamLayout();
+      request.layoutRevision = gridRenderRevision;
+    }
+    const layout = request.layout;
     rows.forEach(function (item) {
       if (soloId) {
         if (itemIndexById[item.id] != null) { return; }
@@ -6787,8 +7698,14 @@
       request.ranks.set(item.id, request.order.length);
       request.order.push(item.id);
       const index = itemIndexById[item.id];
-      if (index == null) { itemIndexById[item.id] = items.length; items.push(item); }
-      else { items[index] = item; }
+      if (index == null) {
+        itemIndexById[item.id] = items.length;
+        items.push(item);
+        addStreamGroupItem(item);
+      } else {
+        items[index] = item;
+        streamGroupsTrusted = false;
+      }
       if (item.favorite) {
         placeStreamCell(layout, request, item, "fav", ensureStreamSection(layout, "favorites", null, request));
       } else if (layout.cells["fav:" + item.id] && layout.cells["fav:" + item.id].isConnected) {
@@ -6798,6 +7715,10 @@
         main.dataset.together = String(items.length);
         placeStreamCell(layout, request, item, "together", ensureStreamSection(layout, "together", null, request));
       } else { delete main.dataset.together; }
+      refreshVirtualActive();
+      if (virtualActiveCache) {
+        return;
+      }
       let list;
       if (!groupDates && arrangeBy === "dates") {
         list = layout.wall;
@@ -6813,15 +7734,21 @@
       }
       placeStreamCell(layout, request, item, "grid", list);
     });
-    groups = arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy);
+    if (virtualActiveCache && streamGroupsTrusted && streamGroupState) {
+      publishStreamGroups();
+    } else {
+      groups = arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy);
+    }
     catalogReady = true;
     stillSuspended = false;
     renderKey = "";
     applyGridMetrics();
-    paintSelection();
     syncSelectionChrome();
     syncViewerIndex();
     syncNavChrome();
+    if (virtualActiveCache) {
+      scheduleVirtualGrid();
+    }
     paintGridStills();
   }
 
@@ -7104,6 +8031,11 @@
     }
     gridSize = next;
     applyGridMetrics();
+    metricsCache = null;
+    virtualKey = "";
+    if (virtualActiveCache) {
+      mountVirtualGrid();
+    }
     rearmHover();
   }
 
@@ -9519,8 +10451,11 @@
       // An empty library keeps refreshing until pictures arrive; an empty
       // *filter result* (nobody has 4 stars yet) does not re-download the catalog.
       const emptyLibrary = !items.length && !hasActiveFilter() && leftoverCount() === 0;
-      const refresh = scanning || (lastActivity && lastActivity.scan && lastActivity.scan.phase === "scan") || emptyLibrary || catalogNeedsStills() || currentView === "settings";
-      return Promise.all([loadJobs(), refresh ? loadCatalog({ background: true }) : refreshIdleSettings()]);
+      const catalogRefresh = scanning || (lastActivity && lastActivity.scan && lastActivity.scan.phase === "scan") || emptyLibrary || currentView === "settings";
+      const follow = catalogRefresh
+        ? loadCatalog({ background: true })
+        : (catalogNeedsStills() ? loadVisibleRenditionStatus() : refreshIdleSettings());
+      return Promise.all([loadJobs(), follow]);
     }).catch(function () {
       showDisconnected(true);
     }).finally(function () {
