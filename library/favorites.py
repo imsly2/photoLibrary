@@ -242,8 +242,21 @@ def windows_reveal_select_arg(path: Path) -> str:
 
 
 def windows_reveal_command(path: Path) -> list[str]:
-    """Argv Explorer accepts: explorer.exe + /select,path (spaces stay inside the arg)."""
+    """Argv pieces before Windows quoting. Do not pass this list to Popen."""
     return ["explorer.exe", windows_reveal_select_arg(path)]
+
+
+def windows_reveal_command_line(path: Path) -> str:
+    """Command line Explorer actually selects.
+
+    Quotes wrap the path only: ``explorer.exe /select,"C:\\Folder With Spaces\\file.MOV"``.
+    Quoting the whole ``/select,path`` argument, which is what
+    ``subprocess.list2cmdline`` does to the argv list, opens Documents.
+    """
+    text = _strip_extended_prefix(str(path))
+    if _windows():
+        text = os.path.normpath(text)
+    return 'explorer.exe /select,"' + text + '"'
 
 
 def open_path_with_default(path: Path) -> bool:
@@ -273,9 +286,7 @@ def open_containing_folder(path: Path) -> bool:
     folder = target.parent
     try:
         if _windows():
-            # List form: /select, glued to the path, no extra quotes in the
-            # arg. A quoted string command still opens Documents on spaces.
-            subprocess.Popen(windows_reveal_command(target))
+            subprocess.Popen(windows_reveal_command_line(target))
             return True
         if sys.platform == "darwin":
             subprocess.Popen(["open", "-R", str(target)])

@@ -190,3 +190,59 @@ screen after 25s, first tiles at 10s, stream still open. Faces moved
 browse test was also loading pictures. The folder row can now say which
 file that is. Detection itself is still one photo at a time. No feature
 Check is closed.
+
+## Person filter, 2026-10-28
+
+The slow start on a person filter was the page emptying the grid, then
+waiting for `/api/items/stream` to take the catalog lock. Face, object,
+and rating work were running. Thumbnails were not fetched again.
+`newMedia` stayed 0. Once the first cells existed, pictures already in
+the browser painted in about a tenth of a second. The long wait, then
+the sudden fast fill, was that lock, then the cache.
+
+Command, read-only, live catalog, faces still running, no server restart:
+
+```
+node tests/perf/filter_switch.cjs docs/features/processing-feedback/Rev1.0/assets/filter-switch-before.json
+```
+
+Unnamed person `person_82c19bbf9bbc`, 2,042 photos. Headless Edge,
+1600×900.
+
+| | Filter | Clear |
+| --- | ---: | ---: |
+| Server-Timing lock | 3,843 ms | 6,788 ms |
+| Snapshot | 94 ms | 79 ms |
+| Prepare | 934 ms | 438 ms |
+| First cell | 4,966 ms | 7,362 ms |
+| First painted picture | 5,075 ms | 7,362 ms |
+| 70 painted | 5,965 ms | 8,332 ms |
+| New thumbnail transfers | 0 | 0 |
+| State at 45s | still loading | still loading |
+
+The grid now keeps the full catalog from the last unfiltered load. A
+person click, or clearing that person, rebuilds the on-screen rows from
+those records and reuses decoded pictures. It does not ask the server
+again for that switch. Same command, after the page script change:
+
+```
+node tests/perf/filter_switch.cjs docs/features/processing-feedback/Rev1.0/assets/filter-switch-local.json
+```
+
+Same person, count 2,064 because faces were still tagging. The click
+itself is included because the rebuild happens inside the click.
+
+| | Filter | Clear |
+| --- | ---: | ---: |
+| Click | 302 ms | 147 ms |
+| First cell | 7 ms | 3 ms |
+| First painted picture | 7 ms | 3 ms |
+| 70 painted | 347 ms | 3 ms |
+| Settled | 487 ms, 119/119 | one cell still blank at 45s, 78/79 |
+| Streams | none | none |
+| New thumbnail transfers | 0 | 0 |
+
+The first pictures now arrive on the fast path. One preview on the
+cleared grid stayed blank, the same class as the known unavailable
+preview. Refresh the open tab. The running server did not need a
+reload. No feature Check is closed.

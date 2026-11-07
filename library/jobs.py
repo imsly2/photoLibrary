@@ -241,14 +241,18 @@ def _queue_state(pending: int, paused: bool, *, live: bool) -> str:
 
 
 def jobs_status(
-    root: Path, paused: bool, items: list[dict[str, Any]] | None = None
+    root: Path,
+    paused: bool,
+    items: list[dict[str, Any]] | None = None,
+    paused_queues: set[str] | None = None,
 ) -> dict[str, Any]:
     queues: list[dict[str, Any]] = []
     processing = False
+    held = paused_queues or set()
     if items is not None:
-        return _jobs_status_loaded(root, paused, queues, processing, items)
+        return _jobs_status_loaded(root, paused, queues, processing, items, held)
     with reading(root):
-        return _jobs_status_loaded(root, paused, queues, processing, None)
+        return _jobs_status_loaded(root, paused, queues, processing, None, held)
 
 
 def _jobs_status_loaded(
@@ -257,14 +261,17 @@ def _jobs_status_loaded(
     queues: list[dict[str, Any]],
     processing: bool,
     items: list[dict[str, Any]] | None,
+    paused_queues: set[str],
 ) -> dict[str, Any]:
     for queue_id in QUEUE_ORDER:
         pending, done, error = _queue_counts(root, queue_id, items)
         available = _queue_available(root, queue_id)
-        live = available and not paused
-        state = "unavailable" if pending > 0 and not available else _queue_state(pending, paused, live=live)
+        queue_paused = bool(paused) or queue_id in paused_queues
+        live = available and not queue_paused
+        state = "unavailable" if pending > 0 and not available else _queue_state(pending, queue_paused, live=live)
         if state == "running":
             processing = True
+        total = done + pending
         queues.append(
             {
                 "id": queue_id,
@@ -272,6 +279,7 @@ def _jobs_status_loaded(
                 "pending": pending,
                 "done": done,
                 "error": error,
+                "percent": None if total <= 0 else int(100 * done / total),
                 "state": state,
                 "available": available,
             }
@@ -279,20 +287,27 @@ def _jobs_status_loaded(
     return {
         "ok": True,
         "paused": bool(paused),
+        "pausedQueues": sorted(paused_queues),
+        "queuePause": True,
         "processing": processing,
         "queues": queues,
     }
 
 
-def read_jobs_action(body: Any) -> str:
+def read_jobs_action(body: Any) -> tuple[str, str | None]:
     if body is None:
         body = {}
     if not isinstance(body, dict):
         raise fail("invalid-argument")
-    extra = set(body) - {"action"}
+    extra = set(body) - {"action", "queue"}
     if extra:
         raise fail("invalid-argument")
     action = body.get("action")
     if action not in {"pause", "resume", "rerun-faces"}:
         raise fail("invalid-argument")
-    return action
+    queue = body.get("queue")
+    if queue is None:
+        return action, None
+    if action == "rerun-faces" or type(queue) is not str or queue not in QUEUE_ORDER:
+        raise fail("invalid-argument")
+    return action, queue

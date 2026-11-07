@@ -19,7 +19,7 @@ from library.media import (
 from library.records import empty_metadata, read_metadata
 
 ISO6709_RE = re.compile(
-    r"^([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)\/$"
+    r"^([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)(?:([+-]\d+(?:\.\d+)?))?/?$"
 )
 EXIF_DT_RE = re.compile(
     r"^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2}):(\d{2})$"
@@ -504,10 +504,62 @@ def _video_from_ffprobe(path: Path) -> dict[str, Any]:
     return {"metadata": meta, "exifCapturedAt": captured}
 
 
+def _heif_tiff(data: bytes) -> bytes | None:
+    """TIFF inside a HEIC Exif item. A box name can contain the letters Exif."""
+    token = b"Exif\x00\x00"
+    start = 0
+    while True:
+        at = data.find(token, start)
+        if at < 0:
+            return None
+        tiff = data[at + len(token) :]
+        if len(tiff) >= 8 and tiff[:4] in {b"II*\x00", b"MM\x00*"}:
+            return tiff
+        start = at + 4
+
+
+def _apply_tiff_fields(meta: dict[str, Any], tiff: bytes) -> str | None:
+    parsed = _parse_tiff(tiff)
+    ifd0 = parsed.get("ifd0") or {}
+    exif = parsed.get("exif") or {}
+    orientation = _int_in_range(ifd0.get(TAG_ORIENTATION), 1, 8)
+    if orientation is not None:
+        meta["orientation"] = orientation
+    camera = _join_name(_text(ifd0.get(TAG_MAKE)), _text(ifd0.get(TAG_MODEL)))
+    if camera:
+        meta["camera"] = camera
+    lens = _join_name(_text(exif.get(TAG_LENS_MAKE)), _text(exif.get(TAG_LENS_MODEL)))
+    if lens:
+        meta["lens"] = lens
+    _apply_gps(meta, parsed.get("gps") or {})
+    captured = parse_exif_datetime(
+        _text(exif.get(TAG_DATETIME_ORIGINAL)),
+        _text(exif.get(TAG_OFFSET_ORIGINAL)),
+    )
+    if captured is None:
+        captured = parse_exif_datetime(
+            _text(exif.get(TAG_DATETIME_DIGITIZED)),
+            _text(exif.get(TAG_OFFSET_DIGITIZED)),
+        )
+    return captured
+
+
 def _heif_probe(path: Path, data: bytes | None = None) -> dict[str, Any]:
     if not heif_has_valid_brand(path, data):
         return {"metadata": empty_metadata(), "exifCapturedAt": None}
-    return _still_from_probe(path)
+    sized = _size_from_ffprobe(path)
+    meta = sized["metadata"]
+    blob = data
+    if blob is None:
+        try:
+            blob = path.read_bytes()
+        except OSError:
+            blob = b""
+    captured = None
+    tiff = _heif_tiff(blob)
+    if tiff is not None:
+        captured = _apply_tiff_fields(meta, tiff)
+    return {"metadata": meta, "exifCapturedAt": captured}
 
 
 def read_capture(path: Path, data: bytes | None = None) -> tuple[str, str, dict[str, Any]]:

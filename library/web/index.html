@@ -21,6 +21,7 @@
           <option value="newest" data-i18n="newest">Newest</option>
           <option value="oldest" data-i18n="oldest">Oldest</option>
           <option value="name" data-i18n="name">Name</option>
+          <option value="size" data-i18n="sortSize">Size</option>
           <option value="location" data-i18n="location">Location</option>
           <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
@@ -31,6 +32,7 @@
           <option value="date" data-i18n="date">Date</option>
           <option value="location" data-i18n="location">Location</option>
           <option value="name" data-i18n="name">Name</option>
+          <option value="size" data-i18n="sortSize">Size</option>
           <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
       </label>
@@ -65,6 +67,7 @@
       <button type="button" id="filter-photos" class="toolbar-toggle" data-kind="photo,live" aria-pressed="false" data-i18n="photos">Photos</button>
       <button type="button" id="filter-videos" class="toolbar-toggle" aria-pressed="false" data-i18n="videos">Videos</button>
       <button type="button" id="filter-favorites" class="toolbar-toggle" aria-pressed="false" data-i18n="favorites">Favorites</button>
+      <button type="button" id="filter-with-people" class="toolbar-toggle" aria-pressed="false" data-i18n="withPeople">With people</button>
       <button type="button" id="filter-recent" class="toolbar-toggle" aria-pressed="false" data-i18n="recentlyAdded">Recently added</button>
       <button type="button" id="filter-duplicates" data-i18n="duplicates">Duplicates</button>
       <button type="button" id="filter-stars" class="toolbar-toggle" aria-pressed="false" data-i18n="fourStarsUp">4 stars and up</button>
@@ -82,11 +85,12 @@
     <button type="button" id="clear-filters" hidden data-i18n="clearAll">Clear all</button>
     <label class="toolbar-field">
       <span data-i18n="group">Group</span>
-      <select id="arrange" aria-label="Group by Date People Places or Tags" data-i18n-aria="groupBy">
+      <select id="arrange" aria-label="Group by Date People Places Tags or Off" data-i18n-aria="groupBy">
         <option value="dates" data-i18n="dates">Date</option>
         <option value="people" data-i18n="people">People</option>
         <option value="places" data-i18n="places">Places</option>
         <option value="tags" data-i18n="tags">Tags</option>
+        <option value="off" data-i18n="off">Off</option>
       </select>
     </label>
     <div id="tag-actions">
@@ -195,11 +199,21 @@
       </div>
     </div>
     <p id="unavailable-banner" hidden aria-live="polite" data-i18n="originalMissing">Original is not on this computer</p>
+    <p id="viewer-caption"></p>
     <div id="viewer-body">
       <div id="viewer-stage">
         <img id="viewer-image" alt="">
         <img id="viewer-original" alt="" hidden>
         <video id="viewer-video" hidden playsinline></video>
+        <div id="viewer-play-flash" aria-hidden="true">
+          <svg id="viewer-play-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <polygon points="24,14 24,50 52,32"></polygon>
+          </svg>
+          <svg id="viewer-pause-mark" viewBox="0 0 64 64" hidden aria-hidden="true">
+            <rect x="18" y="14" width="9" height="36"></rect>
+            <rect x="37" y="14" width="9" height="36"></rect>
+          </svg>
+        </div>
         <p id="viewer-placeholder" hidden data-i18n="previewUnavailable">Preview is not available</p>
         <nav id="viewer-stack" hidden></nav>
       </div>
@@ -436,6 +450,7 @@
           <option value="date" data-i18n="date">Date</option>
           <option value="location" data-i18n="location">Location</option>
           <option value="name" data-i18n="name">Name</option>
+          <option value="size" data-i18n="sortSize">Size</option>
           <option value="rating" data-i18n="sortRating">Rating</option>
         </select>
       </label>
@@ -561,6 +576,7 @@
           <dd id="import-iphone-missing">0</dd>
         </div>
       </dl>
+      <p id="import-iphone-size">Size 0 GB</p>
       <p id="import-iphone-kept" hidden></p>
       <p id="import-iphone-pace" aria-live="polite"></p>
     </div>

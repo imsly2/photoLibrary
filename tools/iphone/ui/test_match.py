@@ -52,6 +52,36 @@ class MatchTests(unittest.TestCase):
             self.assertEqual(by_source["201508_a/IMG_0520.JPG"].dest_relative, "201508_a/IMG_0520.JPG")
             self.assertNotIn("2026-05", by_source["201508_a/IMG_0520.JPG"].dest_relative or "")
 
+    def test_mirror_counts_same_name_and_size_in_another_folder_as_already_here(self) -> None:
+        when = datetime(2026, 10, 1)
+        with TemporaryDirectory() as raw:
+            dest = Path(raw)
+            saved = dest / "202601_a" / "IMG_4807.AAE"
+            saved.parent.mkdir()
+            saved.write_bytes(b"same-bytes")
+            partial = dest / "202508_a" / "IMG_3825.HEIC"
+            partial.parent.mkdir()
+            partial.write_bytes(b"short")
+            items = plan_mirror(
+                [
+                    PhoneFile("202610_a/IMG_4807.AAE", saved.stat().st_size, when),
+                    PhoneFile("202606_a/IMG_4807.AAE", saved.stat().st_size, when),
+                    PhoneFile("202508_a/IMG_3825.HEIC", 99, when),
+                    PhoneFile("202610_a/IMG_9000.JPG", 4, when),
+                ],
+                dest,
+            )
+            by_source = {item.source_path: item for item in items}
+            first = by_source["202610_a/IMG_4807.AAE"]
+            self.assertEqual(first.action, "skip")
+            self.assertEqual(first.local_relative, "202601_a/IMG_4807.AAE")
+            second = by_source["202606_a/IMG_4807.AAE"]
+            self.assertEqual(second.action, "copy")
+            self.assertEqual(second.dest_relative, "202606_a/IMG_4807.AAE")
+            self.assertEqual(by_source["202508_a/IMG_3825.HEIC"].action, "keep")
+            self.assertEqual(by_source["202610_a/IMG_9000.JPG"].action, "copy")
+            self.assertEqual(by_source["202610_a/IMG_9000.JPG"].dest_relative, "202610_a/IMG_9000.JPG")
+
     def test_explorer_repeat_is_counted_once(self) -> None:
         from ui.explorer import _files_from_lines
 

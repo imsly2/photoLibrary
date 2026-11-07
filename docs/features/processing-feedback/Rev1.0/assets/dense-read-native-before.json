@@ -1,0 +1,3732 @@
+{
+  "note": "Separate process, concurrent live writers; read-only filesystem guard. No live lock wait measured.",
+  "phases": [
+    {
+      "name": "recover",
+      "ms": 203.3732000272721,
+      "error": null,
+      "functions": [
+        {
+          "file": "service.py",
+          "line": 75,
+          "function": "recover",
+          "calls": 1,
+          "selfMs": 0.0512,
+          "totalMs": 201.46460000000002
+        },
+        {
+          "file": "scan.py",
+          "line": 416,
+          "function": "settle_interrupted_scans",
+          "calls": 1,
+          "selfMs": 1.1549000000000003,
+          "totalMs": 196.602
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 218,
+          "function": "try_load_source",
+          "calls": 2,
+          "selfMs": 0.021300000000000003,
+          "totalMs": 195.1862
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 234,
+          "function": "_merged_source",
+          "calls": 2,
+          "selfMs": 5.3376,
+          "totalMs": 182.84340000000003
+        },
+        {
+          "file": "records.py",
+          "line": 612,
+          "function": "read_source",
+          "calls": 2,
+          "selfMs": 12.808200000000001,
+          "totalMs": 140.43080000000003
+        },
+        {
+          "file": "records.py",
+          "line": 550,
+          "function": "read_file_entry",
+          "calls": 16548,
+          "selfMs": 59.37630000000001,
+          "totalMs": 127.5714
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 2,
+          "selfMs": 0.0201,
+          "totalMs": 35.47540000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 2,
+          "selfMs": 0.4442,
+          "totalMs": 35.1499
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 2,
+          "selfMs": 0.0134,
+          "totalMs": 30.177200000000003
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 2,
+          "selfMs": 0.0216,
+          "totalMs": 30.161900000000003
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 2,
+          "selfMs": 30.1197,
+          "totalMs": 30.1197
+        },
+        {
+          "file": "records.py",
+          "line": 128,
+          "function": "_exact_keys",
+          "calls": 16552,
+          "selfMs": 23.550300000000004,
+          "totalMs": 27.002900000000004
+        },
+        {
+          "file": "records.py",
+          "line": 145,
+          "function": "_str",
+          "calls": 66206,
+          "selfMs": 22.022,
+          "totalMs": 22.022
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 268,
+          "function": "_source_view",
+          "calls": 2,
+          "selfMs": 12.3149,
+          "totalMs": 12.3215
+        },
+        {
+          "file": "records.py",
+          "line": 122,
+          "function": "_require_dict",
+          "calls": 16554,
+          "selfMs": 5.5434,
+          "totalMs": 7.7694
+        },
+        {
+          "file": "records.py",
+          "line": 153,
+          "function": "_null_or_str",
+          "calls": 33098,
+          "selfMs": 6.900600000000001,
+          "totalMs": 6.900600000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 2,
+          "selfMs": 2.8919,
+          "totalMs": 4.5285
+        },
+        {
+          "file": "records.py",
+          "line": 167,
+          "function": "_int",
+          "calls": 16553,
+          "selfMs": 4.526700000000001,
+          "totalMs": 4.526700000000001
+        },
+        {
+          "file": "atomic.py",
+          "line": 311,
+          "function": "recover_transactions",
+          "calls": 1,
+          "selfMs": 0.0128,
+          "totalMs": 3.9627999999999997
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'keys' of 'dict' objects>",
+          "calls": 16552,
+          "selfMs": 3.4526000000000003,
+          "totalMs": 3.4526000000000003
+        },
+        {
+          "file": "history.py",
+          "line": 420,
+          "function": "seal_open_entries",
+          "calls": 1,
+          "selfMs": 0.0393,
+          "totalMs": 2.4650000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.isinstance>",
+          "calls": 16969,
+          "selfMs": 2.3072,
+          "totalMs": 2.3072
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 35,
+          "selfMs": 0.0216,
+          "totalMs": 1.9424000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 35,
+          "selfMs": 1.5453000000000001,
+          "totalMs": 1.9208
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.sorted>",
+          "calls": 7,
+          "selfMs": 0.0396,
+          "totalMs": 1.7472
+        }
+      ]
+    },
+    {
+      "name": "snapshot-without-recovery",
+      "ms": 12098.754500038922,
+      "error": null,
+      "functions": [
+        {
+          "file": "service.py",
+          "line": 378,
+          "function": "snapshot_catalog",
+          "calls": 1,
+          "selfMs": 0.6795000000000001,
+          "totalMs": 12090.0223
+        },
+        {
+          "file": "item_index.py",
+          "line": 238,
+          "function": "iter_items",
+          "calls": 1,
+          "selfMs": 9.6453,
+          "totalMs": 12066.360400000001
+        },
+        {
+          "file": "item_index.py",
+          "line": 125,
+          "function": "resync",
+          "calls": 1,
+          "selfMs": 33.345600000000005,
+          "totalMs": 12052.9035
+        },
+        {
+          "file": "item_index.py",
+          "line": 181,
+          "function": "_folder_record_sigs",
+          "calls": 1,
+          "selfMs": 114.179,
+          "totalMs": 6234.367300000001
+        },
+        {
+          "file": "item_store.py",
+          "line": 184,
+          "function": "folder_records",
+          "calls": 1,
+          "selfMs": 0.37410000000000004,
+          "totalMs": 5784.5151000000005
+        },
+        {
+          "file": "item_store.py",
+          "line": 90,
+          "function": "_state",
+          "calls": 1,
+          "selfMs": 0.24430000000000002,
+          "totalMs": 5784.141
+        },
+        {
+          "file": "item_store.py",
+          "line": 99,
+          "function": "_build",
+          "calls": 1,
+          "selfMs": 137.0028,
+          "totalMs": 5783.886600000001
+        },
+        {
+          "file": "item_index.py",
+          "line": 281,
+          "function": "_parse_into",
+          "calls": 14608,
+          "selfMs": 88.45660000000001,
+          "totalMs": 5771.4922
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 14611,
+          "selfMs": 44.723000000000006,
+          "totalMs": 3176.1483000000003
+        },
+        {
+          "file": "item_store.py",
+          "line": 157,
+          "function": "_read_owner",
+          "calls": 14608,
+          "selfMs": 99.0532,
+          "totalMs": 3056.2477
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 29219,
+          "selfMs": 2211.4616,
+          "totalMs": 2887.3148
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 29219,
+          "selfMs": 94.7182,
+          "totalMs": 2747.3246000000004
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 14608,
+          "selfMs": 241.25140000000002,
+          "totalMs": 2389.6982000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 29219,
+          "selfMs": 1569.1063000000001,
+          "totalMs": 1663.8214
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2872,
+          "selfMs": 37.3927,
+          "totalMs": 1209.708
+        },
+        {
+          "file": "folder_library.py",
+          "line": 120,
+          "function": "library_dir",
+          "calls": 14614,
+          "selfMs": 70.01,
+          "totalMs": 1143.0307000000003
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 29219,
+          "selfMs": 61.265100000000004,
+          "totalMs": 988.7850000000001
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2872,
+          "selfMs": 23.3485,
+          "totalMs": 971.6650000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 116951,
+          "selfMs": 179.2524,
+          "totalMs": 925.8632000000001
+        },
+        {
+          "file": "portable.py",
+          "line": 68,
+          "function": "folder_for_source",
+          "calls": 14612,
+          "selfMs": 24.9262,
+          "totalMs": 909.7904000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 29219,
+          "selfMs": 90.56530000000001,
+          "totalMs": 909.7022000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2872,
+          "selfMs": 239.1665,
+          "totalMs": 883.7021000000001
+        },
+        {
+          "file": "item_store.py",
+          "line": 144,
+          "function": "_record_files",
+          "calls": 14610,
+          "selfMs": 64.54310000000001,
+          "totalMs": 843.9193
+        },
+        {
+          "file": "_abc.py",
+          "line": 460,
+          "function": "is_dir",
+          "calls": 14617,
+          "selfMs": 25.201900000000002,
+          "totalMs": 807.4889000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 14628,
+          "selfMs": 10.313500000000001,
+          "totalMs": 777.3893
+        }
+      ]
+    },
+    {
+      "name": "all-prepare-0",
+      "ms": 2316.2858000723645,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.26030000000000003,
+          "totalMs": 2314.517
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 37.640100000000004,
+          "totalMs": 2314.2567
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 178.05610000000001,
+          "totalMs": 1319.4578000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 43.41610000000001,
+          "totalMs": 785.5913
+        },
+        {
+          "file": "stacks.py",
+          "line": 27,
+          "function": "_parent_key",
+          "calls": 29213,
+          "selfMs": 97.114,
+          "totalMs": 560.2660999999999
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 68.93260000000001,
+          "totalMs": 504.58910000000003
+        },
+        {
+          "file": "stacks.py",
+          "line": 45,
+          "function": "_parent_folder",
+          "calls": 14608,
+          "selfMs": 44.5269,
+          "totalMs": 419.2362
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 14.7749,
+          "totalMs": 413.1386
+        },
+        {
+          "file": "_local.py",
+          "line": 329,
+          "function": "parent",
+          "calls": 14608,
+          "selfMs": 22.2682,
+          "totalMs": 299.618
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 5.851500000000001,
+          "totalMs": 257.7948
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 82.0222,
+          "totalMs": 232.0528
+        },
+        {
+          "file": "stacks.py",
+          "line": 55,
+          "function": "_bare_stem",
+          "calls": 14506,
+          "selfMs": 26.586100000000002,
+          "totalMs": 231.41830000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 880596,
+          "selfMs": 213.8902,
+          "totalMs": 213.8902
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 5.993500000000001,
+          "totalMs": 211.62120000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 15797,
+          "selfMs": 36.192600000000006,
+          "totalMs": 169.443
+        },
+        {
+          "file": "_local.py",
+          "line": 257,
+          "function": "_parse_path",
+          "calls": 30303,
+          "selfMs": 93.46370000000002,
+          "totalMs": 168.42610000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 498,
+          "function": "__init__",
+          "calls": 47289,
+          "selfMs": 51.13640000000001,
+          "totalMs": 168.06380000000001
+        },
+        {
+          "file": "_abc.py",
+          "line": 194,
+          "function": "stem",
+          "calls": 14506,
+          "selfMs": 17.317000000000004,
+          "totalMs": 141.6571
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 90.3385,
+          "totalMs": 135.05140000000003
+        },
+        {
+          "file": "_local.py",
+          "line": 245,
+          "function": "_from_parsed_parts",
+          "calls": 14608,
+          "selfMs": 13.9208,
+          "totalMs": 132.30820000000003
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.5915000000000001,
+          "totalMs": 118.66230000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 346,
+          "function": "name",
+          "calls": 14506,
+          "selfMs": 6.9546,
+          "totalMs": 117.7355
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.8864000000000001,
+          "totalMs": 117.0708
+        },
+        {
+          "file": "_local.py",
+          "line": 117,
+          "function": "__init__",
+          "calls": 47289,
+          "selfMs": 73.64760000000001,
+          "totalMs": 116.9274
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1192,
+          "selfMs": 77.2944,
+          "totalMs": 116.33650000000002
+        }
+      ]
+    },
+    {
+      "name": "all-first-0",
+      "ms": 10.606999974697828,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0026,
+          "totalMs": 9.4625
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0021000000000000003,
+          "totalMs": 9.459900000000001
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0087,
+          "totalMs": 9.4578
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0268,
+          "totalMs": 9.447600000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.020300000000000002,
+          "totalMs": 9.3954
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.013600000000000001,
+          "totalMs": 8.0941
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.003,
+          "totalMs": 8.0836
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0142,
+          "totalMs": 8.067400000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0046,
+          "totalMs": 7.8777
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0039,
+          "totalMs": 7.781000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.0162,
+          "totalMs": 7.776600000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 135,
+          "function": "resolve_volume_mount",
+          "calls": 1,
+          "selfMs": 0.0073,
+          "totalMs": 7.718100000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 168,
+          "function": "_process_mount",
+          "calls": 1,
+          "selfMs": 0.0108,
+          "totalMs": 7.6835
+        },
+        {
+          "file": "volumes.py",
+          "line": 209,
+          "function": "_windows_mount_for_serial",
+          "calls": 1,
+          "selfMs": 0.0106,
+          "totalMs": 7.6683
+        },
+        {
+          "file": "volumes.py",
+          "line": 221,
+          "function": "_windows_mount_for_serial_uncounted",
+          "calls": 1,
+          "selfMs": 0.0769,
+          "totalMs": 7.657000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 73,
+          "function": "windows_volume",
+          "calls": 8,
+          "selfMs": 7.155900000000001,
+          "totalMs": 7.4674000000000005
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.017900000000000003,
+          "totalMs": 1.0609
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0193,
+          "totalMs": 1.0057
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 12,
+          "selfMs": 0.5478000000000001,
+          "totalMs": 0.6320000000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 10,
+          "selfMs": 0.0079,
+          "totalMs": 0.5528
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.0152,
+          "totalMs": 0.48180000000000006
+        },
+        {
+          "file": "_local.py",
+          "line": 664,
+          "function": "resolve",
+          "calls": 2,
+          "selfMs": 0.005,
+          "totalMs": 0.38920000000000005
+        },
+        {
+          "file": "favorites.py",
+          "line": 194,
+          "function": "existing_folder",
+          "calls": 1,
+          "selfMs": 0.0128,
+          "totalMs": 0.3844
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 705,
+          "function": "realpath",
+          "calls": 2,
+          "selfMs": 0.0159,
+          "totalMs": 0.36860000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 4,
+          "selfMs": 0.3294,
+          "totalMs": 0.3294
+        }
+      ]
+    },
+    {
+      "name": "person-prepare-0",
+      "ms": 857.5073999818414,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.3612,
+          "totalMs": 856.6526000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 23.448,
+          "totalMs": 856.2914000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 40.3085,
+          "totalMs": 692.9939
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 53.221700000000006,
+          "totalMs": 459.48240000000004
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 13.5271,
+          "totalMs": 385.29260000000005
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 5.148300000000001,
+          "totalMs": 240.4486
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 3.8293000000000004,
+          "totalMs": 192.8369
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 65.6052,
+          "totalMs": 190.2697
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.5190000000000001,
+          "totalMs": 114.90790000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.8659000000000001,
+          "totalMs": 113.3889
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1189,
+          "selfMs": 73.372,
+          "totalMs": 112.52300000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 368,
+          "selfMs": 1.9593000000000003,
+          "totalMs": 106.20420000000001
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 34.293200000000006,
+          "totalMs": 93.1915
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1189,
+          "selfMs": 3.5275000000000003,
+          "totalMs": 86.9068
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1189,
+          "selfMs": 82.9328,
+          "totalMs": 85.9488
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 345697,
+          "selfMs": 69.2924,
+          "totalMs": 69.2924
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 16.504,
+          "totalMs": 66.58460000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1189,
+          "selfMs": 60.8604,
+          "totalMs": 64.4205
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 28.123,
+          "totalMs": 47.4619
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 10.295100000000001,
+          "totalMs": 45.1606
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 12.3505,
+          "totalMs": 41.745900000000006
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 2378,
+          "selfMs": 2.2305,
+          "totalMs": 40.4412
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 2378,
+          "selfMs": 6.4786,
+          "totalMs": 38.2107
+        },
+        {
+          "file": "rating.py",
+          "line": 159,
+          "function": "empty_quality",
+          "calls": 13859,
+          "selfMs": 11.901700000000002,
+          "totalMs": 31.0367
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 1189,
+          "selfMs": 4.3119000000000005,
+          "totalMs": 29.6433
+        }
+      ]
+    },
+    {
+      "name": "person-first-0",
+      "ms": 3.4030000679194927,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0035000000000000005,
+          "totalMs": 2.4694000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0012000000000000001,
+          "totalMs": 2.4659
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.006300000000000001,
+          "totalMs": 2.4647
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.025400000000000002,
+          "totalMs": 2.457
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.022400000000000003,
+          "totalMs": 2.4053
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0051,
+          "totalMs": 1.3175000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.025300000000000003,
+          "totalMs": 1.3119
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 3,
+          "selfMs": 0.035,
+          "totalMs": 1.1595000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 3,
+          "selfMs": 0.0233,
+          "totalMs": 0.9778
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 3,
+          "selfMs": 0.2311,
+          "totalMs": 0.8581000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1539,
+          "selfMs": 0.4623,
+          "totalMs": 0.6270000000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.0141,
+          "totalMs": 0.5359
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 8,
+          "selfMs": 0.4359,
+          "totalMs": 0.49150000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.01,
+          "totalMs": 0.48390000000000005
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0104,
+          "totalMs": 0.48360000000000003
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 0.4771
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0092,
+          "totalMs": 0.4623
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 7,
+          "selfMs": 0.005,
+          "totalMs": 0.45470000000000005
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.0142,
+          "totalMs": 0.39890000000000003
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 4,
+          "selfMs": 0.0086,
+          "totalMs": 0.3291
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0041,
+          "totalMs": 0.2921
+        },
+        {
+          "file": "_local.py",
+          "line": 664,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.0026,
+          "totalMs": 0.1763
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1592,
+          "selfMs": 0.174,
+          "totalMs": 0.174
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 705,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.009300000000000001,
+          "totalMs": 0.165
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.1442,
+          "totalMs": 0.1442
+        }
+      ]
+    },
+    {
+      "name": "person-name-prepare-0",
+      "ms": 900.7824999280274,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.4978000000000001,
+          "totalMs": 899.7704000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 23.591900000000003,
+          "totalMs": 899.2726000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 42.2387,
+          "totalMs": 726.4767
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 54.4607,
+          "totalMs": 477.4354
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 13.8992,
+          "totalMs": 401.08340000000004
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 5.2601,
+          "totalMs": 241.60700000000003
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 71.59360000000001,
+          "totalMs": 203.6758
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 4.0419,
+          "totalMs": 197.48990000000003
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.7569000000000001,
+          "totalMs": 121.10240000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.9731000000000001,
+          "totalMs": 119.3455
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1189,
+          "selfMs": 76.9601,
+          "totalMs": 118.3724
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 368,
+          "selfMs": 2.1870000000000003,
+          "totalMs": 117.77340000000001
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 35.821600000000004,
+          "totalMs": 99.072
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1189,
+          "selfMs": 85.1008,
+          "totalMs": 88.221
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1189,
+          "selfMs": 3.8748000000000005,
+          "totalMs": 85.592
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 346721,
+          "selfMs": 73.6041,
+          "totalMs": 73.6041
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 17.1441,
+          "totalMs": 69.50019999999999
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1189,
+          "selfMs": 58.7907,
+          "totalMs": 62.437200000000004
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 30.4724,
+          "totalMs": 49.716800000000006
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 12.3803,
+          "totalMs": 46.6084
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 13.5127,
+          "totalMs": 46.2928
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 2378,
+          "selfMs": 2.4963,
+          "totalMs": 42.71770000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 2378,
+          "selfMs": 6.931100000000001,
+          "totalMs": 40.2214
+        },
+        {
+          "file": "rating.py",
+          "line": 159,
+          "function": "empty_quality",
+          "calls": 13859,
+          "selfMs": 12.0676,
+          "totalMs": 33.5229
+        },
+        {
+          "file": "service.py",
+          "line": 1397,
+          "function": "_entity_token_match",
+          "calls": 14608,
+          "selfMs": 15.6828,
+          "totalMs": 32.7801
+        }
+      ]
+    },
+    {
+      "name": "person-name-first-0",
+      "ms": 4.370199982076883,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0044,
+          "totalMs": 3.031
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0019,
+          "totalMs": 3.0266
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0067,
+          "totalMs": 3.0247000000000006
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.048900000000000006,
+          "totalMs": 3.0163
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.0293,
+          "totalMs": 2.9002000000000003
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.007700000000000001,
+          "totalMs": 1.5205000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0472,
+          "totalMs": 1.5122
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2,
+          "selfMs": 0.050600000000000006,
+          "totalMs": 1.3364000000000003
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2,
+          "selfMs": 0.0483,
+          "totalMs": 1.0693
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2,
+          "selfMs": 0.2454,
+          "totalMs": 0.897
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.018500000000000003,
+          "totalMs": 0.7482000000000001
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0146,
+          "totalMs": 0.6761
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1026,
+          "selfMs": 0.46240000000000003,
+          "totalMs": 0.6516
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 8,
+          "selfMs": 0.5135000000000001,
+          "totalMs": 0.5937000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0119,
+          "totalMs": 0.5664
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.0188,
+          "totalMs": 0.5571
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.003,
+          "totalMs": 0.556
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 7,
+          "selfMs": 0.007700000000000001,
+          "totalMs": 0.5447000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.013600000000000001,
+          "totalMs": 0.5371
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 4,
+          "selfMs": 0.011300000000000001,
+          "totalMs": 0.3705
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0038,
+          "totalMs": 0.30900000000000005
+        },
+        {
+          "file": "_local.py",
+          "line": 664,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.0032,
+          "totalMs": 0.241
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 705,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.0134,
+          "totalMs": 0.22690000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.1976,
+          "totalMs": 0.1976
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1048,
+          "selfMs": 0.19560000000000002,
+          "totalMs": 0.19560000000000002
+        }
+      ]
+    },
+    {
+      "name": "all-prepare-1",
+      "ms": 1719.270100002177,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.4015,
+          "totalMs": 1718.5312000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 136.4721,
+          "totalMs": 1718.1297000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 41.9707,
+          "totalMs": 789.0975
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 158.9908,
+          "totalMs": 635.4017000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 87.2621,
+          "totalMs": 526.6243000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 15.525400000000001,
+          "totalMs": 415.9724
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 6.369000000000001,
+          "totalMs": 257.3359
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 75.6926,
+          "totalMs": 217.3428
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 880585,
+          "selfMs": 214.00130000000001,
+          "totalMs": 214.00130000000001
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 4.3055,
+          "totalMs": 204.8736
+        },
+        {
+          "file": "stacks.py",
+          "line": 27,
+          "function": "_parent_key",
+          "calls": 29213,
+          "selfMs": 88.9741,
+          "totalMs": 133.4074
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 77.1649,
+          "totalMs": 124.52560000000001
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.6937,
+          "totalMs": 121.76960000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.9293000000000001,
+          "totalMs": 120.07590000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1189,
+          "selfMs": 77.1616,
+          "totalMs": 119.1466
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 368,
+          "selfMs": 2.0935,
+          "totalMs": 113.84290000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 60,
+          "function": "_stem_parts",
+          "calls": 27256,
+          "selfMs": 38.308800000000005,
+          "totalMs": 102.99810000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1189,
+          "selfMs": 3.8951000000000002,
+          "totalMs": 92.62250000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1189,
+          "selfMs": 87.8604,
+          "totalMs": 91.04100000000001
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 17.4301,
+          "totalMs": 72.93
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1189,
+          "selfMs": 64.34630000000001,
+          "totalMs": 68.1842
+        },
+        {
+          "file": "stacks.py",
+          "line": 17,
+          "function": "_parse_captured",
+          "calls": 25302,
+          "selfMs": 30.064500000000002,
+          "totalMs": 61.24850000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'sort' of 'list' objects>",
+          "calls": 29220,
+          "selfMs": 20.991300000000003,
+          "totalMs": 56.086800000000004
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 31.172300000000003,
+          "totalMs": 52.70850000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'match' of 're.Pattern' objects>",
+          "calls": 29634,
+          "selfMs": 48.5026,
+          "totalMs": 48.5026
+        }
+      ]
+    },
+    {
+      "name": "all-first-1",
+      "ms": 1.7268999945372343,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 0.9733
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0017000000000000001,
+          "totalMs": 0.9705
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0129,
+          "totalMs": 0.9688
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.022400000000000003,
+          "totalMs": 0.9544000000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.014000000000000002,
+          "totalMs": 0.9054000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.011600000000000001,
+          "totalMs": 0.4779
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0027,
+          "totalMs": 0.46590000000000004
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0101,
+          "totalMs": 0.45220000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 6,
+          "selfMs": 0.3669,
+          "totalMs": 0.39390000000000003
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.004000000000000001,
+          "totalMs": 0.30610000000000004
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 0.24380000000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.019200000000000002,
+          "totalMs": 0.2187
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.0061,
+          "totalMs": 0.198
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.011700000000000002,
+          "totalMs": 0.1515
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0044,
+          "totalMs": 0.14770000000000003
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0211,
+          "totalMs": 0.1429
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.0055000000000000005,
+          "totalMs": 0.14010000000000003
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0024000000000000002,
+          "totalMs": 0.09530000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.011700000000000002,
+          "totalMs": 0.0926
+        },
+        {
+          "file": "media.py",
+          "line": 137,
+          "function": "mtime_iso",
+          "calls": 1,
+          "selfMs": 0.007500000000000001,
+          "totalMs": 0.06780000000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 4,
+          "selfMs": 0.016900000000000002,
+          "totalMs": 0.0674
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 8,
+          "selfMs": 0.0125,
+          "totalMs": 0.0536
+        },
+        {
+          "file": "records.py",
+          "line": 446,
+          "function": "_read_quality_field",
+          "calls": 1,
+          "selfMs": 0.0017000000000000001,
+          "totalMs": 0.045000000000000005
+        },
+        {
+          "file": "rating.py",
+          "line": 178,
+          "function": "read_quality",
+          "calls": 1,
+          "selfMs": 0.0105,
+          "totalMs": 0.043300000000000005
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 1,
+          "selfMs": 0.0064,
+          "totalMs": 0.0396
+        }
+      ]
+    },
+    {
+      "name": "person-prepare-1",
+      "ms": 890.5607999768108,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.7321000000000001,
+          "totalMs": 889.3904
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 25.094600000000003,
+          "totalMs": 888.6583
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 42.402300000000004,
+          "totalMs": 719.6319
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 55.202,
+          "totalMs": 471.52600000000007
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 14.358800000000002,
+          "totalMs": 394.34240000000005
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 5.426,
+          "totalMs": 244.5438
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 68.4954,
+          "totalMs": 202.6677
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 3.8472000000000004,
+          "totalMs": 197.3583
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.5519,
+          "totalMs": 116.8034
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.9259000000000001,
+          "totalMs": 115.25150000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1189,
+          "selfMs": 75.909,
+          "totalMs": 114.32560000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 368,
+          "selfMs": 2.0515,
+          "totalMs": 106.4335
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 36.133700000000005,
+          "totalMs": 97.82260000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1189,
+          "selfMs": 3.6954000000000002,
+          "totalMs": 89.004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1189,
+          "selfMs": 83.8439,
+          "totalMs": 86.89030000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 345697,
+          "selfMs": 72.5661,
+          "totalMs": 72.5661
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 17.3403,
+          "totalMs": 71.20620000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1189,
+          "selfMs": 61.68430000000001,
+          "totalMs": 65.26010000000001
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 31.798600000000004,
+          "totalMs": 51.187400000000004
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 12.310500000000001,
+          "totalMs": 44.6027
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 13.0726,
+          "totalMs": 44.43770000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 2378,
+          "selfMs": 2.2258,
+          "totalMs": 39.702600000000004
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 2378,
+          "selfMs": 6.400100000000001,
+          "totalMs": 37.476800000000004
+        },
+        {
+          "file": "rating.py",
+          "line": 159,
+          "function": "empty_quality",
+          "calls": 13859,
+          "selfMs": 12.110600000000002,
+          "totalMs": 33.931599999999996
+        },
+        {
+          "file": "service.py",
+          "line": 1397,
+          "function": "_entity_token_match",
+          "calls": 14608,
+          "selfMs": 15.6165,
+          "totalMs": 31.365099999999998
+        }
+      ]
+    },
+    {
+      "name": "person-first-1",
+      "ms": 2.847400028258562,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0036000000000000003,
+          "totalMs": 2.0219
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0013,
+          "totalMs": 2.0183000000000004
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0141,
+          "totalMs": 2.0170000000000003
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0236,
+          "totalMs": 2.0014
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.019700000000000002,
+          "totalMs": 1.9495
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0052,
+          "totalMs": 1.3290000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0257,
+          "totalMs": 1.3234000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 3,
+          "selfMs": 0.040900000000000006,
+          "totalMs": 1.1668000000000003
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 3,
+          "selfMs": 0.0238,
+          "totalMs": 0.9672000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 3,
+          "selfMs": 0.22840000000000002,
+          "totalMs": 0.8503000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1539,
+          "selfMs": 0.4581,
+          "totalMs": 0.6219
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0099,
+          "totalMs": 0.42040000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0023,
+          "totalMs": 0.41300000000000003
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0088,
+          "totalMs": 0.39860000000000007
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 5,
+          "selfMs": 0.2608,
+          "totalMs": 0.2891
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.0038,
+          "totalMs": 0.25100000000000006
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0029000000000000002,
+          "totalMs": 0.23450000000000001
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.005600000000000001,
+          "totalMs": 0.1762
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1592,
+          "selfMs": 0.17350000000000002,
+          "totalMs": 0.17350000000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.013100000000000002,
+          "totalMs": 0.1341
+        },
+        {
+          "file": "records.py",
+          "line": 338,
+          "function": "_read_landmarks",
+          "calls": 3,
+          "selfMs": 0.0777,
+          "totalMs": 0.1135
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.0052,
+          "totalMs": 0.10360000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0025,
+          "totalMs": 0.1019
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.012700000000000001,
+          "totalMs": 0.0989
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0082,
+          "totalMs": 0.08170000000000001
+        }
+      ]
+    },
+    {
+      "name": "person-name-prepare-1",
+      "ms": 929.3892000569031,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.4086,
+          "totalMs": 928.6028000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 26.027300000000004,
+          "totalMs": 928.1942000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 45.215500000000006,
+          "totalMs": 740.9780000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 58.4401,
+          "totalMs": 475.7651000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13238,
+          "selfMs": 14.8093,
+          "totalMs": 394.27880000000005
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 5.3857,
+          "totalMs": 240.69680000000002
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 73.7286,
+          "totalMs": 216.6322
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1189,
+          "selfMs": 6.169200000000001,
+          "totalMs": 200.6473
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 1189,
+          "selfMs": 1.5502,
+          "totalMs": 112.9278
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1189,
+          "selfMs": 0.8734000000000001,
+          "totalMs": 111.3776
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1189,
+          "selfMs": 73.12700000000001,
+          "totalMs": 110.50420000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 368,
+          "selfMs": 2.1639000000000004,
+          "totalMs": 108.337
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 40.249,
+          "totalMs": 105.8121
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1189,
+          "selfMs": 3.7754000000000003,
+          "totalMs": 88.6199
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1189,
+          "selfMs": 85.26790000000001,
+          "totalMs": 88.31810000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 346721,
+          "selfMs": 78.5159,
+          "totalMs": 78.5159
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 18.245400000000004,
+          "totalMs": 74.2864
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1189,
+          "selfMs": 60.9335,
+          "totalMs": 64.5792
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 32.4716,
+          "totalMs": 53.13250000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 13.6598,
+          "totalMs": 52.2659
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 13.842,
+          "totalMs": 47.346000000000004
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 2378,
+          "selfMs": 2.2634,
+          "totalMs": 38.682300000000005
+        },
+        {
+          "file": "rating.py",
+          "line": 159,
+          "function": "empty_quality",
+          "calls": 13859,
+          "selfMs": 13.4037,
+          "totalMs": 36.6835
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 2378,
+          "selfMs": 6.5119,
+          "totalMs": 36.4189
+        },
+        {
+          "file": "service.py",
+          "line": 1397,
+          "function": "_entity_token_match",
+          "calls": 14608,
+          "selfMs": 16.8593,
+          "totalMs": 33.504
+        }
+      ]
+    },
+    {
+      "name": "person-name-first-1",
+      "ms": 2.521799993701279,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 1.7077000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0016,
+          "totalMs": 1.7049
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0132,
+          "totalMs": 1.7033
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.026300000000000004,
+          "totalMs": 1.6891
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.0233,
+          "totalMs": 1.6356000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0082,
+          "totalMs": 1.0093
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.035800000000000005,
+          "totalMs": 1.0001
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2,
+          "selfMs": 0.0369,
+          "totalMs": 0.8918000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2,
+          "selfMs": 0.025200000000000004,
+          "totalMs": 0.7492
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2,
+          "selfMs": 0.1668,
+          "totalMs": 0.6316
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1026,
+          "selfMs": 0.3388,
+          "totalMs": 0.46480000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0097,
+          "totalMs": 0.42910000000000004
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0026,
+          "totalMs": 0.4219
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0102,
+          "totalMs": 0.4063
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 5,
+          "selfMs": 0.2787,
+          "totalMs": 0.3062
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.0036000000000000003,
+          "totalMs": 0.2583
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0033,
+          "totalMs": 0.21380000000000002
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.006200000000000001,
+          "totalMs": 0.17300000000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.0143,
+          "totalMs": 0.14770000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1048,
+          "selfMs": 0.1304,
+          "totalMs": 0.1304
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.0054,
+          "totalMs": 0.1133
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 0.10080000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.012600000000000002,
+          "totalMs": 0.09740000000000001
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0087,
+          "totalMs": 0.09350000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 338,
+          "function": "_read_landmarks",
+          "calls": 2,
+          "selfMs": 0.048600000000000004,
+          "totalMs": 0.07390000000000001
+        }
+      ]
+    },
+    {
+      "name": "128-ready-thumb-resolve-and-read",
+      "ms": 196.2747999932617,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 69,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 1.1568,
+          "totalMs": 195.327
+        },
+        {
+          "file": "service.py",
+          "line": 1051,
+          "function": "media_resolve",
+          "calls": 128,
+          "selfMs": 0.7657,
+          "totalMs": 174.1627
+        },
+        {
+          "file": "service.py",
+          "line": 1141,
+          "function": "_resolve_rendition",
+          "calls": 128,
+          "selfMs": 0.5166,
+          "totalMs": 94.4268
+        },
+        {
+          "file": "renditions.py",
+          "line": 640,
+          "function": "rendition_abs",
+          "calls": 128,
+          "selfMs": 0.5217,
+          "totalMs": 81.5565
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 97,
+          "function": "load_item",
+          "calls": 128,
+          "selfMs": 0.9438000000000001,
+          "totalMs": 78.8863
+        },
+        {
+          "file": "renditions.py",
+          "line": 630,
+          "function": "_folder_file",
+          "calls": 128,
+          "selfMs": 0.36080000000000007,
+          "totalMs": 67.0481
+        },
+        {
+          "file": "folder_library.py",
+          "line": 165,
+          "function": "for_source_id",
+          "calls": 128,
+          "selfMs": 0.37370000000000003,
+          "totalMs": 60.7683
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 896,
+          "selfMs": 0.6312000000000001,
+          "totalMs": 50.4814
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 896,
+          "selfMs": 44.6811,
+          "totalMs": 49.8502
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 223,
+          "function": "try_load_source_head",
+          "calls": 128,
+          "selfMs": 0.544,
+          "totalMs": 49.767
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 234,
+          "function": "_merged_source",
+          "calls": 128,
+          "selfMs": 0.8502000000000001,
+          "totalMs": 49.1884
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 128,
+          "selfMs": 2.7534,
+          "totalMs": 45.0279
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 70,
+          "selfMs": 1.3261,
+          "totalMs": 32.9129
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 128,
+          "selfMs": 1.1401000000000001,
+          "totalMs": 30.382800000000003
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 70,
+          "selfMs": 1.5240000000000002,
+          "totalMs": 27.4723
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 264,
+          "function": "_source_cache_key",
+          "calls": 128,
+          "selfMs": 0.3256,
+          "totalMs": 25.634900000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 664,
+          "function": "resolve",
+          "calls": 128,
+          "selfMs": 0.311,
+          "totalMs": 22.873800000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 70,
+          "selfMs": 5.974200000000001,
+          "totalMs": 22.3728
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 705,
+          "function": "realpath",
+          "calls": 128,
+          "selfMs": 1.0056,
+          "totalMs": 21.3717
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 256,
+          "selfMs": 19.795099999999998,
+          "totalMs": 20.4848
+        },
+        {
+          "file": "_abc.py",
+          "line": 621,
+          "function": "read_bytes",
+          "calls": 128,
+          "selfMs": 0.48460000000000003,
+          "totalMs": 20.0075
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 256,
+          "selfMs": 18.6824,
+          "totalMs": 18.6824
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 35910,
+          "selfMs": 11.6843,
+          "totalMs": 16.3986
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 128,
+          "selfMs": 0.6967000000000001,
+          "totalMs": 15.4929
+        },
+        {
+          "file": "renditions.py",
+          "line": 580,
+          "function": "_usable_file",
+          "calls": 128,
+          "selfMs": 0.35350000000000004,
+          "totalMs": 13.894400000000001
+        }
+      ]
+    },
+    {
+      "name": "face-index-read",
+      "ms": 126.61149993073195,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 71,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0047,
+          "totalMs": 126.08640000000001
+        },
+        {
+          "file": "faces.py",
+          "line": 175,
+          "function": "load_index",
+          "calls": 1,
+          "selfMs": 0.01,
+          "totalMs": 126.08170000000001
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1,
+          "selfMs": 0.011000000000000001,
+          "totalMs": 125.58500000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1,
+          "selfMs": 0.5333,
+          "totalMs": 125.47660000000002
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 1,
+          "selfMs": 0.0066,
+          "totalMs": 118.4175
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 1,
+          "selfMs": 0.015300000000000003,
+          "totalMs": 118.4098
+        },
+        {
+          "file": "decoder.py",
+          "line": 351,
+          "function": "raw_decode",
+          "calls": 1,
+          "selfMs": 118.38390000000001,
+          "totalMs": 118.38390000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1,
+          "selfMs": 4.6877,
+          "totalMs": 6.5258
+        },
+        {
+          "file": "<frozen codecs>",
+          "line": 322,
+          "function": "decode",
+          "calls": 1,
+          "selfMs": 0.009800000000000001,
+          "totalMs": 1.8381
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _codecs.utf_8_decode>",
+          "calls": 1,
+          "selfMs": 1.8283000000000003,
+          "totalMs": 1.8283000000000003
+        },
+        {
+          "file": "faces.py",
+          "line": 90,
+          "function": "index_path",
+          "calls": 1,
+          "selfMs": 0.0014000000000000002,
+          "totalMs": 0.4302
+        },
+        {
+          "file": "paths.py",
+          "line": 42,
+          "function": "library_path",
+          "calls": 1,
+          "selfMs": 0.0191,
+          "totalMs": 0.4288
+        },
+        {
+          "file": "_local.py",
+          "line": 664,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.0024000000000000002,
+          "totalMs": 0.2414
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 705,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.0114,
+          "totalMs": 0.2303
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.17650000000000002,
+          "totalMs": 0.17650000000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 365,
+          "function": "relative_to",
+          "calls": 1,
+          "selfMs": 0.011600000000000001,
+          "totalMs": 0.10470000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1,
+          "selfMs": 0.07160000000000001,
+          "totalMs": 0.0743
+        },
+        {
+          "file": "_abc.py",
+          "line": 476,
+          "function": "is_file",
+          "calls": 1,
+          "selfMs": 0.0034000000000000002,
+          "totalMs": 0.0555
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 5,
+          "selfMs": 0.012100000000000001,
+          "totalMs": 0.055200000000000006
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "line": 1037,
+          "function": "__contains__",
+          "calls": 1,
+          "selfMs": 0.0058000000000000005,
+          "totalMs": 0.052000000000000005
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 1,
+          "selfMs": 0.0020000000000000005,
+          "totalMs": 0.0516
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1,
+          "selfMs": 0.04870000000000001,
+          "totalMs": 0.049600000000000005
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 8,
+          "selfMs": 0.008000000000000002,
+          "totalMs": 0.0463
+        },
+        {
+          "file": "_local.py",
+          "line": 498,
+          "function": "__init__",
+          "calls": 8,
+          "selfMs": 0.0129,
+          "totalMs": 0.041400000000000006
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "line": 1027,
+          "function": "__iter__",
+          "calls": 4,
+          "selfMs": 0.0039,
+          "totalMs": 0.036199999999999996
+        }
+      ]
+    },
+    {
+      "name": "face-empty-cluster",
+      "ms": 116.46419996395707,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 72,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 1.1422,
+          "totalMs": 115.9103
+        },
+        {
+          "file": "faces.py",
+          "line": 1265,
+          "function": "cluster_detections",
+          "calls": 1,
+          "selfMs": 2.8833,
+          "totalMs": 114.76810000000002
+        },
+        {
+          "file": "faces.py",
+          "line": 1253,
+          "function": "_named_person_ids",
+          "calls": 1,
+          "selfMs": 1.1597,
+          "totalMs": 111.4538
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 372,
+          "selfMs": 1.9928000000000003,
+          "totalMs": 110.1426
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 372,
+          "selfMs": 1.1926,
+          "totalMs": 61.0549
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 372,
+          "selfMs": 0.5791999999999999,
+          "totalMs": 33.776
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 372,
+          "selfMs": 0.2718,
+          "totalMs": 33.1968
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 372,
+          "selfMs": 20.959400000000002,
+          "totalMs": 32.925000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 372,
+          "selfMs": 27.532500000000002,
+          "totalMs": 28.492000000000004
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 372,
+          "selfMs": 1.1361999999999999,
+          "totalMs": 24.430300000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 372,
+          "selfMs": 17.765900000000002,
+          "totalMs": 18.781000000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 744,
+          "selfMs": 0.7261000000000001,
+          "totalMs": 12.376600000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 744,
+          "selfMs": 1.8693000000000002,
+          "totalMs": 11.650500000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 148,
+          "function": "__truediv__",
+          "calls": 1116,
+          "selfMs": 0.5970000000000001,
+          "totalMs": 9.411600000000002
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 372,
+          "selfMs": 1.0543,
+          "totalMs": 9.1219
+        },
+        {
+          "file": "_abc.py",
+          "line": 130,
+          "function": "with_segments",
+          "calls": 1116,
+          "selfMs": 1.6646,
+          "totalMs": 8.8146
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 50,
+          "function": "people_dir",
+          "calls": 372,
+          "selfMs": 0.4464,
+          "totalMs": 7.347200000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method '__exit__' of '_io._IOBase' objects>",
+          "calls": 372,
+          "selfMs": 6.940000000000001,
+          "totalMs": 6.940000000000001
+        },
+        {
+          "file": "_local.py",
+          "line": 498,
+          "function": "__init__",
+          "calls": 1116,
+          "selfMs": 1.6184,
+          "totalMs": 6.067
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 372,
+          "selfMs": 0.7927000000000001,
+          "totalMs": 4.5131
+        },
+        {
+          "file": "_local.py",
+          "line": 117,
+          "function": "__init__",
+          "calls": 1116,
+          "selfMs": 2.7140000000000004,
+          "totalMs": 4.448600000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 34,
+          "function": "catalog_root",
+          "calls": 372,
+          "selfMs": 0.315,
+          "totalMs": 4.1871
+        },
+        {
+          "file": "_local.py",
+          "line": 257,
+          "function": "_parse_path",
+          "calls": 372,
+          "selfMs": 2.2691,
+          "totalMs": 4.0760000000000005
+        },
+        {
+          "file": "_local.py",
+          "line": 277,
+          "function": "_raw_path",
+          "calls": 372,
+          "selfMs": 0.9627,
+          "totalMs": 3.9916000000000005
+        },
+        {
+          "file": "decoder.py",
+          "line": 340,
+          "function": "decode",
+          "calls": 372,
+          "selfMs": 1.038,
+          "totalMs": 3.4825000000000004
+        }
+      ]
+    },
+    {
+      "name": "face-one-existing-cluster",
+      "ms": 261.4854999119416,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 74,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 1.5851000000000002,
+          "totalMs": 260.7453
+        },
+        {
+          "file": "faces.py",
+          "line": 1265,
+          "function": "cluster_detections",
+          "calls": 1,
+          "selfMs": 3.2464000000000004,
+          "totalMs": 259.16020000000003
+        },
+        {
+          "file": "faces.py",
+          "line": 1218,
+          "function": "_nearest_person",
+          "calls": 2,
+          "selfMs": 0.5438,
+          "totalMs": 140.3498
+        },
+        {
+          "file": "faces.py",
+          "line": 615,
+          "function": "cosine",
+          "calls": 372,
+          "selfMs": 1.0017,
+          "totalMs": 139.8057
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.sum>",
+          "calls": 373,
+          "selfMs": 35.5093,
+          "totalMs": 138.97610000000003
+        },
+        {
+          "file": "faces.py",
+          "line": 1253,
+          "function": "_named_person_ids",
+          "calls": 1,
+          "selfMs": 1.1395000000000002,
+          "totalMs": 114.4955
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 372,
+          "selfMs": 2.215,
+          "totalMs": 113.2084
+        },
+        {
+          "file": "faces.py",
+          "line": 617,
+          "function": "<genexpr>",
+          "calls": 190836,
+          "selfMs": 103.1551,
+          "totalMs": 103.1551
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 372,
+          "selfMs": 1.2031,
+          "totalMs": 60.308600000000006
+        },
+        {
+          "file": "_abc.py",
+          "line": 442,
+          "function": "exists",
+          "calls": 372,
+          "selfMs": 0.7488000000000001,
+          "totalMs": 35.3691
+        },
+        {
+          "file": "_local.py",
+          "line": 510,
+          "function": "stat",
+          "calls": 372,
+          "selfMs": 0.2764,
+          "totalMs": 34.6203
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 372,
+          "selfMs": 21.878600000000002,
+          "totalMs": 34.343900000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 372,
+          "selfMs": 26.8426,
+          "totalMs": 27.8142
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 372,
+          "selfMs": 1.1346,
+          "totalMs": 24.857300000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 372,
+          "selfMs": 17.5891,
+          "totalMs": 18.8777
+        },
+        {
+          "file": "_local.py",
+          "line": 166,
+          "function": "__fspath__",
+          "calls": 744,
+          "selfMs": 0.7061000000000001,
+          "totalMs": 12.8728
+        },
+        {
+          "file": "_local.py",
+          "line": 227,
+          "function": "__str__",
+          "calls": 744,
+          "selfMs": 2.0930000000000004,
+          "totalMs": 12.1667
+        },
+        {
+          "file": "_local.py",
+          "line": 148,
+          "function": "__truediv__",
+          "calls": 1116,
+          "selfMs": 0.7181000000000001,
+          "totalMs": 11.041700000000002
+        },
+        {
+          "file": "_abc.py",
+          "line": 130,
+          "function": "with_segments",
+          "calls": 1116,
+          "selfMs": 2.4434,
+          "totalMs": 10.3236
+        },
+        {
+          "file": "_local.py",
+          "line": 289,
+          "function": "drive",
+          "calls": 372,
+          "selfMs": 1.1127,
+          "totalMs": 9.3977
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 50,
+          "function": "people_dir",
+          "calls": 372,
+          "selfMs": 0.5699000000000001,
+          "totalMs": 8.2159
+        },
+        {
+          "file": "_local.py",
+          "line": 498,
+          "function": "__init__",
+          "calls": 1116,
+          "selfMs": 1.8327,
+          "totalMs": 6.7620000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method '__exit__' of '_io._IOBase' objects>",
+          "calls": 372,
+          "selfMs": 6.434,
+          "totalMs": 6.434
+        },
+        {
+          "file": "_local.py",
+          "line": 117,
+          "function": "__init__",
+          "calls": 1116,
+          "selfMs": 3.1023,
+          "totalMs": 4.9293000000000005
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 372,
+          "selfMs": 0.8472000000000001,
+          "totalMs": 4.845000000000001
+        }
+      ]
+    }
+  ],
+  "items": 14608
+}

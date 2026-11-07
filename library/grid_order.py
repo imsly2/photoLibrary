@@ -34,12 +34,27 @@ def _rating_key(item: dict[str, Any]) -> tuple:
     )
 
 
+def _current_size_bytes(item: dict[str, Any]) -> int:
+    for loc in item.get("locations") or []:
+        if not isinstance(loc, dict) or loc.get("current") is not True:
+            continue
+        raw = loc.get("sizeBytes")
+        return raw if type(raw) is int else 0
+    return 0
+
+
+def _size_key(item: dict[str, Any]) -> tuple:
+    return (_current_size_bytes(item), item.get("capturedAt") or "", item["id"])
+
+
 def item_key(sort: str) -> ItemKey:
     """Location groups by place first; within work queues it falls back to date."""
     if sort == "name":
         return _name_key
     if sort == "rating":
         return _rating_key
+    if sort == "size":
+        return _size_key
     return _date_key
 
 

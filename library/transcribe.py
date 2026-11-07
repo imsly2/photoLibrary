@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unicodedata
 import wave
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
 
@@ -337,36 +338,128 @@ def transcribe_videos(root: Path, item_id: str | None = None, *, force: bool = F
     }
 
 
-def transcribe_step(root: Path) -> bool:
+def _current_motion_location(item: dict[str, Any]) -> dict[str, Any] | None:
+    for loc in item.get("locations") or []:
+        if isinstance(loc, dict) and loc.get("current") is True and loc.get("component") == "motion":
+            return loc
+    return None
+
+
+def _done_without_disk(item: dict[str, Any]) -> bool:
+    """Transcript already matches the stored file size and time. No disk read."""
+    rec = item.get("transcript")
+    loc = _current_motion_location(item)
+    if loc is None or not isinstance(rec, dict):
+        return False
+    if rec.get("status") not in TRANSCRIPT_STATUSES:
+        return False
+    if rec.get("sourceSizeBytes") != loc.get("sizeBytes"):
+        return False
+    modified = rec.get("sourceModifiedAt")
+    return type(modified) is str and modified != "" and modified == loc.get("modifiedAt")
+
+
+def _compute_transcript(root: Path, video: Path) -> dict[str, Any]:
+    """Probe and transcribe one file. Does not write the catalog."""
+    if not _has_audio_stream(video):
+        return _skipped_record(video)
+    audio = _extract_wav(video)
+    model, device = _whisper_model(root)
+    segments_iter, info = model.transcribe(
+        audio,
+        language=None,
+        word_timestamps=True,
+        vad_filter=True,
+        beam_size=1,
+    )
+    segments: list[dict[str, Any]] = []
+    words: list[dict[str, Any]] = []
+    texts: list[str] = []
+    for seg in segments_iter:
+        text = (seg.text or "").strip()
+        start = float(seg.start or 0.0)
+        end = float(seg.end or start)
+        if text:
+            texts.append(text)
+            segments.append({"start": round(start, 3), "end": round(end, 3), "text": text})
+        for word in seg.words or []:
+            token = (word.word or "").strip()
+            if not token:
+                continue
+            words.append(
+                {
+                    "start": round(float(word.start or start), 3),
+                    "end": round(float(word.end or end), 3),
+                    "word": token,
+                }
+            )
+    language = getattr(info, "language", None)
+    if type(language) is not str or language == "":
+        language = None
+    full = " ".join(texts).strip()
+    if language and language.startswith("zh"):
+        full = "".join(texts).strip()
+    summary, keywords = extractive_summary(full, language)
+    size, modified = _source_stamp(video)
+    return _transcript_record(
+        status="ready",
+        language=language,
+        text=full,
+        segments=segments,
+        words=words,
+        summary=summary,
+        keywords=keywords,
+        size=size,
+        modified=modified,
+        device=device,
+    )
+
+
+def transcribe_step(root: Path, *, io_context=nullcontext) -> bool:
+    """Transcribe one video. The catalog lock stays free during ffprobe and Whisper."""
     if not transcribe_enabled(root):
         return False
     if not model_installed(root):
         return False
-    try:
-        _ensure_runtime()
-    except Exception:
-        return False
-    for item_id in iter_item_ids(root):
-        item = load_item(root, item_id)
-        if item.get("kind") != "video":
+    from library.errors import AppError
+    from library.item_index import iter_items
+
+    for item in iter_items(root):
+        if item.get("kind") != "video" or _done_without_disk(item):
             continue
-        video = _current_video_file(item, root)
-        if video is None:
-            continue
-        if not _has_audio_stream(video):
-            if _already_done(item, video) and (item.get("transcript") or {}).get("status") == "skipped":
-                continue
-            _publish_transcript(root, item_id, _skipped_record(video))
-            return True
-        if _already_done(item, video):
+        item_id = item.get("id")
+        if type(item_id) is not str or _current_motion_location(item) is None:
             continue
         from library.activity import note_item
 
         note_item("transcribe", "Transcribe", item)
+        video: Path | None = None
+        record: dict[str, Any] | None = None
         try:
-            _transcribe_one(root, item_id, video)
+            with io_context():
+                _ensure_runtime()
+                video = _current_video_file(item, root)
+                if video is not None and not _already_done(item, video):
+                    record = _compute_transcript(root, video)
         except Exception:
-            _publish_transcript(root, item_id, _error_record(video))
+            if video is None:
+                try:
+                    with io_context():
+                        video = _current_video_file(item, root)
+                except Exception:
+                    video = None
+            if video is None:
+                return False
+            record = _error_record(video)
+        if record is None:
+            return False
+        try:
+            current = load_item(root, item_id)
+        except AppError:
+            return True
+        if _current_video_file(current, root) != video:
+            return True
+        _publish_transcript(root, item_id, record)
         return True
     return False
 
@@ -549,60 +642,7 @@ def _transcript_record(
 
 
 def _transcribe_one(root: Path, item_id: str, video: Path) -> dict[str, Any]:
-    if not _has_audio_stream(video):
-        record = _skipped_record(video)
-        _publish_transcript(root, item_id, record)
-        return record
-    audio = _extract_wav(video)
-    model, device = _whisper_model(root)
-    segments_iter, info = model.transcribe(
-        audio,
-        language=None,
-        word_timestamps=True,
-        vad_filter=True,
-        beam_size=1,
-    )
-    segments: list[dict[str, Any]] = []
-    words: list[dict[str, Any]] = []
-    texts: list[str] = []
-    for seg in segments_iter:
-        text = (seg.text or "").strip()
-        start = float(seg.start or 0.0)
-        end = float(seg.end or start)
-        if text:
-            texts.append(text)
-            segments.append({"start": round(start, 3), "end": round(end, 3), "text": text})
-        for word in seg.words or []:
-            token = (word.word or "").strip()
-            if not token:
-                continue
-            words.append(
-                {
-                    "start": round(float(word.start or start), 3),
-                    "end": round(float(word.end or end), 3),
-                    "word": token,
-                }
-            )
-    language = getattr(info, "language", None)
-    if type(language) is not str or language == "":
-        language = None
-    full = " ".join(texts).strip()
-    if language and language.startswith("zh"):
-        full = "".join(texts).strip()
-    summary, keywords = extractive_summary(full, language)
-    size, modified = _source_stamp(video)
-    record = _transcript_record(
-        status="ready",
-        language=language,
-        text=full,
-        segments=segments,
-        words=words,
-        summary=summary,
-        keywords=keywords,
-        size=size,
-        modified=modified,
-        device=device,
-    )
+    record = _compute_transcript(root, video)
     _publish_transcript(root, item_id, record)
     return record
 

@@ -1,0 +1,729 @@
+{
+  "meta": {
+    "stamp": "2026-11-06_152511",
+    "url": "http://127.0.0.1:8785",
+    "quick": false,
+    "rows": 28135,
+    "preflight": {
+      "otherClients": 4,
+      "gitRev": "a1bf370",
+      "libraryDirty": true,
+      "queues": {
+        "renditions": "idle",
+        "analyze": "idle",
+        "infer-faces": "paused",
+        "objects": "paused",
+        "transcribe": "paused",
+        "rate": "paused"
+      }
+    },
+    "baseline": null
+  },
+  "metrics": {
+    "browser.open.firstPaintMs": 2205.0,
+    "browser.open.screenPaintedMs": 4644.0,
+    "browser.open.countKnownMs": 291129.0,
+    "browser.open.settledAfterCountMs": 600000.0,
+    "browser.open.peopleReadyMs": 2850.0,
+    "browser.open.endUnpainted": 42.0,
+    "browser.open.longTaskMaxMs": 60.0,
+    "browser.open.frameGapMaxMs": 68.0,
+    "browser.open.mediaRequests": 676.0,
+    "browser.click.photos.readyMs": 113.0,
+    "browser.click.photos.settledMs": 20000.0,
+    "browser.click.photos.settledIgnoringNoSrcMs": 319.0,
+    "browser.click.photos.maxBlank": 140.0,
+    "browser.click.photos.redownloads": 0.0,
+    "browser.click.photos.catalogRequests": 0.0,
+    "browser.click.all.readyMs": 77.0,
+    "browser.click.all.settledMs": 20000.0,
+    "browser.click.all.settledIgnoringNoSrcMs": 77.0,
+    "browser.click.all.maxBlank": 42.0,
+    "browser.click.all.redownloads": 0.0,
+    "browser.click.all.catalogRequests": 0.0,
+    "browser.click.videos.readyMs": 59.0,
+    "browser.click.videos.settledMs": 92.0,
+    "browser.click.videos.settledIgnoringNoSrcMs": 92.0,
+    "browser.click.videos.maxBlank": 2.0,
+    "browser.click.videos.redownloads": 0.0,
+    "browser.click.videos.catalogRequests": 0.0,
+    "browser.click.all2.readyMs": 62.0,
+    "browser.click.all2.settledMs": 20000.0,
+    "browser.click.all2.settledIgnoringNoSrcMs": 62.0,
+    "browser.click.all2.maxBlank": 42.0,
+    "browser.click.all2.redownloads": 0.0,
+    "browser.click.all2.catalogRequests": 0.0,
+    "browser.click.withPeople.readyMs": 51.0,
+    "browser.click.withPeople.settledMs": 20000.0,
+    "browser.click.withPeople.settledIgnoringNoSrcMs": 173.0,
+    "browser.click.withPeople.maxBlank": 81.0,
+    "browser.click.withPeople.redownloads": 0.0,
+    "browser.click.withPeople.catalogRequests": 0.0,
+    "browser.click.clearWithPeople.readyMs": 56.0,
+    "browser.click.clearWithPeople.settledMs": 20000.0,
+    "browser.click.clearWithPeople.settledIgnoringNoSrcMs": 56.0,
+    "browser.click.clearWithPeople.maxBlank": 42.0,
+    "browser.click.clearWithPeople.redownloads": 0.0,
+    "browser.click.clearWithPeople.catalogRequests": 0.0,
+    "browser.click.person.readyMs": 259.0,
+    "browser.click.person.settledMs": 20000.0,
+    "browser.click.person.settledIgnoringNoSrcMs": 527.0,
+    "browser.click.person.maxBlank": 86.0,
+    "browser.click.person.redownloads": 0.0,
+    "browser.click.person.catalogRequests": 0.0,
+    "browser.click.clearPerson.readyMs": 74.0,
+    "browser.click.clearPerson.settledMs": 20000.0,
+    "browser.click.clearPerson.settledIgnoringNoSrcMs": 74.0,
+    "browser.click.clearPerson.maxBlank": 42.0,
+    "browser.click.clearPerson.redownloads": 0.0,
+    "browser.click.clearPerson.catalogRequests": 0.0,
+    "browser.click.search.readyMs": 20000.0,
+    "browser.click.search.settledMs": 20000.0,
+    "browser.click.search.settledIgnoringNoSrcMs": 20000.0,
+    "browser.click.search.maxBlank": 0.0,
+    "browser.click.search.redownloads": 0.0,
+    "browser.click.search.catalogRequests": 1.0,
+    "browser.click.clearSearch.readyMs": 89.0,
+    "browser.click.clearSearch.settledMs": 20000.0,
+    "browser.click.clearSearch.settledIgnoringNoSrcMs": 89.0,
+    "browser.click.clearSearch.maxBlank": 42.0,
+    "browser.click.clearSearch.redownloads": 0.0,
+    "browser.click.clearSearch.catalogRequests": 0.0,
+    "browser.click.sortOther.readyMs": 20000.0,
+    "browser.click.sortOther.settledMs": 20000.0,
+    "browser.click.sortOther.settledIgnoringNoSrcMs": 20000.0,
+    "browser.click.sortOther.maxBlank": 0.0,
+    "browser.click.sortOther.redownloads": 0.0,
+    "browser.click.sortOther.catalogRequests": 1.0,
+    "browser.click.sortBack.readyMs": 36.0,
+    "browser.click.sortBack.settledMs": 20000.0,
+    "browser.click.sortBack.settledIgnoringNoSrcMs": 36.0,
+    "browser.click.sortBack.maxBlank": 42.0,
+    "browser.click.sortBack.redownloads": 0.0,
+    "browser.click.sortBack.catalogRequests": 0.0,
+    "server.healthDuringBrowser.maxMs": 530.0,
+    "server.healthDuringBrowser.p99Ms": 236.5,
+    "server.healthDuringBrowser.over1000": 0.0,
+    "server.settingsIdle.maxMs": 11172.2,
+    "server.settingsIdle.p90Ms": 151.7,
+    "server.catalog.firstRowMs": 885.0,
+    "server.catalog.totalSec": 9.48,
+    "server.catalog.bytes": 57960099.0,
+    "server.thumbs.serial200.p95Ms": 23.8,
+    "server.thumbs.serial304.p95Ms": 25.6,
+    "server.thumbs.parallel300Sec": 0.31,
+    "server.thumbs.duringCatalog.p95Ms": 9.8,
+    "server.people.sec": 0.54,
+    "server.suggestions.sec": 201.5,
+    "server.filters.person.totalSec": 2.53,
+    "server.filters.search2019.totalSec": 1.75,
+    "server.filters.sortName.totalSec": 8.94,
+    "internals.coldRecordLoad.sec": 14.53,
+    "internals.missingSweep.lockedBuildSec": 11.33,
+    "internals.suggestionMath.pythonEstimateSec": 249.0
+  },
+  "raw": {
+    "server": {
+      "catalog": {
+        "query": "(none)",
+        "rows": 28135,
+        "bytes": 57960099,
+        "bytesPerRow": 2060,
+        "longestLine": 17716,
+        "headersMs": 885,
+        "firstRowMs": 885,
+        "totalSec": 9.48,
+        "serverTiming": "lock;dur=169.68, snapshot;dur=30.27, prepare;dur=662.78"
+      },
+      "settingsIdle": {
+        "route": "/api/settings",
+        "n": 68,
+        "p50Ms": 34.0,
+        "p90Ms": 151.7,
+        "p95Ms": 405.9,
+        "p99Ms": 10966.9,
+        "maxMs": 11172.2,
+        "over250": 5,
+        "over1000": 3,
+        "slowAt": [
+          [
+            10.8,
+            10841
+          ],
+          [
+            11.6,
+            252
+          ],
+          [
+            16.3,
+            406
+          ],
+          [
+            41.0,
+            11172
+          ],
+          [
+            71.2,
+            10967
+          ]
+        ]
+      },
+      "thumbs": {
+        "serial200": {
+          "n": 100,
+          "p50Ms": 2.5,
+          "p90Ms": 21.7,
+          "p95Ms": 23.8,
+          "p99Ms": 26.9,
+          "maxMs": 27.3,
+          "over250": 0,
+          "over1000": 0
+        },
+        "avgKB": 11.1,
+        "serial304": {
+          "n": 100,
+          "p50Ms": 11.9,
+          "p90Ms": 20.7,
+          "p95Ms": 25.6,
+          "p99Ms": 26.4,
+          "maxMs": 26.4,
+          "over250": 0,
+          "over1000": 0,
+          "statuses": [
+            304
+          ]
+        },
+        "parallel300Sec": 0.31,
+        "duringCatalog300Sec": 0.44,
+        "duringCatalog": {
+          "n": 300,
+          "p50Ms": 7.0,
+          "p90Ms": 8.7,
+          "p95Ms": 9.8,
+          "p99Ms": 20.1,
+          "maxMs": 29.0,
+          "over250": 0,
+          "over1000": 0
+        },
+        "catalogWhileThumbsSec": 8.13
+      },
+      "people": {
+        "sec": 0.54,
+        "people": 1649,
+        "largest": {
+          "id": "person_82c19bbf9bbc",
+          "itemCount": 3789
+        }
+      },
+      "filters": {
+        "person": {
+          "query": "?person=person_82c19bbf9bbc",
+          "rows": 3789,
+          "bytes": 10582685,
+          "bytesPerRow": 2793,
+          "longestLine": 17716,
+          "headersMs": 537,
+          "firstRowMs": 537,
+          "totalSec": 2.53,
+          "serverTiming": "lock;dur=0.01, snapshot;dur=29.71, prepare;dur=493.63"
+        },
+        "recent": {
+          "query": "?recent=1",
+          "rows": 1,
+          "bytes": 1656,
+          "bytesPerRow": 1656,
+          "longestLine": 1613,
+          "headersMs": 55,
+          "firstRowMs": 55,
+          "totalSec": 0.06,
+          "serverTiming": "lock;dur=0.66, snapshot;dur=30.51, prepare;dur=6.59"
+        },
+        "search2019": {
+          "query": "?q=2019",
+          "rows": 594,
+          "bytes": 1213834,
+          "bytesPerRow": 2043,
+          "longestLine": 4970,
+          "headersMs": 1655,
+          "firstRowMs": 1655,
+          "totalSec": 1.75,
+          "serverTiming": "lock;dur=0.01, snapshot;dur=27.97, prepare;dur=1602.58"
+        },
+        "sortName": {
+          "query": "?sort=name",
+          "rows": 28135,
+          "bytes": 57960099,
+          "bytesPerRow": 2060,
+          "longestLine": 17716,
+          "headersMs": 841,
+          "firstRowMs": 841,
+          "totalSec": 8.94,
+          "serverTiming": "lock;dur=0.01, snapshot;dur=50.70, prepare;dur=788.73"
+        }
+      },
+      "suggestions": {
+        "sec": 201.5,
+        "bytes": 33202
+      },
+      "healthDuringBrowser": {
+        "route": "/api/health",
+        "n": 4713,
+        "p50Ms": 40.0,
+        "p90Ms": 124.8,
+        "p95Ms": 142.8,
+        "p99Ms": 236.5,
+        "maxMs": 530.0,
+        "over250": 38,
+        "over1000": 0,
+        "slowAt": [
+          [
+            1.7,
+            313
+          ],
+          [
+            16.5,
+            346
+          ],
+          [
+            18.1,
+            282
+          ],
+          [
+            32.3,
+            530
+          ],
+          [
+            70.2,
+            253
+          ],
+          [
+            73.4,
+            268
+          ],
+          [
+            78.1,
+            273
+          ],
+          [
+            93.9,
+            508
+          ],
+          [
+            103.2,
+            284
+          ],
+          [
+            124.0,
+            267
+          ],
+          [
+            146.3,
+            286
+          ],
+          [
+            147.3,
+            501
+          ],
+          [
+            157.9,
+            263
+          ],
+          [
+            172.0,
+            252
+          ],
+          [
+            198.8,
+            435
+          ],
+          [
+            257.9,
+            513
+          ],
+          [
+            282.7,
+            428
+          ],
+          [
+            285.4,
+            302
+          ],
+          [
+            287.6,
+            346
+          ],
+          [
+            306.5,
+            283
+          ],
+          [
+            310.5,
+            284
+          ],
+          [
+            320.4,
+            276
+          ],
+          [
+            333.9,
+            261
+          ],
+          [
+            337.5,
+            283
+          ],
+          [
+            344.5,
+            265
+          ],
+          [
+            347.4,
+            252
+          ],
+          [
+            351.5,
+            275
+          ],
+          [
+            367.5,
+            283
+          ],
+          [
+            374.4,
+            268
+          ],
+          [
+            397.5,
+            282
+          ],
+          [
+            404.5,
+            322
+          ],
+          [
+            425.5,
+            332
+          ],
+          [
+            429.6,
+            269
+          ],
+          [
+            438.5,
+            287
+          ],
+          [
+            441.4,
+            267
+          ],
+          [
+            457.4,
+            270
+          ],
+          [
+            461.5,
+            297
+          ],
+          [
+            464.6,
+            416
+          ]
+        ]
+      }
+    },
+    "internals": {
+      "coldRecordLoad": {
+        "rows": 28135,
+        "sec": 14.53
+      },
+      "missingSweep": {
+        "renditions": 38512,
+        "lockedBuildSec": 11.33,
+        "statSec": 3.28,
+        "missing": 0
+      },
+      "suggestionMath": {
+        "people": 1631,
+        "pairs": 1329265,
+        "pythonEstimateSec": 249.0,
+        "numpySec": 0.225
+      }
+    },
+    "browser": {
+      "timestamp": "2026-11-06T21:39:59.093Z",
+      "url": "http://127.0.0.1:8785",
+      "quick": false,
+      "viewport": "1600x900 headless Edge",
+      "openTimeoutMs": 600000,
+      "clickTimeoutMs": 20000,
+      "originalSort": "size",
+      "open": {
+        "firstCellMs": 1539,
+        "firstPaintMs": 2205,
+        "screenPaintedMs": 4644,
+        "countKnownMs": 291129,
+        "settledAfterCountMs": null,
+        "peopleReadyMs": 2850,
+        "countAt": {
+          "5s": null,
+          "10s": null,
+          "30s": 4081,
+          "60s": 5155
+        },
+        "rows": 28116,
+        "timedOut": false,
+        "endVisible": 144,
+        "endUnpainted": 42,
+        "endNoSrc": 42,
+        "mediaRequests": 676,
+        "catalogRequests": 2,
+        "longTasks": 7,
+        "longTaskMaxMs": 60,
+        "frameGapMaxMs": 68
+      },
+      "phases": {
+        "photos": {
+          "label": "photos",
+          "readyMs": 113,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 319,
+          "maxBlank": 140,
+          "changed": false,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 26465,
+          "settledTimedOut": true,
+          "mediaRequests": 121,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 112,
+          "frameGapMaxMs": 128
+        },
+        "all": {
+          "label": "all",
+          "readyMs": 77,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 77,
+          "maxBlank": 42,
+          "changed": false,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 76,
+          "frameGapMaxMs": 89
+        },
+        "videos": {
+          "label": "videos",
+          "readyMs": 59,
+          "settledMs": 92,
+          "settledIgnoringNoSrcMs": 92,
+          "maxBlank": 2,
+          "changed": true,
+          "visible": 170,
+          "unpainted": 0,
+          "noSrc": 0,
+          "rows": 1670,
+          "settledTimedOut": false,
+          "mediaRequests": 2,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 55,
+          "frameGapMaxMs": 60
+        },
+        "all2": {
+          "label": "all2",
+          "readyMs": 62,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 62,
+          "maxBlank": 42,
+          "changed": true,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 60,
+          "frameGapMaxMs": 73
+        },
+        "withPeople": {
+          "label": "withPeople",
+          "readyMs": 51,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 173,
+          "maxBlank": 81,
+          "changed": true,
+          "visible": 136,
+          "unpainted": 34,
+          "noSrc": 34,
+          "rows": 8079,
+          "settledTimedOut": true,
+          "mediaRequests": 71,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 0,
+          "longTaskMaxMs": 0,
+          "frameGapMaxMs": 63
+        },
+        "clearWithPeople": {
+          "label": "clearWithPeople",
+          "readyMs": 56,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 56,
+          "maxBlank": 42,
+          "changed": true,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 54,
+          "frameGapMaxMs": 65
+        },
+        "person": {
+          "label": "person",
+          "readyMs": 259,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 527,
+          "maxBlank": 86,
+          "changed": true,
+          "visible": 147,
+          "unpainted": 11,
+          "noSrc": 11,
+          "rows": 3789,
+          "settledTimedOut": true,
+          "mediaRequests": 99,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 2,
+          "longTaskMaxMs": 260,
+          "frameGapMaxMs": 260
+        },
+        "clearPerson": {
+          "label": "clearPerson",
+          "readyMs": 74,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 74,
+          "maxBlank": 42,
+          "changed": true,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 71,
+          "frameGapMaxMs": 75
+        },
+        "search": {
+          "label": "search",
+          "readyMs": 20000,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 20000,
+          "maxBlank": 0,
+          "changed": true,
+          "visible": 0,
+          "unpainted": 0,
+          "noSrc": 0,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 1,
+          "longTasks": 0,
+          "longTaskMaxMs": 0,
+          "frameGapMaxMs": 64
+        },
+        "clearSearch": {
+          "label": "clearSearch",
+          "readyMs": 89,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 89,
+          "maxBlank": 42,
+          "changed": true,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 1,
+          "longTaskMaxMs": 88,
+          "frameGapMaxMs": 99
+        },
+        "sortOther": {
+          "label": "sortOther",
+          "readyMs": 20000,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 20000,
+          "maxBlank": 0,
+          "changed": true,
+          "visible": 0,
+          "unpainted": 0,
+          "noSrc": 0,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 1,
+          "longTasks": 0,
+          "longTaskMaxMs": 0,
+          "frameGapMaxMs": 44
+        },
+        "sortBack": {
+          "label": "sortBack",
+          "readyMs": 36,
+          "settledMs": 20000,
+          "settledIgnoringNoSrcMs": 36,
+          "maxBlank": 42,
+          "changed": true,
+          "visible": 144,
+          "unpainted": 42,
+          "noSrc": 42,
+          "rows": 28135,
+          "settledTimedOut": true,
+          "mediaRequests": 0,
+          "revalidated": 0,
+          "redownloads": 0,
+          "catalogRequests": 0,
+          "longTasks": 0,
+          "longTaskMaxMs": 0,
+          "frameGapMaxMs": 42
+        }
+      },
+      "mediaTotal": 969
+    }
+  }
+}

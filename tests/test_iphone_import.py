@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from library.iphone_import import _RollProgress, _destination, job, tool_root
+from library.iphone_import import _RollProgress, _destination, _file_mix, job, tool_root
 
 
 def test_tool_root_uses_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -56,7 +56,7 @@ def test_roll_counts_pictures_and_compares_before_the_walk_finishes() -> None:
     ready.set()
     box = {"locals": {"201508_a/img_0519.jpg": ("201508_a/IMG_0519.JPG", 10)}}
 
-    def action(rel, size, locals_by_path):
+    def action(rel, size, locals_by_path, name_sizes=None):
         found = locals_by_path.get(rel.replace("\\", "/").casefold())
         if found is not None and found[1] == size:
             return "skip"
@@ -71,6 +71,7 @@ def test_roll_counts_pictures_and_compares_before_the_walk_finishes() -> None:
     progress.on_row({"rel": "201508_a/IMG_0002.JPG", "size": 4})
     snap = job()
     assert snap["onPhone"] == 2
+    assert snap["bytes"] == 14
     assert snap["skip"] == 1
     assert snap["willCopy"] == 1
     assert snap["comparing"] is False
@@ -83,7 +84,7 @@ def test_roll_compares_pictures_that_arrived_before_the_folder_index() -> None:
     ready = threading.Event()
     box: dict = {}
 
-    def action(rel, size, locals_by_path):
+    def action(rel, size, locals_by_path, name_sizes=None):
         found = locals_by_path.get(rel.replace("\\", "/").casefold())
         if found is not None and found[1] == size:
             return "skip"
@@ -143,7 +144,7 @@ def test_roll_wait_does_not_clear_the_pictures_already_found() -> None:
     ready.set()
     box = {"locals": {}}
 
-    def action(rel, size, locals_by_path):
+    def action(rel, size, locals_by_path, name_sizes=None):
         return "copy"
 
     progress = _RollProgress(ready, box, action)
@@ -164,3 +165,14 @@ def test_roll_wait_does_not_clear_the_pictures_already_found() -> None:
     assert done["pace"]["listMs"] == 18000
     assert done["pace"]["sizeMs"] == 400
     assert done["pace"]["files"] == 40
+
+
+def test_file_mix_separates_pictures_videos_and_edit_notes() -> None:
+    text = _file_mix(
+        [
+            ("/DCIM/100APPLE/IMG_0001.HEIC", 2_000_000_000),
+            ("/DCIM/100APPLE/IMG_0002.MOV", 500_000_000),
+            ("/DCIM/100APPLE/IMG_0001.AAE", 1066),
+        ]
+    )
+    assert text == "1 pictures, 1 videos, 1 edit notes, 2.5 GB"

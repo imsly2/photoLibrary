@@ -17,6 +17,7 @@
   const foundEl = document.getElementById("import-iphone-found");
   const hereEl = document.getElementById("import-iphone-here");
   const missingEl = document.getElementById("import-iphone-missing");
+  const sizeEl = document.getElementById("import-iphone-size");
   const keptEl = document.getElementById("import-iphone-kept");
   const paceEl = document.getElementById("import-iphone-pace");
   if (!dialog || !pathInput || !lookBtn || !copyBtn) {
@@ -34,6 +35,11 @@
   let lastCount = null;
   let lastCountAt = 0;
   let paceStamp = "";
+
+  function windowsGb(bytes) {
+    const n = Number(bytes || 0);
+    return (n / (1024 * 1024 * 1024)).toFixed(1) + " GB";
+  }
 
   function t(key) {
     if (window.LibraryI18n && window.LibraryI18n.t) {
@@ -240,8 +246,15 @@
     }
     const recent = recentRate();
     const average = Number(job.picturesPerSec || 0);
-    if (running && recent != null) {
+    if (running && recent != null && job.phase !== "copying") {
       rateEl.textContent = recent.toFixed(1) + " pictures/sec";
+    } else if (job.phase === "copying") {
+      const started = Number(job.startedAt || 0);
+      const copied = Number(job.copied || 0);
+      const seconds = started > 0 ? (Date.now() / 1000 - started) : 0;
+      rateEl.textContent = seconds > 1 && copied > 0
+        ? (copied / seconds).toFixed(1) + " pictures/sec"
+        : "copying";
     } else if (running && average > 0) {
       rateEl.textContent = average.toFixed(1) + " pictures/sec average";
     } else if (running && quietMs() > 2000) {
@@ -250,18 +263,41 @@
       rateEl.textContent = average > 0 ? average.toFixed(1) + " pictures/sec average" : "";
     }
     folderEl.textContent = job.current || (job.phone || "");
+    if (sizeEl) {
+      if (typeof job.bytes !== "number") {
+        sizeEl.textContent = "";
+      } else {
+        const size = windowsGb(job.bytes);
+        if (job.phase === "reading") {
+          sizeEl.textContent = quietMs() < 2000
+            ? "Size " + size + ", still climbing"
+            : "Size " + size + " so far. This pause is not the finished total.";
+        } else if (job.phase === "looked" || job.phase === "done" || job.phase === "stopped") {
+          sizeEl.textContent = "Size read " + size + ". Compare this with Explorer Properties.";
+        } else {
+          sizeEl.textContent = "Size " + size;
+        }
+      }
+    }
     const nextFound = num(job.onPhone);
     if (foundEl.textContent !== nextFound) {
       foundEl.textContent = nextFound;
     }
-    if (job.comparing && job.phase === "reading") {
+    if (job.phase === "copying") {
+      const total = Number(job.willCopy || 0);
+      const copied = Number(job.copied || 0);
+      hereEl.textContent = num(job.skip);
+      missingEl.textContent = num(Math.max(0, total - copied));
+      keptEl.hidden = false;
+      keptEl.textContent = num(copied) + " of " + num(total) + " copied. " + (job.current || "");
+    } else if (job.comparing && job.phase === "reading") {
       hereEl.textContent = "…";
       missingEl.textContent = "…";
     } else {
       hereEl.textContent = num(job.skip);
       missingEl.textContent = num(job.willCopy);
     }
-    if (job.kept) {
+    if (job.phase !== "copying" && job.kept) {
       keptEl.hidden = false;
       keptEl.textContent = num(job.kept) + " left alone (same place, different size).";
     } else if (job.copied) {

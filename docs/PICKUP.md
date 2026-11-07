@@ -3,6 +3,23 @@
 Current build doorway. North star: [PRODUCT.md](PRODUCT.md). Screen
 contract: [UI-SPEC.md](UI-SPEC.md). What passed: [STATUS.md](STATUS.md).
 
+Load and filter speed is the evening floor Steve accepted on
+2026-11-06. The page reads one compact index and filters it locally.
+The live server on port 8785 is this tree. The regression baseline is
+[baseline.json](process/assets/load-filter/baseline.json), copied from
+[2026-11-06_164514](process/assets/load-filter/runs/2026-11-06_164514.md).
+A later run fails if a primary metric is worse than that file. The
+morning measurement is still in
+[2026-11-06_152511](process/assets/load-filter/runs/2026-11-06_152511.md).
+Count is known in 785 ms. People, suggestions, settings, and thumbnail
+latency beat their targets. Restoring All still redownloads 5
+thumbnails, clearing search redownloads 6, and name sort never
+finishes painting. Those misses are part of the floor, not a pass.
+F15's browse-speed Check is not closed, because the written targets
+in `tests/perf/live_targets.json` are still missed. How the page loads
+now is [LOADING-PIPELINE.md](process/LOADING-PIPELINE.md). The
+measurement notes are [LOAD-FILTER-TARGET.md](process/LOAD-FILTER-TARGET.md).
+
 ## Second-PC iPhone backup handoff
 
 For the exact-Windows-mirror request, read
@@ -12,12 +29,13 @@ The next step is a read-only Windows manifest, not a full copy.
 
 ## iPhone Look, 2026-10-28
 
-A Look can sit on one camera-roll folder for a long stretch, then jump
-the picture count when Windows finishes that folder. The dialog now
-shows found, already here, and not here yet separately, plus a timer
-that keeps ticking during the quiet stretch. Refresh the Library tab.
-Do not restart the server while that Look is still running. The reader
-already in flight does not pick up script changes. No feature Check closed.
+Explorer Properties on the phone climbs while Windows is still asking
+for sizes. A finished selection of Internal Storage was 99.8 GB,
+about 15,000 files, 145 folders. The backup folder is 78.7 GB,
+10,013 files, 134 month folders. The scan was treating a pause in
+the count as the end of a folder, so it listed 5,792 files and could
+not copy the rest. The next Look waits until a folder's count stays
+still for two seconds. No feature Check closed.
 
 ## Active performance work
 
@@ -25,8 +43,11 @@ Dense scrolling now keeps placeholders for the on-screen rows only.
 A 576-tile cold jump completed in 1.7 seconds; the previous run was 8.0
 seconds, and the one before that was still short at 14.9 seconds. The
 open years view holds 78 cells in the page instead of about 12,000.
-Filter and name-sort streams can still be slow while face detection is
-running, and one known preview can stay blank. Refresh the open tab.
+A person filter no longer waits on the catalog lock. Measured on the
+live catalog, Unnamed went from 5.1 s to the first picture down to 7 ms,
+and clearing it went from 7.4 s to 3 ms. Thumbnails were not downloaded
+again. Name sort still uses the stream. One known preview can stay
+blank. Refresh the open tab.
 Details are in
 [DENSE-LIVE-MEASUREMENT](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
 Do not treat this pass as a closed Check.
@@ -88,8 +109,11 @@ record for its pictures, flat, named `IMG_0456.JPG.json` / `.thumb.webp` /
 2. Chrome taste: **Search lives on `#filter-bar`** with All/Photos/Videos/Favorites,
    4 stars and up / Picks / Hide rejects / Blurry, Person/Place/Tag chips,
    Clear all, and **one** Group Date/People/Places/Tags
-   control (default Date). Sort Newest/Oldest/Name/Location/Rating stays in the
-   header and does not duplicate Group. Language English/中文 is in the
+   control (default Date). Sort Newest/Oldest/Name/Size/Location/Rating stays in the
+   header and does not duplicate Group. Size is largest file first and,
+   while Group is Date, shows one list (no year/month/day buckets).
+   **With people** on `#filter-bar` (after Favorites) keeps items with a
+   linked person and combines with Photos/Videos/Favorites. Language English/中文 is in the
    header and persists as `settings.language`. Size + Dates live
    in `#library-chrome` at the **bottom-left** of the grid. Right
    **People** splitter (`#library-side`) filters by face (AND when

@@ -60,11 +60,12 @@ def cached_item_read(
     marked: set[str],
     *,
     metadata: dict[str, Any] | None = None,
+    check_files: bool = True,
 ) -> dict[str, Any]:
     install_path_checks()
     item_id = item.get("id")
     favorite = type(item_id) is str and item_id in marked
-    key = (os.path.normcase(os.path.abspath(str(root))), id(item), favorite)
+    key = (os.path.normcase(os.path.abspath(str(root))), id(item), favorite, check_files)
     now = time.monotonic()
     hit = _views.get(key)
     from library.catalog_io import item_entities, item_read
@@ -77,7 +78,7 @@ def cached_item_read(
     if hit is not None and hit[1] is item and now - hit[0] < _TTL_S:
         base = hit[2]
     else:
-        base = item_read(item, root, marked, entities=entities)
+        base = item_read(item, root, marked, entities=entities, check_files=check_files)
         # Retain the raw object as well as its id: Python must not recycle the
         # identity into an unrelated record while this cache entry remains live.
         _views[key] = (now, item, base)

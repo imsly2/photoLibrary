@@ -536,8 +536,10 @@ def apply_people_merge(root: Path, keep_id: str, drop_id: str) -> dict[str, Any]
     entry = make_history_entry(root, "people-merge", changes)
     transact(root, plan_append(root, entry) + changes)
     from library.faces import rebuild_index
+    from library.people_panel import invalidate_people
 
     rebuild_index(root)
+    invalidate_people(root)
     return ordered_person(keep)
 
 
@@ -593,8 +595,10 @@ def apply_people_split(
     entry = make_history_entry(root, "people-split", changes)
     transact(root, plan_append(root, entry) + changes)
     from library.faces import rebuild_index
+    from library.people_panel import invalidate_people
 
     rebuild_index(root)
+    invalidate_people(root)
     return created
 
 

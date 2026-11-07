@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,7 @@ from library.atomic import transact
 from library.catalog_io import (
     load_people,
     load_person,
+    people_dir,
     person_rel,
     try_load_item,
 )
@@ -18,6 +20,68 @@ from library.history import make_history_entry, plan_append
 from library.records import ordered_person
 
 PERSON_OF_INTEREST_MIN = 3
+
+_guard = threading.Lock()
+_index_cache: dict[str, tuple[Any, dict[str, Any]]] = {}
+_people_cache: dict[str, tuple[Any, list[dict[str, Any]]]] = {}
+_people_bump: dict[str, int] = {}
+
+
+def _root_key(root: Path) -> str:
+    from library.item_index import root_key
+
+    return root_key(root)
+
+
+def people_generation(root: Path) -> tuple[Any, ...]:
+    """Token that changes when item faces or person records change."""
+    from library import item_store
+
+    key = _root_key(root)
+    try:
+        st = people_dir(root).stat()
+        people_token = (int(st.st_mtime_ns), int(st.st_size))
+    except OSError:
+        people_token = (0, 0)
+    return (item_store.write_count(), people_token, _people_bump.get(key, 0))
+
+
+def _people_sig(root: Path) -> tuple[Any, ...]:
+    return people_generation(root)
+
+
+def invalidate_people(root: Path) -> None:
+    """Drop people list and panel caches after a person write/merge/split."""
+    key = _root_key(root)
+    with _guard:
+        _people_bump[key] = _people_bump.get(key, 0) + 1
+        _index_cache.pop(key, None)
+        _people_cache.pop(key, None)
+    try:
+        from library.catalog_index import bump
+
+        bump(root)
+    except Exception:
+        pass
+    try:
+        from library.people_suggest import invalidate_suggestions
+
+        invalidate_suggestions(root)
+    except Exception:
+        pass
+
+
+def cached_load_people(root: Path) -> list[dict[str, Any]]:
+    key = _root_key(root)
+    sig = _people_sig(root)
+    with _guard:
+        hit = _people_cache.get(key)
+        if hit is not None and hit[0] == sig:
+            return hit[1]
+    rows = load_people(root)
+    with _guard:
+        _people_cache[key] = (sig, rows)
+    return rows
 
 
 def _face_box(face: dict[str, Any]) -> list[float] | None:
@@ -74,13 +138,33 @@ def _thumbnail_for(
     return out
 
 
+def _better_face(left: dict[str, Any] | None, right: dict[str, Any]) -> dict[str, Any]:
+    if left is None:
+        return right
+    return _best_face([left, right]) or right
+
+
 def people_index(root: Path) -> dict[str, Any]:
     from library.item_index import iter_items
 
-    faces_by_person: dict[str, list[dict[str, Any]]] = {}
+    key = _root_key(root)
+    sig = _people_sig(root)
+    with _guard:
+        hit = _index_cache.get(key)
+        if hit is not None and hit[0] == sig:
+            return hit[1]
+
+    people = cached_load_people(root)
+    preferred = {
+        person["id"]: person.get("thumbnailItemId")
+        for person in people
+        if type(person.get("thumbnailItemId")) is str and person.get("thumbnailItemId")
+    }
+    best_overall: dict[str, dict[str, Any]] = {}
+    best_preferred: dict[str, dict[str, Any]] = {}
     item_ids_by_person: dict[str, set[str]] = {}
-    # The page asks for this on every catalog refresh; read the stat-validated
-    # in-memory records rather than every item file on disk.
+    # Keep only the best thumbnail candidate per person (and the preferred
+    # thumbnailItemId candidate when set). Do not retain every face.
     for item in iter_items(root):
         item_id = item["id"]
         seen: set[str] = set()
@@ -93,16 +177,25 @@ def people_index(root: Path) -> dict[str, Any]:
                 rec["detScore"] = face.get("detScore")
             if "matchScore" in face:
                 rec["matchScore"] = face.get("matchScore")
-            faces_by_person.setdefault(person_id, []).append(rec)
+            best_overall[person_id] = _better_face(best_overall.get(person_id), rec)
+            if preferred.get(person_id) == item_id:
+                best_preferred[person_id] = _better_face(best_preferred.get(person_id), rec)
             if person_id not in seen:
                 item_ids_by_person.setdefault(person_id, set()).add(item_id)
                 seen.add(person_id)
     rows: list[dict[str, Any]] = []
-    for person in load_people(root):
+    for person in people:
         person_id = person["id"]
         count = len(item_ids_by_person.get(person_id) or [])
         named = type(person.get("name")) is str and bool(person.get("name"))
         visible = named or count >= PERSON_OF_INTEREST_MIN
+        face = best_preferred.get(person_id) or best_overall.get(person_id)
+        thumb = None
+        if face is not None:
+            thumb = {"itemId": face["itemId"]}
+            box = _face_box(face)
+            if box is not None:
+                thumb["box"] = box
         rows.append(
             {
                 "id": person_id,
@@ -110,7 +203,7 @@ def people_index(root: Path) -> dict[str, Any]:
                 "itemCount": count,
                 "visible": visible,
                 "named": named,
-                "thumbnail": _thumbnail_for(person, faces_by_person.get(person_id) or []),
+                "thumbnail": thumb,
                 "thumbnailItemId": person.get("thumbnailItemId"),
             }
         )
@@ -122,10 +215,18 @@ def people_index(root: Path) -> dict[str, Any]:
             rec["id"],
         )
     )
-    return {
+    payload = {
         "personOfInterestMin": PERSON_OF_INTEREST_MIN,
         "people": rows,
     }
+    with _guard:
+        _index_cache[key] = (sig, payload)
+    return payload
+
+
+def warm(root: Path) -> dict[str, Any]:
+    """Build and cache the people panel payload."""
+    return people_index(root)
 
 
 def person_row(root: Path, person_id: str) -> dict[str, Any]:
@@ -187,4 +288,5 @@ def apply_person_update(root: Path, person_id: str, payload: dict[str, Any]) -> 
     changes = [{"path": person_rel(person_id), "before": before, "after": next_rec}]
     entry = make_history_entry(root, "person-update", changes)
     transact(root, plan_append(root, entry) + changes)
+    invalidate_people(root)
     return person_row(root, person_id)

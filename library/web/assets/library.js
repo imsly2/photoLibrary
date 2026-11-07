@@ -55,10 +55,18 @@
   function t(key, vars) {
     return I18N.t(key, vars);
   }
-  // Servers before F23 let the browser keep media a week under the bare URL.
+  // Thumb version from the catalog index; fall back so older fixtures still cache-bust.
   const MEDIA_CACHE_KEY = "2";
+  function mediaCacheVersion(itemId) {
+    const index = itemIndexById[itemId];
+    const item = index != null ? items[index] : (extraById && extraById[itemId]);
+    if (item && item.thumbV != null && item.thumbV !== "") {
+      return String(item.thumbV);
+    }
+    return MEDIA_CACHE_KEY;
+  }
   function mediaUrl(itemId, which, extra) {
-    return "/api/media/" + encodeURIComponent(itemId) + "?which=" + which + (extra || "") + "&v=" + MEDIA_CACHE_KEY;
+    return "/api/media/" + encodeURIComponent(itemId) + "?which=" + which + (extra || "") + "&v=" + mediaCacheVersion(itemId);
   }
   const inspector = document.getElementById("inspector");
   const inspectorName = document.getElementById("inspector-name");
@@ -87,6 +95,7 @@
   const filterPhotos = document.getElementById("filter-photos");
   const filterVideos = document.getElementById("filter-videos");
   const filterFavorites = document.getElementById("filter-favorites");
+  const filterWithPeople = document.getElementById("filter-with-people");
   const filterRecent = document.getElementById("filter-recent");
   const filterFolder = document.getElementById("filter-folder");
   const filterBar = document.getElementById("filter-bar");
@@ -240,6 +249,17 @@
   let catalogFailure = false;
   let queryResetPending = false;
   let catalogReady = false;
+  let filterWait = false;
+  let pinGridTop = false;
+  let libraryCache = null;
+  let catalogMaster = null;
+  let catalogIndexPromise = null;
+  let catalogIndexV = null;
+  let catalogIndexSources = [];
+  let catalogIndexPlaces = [];
+  let catalogIndexPeople = [];
+  let catalogIndexThings = [];
+  let catalogRecentIds = null;
   let lastJobs = null;
   let items = [];
   let itemIndexById = Object.create(null);
@@ -249,9 +269,9 @@
   let viewerItemId = null;
   let savedScroll = 0;
   let savedLevel = "years";
-  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
+  let savedFilter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "", hasPeople: "" };
   let savedSearch = "";
-  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
+  let filter = { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "", hasPeople: "" };
   let fitMode = "fit";
   let selectedId = null;
   let pendingRemoveId = null;
@@ -302,6 +322,7 @@
   let levelWheelLock = false;
   let panning = false;
   let panMoved = false;
+  let panCandidate = null;
   let panLastX = 0;
   let panLastY = 0;
   let scale = 1;
@@ -409,6 +430,9 @@
     if (filter.flag) {
       merged.flag = filter.flag;
     }
+    if (filter.hasPeople) {
+      merged.hasPeople = filter.hasPeople;
+    }
     if (extra) {
       Object.keys(extra).forEach(function (key) {
         merged[key] = extra[key];
@@ -435,7 +459,7 @@
   }
 
   function hasActiveFilter() {
-    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite || filter.source || filter.recent || filter.minStars || filter.pick || filter.flag);
+    return !!(filter.q || filter.scope || filter.person || filter.place || filter.thing || filter.kind || filter.favorite || filter.source || filter.recent || filter.minStars || filter.pick || filter.flag || filter.hasPeople);
   }
 
   function emptySearchText() {
@@ -457,7 +481,7 @@
   }
 
   function emptyFilter() {
-    return { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "" };
+    return { q: "", scope: "", person: "", place: "", thing: "", kind: "", favorite: "", source: "", recent: "", minStars: "", pick: "", hideRejects: "1", flag: "", hasPeople: "" };
   }
 
   function copyFilter(src) {
@@ -469,7 +493,7 @@
   }
 
   function filtersEqual(a, b) {
-    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite && a.source === b.source && a.recent === b.recent && a.minStars === b.minStars && a.pick === b.pick && a.hideRejects === b.hideRejects && a.flag === b.flag;
+    return a.q === b.q && a.scope === b.scope && a.person === b.person && a.place === b.place && a.thing === b.thing && a.kind === b.kind && a.favorite === b.favorite && a.source === b.source && a.recent === b.recent && a.minStars === b.minStars && a.pick === b.pick && a.hideRejects === b.hideRejects && a.flag === b.flag && a.hasPeople === b.hasPeople;
   }
 
   function selectedPeople() {
@@ -617,7 +641,7 @@
     if (filter.recent) {
       addChip("recent", "1", t("recentChip"));
     }
-    const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite || filter.source || filter.recent);
+    const hasEntity = !!(filter.person || filter.place || filter.thing || filter.q || filter.scope || filter.kind || filter.favorite || filter.source || filter.recent || filter.hasPeople);
     if (clearFiltersBtn) {
       clearFiltersBtn.hidden = !hasEntity;
     }
@@ -668,6 +692,7 @@
     main.dataset.pick = filter.pick;
     main.dataset.hideRejects = filter.hideRejects;
     main.dataset.flag = filter.flag;
+    main.dataset.hasPeople = filter.hasPeople;
     const allOn = !filter.kind && !filter.favorite && !filter.recent;
     if (filterAll) {
       filterAll.setAttribute("aria-pressed", allOn ? "true" : "false");
@@ -680,6 +705,9 @@
     }
     if (filterFavorites) {
       filterFavorites.setAttribute("aria-pressed", filter.favorite === "1" ? "true" : "false");
+    }
+    if (filterWithPeople) {
+      filterWithPeople.setAttribute("aria-pressed", filter.hasPeople === "1" ? "true" : "false");
     }
     if (filterRecent) {
       filterRecent.setAttribute("aria-pressed", filter.recent === "1" ? "true" : "false");
@@ -705,6 +733,9 @@
   function presentableSortValue() {
     if (settings.sort === "name") {
       return "name";
+    }
+    if (settings.sort === "size") {
+      return "size";
     }
     if (settings.sort === "location") {
       return "location";
@@ -734,6 +765,9 @@
     } else if (value === "name") {
       settings.sort = "name";
       settings.dir = "asc";
+    } else if (value === "size") {
+      settings.sort = "size";
+      settings.dir = "desc";
     } else if (value === "location") {
       settings.sort = "location";
     } else if (value === "rating") {
@@ -1000,9 +1034,7 @@
   }
 
   function applyFilterState(next, searchValue) {
-    const before = queryString();
     filter = copyFilter(next);
-    if (queryString() !== before) { clearCatalogForQuery(); }
     if (searchInput) {
       searchInput.value = searchValue != null ? searchValue : filter.q;
     }
@@ -1433,14 +1465,18 @@
     if (!sourceId) {
       return;
     }
+    showStatus(t("removingFolder"), true);
     fetch("/api/sources/" + encodeURIComponent(sourceId) + "/remove", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
     }).then(readJson).then(function () {
-      return loadCatalog();
-    }).catch(function () {
-      return loadCatalog();
+      showStatus(t("folderRemoved"), true);
+      return refreshCatalogChrome();
+    }).catch(function (err) {
+      const code = err && err.body && err.body.error;
+      showStatus(code === "busy" ? t("removeFolderBusy") : t("removeFolderFailed"), true);
+      return refreshCatalogChrome();
     });
   }
 
@@ -1689,9 +1725,7 @@
   }
 
   function showThumbHover(cell) {
-    const item = cell && itemById(cell.dataset.id);
-    const playing = item && (item.kind === "video" || item.kind === "live") && hoverAllowed();
-    if (!cell || playing || currentCellSize() >= thumbMaxPx()) {
+    if (!cell || currentCellSize() >= thumbMaxPx()) {
       hideThumbHover();
       return;
     }
@@ -1968,6 +2002,87 @@
     return !url || shown === url;
   }
 
+  const decodedByKey = Object.create(null);
+  const decodedOrder = [];
+
+  function stillMemoryKey(url) {
+    const match = /\/api\/media\/([^?]+)\?which=([^&]+)/.exec(url || "");
+    if (!match) {
+      return url || "";
+    }
+    try {
+      return decodeURIComponent(match[1]) + "|" + match[2];
+    } catch (err) {
+      return match[1] + "|" + match[2];
+    }
+  }
+
+  function rememberDecoded(img, url) {
+    if (!img || !(img.naturalWidth > 0)) {
+      return;
+    }
+    const key = stillMemoryKey(url);
+    if (!key || decodedByKey[key]) {
+      return;
+    }
+    decodedByKey[key] = img;
+    decodedOrder.push(key);
+    while (decodedOrder.length > 500) {
+      delete decodedByKey[decodedOrder.shift()];
+    }
+  }
+
+  function decodedDonor(url) {
+    if (!url) {
+      return null;
+    }
+    const kept = decodedByKey[stillMemoryKey(url)];
+    if (kept && kept.complete && kept.naturalWidth > 0) {
+      return kept;
+    }
+    const nodes = document.querySelectorAll("img");
+    let i;
+    for (i = 0; i < nodes.length; i += 1) {
+      const img = nodes[i];
+      if (img.getAttribute("data-still") === url && img.complete && img.naturalWidth > 0) {
+        return img;
+      }
+    }
+    let donor = null;
+    paintedCells.forEach(function (cell) {
+      if (donor) {
+        return;
+      }
+      const img = cell.querySelector("img");
+      if (img && img.getAttribute("data-still") === url && img.complete && img.naturalWidth > 0) {
+        donor = img;
+      }
+    });
+    return donor;
+  }
+
+  // A new tile for a picture already decoded must not hit the network.
+  function paintFromDecoded(img, url) {
+    const donor = decodedDonor(url);
+    if (!donor || donor === img) {
+      return false;
+    }
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = donor.naturalWidth;
+      canvas.height = donor.naturalHeight;
+      canvas.getContext("2d").drawImage(donor, 0, 0);
+      img.onload = null;
+      img.onerror = null;
+      img.src = canvas.toDataURL("image/jpeg", 0.85);
+      img.setAttribute("data-still", url);
+      img.hidden = false;
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   // Files whose camera thumbnail the server could not use; they wait for the real thumb.
   const cameraMissing = Object.create(null);
 
@@ -2016,10 +2131,14 @@
     if (!job || job.settled) {
       return;
     }
-    // Removing src cancels the browser request before its concurrency slot is reused.
+    // Drop an in-flight request so its connection can be reused. A picture
+    // that has already decoded stays on the element; clearing it made the
+    // next filter download that thumbnail again.
     job.img.onload = null;
     job.img.onerror = null;
-    job.img.removeAttribute("src");
+    if (!(job.img.complete && job.img.naturalWidth > 0)) {
+      job.img.removeAttribute("src");
+    }
     releaseStill(job, false);
   }
 
@@ -2079,9 +2198,13 @@
     }
     let ranked;
     const virtualNodes = document.querySelectorAll("#virtual-grid .cell");
+    const stripNodes = document.querySelectorAll("#favorites .cell, #photos-together .cell");
     const visibleCells = stillObserver ? cellsByStreamRank(stillIntersecting) : [];
-    if (virtualNodes.length) {
-      ranked = viewportStillRank(virtualNodes);
+    if (virtualNodes.length || stripNodes.length) {
+      const targets = [];
+      Array.prototype.forEach.call(virtualNodes, function (cell) { targets.push(cell); });
+      Array.prototype.forEach.call(stripNodes, function (cell) { targets.push(cell); });
+      ranked = viewportStillRank(targets);
     } else if (stillObserver && stillObserverReady && visibleCells.length) {
       const visibleIds = new Set(visibleCells);
       const nearbyCells = cellsByStreamRank(stillNear).filter(function (cell) {
@@ -2253,6 +2376,7 @@
         }
         delete cell.dataset.stillErrorTried;
         stillOk[id] = url;
+        rememberDecoded(next, url);
         delete cell.dataset.stillRetryAt;
         placeholder.hidden = true;
         next.hidden = false;
@@ -2293,6 +2417,9 @@
 
   function stillPlaceholder(item, which) {
     const status = ((item && item.renditions || {}).status || {})[which || stillWhich(item)];
+    if (status === "ready") {
+      return t("loadingPicture");
+    }
     if (which === "preview" && status === "not-applicable") {
       return t(item.available === false ? "previewUnavailable" : "loadingPicture");
     }
@@ -2350,6 +2477,12 @@
       return;
     }
     if (!forceReload && Number(cell.dataset.stillRetryAt || 0) > Date.now()) {
+      return;
+    }
+    if (!forceReload && paintFromDecoded(img, url)) {
+      stillOk[id] = url;
+      placeholder.hidden = true;
+      img.hidden = false;
       return;
     }
     enqueueStill(cell, id, url, forceReload);
@@ -2540,13 +2673,24 @@
     originalPreloadId = null;
   }
 
-  function lockLayoutSize(item, el) {
-    if (layoutW > 0 && layoutH > 0) {
+  function elementPixelSize(el) {
+    if (el && el.videoWidth > 0 && el.videoHeight > 0) {
+      return { w: el.videoWidth, h: el.videoHeight };
+    }
+    if (el && el.naturalWidth > 0 && el.naturalHeight > 0) {
+      return { w: el.naturalWidth, h: el.naturalHeight };
+    }
+    return null;
+  }
+
+  function lockLayoutSize(item, el, refresh) {
+    const measured = refresh ? elementPixelSize(el) : null;
+    if (!refresh && layoutW > 0 && layoutH > 0) {
       naturalW = layoutW;
       naturalH = layoutH;
       return true;
     }
-    const meta = itemPixelSize(item);
+    const meta = measured || elementPixelSize(el) || itemPixelSize(item);
     if (meta) {
       layoutW = meta.w;
       layoutH = meta.h;
@@ -2554,16 +2698,7 @@
       naturalH = layoutH;
       return true;
     }
-    if (el && el.videoWidth > 0 && el.videoHeight > 0) {
-      layoutW = el.videoWidth;
-      layoutH = el.videoHeight;
-      naturalW = layoutW;
-      naturalH = layoutH;
-      return true;
-    }
-    if (el && el.naturalWidth > 0 && el.naturalHeight > 0) {
-      layoutW = el.naturalWidth;
-      layoutH = el.naturalHeight;
+    if (layoutW > 0 && layoutH > 0) {
       naturalW = layoutW;
       naturalH = layoutH;
       return true;
@@ -2843,6 +2978,29 @@
     return value.replace("T", " ").replace(/Z$/, "").replace(/\.\d+$/, "");
   }
 
+  function formatDateReadable(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value || ""));
+    if (!match) {
+      return formatDateTaken(value);
+    }
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const utc = new Date(Date.UTC(year, month - 1, day));
+    if (month < 1 || month > 12 || day < 1 || day > 31 || utc.getUTCDate() !== day) {
+      return formatDateTaken(value);
+    }
+    const weekday = utc.getUTCDay();
+    const lang = window.LibraryI18n && LibraryI18n.getLanguage ? LibraryI18n.getLanguage() : "en";
+    if (lang === "zh-Hans") {
+      const weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+      return year + "年" + month + "月" + day + "日 " + weeks[weekday];
+    }
+    const weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return weeks[weekday] + ", " + months[month - 1] + " " + day + ", " + year;
+  }
+
   function formatFileSize(bytes) {
     const n = Number(bytes);
     if (!isFinite(n) || n < 0) {
@@ -2854,7 +3012,10 @@
     if (n < 1024 * 1024) {
       return (n / 1024).toFixed(1) + " KB";
     }
-    return (n / (1024 * 1024)).toFixed(1) + " MB";
+    if (n < 1024 * 1024 * 1024) {
+      return (n / (1024 * 1024)).toFixed(1) + " MB";
+    }
+    return (n / (1024 * 1024 * 1024)).toFixed(1) + " GB";
   }
 
   function formatGps(lat, lon) {
@@ -4061,7 +4222,6 @@
     const t = Math.max(viewerVideo.currentTime || 0, Number(startTime) || 0);
     const paused = viewerVideo.paused && !viewerWantPlay;
     const rate = viewerVideo.playbackRate || 1;
-    const snap = snapshotViewTransform();
     cancelOriginalPreload();
     viewerVideo.onloadedmetadata = function () {
       if (viewerItemId !== item.id || viewer.hidden) {
@@ -4072,7 +4232,7 @@
           viewerVideo.currentTime = t;
         }
       } catch (err) {}
-      restoreViewTransform(snap);
+      layoutVideo(item, true);
     };
     viewerVideo.onloadeddata = function () {
       if (viewerItemId !== item.id || viewer.hidden) {
@@ -4084,9 +4244,7 @@
         }
       } catch (err) {}
       viewerVideo.playbackRate = rate;
-      restoreViewTransform(snap);
-      layoutVideo(item);
-      restoreViewTransform(snap);
+      layoutVideo(item, true);
       applyViewerVolume();
       setVideoSourceState(state);
       showViewerScrub();
@@ -4263,7 +4421,7 @@
         applyViewerStartTime(startTime);
         appliedStart = true;
       }
-      layoutVideo(item);
+      layoutVideo(item, true);
       showViewerScrub();
       syncViewerSourceChrome();
       if (autoplay) {
@@ -4301,7 +4459,7 @@
         if (viewerItemId !== item.id || viewer.hidden) {
           return;
         }
-        layoutVideo(item);
+        layoutVideo(item, true);
         showViewerScrub();
       };
     };
@@ -4414,21 +4572,25 @@
             }
           });
         }
+        flashPlayback(true);
       } else {
         viewerVideo.pause();
+        flashPlayback(false);
       }
       return;
     }
     if (item.kind !== "video") {
       return;
     }
+    const ready = viewerVideo.getAttribute("data-source-ready") === item.id
+      && (viewerVideo.currentSrc || viewerVideo.getAttribute("src"));
+    if (!ready) {
+      playOriginalOrProxy(item, undefined, true);
+      flashPlayback(true);
+      return;
+    }
     if (viewerVideo.paused) {
       viewerWantPlay = true;
-    } else {
-      viewerWantPlay = false;
-    }
-    playOriginalOrProxy(item);
-    if (viewerVideo.paused) {
       const play = viewerVideo.play();
       if (play && play.catch) {
         play.catch(function () {
@@ -4444,9 +4606,26 @@
           }
         });
       }
-    } else {
-      viewerVideo.pause();
+      flashPlayback(true);
+      return;
     }
+    viewerWantPlay = false;
+    viewerVideo.pause();
+    flashPlayback(false);
+  }
+
+  function flashPlayback(playing) {
+    const flash = document.getElementById("viewer-play-flash");
+    const playMark = document.getElementById("viewer-play-mark");
+    const pauseMark = document.getElementById("viewer-pause-mark");
+    if (!flash || !playMark || !pauseMark) {
+      return;
+    }
+    playMark.hidden = !playing;
+    pauseMark.hidden = playing;
+    flash.classList.remove("pop");
+    void flash.offsetWidth;
+    flash.classList.add("pop");
   }
 
   function seekViewerTo(seconds) {
@@ -4510,7 +4689,195 @@
     }
   }
 
+  const placeMiss = Object.create(null);
+  const placeFetch = Object.create(null);
+
+  function fileNameStem(name) {
+    const base = String(name || "");
+    const dot = base.lastIndexOf(".");
+    return (dot > 0 ? base.slice(0, dot) : base).toLowerCase();
+  }
+
+  function cachedItemById(id) {
+    if (!id) {
+      return null;
+    }
+    if (itemIndexById[id] != null) {
+      return items[itemIndexById[id]];
+    }
+    if (!libraryCache || !libraryCache.items) {
+      return null;
+    }
+    if (!libraryCache.byId) {
+      const byId = Object.create(null);
+      libraryCache.items.forEach(function (item) {
+        if (item && item.id) {
+          byId[item.id] = item;
+        }
+      });
+      libraryCache.byId = byId;
+    }
+    return libraryCache.byId[id] || null;
+  }
+
+  function placePartsFrom(item) {
+    const places = (item && item.entities && item.entities.places) || [];
+    const named = places.filter(function (row) {
+      return row && row.name;
+    })[0];
+    if (named) {
+      return { name: named.name, latitude: named.latitude, longitude: named.longitude };
+    }
+    const located = places.filter(function (row) {
+      return row && row.latitude != null && row.longitude != null;
+    })[0];
+    const meta = (item && item.metadata) || {};
+    return {
+      name: "",
+      latitude: located ? located.latitude : meta.latitude,
+      longitude: located ? located.longitude : meta.longitude,
+    };
+  }
+
+  function viewerPlaceParts(item) {
+    const own = placePartsFrom(item);
+    if (own.name || (own.latitude != null && own.longitude != null)) {
+      return own;
+    }
+    const seen = Object.create(null);
+    const ids = (item && item.stack && item.stack.itemIds) || [];
+    ids.forEach(function (id) { seen[id] = true; });
+    const stem = fileNameStem(item && item.filename);
+    const pool = [];
+    ids.forEach(function (id) {
+      const other = cachedItemById(id);
+      if (other && other !== item) {
+        pool.push(other);
+      }
+    });
+    if (stem && libraryCache && libraryCache.items) {
+      if (!libraryCache.byStem) {
+        const byStem = Object.create(null);
+        libraryCache.items.forEach(function (other) {
+          const key = fileNameStem(other && other.filename);
+          if (!key) {
+            return;
+          }
+          (byStem[key] || (byStem[key] = [])).push(other);
+        });
+        libraryCache.byStem = byStem;
+      }
+      (libraryCache.byStem[stem] || []).forEach(function (other) {
+        if (other && other !== item && !seen[other.id]) {
+          pool.push(other);
+        }
+      });
+    }
+    for (let i = 0; i < pool.length; i += 1) {
+      const partner = placePartsFrom(pool[i]);
+      if (partner.name || (partner.latitude != null && partner.longitude != null)) {
+        return partner;
+      }
+    }
+    return own;
+  }
+
+  function viewerPlaceName(item) {
+    const parts = viewerPlaceParts(item);
+    if (parts.name) {
+      return parts.name;
+    }
+    return formatGps(parts.latitude, parts.longitude);
+  }
+
+  function viewerFileSize(item) {
+    let bytes = 0;
+    const locs = (item && item.locations) || [];
+    const primary = primaryLocation(item);
+    if (primary && Number(primary.sizeBytes) > bytes) {
+      bytes = Number(primary.sizeBytes);
+    }
+    locs.forEach(function (loc) {
+      const n = loc && Number(loc.sizeBytes);
+      if (n > bytes) {
+        bytes = n;
+      }
+    });
+    if (!(bytes > 0)) {
+      return "";
+    }
+    return formatFileSize(bytes);
+  }
+
+  function ensureViewerPlace(item) {
+    const parts = viewerPlaceParts(item);
+    if (!item || !item.id || placeMiss[item.id] || placeFetch[item.id] || parts.name) {
+      return;
+    }
+    placeFetch[item.id] = true;
+    fetch("/api/items/" + encodeURIComponent(item.id) + "/file-place", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    }).then(function (res) {
+      return readJson(res);
+    }).then(function (body) {
+      if (!body || body.latitude == null || body.longitude == null) {
+        placeMiss[item.id] = true;
+        return;
+      }
+      item.metadata = item.metadata || {};
+      item.metadata.latitude = body.latitude;
+      item.metadata.longitude = body.longitude;
+      if (body.placeId) {
+        item.placeId = body.placeId;
+      }
+      item.entities = item.entities || {};
+      const places = (item.entities.places || []).slice();
+      const known = {
+        id: body.placeId || "",
+        name: body.name || "",
+        latitude: body.latitude,
+        longitude: body.longitude,
+      };
+      if (!places.length) {
+        places.push(known);
+      } else {
+        places[0] = known;
+      }
+      item.entities.places = places;
+      if (viewerItemId === item.id && !viewer.hidden) {
+        renderViewerCaption(item);
+      }
+    }).catch(function () {});
+  }
+
+  function renderViewerCaption(item) {
+    const caption = document.getElementById("viewer-caption");
+    if (!caption) {
+      return;
+    }
+    if (!item) {
+      caption.textContent = "";
+      return;
+    }
+    caption.replaceChildren();
+    function addCaption(text) {
+      if (!text) {
+        return;
+      }
+      const span = document.createElement("span");
+      span.textContent = text;
+      caption.appendChild(span);
+    }
+    addCaption(formatDateReadable(item.capturedAt));
+    addCaption(viewerPlaceName(item));
+    addCaption(viewerFileSize(item));
+    ensureViewerPlace(item);
+  }
+
   function renderViewerLabels(item) {
+    renderViewerCaption(item);
     renderFacts(item);
     renderTranscript(item);
     if (peopleLabels) {
@@ -4718,7 +5085,7 @@
 
   function layoutVideo(item, forceFit) {
     const had = layoutW > 0 && layoutH > 0;
-    if (!lockLayoutSize(item, viewerVideo)) {
+    if (!lockLayoutSize(item, viewerVideo, forceFit)) {
       return;
     }
     if (!had || forceFit) {
@@ -4758,9 +5125,9 @@
       if (viewerItemId !== item.id || viewer.hidden) {
         return;
       }
-      layoutVideo(item);
+      layoutVideo(item, true);
     };
-    layoutVideo(item);
+    layoutVideo(item, true);
     showViewerScrub();
     if (autoplay) {
       playOriginalOrProxy(item, startTime, true);
@@ -4777,6 +5144,64 @@
       return;
     }
     openStillViewer(item, index);
+  }
+
+  function mergeFullItemRecord(target, full) {
+    if (!target || !full || typeof full !== "object") {
+      return target;
+    }
+    if (full.path != null) { target.path = full.path; }
+    if (full.camera != null) { target.camera = full.camera; }
+    if (full.faces != null) { target.faces = full.faces; }
+    if (full.transcript != null) { target.transcript = full.transcript; }
+    if (full.locations) { target.locations = full.locations; }
+    if (full.entities) { target.entities = full.entities; }
+    if (full.metadata) { target.metadata = Object.assign({}, target.metadata || {}, full.metadata); }
+    if (full.renditions) {
+      target.renditions = Object.assign({}, target.renditions || {}, full.renditions);
+      if (full.renditions.status) {
+        target.renditions.status = Object.assign({}, (target.renditions && target.renditions.status) || {}, full.renditions.status);
+      }
+    }
+    if (full.rating) { target.rating = Object.assign({}, target.rating || {}, full.rating); }
+    if (full.stack) {
+      target.stack = Object.assign({}, target.stack || {}, full.stack);
+      if (full.stack.itemIds) { target.stack.itemIds = full.stack.itemIds; }
+    }
+    if (full.placeId != null) { target.placeId = full.placeId; }
+    if (full.filename) { target.filename = full.filename; }
+    if (full.kind) { target.kind = full.kind; }
+    if (full.capturedAt != null) { target.capturedAt = full.capturedAt; }
+    if (typeof full.favorite === "boolean") { target.favorite = full.favorite; }
+    return target;
+  }
+
+  function enrichOpenItem(item) {
+    if (!item || !item.id) {
+      return;
+    }
+    const id = item.id;
+    fetch("/api/items/" + encodeURIComponent(id)).then(function (res) {
+      if (res.status === 404) {
+        return null;
+      }
+      return readJson(res);
+    }).then(function (full) {
+      if (!full || full.error || viewerItemId !== id) {
+        return;
+      }
+      mergeFullItemRecord(item, full);
+      if (viewerItemId !== id) {
+        return;
+      }
+      renderViewerLabels(item);
+      syncViewerChrome(item);
+      if (item.kind === "video" || item.kind === "live") {
+        maybePromoteFullSource(item);
+      } else {
+        adoptReadyViewerStill(item);
+      }
+    }).catch(function () {});
   }
 
   function openViewer(id, startTime) {
@@ -4806,6 +5231,7 @@
       setViewerDocked(canDockViewer());
     }
     openViewerAt(index, seek, true);
+    enrichOpenItem(item);
     applyPreviewLayout();
     scheduleGridStills();
     if (!skipHistory) {
@@ -4844,10 +5270,11 @@
       return;
     }
     const host = document.getElementById("virtual-grid");
-    if (!host || !virtualIndex || virtualIndex[id] == null) {
+    const offset = host ? virtualOffset(id) : null;
+    if (!host || offset == null) {
       return;
     }
-    main.scrollTop = Math.max(0, host.offsetTop + virtualIndex[id] - main.clientHeight / 2);
+    main.scrollTop = Math.max(0, host.offsetTop + offset - main.clientHeight / 2);
     virtualKey = "";
     mountVirtualGrid();
   }
@@ -5029,7 +5456,13 @@
   }
 
   function isStackHidden(item) {
-    return !!(item && item.stack && item.stack.representative === false);
+    if (!item || !item.stack || item.stack.representative !== false) {
+      return false;
+    }
+    if (filter.kind === "video" && item.kind === "video") {
+      return false;
+    }
+    return true;
   }
 
   function takeVisibleCell(existing, id, slot) {
@@ -5069,15 +5502,21 @@
     if (arrangeSelect && arrangeSelect.value !== arrangeBy) {
       arrangeSelect.value = arrangeBy;
     }
-    main.className = "level-" + level + (groupDates ? "" : " wall");
+    main.className = "level-" + level + (flatWall() ? " wall" : "");
     main.style.setProperty("--cell", size + "px");
     if (sizeSlider) {
       sizeSlider.max = String(SIZE_STEPS.length - 1);
       sizeSlider.value = String(gridSize);
     }
-    if (dateGroupSelect && dateGroupSelect.value !== dateMode) {
-      dateGroupSelect.value = dateMode;
+    if (dateGroupSelect) {
+      dateGroupSelect.disabled = arrangeBy === "off";
+      const shownMode = arrangeBy === "off" ? "off" : dateMode;
+      if (dateGroupSelect.value !== shownMode) {
+        dateGroupSelect.value = shownMode;
+      }
     }
+    const metrics = gridMetrics(gridInnerWidth());
+    main.style.setProperty("--cols", String(Math.max(1, metrics.cols)));
   }
 
   function groupsFromItems(list, level) {
@@ -5156,6 +5595,9 @@
   }
 
   function groupsFromArrange(list, by) {
+    if (by === "off") {
+      return [];
+    }
     if (by === "dates") {
       return groupsFromItems(list, settings.zoomLevel);
     }
@@ -5337,14 +5779,22 @@
   let virtualActiveCache = false;
   let virtualRecountAt = 0;
   let virtualKey = "";
+  let virtualQuick = "";
   let virtualIndex = null;
   let metricsCache = null;
   let virtualFrame = 0;
   let streamGroupState = null;
   let streamGroupsTrusted = true;
 
+  function flatWall() {
+    if (arrangeBy === "off") {
+      return true;
+    }
+    return arrangeBy === "dates" && (!groupDates || settings.sort === "size");
+  }
+
   function gridMode() {
-    if (!groupDates && arrangeBy === "dates") {
+    if (flatWall()) {
       return "wall";
     }
     if (groupDates && (settings.zoomLevel === "years" || settings.zoomLevel === "months")) {
@@ -5455,6 +5905,9 @@
   }
 
   function streamBucketFor(item) {
+    if (flatWall()) {
+      return { key: "", id: null, mapKey: "wall" };
+    }
     if (arrangeBy === "dates") {
       const captured = (item && item.capturedAt) || "";
       let key = captured.slice(0, 10);
@@ -5527,7 +5980,7 @@
   }
 
   function virtualBlocks() {
-    if (!groupDates && arrangeBy === "dates") {
+    if (flatWall()) {
       const ids = [];
       items.forEach(function (item) {
         if (item && !isStackHidden(item)) {
@@ -5557,7 +6010,6 @@
 
   function layoutVirtual(blocks, metrics) {
     const placed = [];
-    const index = Object.create(null);
     let y = 0;
     blocks.forEach(function (block, blockIndex) {
       const header = block.label ? metrics.header : 0;
@@ -5566,14 +6018,42 @@
       const groupGap = blockIndex === blocks.length - 1 ? 0 : metrics.groupGap;
       const height = header + rowsHeight + groupGap;
       placed.push({ block: block, y: y, header: header, rows: rows, height: height });
-      const origin = y + header;
-      for (let i = 0; i < block.ids.length; i += 1) {
-        index[block.ids[i]] = origin + Math.floor(i / metrics.cols) * metrics.stride;
-      }
       y += height;
     });
-    virtualIndex = index;
     return { placed: placed, total: y };
+  }
+
+  function streamSpacerHeight(metrics) {
+    if (flatWall()) {
+      const rows = Math.ceil(items.length / Math.max(1, metrics.cols));
+      return Math.max(1, rows ? rows * metrics.outer + Math.max(0, rows - 1) * metrics.gap : 1);
+    }
+    let y = 0;
+    (groups || []).forEach(function (group, index) {
+      const count = (group.itemIds || []).length;
+      const collapsed = !!collapsedGroups[arrangeBy + ":" + (group.id || group.key)];
+      const rows = collapsed ? 0 : Math.ceil(count / Math.max(1, metrics.cols));
+      const rowsHeight = rows ? rows * metrics.outer + Math.max(0, rows - 1) * metrics.gap : 0;
+      const groupGap = index === groups.length - 1 ? 0 : metrics.groupGap;
+      y += metrics.header + rowsHeight + groupGap;
+    });
+    return Math.max(1, y);
+  }
+
+  function virtualOffset(id) {
+    const host = document.getElementById("virtual-grid");
+    const metrics = gridMetrics((host && host.clientWidth) || gridInnerWidth());
+    const layout = layoutVirtual(virtualBlocks(), metrics);
+    let found = null;
+    layout.placed.some(function (piece) {
+      const at = piece.block.ids.indexOf(id);
+      if (at < 0) {
+        return false;
+      }
+      found = piece.y + piece.header + Math.floor(at / metrics.cols) * metrics.stride;
+      return true;
+    });
+    return found;
   }
 
   function retireEagerGrid() {
@@ -5638,6 +6118,10 @@
     if (!el) {
       return;
     }
+    if (filterWait) {
+      el.textContent = t("filteringLibrary");
+      return;
+    }
     if (!virtualActiveCache || !items.length) {
       el.textContent = "";
       return;
@@ -5645,13 +6129,9 @@
     const bounds = main.getBoundingClientRect();
     let visible = 0;
     let loaded = 0;
-    let decoded = paintedCells.size;
     document.querySelectorAll("#virtual-grid .cell").forEach(function (cell) {
       const img = cell.querySelector("img");
       const ok = stillLooksGood(img);
-      if (ok) {
-        decoded += 1;
-      }
       const rect = cell.getBoundingClientRect();
       if (rect.bottom <= bounds.top || rect.top >= bounds.bottom || rect.right <= bounds.left || rect.left >= bounds.right) {
         return;
@@ -5662,11 +6142,10 @@
       }
     });
     const total = items.length;
-    el.textContent = t("gridLoadStatus", {
+    el.textContent = t(catalogReady ? "gridLoadStatus" : "gridLoadArriving", {
       loaded: loaded,
       visible: visible,
-      memory: decoded.toLocaleString(),
-      left: Math.max(0, total - decoded).toLocaleString(),
+      total: total.toLocaleString(),
     });
   }
 
@@ -5681,6 +6160,18 @@
       loading.remove();
     }
     const metrics = gridMetrics(host.clientWidth || gridInnerWidth());
+    main.style.setProperty("--cols", String(Math.max(1, metrics.cols)));
+    const hungryNow = virtualWindowHungry() ? 1 : 0;
+    const quick = [metrics.cols, metrics.size, metrics.width, hungryNow, main.scrollTop, main.clientHeight].join(":");
+    if (virtualKey && quick === virtualQuick && host.querySelector(".virtual-chunk")) {
+      const held = host.querySelector(".virtual-spacer");
+      if (held) {
+        held.style.height = streamSpacerHeight(metrics) + "px";
+      }
+      syncGridLoadStatus();
+      return;
+    }
+    virtualQuick = quick;
     const layout = layoutVirtual(virtualBlocks(), metrics);
     const spacer = host.querySelector(".virtual-spacer");
     if (spacer) {
@@ -5995,9 +6486,9 @@
       resumeHoverIfNeeded();
       return;
     }
-    const anchor = visibleAnchorId();
+    const anchor = pinGridTop ? null : visibleAnchorId();
     const existing = collectCells();
-    const mosaic = groupDates && (level === "years" || level === "months");
+    const mosaic = !flatWall() && groupDates && (level === "years" || level === "months");
     const fragment = document.createDocumentFragment();
     const fav = makeFavoritesSection(existing, mosaic);
     if (fav) {
@@ -6010,7 +6501,7 @@
     if (virtualGridActive()) {
       virtualKey = "";
       fragment.appendChild(makeVirtualHost());
-    } else if (!groupDates && arrangeBy === "dates") {
+    } else if (flatWall()) {
       const list = document.createElement("div");
       list.className = "item-list wall-list";
     items.forEach(function (item, index) {
@@ -6492,7 +6983,9 @@
       }
       renderPeople();
       renderActiveFilters();
-      loadSuggestions();
+      if (peopleReviewBtn) {
+        peopleReviewBtn.hidden = false;
+      }
       return body;
     }).catch(function () {
       return null;
@@ -6875,16 +7368,21 @@
   }
 
   function openMergeWizard() {
-    if (!mergeSuggestions.length || !mergeWizard) {
+    if (!mergeWizard) {
       return;
     }
-    if (wizardIndex >= mergeSuggestions.length) {
-      wizardIndex = 0;
-    }
-    paintMergeWizard();
-    if (mergeWizard.showModal) {
-      mergeWizard.showModal();
-    }
+    loadSuggestions().then(function () {
+      if (!mergeSuggestions.length) {
+        return;
+      }
+      if (wizardIndex >= mergeSuggestions.length) {
+        wizardIndex = 0;
+      }
+      paintMergeWizard();
+      if (mergeWizard.showModal) {
+        mergeWizard.showModal();
+      }
+    });
   }
 
   function closeMergeWizard() {
@@ -6953,13 +7451,13 @@
         wizardIndex = 0;
       }
       if (peopleReviewBtn) {
-        peopleReviewBtn.hidden = mergeSuggestions.length === 0;
+        peopleReviewBtn.hidden = false;
       }
       return body;
     }).catch(function () {
       mergeSuggestions = [];
       if (peopleReviewBtn) {
-        peopleReviewBtn.hidden = true;
+        peopleReviewBtn.hidden = false;
       }
       return null;
     });
@@ -7185,9 +7683,28 @@
       li.dataset.id = queue.id;
       li.dataset.state = queue.state || "idle";
       const extra = queue.available ? (queue.state === "paused" ? " · " + t("paused") : "") : " · " + t("setupNeeded");
-      li.textContent = I18N.queueLabel(queue.id, queue.label) + " · " + t("queueCounts", {
-        done: queue.done || 0, pending: queue.pending || 0, error: queue.error || 0,
-      }) + extra;
+      const total = Number(queue.done || 0) + Number(queue.pending || 0);
+      const percent = total > 0 ? Math.floor(100 * Number(queue.done || 0) / total) : null;
+      const label = document.createElement("span");
+      label.textContent = (percent == null
+        ? I18N.queueLabel(queue.id, queue.label) + " · " + t("queueCounts", {
+          done: queue.done || 0, pending: queue.pending || 0, error: queue.error || 0,
+        })
+        : I18N.queueLabel(queue.id, queue.label) + " · " + t("queueProgress", {
+          percent: percent, done: queue.done || 0, pending: queue.pending || 0, error: queue.error || 0,
+        })) + extra;
+      li.appendChild(label);
+      if (body && body.queuePause && (queue.pending > 0 || queue.state === "paused") && !body.paused) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "queue-pause";
+        const held = queue.state === "paused";
+        button.textContent = held ? t("resume") : t("pause");
+        button.addEventListener("click", function () {
+          postJobs(held ? "resume" : "pause", queue.id);
+        });
+        li.appendChild(button);
+      }
       jobsQueues.appendChild(li);
     });
     if (jobsFolders) {
@@ -7297,11 +7814,15 @@
     return jobsInFlight;
   }
 
-  function postJobs(action) {
+  function postJobs(action, queue) {
+    const payload = { action: action };
+    if (queue) {
+      payload.queue = queue;
+    }
     return fetch("/api/jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: action }),
+      body: JSON.stringify(payload),
     }).then(readJson).then(function (body) {
       renderJobs(body);
       return body;
@@ -7481,14 +8002,13 @@
       main.replaceChildren();
       const loading = document.createElement("p");
       loading.id = "grid-loading";
-      loading.textContent = t("loadingPictures");
+      loading.textContent = hasActiveFilter() ? t("filteringLibrary") : t("loadingPictures");
       main.appendChild(loading);
     }
     main.setAttribute("aria-busy", "true");
   }
 
-  function clearCatalogForQuery() {
-    if (catalogRequest) { catalogRequest.controller.abort(); }
+  function releaseGrid() {
     stopHover();
     stillSuspended = true;
     stillQueue.length = 0;
@@ -7504,6 +8024,7 @@
     virtualActiveCache = false;
     virtualRecountAt = 0;
     virtualKey = "";
+    virtualQuick = "";
     virtualIndex = null;
     metricsCache = null;
     extraById = Object.create(null);
@@ -7512,7 +8033,6 @@
     catalogLoading = true;
     catalogFailure = false;
     showDisconnected(false);
-    queryResetPending = true;
     selectedIds = [];
     selectedId = null;
     lastClickedId = null;
@@ -7520,6 +8040,13 @@
     syncViewerIndex();
     syncNavChrome();
     showCatalogLoading();
+  }
+
+  function clearCatalogForQuery() {
+    if (catalogRequest) { catalogRequest.controller.abort(); }
+    filterWait = false;
+    queryResetPending = true;
+    releaseGrid();
   }
 
   function streamSectionKey(group) {
@@ -7543,7 +8070,7 @@
 
   function ensureStreamSection(layout, key, group, request) {
     let section = layout.sections.get(key);
-    const mosaic = groupDates && (settings.zoomLevel === "years" || settings.zoomLevel === "months");
+    const mosaic = !flatWall() && groupDates && (settings.zoomLevel === "years" || settings.zoomLevel === "months");
     if (!section) {
       section = document.createElement("section");
       section.dataset.streamSection = key;
@@ -7675,6 +8202,13 @@
 
   function appendStreamRows(request, rows, soloId) {
     if (!request.current()) { return; }
+    if (request.deferClear) {
+      request.deferClear = false;
+      filterWait = false;
+      releaseGrid();
+      request.layout = null;
+      request.layoutRevision = -1;
+    }
     if (!request.layout || request.layoutRevision !== gridRenderRevision) {
       request.layout = streamLayout();
       request.layoutRevision = gridRenderRevision;
@@ -7720,7 +8254,7 @@
         return;
       }
       let list;
-      if (!groupDates && arrangeBy === "dates") {
+      if (flatWall()) {
         list = layout.wall;
         if (!list) {
           list = document.createElement("div");
@@ -7739,7 +8273,6 @@
     } else {
       groups = arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy);
     }
-    catalogReady = true;
     stillSuspended = false;
     renderKey = "";
     applyGridMetrics();
@@ -7749,7 +8282,9 @@
     if (virtualActiveCache) {
       scheduleVirtualGrid();
     }
-    paintGridStills();
+    if (!virtualActiveCache || !document.querySelector("#virtual-grid .virtual-chunk")) {
+      paintGridStills();
+    }
   }
 
   async function readItemStream(url, request, commit) {
@@ -7774,9 +8309,8 @@
       await new Promise(function (resolve) {
         window.requestAnimationFrame(function () {
           if (request.current()) { commit(rows); }
-          // A second frame allows a real paint before decoding another warm chunk.
-          if (!painted) { window.requestAnimationFrame(resolve); }
-          else { resolve(); }
+          // Let clicks, scrolling, and thumbnail loads run before the next records.
+          window.setTimeout(resolve, 0);
         });
       });
       painted = true;
@@ -7803,12 +8337,15 @@
       while (true) {
         const chunk = await reader.read();
         buffer += decoder.decode(chunk.value || new Uint8Array(), { stream: !chunk.done });
-        let newline;
-        while ((newline = buffer.indexOf("\n")) >= 0) {
-          const text = buffer.slice(0, newline);
-          buffer = buffer.slice(newline + 1);
+        let start = 0;
+        let newline = buffer.indexOf("\n", start);
+        while (newline >= 0) {
+          const text = buffer.slice(start, newline);
+          start = newline + 1;
+          newline = buffer.indexOf("\n", start);
           await line(text);
         }
+        if (start) { buffer = buffer.slice(start); }
         await flush();
         if (chunk.done) { break; }
       }
@@ -7821,7 +8358,672 @@
     }
   }
 
+  let baseCatalog = null;
+  const BIT_PICK = 1;
+  const BIT_REJECT = 2;
+  const BIT_BLURRY = 4;
+  const BIT_THUMB = 8;
+  const BIT_POSTER = 16;
+  const BIT_STACK_HIDDEN = 32;
+  const BIT_LIVE = 64;
+  const BIT_BURST = 128;
+  const BIT_RECENT = 256;
+  const UNNAMED_LABELS = { unnamed: 1, "未命名": 1, unknown: 1, "未知": 1 };
+  const NO_PLACE_LABELS = { "no place": 1, "无地点": 1, "no location": 1, "无位置": 1 };
+  const UNTAGGED_LABELS = { untagged: 1, "无标签": 1 };
+
+  function wideLibraryQuery() {
+    return !filter.q && !filter.scope && !filter.person && !filter.place && !filter.thing
+      && !filter.kind && !filter.favorite && !filter.source && !filter.recent
+      && !filter.minStars && !filter.pick && !filter.flag && !filter.hasPeople;
+  }
+
+  function rememberBaseCatalog() {
+    if (!catalogMaster && !wideLibraryQuery()) {
+      return;
+    }
+    const source = catalogMaster || items;
+    const knowsEntities = source.some(function (item) {
+      return item.entities && (Array.isArray(item.entities.people) || Array.isArray(item.entities.places) || Array.isArray(item.entities.things));
+    });
+    libraryCache = {
+      sort: settings.sort,
+      dir: settings.dir,
+      hideRejects: filter.hideRejects,
+      knowsEntities: knowsEntities,
+      items: (catalogMaster || items).slice(),
+    };
+    baseCatalog = libraryCache;
+  }
+
+  function normQuery(value) {
+    return String(value || "").normalize("NFC").trim().toLowerCase();
+  }
+
+  function hydrateCatalogRow(row, sources, places, people, things) {
+    const id = row[0];
+    const kind = row[1];
+    const fav = !!row[2];
+    let capturedAt = "";
+    if (typeof row[3] === "number" && row[3] > 0) {
+      capturedAt = new Date(row[3]).toISOString().replace(/\.\d{3}Z$/, "Z");
+    } else if (typeof row[3] === "string" && row[3]) {
+      capturedAt = row[3];
+    }
+    const filename = row[4] || "";
+    const sizeBytes = typeof row[5] === "number" ? row[5] : 0;
+    const sourceIndex = row[6];
+    const placeIndex = row[7];
+    const peopleIndexes = row[8];
+    const thingIndexes = row[9];
+    const stars = typeof row[10] === "number" ? row[10] : 0;
+    const bits = typeof row[11] === "number" ? row[11] : 0;
+    const stackCount = typeof row[12] === "number" ? row[12] : 0;
+    const thumbV = row[13];
+    const said = typeof row[14] === "string" ? row[14] : "";
+    const durationMs = typeof row[15] === "number" ? row[15] : 0;
+    const width = typeof row[16] === "number" ? row[16] : 0;
+    const height = typeof row[17] === "number" ? row[17] : 0;
+    const item = {
+      id: id,
+      filename: filename,
+      kind: kind,
+      favorite: fav,
+      capturedAt: capturedAt,
+      recent: !!(bits & BIT_RECENT),
+      locations: [],
+      entities: { people: [], things: [] },
+      rating: {
+        stars: stars,
+        pick: !!(bits & BIT_PICK),
+        reject: !!(bits & BIT_REJECT),
+        flags: (bits & BIT_BLURRY) ? ["blurry"] : [],
+      },
+      renditions: {
+        status: {
+          thumb: (bits & BIT_THUMB) ? "ready" : "queued",
+          poster: (bits & BIT_POSTER) ? "ready" : "queued",
+        },
+      },
+      said: said,
+      thumbV: thumbV,
+    };
+    if (placeIndex != null && placeIndex >= 0 && places[placeIndex]) {
+      const place = places[placeIndex];
+      item.placeId = place.id;
+      item.entities.places = [{ id: place.id, name: place.name || "" }];
+    }
+    if (sourceIndex != null && sourceIndex >= 0 && sources[sourceIndex] != null && sources[sourceIndex] !== "") {
+      item.locations.push({ sourceId: sources[sourceIndex], sizeBytes: sizeBytes });
+    } else if (sizeBytes) {
+      item.locations.push({ sizeBytes: sizeBytes });
+    }
+    (Array.isArray(peopleIndexes) ? peopleIndexes : []).forEach(function (idx) {
+      if (idx != null && idx >= 0 && people[idx]) {
+        item.entities.people.push({ id: people[idx].id, name: people[idx].name || "" });
+      }
+    });
+    (Array.isArray(thingIndexes) ? thingIndexes : []).forEach(function (idx) {
+      if (idx != null && idx >= 0 && things[idx]) {
+        item.entities.things.push({ id: things[idx].id, name: things[idx].name || "" });
+      }
+    });
+    if ((bits & (BIT_LIVE | BIT_BURST | BIT_STACK_HIDDEN)) || stackCount > 1) {
+      item.stack = {
+        kind: (bits & BIT_LIVE) ? "live" : ((bits & BIT_BURST) ? "burst" : ""),
+        count: stackCount > 0 ? stackCount : 1,
+        representative: !(bits & BIT_STACK_HIDDEN),
+      };
+    }
+    const meta = {};
+    if (width) { meta.width = width; }
+    if (height) { meta.height = height; }
+    if (durationMs) { meta.durationSec = durationMs / 1000; }
+    if (meta.width || meta.height || meta.durationSec) {
+      item.metadata = meta;
+    }
+    return item;
+  }
+
+  function applyCatalogIndex(body) {
+    if (!body || !Array.isArray(body.items)) {
+      throw new Error("catalog-index");
+    }
+    const sources = Array.isArray(body.sources) ? body.sources : [];
+    const places = Array.isArray(body.places) ? body.places : [];
+    const people = Array.isArray(body.people) ? body.people : [];
+    const things = Array.isArray(body.things) ? body.things : [];
+    catalogIndexV = body.v != null ? body.v : catalogIndexV;
+    catalogIndexSources = sources;
+    catalogIndexPlaces = places;
+    catalogIndexPeople = people;
+    catalogIndexThings = things;
+    if (Array.isArray(body.recent)) {
+      catalogRecentIds = new Set(body.recent);
+    }
+    catalogMaster = body.items.map(function (row) {
+      return hydrateCatalogRow(row, sources, places, people, things);
+    });
+    rememberBaseCatalog();
+    return catalogMaster;
+  }
+
+  function ensureCatalogIndex() {
+    if (catalogMaster) {
+      return Promise.resolve(catalogMaster);
+    }
+    if (catalogIndexPromise) {
+      return catalogIndexPromise;
+    }
+    catalogIndexPromise = fetch("/api/catalog/index").then(readJson).then(function (body) {
+      applyCatalogIndex(body);
+      return catalogMaster;
+    }).catch(function (err) {
+      catalogIndexPromise = null;
+      throw err;
+    });
+    return catalogIndexPromise;
+  }
+
+  function itemSizeBytes(item) {
+    const locs = item.locations || [];
+    let i;
+    for (i = 0; i < locs.length; i += 1) {
+      if (locs[i] && locs[i].current === true && typeof locs[i].sizeBytes === "number") {
+        return locs[i].sizeBytes;
+      }
+    }
+    for (i = 0; i < locs.length; i += 1) {
+      if (locs[i] && typeof locs[i].sizeBytes === "number") {
+        return locs[i].sizeBytes;
+      }
+    }
+    return 0;
+  }
+
+  function itemPlaceRecord(item) {
+    const places = (item.entities && item.entities.places) || [];
+    return places[0] || null;
+  }
+
+  function locationCategory(item) {
+    const place = itemPlaceRecord(item);
+    if (place && place.name) { return 0; }
+    if (place && (place.latitude != null || place.longitude != null)) { return 1; }
+    const meta = item.metadata || {};
+    if (meta.latitude != null || meta.longitude != null) { return 1; }
+    return 2;
+  }
+
+  function locationLabelKey(item) {
+    const place = itemPlaceRecord(item);
+    if (place && place.name) {
+      return [String(place.name), 0, 0];
+    }
+    if (place && place.latitude != null && place.longitude != null) {
+      return ["", Number(place.latitude) || 0, Number(place.longitude) || 0];
+    }
+    const meta = item.metadata || {};
+    if (meta.latitude != null && meta.longitude != null) {
+      return ["", Number(meta.latitude) || 0, Number(meta.longitude) || 0];
+    }
+    return ["", 0, 0];
+  }
+
+  function compareTuples(a, b) {
+    const n = Math.max(a.length, b.length);
+    let i;
+    for (i = 0; i < n; i += 1) {
+      const left = a[i];
+      const right = b[i];
+      if (left < right) { return -1; }
+      if (left > right) { return 1; }
+    }
+    return 0;
+  }
+
+  function sortLocalItems(list) {
+    const sort = settings.sort || "date";
+    const reverse = (settings.dir || "desc") === "desc";
+    const copy = list.slice();
+    if (sort === "location") {
+      copy.sort(function (a, b) {
+        return compareTuples(
+          [a.capturedAt || "", a.id],
+          [b.capturedAt || "", b.id]
+        );
+      });
+      if (reverse) { copy.reverse(); }
+      copy.sort(function (a, b) {
+        const cmp = compareTuples(locationLabelKey(a), locationLabelKey(b));
+        return reverse ? -cmp : cmp;
+      });
+      copy.sort(function (a, b) {
+        return locationCategory(a) - locationCategory(b);
+      });
+      return copy;
+    }
+    copy.sort(function (a, b) {
+      let keyA;
+      let keyB;
+      if (sort === "name") {
+        keyA = [a.filename || "", a.capturedAt || "", a.id];
+        keyB = [b.filename || "", b.capturedAt || "", b.id];
+      } else if (sort === "size") {
+        keyA = [itemSizeBytes(a), a.capturedAt || "", a.id];
+        keyB = [itemSizeBytes(b), b.capturedAt || "", b.id];
+      } else if (sort === "rating") {
+        const ra = itemRating(a);
+        const rb = itemRating(b);
+        keyA = [
+          typeof ra.stars === "number" ? ra.stars : 0,
+          ra.pick === true ? 1 : 0,
+          typeof ra.suggested === "number" ? ra.suggested : 0,
+          a.capturedAt || "",
+          a.id,
+        ];
+        keyB = [
+          typeof rb.stars === "number" ? rb.stars : 0,
+          rb.pick === true ? 1 : 0,
+          typeof rb.suggested === "number" ? rb.suggested : 0,
+          b.capturedAt || "",
+          b.id,
+        ];
+      } else {
+        keyA = [a.capturedAt || "", a.id];
+        keyB = [b.capturedAt || "", b.id];
+      }
+      const cmp = compareTuples(keyA, keyB);
+      return reverse ? -cmp : cmp;
+    });
+    return copy;
+  }
+
+  function dateQueryMatch(captured, needle) {
+    if (!captured || !needle) { return false; }
+    const calendar = normQuery(String(captured).slice(0, 10));
+    if (needle.length === 4 && /^\d{4}$/.test(needle)) {
+      return calendar.indexOf(needle) === 0;
+    }
+    if (needle.length === 7 && needle.charAt(4) === "-") {
+      return calendar.indexOf(needle) === 0;
+    }
+    if (needle.length === 10 && needle.charAt(4) === "-" && needle.charAt(7) === "-") {
+      return calendar === needle || calendar.indexOf(needle) === 0;
+    }
+    return false;
+  }
+
+  function labelQueryMatch(item, needle) {
+    if (UNNAMED_LABELS[needle]) {
+      const people = (item.entities && item.entities.people) || [];
+      return people.some(function (rec) { return rec && !rec.name; });
+    }
+    if (NO_PLACE_LABELS[needle]) {
+      const places = (item.entities && item.entities.places) || [];
+      return !places.length;
+    }
+    if (UNTAGGED_LABELS[needle]) {
+      const things = (item.entities && item.entities.things) || [];
+      return !things.length;
+    }
+    return false;
+  }
+
+  function saidQueryMatch(item, rawQ, needle) {
+    const said = item.said;
+    if (typeof said === "string" && said && needle && normQuery(said).indexOf(needle) >= 0) {
+      return { text: said.length > 80 ? said.slice(0, 80) : said, field: "said" };
+    }
+    const rec = item.transcript;
+    if (!rec || typeof rec !== "object" || rec.status !== "ready") {
+      return null;
+    }
+    let i;
+    const words = rec.words || [];
+    for (i = 0; i < words.length; i += 1) {
+      const token = words[i] && words[i].word;
+      if (typeof token === "string" && token && normQuery(token).indexOf(needle) >= 0) {
+        const start = words[i].start;
+        return {
+          start: typeof start === "number" ? start : 0,
+          text: token.trim(),
+          field: "transcript",
+        };
+      }
+    }
+    const segments = rec.segments || [];
+    for (i = 0; i < segments.length; i += 1) {
+      const text = segments[i] && segments[i].text;
+      if (typeof text === "string" && text && normQuery(text).indexOf(needle) >= 0) {
+        const start = segments[i].start;
+        return {
+          start: typeof start === "number" ? start : 0,
+          text: text.trim(),
+          field: "transcript",
+        };
+      }
+    }
+    if (typeof rec.summary === "string" && rec.summary && normQuery(rec.summary).indexOf(needle) >= 0) {
+      return { text: rec.summary.trim(), field: "summary" };
+    }
+    const keywords = rec.keywords || [];
+    for (i = 0; i < keywords.length; i += 1) {
+      if (typeof keywords[i] === "string" && keywords[i] && normQuery(keywords[i]).indexOf(needle) >= 0) {
+        return { text: keywords[i], field: "keyword" };
+      }
+    }
+    if (typeof rec.text === "string" && rec.text && normQuery(rec.text).indexOf(needle) >= 0) {
+      const snippet = rec.text.trim();
+      return { text: snippet.length > 80 ? snippet.slice(0, 80) : snippet, field: "transcript" };
+    }
+    return null;
+  }
+
+  function itemMatchesSearch(item, markSaid) {
+    const raw = filter.q;
+    if (raw == null || raw === "") {
+      if (item.saidInVideo) { delete item.saidInVideo; }
+      return true;
+    }
+    if (typeof raw !== "string") {
+      return false;
+    }
+    const needle = normQuery(raw);
+    const scope = filter.scope || null;
+    let matched = false;
+    let saidHit = null;
+    const people = (item.entities && item.entities.people) || [];
+    const places = (item.entities && item.entities.places) || [];
+    const things = (item.entities && item.entities.things) || [];
+    if (!scope || scope === "people") {
+      people.forEach(function (rec) {
+        const name = rec && rec.name;
+        if (typeof name === "string" && name && normQuery(name).indexOf(needle) >= 0) {
+          matched = true;
+        }
+      });
+      if (UNNAMED_LABELS[needle] && people.some(function (rec) { return rec && !rec.name; })) {
+        matched = true;
+      }
+    }
+    if (!scope || scope === "places") {
+      places.forEach(function (rec) {
+        const name = rec && rec.name;
+        if (typeof name === "string" && name && normQuery(name).indexOf(needle) >= 0) {
+          matched = true;
+        }
+      });
+    }
+    if (!scope || scope === "things") {
+      things.forEach(function (rec) {
+        const name = rec && rec.name;
+        if (typeof name === "string" && name && normQuery(name).indexOf(needle) >= 0) {
+          matched = true;
+        }
+        (rec && rec.aliases || []).forEach(function (alias) {
+          if (typeof alias === "string" && alias && normQuery(alias).indexOf(needle) >= 0) {
+            matched = true;
+          }
+        });
+      });
+    }
+    if (!scope) {
+      if (normQuery(item.filename || "").indexOf(needle) >= 0) {
+        matched = true;
+      }
+      if (dateQueryMatch(item.capturedAt || "", needle)) {
+        matched = true;
+      }
+      if (labelQueryMatch(item, needle)) {
+        matched = true;
+      }
+      saidHit = saidQueryMatch(item, raw, needle);
+      if (saidHit) {
+        matched = true;
+      }
+    }
+    if (markSaid) {
+      if (saidHit) {
+        item.saidInVideo = saidHit;
+      } else if (item.saidInVideo) {
+        delete item.saidInVideo;
+      }
+    }
+    return matched;
+  }
+
+  function matchesActiveFilter(item) {
+    if (filter.recent === "1") {
+      if (item.recent !== true) {
+        return false;
+      }
+    }
+    if (filter.kind) {
+      const kinds = filter.kind.split(",").map(function (part) { return part.trim(); }).filter(Boolean);
+      if (kinds.indexOf(item.kind) < 0) {
+        return false;
+      }
+    }
+    if (filter.favorite === "1" && item.favorite !== true) {
+      return false;
+    }
+    if (filter.hasPeople === "1" && !((item.entities && item.entities.people) || []).length) {
+      return false;
+    }
+    if (filter.source) {
+      const locs = item.locations || [];
+      if (!locs.some(function (loc) { return loc && loc.sourceId === filter.source; })) {
+        return false;
+      }
+    }
+    if (filter.minStars) {
+      const stars = Number(itemRating(item).stars);
+      if (!(stars >= Number(filter.minStars))) {
+        return false;
+      }
+    }
+    if (filter.pick === "1" && itemRating(item).pick !== true) {
+      return false;
+    }
+    if (filter.hideRejects === "1" && itemRating(item).reject === true) {
+      return false;
+    }
+    if (filter.flag && (itemRating(item).flags || []).indexOf(filter.flag) < 0) {
+      return false;
+    }
+    if (filter.person) {
+      const wanted = filter.person.split(",").filter(Boolean);
+      const ids = ((item.entities && item.entities.people) || []).map(function (person) { return person.id; });
+      if (!wanted.every(function (id) { return ids.indexOf(id) !== -1; })) {
+        return false;
+      }
+    }
+    if (filter.place) {
+      const wanted = filter.place.split(",").filter(Boolean);
+      const ids = ((item.entities && item.entities.places) || []).map(function (place) { return place.id; });
+      if (item.placeId) {
+        ids.push(item.placeId);
+      }
+      if (!wanted.some(function (id) { return ids.indexOf(id) !== -1; })) {
+        return false;
+      }
+    }
+    if (filter.thing) {
+      const wanted = filter.thing.split(",").filter(Boolean);
+      const ids = ((item.entities && item.entities.things) || []).map(function (thing) { return thing.id; });
+      if (!wanted.every(function (id) { return ids.indexOf(id) !== -1; })) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function localFilteredItems() {
+    if (!catalogMaster) {
+      return null;
+    }
+    const matched = [];
+    catalogMaster.forEach(function (item) {
+      if (!matchesActiveFilter(item)) {
+        if (item.saidInVideo) { delete item.saidInVideo; }
+        return;
+      }
+      if (!itemMatchesSearch(item, true)) {
+        return;
+      }
+      matched.push(item);
+    });
+    return sortLocalItems(matched);
+  }
+
+  function localPersonItems() {
+    return localFilteredItems();
+  }
+
+  function buildTogetherFromMaster(mainItems) {
+    togetherByPerson = Object.create(null);
+    extraById = Object.create(null);
+    const people = selectedPeople();
+    if (people.length < 2 || !catalogMaster) {
+      return;
+    }
+    const inMain = Object.create(null);
+    mainItems.forEach(function (item) { inMain[item.id] = true; });
+    const savedPerson = filter.person;
+    people.forEach(function (personId) {
+      filter.person = personId;
+      const list = [];
+      catalogMaster.forEach(function (item) {
+        if (inMain[item.id]) { return; }
+        if (!matchesActiveFilter(item)) { return; }
+        if (!itemMatchesSearch(item, false)) { return; }
+        list.push(item);
+        extraById[item.id] = item;
+      });
+      togetherByPerson[personId] = sortLocalItems(list);
+    });
+    filter.person = savedPerson;
+  }
+
+  function showLocalCatalog(nextItems) {
+    if (catalogRequest) {
+      catalogRequest.controller.abort();
+      catalogRequest = null;
+    }
+    catalogInFlight = null;
+    items = nextItems;
+    itemIndexById = Object.create(null);
+    items.forEach(function (item, index) { itemIndexById[item.id] = index; });
+    groups = arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : groupsFromArrange(items, arrangeBy);
+    buildTogetherFromMaster(nextItems);
+    catalogReady = true;
+    catalogLoading = false;
+    filterWait = false;
+    catalogFailure = false;
+    stillSuspended = false;
+    queryResetPending = false;
+    main.setAttribute("aria-busy", "false");
+    main.dataset.catalogState = "done";
+    showDisconnected(false);
+    renderKey = "";
+    virtualKey = "";
+    if (!items.length && leftoverCount() === 0) {
+      render();
+      pruneSelection();
+      syncSelectionChrome();
+      syncNavChrome();
+      syncGridLoadStatus();
+      return;
+    }
+    applyGridMetrics();
+    const previousAnchor = main.style.overflowAnchor;
+    main.style.overflowAnchor = "none";
+    const existing = collectCells();
+    const mosaic = !flatWall() && groupDates && (settings.zoomLevel === "years" || settings.zoomLevel === "months");
+    main.querySelectorAll("#favorites, #photos-together, .photos-person").forEach(function (node) {
+      node.querySelectorAll(".cell").forEach(function (cell) {
+        const key = (cell.dataset.slot || "grid") + ":" + cell.dataset.id;
+        if (!existing[key]) {
+          existing[key] = cell;
+        }
+      });
+      node.remove();
+    });
+    let host = document.getElementById("virtual-grid");
+    if (!host || !host.isConnected) {
+      main.querySelectorAll(".cell").forEach(rememberPaintedCell);
+      main.replaceChildren();
+      host = makeVirtualHost();
+      main.appendChild(host);
+    }
+    const fav = makeFavoritesSection(existing, mosaic);
+    if (fav) {
+      main.insertBefore(fav, host);
+    }
+    const together = makeTogetherSection(existing, mosaic);
+    if (together) {
+      main.insertBefore(together, host);
+    }
+    makePersonSoloSections(existing, mosaic).forEach(function (section) {
+      main.appendChild(section);
+    });
+    if (!virtualActiveCache) {
+      refreshVirtualActive();
+    }
+    main.scrollTop = 0;
+    if (virtualActiveCache) {
+      mountVirtualGrid();
+    } else {
+      pinGridTop = true;
+      render();
+      pinGridTop = false;
+    }
+    main.style.overflowAnchor = previousAnchor;
+    pruneSelection();
+    syncSelectionChrome();
+    syncNavChrome();
+    syncGridLoadStatus();
+    paintGridStills();
+  }
+
+  function applyLocalCatalog() {
+    const local = localFilteredItems();
+    if (local === null) {
+      return false;
+    }
+    showLocalCatalog(local);
+    if (filter.person || filter.place || filter.thing) {
+      refreshInspectorFromItems();
+    }
+    return true;
+  }
+
   function loadCatalog(options) {
+    if (catalogMaster) {
+      applyLocalCatalog();
+      return Promise.resolve();
+    }
+    if (!items.length) {
+      catalogLoading = true;
+      main.setAttribute("aria-busy", "true");
+      main.dataset.catalogState = "loading";
+      showCatalogLoading();
+    }
+    return ensureCatalogIndex().then(function () {
+      applyLocalCatalog();
+      refreshCatalogChrome();
+    }).catch(function () {
+      return loadCatalogFromStream(options);
+    });
+  }
+
+  function loadCatalogFromStream(options) {
+    const local = !(options && options.background) ? localFilteredItems() : null;
+    if (local !== null) {
+      showLocalCatalog(local);
+      return Promise.resolve();
+    }
     const qs = queryString();
     if (catalogInFlight && catalogRequest && catalogRequest.qs === qs && !queryResetPending) {
       catalogQueued = true;
@@ -7829,10 +9031,20 @@
     }
     const previous = catalogRequest;
     const background = !queryResetPending && catalogReady && previous && previous.qs === qs;
-    if (!background && !queryResetPending) { clearCatalogForQuery(); }
+    let deferClear = false;
+    if (!background && !queryResetPending) {
+      if (items.length) {
+        deferClear = true;
+        filterWait = true;
+        syncGridLoadStatus();
+      } else {
+        clearCatalogForQuery();
+      }
+    }
     const request = {
       qs: qs, controller: new AbortController(), successor: null, promise: null,
       people: selectedPeople(), records: new Map(), order: [], ranks: new Map(), soloRanks: new Map(), background: background,
+      deferClear: deferClear,
     };
     queryResetPending = false;
     catalogRequest = request;
@@ -7887,12 +9099,15 @@
       appendStreamRows(request, rows);
     }).then(async function (ids) {
       if (!request.current()) { return; }
-      // Retire absent rows only after the complete current result is known. The
-      // cells already painted stay in place; completion never rebuilds the wall.
+      if (request.deferClear) {
+        request.deferClear = false;
+        filterWait = false;
+        releaseGrid();
+      }
       items = request.order.map(function (id) { return request.records.get(id); });
       rebuildIndex();
       removeMissing(ids);
-      if (request.people.length >= 2) {
+      if (request.people.length >= 2 && !catalogMaster) {
         await Promise.all(request.people.map(async function (personId) {
           const order = [];
           const records = new Map();
@@ -7917,6 +9132,7 @@
       catalogReady = true;
       catalogLoading = false;
       stillSuspended = false;
+      rememberBaseCatalog();
       main.setAttribute("aria-busy", "false");
       main.dataset.catalogState = "done";
       catalogFailure = false;
@@ -7934,6 +9150,8 @@
         else { adoptReadyViewerStill(open); }
       } else if (!viewer.hidden) { syncNavChrome(); }
       if (filter.person || filter.place || filter.thing) { refreshInspectorFromItems(); }
+      virtualQuick = "";
+      if (virtualActiveCache) { scheduleVirtualGrid(); }
       paintGridStills();
     }).catch(function (err) {
       if (!request.current() || err.name === "AbortError") { return; }
@@ -8105,6 +9323,7 @@
       favorite: filter.favorite,
       source: filter.source,
       recent: filter.recent,
+      hasPeople: filter.hasPeople,
     }, searchInput ? searchInput.value : "");
     renderKey = "";
     return loadCatalog();
@@ -8784,7 +10003,6 @@
   });
 
   function persistSort() {
-    clearCatalogForQuery();
     renderKey = "";
     loadCatalog();
     persist({ sort: settings.sort, dir: settings.dir }).catch(function () {});
@@ -8876,18 +10094,18 @@
   }
 
   function setArrange(value) {
-    const next = value === "people" || value === "places" || value === "tags" ? value : "dates";
+    const next = value === "people" || value === "places" || value === "tags" || value === "off" ? value : "dates";
     if (next === arrangeBy) {
       return;
     }
     arrangeBy = next;
     renderKey = "";
-    if (arrangeBy === "dates") {
-      groups = groupsFromItems(items, settings.zoomLevel);
-      render();
-      return;
+    applyGridMetrics();
+    if (arrangeBy === "people" || arrangeBy === "places" || arrangeBy === "tags") {
+      return loadCatalog();
     }
-    return loadCatalog();
+    groups = arrangeBy === "dates" ? groupsFromItems(items, settings.zoomLevel) : [];
+    render();
   }
   if (filterAll) {
     filterAll.addEventListener("click", function () {
@@ -8945,6 +10163,11 @@
   if (filterFavorites) {
     filterFavorites.addEventListener("click", function () {
       setKindFilter("", filter.favorite === "1" ? "" : "1");
+    });
+  }
+  if (filterWithPeople) {
+    filterWithPeople.addEventListener("click", function () {
+      toggleRatingFilter("hasPeople", "1");
     });
   }
   if (filterRecent) {
@@ -9496,10 +10719,58 @@
       return;
     }
     fitOnLoad = false;
+    panCandidate = null;
     panning = true;
     panMoved = false;
     panLastX = event.clientX;
     panLastY = event.clientY;
+    viewer.dataset.panning = "1";
+  }
+
+  function stopPan() {
+    panning = false;
+    panCandidate = null;
+    if (viewer) {
+      delete viewer.dataset.panning;
+    }
+  }
+
+  function refitOpenViewer() {
+    if (!viewer || viewer.hidden || panning) {
+      return;
+    }
+    const item = syncViewerIndex();
+    if (!item) {
+      return;
+    }
+    if ((item.kind === "video" || item.kind === "live") && viewerVideo && !viewerVideo.hidden) {
+      layoutVideo(item, true);
+      return;
+    }
+    if (naturalW > 0 && naturalH > 0) {
+      applyFitMode();
+    }
+  }
+
+  let viewerRefitTimer = 0;
+  function scheduleViewerRefit() {
+    window.clearTimeout(viewerRefitTimer);
+    viewerRefitTimer = window.setTimeout(refitOpenViewer, 160);
+  }
+
+  const viewerStageWatch = document.getElementById("viewer-stage");
+  if (viewerStageWatch && typeof ResizeObserver === "function") {
+    let stageBox = "";
+    new ResizeObserver(function () {
+      const next = viewerStageWatch.clientWidth + "x" + viewerStageWatch.clientHeight;
+      if (next === stageBox) {
+        return;
+      }
+      stageBox = next;
+      scheduleViewerRefit();
+    }).observe(viewerStageWatch);
+  } else {
+    window.addEventListener("resize", scheduleViewerRefit, { passive: true });
   }
 
   viewer.addEventListener("mousedown", function (event) {
@@ -9517,15 +10788,20 @@
     if (event.target.closest("button, input, label, a, select, textarea")) {
       return;
     }
-    const item = syncViewerIndex();
-    const still = !!(item && item.kind !== "video" && item.kind !== "live");
-    if (!isZoomed() && !still) {
+    if (!event.target.closest("#viewer-stage")) {
       return;
     }
-    event.preventDefault();
-    startPan(event);
+    panCandidate = { x: event.clientX, y: event.clientY };
+    panMoved = false;
   });
   window.addEventListener("mousemove", function (event) {
+    if (panCandidate && !panning) {
+      const dx = event.clientX - panCandidate.x;
+      const dy = event.clientY - panCandidate.y;
+      if (dx * dx + dy * dy >= 16) {
+        startPan(panCandidate);
+      }
+    }
     if (!panning || viewer.hidden) {
       return;
     }
@@ -9542,7 +10818,7 @@
     applyTransform();
   });
   window.addEventListener("mouseup", function () {
-    panning = false;
+    stopPan();
   });
   viewer.addEventListener("auxclick", function (event) {
     if (event.button === 1) {
@@ -10269,7 +11545,6 @@
   if (searchInput) {
     searchInput.addEventListener("input", function () {
       window.clearTimeout(searchTimer);
-      clearCatalogForQuery();
       searchTimer = window.setTimeout(function () {
         searchTimer = null;
         applySearchFromBox();
@@ -10298,6 +11573,7 @@
           favorite: filter.favorite,
           source: filter.source,
           recent: filter.recent,
+          hasPeople: filter.hasPeople,
         }, filter.q);
         renderKey = "";
         loadCatalog();
@@ -10374,6 +11650,9 @@
   // adopts persisted language/grouping/sort independently when it arrives.
   applyGridMetrics();
   loadVersion();
+  if (peopleReviewBtn) {
+    peopleReviewBtn.hidden = false;
+  }
   loadCatalog();
 
   if (languageSelect) {

@@ -125,17 +125,19 @@ def _in_batch(root: Path) -> bool:
 def resync(root: Path) -> _Cache:
     """Compare the items directory and parse only new or changed files.
 
-    A matching directory mtime skips the listing. Publication updates that
-    token after it refreshes the one item it wrote. Every few calls still
-    list the directory so a scan that landed in the same timestamp is noticed.
+    A matching directory mtime and write count skips the listing.
+    Publication updates that token after it refreshes the one item it wrote.
     """
     with _guard:
         profile_counters["resyncs"] += 1
         cache = _caches.setdefault(root_key(root), _Cache())
         folder = items_dir(root)
         token = _token(root)
-        cache.since_full += 1
-        if token is not None and cache.dir_token == token and cache.since_full < 8:
+        # A matching token means our own writes and the items directory
+        # time are unchanged. Do not walk folder libraries here: those
+        # records can sit on a slow drive, and this runs under the catalog
+        # lock, so the walk was freezing the grid and Settings.
+        if token is not None and cache.dir_token == token:
             return cache
         profile_counters["scandirs"] += 1
         cache.since_full = 0

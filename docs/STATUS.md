@@ -4,6 +4,50 @@ Spec baseline: 2026-10-12. This is a planning result, not a software release.
 
 ## True now
 
+- 2026-11-06 — Browse speed is the evening floor Steve accepted.
+  The page loads one compact index and filters it in the browser.
+  Regression baseline:
+  [baseline.json](process/assets/load-filter/baseline.json), the
+  [2026-11-06_164514](process/assets/load-filter/runs/2026-11-06_164514.json)
+  run. A later run fails if a primary metric is worse than that file.
+  The morning run remains
+  [2026-11-06_152511](process/assets/load-filter/runs/2026-11-06_152511.json).
+  Count known 785 ms (was 291 s). Catalog 4.4 MB (was 58 MB). People
+  0.05 s. Suggestions 0.7 s cold on the restarted server, then a cache
+  hit. Settings idle max 45 ms (was 11 s). Favorites tiles paint.
+  Still inside this floor, and still short of the written targets:
+  restoring All redownloads 5 thumbnails, clearing search redownloads
+  6, and name sort does not finish painting. F15's browse-speed Check
+  is not closed.
+
+- 2026-11-06 — Sort **Size** (largest file first) and a **With people**
+  chip on the filter row. Size is the header Sort menu. With people
+  sits after Favorites and stays on together with Videos, so Videos +
+  Size is the biggest videos, and With people hides pictures with no
+  linked person (unnamed clusters count). While Size is on and Group
+  is Date, the grid is one list. Tests:
+  `tests/test_size_sort_and_people.py` (4 passed). The running Library
+  process does not serve `sort=size` or `hasPeople` until it reloads.
+  No feature Check closed.
+
+- 2026-10-28 — A person filter was slow at the start because the grid was
+  cleared and then waited on the catalog lock while faces were running.
+  The page now filters the catalog it already loaded. On Unnamed
+  (`person_82c19bbf9bbc`), the first picture went from 5.1 s to 7 ms,
+  and clearing the filter went from 7.4 s to 3 ms. No new thumbnail
+  requests. One preview on the cleared grid stayed blank. Refresh the
+  tab. No feature Check closed. Details:
+  [person filter measurement](features/processing-feedback/Rev1.0/DENSE-LIVE-MEASUREMENT-2026-10-27.md).
+
+- 2026-10-28 — Match Explorer folders now treats the same filename and the
+  same size anywhere in the destination as already here. The Look on
+  screen is still the old count: 5,792 on the phone, 378 already here,
+  5,405 not here yet. Do not copy that list. Under the new rule that
+  same phone list is 3,575 already here and 2,217 to copy, mostly
+  `202610_a` (1,953) and `202606_a` (233). The running server does not
+  have this until it reloads, and a reload stops faces. No feature
+  Check closed.
+
 - 2026-10-28 — Import iPhone can read the phone two ways. By month is the
   default: Apple's file channel, folders like `2026-10`, and a second
   picture with the same filename is saved beside the first as `name_2`.

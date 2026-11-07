@@ -745,17 +745,43 @@ _last_missing_sweep: dict[str, float] = {}
 _missing_hinted: set[str] = set()
 
 
-def note_missing(root: Path) -> None:
-    """A media request found no file; the next idle drain step sweeps right away."""
+def note_missing(root: Path, item_id: str | None = None, slot: str | None = None) -> None:
+    """A media request found no file.
+
+    Prefer requeueing that one slot immediately. A bare call still hints a
+    full sweep for callers that do not know the item, but drain_step no
+    longer runs the idle 30s walk.
+    """
+    if type(item_id) is str and item_id and type(slot) is str and slot:
+        requeue_one_missing(root, item_id, slot)
+        note_wanted(root, item_id)
+        return
     from library.item_index import root_key
 
     _missing_hinted.add(root_key(root))
 
 
+def requeue_one_missing(root: Path, item_id: str, slot: str) -> bool:
+    """Requeue one ready slot whose file was missing. Does not walk the library."""
+    if type(item_id) is not str or not item_id or type(slot) is not str or not slot:
+        return False
+    current = try_load_item(root, item_id)
+    if current is None:
+        return False
+    status = ((current.get("renditions") or {}).get("status") or {}).get(slot)
+    if status != "ready":
+        return False
+    if rendition_abs(current, slot, root) is not None:
+        return False
+    publish_slot_status(root, item_id, slot, "queued", None)
+    return True
+
+
 def requeue_missing_renditions(root: Path, *, io_context=nullcontext) -> bool:
     """Queue again every ready slot whose file is gone (e.g. a deleted .library/).
 
-    Runs when hinted by a failed media request, otherwise every MISSING_SWEEP_SEC.
+    Kept for manual/hinted recovery. The idle drain path must not call this
+    on a timer — it holds the catalog lock while resolving every rendition.
     Folders that are not reachable right now are skipped, never requeued.
     """
     from library.item_index import iter_items, root_key
@@ -1039,6 +1065,7 @@ def publish_slot_status(root: Path, item_id: str, slot: str, status: str, relati
 
 
 _pending_mirrors: dict[str, list[dict[str, Any]]] = {}
+_last_settle: dict[str, float] = {}
 
 
 def _publish_change(root: Path, relative: str, before: dict[str, Any], after: dict[str, Any]) -> None:
@@ -1119,9 +1146,24 @@ def drain_step(root: Path, *, io_context=nullcontext, sweep: bool = True) -> boo
     if job is None:
         if not sweep or encoding(root):
             return False
-        if requeue_missing_renditions(root, io_context=io_context):
-            return True
-        settle_rendition_publications(root)
+        # Do not call requeue_missing_renditions on the idle timer: it walks
+        # every rendition under the catalog lock and stalls /api/settings.
+        # Missing files are requeued per-item from media requests instead.
+        # Publication settling copies every source file list (~170 ms) and
+        # used to run on every idle tick, which made thumbnail requests wait.
+        # Mirror only after a rendition was actually published, and not under
+        # the catalog lock.
+        from library.item_index import root_key
+
+        key = root_key(root)
+        if not _pending_mirrors.get(key):
+            return False
+        now = time.monotonic()
+        if now - _last_settle.get(key, 0.0) < 2.0:
+            return False
+        _last_settle[key] = now
+        with io_context():
+            settle_rendition_publications(root)
         return False
     item_id, slot, source, cap = job
     from library.item_index import root_key

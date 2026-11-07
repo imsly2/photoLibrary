@@ -12,7 +12,7 @@ from library.errors import AppError
 from library.favorites import (
     existing_original,
     open_containing_folder,
-    windows_reveal_command,
+    windows_reveal_command_line,
     windows_reveal_select_arg,
 )
 from library.service import Library
@@ -34,50 +34,42 @@ def parse_select_path(command: object) -> str:
     if isinstance(command, (list, tuple)) and len(command) >= 2:
         arg = str(command[1])
         if arg.startswith(SELECT_PREFIX):
-            return arg[len(SELECT_PREFIX) :]
+            return arg[len(SELECT_PREFIX) :].strip('"')
         return ""
     text = str(command)
+    marker = 'explorer.exe /select,"'
+    if text.startswith(marker) and text.endswith('"'):
+        return text[len(marker) : -1]
     if text.startswith(SELECT_PREFIX):
-        return text[len(SELECT_PREFIX) :]
+        return text[len(SELECT_PREFIX) :].strip('"')
     return ""
 
 
 def prove_command_form(checks: Checks) -> None:
     windows = Path(r"C:\Family Photos\Vacation 2024\IMG_1042.jpg")
-    command = windows_reveal_command(windows)
+    command = windows_reveal_command_line(windows)
     checks.check(
-        "command-is-argv-list",
-        isinstance(command, list) and command[0] == "explorer.exe" and len(command) == 2,
-        json.dumps(command) if isinstance(command, list) else str(command),
+        "command-is-explorer-command-line",
+        command == 'explorer.exe /select,"C:\\Family Photos\\Vacation 2024\\IMG_1042.jpg"',
+        command,
     )
-    checks.check(
-        "command-windows-spaces",
-        command == ["explorer.exe", r"/select,C:\Family Photos\Vacation 2024\IMG_1042.jpg"],
-        json.dumps(command) if isinstance(command, list) else str(command),
-    )
-    iphone = windows_reveal_command(IPHONE_BACKUP)
-    iphone_arg = iphone[1] if isinstance(iphone, list) and len(iphone) > 1 else ""
+    iphone = windows_reveal_command_line(IPHONE_BACKUP)
     checks.check(
         "command-iphone-backup-spaces",
-        iphone == ["explorer.exe", r"/select,J:\Iphone Backup\Another Rope Swing.MOV"],
-        json.dumps(iphone) if isinstance(iphone, list) else str(iphone),
+        iphone == 'explorer.exe /select,"J:\\Iphone Backup\\Another Rope Swing.MOV"',
+        iphone,
     )
     checks.check(
-        "command-select-arg-has-no-quotes",
-        '"' not in iphone_arg and "'" not in iphone_arg and " " in iphone_arg,
-        iphone_arg,
-    )
-    checks.check(
-        "command-comma-glued",
-        iphone_arg.startswith("/select,J:") and "Iphone Backup" in iphone_arg,
-        iphone_arg,
+        "command-quotes-path-only",
+        iphone.startswith('explorer.exe /select,"') and iphone.endswith('"') and "Iphone Backup" in iphone,
+        iphone,
     )
     posix = Path("/tmp/Iphone Backup/Another Rope Swing.MOV")
-    posix_cmd = windows_reveal_command(posix)
+    posix_cmd = windows_reveal_command_line(posix)
     checks.check(
         "command-posix-argv",
-        isinstance(posix_cmd, list) and posix_cmd[0] == "explorer.exe" and posix_cmd[1].startswith(SELECT_PREFIX),
-        json.dumps(posix_cmd) if isinstance(posix_cmd, list) else str(posix_cmd),
+        isinstance(posix_cmd, str) and posix_cmd.startswith('explorer.exe /select,"'),
+        posix_cmd,
     )
     selected = parse_select_path(posix_cmd)
     checks.check(
@@ -247,7 +239,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     )
     checks.check(
         "linked-reveal-argv-no-quotes",
-        isinstance(command, list) and command[0] == "explorer.exe" and '"' not in str(command[1]),
+        isinstance(command, str) and command.startswith('explorer.exe /select,"') and command.endswith('"'),
         json.dumps(command, default=str),
     )
     checks.check(
@@ -328,7 +320,7 @@ def prove_library_reveal(checks: Checks, root: Path, artifacts: Path, commands: 
     )
     checks.check(
         "copy-reveal-argv-list",
-        isinstance(copy_command, list) and copy_command[0] == "explorer.exe" and '"' not in str(copy_command[1]),
+        isinstance(copy_command, str) and copy_command.startswith('explorer.exe /select,"') and copy_command.endswith('"'),
         json.dumps(copy_command, default=str),
     )
 
@@ -401,9 +393,9 @@ def prove_static_source(checks: Checks) -> None:
     page_text = page + "\n" + i18n
     checks.check(
         "source-uses-explorer-select-argv",
-        '["explorer.exe"' in favorites
-        and "/select," in favorites
-        and 'explorer.exe /select,"' not in favorites,
+        "windows_reveal_command_line" in favorites
+        and 'explorer.exe /select,"' in favorites
+        and "subprocess.Popen(windows_reveal_command_line(target))" in favorites,
         "favorites.py command form",
     )
     checks.check(

@@ -31,13 +31,21 @@ is never replaced. Another picture with the same filename is written
 beside it as `IMG_0001_2`, and the original stays. Same filename and
 same size counts as already here. **Match Explorer folders** is the
 other way, for a destination that was copied from File Explorer. It
-reads Apple iPhone → Internal Storage and keeps names such as
-`201508_a/IMG_0519.JPG`. That way waits on Explorer, so it is much
-slower. Same relative path and same size stays. A different size is
-left untouched. While either read is still going, the dialog shows
+reads Apple iPhone → Internal Storage. A file already in the
+destination with the same filename and the same size counts as already
+here, even when the phone now shows that file in a different month
+folder. Copy writes only files that are not already there, into the
+folder name the phone is using now, such as `201508_a/IMG_0519.JPG`.
+That way waits on Explorer, so it is much slower. A different size at
+that same path is left untouched. While either read is still going, the dialog shows
 pictures found, already here, and not here yet as separate numbers, the
 folder it is in, how long it has been running, and how fast pictures
-are being found. Comparison starts during that read. Copy after a Look
+are being found. The same board shows the size read so far, in the
+GB Explorer Properties uses. While that size is still climbing, the
+read is partial. The finished size is the number when Look stops.
+When the read finishes, the line also says how many
+of those files are pictures, how many are videos, how many are Apple
+edit notes, and the total size. Comparison starts during that read. Copy after a Look
 of the same folder and the same way uses that list and does not read
 the phone again. Copy writes only what is missing. The phone is
 read-only. By month lists `/DCIM`, the camera files Apple exposes on
@@ -357,7 +365,7 @@ install can pull a newer app folder without opening a command prompt.
 The header shows the checkout SHA from `GET /api/version` and refreshes
 it from a successful update payload.
 
-`GET /api/items` accepts `sort=date|location|name|rating`, `dir=asc|desc`,
+`GET /api/items` accepts `sort=date|location|name|rating|size`, `dir=asc|desc`,
 `person=` (one id/name, or comma-separated ids meaning **all** faces),
 `place=`, `thing=` (one id/name, or comma-separated ids/names meaning
 **all** those tags), `kind=photo|video|live` or a comma list,
@@ -373,7 +381,11 @@ kinds (`photo,live` for Photos). The filter bar All / Photos / Videos /
 Favorites / Recently added controls send no kind, `kind=photo,live`, `kind=video`,
 `favorite=1`, or `recent=1`. Kind, favorite, recent, and source are transient
 filters, not settings.
-`favorite=1` keeps only hearted items. Item reads include computed
+`favorite=1` keeps only hearted items. `hasPeople=1` keeps items that
+have at least one linked person, named or unnamed. A face that is not
+in the people catalog does not count, and an item with no linked person
+drops out. It combines with kind, favorite, and a specific `person=`
+filter. Item reads include computed
 `favorite` (not stored on the item JSON) and computed `rating`
 (`suggested`, `yours`, effective `stars`, `pick`, `reject`, `flags`,
 `bestOfGroup`). `minStars=4` keeps effective stars ≥ 4 (yours wins).
@@ -516,9 +528,15 @@ in seconds for video, latitude, longitude.
 
 A picture or video has a location only when the file itself carries one.
 On an iPhone that is the camera writing coordinates into the file while
-Location Services is on for Camera. JPEG and HEIC store them in EXIF GPS
-(latitude, longitude, altitude). MOV and MP4 store them as a QuickTime
-ISO6709 location string, not EXIF. The scan reads both.
+Location Services is on for Camera. JPEG stores them in EXIF GPS (latitude, longitude, altitude). HEIC
+stores that same EXIF block inside the file; the scan reads it from
+there. MOV and MP4 store them as a QuickTime ISO6709 location string.
+Opening a video reads that string from the file header. It does not
+load the whole movie. A place saved with the folder library is the
+name in the preview. A video whose file has no location string has
+no place to show. A HEIC indexed before that read had no coordinates.
+Opening it saves the place from the file. Resume on Analyze reads the
+rest, one picture at a time.
 
 The place name you see in the iPhone Photos app is not in the file. Photos
 looks the coordinates up and keeps the name in its own database. A copied
@@ -803,9 +821,10 @@ wall — no date-section gaps. Years/Months/Days persist in `zoomLevel`
 (`all` remains a valid API/settings value and displays as Days). Off is
 session-only.
 
-`#arrange` Group Date / People / Places / Tags (session-only, default
+`#arrange` Group Date / People / Places / Tags / Off (session-only, default
 Date) draws one header per date, person, place, or tag on the current
-set, plus Unknown / No place / Untagged. An item lands in one group.
+set, plus Unknown / No place / Untagged. Off is one wall of the current
+filter, in the current sort, with no section headers. An item lands in one group.
 Click any group header to collapse or expand it; remembered for the
 session. This is the only arrangement control. Sort stays Newest /
 Oldest / Name / Location. Search lives on `#filter-bar` and does not
@@ -813,7 +832,9 @@ duplicate Group.
 
 Changing Dates or Size must keep already-loaded thumbnails on screen;
 the grid does not blank during the interaction. The item under the
-cursor stays in view when Dates changes.
+cursor stays in view when Dates changes. On a library of about 28,000
+pictures, Size and Dates answer in the next frame. Pictures already
+seen stay painted and are not downloaded again.
 
 Tiles that are large enough (Size 144 px and up) show a heart control in
 the same corner language as the VIDEO/LIVE badge — under or beside that
@@ -853,6 +874,11 @@ stop at the ends. Back (and Esc) returns to the grid he came from on the
 **same** live origin and port. Browser Back does the same while the page is
 open; it must not load a stale port or call a hop that leaves this listen URL.
 
+The preview header (`#viewer-caption`) shows the weekday date, the
+place, and the file size on one line, for a photo or a video. The size
+is the current file’s `sizeBytes`. The place is the catalog name, or
+the coordinates when that name is not on the record yet.
+
 The viewer chrome is Windows Photo Viewer–ish. Previous and Next sit at
 the **bottom**; Left/Right arrows still change photo and stop at the ends.
 Rotate sits next to them (button or Ctrl+R). Zoom is a **vertical side slider** (with percentage) plus
@@ -881,9 +907,9 @@ the preview is queued, and “Preview is not available” only when it failed
 or the picture is missing. The viewer keeps watching for a queued preview
 for as long as it stays open. Reveal in
 Explorer and Open sit side by side. Reveal opens the original's containing
-folder on this computer whenever the file is here (`explorer.exe` argv
-`/select,fullpath` on Windows — comma glued, no extra quotes, so paths
-with spaces still select the file). Open launches that file in the computer's default app. Delete
+folder on this computer whenever the file is here (Windows command
+line `explorer.exe /select,"full path"`, quotes around the path only,
+so a folder name with spaces still selects the file). Open launches that file in the computer's default app. Delete
 removes the catalog record (confirm; bytes stay). Delete file extra-confirms
 and Recycle-Bins the original. For video the viewer shows the poster, then
 starts the proxy and swaps to the original when the browser can decode
@@ -912,15 +938,32 @@ source is available. Artifact: both responses' content types and lengths.
 
 ## F11 — Sort
 
-The toolbar’s presentable sort labels are Newest, Oldest, and Name
-(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
-stays available. Default is Newest. Filters All / Photos / Videos /
-Favorites are mutually exclusive: no kind, `kind=photo,live`,
+The toolbar’s presentable sort labels are Newest, Oldest, Name, and Size
+(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`,
+`sort=size&dir=desc`). Location and Rating stay available. Default is
+Newest. Size is largest file first. The file size is the current
+location’s `sizeBytes` (0 when that location has no size). Ties break
+by `capturedAt`, then id. Group **Off** is that one list for any sort, including Size, so the
+biggest file is the first tile. While Size is selected and Group is
+Date, Years / Months / Days also do not bucket it. Switching Group
+back to Date, and Sort back to Newest or Oldest, restores date
+buckets. Group People / Places / Tags still groups, and size order
+holds inside each group. Filters All / Photos /
+Videos / Favorites stay mutually exclusive: no kind, `kind=photo,live`,
 `kind=video`, or `favorite=1`. They keep the current sort among those
-items.
+items. **With people** (`#filter-with-people`, `hasPeople=1`) sits on
+that same chip row, after Favorites, and is not part of that exclusive
+set. Pressed, it hides items with no linked person. Press again to
+clear it. Videos and With people together are videos that contain a
+person, still in the current sort — Size then puts the biggest of
+those first.
 
 Date uses `capturedAt`. Location groups by place name, then unnamed GPS
 places, then "No location", and by date inside a group. Name uses the filename.
+
+Choosing a sort or Group shows the right pictures within a frame or two.
+Tiles that remain keep the pictures they already show. Sort does not
+blank the grid and does not wait on a new list from the server.
 
 **Check:** `python -m tests.qa check F11` (planned runner; common root/artifact
 arguments and full assertions in SLICES). three fixtures with dates June 2024, June 2023, and no EXIF.
@@ -1064,8 +1107,12 @@ associations through the same catalog:
   the machine. After changing the slider, Processing **Re-run Faces**.
 
 Browse stays up when models or the geo pack are missing (`models-missing`
-/ idle queues). Processing Pause/Start on `/api/jobs` starts or stops
-the real serve-time drains. Processing also shows the file in progress
+/ idle queues). Thumbnails start on their own. Places, Faces, Objects,
+Transcribe, and Rating stay paused until Resume on that row. Processing
+Pause stops every serve-time drain. Start runs them again. Each queue
+row shows percent done, done, waiting, and errors, and its own Pause. The folder list under that panel
+names each folder, its scan, and its preview counts. Processing also
+shows the file in progress
 (`GET /api/activity`: phase, filename, done/total, and seconds on that
 file) and the listen address of this Library server. The folder read
 names each picture as it is hashed. Later queues name the picture
@@ -1099,6 +1146,19 @@ appear. An unnamed cluster appears only when that face is on at least
 clicking a selected person again removes that filter. Selecting several
 people keeps photos that contain all of them. Active people, places, and
 tags show as chips on `#filter-bar` with one-click remove and Clear all.
+**With people** on that same row is the any-person filter: every item
+with a linked person, named or unnamed. The side panel remains the
+filter for one person or several people together.
+
+On a library of about 28,000 pictures the People panel is filled within
+about a second and a half of opening. Clicking a person, clicking that
+person again, selecting several, With people, a place, or a tag shows
+the matching pictures within a frame or two. Clearing that filter does
+the same. Tiles that already show a picture keep it and do not download
+it again. Opening the library does not compute suggested pairs. Review
+matches is the only place that asks, and that answer comes back within
+about a second. Faces, places, objects, and suggestions never make the
+grid wait.
 The panel is where unknowns are named and a thumbnail face is chosen
 (square `which=face&box=` crops, not a CSS zoom of the whole thumb).
 Info still names a person on the open item.
@@ -1119,26 +1179,41 @@ Artifact: the people file, the thing file, and the search JSON.
 
 ## F15 — Search
 
-Browsing responds to the current request first. Clicking a person, changing a
-filter or sort, and clearing a filter **clears the previous grid immediately**.
-Show the loading state until the first matching result, then draw matching results
-incrementally in the exact requested order. This happens on every switch, including
-repeat visits and warm caches. Never wait for the complete result body or the last
-thumbnail before drawing the first match. A newer request cancels/supersedes older
-work; obsolete rows, errors, completion callbacks and scheduled paints cannot appear
-in the new grid. Background refresh of an unchanged query preserves its painted grid.
-Prepare the metadata match/order before full browser-record projection, then stream
-records as they are projected. Paint the first record promptly and yield between
-bounded batches even if cached/network results arrive together. Completion must not
-cause a final full-grid snap or replay the whole result set. Do not wait for folder
-status, settings, People, Tags, or optional per-person leftover sections. Build
-date/entity groups from the same current results so grouping never repeats search.
-Thumbnails load progressively, with the visible grid first and a small nearby
-prefetch area; scrolling changes priority. A bounded painted-tile cache may accelerate
-individual newly arriving records but must not restore an entire old grid at once.
-Show an empty-result state only after successful completion with no matches; retain
-the current partial results on an error and make failure visible.
-These are responsiveness requirements within F7/F9/F11/F15, not another feature Check.
+On this computer's library of about 28,000 pictures, opening the page
+knows how many pictures match within about a second. The first thumbnail
+is painted within half a second, and the first screen is painted within
+a second and a half. Any filter, person, place, tag, folder, search,
+sort, Group, or clear shows the right pictures within a frame or two:
+the count is known within a tenth of a second, and every visible tile,
+including the Favorites strip, shows its picture within a quarter
+second. A picture already seen never goes blank and is never downloaded
+again. Typing in the search box does not clear the grid. The pictures
+change when the query settles. An empty result appears only when the
+match is known and it is empty. A newer query replaces an older one.
+Nothing running in the background — thumbnails, faces, suggestions, or
+scans — can make opening or filtering wait.
+
+The page holds one compact copy of what filters, sort, grouping, and
+the grid need. It is fetched once and kept. Every control above runs on
+that copy in the page, so a click does not wait on a new list. A change
+reorders which pictures the existing tiles show. It does not throw the
+grid away. A thumbnail's address names the version of that thumbnail and
+stays cached. The full record for one picture loads when its preview or
+inspector opens.
+
+That is the structure in
+[LOAD-FILTER-TARGET](process/LOAD-FILTER-TARGET.md). It is the one to
+build, because the live measurement already showed a compact list of the
+fields the controls need is about 2 MB and ready in a fraction of a
+second, while the full list is 57 MB and the page cannot take it in
+fast, and because filtering that copy in the page is a few milliseconds
+at this size. Processing stays off the path those controls use: it does
+not hold the catalog lock or the interpreter a browse request needs.
+Suggested pairs use vector math, are cached, and run only when Review
+matches asks. The per-folder `.library/` records stay the source of
+truth (F23). The copy the page reads is rebuildable.
+
+These are the browse requirements for F9, F11, F14, and F15.
 
 The search box lives on `#filter-bar` and matches a person, place, or
 thing name, a filename, a capturedAt date (`YYYY`, `YYYY-MM`,
@@ -1157,6 +1232,12 @@ the filenames. The same inspector exists for a person and a place.
 **Check:** `python -m tests.qa check F15` (planned runner; common root/artifact
 arguments and full assertions in SLICES). covered by the annotate check above, plus `GET /api/items?q=IMG_1042`
 returns the fixture whose filename contains that string. Artifact: that response.
+Browse speed on the live library: `python -m tests.perf.live_load_filter`
+against the running server. Every primary metric is at or under
+`tests/perf/live_targets.json`, and none is worse than
+`docs/process/assets/load-filter/baseline.json`. A probe that reports
+`absent` is not a pass. Artifact: the run file under
+`docs/process/assets/load-filter/runs/`.
 
 ## F16 — When the original is not here
 
@@ -1347,7 +1428,7 @@ and every in-page link stay on that origin; do not leave stale port links.
 
 | View | What you see |
 |------|----------------|
-| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Location, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel (each section collapsible; Tags start collapsed) and processing Pause/Start with one row per folder (index walk, thumbnails done/waiting/failed, Check or Resume), Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
+| Library | The zoomed grid, Add folder, sort Newest/Oldest/Name/Size/Location/Rating, language English/中文, `#filter-bar` (Search, All/Photos/Videos/Favorites, With people, Person/Place/Tag chips, Clear all, Group Date/People/Places/Tags), Size and Dates Years/Months/Days/Off in the bottom-left cluster, right People + Tags panel (each section collapsible; Tags start collapsed) and processing Pause/Start with one row per folder (index walk, thumbnails done/waiting/failed, Check or Resume), Favorites section, Update Library and the checkout SHA. Header Library is a pressed button when this view is current. |
 | Globe | The WebGL earth, clusters, Play for the tour. Header Globe is a pressed button when this view is current. |
 | Viewer | One item, preview then original, bottom Prev/Next/Rotate, vertical side zoom slider with %, bottom video scrub, fullscreen, slideshow, Info (file facts then names), viewer heart, Reveal and Open side by side, Remove / Delete file. Presentable chrome: [UI-SPEC](UI-SPEC.md#windows-presentable-shell). |
 | Search | The same grid, filtered. Inspector for the person, place, or thing. |
@@ -1408,7 +1489,11 @@ places and people are kept beside the names so the app can link them.
 **Where the truth lives.** For its pictures, the folder library is the only
 record. `library-data/` keeps settings, undo, models, logs, the library-wide
 people list (one person across many folders), and `catalog.sqlite`, a speed
-index rebuilt from the folder libraries. Delete a folder's `.library/` and
+index rebuilt from the folder libraries. Opening the library reads that
+rebuildable index, not every picture record, so the count is known within
+about a second on about 28,000 pictures. Delete the index and the next
+open builds it again from the folder libraries; nothing the folders
+remember changes. Delete a folder's `.library/` and
 that folder starts over: its pictures are read and processed again, and its
 names, faces, places, and ratings are gone. Move the folder, or open it on
 another computer, and everything comes with it.

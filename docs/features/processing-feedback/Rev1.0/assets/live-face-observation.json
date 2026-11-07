@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-10-27T23:29:01.333Z",
+  "note": "Observed queue counters, not isolated model timings. Other clients and processing affect throughput.",
+  "samples": [
+    {
+      "ms": 586,
+      "done": 2216,
+      "pending": 12389,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 5925,
+      "done": 2220,
+      "pending": 12385,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 11455,
+      "done": 2225,
+      "pending": 12380,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 21237,
+      "done": 2229,
+      "pending": 12376,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 28290,
+      "done": 2231,
+      "pending": 12374,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 33546,
+      "done": 2235,
+      "pending": 12370,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 39609,
+      "done": 2240,
+      "pending": 12365,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 44957,
+      "done": 2242,
+      "pending": 12363,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 51860,
+      "done": 2244,
+      "pending": 12361,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 57981,
+      "done": 2247,
+      "pending": 12358,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    },
+    {
+      "ms": 60309,
+      "done": 2249,
+      "pending": 12356,
+      "errors": 0,
+      "state": "running",
+      "paused": false
+    }
+  ]
+}

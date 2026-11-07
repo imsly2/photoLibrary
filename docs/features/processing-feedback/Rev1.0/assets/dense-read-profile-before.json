@@ -1,0 +1,3525 @@
+{
+  "note": "Separate process, concurrent live writers; read-only filesystem guard. No live lock wait measured.",
+  "phases": [
+    {
+      "name": "recover",
+      "ms": 429.75570005364716,
+      "error": null,
+      "functions": [
+        {
+          "file": "service.py",
+          "line": 75,
+          "function": "recover",
+          "calls": 1,
+          "selfMs": 0.077,
+          "totalMs": 426.1723
+        },
+        {
+          "file": "scan.py",
+          "line": 416,
+          "function": "settle_interrupted_scans",
+          "calls": 1,
+          "selfMs": 1.3489,
+          "totalMs": 419.66
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 218,
+          "function": "try_load_source",
+          "calls": 2,
+          "selfMs": 0.0141,
+          "totalMs": 418.06790000000007
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 234,
+          "function": "_merged_source",
+          "calls": 2,
+          "selfMs": 1.9290000000000003,
+          "totalMs": 410.1304
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 2,
+          "selfMs": 0.027600000000000003,
+          "totalMs": 251.1494
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 2,
+          "selfMs": 212.85780000000003,
+          "totalMs": 212.87130000000002
+        },
+        {
+          "file": "records.py",
+          "line": 612,
+          "function": "read_source",
+          "calls": 2,
+          "selfMs": 14.8566,
+          "totalMs": 155.3312
+        },
+        {
+          "file": "records.py",
+          "line": 550,
+          "function": "read_file_entry",
+          "calls": 16548,
+          "selfMs": 64.2161,
+          "totalMs": 140.39880000000002
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 2,
+          "selfMs": 0.5435,
+          "totalMs": 38.1752
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 2,
+          "selfMs": 0.018600000000000002,
+          "totalMs": 31.5345
+        },
+        {
+          "file": "decoder.py",
+          "line": 333,
+          "function": "decode",
+          "calls": 2,
+          "selfMs": 0.025900000000000003,
+          "totalMs": 31.509800000000006
+        },
+        {
+          "file": "decoder.py",
+          "line": 344,
+          "function": "raw_decode",
+          "calls": 2,
+          "selfMs": 31.4544,
+          "totalMs": 31.4544
+        },
+        {
+          "file": "records.py",
+          "line": 128,
+          "function": "_exact_keys",
+          "calls": 16552,
+          "selfMs": 26.0346,
+          "totalMs": 29.8363
+        },
+        {
+          "file": "records.py",
+          "line": 145,
+          "function": "_str",
+          "calls": 66206,
+          "selfMs": 24.3668,
+          "totalMs": 24.3668
+        },
+        {
+          "file": "records.py",
+          "line": 122,
+          "function": "_require_dict",
+          "calls": 16554,
+          "selfMs": 6.151700000000001,
+          "totalMs": 8.758700000000001
+        },
+        {
+          "file": "records.py",
+          "line": 153,
+          "function": "_null_or_str",
+          "calls": 33098,
+          "selfMs": 7.9276,
+          "totalMs": 7.9276
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 268,
+          "function": "_source_view",
+          "calls": 2,
+          "selfMs": 7.9190000000000005,
+          "totalMs": 7.923400000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 2,
+          "selfMs": 3.491,
+          "totalMs": 6.097200000000001
+        },
+        {
+          "file": "atomic.py",
+          "line": 311,
+          "function": "recover_transactions",
+          "calls": 1,
+          "selfMs": 0.0162,
+          "totalMs": 5.437
+        },
+        {
+          "file": "records.py",
+          "line": 167,
+          "function": "_int",
+          "calls": 16553,
+          "selfMs": 5.3334,
+          "totalMs": 5.3334
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1081,
+          "function": "glob",
+          "calls": 32,
+          "selfMs": 0.1527,
+          "totalMs": 4.0641
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 64,
+          "selfMs": 0.245,
+          "totalMs": 3.9234000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'keys' of 'dict' objects>",
+          "calls": 16552,
+          "selfMs": 3.8017000000000003,
+          "totalMs": 3.8017000000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 64,
+          "selfMs": 3.0024,
+          "totalMs": 3.6784
+        },
+        {
+          "file": "history.py",
+          "line": 420,
+          "function": "seal_open_entries",
+          "calls": 1,
+          "selfMs": 0.031400000000000004,
+          "totalMs": 3.4957
+        }
+      ]
+    },
+    {
+      "name": "snapshot-without-recovery",
+      "ms": 13306.864900048822,
+      "error": null,
+      "functions": [
+        {
+          "file": "service.py",
+          "line": 378,
+          "function": "snapshot_catalog",
+          "calls": 1,
+          "selfMs": 0.7761,
+          "totalMs": 13297.465400000001
+        },
+        {
+          "file": "item_index.py",
+          "line": 238,
+          "function": "iter_items",
+          "calls": 1,
+          "selfMs": 9.7964,
+          "totalMs": 13269.258600000001
+        },
+        {
+          "file": "item_index.py",
+          "line": 125,
+          "function": "resync",
+          "calls": 1,
+          "selfMs": 34.8136,
+          "totalMs": 13255.626400000001
+        },
+        {
+          "file": "item_index.py",
+          "line": 181,
+          "function": "_folder_record_sigs",
+          "calls": 1,
+          "selfMs": 127.55130000000001,
+          "totalMs": 6826.6372
+        },
+        {
+          "file": "item_index.py",
+          "line": 281,
+          "function": "_parse_into",
+          "calls": 14608,
+          "selfMs": 117.02480000000001,
+          "totalMs": 6378.6855000000005
+        },
+        {
+          "file": "item_store.py",
+          "line": 184,
+          "function": "folder_records",
+          "calls": 1,
+          "selfMs": 0.263,
+          "totalMs": 6333.527500000001
+        },
+        {
+          "file": "item_store.py",
+          "line": 90,
+          "function": "_state",
+          "calls": 1,
+          "selfMs": 0.1996,
+          "totalMs": 6333.2645
+        },
+        {
+          "file": "item_store.py",
+          "line": 99,
+          "function": "_build",
+          "calls": 1,
+          "selfMs": 156.8075,
+          "totalMs": 6333.0478
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 14611,
+          "selfMs": 48.775000000000006,
+          "totalMs": 3485.1497
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 29219,
+          "selfMs": 2429.7388,
+          "totalMs": 3346.261
+        },
+        {
+          "file": "item_store.py",
+          "line": 157,
+          "function": "_read_owner",
+          "calls": 14608,
+          "selfMs": 98.5947,
+          "totalMs": 3279.6779
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 29219,
+          "selfMs": 98.8677,
+          "totalMs": 2813.7279000000003
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 14608,
+          "selfMs": 272.84420000000006,
+          "totalMs": 2647.5231000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 29219,
+          "selfMs": 1619.3231,
+          "totalMs": 1724.2289
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2842,
+          "selfMs": 38.11410000000001,
+          "totalMs": 1312.7669
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 116966,
+          "selfMs": 193.4538,
+          "totalMs": 1261.4716
+        },
+        {
+          "file": "folder_library.py",
+          "line": 120,
+          "function": "library_dir",
+          "calls": 14614,
+          "selfMs": 79.3195,
+          "totalMs": 1245.3044
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2842,
+          "selfMs": 25.1194,
+          "totalMs": 1099.2285000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 59869,
+          "selfMs": 215.7263,
+          "totalMs": 1058.7897000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2842,
+          "selfMs": 265.5496,
+          "totalMs": 1000.3276000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 58481,
+          "selfMs": 89.4755,
+          "totalMs": 991.2506000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 29219,
+          "selfMs": 61.2658,
+          "totalMs": 990.6313000000001
+        },
+        {
+          "file": "portable.py",
+          "line": 68,
+          "function": "folder_for_source",
+          "calls": 14612,
+          "selfMs": 24.135,
+          "totalMs": 976.9339
+        },
+        {
+          "file": "item_store.py",
+          "line": 144,
+          "function": "_record_files",
+          "calls": 14610,
+          "selfMs": 68.71770000000001,
+          "totalMs": 935.2011
+        },
+        {
+          "file": "decoder.py",
+          "line": 333,
+          "function": "decode",
+          "calls": 29219,
+          "selfMs": 95.03240000000001,
+          "totalMs": 901.4837000000001
+        }
+      ]
+    },
+    {
+      "name": "all-prepare-0",
+      "ms": 2834.618700086139,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.34700000000000003,
+          "totalMs": 2833.0084
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 32.7496,
+          "totalMs": 2832.6614
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 186.67620000000002,
+          "totalMs": 1736.1094
+        },
+        {
+          "file": "stacks.py",
+          "line": 27,
+          "function": "_parent_key",
+          "calls": 29213,
+          "selfMs": 123.64540000000001,
+          "totalMs": 870.0564
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 42.9157,
+          "totalMs": 812.6652000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 45,
+          "function": "_parent_folder",
+          "calls": 14608,
+          "selfMs": 50.816,
+          "totalMs": 692.8871000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 731,
+          "function": "parent",
+          "calls": 14608,
+          "selfMs": 27.031200000000002,
+          "totalMs": 555.4358000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 74.539,
+          "totalMs": 550.1906000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 16.0859,
+          "totalMs": 452.06870000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1157,
+          "function": "__init__",
+          "calls": 47286,
+          "selfMs": 59.842600000000004,
+          "totalMs": 353.76210000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 30302,
+          "selfMs": 48.624,
+          "totalMs": 351.36870000000005
+        },
+        {
+          "file": "pathlib.py",
+          "line": 420,
+          "function": "_from_parsed_parts",
+          "calls": 14608,
+          "selfMs": 18.3763,
+          "totalMs": 320.7237
+        },
+        {
+          "file": "stacks.py",
+          "line": 55,
+          "function": "_bare_stem",
+          "calls": 14506,
+          "selfMs": 29.693100000000005,
+          "totalMs": 319.6954
+        },
+        {
+          "file": "pathlib.py",
+          "line": 358,
+          "function": "__init__",
+          "calls": 47286,
+          "selfMs": 226.68710000000002,
+          "totalMs": 293.9195
+        },
+        {
+          "file": "pathlib.py",
+          "line": 380,
+          "function": "with_segments",
+          "calls": 18172,
+          "selfMs": 27.097,
+          "totalMs": 284.1481
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 6.2586,
+          "totalMs": 273.14979999999997
+        },
+        {
+          "file": "pathlib.py",
+          "line": 387,
+          "function": "_parse_path",
+          "calls": 30302,
+          "selfMs": 120.74870000000001,
+          "totalMs": 268.5732
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 15796,
+          "selfMs": 31.183500000000002,
+          "totalMs": 246.53860000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 880565,
+          "selfMs": 233.41060000000002,
+          "totalMs": 233.41060000000002
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 73.7459,
+          "totalMs": 216.33290000000002
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 166.987,
+          "totalMs": 215.1708
+        },
+        {
+          "file": "pathlib.py",
+          "line": 618,
+          "function": "stem",
+          "calls": 14506,
+          "selfMs": 20.559400000000004,
+          "totalMs": 215.01680000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 4.04,
+          "totalMs": 207.37930000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 583,
+          "function": "name",
+          "calls": 14506,
+          "selfMs": 9.5022,
+          "totalMs": 185.3248
+        },
+        {
+          "file": "pathlib.py",
+          "line": 569,
+          "function": "_tail",
+          "calls": 30302,
+          "selfMs": 42.7719,
+          "totalMs": 178.7855
+        }
+      ]
+    },
+    {
+      "name": "all-first-0",
+      "ms": 9.82310005929321,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0032,
+          "totalMs": 9.140600000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0021000000000000003,
+          "totalMs": 9.1374
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0104,
+          "totalMs": 9.1353
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0251,
+          "totalMs": 9.1231
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.018000000000000002,
+          "totalMs": 9.0715
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.011000000000000001,
+          "totalMs": 7.8105
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0032,
+          "totalMs": 7.8021
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0437,
+          "totalMs": 7.7727
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.004000000000000001,
+          "totalMs": 7.4853000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.004000000000000001,
+          "totalMs": 7.3
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.0419,
+          "totalMs": 7.2955000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 135,
+          "function": "resolve_volume_mount",
+          "calls": 1,
+          "selfMs": 0.0052,
+          "totalMs": 7.1932
+        },
+        {
+          "file": "volumes.py",
+          "line": 168,
+          "function": "_process_mount",
+          "calls": 1,
+          "selfMs": 0.0095,
+          "totalMs": 7.171
+        },
+        {
+          "file": "volumes.py",
+          "line": 209,
+          "function": "_windows_mount_for_serial",
+          "calls": 1,
+          "selfMs": 0.0085,
+          "totalMs": 7.157
+        },
+        {
+          "file": "volumes.py",
+          "line": 221,
+          "function": "_windows_mount_for_serial_uncounted",
+          "calls": 1,
+          "selfMs": 0.061000000000000006,
+          "totalMs": 7.1477
+        },
+        {
+          "file": "volumes.py",
+          "line": 73,
+          "function": "windows_volume",
+          "calls": 8,
+          "selfMs": 6.6489,
+          "totalMs": 6.9905
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.016100000000000003,
+          "totalMs": 1.0213
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0183,
+          "totalMs": 0.9680000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 14,
+          "selfMs": 0.7295,
+          "totalMs": 0.8652000000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 12,
+          "selfMs": 0.0087,
+          "totalMs": 0.7897000000000001
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.015700000000000002,
+          "totalMs": 0.44020000000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1228,
+          "function": "resolve",
+          "calls": 2,
+          "selfMs": 0.007000000000000001,
+          "totalMs": 0.4252
+        },
+        {
+          "file": "favorites.py",
+          "line": 194,
+          "function": "existing_folder",
+          "calls": 1,
+          "selfMs": 0.013000000000000001,
+          "totalMs": 0.3905
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 4,
+          "selfMs": 0.01,
+          "totalMs": 0.3636
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 664,
+          "function": "realpath",
+          "calls": 2,
+          "selfMs": 0.0171,
+          "totalMs": 0.2884
+        }
+      ]
+    },
+    {
+      "name": "person-prepare-0",
+      "ms": 1250.7487999973819,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.6692,
+          "totalMs": 1249.8210000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 38.80930000000001,
+          "totalMs": 1249.1518
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 72.8944,
+          "totalMs": 1017.2239000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 85.0905,
+          "totalMs": 616.3897000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 18.866,
+          "totalMs": 496.01150000000007
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 104.0504,
+          "totalMs": 322.7355
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 7.712600000000001,
+          "totalMs": 322.7139
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 5.3176000000000005,
+          "totalMs": 228.75560000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 1188,
+          "selfMs": 1.8462,
+          "totalMs": 150.4293
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1188,
+          "selfMs": 1.5133,
+          "totalMs": 148.5831
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1188,
+          "selfMs": 84.6853,
+          "totalMs": 147.0698
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 53.309400000000004,
+          "totalMs": 141.2409
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 23.2354,
+          "totalMs": 130.04950000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 345047,
+          "selfMs": 124.15060000000001,
+          "totalMs": 124.15060000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 367,
+          "selfMs": 2.7218000000000004,
+          "totalMs": 118.4375
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 55.6741,
+          "totalMs": 102.8315
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1188,
+          "selfMs": 5.0876,
+          "totalMs": 102.3197
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1188,
+          "selfMs": 94.6974,
+          "totalMs": 99.88040000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1188,
+          "selfMs": 68.486,
+          "totalMs": 72.93430000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 2376,
+          "selfMs": 3.3191,
+          "totalMs": 64.0072
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 17.433400000000002,
+          "totalMs": 61.9213
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 2376,
+          "selfMs": 8.5971,
+          "totalMs": 60.6881
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 12.687000000000001,
+          "totalMs": 49.7167
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 1188,
+          "selfMs": 3.2311,
+          "totalMs": 49.3496
+        },
+        {
+          "file": "pathlib.py",
+          "line": 719,
+          "function": "__truediv__",
+          "calls": 3564,
+          "selfMs": 2.7852,
+          "totalMs": 48.8549
+        }
+      ]
+    },
+    {
+      "name": "person-first-0",
+      "ms": 4.099999903701246,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0041,
+          "totalMs": 3.0141
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0020000000000000005,
+          "totalMs": 3.0100000000000002
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0074,
+          "totalMs": 3.0080000000000005
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0286,
+          "totalMs": 2.9986
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.024800000000000003,
+          "totalMs": 2.9400000000000004
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0064,
+          "totalMs": 1.7056
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0346,
+          "totalMs": 1.6988
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 3,
+          "selfMs": 0.0654,
+          "totalMs": 1.5026
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 3,
+          "selfMs": 0.030500000000000003,
+          "totalMs": 1.2393
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 3,
+          "selfMs": 0.2883,
+          "totalMs": 1.1006
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1539,
+          "selfMs": 0.5698000000000001,
+          "totalMs": 0.8123
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.0162,
+          "totalMs": 0.6762
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0114,
+          "totalMs": 0.6191
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 9,
+          "selfMs": 0.48550000000000004,
+          "totalMs": 0.5858
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 8,
+          "selfMs": 0.0067,
+          "totalMs": 0.5469
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.0166,
+          "totalMs": 0.5239
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.008900000000000002,
+          "totalMs": 0.4777
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0023,
+          "totalMs": 0.4708
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.010300000000000002,
+          "totalMs": 0.4552
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 4,
+          "selfMs": 0.0095,
+          "totalMs": 0.3368
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0028000000000000004,
+          "totalMs": 0.2743
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1228,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.0044,
+          "totalMs": 0.2681
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1592,
+          "selfMs": 0.2539,
+          "totalMs": 0.2539
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 664,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.0118,
+          "totalMs": 0.18390000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.1544,
+          "totalMs": 0.1544
+        }
+      ]
+    },
+    {
+      "name": "person-name-prepare-0",
+      "ms": 976.2396999867633,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.5900000000000001,
+          "totalMs": 974.94
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 26.025700000000004,
+          "totalMs": 974.35
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 47.932300000000005,
+          "totalMs": 796.8228
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 59.65500000000001,
+          "totalMs": 532.5654000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 15.6781,
+          "totalMs": 448.22510000000005
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 7.7746,
+          "totalMs": 275.3414
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 69.955,
+          "totalMs": 212.97580000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 4.2419,
+          "totalMs": 210.7632
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 1188,
+          "selfMs": 2.0307000000000004,
+          "totalMs": 137.78640000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1188,
+          "selfMs": 0.9970000000000001,
+          "totalMs": 135.75570000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1188,
+          "selfMs": 76.17920000000001,
+          "totalMs": 134.7587
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 367,
+          "selfMs": 2.9428,
+          "totalMs": 125.8157
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 37.8811,
+          "totalMs": 105.3729
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1188,
+          "selfMs": 4.370000000000001,
+          "totalMs": 94.2121
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1188,
+          "selfMs": 90.0098,
+          "totalMs": 93.60320000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 346057,
+          "selfMs": 78.84230000000001,
+          "totalMs": 78.84230000000001
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 18.9407,
+          "totalMs": 77.5918
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1188,
+          "selfMs": 64.40750000000001,
+          "totalMs": 68.4785
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 2376,
+          "selfMs": 2.7986,
+          "totalMs": 60.165800000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 2376,
+          "selfMs": 6.9743,
+          "totalMs": 57.3672
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 32.7078,
+          "totalMs": 55.6603
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 1188,
+          "selfMs": 2.9674,
+          "totalMs": 47.8903
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 13.5014,
+          "totalMs": 47.045700000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 1188,
+          "selfMs": 4.9597,
+          "totalMs": 44.9229
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 10.739700000000001,
+          "totalMs": 43.7289
+        }
+      ]
+    },
+    {
+      "name": "person-name-first-0",
+      "ms": 3.0620000325143337,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0034000000000000002,
+          "totalMs": 2.2418
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0022,
+          "totalMs": 2.2384000000000004
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.005600000000000001,
+          "totalMs": 2.2362
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.027600000000000003,
+          "totalMs": 2.2293
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.025200000000000004,
+          "totalMs": 2.1676
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0057,
+          "totalMs": 0.9316000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0279,
+          "totalMs": 0.9254
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2,
+          "selfMs": 0.0318,
+          "totalMs": 0.8310000000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.0176,
+          "totalMs": 0.6988000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2,
+          "selfMs": 0.0188,
+          "totalMs": 0.6852
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0142,
+          "totalMs": 0.6411
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 10,
+          "selfMs": 0.5209,
+          "totalMs": 0.6140000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2,
+          "selfMs": 0.1506,
+          "totalMs": 0.5759000000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 8,
+          "selfMs": 0.0068000000000000005,
+          "totalMs": 0.514
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0101,
+          "totalMs": 0.4877
+        },
+        {
+          "file": "favorites.py",
+          "line": 213,
+          "function": "existing_original",
+          "calls": 1,
+          "selfMs": 0.0152,
+          "totalMs": 0.4812
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0022,
+          "totalMs": 0.47940000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.012400000000000001,
+          "totalMs": 0.4627
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1026,
+          "selfMs": 0.299,
+          "totalMs": 0.4253
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 4,
+          "selfMs": 0.0102,
+          "totalMs": 0.3103
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0033,
+          "totalMs": 0.2727
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1228,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.0039,
+          "totalMs": 0.2544
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 664,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.010700000000000001,
+          "totalMs": 0.1773
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.15000000000000002,
+          "totalMs": 0.15000000000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 10,
+          "selfMs": 0.017900000000000003,
+          "totalMs": 0.1328
+        }
+      ]
+    },
+    {
+      "name": "all-prepare-1",
+      "ms": 2025.5672000348568,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.6915,
+          "totalMs": 2024.2536000000002
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 40.326,
+          "totalMs": 2023.5620999999999
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 44.822,
+          "totalMs": 972.5014000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 173.7629,
+          "totalMs": 819.9843
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 210.13150000000002,
+          "totalMs": 688.4071
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 16.8419,
+          "totalMs": 452.9137
+        },
+        {
+          "file": "stacks.py",
+          "line": 27,
+          "function": "_parent_key",
+          "calls": 29213,
+          "selfMs": 244.0644,
+          "totalMs": 299.35060000000004
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 7.0948,
+          "totalMs": 285.7247
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 880554,
+          "selfMs": 243.9813,
+          "totalMs": 243.9813
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 81.41870000000002,
+          "totalMs": 235.8548
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 4.3977,
+          "totalMs": 204.42890000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 1188,
+          "selfMs": 1.7024000000000001,
+          "totalMs": 146.31760000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1188,
+          "selfMs": 1.0902,
+          "totalMs": 144.6152
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1188,
+          "selfMs": 76.7341,
+          "totalMs": 143.525
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 93.1834,
+          "totalMs": 143.5124
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 367,
+          "selfMs": 2.7852,
+          "totalMs": 117.23060000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1188,
+          "selfMs": 90.4721,
+          "totalMs": 94.27820000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 60,
+          "function": "_stem_parts",
+          "calls": 27256,
+          "selfMs": 38.5999,
+          "totalMs": 88.05560000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1188,
+          "selfMs": 4.1408000000000005,
+          "totalMs": 87.52210000000001
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 22.9476,
+          "totalMs": 84.7734
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 2376,
+          "selfMs": 2.9744,
+          "totalMs": 68.37440000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 2376,
+          "selfMs": 6.757300000000001,
+          "totalMs": 65.4
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1188,
+          "selfMs": 59.8141,
+          "totalMs": 63.77340000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'sort' of 'list' objects>",
+          "calls": 29220,
+          "selfMs": 21.334100000000003,
+          "totalMs": 63.6935
+        },
+        {
+          "file": "stacks.py",
+          "line": 17,
+          "function": "_parse_captured",
+          "calls": 25302,
+          "selfMs": 30.0231,
+          "totalMs": 60.428000000000004
+        }
+      ]
+    },
+    {
+      "name": "all-first-1",
+      "ms": 1.60030007828027,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0022,
+          "totalMs": 0.8730000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0019,
+          "totalMs": 0.8708
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0091,
+          "totalMs": 0.8689
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0219,
+          "totalMs": 0.8585000000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.012100000000000001,
+          "totalMs": 0.8106000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0082,
+          "totalMs": 0.42580000000000007
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0017000000000000001,
+          "totalMs": 0.4181
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0087,
+          "totalMs": 0.4061
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 6,
+          "selfMs": 0.30820000000000003,
+          "totalMs": 0.3456
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.0033,
+          "totalMs": 0.26210000000000006
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0029000000000000002,
+          "totalMs": 0.23390000000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.014700000000000001,
+          "totalMs": 0.1859
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.005600000000000001,
+          "totalMs": 0.1832
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.004200000000000001,
+          "totalMs": 0.146
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0208,
+          "totalMs": 0.1415
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0101,
+          "totalMs": 0.13130000000000003
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.004900000000000001,
+          "totalMs": 0.1078
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0025,
+          "totalMs": 0.0989
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.01,
+          "totalMs": 0.0959
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 4,
+          "selfMs": 0.0095,
+          "totalMs": 0.07570000000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 4,
+          "selfMs": 0.009800000000000001,
+          "totalMs": 0.06620000000000001
+        },
+        {
+          "file": "media.py",
+          "line": 137,
+          "function": "mtime_iso",
+          "calls": 1,
+          "selfMs": 0.0073,
+          "totalMs": 0.0589
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 8,
+          "selfMs": 0.0086,
+          "totalMs": 0.05260000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 446,
+          "function": "_read_quality_field",
+          "calls": 1,
+          "selfMs": 0.0019,
+          "totalMs": 0.045000000000000005
+        },
+        {
+          "file": "rating.py",
+          "line": 178,
+          "function": "read_quality",
+          "calls": 1,
+          "selfMs": 0.011200000000000002,
+          "totalMs": 0.043100000000000006
+        }
+      ]
+    },
+    {
+      "name": "person-prepare-1",
+      "ms": 1029.7586999367923,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.42660000000000003,
+          "totalMs": 1028.9305
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 28.643600000000003,
+          "totalMs": 1028.5039
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 49.26070000000001,
+          "totalMs": 832.3477
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 64.5033,
+          "totalMs": 535.6696000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 16.714700000000004,
+          "totalMs": 444.78180000000003
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 7.928400000000001,
+          "totalMs": 280.8124
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 82.7894,
+          "totalMs": 243.67450000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 4.499300000000001,
+          "totalMs": 207.3462
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 1188,
+          "selfMs": 1.6802000000000001,
+          "totalMs": 140.05100000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1188,
+          "selfMs": 1.3302,
+          "totalMs": 138.3708
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1188,
+          "selfMs": 75.23740000000001,
+          "totalMs": 137.0406
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 367,
+          "selfMs": 2.7661000000000002,
+          "totalMs": 115.85550000000002
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 41.4568,
+          "totalMs": 113.06070000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1188,
+          "selfMs": 89.5438,
+          "totalMs": 93.16390000000001
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1188,
+          "selfMs": 4.172700000000001,
+          "totalMs": 92.9114
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 345047,
+          "selfMs": 92.0595,
+          "totalMs": 92.0595
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 20.656900000000004,
+          "totalMs": 87.24600000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1188,
+          "selfMs": 64.2243,
+          "totalMs": 68.3289
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 2376,
+          "selfMs": 2.748,
+          "totalMs": 63.3137
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 34.573100000000004,
+          "totalMs": 63.30290000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 2376,
+          "selfMs": 7.0292,
+          "totalMs": 60.56570000000001
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 12.418800000000001,
+          "totalMs": 52.0896
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 14.487900000000002,
+          "totalMs": 51.0371
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 1188,
+          "selfMs": 5.970400000000001,
+          "totalMs": 50.861200000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 1188,
+          "selfMs": 4.6816,
+          "totalMs": 44.8908
+        }
+      ]
+    },
+    {
+      "name": "person-first-1",
+      "ms": 3.821499994955957,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.005,
+          "totalMs": 2.7725000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0021000000000000003,
+          "totalMs": 2.7675
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.017900000000000003,
+          "totalMs": 2.7654000000000005
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.030100000000000002,
+          "totalMs": 2.7459000000000002
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.025200000000000004,
+          "totalMs": 2.6797
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0059,
+          "totalMs": 1.8902
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.03590000000000001,
+          "totalMs": 1.8836
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 3,
+          "selfMs": 0.055400000000000005,
+          "totalMs": 1.6852000000000003
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 3,
+          "selfMs": 0.0327,
+          "totalMs": 1.4223000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 3,
+          "selfMs": 0.34080000000000005,
+          "totalMs": 1.2706
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1539,
+          "selfMs": 0.6565000000000001,
+          "totalMs": 0.9298000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.0109,
+          "totalMs": 0.5353000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0029000000000000002,
+          "totalMs": 0.5265000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.011200000000000002,
+          "totalMs": 0.5074000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 5,
+          "selfMs": 0.32030000000000003,
+          "totalMs": 0.36740000000000006
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.0048000000000000004,
+          "totalMs": 0.3191
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0032,
+          "totalMs": 0.3054
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1592,
+          "selfMs": 0.2867,
+          "totalMs": 0.2867
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.0066,
+          "totalMs": 0.22750000000000004
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.016100000000000003,
+          "totalMs": 0.16890000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 338,
+          "function": "_read_landmarks",
+          "calls": 3,
+          "selfMs": 0.0903,
+          "totalMs": 0.1491
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0034000000000000002,
+          "totalMs": 0.1326
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.0148,
+          "totalMs": 0.12860000000000002
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.0059,
+          "totalMs": 0.1264
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.0101,
+          "totalMs": 0.1044
+        }
+      ]
+    },
+    {
+      "name": "person-name-prepare-1",
+      "ms": 894.7642999701202,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 66,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.6280000000000001,
+          "totalMs": 893.6183000000001
+        },
+        {
+          "file": "service.py",
+          "line": 414,
+          "function": "items_iter_from_snapshot",
+          "calls": 1,
+          "selfMs": 24.4411,
+          "totalMs": 892.9903
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 666,
+          "function": "item_query_read",
+          "calls": 14608,
+          "selfMs": 43.0515,
+          "totalMs": 727.029
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 631,
+          "function": "item_entities",
+          "calls": 14608,
+          "selfMs": 56.7553,
+          "totalMs": 476.7987
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 618,
+          "function": "read",
+          "calls": 13208,
+          "selfMs": 14.0548,
+          "totalMs": 396.7935
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 406,
+          "function": "try_load_place",
+          "calls": 769,
+          "selfMs": 6.2006000000000006,
+          "totalMs": 246.82670000000002
+        },
+        {
+          "file": "rating.py",
+          "line": 261,
+          "function": "quality_view",
+          "calls": 14608,
+          "selfMs": 67.87410000000001,
+          "totalMs": 204.02710000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1188,
+          "selfMs": 3.7390000000000003,
+          "totalMs": 184.46290000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 1188,
+          "selfMs": 1.4680000000000002,
+          "totalMs": 126.2069
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1188,
+          "selfMs": 2.0055000000000005,
+          "totalMs": 124.73890000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1188,
+          "selfMs": 71.34060000000001,
+          "totalMs": 122.7334
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 367,
+          "selfMs": 2.4802,
+          "totalMs": 108.6854
+        },
+        {
+          "file": "service.py",
+          "line": 1415,
+          "function": "_item_matches",
+          "calls": 14608,
+          "selfMs": 35.4575,
+          "totalMs": 98.0187
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1188,
+          "selfMs": 81.72370000000001,
+          "totalMs": 84.9641
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1188,
+          "selfMs": 3.8018,
+          "totalMs": 77.43350000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'get' of 'dict' objects>",
+          "calls": 346057,
+          "selfMs": 76.5468,
+          "totalMs": 76.5468
+        },
+        {
+          "file": "rating.py",
+          "line": 296,
+          "function": "_score_breakdown",
+          "calls": 14608,
+          "selfMs": 17.4707,
+          "totalMs": 72.8727
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1188,
+          "selfMs": 52.387600000000006,
+          "totalMs": 56.0795
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 2376,
+          "selfMs": 2.6115,
+          "totalMs": 52.812900000000006
+        },
+        {
+          "file": "rating.py",
+          "line": 286,
+          "function": "_unit_metric",
+          "calls": 31734,
+          "selfMs": 30.934000000000005,
+          "totalMs": 52.4517
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 2376,
+          "selfMs": 6.5164,
+          "totalMs": 50.2014
+        },
+        {
+          "file": "service.py",
+          "line": 1404,
+          "function": "_all_tokens_match",
+          "calls": 14608,
+          "selfMs": 12.7317,
+          "totalMs": 44.9936
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 1188,
+          "selfMs": 2.6753000000000005,
+          "totalMs": 41.3747
+        },
+        {
+          "file": "stacks.py",
+          "line": 118,
+          "function": "annotate_stacks",
+          "calls": 1,
+          "selfMs": 9.483,
+          "totalMs": 41.245400000000004
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 1188,
+          "selfMs": 3.8411,
+          "totalMs": 38.699400000000004
+        }
+      ]
+    },
+    {
+      "name": "person-name-first-1",
+      "ms": 2.341400017030537,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 67,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.0024000000000000002,
+          "totalMs": 1.5746
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.next>",
+          "calls": 1,
+          "selfMs": 0.0019,
+          "totalMs": 1.5722000000000003
+        },
+        {
+          "file": "service.py",
+          "line": 459,
+          "function": "reads",
+          "calls": 1,
+          "selfMs": 0.0109,
+          "totalMs": 1.5703000000000003
+        },
+        {
+          "file": "read_cache.py",
+          "line": 57,
+          "function": "cached_item_read",
+          "calls": 1,
+          "selfMs": 0.0208,
+          "totalMs": 1.5582
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 679,
+          "function": "item_read",
+          "calls": 1,
+          "selfMs": 0.0184,
+          "totalMs": 1.5101000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 530,
+          "function": "ordered_item",
+          "calls": 1,
+          "selfMs": 0.0045000000000000005,
+          "totalMs": 0.8914000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 1,
+          "selfMs": 0.0212,
+          "totalMs": 0.8865000000000001
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 2,
+          "selfMs": 0.022400000000000003,
+          "totalMs": 0.8091000000000002
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 2,
+          "selfMs": 0.0155,
+          "totalMs": 0.6814000000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 2,
+          "selfMs": 0.16190000000000002,
+          "totalMs": 0.6129
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 1026,
+          "selfMs": 0.31860000000000005,
+          "totalMs": 0.451
+        },
+        {
+          "file": "volumes.py",
+          "line": 341,
+          "function": "item_component_available",
+          "calls": 2,
+          "selfMs": 0.008000000000000002,
+          "totalMs": 0.44110000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 381,
+          "function": "item_available",
+          "calls": 1,
+          "selfMs": 0.0015,
+          "totalMs": 0.4338
+        },
+        {
+          "file": "volumes.py",
+          "line": 361,
+          "function": "_item_component_available",
+          "calls": 2,
+          "selfMs": 0.0095,
+          "totalMs": 0.42140000000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 5,
+          "selfMs": 0.2784,
+          "totalMs": 0.31600000000000006
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 4,
+          "selfMs": 0.004000000000000001,
+          "totalMs": 0.27580000000000005
+        },
+        {
+          "file": "volumes.py",
+          "line": 252,
+          "function": "location_file",
+          "calls": 1,
+          "selfMs": 0.0021000000000000003,
+          "totalMs": 0.24600000000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 886,
+          "function": "is_file",
+          "calls": 2,
+          "selfMs": 0.0053,
+          "totalMs": 0.19440000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method math.isfinite>",
+          "calls": 1048,
+          "selfMs": 0.1368,
+          "totalMs": 0.1368
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 705,
+          "function": "_last_known_read",
+          "calls": 1,
+          "selfMs": 0.012600000000000002,
+          "totalMs": 0.1365
+        },
+        {
+          "file": "volumes.py",
+          "line": 286,
+          "function": "location_matches_stat",
+          "calls": 1,
+          "selfMs": 0.0048000000000000004,
+          "totalMs": 0.1102
+        },
+        {
+          "file": "volumes.py",
+          "line": 268,
+          "function": "_location_file_once",
+          "calls": 1,
+          "selfMs": 0.0024000000000000002,
+          "totalMs": 0.10060000000000001
+        },
+        {
+          "file": "volumes.py",
+          "line": 240,
+          "function": "volume_file_path",
+          "calls": 1,
+          "selfMs": 0.012400000000000001,
+          "totalMs": 0.09770000000000001
+        },
+        {
+          "file": "read_cache.py",
+          "line": 33,
+          "function": "cached",
+          "calls": 2,
+          "selfMs": 0.008000000000000002,
+          "totalMs": 0.0843
+        },
+        {
+          "file": "records.py",
+          "line": 338,
+          "function": "_read_landmarks",
+          "calls": 2,
+          "selfMs": 0.0473,
+          "totalMs": 0.0765
+        }
+      ]
+    },
+    {
+      "name": "128-ready-thumb-resolve-and-read",
+      "ms": 1371.853500022553,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 69,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 2.1611,
+          "totalMs": 1370.987
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1015,
+          "function": "read_bytes",
+          "calls": 128,
+          "selfMs": 1.0336,
+          "totalMs": 1151.5872
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 256,
+          "selfMs": 1147.2128000000002,
+          "totalMs": 1147.9148
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1005,
+          "function": "open",
+          "calls": 128,
+          "selfMs": 0.3614,
+          "totalMs": 1134.7701000000002
+        },
+        {
+          "file": "service.py",
+          "line": 1051,
+          "function": "media_resolve",
+          "calls": 128,
+          "selfMs": 1.3997,
+          "totalMs": 217.2387
+        },
+        {
+          "file": "service.py",
+          "line": 1141,
+          "function": "_resolve_rendition",
+          "calls": 128,
+          "selfMs": 0.6956,
+          "totalMs": 124.88770000000001
+        },
+        {
+          "file": "renditions.py",
+          "line": 640,
+          "function": "rendition_abs",
+          "calls": 128,
+          "selfMs": 0.6895,
+          "totalMs": 110.08900000000001
+        },
+        {
+          "file": "renditions.py",
+          "line": 630,
+          "function": "_folder_file",
+          "calls": 128,
+          "selfMs": 0.5325,
+          "totalMs": 93.5194
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 97,
+          "function": "load_item",
+          "calls": 128,
+          "selfMs": 1.3930000000000002,
+          "totalMs": 90.82950000000001
+        },
+        {
+          "file": "folder_library.py",
+          "line": 165,
+          "function": "for_source_id",
+          "calls": 128,
+          "selfMs": 0.5582,
+          "totalMs": 85.31320000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 223,
+          "function": "try_load_source_head",
+          "calls": 128,
+          "selfMs": 0.7277000000000001,
+          "totalMs": 72.75410000000001
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 234,
+          "function": "_merged_source",
+          "calls": 128,
+          "selfMs": 1.1607,
+          "totalMs": 71.9862
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 1024,
+          "selfMs": 0.8401000000000001,
+          "totalMs": 70.3357
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 1024,
+          "selfMs": 57.3849,
+          "totalMs": 69.49560000000001
+        },
+        {
+          "file": "records.py",
+          "line": 490,
+          "function": "read_item",
+          "calls": 128,
+          "selfMs": 3.2929,
+          "totalMs": 50.7533
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 264,
+          "function": "_source_cache_key",
+          "calls": 128,
+          "selfMs": 0.4746,
+          "totalMs": 40.27570000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1228,
+          "function": "resolve",
+          "calls": 128,
+          "selfMs": 0.5958000000000001,
+          "totalMs": 39.770900000000005
+        },
+        {
+          "file": "records.py",
+          "line": 381,
+          "function": "read_face",
+          "calls": 70,
+          "selfMs": 1.5748000000000002,
+          "totalMs": 37.6284
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 128,
+          "selfMs": 0.7547,
+          "totalMs": 34.4265
+        },
+        {
+          "file": "records.py",
+          "line": 365,
+          "function": "unpack_embedding",
+          "calls": 70,
+          "selfMs": 1.2719,
+          "totalMs": 31.486800000000002
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 664,
+          "function": "realpath",
+          "calls": 128,
+          "selfMs": 1.2628000000000001,
+          "totalMs": 27.3973
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.all>",
+          "calls": 70,
+          "selfMs": 6.891100000000001,
+          "totalMs": 26.5299
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 256,
+          "selfMs": 23.570200000000003,
+          "totalMs": 23.570200000000003
+        },
+        {
+          "file": "records.py",
+          "line": 376,
+          "function": "<genexpr>",
+          "calls": 35910,
+          "selfMs": 13.196000000000002,
+          "totalMs": 19.6388
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 128,
+          "selfMs": 0.2675,
+          "totalMs": 18.156100000000002
+        }
+      ]
+    },
+    {
+      "name": "face-index-read",
+      "ms": 138.9132000040263,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 71,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 0.006,
+          "totalMs": 138.15650000000002
+        },
+        {
+          "file": "faces.py",
+          "line": 175,
+          "function": "load_index",
+          "calls": 1,
+          "selfMs": 0.016000000000000004,
+          "totalMs": 138.15050000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 1,
+          "selfMs": 0.021700000000000004,
+          "totalMs": 137.18189999999998
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 1,
+          "selfMs": 0.6653000000000001,
+          "totalMs": 129.62500000000003
+        },
+        {
+          "file": "__init__.py",
+          "line": 299,
+          "function": "loads",
+          "calls": 1,
+          "selfMs": 0.0079,
+          "totalMs": 121.38650000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 333,
+          "function": "decode",
+          "calls": 1,
+          "selfMs": 0.0177,
+          "totalMs": 121.37570000000001
+        },
+        {
+          "file": "decoder.py",
+          "line": 344,
+          "function": "raw_decode",
+          "calls": 1,
+          "selfMs": 121.3434,
+          "totalMs": 121.3434
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 1,
+          "selfMs": 4.2481,
+          "totalMs": 7.573200000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 1,
+          "selfMs": 7.488600000000001,
+          "totalMs": 7.4965
+        },
+        {
+          "file": "<frozen codecs>",
+          "line": 319,
+          "function": "decode",
+          "calls": 1,
+          "selfMs": 0.0173,
+          "totalMs": 3.3251
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _codecs.utf_8_decode>",
+          "calls": 1,
+          "selfMs": 3.3078,
+          "totalMs": 3.3078
+        },
+        {
+          "file": "faces.py",
+          "line": 90,
+          "function": "index_path",
+          "calls": 1,
+          "selfMs": 0.0020000000000000005,
+          "totalMs": 0.8791000000000001
+        },
+        {
+          "file": "paths.py",
+          "line": 42,
+          "function": "library_path",
+          "calls": 1,
+          "selfMs": 0.0315,
+          "totalMs": 0.8771
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1228,
+          "function": "resolve",
+          "calls": 1,
+          "selfMs": 0.007200000000000001,
+          "totalMs": 0.45180000000000003
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 664,
+          "function": "realpath",
+          "calls": 1,
+          "selfMs": 0.0148,
+          "totalMs": 0.32530000000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 663,
+          "function": "relative_to",
+          "calls": 1,
+          "selfMs": 0.0202,
+          "totalMs": 0.2781
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt._getfinalpathname>",
+          "calls": 2,
+          "selfMs": 0.22890000000000002,
+          "totalMs": 0.22890000000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 2,
+          "selfMs": 0.0038,
+          "totalMs": 0.1709
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 2,
+          "selfMs": 0.13,
+          "totalMs": 0.16710000000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 6,
+          "selfMs": 0.020300000000000002,
+          "totalMs": 0.15000000000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 690,
+          "function": "is_relative_to",
+          "calls": 1,
+          "selfMs": 0.0067,
+          "totalMs": 0.1338
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 5,
+          "selfMs": 0.0172,
+          "totalMs": 0.1297
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "line": 1022,
+          "function": "__iter__",
+          "calls": 9,
+          "selfMs": 0.0105,
+          "totalMs": 0.12840000000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 277,
+          "function": "__getitem__",
+          "calls": 8,
+          "selfMs": 0.020600000000000004,
+          "totalMs": 0.1179
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 10,
+          "selfMs": 0.017900000000000003,
+          "totalMs": 0.1144
+        }
+      ]
+    },
+    {
+      "name": "face-empty-cluster",
+      "ms": 165.50320002716035,
+      "error": null,
+      "functions": [
+        {
+          "file": "profile_reads.py",
+          "line": 72,
+          "function": "<lambda>",
+          "calls": 1,
+          "selfMs": 1.6521000000000001,
+          "totalMs": 164.78310000000002
+        },
+        {
+          "file": "faces.py",
+          "line": 1265,
+          "function": "cluster_detections",
+          "calls": 1,
+          "selfMs": 6.1402,
+          "totalMs": 163.131
+        },
+        {
+          "file": "faces.py",
+          "line": 1253,
+          "function": "_named_person_ids",
+          "calls": 1,
+          "selfMs": 1.1851,
+          "totalMs": 156.5465
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 593,
+          "function": "try_load_person",
+          "calls": 371,
+          "selfMs": 2.9506,
+          "totalMs": 155.18380000000002
+        },
+        {
+          "file": "atomic.py",
+          "line": 124,
+          "function": "load_json",
+          "calls": 371,
+          "selfMs": 1.5535,
+          "totalMs": 75.65200000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 852,
+          "function": "exists",
+          "calls": 371,
+          "selfMs": 0.5569000000000001,
+          "totalMs": 57.21660000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 835,
+          "function": "stat",
+          "calls": 371,
+          "selfMs": 0.2986,
+          "totalMs": 56.6597
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method nt.stat>",
+          "calls": 371,
+          "selfMs": 26.5528,
+          "totalMs": 56.36110000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method _io.open>",
+          "calls": 371,
+          "selfMs": 38.72410000000001,
+          "totalMs": 39.8924
+        },
+        {
+          "file": "pathlib.py",
+          "line": 447,
+          "function": "__fspath__",
+          "calls": 742,
+          "selfMs": 0.906,
+          "totalMs": 30.3135
+        },
+        {
+          "file": "pathlib.py",
+          "line": 437,
+          "function": "__str__",
+          "calls": 742,
+          "selfMs": 2.2228,
+          "totalMs": 29.407500000000002
+        },
+        {
+          "file": "__init__.py",
+          "line": 274,
+          "function": "load",
+          "calls": 371,
+          "selfMs": 1.3257,
+          "totalMs": 28.651300000000003
+        },
+        {
+          "file": "pathlib.py",
+          "line": 551,
+          "function": "drive",
+          "calls": 371,
+          "selfMs": 0.9645000000000001,
+          "totalMs": 26.335900000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 407,
+          "function": "_load_parts",
+          "calls": 371,
+          "selfMs": 2.1885000000000003,
+          "totalMs": 25.3714
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'read' of '_io.TextIOWrapper' objects>",
+          "calls": 371,
+          "selfMs": 20.5761,
+          "totalMs": 22.086100000000002
+        },
+        {
+          "file": "pathlib.py",
+          "line": 387,
+          "function": "_parse_path",
+          "calls": 371,
+          "selfMs": 9.9526,
+          "totalMs": 15.0769
+        },
+        {
+          "file": "pathlib.py",
+          "line": 719,
+          "function": "__truediv__",
+          "calls": 1113,
+          "selfMs": 0.9740000000000001,
+          "totalMs": 14.334800000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 711,
+          "function": "joinpath",
+          "calls": 1113,
+          "selfMs": 1.6062,
+          "totalMs": 13.360800000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 380,
+          "function": "with_segments",
+          "calls": 1113,
+          "selfMs": 2.9642,
+          "totalMs": 11.7546
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 50,
+          "function": "people_dir",
+          "calls": 371,
+          "selfMs": 0.5317000000000001,
+          "totalMs": 11.389800000000001
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 108,
+          "function": "join",
+          "calls": 371,
+          "selfMs": 3.575,
+          "totalMs": 7.9182999999999995
+        },
+        {
+          "file": "<frozen ntpath>",
+          "line": 180,
+          "function": "splitroot",
+          "calls": 1855,
+          "selfMs": 5.9971,
+          "totalMs": 7.596100000000001
+        },
+        {
+          "file": "pathlib.py",
+          "line": 1157,
+          "function": "__init__",
+          "calls": 1113,
+          "selfMs": 1.7823000000000002,
+          "totalMs": 7.4827
+        },
+        {
+          "file": "catalog_io.py",
+          "line": 34,
+          "function": "catalog_root",
+          "calls": 371,
+          "selfMs": 0.3739,
+          "totalMs": 6.6805
+        },
+        {
+          "file": "pathlib.py",
+          "line": 358,
+          "function": "__init__",
+          "calls": 1113,
+          "selfMs": 3.7812,
+          "totalMs": 5.7004
+        }
+      ]
+    }
+  ],
+  "items": 14608
+}

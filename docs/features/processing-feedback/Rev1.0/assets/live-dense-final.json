@@ -1,0 +1,3103 @@
+{
+  "timestamp": "2026-10-27T23:26:25.149Z",
+  "url": "http://127.0.0.1:8785",
+  "note": "Headless Edge on server PC, 1600x900, fresh browser cache; not the tablet. Non-GET requests blocked. Image counts are visible loaded image elements, sampled after browser frames. Live background work continues.",
+  "scenarios": {
+    "initial": [
+      {
+        "ms": 70,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 173,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 282,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 391,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 500,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 607,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 732,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 840,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 944,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1061,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1164,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1278,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1380,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1488,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1588,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1690,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1798,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1906,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2028,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2137,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2245,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2354,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2454,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2568,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2676,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2784,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2892,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3001,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3111,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3219,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3330,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3435,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3536,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3637,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3738,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3853,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3962,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4070,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4178,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4280,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4394,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4503,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4611,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4721,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4829,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4930,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5031,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5139,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5247,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5355,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5456,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5571,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5679,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5787,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5896,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6011,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6128,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6236,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6345,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6454,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6562,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6670,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6777,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6886,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6995,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7104,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7212,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7321,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7429,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7536,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7644,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7752,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7860,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7968,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8077,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8186,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8293,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8401,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8508,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8616,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8724,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8832,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8941,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9050,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9157,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9265,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9373,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9480,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9588,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9697,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9806,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9907,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10028,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10131,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10245,
+        "visible": 21,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10365,
+        "visible": 28,
+        "painted": 7,
+        "state": "loading"
+      },
+      {
+        "ms": 10481,
+        "visible": 109,
+        "painted": 34,
+        "state": "loading"
+      },
+      {
+        "ms": 10604,
+        "visible": 112,
+        "painted": 53,
+        "state": "loading"
+      },
+      {
+        "ms": 10719,
+        "visible": 112,
+        "painted": 90,
+        "state": "loading"
+      },
+      {
+        "ms": 10835,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 10950,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11083,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11222,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11336,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11459,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11569,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11687,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11816,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 11955,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12070,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12186,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12304,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12437,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12567,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12688,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12841,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 12980,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13157,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13313,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13474,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13616,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13757,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 13914,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14080,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14230,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14396,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14548,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14695,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 14843,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 15019,
+        "visible": 112,
+        "painted": 111,
+        "state": "loading"
+      },
+      {
+        "ms": 15210,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 15367,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 15560,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 15734,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 15903,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16121,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16299,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16471,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16627,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16799,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 16954,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 17100,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 17254,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 17414,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 17562,
+        "visible": 95,
+        "painted": 94,
+        "state": "loading"
+      },
+      {
+        "ms": 17769,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 17959,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 18120,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 18321,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 18496,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 18686,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 18907,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 19112,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 19313,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 19517,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 19765,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      },
+      {
+        "ms": 19977,
+        "visible": 78,
+        "painted": 77,
+        "state": "loading"
+      }
+    ],
+    "scroll": [
+      {
+        "ms": 282,
+        "visible": 576,
+        "painted": 2,
+        "state": "loading"
+      },
+      {
+        "ms": 857,
+        "visible": 576,
+        "painted": 2,
+        "state": "loading"
+      },
+      {
+        "ms": 1372,
+        "visible": 576,
+        "painted": 14,
+        "state": "loading"
+      },
+      {
+        "ms": 1819,
+        "visible": 576,
+        "painted": 26,
+        "state": "loading"
+      },
+      {
+        "ms": 2128,
+        "visible": 576,
+        "painted": 38,
+        "state": "loading"
+      },
+      {
+        "ms": 2490,
+        "visible": 576,
+        "painted": 50,
+        "state": "loading"
+      },
+      {
+        "ms": 2875,
+        "visible": 576,
+        "painted": 74,
+        "state": "loading"
+      },
+      {
+        "ms": 3290,
+        "visible": 576,
+        "painted": 86,
+        "state": "loading"
+      },
+      {
+        "ms": 3701,
+        "visible": 576,
+        "painted": 98,
+        "state": "loading"
+      },
+      {
+        "ms": 4119,
+        "visible": 576,
+        "painted": 122,
+        "state": "loading"
+      },
+      {
+        "ms": 4469,
+        "visible": 576,
+        "painted": 134,
+        "state": "loading"
+      },
+      {
+        "ms": 4875,
+        "visible": 576,
+        "painted": 152,
+        "state": "loading"
+      },
+      {
+        "ms": 5288,
+        "visible": 576,
+        "painted": 170,
+        "state": "loading"
+      },
+      {
+        "ms": 5662,
+        "visible": 576,
+        "painted": 188,
+        "state": "loading"
+      },
+      {
+        "ms": 6050,
+        "visible": 576,
+        "painted": 200,
+        "state": "loading"
+      },
+      {
+        "ms": 6423,
+        "visible": 576,
+        "painted": 219,
+        "state": "loading"
+      },
+      {
+        "ms": 6831,
+        "visible": 576,
+        "painted": 231,
+        "state": "loading"
+      },
+      {
+        "ms": 7315,
+        "visible": 576,
+        "painted": 248,
+        "state": "loading"
+      },
+      {
+        "ms": 7755,
+        "visible": 576,
+        "painted": 265,
+        "state": "loading"
+      },
+      {
+        "ms": 8221,
+        "visible": 576,
+        "painted": 277,
+        "state": "loading"
+      },
+      {
+        "ms": 8759,
+        "visible": 576,
+        "painted": 301,
+        "state": "loading"
+      },
+      {
+        "ms": 9209,
+        "visible": 576,
+        "painted": 313,
+        "state": "loading"
+      },
+      {
+        "ms": 9726,
+        "visible": 576,
+        "painted": 333,
+        "state": "loading"
+      },
+      {
+        "ms": 10048,
+        "visible": 576,
+        "painted": 345,
+        "state": "loading"
+      },
+      {
+        "ms": 10500,
+        "visible": 576,
+        "painted": 361,
+        "state": "loading"
+      },
+      {
+        "ms": 10889,
+        "visible": 576,
+        "painted": 369,
+        "state": "loading"
+      },
+      {
+        "ms": 11284,
+        "visible": 576,
+        "painted": 386,
+        "state": "loading"
+      },
+      {
+        "ms": 11669,
+        "visible": 576,
+        "painted": 405,
+        "state": "loading"
+      },
+      {
+        "ms": 12161,
+        "visible": 576,
+        "painted": 422,
+        "state": "loading"
+      },
+      {
+        "ms": 12508,
+        "visible": 576,
+        "painted": 441,
+        "state": "loading"
+      },
+      {
+        "ms": 12976,
+        "visible": 576,
+        "painted": 458,
+        "state": "loading"
+      },
+      {
+        "ms": 13374,
+        "visible": 576,
+        "painted": 477,
+        "state": "loading"
+      },
+      {
+        "ms": 13773,
+        "visible": 576,
+        "painted": 494,
+        "state": "loading"
+      },
+      {
+        "ms": 14118,
+        "visible": 576,
+        "painted": 506,
+        "state": "loading"
+      },
+      {
+        "ms": 14489,
+        "visible": 576,
+        "painted": 525,
+        "state": "loading"
+      },
+      {
+        "ms": 14902,
+        "visible": 576,
+        "painted": 542,
+        "state": "loading"
+      }
+    ],
+    "person": [
+      {
+        "ms": 74,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 179,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 286,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 394,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 503,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 610,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 720,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 821,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 935,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1046,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1150,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1258,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1367,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1475,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1575,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1688,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1796,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1904,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2011,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2119,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2228,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2336,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2444,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2553,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2661,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2769,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2878,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2986,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3095,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3203,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3311,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3419,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3530,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3637,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3746,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3853,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3961,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4070,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4178,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4286,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4394,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4503,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4612,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4719,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4828,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4936,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5037,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5138,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5245,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5354,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5463,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5571,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5679,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5786,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5893,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6002,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6108,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6217,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6325,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6433,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6542,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6644,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6759,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6867,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6975,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7084,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7192,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7300,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7408,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7516,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7625,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7734,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7842,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7950,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8051,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8166,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8273,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8383,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8491,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8592,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8693,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8801,
+        "visible": 1,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8916,
+        "visible": 43,
+        "painted": 10,
+        "state": "loading"
+      },
+      {
+        "ms": 9033,
+        "visible": 69,
+        "painted": 50,
+        "state": "loading"
+      },
+      {
+        "ms": 9147,
+        "visible": 105,
+        "painted": 83,
+        "state": "loading"
+      },
+      {
+        "ms": 9259,
+        "visible": 121,
+        "painted": 96,
+        "state": "loading"
+      },
+      {
+        "ms": 9374,
+        "visible": 165,
+        "painted": 135,
+        "state": "loading"
+      },
+      {
+        "ms": 9509,
+        "visible": 213,
+        "painted": 167,
+        "state": "loading"
+      },
+      {
+        "ms": 9641,
+        "visible": 288,
+        "painted": 211,
+        "state": "loading"
+      },
+      {
+        "ms": 9787,
+        "visible": 308,
+        "painted": 226,
+        "state": "loading"
+      },
+      {
+        "ms": 9923,
+        "visible": 364,
+        "painted": 255,
+        "state": "loading"
+      },
+      {
+        "ms": 10068,
+        "visible": 403,
+        "painted": 275,
+        "state": "loading"
+      },
+      {
+        "ms": 10224,
+        "visible": 473,
+        "painted": 299,
+        "state": "loading"
+      },
+      {
+        "ms": 10380,
+        "visible": 486,
+        "painted": 316,
+        "state": "done"
+      },
+      {
+        "ms": 10492,
+        "visible": 486,
+        "painted": 353,
+        "state": "done"
+      },
+      {
+        "ms": 10600,
+        "visible": 486,
+        "painted": 392,
+        "state": "done"
+      },
+      {
+        "ms": 10717,
+        "visible": 486,
+        "painted": 435,
+        "state": "done"
+      },
+      {
+        "ms": 10833,
+        "visible": 486,
+        "painted": 484,
+        "state": "done"
+      },
+      {
+        "ms": 10941,
+        "visible": 486,
+        "painted": 484,
+        "state": "done"
+      },
+      {
+        "ms": 11048,
+        "visible": 486,
+        "painted": 484,
+        "state": "done"
+      },
+      {
+        "ms": 11156,
+        "visible": 486,
+        "painted": 484,
+        "state": "done"
+      },
+      {
+        "ms": 11265,
+        "visible": 486,
+        "painted": 484,
+        "state": "done"
+      },
+      {
+        "ms": 11384,
+        "visible": 486,
+        "painted": 486,
+        "state": "done"
+      }
+    ],
+    "sort": [
+      {
+        "ms": 44,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 154,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 264,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 372,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 479,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 587,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 696,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 803,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 912,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1019,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1121,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1236,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1344,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1452,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1560,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1667,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1776,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1885,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 1993,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2102,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2210,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2319,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2427,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2534,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2641,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2750,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2858,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 2965,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3072,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3180,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3287,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3396,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3505,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3612,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3714,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3829,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 3938,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4045,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4154,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4262,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4370,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4479,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4589,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4697,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4804,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 4912,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5021,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5144,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5253,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5359,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5469,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5577,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5686,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5794,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 5902,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6027,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6136,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6243,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6352,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6460,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6568,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6677,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6785,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 6911,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7017,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7126,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7234,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7335,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7449,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7557,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7666,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7773,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7874,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 7994,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8097,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8205,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8314,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8420,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8529,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8637,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8743,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8844,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 8945,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9054,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9161,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9270,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9378,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9487,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9594,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9703,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9810,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 9919,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10027,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10135,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10243,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10350,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10458,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10566,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10673,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10774,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 10889,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11011,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11127,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11243,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11352,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11459,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11567,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11676,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11777,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 11892,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12000,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12109,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12218,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12327,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12433,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12544,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12650,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12758,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12866,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 12977,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13094,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13205,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13313,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13421,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13530,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13637,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13745,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13854,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 13963,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14077,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14179,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14287,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14396,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14504,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14612,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14720,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14822,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 14937,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15045,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15154,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15262,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15370,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15478,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15588,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15696,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15797,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 15912,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16021,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16129,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16230,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16346,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16455,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16563,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16669,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16778,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16887,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 16993,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17102,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17204,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17319,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17425,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17534,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17642,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17750,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17857,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 17966,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18074,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18180,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18289,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18397,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18506,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18614,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18723,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18827,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 18939,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19047,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19157,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19258,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19372,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19480,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19587,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19695,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19797,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 19912,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 20019,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 20124,
+        "visible": 0,
+        "painted": 0,
+        "state": "loading"
+      },
+      {
+        "ms": 20231,
+        "visible": 59,
+        "painted": 8,
+        "state": "loading"
+      },
+      {
+        "ms": 20348,
+        "visible": 86,
+        "painted": 49,
+        "state": "loading"
+      },
+      {
+        "ms": 20466,
+        "visible": 115,
+        "painted": 88,
+        "state": "loading"
+      },
+      {
+        "ms": 20584,
+        "visible": 154,
+        "painted": 129,
+        "state": "loading"
+      },
+      {
+        "ms": 20699,
+        "visible": 184,
+        "painted": 169,
+        "state": "loading"
+      },
+      {
+        "ms": 20819,
+        "visible": 232,
+        "painted": 209,
+        "state": "loading"
+      },
+      {
+        "ms": 20932,
+        "visible": 303,
+        "painted": 303,
+        "state": "loading"
+      },
+      {
+        "ms": 21051,
+        "visible": 399,
+        "painted": 399,
+        "state": "loading"
+      },
+      {
+        "ms": 21225,
+        "visible": 486,
+        "painted": 486,
+        "state": "done"
+      }
+    ]
+  },
+  "errors": [],
+  "runtime": {
+    "schemaVersion": 1,
+    "pid": 18720,
+    "root": "J:\\slyOS\\projects\\photoLibrary\\library-data",
+    "url": "http://127.0.0.1:8785/"
+  },
+  "jobsStart": {
+    "ok": true,
+    "paused": false,
+    "processing": true,
+    "queues": [
+      {
+        "id": "renditions",
+        "label": "Previews",
+        "pending": 0,
+        "done": 15207,
+        "error": 16,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze",
+        "pending": 0,
+        "done": 769,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "infer-faces",
+        "label": "Faces",
+        "pending": 12413,
+        "done": 2192,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "objects",
+        "label": "Objects",
+        "pending": 13856,
+        "done": 749,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "transcribe",
+        "label": "Transcribe",
+        "pending": 2,
+        "done": 0,
+        "error": 1,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "rate",
+        "label": "Rating",
+        "pending": 13856,
+        "done": 748,
+        "error": 1,
+        "state": "running",
+        "available": true
+      }
+    ]
+  },
+  "jsSha256": "5d7c1d116ccbdb5c8387ab4c18132a93fdf06ddc2b072bdb65da75cebd01bbfc",
+  "network": {
+    "sort": [
+      {
+        "headersMs": 14931,
+        "totalMs": 16025,
+        "status": 200
+      }
+    ]
+  },
+  "domContentLoadedMs": 261,
+  "initialCells": 7008,
+  "jobsEnd": {
+    "ok": true,
+    "paused": false,
+    "processing": true,
+    "queues": [
+      {
+        "id": "renditions",
+        "label": "Previews",
+        "pending": 0,
+        "done": 15207,
+        "error": 16,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze",
+        "pending": 0,
+        "done": 769,
+        "error": 0,
+        "state": "idle",
+        "available": true
+      },
+      {
+        "id": "infer-faces",
+        "label": "Faces",
+        "pending": 12400,
+        "done": 2205,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "objects",
+        "label": "Objects",
+        "pending": 13856,
+        "done": 749,
+        "error": 0,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "transcribe",
+        "label": "Transcribe",
+        "pending": 2,
+        "done": 0,
+        "error": 1,
+        "state": "running",
+        "available": true
+      },
+      {
+        "id": "rate",
+        "label": "Rating",
+        "pending": 13856,
+        "done": 748,
+        "error": 1,
+        "state": "running",
+        "available": true
+      }
+    ]
+  },
+  "elapsedMs": 70726
+}

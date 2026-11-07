@@ -55,6 +55,11 @@ class Library:
         self.root.mkdir(parents=True, exist_ok=True)
         self._scanning = False
         self._jobs_paused = False
+        # Thumbnails still run. Places, faces, objects, transcripts, and
+        # rating wait until Resume on that row.
+        from library.jobs import QUEUE_ORDER
+
+        self._paused_queues: set[str] = {queue for queue in QUEUE_ORDER if queue != "renditions"}
         self._inferring = False
         self._resets: set[str] = set()
         self._reset_checked = 0.0
@@ -417,7 +422,7 @@ class Library:
         query: dict[str, str] | None = None,
     ):
         """Prepare final metadata order/stacks now; project each read on demand."""
-        from library.catalog_io import ItemEntityReader, item_query_read
+        from library.catalog_io import ItemEntityReader, item_entities, item_query_read
         from library.read_cache import cached_item_read
         from library.stacks import annotate_stacks
         from library.volumes import item_available
@@ -435,7 +440,8 @@ class Library:
                 raise fail("invalid-argument")
             recent = set(snap["recent"])
         person_token = query.get("person")
-        people_by_id = _people_by_id(self.root) if person_token else None
+        has_people = query.get("hasPeople") == "1"
+        people_by_id = _people_by_id(self.root) if person_token or has_people else None
         # Entity records are needed to match a name, place, thing, or search,
         # and to sort by place. A date/name/rating pass and a person-id click
         # can decide membership from the item and the person files alone.
@@ -449,7 +455,9 @@ class Library:
         for item in snap["items"]:
             if recent is not None and item.get("id") not in recent:
                 continue
-            if people_by_id is not None and not _person_query_matches(item, person_token, people_by_id):
+            if has_people and people_by_id is not None and not _item_has_linked_person(item, people_by_id):
+                continue
+            if person_token and people_by_id is not None and not _person_query_matches(item, person_token, people_by_id):
                 continue
             heavy = bool(
                 query.get("place") or query.get("thing") or query.get("q")
@@ -484,11 +492,23 @@ class Library:
             matches.append(metadata)
             raw_by_id[item["id"]] = item
         ordered_matches = annotate_stacks(_sort_items(matches, query, settings))
+        entity_reader = reader or ItemEntityReader(self.root)
 
         def reads():
             for metadata in ordered_matches:
                 item = raw_by_id[metadata["id"]]
-                view = cached_item_read(item, self.root, marked, metadata=metadata)
+                # The grid lists records already on disk. Checking every original
+                # file here made the first pictures wait on the photo drive.
+                view = cached_item_read(
+                    item,
+                    self.root,
+                    marked,
+                    metadata={
+                        **metadata,
+                        "entities": item_entities(item, self.root, entity_reader),
+                    },
+                    check_files=False,
+                )
                 if not include_unavailable:
                     view["available"] = metadata["available"]
                 if "stack" in metadata:
@@ -499,6 +519,18 @@ class Library:
 
     def items_list(self, query: dict[str, str] | None = None) -> list[dict[str, Any]]:
         return self.items_from_snapshot(self.snapshot_catalog(), query)
+
+    def item_browser_record(self, item_id: str) -> dict[str, Any]:
+        """One item's browser view for preview/inspector. No catalog FairLock."""
+        from library.catalog_io import item_read
+        from library.errors import fail
+        from library.favorites import favorite_ids
+        from library.item_index import load_item
+
+        if type(item_id) is not str or not item_id:
+            raise fail("not-found")
+        item = load_item(self.root, item_id)
+        return item_read(item, self.root, favorite_ids(self.root))
 
     def duplicates_from_snapshot(self, snap: dict[str, Any]) -> dict[str, Any]:
         from library.duplicates import list_duplicate_groups
@@ -527,8 +559,6 @@ class Library:
         query: dict[str, str] | None = None,
         snap: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
-        from library.read_cache import cached_item_read
-
         if snap is None:
             snap = self.snapshot_catalog()
         settings = snap["settings"]
@@ -536,10 +566,10 @@ class Library:
         extra = set(query) - {"unavailable"}
         if extra:
             raise fail("invalid-argument")
-        items = [cached_item_read(item, self.root, snap["marked"]) for item in snap["items"]]
-        items = [item for item in items if _item_visible(item, settings, query)]
         by_place: dict[str, list[dict[str, Any]]] = {}
-        for item in items:
+        for item in snap["items"]:
+            if not _listed_without_stat(item, settings, query):
+                continue
             place_id = item.get("placeId")
             if type(place_id) is str and place_id:
                 by_place.setdefault(place_id, []).append(item)
@@ -575,8 +605,6 @@ class Library:
         query: dict[str, str] | None = None,
         snap: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
-        from library.read_cache import cached_item_read
-
         if snap is None:
             snap = self.snapshot_catalog()
         settings = snap["settings"]
@@ -585,8 +613,7 @@ class Library:
         if extra:
             raise fail("invalid-argument")
         cap = settings["tourPictures"]
-        items = [cached_item_read(item, self.root, snap["marked"]) for item in snap["items"]]
-        items = [item for item in items if _item_visible(item, settings, query)]
+        items = [item for item in snap["items"] if _listed_without_stat(item, settings, query)]
         places_by_id = {place["id"]: place for place in load_places(self.root)}
         by_place: dict[str, list[dict[str, Any]]] = {}
         for item in items:
@@ -845,7 +872,12 @@ class Library:
     def jobs_from_snapshot(self, snap: dict[str, Any]) -> dict[str, Any]:
         from library.jobs import jobs_status
 
-        return jobs_status(self.root, bool(snap.get("paused")), snap.get("items"))
+        return jobs_status(
+            self.root,
+            bool(snap.get("paused")),
+            snap.get("items"),
+            self._paused_queues,
+        )
 
     def jobs_get(self) -> dict[str, Any]:
         return self.jobs_from_snapshot(self.snapshot_catalog())
@@ -853,20 +885,36 @@ class Library:
     def jobs_set(self, payload: dict[str, Any]) -> dict[str, Any]:
         from library.jobs import jobs_status, read_jobs_action
 
-        action = read_jobs_action(payload)
+        action, queue = read_jobs_action(payload)
         if action == "rerun-faces":
             from library.faces import request_faces_rescan
 
             self.recover()
             self.ensure_settings()
             request_faces_rescan(self.root)
-            return jobs_status(self.root, getattr(self, "_jobs_paused", False))
+            return self._jobs_view()
+        if queue:
+            if action == "pause":
+                self._paused_queues.add(queue)
+            else:
+                self._paused_queues.discard(queue)
+            return self._jobs_view()
         self._jobs_paused = action == "pause"
         if self._jobs_paused:
             from library.faces import flush_index
 
             flush_index(self.root)
-        return jobs_status(self.root, self._jobs_paused)
+        else:
+            self._paused_queues.clear()
+        return self._jobs_view()
+
+    def _jobs_view(self) -> dict[str, Any]:
+        from library.jobs import jobs_status
+
+        return jobs_status(self.root, self._jobs_paused, None, self._paused_queues)
+
+    def _queue_held(self, queue_id: str) -> bool:
+        return self._jobs_paused or queue_id in self._paused_queues
 
     def analyze_places(self) -> dict[str, Any]:
         from library.places import analyze_places as fill_place_names
@@ -999,7 +1047,7 @@ class Library:
         encoder threads. A still encoded from the original may also publish
         faces from that same upright frame. Never runs objects, rating or
         transcripts."""
-        if self._jobs_paused or self._inferring:
+        if self._jobs_paused or self._queue_held("renditions") or self._inferring:
             return False
         return drain_queued_jpegs(self.root, io_context=io_context, sweep=False)
 
@@ -1012,7 +1060,7 @@ class Library:
         if getattr(self, "_inferring", False):
             return False
         self.ensure_settings()
-        if drain_queued_jpegs(self.root, io_context=io_context):
+        if not self._queue_held("renditions") and drain_queued_jpegs(self.root, io_context=io_context):
             return True
         if getattr(self, "_scanning", False) or rendition_encoding(self.root):
             return False
@@ -1029,7 +1077,7 @@ class Library:
         except Exception as exc:
             log_drain_error("faces-force", exc)
             force_faces = False
-        if force_faces:
+        if force_faces and not self._queue_held("infer-faces"):
             try:
                 from library.faces import infer_faces_step
 
@@ -1037,14 +1085,17 @@ class Library:
                     return True
             except Exception as exc:
                 log_drain_error("faces-force-step", exc)
-        try:
-            from library.places import analyze_places_step
+        if not self._queue_held("analyze"):
+            try:
+                from library.places import analyze_places_step, capture_gps_step
 
-            if analyze_places_step(self.root):
-                return True
-        except Exception as exc:
-            log_drain_error("places", exc)
-        if not force_faces:
+                if capture_gps_step(self.root, io_context=io_context):
+                    return True
+                if analyze_places_step(self.root):
+                    return True
+            except Exception as exc:
+                log_drain_error("places", exc)
+        if not force_faces and not self._queue_held("infer-faces"):
             try:
                 from library.faces import infer_faces_step
 
@@ -1052,27 +1103,30 @@ class Library:
                     return True
             except Exception as exc:
                 log_drain_error("faces", exc)
-        try:
-            from library.objects import analyze_step as run_analyze_step
+        if not self._queue_held("objects"):
+            try:
+                from library.objects import analyze_step as run_analyze_step
 
-            if run_analyze_step(self.root, io_context=io_context):
-                return True
-        except Exception as exc:
-            log_drain_error("objects", exc)
-        try:
-            from library.transcribe import transcribe_step
+                if run_analyze_step(self.root, io_context=io_context):
+                    return True
+            except Exception as exc:
+                log_drain_error("objects", exc)
+        if not self._queue_held("transcribe"):
+            try:
+                from library.transcribe import transcribe_step
 
-            if transcribe_step(self.root):
-                return True
-        except Exception as exc:
-            log_drain_error("transcribe", exc)
-        try:
-            from library.rating import rate_step
+                if transcribe_step(self.root, io_context=io_context):
+                    return True
+            except Exception as exc:
+                log_drain_error("transcribe", exc)
+        if not self._queue_held("rate"):
+            try:
+                from library.rating import rate_step
 
-            if rate_step(self.root, io_context=io_context):
-                return True
-        except Exception as exc:
-            log_drain_error("rating", exc)
+                if rate_step(self.root, io_context=io_context):
+                    return True
+            except Exception as exc:
+                log_drain_error("rating", exc)
         from library.activity import clear as clear_activity
         from library.faces import flush_index
 
@@ -1185,7 +1239,7 @@ class Library:
             if ((item.get("renditions") or {}).get("status") or {}).get(which) == "ready":
                 from library.renditions import note_missing
 
-                note_missing(self.root)
+                note_missing(self.root, str(item.get("id") or ""), which)
             raise fail("preview-unavailable")
         content_type = "video/mp4" if which in {"proxy", "playback"} else "image/webp"
         return {"path": path, "content_type": content_type}
@@ -1211,6 +1265,7 @@ ITEM_QUERY_KEYS = frozenset(
         "pick",
         "hideRejects",
         "flag",
+        "hasPeople",
     }
 )
 ITEM_KINDS = frozenset({"photo", "video", "live"})
@@ -1382,14 +1437,14 @@ def _validate_item_query(query: dict[str, str]) -> None:
             raise fail("invalid-argument")
         if key in {"person", "place", "thing"} and not any(value.split(",")):
             raise fail("invalid-argument")
-        if key in {"favorite", "recent", "pick"} and value != "1":
+        if key in {"favorite", "recent", "pick", "hasPeople"} and value != "1":
             raise fail("invalid-argument")
         if key in {"unavailable", "hideRejects"} and value not in {"0", "1"}:
             raise fail("invalid-argument")
         if key == "minStars" and (not value.isdigit() or not 1 <= int(value) <= 5):
             raise fail("invalid-argument")
         allowed = {
-            "sort": {"date", "name", "location", "rating"},
+            "sort": {"date", "name", "location", "rating", "size"},
             "dir": {"asc", "desc"}, "scope": {"people", "places", "things"},
             "flag": {"blurry", "too-dark", "too-bright"},
         }
@@ -1433,6 +1488,16 @@ def _linked_people(item: dict[str, Any], people_by_id: dict[str, dict[str, Any]]
     return found
 
 
+def _item_has_linked_person(item: dict[str, Any], people_by_id: dict[str, dict[str, Any]]) -> bool:
+    for face in item.get("faces") or []:
+        if not isinstance(face, dict):
+            continue
+        person_id = face.get("personId")
+        if type(person_id) is str and person_id in people_by_id:
+            return True
+    return False
+
+
 def _person_query_matches(
     item: dict[str, Any], token: str, people_by_id: dict[str, dict[str, Any]]
 ) -> bool:
@@ -1456,6 +1521,22 @@ def _slim_match_record(item: dict[str, Any], marked: set[str]) -> dict[str, Any]
         "metadata": item.get("metadata"),
         "placeId": item.get("placeId"),
     }
+
+
+def _listed_without_stat(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:
+    """Same membership as ``_item_visible`` without opening the original file."""
+    raw = query.get("unavailable")
+    if raw is None:
+        include = settings["unavailableItems"] == "show"
+    elif raw == "1":
+        include = True
+    elif raw == "0":
+        include = False
+    else:
+        raise fail("invalid-argument")
+    if include:
+        return True
+    return item.get("available") is not False
 
 
 def _item_visible(item: dict[str, Any], settings: dict[str, Any], query: dict[str, str]) -> bool:
@@ -1740,7 +1821,7 @@ def _sort_items(
 ) -> list[dict[str, Any]]:
     sort = query.get("sort") or settings["sort"]
     direction = query.get("dir") or settings["dir"]
-    if sort not in {"date", "location", "name", "rating"} or direction not in {"asc", "desc"}:
+    if sort not in {"date", "location", "name", "rating", "size"} or direction not in {"asc", "desc"}:
         raise fail("invalid-argument")
     reverse = direction == "desc"
 

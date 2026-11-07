@@ -330,43 +330,77 @@ def _mirror_locals(destination: Path) -> dict[str, tuple[str, int]]:
     return found
 
 
+def mirror_name_sizes(locals_by_path: dict[str, tuple[str, int]]) -> dict[tuple[str, int], list[str]]:
+    """Each saved file can satisfy one phone file with the same name and size."""
+    buckets: dict[tuple[str, int], list[str]] = {}
+    for rel, size in locals_by_path.values():
+        buckets.setdefault((Path(rel).name.casefold(), size), []).append(rel)
+    return buckets
+
+
+def _take_saved(name_sizes: dict[tuple[str, int], list[str]] | None, name: str, size: int, prefer: str | None) -> str | None:
+    if name_sizes is None:
+        return None
+    bucket = name_sizes.get((name.casefold(), size))
+    if not bucket:
+        return None
+    if prefer is not None:
+        want = prefer.casefold()
+        for index, rel in enumerate(bucket):
+            if rel.casefold() == want:
+                return bucket.pop(index)
+    return bucket.pop()
+
+
 def mirror_action(
     source_path: str,
     size: int,
     locals_by_path: dict[str, tuple[str, int]],
-) -> str:
-    """Same rule as the final Look: path and size, nothing invented."""
+    name_sizes: dict[tuple[str, int], list[str]] | None = None,
+) -> tuple[str, str | None]:
+    """Already copied means the same filename and the same size, in any folder.
+
+    A different size at the phone's current path is left untouched. Anything
+    else is copied into the folder name the phone is using now.
+    """
     rel = _safe_mirror_relative(source_path)
     found = locals_by_path.get(rel.casefold())
     if found is not None and found[1] == size:
-        return ACTION_SKIP
+        _take_saved(name_sizes, Path(rel).name, size, found[0])
+        return ACTION_SKIP, found[0]
+    saved = _take_saved(name_sizes, Path(rel).name, size, None)
+    if saved is not None:
+        return ACTION_SKIP, saved
     if found is not None:
-        return ACTION_KEEP
-    return ACTION_COPY
+        return ACTION_KEEP, found[0]
+    return ACTION_COPY, None
 
 
 def plan_mirror(phone_files: list[PhoneFile], destination: Path) -> list[PlanItem]:
-    """Match Explorer's Internal Storage paths. Never invent a date folder.
+    """Match a previous Explorer copy. Never invent a date folder.
 
-    Same folder, name, and size is a skip. A different size at that path is
-    left untouched. A missing file is copied to that same relative path.
+    Same filename and same size, in any folder, is already here. One saved
+    file satisfies one phone file. A different size at the phone's current
+    path is left untouched. A file that is not already here is copied to the
+    folder name the phone is using now.
     """
     locals_by_path = _mirror_locals(destination)
+    name_sizes = mirror_name_sizes(locals_by_path)
     items: list[PlanItem] = []
     for phone in phone_files:
         rel = _safe_mirror_relative(phone.source_path)
-        action = mirror_action(phone.source_path, phone.size, locals_by_path)
+        action, matched = mirror_action(phone.source_path, phone.size, locals_by_path, name_sizes)
         found = locals_by_path.get(rel.casefold())
-        if action == ACTION_SKIP and found is not None:
+        if action == ACTION_SKIP and matched is not None:
             items.append(
                 PlanItem(
                     rel,
                     phone.size,
                     phone.mtime,
                     ACTION_SKIP,
-                    found[0],
-                    found[0],
-                    found[1],
+                    matched,
+                    matched,
+                    phone.size,
                     None,
                 )
             )

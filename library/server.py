@@ -57,7 +57,9 @@ def _lower_thread_priority() -> None:
 
 def _media_cache(which: str | None, mtime_ns: int, size: int) -> tuple[str, str | None]:
     etag = '"%x-%x"' % (mtime_ns, size)
-    if which in {"thumb", "camera", "preview", "poster", "face", "proxy", "playback"}:
+    if which in {"thumb", "camera", "preview", "poster", "face"}:
+        return "public, max-age=31536000, immutable", etag
+    if which in {"proxy", "playback"}:
         return "private, no-cache", etag
     return "no-store", None
 
@@ -585,6 +587,21 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 with self.lock:
                     self._send_json(200, self.library.remove_source(source_id))
                 return
+            if route == "/api/catalog/index" and method in {"GET", "HEAD"}:
+                # Build/serve outside FairLock; encode_index only copies the
+                # in-memory item list under item_index's own guard.
+                from library.catalog_index import encode_index
+
+                body, version = encode_index(self.library.root)
+                etag = f'"{version}"'
+                self._send(
+                    200,
+                    body,
+                    "application/json",
+                    cache_control="private, max-age=60",
+                    etag=etag,
+                )
+                return
             if route == "/api/items/stream" and method in {"GET", "HEAD"}:
                 self._items_stream(_query_map(parsed.query))
                 return
@@ -846,6 +863,17 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 return
             if (
                 route.startswith("/api/items/")
+                and method in {"GET", "HEAD"}
+                and "/" not in route[len("/api/items/") :]
+            ):
+                item_id = route[len("/api/items/") :]
+                if not item_id:
+                    raise fail("not-found")
+                # Single-item browser record for preview; no FairLock across disk.
+                self._send_json(200, self.library.item_browser_record(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
                 and route.endswith("/favorite")
                 and method == "PUT"
             ):
@@ -906,6 +934,21 @@ class LibraryHandler(BaseHTTPRequestHandler):
                 self._read_json()
                 with self.lock:
                     self._send_json(200, self.library.reveal(item_id))
+                return
+            if (
+                route.startswith("/api/items/")
+                and route.endswith("/file-place")
+                and method == "POST"
+            ):
+                item_id = route[len("/api/items/") : -len("/file-place")]
+                if not item_id or item_id.endswith("/") or "/" in item_id:
+                    raise fail("not-found")
+                self._read_json()
+                from library.places import prepare_file_place, store_file_place
+
+                prepared = prepare_file_place(self.library.root, item_id)
+                with self.lock:
+                    self._send_json(200, store_file_place(self.library.root, item_id, prepared))
                 return
             if (
                 route.startswith("/api/items/")
@@ -1047,39 +1090,57 @@ class LibraryHandler(BaseHTTPRequestHandler):
             raise
         path = resolved["path"]
         content_type = resolved["content_type"]
+
+        def _requeue_missing() -> None:
+            from library.renditions import note_missing, note_wanted
+
+            if which in {"thumb", "preview", "poster", "proxy", "playback"}:
+                note_missing(self.library.root, item_id, which)
+            else:
+                note_wanted(self.library.root, item_id)
+
         try:
             stat = path.stat()
             cache_control, etag = _media_cache(which, stat.st_mtime_ns, stat.st_size)
             if etag and (self.headers.get("If-None-Match") or "") == etag:
                 self._send(304, b"", content_type, cache_control=cache_control, etag=etag)
                 return
-            data = resolved.get("read", Path.read_bytes)(path)
+            total = int(stat.st_size)
+            if total <= 0:
+                _requeue_missing()
+                raise fail("unavailable" if which == "original" else "preview-unavailable")
+            range_header = self.headers.get("Range")
+            if range_header:
+                spec = parse_byte_range(range_header, total)
+                if spec is None:
+                    raise fail("invalid-range")
+                start, end = spec
+                length = end - start + 1
+                with path.open("rb") as handle:
+                    handle.seek(start)
+                    data = handle.read(length)
+                if not data:
+                    _requeue_missing()
+                    raise fail("unavailable" if which == "original" else "preview-unavailable")
+                self._send_partial(
+                    data,
+                    content_type,
+                    start,
+                    start + len(data) - 1,
+                    total,
+                    cache_control=cache_control,
+                    etag=etag,
+                )
+                return
+            reader = resolved.get("read")
+            data = reader(path) if reader is not None else path.read_bytes()
         except OSError as exc:
-            if which in {"preview", "poster", "proxy", "playback"}:
-                from library.renditions import note_wanted
-
-                note_wanted(self.library.root, item_id)
+            _requeue_missing()
             raise fail("unavailable" if which == "original" else "preview-unavailable") from exc
         if not data:
-            if which in {"preview", "poster", "proxy", "playback"}:
-                from library.renditions import note_wanted
-
-                note_wanted(self.library.root, item_id)
+            _requeue_missing()
             raise fail("unavailable" if which == "original" else "preview-unavailable")
-        spec = parse_byte_range(self.headers.get("Range"), len(data))
-        if spec is None:
-            self._send(200, data, content_type, cache_control=cache_control, etag=etag)
-            return
-        start, end = spec
-        self._send_partial(
-            data[start : end + 1],
-            content_type,
-            start,
-            end,
-            len(data),
-            cache_control=cache_control,
-            etag=etag,
-        )
+        self._send(200, data, content_type, cache_control=cache_control, etag=etag)
 
     def _send_partial(
         self,
@@ -1206,7 +1267,6 @@ def serve(root: Path) -> int:
             root / RUNTIME_NAME,
             runtime_record(root, os.getpid(), url),
         )
-        print(url, flush=True)
 
         def io_unlocked():
             return unlocked_io(handler.lock)
@@ -1232,6 +1292,15 @@ def serve(root: Path) -> int:
                     append_error(library.root, "/api/jobs", f"processing-drain:outer:{type(exc).__name__}")
                     worked = False
                 drain_stop.wait(0.005 if worked else 0.25)
+
+        # Warm browse caches before advertising the URL or starting drain so
+        # the first catalog/people request is a memory hit.
+        from library.catalog_index import warm as warm_catalog_index
+        from library.people_panel import warm as warm_people_panel
+
+        warm_people_panel(library.root)
+        warm_catalog_index(library.root)
+        print(url, flush=True)
 
         from library.renditions import encoder_count
 

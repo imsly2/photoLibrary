@@ -29,6 +29,7 @@ _job: dict = {
     "path": "",
     "phone": "",
     "onPhone": 0,
+    "bytes": 0,
     "skip": 0,
     "willCopy": 0,
     "copied": 0,
@@ -112,6 +113,7 @@ def _load(root: Path):
         plan,
         plan_mirror,
         _mirror_locals,
+        mirror_name_sizes,
     )
     from ui.phone import Phone, PhoneError, stream_list  # type: ignore
 
@@ -130,6 +132,7 @@ def _load(root: Path):
         "look_status": look_status,
         "mirror_action": mirror_action,
         "mirror_locals": _mirror_locals,
+        "mirror_name_sizes": mirror_name_sizes,
         "phone_text": phone_text,
         "plan": plan,
         "plan_mirror": plan_mirror,
@@ -226,6 +229,7 @@ class _RollProgress:
 
     def __init__(self, ready: threading.Event, box: dict, action) -> None:
         self.pictures = 0
+        self.bytes = 0
         self.folders: set[str] = set()
         self.current = ""
         self.folder_found = 0
@@ -276,6 +280,7 @@ class _RollProgress:
             return
         self._seen.add(key)
         self.pictures += 1
+        self.bytes += size
         self.waiting_ms = 0
         self._last_file = time.monotonic()
         parent = str(Path(rel).parent).replace("\\", "/")
@@ -310,7 +315,8 @@ class _RollProgress:
         locals_by_path = self._locals()
         if locals_by_path is None:
             return
-        action = self._action(rel, size, locals_by_path)
+        result = self._action(rel, size, locals_by_path, self._box.get("names"))
+        action = result[0] if isinstance(result, tuple) else result
         if action == "skip":
             self.skip += 1
         elif action == "keep":
@@ -327,6 +333,7 @@ class _RollProgress:
         _set(
             current=self.current,
             onPhone=self.pictures,
+            bytes=self.bytes,
             skip=self.skip,
             willCopy=self.will_copy,
             kept=self.kept,
@@ -371,6 +378,7 @@ def look(path: str, layout: str = "month") -> dict:
         path=str(dest),
         phone="",
         onPhone=0,
+        bytes=0,
         skip=0,
         willCopy=0,
         copied=0,
@@ -411,6 +419,7 @@ def _read_roll(api, dest: Path):
     def scan() -> None:
         try:
             box["locals"] = api["mirror_locals"](dest)
+            box["names"] = api["mirror_name_sizes"](box["locals"])
         except Exception as exc:
             box["error"] = exc
         finally:
@@ -428,6 +437,45 @@ def _read_roll(api, dest: Path):
     return listed
 
 
+def _file_mix(files) -> str:
+    """Pictures, videos, and Apple edit notes, plus the real byte total."""
+    pictures = videos = notes = other = 0
+    total = 0
+    photo = {".jpg", ".jpeg", ".heic", ".heif", ".png", ".gif", ".webp", ".tif", ".tiff", ".dng", ".avif"}
+    movie = {".mov", ".mp4", ".m4v"}
+    for item in files:
+        path = getattr(item, "source_path", None)
+        size = getattr(item, "size", None)
+        if path is None:
+            path = item[0]
+            size = item[1]
+        total += int(size or 0)
+        ext = Path(str(path)).suffix.lower()
+        if ext in photo:
+            pictures += 1
+        elif ext in movie:
+            videos += 1
+        elif ext == ".aae":
+            notes += 1
+        else:
+            other += 1
+    text = f"{pictures:,} pictures, {videos:,} videos, {notes:,} edit notes"
+    if other:
+        text += f", {other:,} other"
+    text += f", {total / 1_000_000_000:.1f} GB"
+    return text
+
+
+def _byte_total(files) -> int:
+    total = 0
+    for item in files:
+        size = getattr(item, "size", None)
+        if size is None:
+            size = item[1]
+        total += int(size or 0)
+    return total
+
+
 def _read_month(api):
     """List /DCIM over Apple's file channel and count each file as it arrives."""
     found = {"n": 0}
@@ -443,9 +491,11 @@ def _read_month(api):
         if not isinstance(path, str) or isinstance(size, bool) or not isinstance(size, int):
             return
         found["n"] += 1
+        found["bytes"] = found.get("bytes", 0) + size
         parent = str(Path(path).parent).replace("\\", "/")
         _set(
             onPhone=found["n"],
+            bytes=found["bytes"],
             current=parent,
             comparing=True,
             layout="month",
@@ -474,6 +524,7 @@ def _publish_month(api, dest: Path, name: str, files) -> None:
         phone=name,
         path=str(dest),
         onPhone=len(items),
+        bytes=_byte_total(files),
         skip=skip,
         willCopy=will_copy,
         kept=0,
@@ -490,7 +541,8 @@ def _publish_month(api, dest: Path, name: str, files) -> None:
         message=(
             "Nothing was copied. Pictures go into month folders like 2026-10. "
             "A file already there is never replaced. "
-            f"{skip:,} already here, {will_copy:,} not here yet."
+            f"{skip:,} already here, {will_copy:,} not here yet. "
+            f"{_file_mix(files)}."
         ),
         error="",
     )
@@ -538,7 +590,7 @@ def _publish_look(api, dest: Path, name: str, files, repeated: int, skipped: int
                 "action": item.action,
             }
         )
-    notes = ["Nothing was copied."]
+    notes = ["Nothing was copied.", _file_mix(files) + "."]
     if repeated:
         notes.append(f"Explorer listed {repeated} pictures twice. Each was counted once.")
     if skipped:
@@ -558,6 +610,7 @@ def _publish_look(api, dest: Path, name: str, files, repeated: int, skipped: int
         phone=name,
         path=str(dest),
         onPhone=len(items),
+        bytes=_byte_total(files),
         skip=skip,
         willCopy=will_copy,
         kept=kept,

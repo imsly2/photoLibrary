@@ -44,7 +44,7 @@ ENUMS: dict[str, frozenset[str]] = {
     "addFolderDefault": frozenset({"ask", "copy-here", "serve-from-there"}),
     "playProxies": frozenset({"days-and-all", "always", "off"}),
     "listenHost": frozenset({"127.0.0.1", "0.0.0.0"}),
-    "sort": frozenset({"date", "location", "name", "rating"}),
+    "sort": frozenset({"date", "location", "name", "rating", "size"}),
     "dir": frozenset({"asc", "desc"}),
     "zoomLevel": frozenset({"years", "months", "days", "all"}),
     "language": frozenset({"en", "zh-Hans"}),

@@ -134,37 +134,28 @@ function Add-FileLine($Item, $RelativePath) {
 }
 
 function Get-FolderItems($FolderItem, $Label, $EmptyWaitMs) {
-    # Count on a phone folder often blocks until Windows has the whole
-    # folder. A second thread emits waitingMs during that block so the
-    # dialog clock keeps moving. When Count returns quickly, keep polling:
-    # the folder may still be filling in.
+    # Count on a phone folder climbs, pauses, then climbs again. Properties
+    # in Explorer does the same thing. A pause is not the end of the folder.
+    # Wait until the count has stayed still for two seconds. A second thread
+    # emits waitingMs during a blocking Count so the dialog clock keeps moving.
     Start-FolderPulse $Label
     $listed = [Diagnostics.Stopwatch]::StartNew()
     $items = $FolderItem.GetFolder.Items()
     $last = -1
-    $quiet = 0
-    $grewSlowly = $false
-    $emptyLimit = [Math]::Max(2, [int]($EmptyWaitMs / 150))
+    $sinceChange = [Diagnostics.Stopwatch]::StartNew()
     $count = 0
     while ($true) {
-        $read = [Diagnostics.Stopwatch]::StartNew()
         $count = [int]$items.Count
-        $readMs = [int]$read.ElapsedMilliseconds
-        $stableAfterSlow = $false
         if ($count -ne $last) {
             $last = $count
-            $quiet = 0
-            $grewSlowly = $readMs -ge 400
+            $sinceChange.Restart()
             Write-JsonLine ([ordered]@{ reading = $Label; found = $count })
-        } else {
-            $quiet++
-            $stableAfterSlow = $grewSlowly
-            $grewSlowly = $false
         }
-        $filled = $count -gt 0 -and ($quiet -ge 2 -or $stableAfterSlow)
-        $empty = $count -eq 0 -and $quiet -ge $emptyLimit
+        $stillMs = [int]$sinceChange.ElapsedMilliseconds
+        $filled = $count -gt 0 -and $stillMs -ge 2000
+        $empty = $count -eq 0 -and $stillMs -ge $EmptyWaitMs
         if ($filled -or $empty) { break }
-        if (-not $grewSlowly) { Start-Sleep -Milliseconds 150 }
+        Start-Sleep -Milliseconds 200
     }
     Stop-FolderPulse
     $script:lastListMs = [int]$listed.ElapsedMilliseconds

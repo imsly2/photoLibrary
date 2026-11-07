@@ -403,6 +403,30 @@ def load_place(root: Path, place_id: str) -> dict[str, Any]:
         raise fail("io-error") from exc
 
 
+def library_root_of_record(path: Path) -> Path | None:
+    """The `.library` folder that holds this item record, when it has one."""
+    for parent in path.parents:
+        if parent.name == ".library":
+            return parent
+    return None
+
+
+def place_beside_item(root: Path, item: dict[str, Any], place_id: str) -> dict[str, Any] | None:
+    """A place saved in the folder library, when it is not under the server root."""
+    from library.item_store import stored_path
+
+    item_id = item.get("id")
+    if type(item_id) is not str or not item_id:
+        return None
+    record = stored_path(root, item_id)
+    if record is None:
+        return None
+    library_root = library_root_of_record(record)
+    if library_root is None:
+        return None
+    return try_load_place(library_root, place_id)
+
+
 def try_load_place(root: Path, place_id: str) -> dict[str, Any] | None:
     relative = place_rel(place_id)
     overlaid = _overlay_payload(relative)
@@ -636,6 +660,11 @@ def item_entities(
     place_id = item.get("placeId")
     if type(place_id) is str and place_id:
         place = reader.read("places", place_id)
+        if place is None:
+            place = place_beside_item(root, item, place_id)
+            if place is not None:
+                place = ordered_place(place)
+                reader.records[("places", place_id)] = place
         if place is not None:
             places = [place]
     people: list[dict[str, Any]] = []
@@ -682,6 +711,7 @@ def item_read(
     favorites: set[str] | None = None,
     *,
     entities: dict[str, list[dict[str, Any]]] | None = None,
+    check_files: bool = True,
 ) -> dict[str, Any]:
     from library.favorites import favorite_ids
     from library.rating import quality_view
@@ -692,9 +722,22 @@ def item_read(
         out["faces"] = [
             {key: value for key, value in face.items() if key != "embedding"} for face in out["faces"]
         ]
-    out["available"] = item_available(item, root)
-    out["motionAvailable"] = item_motion_available(item, root)
-    out.update(_last_known_read(item))
+    if check_files:
+        out["available"] = item_available(item, root)
+        out["motionAvailable"] = item_motion_available(item, root)
+        out.update(_last_known_read(item))
+    else:
+        out["available"] = item.get("available") is not False
+        out["motionAvailable"] = item.get("kind") == "video"
+        path = ""
+        for loc in item.get("locations") or []:
+            if loc.get("current") is True and type(loc.get("lastKnownPath")) is str and loc.get("lastKnownPath"):
+                path = loc["lastKnownPath"]
+                break
+        parent = path.rsplit("\\", 1)[0].rsplit("/", 1)[0] if path else ""
+        out["lastKnownPath"] = path
+        out["lastKnownFile"] = True
+        out["lastKnownFolder"] = parent
     marked = favorite_ids(root) if favorites is None else favorites
     out["favorite"] = item.get("id") in marked
     out["entities"] = item_entities(item, root) if entities is None else entities

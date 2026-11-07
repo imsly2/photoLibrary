@@ -1,0 +1,19 @@
+{
+  "_about": "Goal numbers for the live library (docs/process/LOAD-FILTER-TARGET.md). A metric at or under its number is met. * matches one name part.",
+  "browser.open.firstPaintMs": 500,
+  "browser.open.screenPaintedMs": 1500,
+  "browser.open.countKnownMs": 1000,
+  "browser.open.settledAfterCountMs": 1500,
+  "browser.open.peopleReadyMs": 1500,
+  "browser.open.endUnpainted": 0,
+  "browser.click.*.readyMs": 100,
+  "browser.click.*.settledMs": 250,
+  "browser.click.*.redownloads": 0,
+  "server.healthDuringBrowser.maxMs": 100,
+  "server.settingsIdle.maxMs": 100,
+  "server.catalog.bytes": 5000000,
+  "server.thumbs.serial200.p95Ms": 20,
+  "server.thumbs.duringCatalog.p95Ms": 30,
+  "server.people.sec": 0.5,
+  "server.suggestions.sec": 1
+}

@@ -47,10 +47,10 @@ fill. They must read as clickable toggles, not heading text.
 |---|---|
 | Empty library | Library header and Add folder as the CTA; plain “No pictures yet” in grid. No fake sample pictures. Add opens named dialog. |
 | Add folder | On Windows, Browse is the normal path: native folder picker fills the field. Cancel leaves the field unchanged. Typed or pasted paths still work; they are not required. `ask` starts with neither mode selected and Add disabled until path+mode exist. Other defaults preselect a mode, still require Add. Cancel/Esc closes without writes. No file-upload control. |
-| Import iPhone | Header button beside Add folder, and the same button on an empty library. `ImportIphone.bat` opens this same dialog and does not start a second Library when one is already open. Browse picks the destination. Two choices sit above the path. **By month** is the default. It reads the phone over Apple's file channel and saves into `YYYY-MM` folders. A file already there is never replaced. A second picture with the same filename is saved beside it as `name_2`. **Match Explorer folders** reads Apple iPhone → Internal Storage, keeps folders such as `201508_a`, and does not write on Look. Use it when the destination was copied from Explorer. That choice is the slow one. While that read is still going, the dialog shows separate counts for pictures found, already in this folder, and not here yet, the folder it is asking the phone for, a running timer, and pictures per second. The timer and the time spent on the current folder keep moving when the phone has not handed over a new picture. Items seen in the open folder climb while that folder is still filling in. Refreshing the page while a Look is running reopens this dialog on that same Look. A file already at that same relative path with the same size is an exact match. **Copy what's missing** writes only files that are not there, into those same folder names, then adds that folder with Serve from that folder. After a Look of that same folder, Copy uses the list Look just made and does not read the phone again. A second read, when one is needed, is the same Explorer listing and is usually faster because Windows already has the folders. Same path and a different size is left untouched. Esc stops a copy; Esc again closes. Nothing on the phone is deleted or overwritten. After Look, one sentence says how many pictures are already in the folder and how many are not. The list shows the already-copied files first, labeled Already in this folder, then files that are not here yet. The current filename shows while copying. If Explorer cannot see the phone, the dialog says so. |
+| Import iPhone | Header button beside Add folder, and the same button on an empty library. `ImportIphone.bat` opens this same dialog and does not start a second Library when one is already open. Browse picks the destination. Two choices sit above the path. **By month** is the default. It reads the phone over Apple's file channel and saves into `YYYY-MM` folders. A file already there is never replaced. A second picture with the same filename is saved beside it as `name_2`. **Match Explorer folders** reads Apple iPhone → Internal Storage, keeps folders such as `201508_a`, and does not write on Look. Use it when the destination was copied from Explorer. That choice is the slow one. While that read is still going, the dialog shows separate counts for pictures found, already in this folder, and not here yet, the folder it is asking the phone for, a running timer, and pictures per second. The timer and the time spent on the current folder keep moving when the phone has not handed over a new picture. Items seen in the open folder climb while that folder is still filling in. Refreshing the page while a Look is running reopens this dialog on that same Look. A file already in the destination with the same filename and the same size is already here, including one that sits in a different month folder. **Copy what's missing** writes only files that are not already there, into the folder name the phone is using now, then adds that folder with Serve from that folder. After a Look of that same folder, Copy uses the list Look just made and does not read the phone again. A second read, when one is needed, is the same Explorer listing and is usually faster because Windows already has the folders. Same path and a different size is left untouched. Esc stops a copy; Esc again closes. Nothing on the phone is deleted or overwritten. After Look, one sentence says how many pictures are already in the folder and how many are not. The list shows the already-copied files first, labeled Already in this folder, then files that are not here yet. The current filename shows while copying. If Explorer cannot see the phone, the dialog says so. |
 | Scanning | Close Add as soon as `POST /api/sources` returns 202 for **either** copy-here or serve-from-there. Never leave the dialog open on `busy` or a long scan; if the POST is `busy`, close and show scan status. Library shows a confirmation that the folder was added and a status line with added/skipped/error counts from sources. Poll every second while running. Previously indexed items remain browsable; newly indexed items appear as they become ready, with placeholders until renditions arrive. No percentage without a known denominator. An error leaves counts, readable error text, and **Retry**; never a blank page. The serve process prints scan progress on stdout during normal work. |
 | Disconnected | Banner “Library is not responding”. Keep the last grid if any. Retry health then catalog every second. Clear the banner when health is 200. Never a blank crash and never a traceback. |
-| Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, 4 stars and up / Picks / Hide rejects / Blurry, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Location/Rating stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
+| Ready | **Search lives on `#filter-bar`** with All / Photos / Videos / Favorites, With people, 4 stars and up / Picks / Hide rejects / Blurry, removable Person/Place/Tag chips, Clear all, and **one** Group (Date / People / Places / Tags, default Date). Sort Newest/Oldest/Name/Size/Location/Rating stays in the header and does not duplicate Group. Language English/中文 is in the header and persists as `language`. Years/Months/Days/Off date grouping, one Size density slider and Dates in the **bottom-left** cluster under the grid, a right **People** side panel plus collapsible **Tags** (Tags start collapsed; People start expanded; neither section paints over the other), hearts and open work on the same current item set. Date grouping (Years/Months/Days), sort, and language persist to settings; Off, Group People/Places/Tags, selection, current filter, Size, side-panel width/collapse, People/Tags section collapse, Favorites collapse, and group collapse are transient. No localStorage truth. The page address is the live listen origin. |
 | Live origin | History, Back, and links stay on `window.location.origin` (the process that served this page). Root-relative `/` and `/api/*` only. Never build `http://<host>:<settings.port>` or reuse a stored runtime URL from another listen (QA range 18765–18864 is a common stale port). Browser Back while the page is open closes the viewer or stays on the grid; it does not navigate to another host or port and does not call `history.back()`. |
 | Update | Header `#update-library` is labeled Update Library. `#library-version` beside it shows this copy's short git SHA (or `local`). Click runs `POST /api/update`, which always tracks `main` over anonymous HTTPS git, or a zip of `main` if git is missing. No `gh`, no GitHub login. `library-data/` is never replaced. While the pull runs, `#update-status` says Updating… Then one i18n sentence: updated / already current / pull failed / diverged / need-public / update-unavailable. A successful Update refreshes `#library-version`. When the pull writes a newer `main` and this Library serve is running, stop only that process on the settings port and relaunch; the page says Restarting… then reloads. If Library was not running, Update finishes without launching. No command prompt. Launcher `Update.bat` uses the same pull and relaunch. |
 | Viewer | A wide click docks the existing `#viewer` between `#library-stage` and `#library-side`, with `#preview-splitter` (6px, session width, default 480px, min 320px, grows until the grid is 120px wide) on its left. A grid tile smaller than the thumb's longest side (`thumbPx`) shows that thumb at full size on hover; the flyout does not take the click. People stays. A narrow window and F/F11 use the full-window viewer; Esc leaves fullscreen first, then closes the dock or the full viewer. Show still preview first, then readable original with **no** “Showing original” control; video uses poster then **progressive** proxy→original (see Video playback and zoom). `#viewer-source` beside `#viewer-crumb` names Preview / Loading full… / Original / Full / Preview — full unavailable. Live uses still with motion playback. Back stays top-left. Previous/Next and Rotate sit on a **bottom** bar (`#viewer-nav` inside `#viewer-bottom`). ArrowLeft/ArrowRight still change photo and stop at ends. Zoom is a **vertical** `#viewer-zoom-slider` on the side of the stage (range 25–1600, 0.25×–16× fit) with a live percentage (`#viewer-zoom-pct`). **Plain wheel** is the primary zoom; the slider is secondary. Ctrl+wheel and Ctrl++/− stay. Ctrl+0 fits, Ctrl+1 is 100%. No Zoom in/Zoom out buttons. The slider does **not** sit in `#viewer-bottom` or over the picture. Click-hold pans while zoomed; stills also left-drag pan at fit; middle-drag pans stills and video. Rotate (button or Ctrl+R) turns the displayed still 90° and does not rewrite the original. F11 or F toggles fullscreen; Esc leaves fullscreen, then the viewer. F5 starts a slideshow of the current set (Space pauses; Esc stops; empty library: “Add photos first”). A heart toggles favorite (`catalog/favorites.json`); pressed/filled means favorited. Reveal in Explorer and Open (`#open-original`) sit side by side. Delete removes from the library (confirm; originals stay); Delete file is a second control with an extra confirm. Person/Place/Thing are **not** pills over the preview. Top-right `#viewer-info` opens a dropdown: EXIF/file facts first (date taken, camera, dimensions, size, path, GPS, hash; extra current paths as **Also at**; empty “No camera info for this file.”), then people/places/things; a click on an entity filters the grid and closes the viewer. Type-in fields stay inside Info and stay labeled. Tooltips on chrome name the shortcut. Esc closes `#duplicate-compare`, then Info, then slideshow, then fullscreen, then the viewer. No box-drawing editor. `#viewer-scrub` lives in `#viewer-bottom` (the former zoom-slider slot) and seeks the playing video at any zoom or source; it does not overlay the picture. |
@@ -126,11 +126,23 @@ on the tile and do not crop the media.
 The All / Photos / Videos / Favorites controls live on `#filter-bar`
 (not in the header) and are mutually exclusive. All clears kind and
 favorite. Photos sends `kind=photo,live`. Videos sends `kind=video`.
-Favorites sends `favorite=1`. Rating chips on the same row: **4 stars
+Favorites sends `favorite=1`. **With people**
+(`#filter-with-people`) sits on that row after Favorites and is not
+exclusive with them. Pressed, it sends `hasPeople=1` and keeps items
+with at least one linked person (named or unnamed). Press again to
+clear it. Clear all clears it. Rating chips on the same row: **4 stars
 and up** (`minStars=4`), **Picks** (`pick=1`), **Hide rejects**
 (`hideRejects=1`, default on), **Blurry** (`flag=blurry`). Combined with the presentable sort
 (Newest / Oldest / Name) and the active-filter chips, this is how the
-library is filtered. Location and Rating sort remain available.
+library is filtered. Once that list has arrived, those chips, a folder, and a
+person, place, or tag filter apply to it here. Pressing the chip does
+not clear the grid first, and thumbnails already painted stay on their
+tiles. Videos are the video records in that list, including a short
+video that shares a tile with a still. A wall of videos keeps the same
+column width while scrolling, so a tile does not jump left or right.
+Clearing the filter puts the same pictures back. They do not ask the server again. Search and Recently added still ask the server. Until
+that answer arrives the pictures stay up, and the bottom line says the
+library is being filtered. Location and Rating sort remain available.
 
 Hearts: `#grid` `data-hearts=on` when `--cell` is 144 or larger, `off` at
 72 and 104. The heart is a button `.heart` in the badge corner (top-left
@@ -147,12 +159,26 @@ row. Collapse is session-only.
 Click a cell opens it. ArrowLeft/ArrowRight navigate. Viewer zoom is a
 **vertical side** slider (`#viewer-zoom-slider`) showing percentage, plus
 **plain wheel** (primary) or Ctrl+wheel around the cursor's image
-coordinate; middle drag moves it 1:1. Click-hold pans while the picture
-is zoomed past fit (stills and video). A still also pans with a left
-drag. No reflow or automatic fit during a gesture. Slider/wheel span
+coordinate; middle drag moves it 1:1. A left click-hold that moves
+pans the same way, for a still or a video, zoomed or not. A click that
+does not move does not pan and does not refit. Slider/wheel span
 0.25× fit to 16× fit. Images and video initially fit; each newly opened
-item resets fit and rotation. A still click does nothing. Video/live
-click or Space toggles playback unless that pointer was a pan. The
+item resets fit and rotation. When `#viewer-stage` stops changing size
+(window, `#preview-splitter`, or the people splitter), the open picture
+or video fits that box. It does not follow the pointer during the drag.
+`#viewer-caption` sits above the picture and shows the weekday date,
+the place, and the file size. The place is the catalog name when the
+record has one, otherwise the coordinates. A video uses that same line.
+Its place is the one saved for that file, including a place stored in
+the folder library. The size is that file’s `sizeBytes` (the motion
+file for a video) and stays on its own when the file has no place.
+A video with no location of its own uses the place on a same-name still
+when that still is in the library. A hovered tile shows a light border.
+The enlarged thumbnail shows for a photo or a video.
+
+A still click does nothing. Video/live click or Space toggles playback
+unless that pointer was a pan, and a play or pause mark pops on
+`#viewer-stage`. That click does not refit. The
 viewer scrub bar sits in `#viewer-bottom` (not over the picture) and
 seeks; wheel does not seek. Unsupported original codec stays on the
 proxy after a progressive start, not a silent freeze.
@@ -241,9 +267,12 @@ filtering is unchanged; leftover cells use a non-`grid` slot.
 ## Filter bar, chips, arrange, and tags
 
 **Group vs Sort vs chips, one sentence each:** Group (`#arrange`) is how
-the wall is arranged (Date / People / Places / Tags). Sort is the order
-inside that arrangement (Newest / Oldest / Name / Location). Filter chips
-are a temporary subset (All / Photos / Videos / Favorites plus Person /
+the wall is arranged (Date / People / Places / Tags / Off). Off is one
+wall in the current sort. Sort is the order
+inside that arrangement (Newest / Oldest / Name / Size / Location).
+While Size is selected and Group is Date, the grid is one list, largest
+file first. Filter chips
+are a temporary subset (All / Photos / Videos / Favorites, With people, plus Person /
 Place / Tag). Search is a text box on that same filter row; it is not a
 fourth arrangement mode.
 
@@ -320,9 +349,19 @@ orphan list.
 ### Processing
 
 `#jobs-panel` reports background work and never blocks browse. Poll
-`GET /api/jobs` while the page is open. Show whether work is running,
-a progress-ish line (queue label + pending count, not a fake
-percentage), and **Pause** / **Start** (Resume when paused).
+`GET /api/jobs` while the page is open. Each queue row shows a real
+percent, `done / (done + waiting)`, plus done, waiting, and errors.
+**Pause** on that row stops only that queue. **Resume** on that row
+starts it again. The panel **Pause** stops every queue. **Start**
+runs every queue again. A fresh server runs thumbnails only. Places,
+Faces, Objects, Transcribe, and Rating stay paused until Resume.
+
+The bottom line counts thumbnails on screen and pictures in the
+library. While the list is still arriving it says the picture count
+is still counting. It is not a processing queue. The page stays
+usable while that count is still climbing: on-screen thumbnails keep
+loading, and a click can open the preview. Records that arrive after
+the first screen do not rebuild the tiles already showing.
 
 Also poll `GET /api/activity` about once a second. That reply is the
 file the server is on right now (`phase`, `file`, `done`, `total`,
@@ -354,8 +393,9 @@ with audio (`transcribeVideos` on and model present), then Rating on
 photo/Live stills (`ratingMode` not `off`). After **Re-run Faces**
 (`forceRescan`), the drain finishes the remaining face items first so
 the Faces pending count runs to zero; a failed item is marked scanned
-and the queue continues. Pause sets `paused` and
-the drain skips work; Start/Resume clears it. Missing pack or models:
+and the queue continues. Pause with no queue sets `paused` and the
+drain skips every kind of work. Pause with a queue id skips only that
+work. Start clears every pause. Missing pack or models:
 `available` false, queue idle, browse stays up. Start never opens a
 modal and never freezes the grid.
 
@@ -456,6 +496,8 @@ the query changes (including Clear all and clicking a selected person to remove 
 show loading, then progressively draw current streamed records in order. Repeat and
 warm-cache visits use the same path. The first record paints before stream completion;
 bounded paint batches yield to the browser, and completion does not rebuild the grid.
+Parsing the arriving list yields often enough that scrolling, clicks, and thumbnail
+loads keep running before the count finishes.
 Unchanged-query background refresh keeps painted tiles. Current results paint
 independently of sidebar/status reads, and obsolete response/paint callbacks are
 ignored. Load visible thumbnails before nearby prefetch; offscreen work must not
@@ -554,13 +596,17 @@ restores catalog only — not the bytes. Linked and copied files both
 require that extra confirm. Never make Delete file the Delete-key
 default. Commands: CONTRACTS `remove` and `delete-file`.
 
-**8. Sort + filters.** Presentable sort labels: Newest, Oldest, Name
-(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`). Location sort
-stays available so F11 is not weakened. Rating sort (`sort=rating`)
-orders by effective stars. Search lives on `#filter-bar`.
+**8. Sort + filters.** Presentable sort labels: Newest, Oldest, Name, Size
+(`sort=date&dir=desc`, `sort=date&dir=asc`, `sort=name`,
+`sort=size&dir=desc`). Location sort stays available so F11 is not
+weakened. Rating sort (`sort=rating`) orders by effective stars. Size
+is largest file first (current location `sizeBytes`). While Size is
+selected and Group is Date, the grid is one list in that order;
+Years/Months/Days do not bucket it. Search lives on `#filter-bar`.
 Filters on that row: mutually exclusive All (no kind, no
 favorite), Photos (`kind=photo,live`), Videos (`kind=video`), Favorites
-(`favorite=1`), plus **4 stars and up**, **Picks**, **Hide rejects**
+(`favorite=1`), plus **With people** (`hasPeople=1`, combinable),
+**4 stars and up**, **Picks**, **Hide rejects**
 (default on), **Blurry**, removable Person / Place / Tag chips and Clear all.
 The Favorites strip still appears when All is selected and any current
 result is hearted. Group Date / People / Places / Tags is session-only
@@ -764,7 +810,7 @@ taste gate.
 | 12 | Fullscreen | F11 or F; Esc exits fullscreen, then the viewer |
 | 13 | Slideshow | F5 starts; Space pauses; Esc stops; empty “Add photos first” |
 | 14 | Favorite | Viewer heart; tile heart at large Size; Favorites strip can collapse |
-| 15 | Reveal + Open | Side by side; Reveal uses argv `explorer.exe` + `/select,fullpath` (comma glued, no extra quotes) so paths with spaces (e.g. `Iphone Backup`) select the file; missing original shows the banner, never Documents |
+| 15 | Reveal + Open | Side by side; Reveal runs the command line `explorer.exe /select,"full path"` (quotes around the path only). A quoted `/select,full path` argument opens Documents when the path has spaces. Missing original shows the banner, never Documents |
 | 16 | Info | File facts first (or “No camera info”), then people/places/things; click filters the grid |
 | 17 | Remove / Delete file | Delete key removes from library (confirm, bytes stay). Delete file extra-confirms and Recycle-Bins |
 | 18 | Reconnect | Kill the server: “Library is not responding”; restore health clears it |
