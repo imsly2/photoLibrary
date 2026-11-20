@@ -143,3 +143,6 @@ docs/features/**/*.tmp
 
 # App-local runtime downloads (never commit binaries or machine state).
 .local/
+
+# Personal photo comparison scratch — never publish (this repo is public).
+.scratch/
